@@ -23,6 +23,9 @@ def gen_variable_definition(node):
     assert node.type.spelling == 'const unsigned int'
     variable = node.spelling
 
+    # Convert variable to the RUST_CONSTANT_STYLE.
+    variable = re.sub(r'([a-z])([A-Z])', r'\1_\2', variable).upper()
+
     children = list(node.get_children())
     assert len(children) == 1
     assert children[0].kind is libclang.CursorKind.UNEXPOSED_EXPR

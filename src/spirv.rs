@@ -4,11 +4,11 @@
 pub type Word = u32;
 pub type Id = u32;
 
-const MagicNumber: usize = 0x07230203;
-const Version: usize = 0x00010000;
-const Revision: usize = 3;
-const OpCodeMask: usize = 0xffff;
-const WordCountShift: usize = 16;
+const MAGIC_NUMBER: usize = 0x07230203;
+const VERSION: usize = 0x00010000;
+const REVISION: usize = 3;
+const OP_CODE_MASK: usize = 0xffff;
+const WORD_COUNT_SHIFT: usize = 16;
 
 #[derive(Clone, Copy, Debug)]
 pub enum SourceLanguage {
