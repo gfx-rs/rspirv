@@ -1,6 +1,9 @@
 // This rust module is automatically generated from  SPIR-V C++ header file:
 //   https://www.khronos.org/registry/spir-v/api/1.0/spirv.hpp
 
+#![allow(dead_code)]
+#![allow(non_camel_case_types)]
+
 pub type Word = u32;
 pub type Id = u32;
 
@@ -856,4 +859,3 @@ pub enum Op {
     AtomicFlagClear = 319,
     ImageSparseRead = 320,
 }
-

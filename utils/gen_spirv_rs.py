@@ -110,7 +110,8 @@ def generate_spirv_rs(spirv_hpp_path):
             consts.append(gen_variable_definition(node))
         elif node.kind is libclang.CursorKind.ENUM_DECL:
             enums.append(gen_enum_definition(node))
-    return '{types}\n\n{consts}\n\n{enums}\n'.format(
+    return '{allows}\n\n{types}\n\n{consts}\n\n{enums}'.format(
+        allows='#![allow(dead_code)]\n#![allow(non_camel_case_types)]',
         types='pub type Word = u32;\npub type Id = u32;',
         consts='\n'.join(consts),
         enums='\n\n'.join(enums))
