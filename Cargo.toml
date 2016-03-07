@@ -1,0 +1,8 @@
+[package]
+name = "rspirv"
+version = "0.1.0"
+authors = ["Lei Zhang <antiagainst@gmail.com>"]
+
+[dependencies]
+getopts = "0.2"
+nom = "~1.2.1"
