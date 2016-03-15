@@ -1,21 +1,12 @@
 use spirv;
-
-#[derive(Debug)]
-enum OperandClass {
-    OptionalId,
-    OptionalLiteralString,
-    LiteralNumber,
-    LiteralString,
-    Source,
-    Capability,
-}
+use super::OperandType;
 
 #[derive(Debug)]
 struct Operand<'a> {
     name: &'a str,
     code: spirv::Word,
     capabilities: &'a [spirv::Capability],
-    operands: &'a [OperandClass],
+    operands: &'a [OperandType],
 }
 
 #[derive(Debug)]
@@ -25,7 +16,7 @@ pub struct Instruction<'a> {
     capabilities: &'a [spirv::Capability],
     has_result_type: bool,
     has_result_id: bool,
-    operands: &'a [OperandClass],
+    operands: &'a [OperandType],
 }
 
 macro_rules! inst {
@@ -39,7 +30,7 @@ macro_rules! inst {
             has_result_type: $rtype,
             has_result_id: $rid,
             operands: &[
-                $(OperandClass::$operand),*
+                $(OperandType::$operand),*
             ],
         }
     }
@@ -49,7 +40,7 @@ static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[
     inst!(Nop, [], false, false, []),
     inst!(Undef, [], true, true, []),
     inst!(SourceContinued, [], false, false, [LiteralString]),
-    inst!(Source, [], false, false, [Source, LiteralNumber, OptionalId, OptionalLiteralString]),
+    inst!(Source, [], false, false, [SourceLanguage, LiteralInteger, OptionalId, OptionalLiteralString]),
     inst!(String, [], false, true, [LiteralString]),
     inst!(Capability, [], false, false, [Capability]),
 ];
