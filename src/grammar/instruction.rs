@@ -9,41 +9,37 @@ struct Operand<'a> {
     operands: &'a [OperandType],
 }
 
+#[derive(Clone, Copy, Debug)]
+pub enum OperandQuantifier {
+    One,
+    ZeroOrOne,
+    ZeroOrMore,
+}
+
 #[derive(Debug)]
 pub struct Instruction<'a> {
     opname: &'a str,
     opcode: spirv::Op,
     capabilities: &'a [spirv::Capability],
-    has_result_type: bool,
-    has_result_id: bool,
-    operands: &'a [OperandType],
+    operands: &'a [(OperandKind, OperandQuantifier)],
 }
 
 macro_rules! inst {
-    ($op:ident, [$( $cap:ident ),*], $rtype:expr, $rid:expr, [$( $operand:ident ),*]) => {
+    ($op:ident, [$( $cap:ident ),*], [$( ($kind:ident, $quantifier:ident) ),*]) => {
         Instruction {
             opname: stringify!($op),
             opcode: spirv::Op::$op,
             capabilities: &[
-                $(spirv::Capability::$cap),*
+                $( spirv::Capability::$cap ),*
             ],
-            has_result_type: $rtype,
-            has_result_id: $rid,
             operands: &[
-                $(OperandType::$operand),*
+                $( (OperandKind::$kind, OperandQuantifier::$quantifier) ),*
             ],
         }
     }
 }
 
-static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[
-    inst!(Nop, [], false, false, []),
-    inst!(Undef, [], true, true, []),
-    inst!(SourceContinued, [], false, false, [LiteralString]),
-    inst!(Source, [], false, false, [SourceLanguage, LiteralInteger, OptionalId, OptionalLiteralString]),
-    inst!(String, [], false, true, [LiteralString]),
-    inst!(Capability, [], false, false, [Capability]),
-];
+include!("table.rs");
 
 pub struct InstructionTable;
 
