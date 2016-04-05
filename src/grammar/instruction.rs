@@ -1,13 +1,4 @@
 use spirv;
-use super::OperandType;
-
-#[derive(Debug)]
-struct Operand<'a> {
-    name: &'a str,
-    code: spirv::Word,
-    capabilities: &'a [spirv::Capability],
-    operands: &'a [OperandType],
-}
 
 #[derive(Clone, Copy, Debug)]
 pub enum OperandQuantifier {
