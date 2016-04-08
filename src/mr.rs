@@ -2,9 +2,10 @@ use grammar;
 use spirv::Word;
 
 #[derive(Debug)]
-pub struct Module {
+pub struct Module<'a> {
     pub header: Option<ModuleHeader>,
     pub instructions: Vec<Instruction>,
+    pub functions: Vec<Function<'a>>,
 }
 
 #[derive(Debug)]
@@ -17,6 +18,17 @@ pub struct ModuleHeader {
 }
 
 #[derive(Debug)]
+pub struct Function<'a> {
+    pub basic_blocks: Vec<BasicBlock<'a>>,
+}
+
+#[derive(Debug)]
+pub struct BasicBlock<'a> {
+    pub function: &'a Function<'a>,
+    pub instructions: Vec<Instruction>,
+}
+
+#[derive(Debug)]
 pub struct Instruction {
     pub class: &'static grammar::Instruction<'static>,
     pub result_type: Option<Word>,
@@ -24,11 +36,12 @@ pub struct Instruction {
     pub operands: Vec<Word>,
 }
 
-impl Module {
-    pub fn new() -> Module {
+impl<'a> Module<'a> {
+    pub fn new() -> Module<'a> {
         Module {
             header: None,
             instructions: vec![],
+            functions: vec![],
         }
     }
 }

@@ -62,15 +62,15 @@ enum SpirvSection {
     Instruction(&'static grammar::Instruction<'static>, u16),
 }
 
-pub struct Reader {
+pub struct Reader<'a> {
     state: ReaderState,
     section: SpirvSection,
     endianness: Endianness,
-    module: mr::Module,
+    module: mr::Module<'a>,
 }
 
-impl Reader {
-    pub fn new() -> Reader {
+impl<'a> Reader<'a> {
+    pub fn new() -> Reader<'a> {
         Reader {
             state: nom::ConsumerState::Continue(nom::Move::Consume(0)),
             section: SpirvSection::Init,
@@ -160,7 +160,7 @@ impl Reader {
     }
 }
 
-impl<'i> nom::Consumer<&'i [u8], (), (), nom::Move> for Reader {
+impl<'a, 'i> nom::Consumer<&'i [u8], (), (), nom::Move> for Reader<'a> {
     fn handle(&mut self, input: nom::Input<&'i [u8]>) -> &ReaderState {
         match input {
             nom::Input::Element(data) | nom::Input::Eof(Some(data)) => {
