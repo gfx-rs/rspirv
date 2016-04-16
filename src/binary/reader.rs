@@ -1,7 +1,7 @@
-use builder;
 use mr;
 use spirv;
-use binary::producer;
+
+use super::producer;
 
 use std::result;
 
@@ -17,14 +17,14 @@ const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
 pub struct Reader<'a> {
     producer: producer::Producer,
-    builder: builder::Builder<'a>,
+    builder: mr::Builder<'a>,
 }
 
 impl<'a> Reader<'a> {
     pub fn new() -> Reader<'a> {
         Reader {
             producer: producer::Producer::new(),
-            builder: builder::Builder::new(),
+            builder: mr::Builder::new(),
         }
     }
 

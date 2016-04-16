@@ -1,4 +1,4 @@
-pub use self::instruction::Instruction;
-pub use self::instruction::InstructionTable;
+pub use self::syntax::Instruction;
+pub use self::syntax::InstructionTable;
 
-mod instruction;
+mod syntax;

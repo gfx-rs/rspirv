@@ -1,18 +1,18 @@
 use spirv;
 
-#[derive(Clone, Copy, Debug)]
-pub enum OperandQuantifier {
-    One,
-    ZeroOrOne,
-    ZeroOrMore,
-}
-
 #[derive(Debug)]
 pub struct Instruction<'a> {
     opname: &'a str,
     opcode: spirv::Op,
     capabilities: &'a [spirv::Capability],
     operands: &'a [(OperandKind, OperandQuantifier)],
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum OperandQuantifier {
+    One,
+    ZeroOrOne,
+    ZeroOrMore,
 }
 
 macro_rules! inst {
@@ -30,8 +30,6 @@ macro_rules! inst {
     }
 }
 
-include!("table.rs");
-
 pub struct InstructionTable;
 
 impl InstructionTable {
@@ -44,3 +42,5 @@ impl InstructionTable {
         None
     }
 }
+
+include!("table.rs");
