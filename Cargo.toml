@@ -5,4 +5,3 @@ authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
 [dependencies]
 getopts = "0.2"
-nom = "~1.2.1"

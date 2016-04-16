@@ -1,9 +1,9 @@
 extern crate getopts;
-extern crate nom;
 extern crate rspirv;
 
-use nom::Producer;
 use std::env;
+use std::fs;
+use std::io::Read;
 
 fn print_usage(program: &str, opts: getopts::Options) {
     let brief = format!("Usage: {} [options] <spirv-binary>", program);
@@ -31,20 +31,11 @@ fn main() {
         return;
     };
 
-    let mut p = nom::FileProducer::new(input, 1024 * 5).unwrap();
-    let mut c = rspirv::binary::Reader::new();
+    let mut f = fs::File::open(input).unwrap();
+    let mut buffer = Vec::new();
 
-    loop {
-        match p.apply(&mut c) {
-            &nom::ConsumerState::Done(_, _) => {
-                println!("Succeed.");
-                break;
-            }
-            &nom::ConsumerState::Error(_) => {
-                println!("Failed.");
-                break;
-            }
-            &nom::ConsumerState::Continue(_) => continue,
-        }
-    }
+    f.read_to_end(&mut buffer).unwrap();
+
+    let mut reader = rspirv::binary::Reader::new();
+    reader.process(buffer);
 }
