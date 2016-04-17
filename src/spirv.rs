@@ -9,10 +9,11 @@ pub type Id = u32;
 
 const MAGIC_NUMBER: usize = 0x07230203;
 const VERSION: usize = 0x00010000;
-const REVISION: usize = 3;
+const REVISION: usize = 4;
 const OP_CODE_MASK: usize = 0xffff;
 const WORD_COUNT_SHIFT: usize = 16;
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum SourceLanguage {
     Unknown = 0,
@@ -22,6 +23,7 @@ pub enum SourceLanguage {
     OpenCL_CPP = 4,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionModel {
     Vertex = 0,
@@ -33,6 +35,7 @@ pub enum ExecutionModel {
     Kernel = 6,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum AddressingModel {
     Logical = 0,
@@ -40,6 +43,7 @@ pub enum AddressingModel {
     Physical64 = 2,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum MemoryModel {
     Simple = 0,
@@ -47,6 +51,7 @@ pub enum MemoryModel {
     OpenCL = 2,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum ExecutionMode {
     Invocations = 0,
@@ -82,6 +87,7 @@ pub enum ExecutionMode {
     ContractionOff = 31,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum StorageClass {
     UniformConstant = 0,
@@ -98,6 +104,7 @@ pub enum StorageClass {
     Image = 11,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum Dim {
     Dim1D = 0,
@@ -109,6 +116,7 @@ pub enum Dim {
     DimSubpassData = 6,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum SamplerAddressingMode {
     None = 0,
@@ -118,12 +126,14 @@ pub enum SamplerAddressingMode {
     RepeatMirrored = 4,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum SamplerFilterMode {
     Nearest = 0,
     Linear = 1,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum ImageFormat {
     Unknown = 0,
@@ -168,6 +178,7 @@ pub enum ImageFormat {
     R8ui = 39,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum ImageChannelOrder {
     R = 0,
@@ -191,6 +202,7 @@ pub enum ImageChannelOrder {
     sBGRA = 18,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum ImageChannelDataType {
     SnormInt8 = 0,
@@ -212,6 +224,7 @@ pub enum ImageChannelDataType {
     UnormInt101010_2 = 16,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum ImageOperandsShift {
     BiasShift = 0,
@@ -224,6 +237,7 @@ pub enum ImageOperandsShift {
     MinLodShift = 7,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum ImageOperandsMask {
     MaskNone = 0,
@@ -237,6 +251,7 @@ pub enum ImageOperandsMask {
     MinLodMask = 0x00000080,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum FPFastMathModeShift {
     NotNaNShift = 0,
@@ -246,6 +261,7 @@ pub enum FPFastMathModeShift {
     FastShift = 4,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum FPFastMathModeMask {
     MaskNone = 0,
@@ -256,6 +272,7 @@ pub enum FPFastMathModeMask {
     FastMask = 0x00000010,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum FPRoundingMode {
     RTE = 0,
@@ -264,12 +281,14 @@ pub enum FPRoundingMode {
     RTN = 3,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum LinkageType {
     Export = 0,
     Import = 1,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum AccessQualifier {
     ReadOnly = 0,
@@ -277,6 +296,7 @@ pub enum AccessQualifier {
     ReadWrite = 2,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum FunctionParameterAttribute {
     Zext = 0,
@@ -289,6 +309,7 @@ pub enum FunctionParameterAttribute {
     NoReadWrite = 7,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum Decoration {
     RelaxedPrecision = 0,
@@ -336,6 +357,7 @@ pub enum Decoration {
     Alignment = 44,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum BuiltIn {
     Position = 0,
@@ -381,12 +403,14 @@ pub enum BuiltIn {
     InstanceIndex = 43,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum SelectionControlShift {
     FlattenShift = 0,
     DontFlattenShift = 1,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum SelectionControlMask {
     MaskNone = 0,
@@ -394,12 +418,14 @@ pub enum SelectionControlMask {
     DontFlattenMask = 0x00000002,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum LoopControlShift {
     UnrollShift = 0,
     DontUnrollShift = 1,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum LoopControlMask {
     MaskNone = 0,
@@ -407,6 +433,7 @@ pub enum LoopControlMask {
     DontUnrollMask = 0x00000002,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum FunctionControlShift {
     InlineShift = 0,
@@ -415,6 +442,7 @@ pub enum FunctionControlShift {
     ConstShift = 3,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum FunctionControlMask {
     MaskNone = 0,
@@ -424,6 +452,7 @@ pub enum FunctionControlMask {
     ConstMask = 0x00000008,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum MemorySemanticsShift {
     AcquireShift = 1,
@@ -438,6 +467,7 @@ pub enum MemorySemanticsShift {
     ImageMemoryShift = 11,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum MemorySemanticsMask {
     MaskNone = 0,
@@ -453,6 +483,7 @@ pub enum MemorySemanticsMask {
     ImageMemoryMask = 0x00000800,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum MemoryAccessShift {
     VolatileShift = 0,
@@ -460,6 +491,7 @@ pub enum MemoryAccessShift {
     NontemporalShift = 2,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum MemoryAccessMask {
     MaskNone = 0,
@@ -468,6 +500,7 @@ pub enum MemoryAccessMask {
     NontemporalMask = 0x00000004,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum Scope {
     CrossDevice = 0,
@@ -477,6 +510,7 @@ pub enum Scope {
     Invocation = 4,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum GroupOperation {
     Reduce = 0,
@@ -484,6 +518,7 @@ pub enum GroupOperation {
     ExclusiveScan = 2,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum KernelEnqueueFlags {
     NoWait = 0,
@@ -491,17 +526,20 @@ pub enum KernelEnqueueFlags {
     WaitWorkGroup = 2,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum KernelProfilingInfoShift {
     CmdExecTimeShift = 0,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum KernelProfilingInfoMask {
     MaskNone = 0,
     CmdExecTimeMask = 0x00000001,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum Capability {
     Matrix = 0,
@@ -562,6 +600,7 @@ pub enum Capability {
     MultiViewport = 57,
 }
 
+#[repr(u32)]
 #[derive(Clone, Copy, Debug)]
 pub enum Op {
     Nop = 0,

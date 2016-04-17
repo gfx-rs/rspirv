@@ -88,7 +88,7 @@ def gen_enum_definition(node):
     cases = itertools.imap('    {} = {},'.format, case_names, case_values)
 
     return '{attribute}\npub enum {enum_class} {{\n{enumerants}\n}}'.format(
-        attribute='#[derive(Clone, Copy, Debug)]',
+        attribute='#[repr(u32)]\n#[derive(Clone, Copy, Debug)]',
         enum_class=enum_class,
         enumerants='\n'.join(cases))
 
