@@ -34,12 +34,7 @@ pub struct InstructionTable;
 
 impl InstructionTable {
     pub fn lookup_opcode(opcode: u16) -> Option<&'static Instruction<'static>> {
-        for inst in INSTRUCTION_TABLE {
-            if (inst.opcode as u16) == opcode {
-                return Some(inst);
-            }
-        }
-        None
+        INSTRUCTION_TABLE.iter().find(|&inst| (inst.opcode as u16) == opcode)
     }
 }
 

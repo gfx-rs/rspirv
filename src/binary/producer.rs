@@ -53,7 +53,7 @@ impl Producer {
 
     pub fn get_next_n_words(&mut self, n: usize) -> Result<Vec<spirv::Word>> {
         let mut words = Vec::new();
-        for i in 0..n {
+        for _ in 0..n {
             words.push(try!(self.get_next_word()));
         }
         Ok(words)
