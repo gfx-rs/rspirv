@@ -2,10 +2,10 @@ use spirv;
 
 #[derive(Debug)]
 pub struct Instruction<'a> {
-    opname: &'a str,
-    opcode: spirv::Op,
-    capabilities: &'a [spirv::Capability],
-    operands: &'a [(OperandKind, OperandQuantifier)],
+    pub opname: &'a str,
+    pub opcode: spirv::Op,
+    pub capabilities: &'a [spirv::Capability],
+    pub operands: &'a [(OperandKind, OperandQuantifier)],
 }
 
 #[derive(Clone, Copy, Debug)]

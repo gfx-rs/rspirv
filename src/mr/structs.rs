@@ -1,9 +1,12 @@
 use grammar;
+use spirv;
+
 use spirv::Word;
 
 #[derive(Debug)]
 pub struct Module<'a> {
     pub header: Option<ModuleHeader>,
+    pub capabilities: Vec<spirv::Capability>,
     pub instructions: Vec<Instruction>,
     pub functions: Vec<Function<'a>>,
 }
@@ -40,6 +43,7 @@ impl<'a> Module<'a> {
     pub fn new() -> Module<'a> {
         Module {
             header: None,
+            capabilities: vec![],
             instructions: vec![],
             functions: vec![],
         }
