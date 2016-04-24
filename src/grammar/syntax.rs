@@ -5,7 +5,13 @@ pub struct Instruction<'a> {
     pub opname: &'a str,
     pub opcode: spirv::Op,
     pub capabilities: &'a [spirv::Capability],
-    pub operands: &'a [(OperandKind, OperandQuantifier)],
+    pub operands: &'a [LogicalOperand],
+}
+
+#[derive(Debug)]
+pub struct LogicalOperand {
+    pub kind: OperandKind,
+    pub quantifier: OperandQuantifier,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -24,7 +30,10 @@ macro_rules! inst {
                 $( spirv::Capability::$cap ),*
             ],
             operands: &[
-                $( (OperandKind::$kind, OperandQuantifier::$quantifier) ),*
+                $( LogicalOperand {
+                    kind: OperandKind::$kind,
+                    quantifier: OperandQuantifier::$quantifier }
+                ),*
             ],
         }
     }

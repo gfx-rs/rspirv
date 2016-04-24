@@ -1,4 +1,3 @@
-pub use self::syntax::Instruction;
-pub use self::syntax::InstructionTable;
+pub use self::syntax::{Instruction, InstructionTable, OperandKind, OperandQuantifier};
 
 mod syntax;
