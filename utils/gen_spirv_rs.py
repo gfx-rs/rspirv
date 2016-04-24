@@ -10,6 +10,8 @@ import re
 
 import clang.cindex as libclang
 
+SPIRV_HPP_URL = 'https://www.khronos.org/registry/spir-v/api/1.0/spirv.hpp'
+
 
 def gen_variable_definition(node):
     """Generates variable definition from a clang VarDecl AST node.
@@ -88,7 +90,8 @@ def gen_enum_definition(node):
     cases = itertools.imap('    {} = {},'.format, case_names, case_values)
 
     return '{attribute}\npub enum {enum_class} {{\n{enumerants}\n}}'.format(
-        attribute='#[repr(u32)]\n#[derive(Clone, Copy, Debug)]',
+        attribute='#[repr(u32)]\n'
+        '#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]',
         enum_class=enum_class,
         enumerants='\n'.join(cases))
 
@@ -125,5 +128,5 @@ if __name__ == '__main__':
 
     print('// This rust module is automatically generated from ',
           'SPIR-V C++ header file:')
-    print('//   https://www.khronos.org/registry/spir-v/api/1.0/spirv.hpp\n')
+    print('//   {}\n'.format(SPIRV_HPP_URL))
     print(generate_spirv_rs(args.path))

@@ -14,7 +14,7 @@ const OP_CODE_MASK: usize = 0xffff;
 const WORD_COUNT_SHIFT: usize = 16;
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum SourceLanguage {
     Unknown = 0,
     ESSL = 1,
@@ -24,7 +24,7 @@ pub enum SourceLanguage {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum ExecutionModel {
     Vertex = 0,
     TessellationControl = 1,
@@ -36,7 +36,7 @@ pub enum ExecutionModel {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum AddressingModel {
     Logical = 0,
     Physical32 = 1,
@@ -44,7 +44,7 @@ pub enum AddressingModel {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum MemoryModel {
     Simple = 0,
     GLSL450 = 1,
@@ -52,7 +52,7 @@ pub enum MemoryModel {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum ExecutionMode {
     Invocations = 0,
     SpacingEqual = 1,
@@ -88,7 +88,7 @@ pub enum ExecutionMode {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum StorageClass {
     UniformConstant = 0,
     Input = 1,
@@ -105,7 +105,7 @@ pub enum StorageClass {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum Dim {
     Dim1D = 0,
     Dim2D = 1,
@@ -117,7 +117,7 @@ pub enum Dim {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum SamplerAddressingMode {
     None = 0,
     ClampToEdge = 1,
@@ -127,14 +127,14 @@ pub enum SamplerAddressingMode {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum SamplerFilterMode {
     Nearest = 0,
     Linear = 1,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum ImageFormat {
     Unknown = 0,
     Rgba32f = 1,
@@ -179,7 +179,7 @@ pub enum ImageFormat {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum ImageChannelOrder {
     R = 0,
     A = 1,
@@ -203,7 +203,7 @@ pub enum ImageChannelOrder {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum ImageChannelDataType {
     SnormInt8 = 0,
     SnormInt16 = 1,
@@ -225,7 +225,7 @@ pub enum ImageChannelDataType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum ImageOperandsShift {
     BiasShift = 0,
     LodShift = 1,
@@ -238,7 +238,7 @@ pub enum ImageOperandsShift {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum ImageOperandsMask {
     MaskNone = 0,
     BiasMask = 0x00000001,
@@ -252,7 +252,7 @@ pub enum ImageOperandsMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum FPFastMathModeShift {
     NotNaNShift = 0,
     NotInfShift = 1,
@@ -262,7 +262,7 @@ pub enum FPFastMathModeShift {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum FPFastMathModeMask {
     MaskNone = 0,
     NotNaNMask = 0x00000001,
@@ -273,7 +273,7 @@ pub enum FPFastMathModeMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum FPRoundingMode {
     RTE = 0,
     RTZ = 1,
@@ -282,14 +282,14 @@ pub enum FPRoundingMode {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum LinkageType {
     Export = 0,
     Import = 1,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum AccessQualifier {
     ReadOnly = 0,
     WriteOnly = 1,
@@ -297,7 +297,7 @@ pub enum AccessQualifier {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum FunctionParameterAttribute {
     Zext = 0,
     Sext = 1,
@@ -310,7 +310,7 @@ pub enum FunctionParameterAttribute {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum Decoration {
     RelaxedPrecision = 0,
     SpecId = 1,
@@ -358,7 +358,7 @@ pub enum Decoration {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum BuiltIn {
     Position = 0,
     PointSize = 1,
@@ -404,14 +404,14 @@ pub enum BuiltIn {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum SelectionControlShift {
     FlattenShift = 0,
     DontFlattenShift = 1,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum SelectionControlMask {
     MaskNone = 0,
     FlattenMask = 0x00000001,
@@ -419,14 +419,14 @@ pub enum SelectionControlMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum LoopControlShift {
     UnrollShift = 0,
     DontUnrollShift = 1,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum LoopControlMask {
     MaskNone = 0,
     UnrollMask = 0x00000001,
@@ -434,7 +434,7 @@ pub enum LoopControlMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum FunctionControlShift {
     InlineShift = 0,
     DontInlineShift = 1,
@@ -443,7 +443,7 @@ pub enum FunctionControlShift {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum FunctionControlMask {
     MaskNone = 0,
     InlineMask = 0x00000001,
@@ -453,7 +453,7 @@ pub enum FunctionControlMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum MemorySemanticsShift {
     AcquireShift = 1,
     ReleaseShift = 2,
@@ -468,7 +468,7 @@ pub enum MemorySemanticsShift {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum MemorySemanticsMask {
     MaskNone = 0,
     AcquireMask = 0x00000002,
@@ -484,7 +484,7 @@ pub enum MemorySemanticsMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum MemoryAccessShift {
     VolatileShift = 0,
     AlignedShift = 1,
@@ -492,7 +492,7 @@ pub enum MemoryAccessShift {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum MemoryAccessMask {
     MaskNone = 0,
     VolatileMask = 0x00000001,
@@ -501,7 +501,7 @@ pub enum MemoryAccessMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum Scope {
     CrossDevice = 0,
     Device = 1,
@@ -511,7 +511,7 @@ pub enum Scope {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum GroupOperation {
     Reduce = 0,
     InclusiveScan = 1,
@@ -519,7 +519,7 @@ pub enum GroupOperation {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum KernelEnqueueFlags {
     NoWait = 0,
     WaitKernel = 1,
@@ -527,20 +527,20 @@ pub enum KernelEnqueueFlags {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum KernelProfilingInfoShift {
     CmdExecTimeShift = 0,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum KernelProfilingInfoMask {
     MaskNone = 0,
     CmdExecTimeMask = 0x00000001,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum Capability {
     Matrix = 0,
     Shader = 1,
@@ -601,7 +601,7 @@ pub enum Capability {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
 pub enum Op {
     Nop = 0,
     Undef = 1,
