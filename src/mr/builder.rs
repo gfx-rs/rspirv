@@ -56,6 +56,9 @@ impl SpirvWordDecoder {
         (0..WORD_NUM_BYTES).map(|i| ((word >> (8 * i)) & 0xff) as u8).collect()
     }
 
+    // TODO(antiagainst): in the following methods, we should distinguish None caused by no next
+    // word and cannot decode the next word to the expected type.
+
     pub fn capability(&mut self) -> Option<spirv::Capability> {
         if let Some(word) = self.next() {
             spirv::Capability::from_u32(word)
@@ -120,6 +123,166 @@ impl SpirvWordDecoder {
         }
     }
 
+    pub fn dim(&mut self) -> Option<spirv::Dim> {
+        if let Some(word) = self.next() {
+            spirv::Dim::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn sampler_addressing_mode(&mut self) -> Option<spirv::SamplerAddressingMode> {
+        if let Some(word) = self.next() {
+            spirv::SamplerAddressingMode::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn sampler_filter_mode(&mut self) -> Option<spirv::SamplerFilterMode> {
+        if let Some(word) = self.next() {
+            spirv::SamplerFilterMode::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn image_format(&mut self) -> Option<spirv::ImageFormat> {
+        if let Some(word) = self.next() {
+            spirv::ImageFormat::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn image_channel_order(&mut self) -> Option<spirv::ImageChannelOrder> {
+        if let Some(word) = self.next() {
+            spirv::ImageChannelOrder::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn image_channel_data_type(&mut self) -> Option<spirv::ImageChannelDataType> {
+        if let Some(word) = self.next() {
+            spirv::ImageChannelDataType::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn fp_rounding_mode(&mut self) -> Option<spirv::FPRoundingMode> {
+        if let Some(word) = self.next() {
+            spirv::FPRoundingMode::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn linkage_type(&mut self) -> Option<spirv::LinkageType> {
+        if let Some(word) = self.next() {
+            spirv::LinkageType::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn access_qualifier(&mut self) -> Option<spirv::AccessQualifier> {
+        if let Some(word) = self.next() {
+            spirv::AccessQualifier::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn function_parameter_attribute(&mut self) -> Option<spirv::FunctionParameterAttribute> {
+        if let Some(word) = self.next() {
+            spirv::FunctionParameterAttribute::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn built_in(&mut self) -> Option<spirv::BuiltIn> {
+        if let Some(word) = self.next() {
+            spirv::BuiltIn::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn group_operation(&mut self) -> Option<spirv::GroupOperation> {
+        if let Some(word) = self.next() {
+            spirv::GroupOperation::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn kernel_enqueue_flags(&mut self) -> Option<spirv::KernelEnqueueFlags> {
+        if let Some(word) = self.next() {
+            spirv::KernelEnqueueFlags::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn image_operands(&mut self) -> Option<spirv::ImageOperands> {
+        if let Some(word) = self.next() {
+            spirv::ImageOperands::from_bits(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn fp_fast_math_mode(&mut self) -> Option<spirv::FPFastMathMode> {
+        if let Some(word) = self.next() {
+            spirv::FPFastMathMode::from_bits(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn selection_control(&mut self) -> Option<spirv::SelectionControl> {
+        if let Some(word) = self.next() {
+            spirv::SelectionControl::from_bits(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn loop_control(&mut self) -> Option<spirv::LoopControl> {
+        if let Some(word) = self.next() {
+            spirv::LoopControl::from_bits(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn function_control(&mut self) -> Option<spirv::FunctionControl> {
+        if let Some(word) = self.next() {
+            spirv::FunctionControl::from_bits(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn memory_access(&mut self) -> Option<spirv::MemoryAccess> {
+        if let Some(word) = self.next() {
+            spirv::MemoryAccess::from_bits(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn kernel_profiling_info(&mut self) -> Option<spirv::KernelProfilingInfo> {
+        if let Some(word) = self.next() {
+            spirv::KernelProfilingInfo::from_bits(word)
+        } else {
+            None
+        }
+    }
+
     pub fn string(&mut self) -> Option<String> {
         let mut bytes = Vec::new();
         while let Some(word) = self.next() {
@@ -155,11 +318,18 @@ fn decode_words_to_operands(grammar: GInstRef,
         let logical_operand = &grammar.operands[logical_operand_index];
         if !decoder.empty() {
             concrete_operands.push(match logical_operand.kind {
-                GOpKind::Capability => mr::Operand::Capability(decoder.capability().unwrap()),
                 GOpKind::IdType => mr::Operand::IdType(decoder.id().unwrap()),
                 GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
-                GOpKind::IdRef => mr::Operand::IdRef(decoder.id().unwrap()),
+                GOpKind::IdRef |
+                GOpKind::IdMemorySemantics |
+                GOpKind::IdScope => mr::Operand::IdRef(decoder.id().unwrap()),
                 GOpKind::LiteralString => mr::Operand::LiteralString(decoder.string().unwrap()),
+                GOpKind::LiteralContextDependentNumber => {
+                    mr::Operand::LiteralContextDependentNumber(decoder.context_dependent_number()
+                                                                      .unwrap())
+                }
+                GOpKind::Capability => mr::Operand::Capability(decoder.capability().unwrap()),
+                GOpKind::Decoration => mr::Operand::Decoration(decoder.decoration().unwrap()),
                 GOpKind::AddressingModel => {
                     mr::Operand::AddressingModel(decoder.addressing_model()
                                                         .unwrap())
@@ -181,36 +351,60 @@ fn decode_words_to_operands(grammar: GInstRef,
                     mr::Operand::LiteralInteger(decoder.literal_integer()
                                                        .unwrap())
                 }
-                GOpKind::Decoration => mr::Operand::Decoration(decoder.decoration().unwrap()),
                 GOpKind::StorageClass => {
                     mr::Operand::StorageClass(decoder.storage_class().unwrap())
                 }
-                GOpKind::LiteralContextDependentNumber => {
-                    mr::Operand::LiteralContextDependentNumber(decoder.context_dependent_number()
-                                                                      .unwrap())
+                GOpKind::ImageOperands => {
+                    mr::Operand::ImageOperands(decoder.image_operands().unwrap())
                 }
-                GOpKind::ImageOperands |
-                GOpKind::FPFastMathMode |
-                GOpKind::SelectionControl |
-                GOpKind::LoopControl |
-                GOpKind::FunctionControl |
-                GOpKind::IdMemorySemantics |
-                GOpKind::MemoryAccess |
-                GOpKind::KernelProfilingInfo |
-                GOpKind::Dim |
-                GOpKind::SamplerAddressingMode |
-                GOpKind::SamplerFilterMode |
-                GOpKind::ImageFormat |
-                GOpKind::ImageChannelOrder |
-                GOpKind::ImageChannelDataType |
-                GOpKind::FPRoundingMode |
-                GOpKind::LinkageType |
-                GOpKind::AccessQualifier |
-                GOpKind::FunctionParameterAttribute |
-                GOpKind::BuiltIn |
-                GOpKind::IdScope |
-                GOpKind::GroupOperation |
-                GOpKind::KernelEnqueueFlags |
+                GOpKind::FPFastMathMode => {
+                    mr::Operand::FPFastMathMode(decoder.fp_fast_math_mode().unwrap())
+                }
+                GOpKind::SelectionControl => {
+                    mr::Operand::SelectionControl(decoder.selection_control().unwrap())
+                }
+                GOpKind::LoopControl => mr::Operand::LoopControl(decoder.loop_control().unwrap()),
+                GOpKind::FunctionControl => {
+                    mr::Operand::FunctionControl(decoder.function_control().unwrap())
+                }
+                GOpKind::MemoryAccess => {
+                    mr::Operand::MemoryAccess(decoder.memory_access().unwrap())
+                }
+                GOpKind::KernelProfilingInfo => {
+                    mr::Operand::KernelProfilingInfo(decoder.kernel_profiling_info().unwrap())
+                }
+                GOpKind::Dim => mr::Operand::Dim(decoder.dim().unwrap()),
+                GOpKind::SamplerAddressingMode => {
+                    mr::Operand::SamplerAddressingMode(decoder.sampler_addressing_mode().unwrap())
+                }
+                GOpKind::SamplerFilterMode => {
+                    mr::Operand::SamplerFilterMode(decoder.sampler_filter_mode().unwrap())
+                }
+                GOpKind::ImageFormat => mr::Operand::ImageFormat(decoder.image_format().unwrap()),
+                GOpKind::ImageChannelOrder => {
+                    mr::Operand::ImageChannelOrder(decoder.image_channel_order().unwrap())
+                }
+                GOpKind::ImageChannelDataType => {
+                    mr::Operand::ImageChannelDataType(decoder.image_channel_data_type().unwrap())
+                }
+                GOpKind::FPRoundingMode => {
+                    mr::Operand::FPRoundingMode(decoder.fp_rounding_mode().unwrap())
+                }
+                GOpKind::LinkageType => mr::Operand::LinkageType(decoder.linkage_type().unwrap()),
+                GOpKind::AccessQualifier => {
+                    mr::Operand::AccessQualifier(decoder.access_qualifier().unwrap())
+                }
+                GOpKind::FunctionParameterAttribute => {
+                    mr::Operand::FunctionParameterAttribute(decoder.function_parameter_attribute()
+                                                                   .unwrap())
+                }
+                GOpKind::BuiltIn => mr::Operand::BuiltIn(decoder.built_in().unwrap()),
+                GOpKind::GroupOperation => {
+                    mr::Operand::GroupOperation(decoder.group_operation().unwrap())
+                }
+                GOpKind::KernelEnqueueFlags => {
+                    mr::Operand::KernelEnqueueFlags(decoder.kernel_enqueue_flags().unwrap())
+                }
                 GOpKind::LiteralExtInstInteger |
                 GOpKind::LiteralSpecConstantOpInteger |
                 GOpKind::PairLiteralIntegerIdRef |
