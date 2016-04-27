@@ -224,52 +224,29 @@ pub enum ImageChannelDataType {
     UnormInt101010_2 = 16,
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum ImageOperandsShift {
-    BiasShift = 0,
-    LodShift = 1,
-    GradShift = 2,
-    ConstOffsetShift = 3,
-    OffsetShift = 4,
-    ConstOffsetsShift = 5,
-    SampleShift = 6,
-    MinLodShift = 7,
+bitflags!{
+    pub flags ImageOperands : u32 {
+        const IMAGE_OPERANDS_NONE = 0,
+        const IMAGE_OPERANDS_BIAS = 0x00000001,
+        const IMAGE_OPERANDS_LOD = 0x00000002,
+        const IMAGE_OPERANDS_GRAD = 0x00000004,
+        const IMAGE_OPERANDS_CONST_OFFSET = 0x00000008,
+        const IMAGE_OPERANDS_OFFSET = 0x00000010,
+        const IMAGE_OPERANDS_CONST_OFFSETS = 0x00000020,
+        const IMAGE_OPERANDS_SAMPLE = 0x00000040,
+        const IMAGE_OPERANDS_MIN_LOD = 0x00000080,
+    }
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum ImageOperandsMask {
-    MaskNone = 0,
-    BiasMask = 0x00000001,
-    LodMask = 0x00000002,
-    GradMask = 0x00000004,
-    ConstOffsetMask = 0x00000008,
-    OffsetMask = 0x00000010,
-    ConstOffsetsMask = 0x00000020,
-    SampleMask = 0x00000040,
-    MinLodMask = 0x00000080,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum FPFastMathModeShift {
-    NotNaNShift = 0,
-    NotInfShift = 1,
-    NSZShift = 2,
-    AllowRecipShift = 3,
-    FastShift = 4,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum FPFastMathModeMask {
-    MaskNone = 0,
-    NotNaNMask = 0x00000001,
-    NotInfMask = 0x00000002,
-    NSZMask = 0x00000004,
-    AllowRecipMask = 0x00000008,
-    FastMask = 0x00000010,
+bitflags!{
+    pub flags FPFastMathMode : u32 {
+        const FPFAST_MATH_MODE_NONE = 0,
+        const FPFAST_MATH_MODE_NOT_NA_N = 0x00000001,
+        const FPFAST_MATH_MODE_NOT_INF = 0x00000002,
+        const FPFAST_MATH_MODE_NSZ = 0x00000004,
+        const FPFAST_MATH_MODE_ALLOW_RECIP = 0x00000008,
+        const FPFAST_MATH_MODE_FAST = 0x00000010,
+    }
 }
 
 #[repr(u32)]
@@ -403,101 +380,55 @@ pub enum BuiltIn {
     InstanceIndex = 43,
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum SelectionControlShift {
-    FlattenShift = 0,
-    DontFlattenShift = 1,
+bitflags!{
+    pub flags SelectionControl : u32 {
+        const SELECTION_CONTROL_NONE = 0,
+        const SELECTION_CONTROL_FLATTEN = 0x00000001,
+        const SELECTION_CONTROL_DONT_FLATTEN = 0x00000002,
+    }
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum SelectionControlMask {
-    MaskNone = 0,
-    FlattenMask = 0x00000001,
-    DontFlattenMask = 0x00000002,
+bitflags!{
+    pub flags LoopControl : u32 {
+        const LOOP_CONTROL_NONE = 0,
+        const LOOP_CONTROL_UNROLL = 0x00000001,
+        const LOOP_CONTROL_DONT_UNROLL = 0x00000002,
+    }
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum LoopControlShift {
-    UnrollShift = 0,
-    DontUnrollShift = 1,
+bitflags!{
+    pub flags FunctionControl : u32 {
+        const FUNCTION_CONTROL_NONE = 0,
+        const FUNCTION_CONTROL_INLINE = 0x00000001,
+        const FUNCTION_CONTROL_DONT_INLINE = 0x00000002,
+        const FUNCTION_CONTROL_PURE = 0x00000004,
+        const FUNCTION_CONTROL_CONST = 0x00000008,
+    }
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum LoopControlMask {
-    MaskNone = 0,
-    UnrollMask = 0x00000001,
-    DontUnrollMask = 0x00000002,
+bitflags!{
+    pub flags MemorySemantics : u32 {
+        const MEMORY_SEMANTICS_NONE = 0,
+        const MEMORY_SEMANTICS_ACQUIRE = 0x00000002,
+        const MEMORY_SEMANTICS_RELEASE = 0x00000004,
+        const MEMORY_SEMANTICS_ACQUIRE_RELEASE = 0x00000008,
+        const MEMORY_SEMANTICS_SEQUENTIALLY_CONSISTENT = 0x00000010,
+        const MEMORY_SEMANTICS_UNIFORM_MEMORY = 0x00000040,
+        const MEMORY_SEMANTICS_SUBGROUP_MEMORY = 0x00000080,
+        const MEMORY_SEMANTICS_WORKGROUP_MEMORY = 0x00000100,
+        const MEMORY_SEMANTICS_CROSS_WORKGROUP_MEMORY = 0x00000200,
+        const MEMORY_SEMANTICS_ATOMIC_COUNTER_MEMORY = 0x00000400,
+        const MEMORY_SEMANTICS_IMAGE_MEMORY = 0x00000800,
+    }
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum FunctionControlShift {
-    InlineShift = 0,
-    DontInlineShift = 1,
-    PureShift = 2,
-    ConstShift = 3,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum FunctionControlMask {
-    MaskNone = 0,
-    InlineMask = 0x00000001,
-    DontInlineMask = 0x00000002,
-    PureMask = 0x00000004,
-    ConstMask = 0x00000008,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum MemorySemanticsShift {
-    AcquireShift = 1,
-    ReleaseShift = 2,
-    AcquireReleaseShift = 3,
-    SequentiallyConsistentShift = 4,
-    UniformMemoryShift = 6,
-    SubgroupMemoryShift = 7,
-    WorkgroupMemoryShift = 8,
-    CrossWorkgroupMemoryShift = 9,
-    AtomicCounterMemoryShift = 10,
-    ImageMemoryShift = 11,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum MemorySemanticsMask {
-    MaskNone = 0,
-    AcquireMask = 0x00000002,
-    ReleaseMask = 0x00000004,
-    AcquireReleaseMask = 0x00000008,
-    SequentiallyConsistentMask = 0x00000010,
-    UniformMemoryMask = 0x00000040,
-    SubgroupMemoryMask = 0x00000080,
-    WorkgroupMemoryMask = 0x00000100,
-    CrossWorkgroupMemoryMask = 0x00000200,
-    AtomicCounterMemoryMask = 0x00000400,
-    ImageMemoryMask = 0x00000800,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum MemoryAccessShift {
-    VolatileShift = 0,
-    AlignedShift = 1,
-    NontemporalShift = 2,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum MemoryAccessMask {
-    MaskNone = 0,
-    VolatileMask = 0x00000001,
-    AlignedMask = 0x00000002,
-    NontemporalMask = 0x00000004,
+bitflags!{
+    pub flags MemoryAccess : u32 {
+        const MEMORY_ACCESS_NONE = 0,
+        const MEMORY_ACCESS_VOLATILE = 0x00000001,
+        const MEMORY_ACCESS_ALIGNED = 0x00000002,
+        const MEMORY_ACCESS_NONTEMPORAL = 0x00000004,
+    }
 }
 
 #[repr(u32)]
@@ -526,17 +457,11 @@ pub enum KernelEnqueueFlags {
     WaitWorkGroup = 2,
 }
 
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum KernelProfilingInfoShift {
-    CmdExecTimeShift = 0,
-}
-
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
-pub enum KernelProfilingInfoMask {
-    MaskNone = 0,
-    CmdExecTimeMask = 0x00000001,
+bitflags!{
+    pub flags KernelProfilingInfo : u32 {
+        const KERNEL_PROFILING_INFO_NONE = 0,
+        const KERNEL_PROFILING_INFO_CMD_EXEC_TIME = 0x00000001,
+    }
 }
 
 #[repr(u32)]

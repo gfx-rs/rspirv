@@ -87,13 +87,29 @@ def gen_enum_definition(node):
     if not any([re.match(r'\d', c) for c in trimmed_case_names]):
         case_names = trimmed_case_names
 
-    cases = itertools.imap('    {} = {},'.format, case_names, case_values)
+    if enum_class.endswith('Shift'):
+        return ''
+    elif enum_class.endswith('Mask'):
+        enum_class = enum_class.replace('Mask', '')
+        case_names = [enum_class + n.replace('Mask', '') for n in case_names]
+        case_names = [re.sub(r'([a-z])([A-Z])', r'\1_\2', n).upper()
+                      for n in case_names]
+        cases = itertools.imap('        const {} = {},'.format,
+                               case_names, case_values)
+        return ('bitflags!{{\n'
+                '    pub flags {enum_class} : u32 {{\n{enumerants}\n'
+                '    }}\n'
+                '}}'.format(
+                    enum_class=enum_class,
+                    enumerants='\n'.join(cases)))
 
-    return '{attribute}\npub enum {enum_class} {{\n{enumerants}\n}}'.format(
-        attribute='#[repr(u32)]\n'
-        '#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]',
-        enum_class=enum_class,
-        enumerants='\n'.join(cases))
+    else:
+        cases = itertools.imap('    {} = {},'.format, case_names, case_values)
+        return '{attribute}\npub enum {enum_class} {{\n{enumerants}\n}}'.format(
+            attribute='#[repr(u32)]\n'
+            '#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]',
+            enum_class=enum_class,
+            enumerants='\n'.join(cases))
 
 
 def generate_spirv_rs(spirv_hpp_path):
@@ -112,7 +128,9 @@ def generate_spirv_rs(spirv_hpp_path):
         if node.kind is libclang.CursorKind.VAR_DECL:
             consts.append(gen_variable_definition(node))
         elif node.kind is libclang.CursorKind.ENUM_DECL:
-            enums.append(gen_enum_definition(node))
+            enum_def = gen_enum_definition(node)
+            if len(enum_def) > 0:
+                enums.append(enum_def)
     return '{allows}\n\n{types}\n\n{consts}\n\n{enums}'.format(
         allows='#![allow(dead_code)]\n#![allow(non_camel_case_types)]',
         types='pub type Word = u32;\npub type Id = u32;',
