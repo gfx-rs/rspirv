@@ -6,8 +6,8 @@ use std::result;
 use num::traits::cast::FromPrimitive;
 
 use grammar::InstructionTable as GInstTable;
-use grammar::OperandKind as GOperandKind;
-use grammar::OperandQuantifier as GOperandQuantifier;
+use grammar::OperandKind as GOpKind;
+use grammar::OperandQuantifier as GOpCount;
 
 type GInstRef = &'static grammar::Instruction<'static>;
 
@@ -56,7 +56,7 @@ impl SpirvWordDecoder {
         (0..WORD_NUM_BYTES).map(|i| ((word >> (8 * i)) & 0xff) as u8).collect()
     }
 
-    pub fn decode_capability(&mut self) -> Option<spirv::Capability> {
+    pub fn capability(&mut self) -> Option<spirv::Capability> {
         if let Some(word) = self.next() {
             spirv::Capability::from_u32(word)
         } else {
@@ -64,7 +64,7 @@ impl SpirvWordDecoder {
         }
     }
 
-    pub fn decode_addressing_model(&mut self) -> Option<spirv::AddressingModel> {
+    pub fn addressing_model(&mut self) -> Option<spirv::AddressingModel> {
         if let Some(word) = self.next() {
             spirv::AddressingModel::from_u32(word)
         } else {
@@ -72,7 +72,7 @@ impl SpirvWordDecoder {
         }
     }
 
-    pub fn decode_memory_model(&mut self) -> Option<spirv::MemoryModel> {
+    pub fn memory_model(&mut self) -> Option<spirv::MemoryModel> {
         if let Some(word) = self.next() {
             spirv::MemoryModel::from_u32(word)
         } else {
@@ -80,7 +80,7 @@ impl SpirvWordDecoder {
         }
     }
 
-    pub fn decode_execution_mode(&mut self) -> Option<spirv::ExecutionMode> {
+    pub fn execution_mode(&mut self) -> Option<spirv::ExecutionMode> {
         if let Some(word) = self.next() {
             spirv::ExecutionMode::from_u32(word)
         } else {
@@ -96,7 +96,7 @@ impl SpirvWordDecoder {
         }
     }
 
-    pub fn decode_source_language(&mut self) -> Option<spirv::SourceLanguage> {
+    pub fn source_language(&mut self) -> Option<spirv::SourceLanguage> {
         if let Some(word) = self.next() {
             spirv::SourceLanguage::from_u32(word)
         } else {
@@ -104,7 +104,7 @@ impl SpirvWordDecoder {
         }
     }
 
-    pub fn decode_decoration(&mut self) -> Option<spirv::Decoration> {
+    pub fn decoration(&mut self) -> Option<spirv::Decoration> {
         if let Some(word) = self.next() {
             spirv::Decoration::from_u32(word)
         } else {
@@ -112,7 +112,7 @@ impl SpirvWordDecoder {
         }
     }
 
-    pub fn decode_storage_class(&mut self) -> Option<spirv::StorageClass> {
+    pub fn storage_class(&mut self) -> Option<spirv::StorageClass> {
         if let Some(word) = self.next() {
             spirv::StorageClass::from_u32(word)
         } else {
@@ -120,7 +120,7 @@ impl SpirvWordDecoder {
         }
     }
 
-    pub fn decode_string(&mut self) -> Option<String> {
+    pub fn string(&mut self) -> Option<String> {
         let mut bytes = Vec::new();
         while let Some(word) = self.next() {
             bytes.append(&mut self.split_word_to_bytes(word));
@@ -131,15 +131,15 @@ impl SpirvWordDecoder {
         String::from_utf8(bytes).ok()
     }
 
-    pub fn decode_id(&mut self) -> Option<spirv::Word> {
+    pub fn id(&mut self) -> Option<spirv::Word> {
         self.next()
     }
 
-    pub fn decode_literal_integer(&mut self) -> Option<u32> {
+    pub fn literal_integer(&mut self) -> Option<u32> {
         self.next()
     }
 
-    pub fn decode_context_dependent_number(&mut self) -> Option<u32> {
+    pub fn context_dependent_number(&mut self) -> Option<u32> {
         // TODO(antiagainst): This should return the correct typed number.
         self.next()
     }
@@ -155,89 +155,79 @@ fn decode_words_to_operands(grammar: GInstRef,
         let logical_operand = &grammar.operands[logical_operand_index];
         if !decoder.empty() {
             concrete_operands.push(match logical_operand.kind {
-                GOperandKind::Capability => {
-                    mr::Operand::Capability(decoder.decode_capability().unwrap())
-                }
-                GOperandKind::IdType => mr::Operand::IdType(decoder.decode_id().unwrap()),
-                GOperandKind::IdResult => mr::Operand::IdResult(decoder.decode_id().unwrap()),
-                GOperandKind::IdRef => mr::Operand::IdRef(decoder.decode_id().unwrap()),
-                GOperandKind::LiteralString => {
-                    mr::Operand::LiteralString(decoder.decode_string().unwrap())
-                }
-                GOperandKind::AddressingModel => {
-                    mr::Operand::AddressingModel(decoder.decode_addressing_model()
+                GOpKind::Capability => mr::Operand::Capability(decoder.capability().unwrap()),
+                GOpKind::IdType => mr::Operand::IdType(decoder.id().unwrap()),
+                GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
+                GOpKind::IdRef => mr::Operand::IdRef(decoder.id().unwrap()),
+                GOpKind::LiteralString => mr::Operand::LiteralString(decoder.string().unwrap()),
+                GOpKind::AddressingModel => {
+                    mr::Operand::AddressingModel(decoder.addressing_model()
                                                         .unwrap())
                 }
-                GOperandKind::MemoryModel => {
-                    mr::Operand::MemoryModel(decoder.decode_memory_model().unwrap())
-                }
-                GOperandKind::ExecutionMode => {
-                    mr::Operand::ExecutionMode(decoder.decode_execution_mode()
+                GOpKind::MemoryModel => mr::Operand::MemoryModel(decoder.memory_model().unwrap()),
+                GOpKind::ExecutionMode => {
+                    mr::Operand::ExecutionMode(decoder.execution_mode()
                                                       .unwrap())
                 }
-                GOperandKind::ExecutionModel => {
+                GOpKind::ExecutionModel => {
                     mr::Operand::ExecutionModel(decoder.decode_execution_model()
                                                        .unwrap())
                 }
-                GOperandKind::SourceLanguage => {
-                    mr::Operand::SourceLanguage(decoder.decode_source_language()
+                GOpKind::SourceLanguage => {
+                    mr::Operand::SourceLanguage(decoder.source_language()
                                                        .unwrap())
                 }
-                GOperandKind::LiteralInteger => {
-                    mr::Operand::LiteralInteger(decoder.decode_literal_integer()
+                GOpKind::LiteralInteger => {
+                    mr::Operand::LiteralInteger(decoder.literal_integer()
                                                        .unwrap())
                 }
-                GOperandKind::Decoration => {
-                    mr::Operand::Decoration(decoder.decode_decoration().unwrap())
+                GOpKind::Decoration => mr::Operand::Decoration(decoder.decoration().unwrap()),
+                GOpKind::StorageClass => {
+                    mr::Operand::StorageClass(decoder.storage_class().unwrap())
                 }
-                GOperandKind::StorageClass => {
-                    mr::Operand::StorageClass(decoder.decode_storage_class().unwrap())
+                GOpKind::LiteralContextDependentNumber => {
+                    mr::Operand::LiteralContextDependentNumber(decoder.context_dependent_number()
+                                                                      .unwrap())
                 }
-                GOperandKind::LiteralContextDependentNumber => {
-                    mr::Operand::LiteralContextDependentNumber(
-                        decoder.decode_context_dependent_number().unwrap())
-                }
-                GOperandKind::ImageOperands |
-                GOperandKind::FPFastMathMode |
-                GOperandKind::SelectionControl |
-                GOperandKind::LoopControl |
-                GOperandKind::FunctionControl |
-                GOperandKind::IdMemorySemantics |
-                GOperandKind::MemoryAccess |
-                GOperandKind::KernelProfilingInfo |
-                GOperandKind::Dim |
-                GOperandKind::SamplerAddressingMode |
-                GOperandKind::SamplerFilterMode |
-                GOperandKind::ImageFormat |
-                GOperandKind::ImageChannelOrder |
-                GOperandKind::ImageChannelDataType |
-                GOperandKind::FPRoundingMode |
-                GOperandKind::LinkageType |
-                GOperandKind::AccessQualifier |
-                GOperandKind::FunctionParameterAttribute |
-                GOperandKind::BuiltIn |
-                GOperandKind::IdScope |
-                GOperandKind::GroupOperation |
-                GOperandKind::KernelEnqueueFlags |
-                GOperandKind::LiteralExtInstInteger |
-                GOperandKind::LiteralSpecConstantOpInteger |
-                GOperandKind::PairLiteralIntegerIdRef |
-                GOperandKind::PairIdRefLiteralInteger => {
+                GOpKind::ImageOperands |
+                GOpKind::FPFastMathMode |
+                GOpKind::SelectionControl |
+                GOpKind::LoopControl |
+                GOpKind::FunctionControl |
+                GOpKind::IdMemorySemantics |
+                GOpKind::MemoryAccess |
+                GOpKind::KernelProfilingInfo |
+                GOpKind::Dim |
+                GOpKind::SamplerAddressingMode |
+                GOpKind::SamplerFilterMode |
+                GOpKind::ImageFormat |
+                GOpKind::ImageChannelOrder |
+                GOpKind::ImageChannelDataType |
+                GOpKind::FPRoundingMode |
+                GOpKind::LinkageType |
+                GOpKind::AccessQualifier |
+                GOpKind::FunctionParameterAttribute |
+                GOpKind::BuiltIn |
+                GOpKind::IdScope |
+                GOpKind::GroupOperation |
+                GOpKind::KernelEnqueueFlags |
+                GOpKind::LiteralExtInstInteger |
+                GOpKind::LiteralSpecConstantOpInteger |
+                GOpKind::PairLiteralIntegerIdRef |
+                GOpKind::PairIdRefLiteralInteger => {
                     println!("unimplemented operand kind: {:?}", logical_operand.kind);
                     unimplemented!();
                 }
             });
             match logical_operand.quantifier {
-                GOperandQuantifier::One |
-                GOperandQuantifier::ZeroOrOne => logical_operand_index += 1,
-                GOperandQuantifier::ZeroOrMore => continue,
+                GOpCount::One | GOpCount::ZeroOrOne => logical_operand_index += 1,
+                GOpCount::ZeroOrMore => continue,
             }
         } else {
             // We still have logical operands to match but no no more words.
             match logical_operand.quantifier {
-                GOperandQuantifier::One => return Err(State::OperandExpected),
-                GOperandQuantifier::ZeroOrOne |
-                GOperandQuantifier::ZeroOrMore => break,
+                GOpCount::One => return Err(State::OperandExpected),
+                GOpCount::ZeroOrOne | GOpCount::ZeroOrMore => break,
             }
         }
     }
