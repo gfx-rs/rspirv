@@ -6,5 +6,5 @@ authors = ["Lei Zhang <antiagainst@gmail.com>"]
 [dependencies]
 bitflags = "0.6"
 getopts = "0.2"
-num = "0.1.32"
-num-macros = "0.1.32"
+num = "0.1"
+num-macros = "0.1"
