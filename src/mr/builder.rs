@@ -291,6 +291,9 @@ impl SpirvWordDecoder {
                 break;
             }
         }
+        while !bytes.is_empty() && bytes.last() == Some(&0) {
+            bytes.pop();
+        }
         String::from_utf8(bytes).ok()
     }
 
