@@ -443,27 +443,49 @@ impl<'a> Builder<'a> {
         self.module = Some(module);
     }
 
-    pub fn add_capability(&mut self, cap: spirv::Word) {
-        self.module
-            .as_mut()
-            .unwrap()
-            .capabilities
-            .push(spirv::Capability::from_u32(cap).unwrap());
+    pub fn finalize(&mut self) -> Option<mr::Module<'a>> {
+        self.module.take()
     }
 
-    pub fn add_instruction(&mut self, opcode: u16, operands: Vec<spirv::Word>) -> State {
+    pub fn require_capability(&mut self, capability: mr::Operand) {
+        if let mr::Operand::Capability(cap) = capability {
+            self.module
+                .as_mut()
+                .unwrap()
+                .capabilities
+                .push(cap)
+
+        } else {
+            // TODO(antiagainst): we should return a suitable error here.
+            panic!()
+        }
+
+    }
+
+    pub fn attach_name(&mut self, id: mr::Operand, name: mr::Operand) {
+        if let (mr::Operand::IdRef(id_ref), mr::Operand::LiteralString(name_str)) = (id, name) {
+            self.module.as_mut().unwrap().names.insert(id_ref, name_str);
+        } else {
+            panic!()
+        }
+    }
+
+    pub fn add_instruction(&mut self, opcode: u16, words: Vec<spirv::Word>) -> State {
         assert!(self.module.is_some());
         if let Some(inst) = GInstTable::lookup_opcode(opcode) {
-            println!("opcode: {:?}, operands: {:?}",
-                     inst.opcode,
-                     decode_words_to_operands(inst, operands).unwrap());
+            let mut operands = decode_words_to_operands(inst, words).unwrap();
+            match inst.opcode {
+                spirv::Op::Capability => self.require_capability(operands.pop().unwrap()),
+                spirv::Op::Name => {
+                    let name = operands.pop().unwrap();
+                    let id = operands.pop().unwrap();
+                    self.attach_name(id, name)
+                }
+                _ => println!("opcode: {:?}, operands: {:?}", inst.opcode, operands),
+            }
             State::Normal
         } else {
             State::UnknownOpcode
         }
-    }
-
-    pub fn finalize(&mut self) -> Option<mr::Module<'a>> {
-        self.module.take()
     }
 }

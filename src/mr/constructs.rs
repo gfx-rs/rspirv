@@ -3,12 +3,15 @@ use spirv;
 
 use spirv::Word;
 
+use std::collections::HashMap;
+
 #[derive(Debug)]
 pub struct Module<'a> {
     pub header: Option<ModuleHeader>,
     pub capabilities: Vec<spirv::Capability>,
     pub instructions: Vec<Instruction>,
     pub functions: Vec<Function<'a>>,
+    pub names: HashMap<Word, String>,
 }
 
 #[derive(Debug)]
@@ -91,6 +94,7 @@ impl<'a> Module<'a> {
             capabilities: vec![],
             instructions: vec![],
             functions: vec![],
+            names: HashMap::new(),
         }
     }
 }
