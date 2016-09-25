@@ -9,9 +9,16 @@ use std::collections::HashMap;
 pub struct Module<'a> {
     pub header: Option<ModuleHeader>,
     pub capabilities: Vec<spirv::Capability>,
-    pub instructions: Vec<Instruction>,
-    pub functions: Vec<Function<'a>>,
+    pub extensions: Vec<String>,
+    pub ext_inst_imports: Vec<Instruction>,
+    pub memory_model: Option<(spirv::AddressingModel, spirv::MemoryModel)>,
+    pub entry_points: Vec<Instruction>,
+    pub execution_modes: Vec<Instruction>,
+    pub debugs: Vec<Instruction>,
     pub names: HashMap<Word, String>,
+    pub annotations: Vec<Instruction>,
+    pub types_global_values: Vec<Instruction>,
+    pub functions: Vec<Function<'a>>,
 }
 
 #[derive(Debug)]
@@ -92,20 +99,31 @@ impl<'a> Module<'a> {
         Module {
             header: None,
             capabilities: vec![],
-            instructions: vec![],
-            functions: vec![],
+            extensions: vec![],
+            ext_inst_imports: vec![],
+            memory_model: None,
+            entry_points: vec![],
+            execution_modes: vec![],
+            debugs: vec![],
             names: HashMap::new(),
+            annotations: vec![],
+            types_global_values: vec![],
+            functions: vec![],
         }
     }
 }
 
 impl Instruction {
-    pub fn new(class: &'static grammar::Instruction<'static>) -> Instruction {
+    pub fn new(class: &'static grammar::Instruction<'static>,
+               result_type: Option<Word>,
+               result_id: Option<Word>,
+               operands: Vec<Operand>)
+               -> Instruction {
         Instruction {
             class: class,
-            result_type: None,
-            result_id: None,
-            operands: vec![],
+            result_type: result_type,
+            result_id: result_id,
+            operands: operands,
         }
     }
 }
