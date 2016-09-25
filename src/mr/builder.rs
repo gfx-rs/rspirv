@@ -311,111 +311,116 @@ impl SpirvWordDecoder {
     }
 }
 
-fn decode_words_to_operands(grammar: GInstRef,
-                            words: Vec<spirv::Word>)
-                            -> Result<Vec<mr::Operand>> {
+fn decode_operand(decoder: &mut SpirvWordDecoder,
+                  kind: grammar::OperandKind)
+                  -> Result<mr::Operand> {
+    Ok(match kind {
+        GOpKind::IdType => mr::Operand::IdType(decoder.id().unwrap()),
+        GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
+        GOpKind::IdRef |
+        GOpKind::IdMemorySemantics |
+        GOpKind::IdScope => mr::Operand::IdRef(decoder.id().unwrap()),
+        GOpKind::LiteralString => mr::Operand::LiteralString(decoder.string().unwrap()),
+        GOpKind::LiteralContextDependentNumber => {
+            mr::Operand::LiteralContextDependentNumber(decoder.context_dependent_number().unwrap())
+        }
+        GOpKind::Capability => mr::Operand::Capability(decoder.capability().unwrap()),
+        GOpKind::Decoration => mr::Operand::Decoration(decoder.decoration().unwrap()),
+        GOpKind::AddressingModel => {
+            mr::Operand::AddressingModel(decoder.addressing_model()
+                                                .unwrap())
+        }
+        GOpKind::MemoryModel => mr::Operand::MemoryModel(decoder.memory_model().unwrap()),
+        GOpKind::ExecutionMode => {
+            mr::Operand::ExecutionMode(decoder.execution_mode()
+                                              .unwrap())
+        }
+        GOpKind::ExecutionModel => {
+            mr::Operand::ExecutionModel(decoder.decode_execution_model()
+                                               .unwrap())
+        }
+        GOpKind::SourceLanguage => {
+            mr::Operand::SourceLanguage(decoder.source_language()
+                                               .unwrap())
+        }
+        GOpKind::LiteralInteger => {
+            mr::Operand::LiteralInteger(decoder.literal_integer()
+                                               .unwrap())
+        }
+        GOpKind::StorageClass => mr::Operand::StorageClass(decoder.storage_class().unwrap()),
+        GOpKind::ImageOperands => mr::Operand::ImageOperands(decoder.image_operands().unwrap()),
+        GOpKind::FPFastMathMode => {
+            mr::Operand::FPFastMathMode(decoder.fp_fast_math_mode().unwrap())
+        }
+        GOpKind::SelectionControl => {
+            mr::Operand::SelectionControl(decoder.selection_control().unwrap())
+        }
+        GOpKind::LoopControl => mr::Operand::LoopControl(decoder.loop_control().unwrap()),
+        GOpKind::FunctionControl => {
+            mr::Operand::FunctionControl(decoder.function_control().unwrap())
+        }
+        GOpKind::MemoryAccess => mr::Operand::MemoryAccess(decoder.memory_access().unwrap()),
+        GOpKind::KernelProfilingInfo => {
+            mr::Operand::KernelProfilingInfo(decoder.kernel_profiling_info()
+                                                    .unwrap())
+        }
+        GOpKind::Dim => mr::Operand::Dim(decoder.dim().unwrap()),
+        GOpKind::SamplerAddressingMode => {
+            mr::Operand::SamplerAddressingMode(decoder.sampler_addressing_mode()
+                                                      .unwrap())
+        }
+        GOpKind::SamplerFilterMode => {
+            mr::Operand::SamplerFilterMode(decoder.sampler_filter_mode().unwrap())
+        }
+        GOpKind::ImageFormat => mr::Operand::ImageFormat(decoder.image_format().unwrap()),
+        GOpKind::ImageChannelOrder => {
+            mr::Operand::ImageChannelOrder(decoder.image_channel_order().unwrap())
+        }
+        GOpKind::ImageChannelDataType => {
+            mr::Operand::ImageChannelDataType(decoder.image_channel_data_type()
+                                                     .unwrap())
+        }
+        GOpKind::FPRoundingMode => mr::Operand::FPRoundingMode(decoder.fp_rounding_mode().unwrap()),
+        GOpKind::LinkageType => mr::Operand::LinkageType(decoder.linkage_type().unwrap()),
+        GOpKind::AccessQualifier => {
+            mr::Operand::AccessQualifier(decoder.access_qualifier().unwrap())
+        }
+        GOpKind::FunctionParameterAttribute => {
+            mr::Operand::FunctionParameterAttribute(decoder.function_parameter_attribute().unwrap())
+        }
+        GOpKind::BuiltIn => mr::Operand::BuiltIn(decoder.built_in().unwrap()),
+        GOpKind::GroupOperation => mr::Operand::GroupOperation(decoder.group_operation().unwrap()),
+        GOpKind::KernelEnqueueFlags => {
+            mr::Operand::KernelEnqueueFlags(decoder.kernel_enqueue_flags().unwrap())
+        }
+        GOpKind::LiteralExtInstInteger |
+        GOpKind::LiteralSpecConstantOpInteger |
+        GOpKind::PairLiteralIntegerIdRef |
+        GOpKind::PairIdRefLiteralInteger => {
+            println!("unimplemented operand kind: {:?}", kind);
+            unimplemented!();
+        }
+    })
+}
+
+fn decode_words_to_operands(grammar: GInstRef, words: Vec<spirv::Word>)
+     -> Result<(Option<spirv::Word>, Option<spirv::Word>, Vec<mr::Operand>)> {
     let mut decoder = SpirvWordDecoder::new(words);
     let mut logical_operand_index: usize = 0;
+    let mut result_type_id = None;
+    let mut result_id = None;
     let mut concrete_operands = Vec::new();
     while logical_operand_index < grammar.operands.len() {
         let logical_operand = &grammar.operands[logical_operand_index];
         if !decoder.empty() {
-            concrete_operands.push(match logical_operand.kind {
-                GOpKind::IdType => mr::Operand::IdType(decoder.id().unwrap()),
-                GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
-                GOpKind::IdRef |
-                GOpKind::IdMemorySemantics |
-                GOpKind::IdScope => mr::Operand::IdRef(decoder.id().unwrap()),
-                GOpKind::LiteralString => mr::Operand::LiteralString(decoder.string().unwrap()),
-                GOpKind::LiteralContextDependentNumber => {
-                    mr::Operand::LiteralContextDependentNumber(decoder.context_dependent_number()
-                                                                      .unwrap())
+            match logical_operand.kind {
+                GOpKind::IdType => result_type_id = decoder.id(),
+                GOpKind::IdResult => result_id = decoder.id(),
+                _ => {
+                    concrete_operands.push(decode_operand(&mut decoder, logical_operand.kind)
+                                               .unwrap())
                 }
-                GOpKind::Capability => mr::Operand::Capability(decoder.capability().unwrap()),
-                GOpKind::Decoration => mr::Operand::Decoration(decoder.decoration().unwrap()),
-                GOpKind::AddressingModel => {
-                    mr::Operand::AddressingModel(decoder.addressing_model()
-                                                        .unwrap())
-                }
-                GOpKind::MemoryModel => mr::Operand::MemoryModel(decoder.memory_model().unwrap()),
-                GOpKind::ExecutionMode => {
-                    mr::Operand::ExecutionMode(decoder.execution_mode()
-                                                      .unwrap())
-                }
-                GOpKind::ExecutionModel => {
-                    mr::Operand::ExecutionModel(decoder.decode_execution_model()
-                                                       .unwrap())
-                }
-                GOpKind::SourceLanguage => {
-                    mr::Operand::SourceLanguage(decoder.source_language()
-                                                       .unwrap())
-                }
-                GOpKind::LiteralInteger => {
-                    mr::Operand::LiteralInteger(decoder.literal_integer()
-                                                       .unwrap())
-                }
-                GOpKind::StorageClass => {
-                    mr::Operand::StorageClass(decoder.storage_class().unwrap())
-                }
-                GOpKind::ImageOperands => {
-                    mr::Operand::ImageOperands(decoder.image_operands().unwrap())
-                }
-                GOpKind::FPFastMathMode => {
-                    mr::Operand::FPFastMathMode(decoder.fp_fast_math_mode().unwrap())
-                }
-                GOpKind::SelectionControl => {
-                    mr::Operand::SelectionControl(decoder.selection_control().unwrap())
-                }
-                GOpKind::LoopControl => mr::Operand::LoopControl(decoder.loop_control().unwrap()),
-                GOpKind::FunctionControl => {
-                    mr::Operand::FunctionControl(decoder.function_control().unwrap())
-                }
-                GOpKind::MemoryAccess => {
-                    mr::Operand::MemoryAccess(decoder.memory_access().unwrap())
-                }
-                GOpKind::KernelProfilingInfo => {
-                    mr::Operand::KernelProfilingInfo(decoder.kernel_profiling_info().unwrap())
-                }
-                GOpKind::Dim => mr::Operand::Dim(decoder.dim().unwrap()),
-                GOpKind::SamplerAddressingMode => {
-                    mr::Operand::SamplerAddressingMode(decoder.sampler_addressing_mode().unwrap())
-                }
-                GOpKind::SamplerFilterMode => {
-                    mr::Operand::SamplerFilterMode(decoder.sampler_filter_mode().unwrap())
-                }
-                GOpKind::ImageFormat => mr::Operand::ImageFormat(decoder.image_format().unwrap()),
-                GOpKind::ImageChannelOrder => {
-                    mr::Operand::ImageChannelOrder(decoder.image_channel_order().unwrap())
-                }
-                GOpKind::ImageChannelDataType => {
-                    mr::Operand::ImageChannelDataType(decoder.image_channel_data_type().unwrap())
-                }
-                GOpKind::FPRoundingMode => {
-                    mr::Operand::FPRoundingMode(decoder.fp_rounding_mode().unwrap())
-                }
-                GOpKind::LinkageType => mr::Operand::LinkageType(decoder.linkage_type().unwrap()),
-                GOpKind::AccessQualifier => {
-                    mr::Operand::AccessQualifier(decoder.access_qualifier().unwrap())
-                }
-                GOpKind::FunctionParameterAttribute => {
-                    mr::Operand::FunctionParameterAttribute(decoder.function_parameter_attribute()
-                                                                   .unwrap())
-                }
-                GOpKind::BuiltIn => mr::Operand::BuiltIn(decoder.built_in().unwrap()),
-                GOpKind::GroupOperation => {
-                    mr::Operand::GroupOperation(decoder.group_operation().unwrap())
-                }
-                GOpKind::KernelEnqueueFlags => {
-                    mr::Operand::KernelEnqueueFlags(decoder.kernel_enqueue_flags().unwrap())
-                }
-                GOpKind::LiteralExtInstInteger |
-                GOpKind::LiteralSpecConstantOpInteger |
-                GOpKind::PairLiteralIntegerIdRef |
-                GOpKind::PairIdRefLiteralInteger => {
-                    println!("unimplemented operand kind: {:?}", logical_operand.kind);
-                    unimplemented!();
-                }
-            });
+            }
             match logical_operand.quantifier {
                 GOpCount::One | GOpCount::ZeroOrOne => logical_operand_index += 1,
                 GOpCount::ZeroOrMore => continue,
@@ -428,7 +433,7 @@ fn decode_words_to_operands(grammar: GInstRef,
             }
         }
     }
-    Ok(concrete_operands)
+    Ok((result_type_id, result_id, concrete_operands))
 }
 
 pub struct Builder<'a> {
@@ -476,7 +481,9 @@ impl<'a> Builder<'a> {
     pub fn add_instruction(&mut self, opcode: u16, words: Vec<spirv::Word>) -> State {
         assert!(self.module.is_some());
         if let Some(inst) = GInstTable::lookup_opcode(opcode) {
-            let mut operands = decode_words_to_operands(inst, words).unwrap();
+            let (mut result_type_id, mut result_id, mut operands) = decode_words_to_operands(inst,
+                                                                                             words)
+                                                                        .unwrap();
             match inst.opcode {
                 spirv::Op::Capability => self.require_capability(operands.pop().unwrap()),
                 spirv::Op::Name => {

@@ -39,7 +39,7 @@ pub struct Instruction {
     pub class: &'static grammar::Instruction<'static>,
     pub result_type: Option<Word>,
     pub result_id: Option<Word>,
-    pub operands: Vec<Word>,
+    pub operands: Vec<Operand>,
 }
 
 #[allow(dead_code)]
