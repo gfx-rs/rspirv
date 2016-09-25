@@ -14,7 +14,7 @@ type GInstRef = &'static grammar::Instruction<'static>;
 #[derive(Debug)]
 pub enum State {
     Normal,
-    UnknownOpcode,
+    OpcodeUnknown,
     OperandExpected,
 }
 
@@ -403,7 +403,9 @@ fn decode_operand(decoder: &mut SpirvWordDecoder,
     })
 }
 
-fn decode_words_to_operands(grammar: GInstRef, words: Vec<spirv::Word>)
+fn decode_words_to_operands
+    (grammar: GInstRef,
+     words: Vec<spirv::Word>)
      -> Result<(Option<spirv::Word>, Option<spirv::Word>, Vec<mr::Operand>)> {
     let mut decoder = SpirvWordDecoder::new(words);
     let mut logical_operand_index: usize = 0;
@@ -495,7 +497,7 @@ impl<'a> Builder<'a> {
             }
             State::Normal
         } else {
-            State::UnknownOpcode
+            State::OpcodeUnknown
         }
     }
 }

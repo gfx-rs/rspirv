@@ -1,13 +1,25 @@
 use spirv;
 
-use std::result;
+use std::{fmt, error, result};
 
-pub enum State {
-    StreamEnd,
+#[derive(Clone, Copy, Debug)]
+pub enum Error {
     StreamExpected,
 }
 
-pub type Result<T> = result::Result<T, State>;
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "expected more bytes in the stream")
+    }
+}
+
+impl error::Error for Error {
+    fn description(&self) -> &str {
+        "expected more bytes in the stream"
+    }
+}
+
+pub type Result<T> = result::Result<T, Error>;
 
 const WORD_NUM_BYTES: usize = 4;
 
@@ -29,9 +41,9 @@ impl Producer {
         self.position = 0;
     }
 
-    pub fn get_next_byte(&mut self) -> Result<u8> {
+    fn get_next_byte(&mut self) -> Result<u8> {
         if self.position >= self.data.len() {
-            Err(State::StreamEnd)
+            Err(Error::StreamExpected)
         } else {
             self.position += 1;
             Ok(self.data[self.position - 1])
@@ -40,9 +52,9 @@ impl Producer {
 
     pub fn get_next_word(&mut self) -> Result<spirv::Word> {
         if self.position >= self.data.len() {
-            Err(State::StreamEnd)
+            Err(Error::StreamExpected)
         } else if self.position + WORD_NUM_BYTES > self.data.len() {
-            Err(State::StreamExpected)
+            Err(Error::StreamExpected)
         } else {
             self.position += WORD_NUM_BYTES;
             Ok((0..WORD_NUM_BYTES).fold(0, |word, i| {

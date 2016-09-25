@@ -11,7 +11,7 @@ pub enum State {
     HeaderIncomplete,
     HeaderIncorrect,
     InstructionIncomplete,
-    UnknownOpcode,
+    OpcodeUnknown,
     OperandExpected,
 }
 
@@ -79,7 +79,7 @@ impl<'a> Reader<'a> {
                 Ok((opcode, operands)) => {
                     match self.builder.add_instruction(opcode, operands) {
                         mr::BuilderState::Normal => continue,
-                        mr::BuilderState::UnknownOpcode => return Err(State::UnknownOpcode),
+                        mr::BuilderState::OpcodeUnknown => return Err(State::OpcodeUnknown),
                         mr::BuilderState::OperandExpected => return Err(State::OperandExpected),
                     }
                 }
