@@ -41,15 +41,6 @@ impl Producer {
         self.position = 0;
     }
 
-    fn get_next_byte(&mut self) -> Result<u8> {
-        if self.position >= self.data.len() {
-            Err(Error::StreamExpected)
-        } else {
-            self.position += 1;
-            Ok(self.data[self.position - 1])
-        }
-    }
-
     pub fn get_next_word(&mut self) -> Result<spirv::Word> {
         if self.position >= self.data.len() {
             Err(Error::StreamExpected)

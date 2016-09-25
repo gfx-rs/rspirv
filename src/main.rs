@@ -38,5 +38,5 @@ fn main() {
 
     let mut reader = rspirv::binary::Reader::new();
     let module = reader.process(buffer);
-    println!("{:?}", module);
+    println!("{:#?}", module);
 }
