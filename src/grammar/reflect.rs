@@ -64,7 +64,6 @@ pub fn is_type(opcode: spirv::Op) -> bool {
 
 pub fn is_constant(opcode: spirv::Op) -> bool {
     match opcode {
-
         spirv::Op::ConstantTrue |
         spirv::Op::ConstantFalse |
         spirv::Op::Constant |
@@ -82,4 +81,18 @@ pub fn is_constant(opcode: spirv::Op) -> bool {
 
 pub fn is_variable(opcode: spirv::Op) -> bool {
     opcode == spirv::Op::Variable
+}
+
+pub fn is_terminator(opcode: spirv::Op) -> bool {
+    match opcode {
+        spirv::Op::Phi |
+        spirv::Op::Branch |
+        spirv::Op::BranchConditional |
+        spirv::Op::Switch |
+        spirv::Op::Kill |
+        spirv::Op::Return |
+        spirv::Op::ReturnValue |
+        spirv::Op::Unreachable => true,
+        _ => false,
+    }
 }

@@ -20,13 +20,13 @@ pub type Result<T> = result::Result<T, State>;
 const HEADER_NUM_WORDS: usize = 5;
 const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
-pub struct Reader<'a> {
+pub struct Reader {
     producer: producer::Producer,
-    builder: mr::Builder<'a>,
+    builder: mr::Builder,
 }
 
-impl<'a> Reader<'a> {
-    pub fn new() -> Reader<'a> {
+impl Reader {
+    pub fn new() -> Reader {
         Reader {
             producer: producer::Producer::new(),
             builder: mr::Builder::new(),
@@ -68,7 +68,7 @@ impl<'a> Reader<'a> {
         }
     }
 
-    pub fn process(&mut self, binary: Vec<u8>) -> Result<mr::Module<'a>> {
+    pub fn process(&mut self, binary: Vec<u8>) -> Result<mr::Module> {
         self.producer.set_data(binary);
         let header = try!(self.process_header());
         println!("{:?}", header);

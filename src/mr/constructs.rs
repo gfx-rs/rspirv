@@ -6,7 +6,7 @@ use spirv::Word;
 use std::collections::HashMap;
 
 #[derive(Debug)]
-pub struct Module<'a> {
+pub struct Module {
     pub header: Option<ModuleHeader>,
     pub capabilities: Vec<spirv::Capability>,
     pub extensions: Vec<String>,
@@ -18,7 +18,7 @@ pub struct Module<'a> {
     pub names: HashMap<Word, String>,
     pub annotations: Vec<Instruction>,
     pub types_global_values: Vec<Instruction>,
-    pub functions: Vec<Function<'a>>,
+    pub functions: Vec<Function>,
 }
 
 #[derive(Debug)]
@@ -31,13 +31,16 @@ pub struct ModuleHeader {
 }
 
 #[derive(Debug)]
-pub struct Function<'a> {
-    pub basic_blocks: Vec<BasicBlock<'a>>,
+pub struct Function {
+    pub def: Option<Instruction>,
+    pub end: Option<Instruction>,
+    pub parameters: Vec<Instruction>,
+    pub basic_blocks: Vec<BasicBlock>,
 }
 
 #[derive(Debug)]
-pub struct BasicBlock<'a> {
-    pub function: &'a Function<'a>,
+pub struct BasicBlock {
+    pub label: Instruction,
     pub instructions: Vec<Instruction>,
 }
 
@@ -94,8 +97,8 @@ pub enum Operand {
     PairIdRefLiteralInteger,
 }
 
-impl<'a> Module<'a> {
-    pub fn new() -> Module<'a> {
+impl Module {
+    pub fn new() -> Module {
         Module {
             header: None,
             capabilities: vec![],
@@ -109,6 +112,26 @@ impl<'a> Module<'a> {
             annotations: vec![],
             types_global_values: vec![],
             functions: vec![],
+        }
+    }
+}
+
+impl Function {
+    pub fn new() -> Function {
+        Function {
+            def: None,
+            end: None,
+            parameters: vec![],
+            basic_blocks: vec![],
+        }
+    }
+}
+
+impl BasicBlock {
+    pub fn new(label: Instruction) -> BasicBlock {
+        BasicBlock {
+            label: label,
+            instructions: vec![],
         }
     }
 }
