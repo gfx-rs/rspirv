@@ -311,9 +311,7 @@ impl SpirvWordDecoder {
     }
 }
 
-fn decode_operand(decoder: &mut SpirvWordDecoder,
-                  kind: grammar::OperandKind)
-                  -> Result<mr::Operand> {
+fn decode_operand(decoder: &mut SpirvWordDecoder, kind: GOpKind) -> Result<mr::Operand> {
     Ok(match kind {
         GOpKind::IdType => mr::Operand::IdType(decoder.id().unwrap()),
         GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
@@ -405,9 +403,9 @@ fn decode_operand(decoder: &mut SpirvWordDecoder,
 
 fn decode_words_to_operands(grammar: GInstRef, words: Vec<spirv::Word>) -> Result<mr::Instruction> {
     let mut decoder = SpirvWordDecoder::new(words);
-    let mut logical_operand_index: usize = 0;
     let mut rtype = None;
     let mut rid = None;
+    let mut logical_operand_index: usize = 0;
     let mut concrete_operands = Vec::new();
     while logical_operand_index < grammar.operands.len() {
         let logical_operand = &grammar.operands[logical_operand_index];
@@ -436,7 +434,7 @@ fn decode_words_to_operands(grammar: GInstRef, words: Vec<spirv::Word>) -> Resul
 }
 
 pub struct Builder {
-    module: Option<mr::Module>,
+    module: mr::Module,
     function: Option<mr::Function>,
     block: Option<mr::BasicBlock>,
 }
@@ -444,27 +442,23 @@ pub struct Builder {
 impl Builder {
     pub fn new() -> Builder {
         Builder {
-            module: None,
+            module: mr::Module::new(),
             function: None,
             block: None,
         }
     }
 
     pub fn initialize(&mut self, header: mr::ModuleHeader) {
-        let mut module = mr::Module::new();
-        module.header = Some(header);
-        self.module = Some(module);
+        self.module.header = Some(header)
     }
 
-    pub fn finalize(&mut self) -> Option<mr::Module> {
-        self.module.take()
+    pub fn finalize(self) -> mr::Module {
+        self.module
     }
 
     pub fn require_capability(&mut self, capability: mr::Operand) {
         if let mr::Operand::Capability(cap) = capability {
             self.module
-                .as_mut()
-                .unwrap()
                 .capabilities
                 .push(cap)
 
@@ -477,7 +471,7 @@ impl Builder {
 
     pub fn enable_extension(&mut self, extension: mr::Operand) {
         if let mr::Operand::LiteralString(ext) = extension {
-            self.module.as_mut().unwrap().extensions.push(ext)
+            self.module.extensions.push(ext)
         } else {
             panic!()
         }
@@ -485,14 +479,13 @@ impl Builder {
 
     pub fn attach_name(&mut self, id: mr::Operand, name: mr::Operand) {
         if let (mr::Operand::IdRef(id_ref), mr::Operand::LiteralString(name_str)) = (id, name) {
-            self.module.as_mut().unwrap().names.insert(id_ref, name_str);
+            self.module.names.insert(id_ref, name_str);
         } else {
             panic!()
         }
     }
 
     pub fn add_instruction(&mut self, opcode: u16, words: Vec<spirv::Word>) -> State {
-        assert!(self.module.is_some());
         if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
             let mut inst = decode_words_to_operands(grammar, words).unwrap();
             match inst.class.opcode {
@@ -500,8 +493,6 @@ impl Builder {
                 spirv::Op::Extension => self.enable_extension(inst.operands.pop().unwrap()),
                 spirv::Op::ExtInstImport => {
                     self.module
-                        .as_mut()
-                        .unwrap()
                         .ext_inst_imports
                         .push(inst)
                 }
@@ -510,20 +501,16 @@ impl Builder {
                     let address = inst.operands.pop().unwrap();
                     if let (mr::Operand::AddressingModel(am), mr::Operand::MemoryModel(mm)) =
                            (address, memory) {
-                        self.module.as_mut().unwrap().memory_model = Some((am, mm))
+                        self.module.memory_model = Some((am, mm))
                     }
                 }
                 spirv::Op::EntryPoint => {
                     self.module
-                        .as_mut()
-                        .unwrap()
                         .entry_points
                         .push(inst)
                 }
                 spirv::Op::ExecutionMode => {
                     self.module
-                        .as_mut()
-                        .unwrap()
                         .execution_modes
                         .push(inst)
                 }
@@ -534,15 +521,11 @@ impl Builder {
                 }
                 opcode if grammar::reflect::is_nonlocation_debug(opcode) => {
                     self.module
-                        .as_mut()
-                        .unwrap()
                         .debugs
                         .push(inst)
                 }
                 opcode if grammar::reflect::is_annotation(opcode) => {
                     self.module
-                        .as_mut()
-                        .unwrap()
                         .annotations
                         .push(inst)
                 }
@@ -550,8 +533,6 @@ impl Builder {
                           grammar::reflect::is_constant(opcode) ||
                           grammar::reflect::is_variable(opcode) => {
                     self.module
-                        .as_mut()
-                        .unwrap()
                         .types_global_values
                         .push(inst)
                 }
@@ -562,7 +543,7 @@ impl Builder {
                 }
                 spirv::Op::FunctionEnd => {
                     self.function.as_mut().unwrap().end = Some(inst);
-                    self.module.as_mut().unwrap().functions.push(self.function.take().unwrap())
+                    self.module.functions.push(self.function.take().unwrap())
                 }
                 spirv::Op::FunctionParameter => {
                     self.function

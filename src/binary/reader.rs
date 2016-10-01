@@ -22,15 +22,11 @@ const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
 pub struct Reader {
     producer: producer::Producer,
-    builder: mr::Builder,
 }
 
 impl Reader {
     pub fn new() -> Reader {
-        Reader {
-            producer: producer::Producer::new(),
-            builder: mr::Builder::new(),
-        }
+        Reader { producer: producer::Producer::new() }
     }
 
     fn split_into_word_count_and_opcode(&self, word: spirv::Word) -> (u16, u16) {
@@ -69,15 +65,16 @@ impl Reader {
     }
 
     pub fn process(&mut self, binary: Vec<u8>) -> Result<mr::Module> {
+        let mut builder = mr::Builder::new();
         self.producer.set_data(binary);
         let header = try!(self.process_header());
         println!("{:?}", header);
-        self.builder.initialize(header);
+        builder.initialize(header);
 
         loop {
             match self.process_instruction() {
                 Ok((opcode, operands)) => {
-                    match self.builder.add_instruction(opcode, operands) {
+                    match builder.add_instruction(opcode, operands) {
                         mr::BuilderState::Normal => continue,
                         mr::BuilderState::OpcodeUnknown => return Err(State::OpcodeUnknown),
                         mr::BuilderState::OperandExpected => return Err(State::OperandExpected),
@@ -88,6 +85,6 @@ impl Reader {
             }
         }
 
-        Ok(self.builder.finalize().unwrap())
+        Ok(builder.finalize())
     }
 }
