@@ -29,16 +29,11 @@ pub struct Producer {
 }
 
 impl Producer {
-    pub fn new() -> Producer {
+    pub fn new(data: Vec<u8>) -> Producer {
         Producer {
-            data: vec![],
+            data: data,
             position: 0,
         }
-    }
-
-    pub fn set_data(&mut self, data: Vec<u8>) {
-        self.data = data;
-        self.position = 0;
     }
 
     pub fn get_next_word(&mut self) -> Result<spirv::Word> {

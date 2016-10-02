@@ -20,21 +20,19 @@ pub type Result<T> = result::Result<T, State>;
 const HEADER_NUM_WORDS: usize = 5;
 const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
-pub struct Reader {
-    producer: producer::Producer,
-}
+pub struct Reader {}
 
 impl Reader {
     pub fn new() -> Reader {
-        Reader { producer: producer::Producer::new() }
+        Reader {}
     }
 
-    fn split_into_word_count_and_opcode(&self, word: spirv::Word) -> (u16, u16) {
+    fn split_into_word_count_and_opcode(word: spirv::Word) -> (u16, u16) {
         ((word >> 16) as u16, (word & 0xffff) as u16)
     }
 
-    fn process_header(&mut self) -> Result<mr::ModuleHeader> {
-        if let Ok(words) = self.producer.get_next_n_words(HEADER_NUM_WORDS) {
+    fn read_header(&self, producer: &mut producer::Producer) -> Result<mr::ModuleHeader> {
+        if let Ok(words) = producer.get_next_n_words(HEADER_NUM_WORDS) {
             if words[0] != MAGIC_NUMBER {
                 return Err(State::HeaderIncorrect);
             }
@@ -51,10 +49,10 @@ impl Reader {
         }
     }
 
-    fn process_instruction(&mut self) -> Result<(u16, Vec<spirv::Word>)> {
-        if let Ok(word) = self.producer.get_next_word() {
-            let (wc, opcode) = self.split_into_word_count_and_opcode(word);
-            if let Ok(words) = self.producer.get_next_n_words((wc - 1) as usize) {
+    fn read_inst(&self, producer: &mut producer::Producer) -> Result<(u16, Vec<spirv::Word>)> {
+        if let Ok(word) = producer.get_next_word() {
+            let (wc, opcode) = Reader::split_into_word_count_and_opcode(word);
+            if let Ok(words) = producer.get_next_n_words((wc - 1) as usize) {
                 Ok((opcode, words))
             } else {
                 Err(State::InstructionIncomplete)
@@ -64,15 +62,15 @@ impl Reader {
         }
     }
 
-    pub fn process(&mut self, binary: Vec<u8>) -> Result<mr::Module> {
+    pub fn read(&self, binary: Vec<u8>) -> Result<mr::Module> {
+        let mut producer = producer::Producer::new(binary);
         let mut builder = mr::Builder::new();
-        self.producer.set_data(binary);
-        let header = try!(self.process_header());
+        let header = try!(self.read_header(&mut producer));
         println!("{:?}", header);
         builder.initialize(header);
 
         loop {
-            match self.process_instruction() {
+            match self.read_inst(&mut producer) {
                 Ok((opcode, operands)) => {
                     match builder.add_instruction(opcode, operands) {
                         mr::BuilderState::Normal => continue,
