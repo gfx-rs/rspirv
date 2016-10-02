@@ -433,15 +433,15 @@ fn decode_words_to_operands(grammar: GInstRef, words: Vec<spirv::Word>) -> Resul
     Ok(mr::Instruction::new(grammar, rtype, rid, concrete_operands))
 }
 
-pub struct Builder {
+pub struct Loader {
     module: mr::Module,
     function: Option<mr::Function>,
     block: Option<mr::BasicBlock>,
 }
 
-impl Builder {
-    pub fn new() -> Builder {
-        Builder {
+impl Loader {
+    pub fn new() -> Loader {
+        Loader {
             module: mr::Module::new(),
             function: None,
             block: None,

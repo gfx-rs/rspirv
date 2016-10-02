@@ -1,6 +1,6 @@
-pub use self::builder::Builder;
-pub use self::builder::State as BuilderState;
+pub use self::loader::Loader;
+pub use self::loader::State as LoaderState;
 pub use self::constructs::{Module, ModuleHeader, Function, BasicBlock, Instruction, Operand};
 
-mod builder;
+mod loader;
 mod constructs;

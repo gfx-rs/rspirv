@@ -64,18 +64,18 @@ impl Reader {
 
     pub fn read(&self, binary: Vec<u8>) -> Result<mr::Module> {
         let mut producer = producer::Producer::new(binary);
-        let mut builder = mr::Builder::new();
+        let mut loader = mr::Loader::new();
         let header = try!(self.read_header(&mut producer));
         println!("{:?}", header);
-        builder.initialize(header);
+        loader.initialize(header);
 
         loop {
             match self.read_inst(&mut producer) {
                 Ok((opcode, operands)) => {
-                    match builder.add_instruction(opcode, operands) {
-                        mr::BuilderState::Normal => continue,
-                        mr::BuilderState::OpcodeUnknown => return Err(State::OpcodeUnknown),
-                        mr::BuilderState::OperandExpected => return Err(State::OperandExpected),
+                    match loader.add_instruction(opcode, operands) {
+                        mr::LoaderState::Normal => continue,
+                        mr::LoaderState::OpcodeUnknown => return Err(State::OpcodeUnknown),
+                        mr::LoaderState::OperandExpected => return Err(State::OperandExpected),
                     }
                 }
                 Err(State::Complete) => break,
@@ -83,6 +83,6 @@ impl Reader {
             }
         }
 
-        Ok(builder.finalize())
+        Ok(loader.finalize())
     }
 }
