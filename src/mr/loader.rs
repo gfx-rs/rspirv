@@ -22,12 +22,12 @@ type Result<T> = result::Result<T, State>;
 
 const WORD_NUM_BYTES: usize = 4;
 
-struct SpirvWordDecoder {
+struct SpirvOperandDecoder {
     words: Vec<spirv::Word>,
     index: usize,
 }
 
-impl Iterator for SpirvWordDecoder {
+impl Iterator for SpirvOperandDecoder {
     type Item = spirv::Word;
 
     fn next(&mut self) -> Option<spirv::Word> {
@@ -40,9 +40,9 @@ impl Iterator for SpirvWordDecoder {
     }
 }
 
-impl SpirvWordDecoder {
-    pub fn new(words: Vec<spirv::Word>) -> SpirvWordDecoder {
-        SpirvWordDecoder {
+impl SpirvOperandDecoder {
+    pub fn new(words: Vec<spirv::Word>) -> SpirvOperandDecoder {
+        SpirvOperandDecoder {
             words: words,
             index: 0,
         }
@@ -311,7 +311,7 @@ impl SpirvWordDecoder {
     }
 }
 
-fn decode_operand(decoder: &mut SpirvWordDecoder, kind: GOpKind) -> Result<mr::Operand> {
+fn decode_operand(decoder: &mut SpirvOperandDecoder, kind: GOpKind) -> Result<mr::Operand> {
     Ok(match kind {
         GOpKind::IdType => mr::Operand::IdType(decoder.id().unwrap()),
         GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
@@ -402,7 +402,7 @@ fn decode_operand(decoder: &mut SpirvWordDecoder, kind: GOpKind) -> Result<mr::O
 }
 
 fn decode_words_to_operands(grammar: GInstRef, words: Vec<spirv::Word>) -> Result<mr::Instruction> {
-    let mut decoder = SpirvWordDecoder::new(words);
+    let mut decoder = SpirvOperandDecoder::new(words);
     let mut rtype = None;
     let mut rid = None;
     let mut logical_operand_index: usize = 0;
