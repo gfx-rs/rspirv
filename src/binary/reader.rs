@@ -36,14 +36,7 @@ impl Reader {
             if words[0] != MAGIC_NUMBER {
                 return Err(State::HeaderIncorrect);
             }
-            let header = mr::ModuleHeader {
-                magic_number: words[0],
-                version: words[1],
-                generator: words[2],
-                bound: words[3],
-                reserved_word: words[4],
-            };
-            Ok(header)
+            Ok(mr::ModuleHeader::new(words[0], words[1], words[2], words[3], words[4]))
         } else {
             Err(State::HeaderIncomplete)
         }
@@ -66,7 +59,6 @@ impl Reader {
         let mut producer = producer::Producer::new(binary);
         let mut loader = mr::Loader::new();
         let header = try!(self.read_header(&mut producer));
-        println!("{:?}", header);
         loader.initialize(header);
 
         loop {

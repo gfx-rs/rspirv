@@ -5,6 +5,8 @@ use std::env;
 use std::fs;
 use std::io::Read;
 
+use rspirv::binary::Disassemble;
+
 fn print_usage(program: &str, opts: getopts::Options) {
     let brief = format!("Usage: {} [options] <spirv-binary>", program);
     print!("{}", opts.usage(&brief));
@@ -37,6 +39,6 @@ fn main() {
     f.read_to_end(&mut buffer).unwrap();
 
     let reader = rspirv::binary::Reader::new();
-    let module = reader.read(buffer);
-    println!("{:#?}", module);
+    let module = reader.read(buffer).unwrap();
+    println!("{}", module.disassemble());
 }

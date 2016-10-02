@@ -4,6 +4,7 @@ use spirv;
 use spirv::Word;
 
 use std::collections::HashMap;
+use std::fmt;
 
 #[derive(Debug)]
 pub struct Module {
@@ -23,11 +24,11 @@ pub struct Module {
 
 #[derive(Debug)]
 pub struct ModuleHeader {
-    pub magic_number: Word,
-    pub version: Word,
-    pub generator: Word,
-    pub bound: Word,
-    pub reserved_word: Word,
+    magic_number: Word,
+    version: Word,
+    generator: Word,
+    bound: Word,
+    reserved_word: Word,
 }
 
 #[derive(Debug)]
@@ -97,6 +98,53 @@ pub enum Operand {
     PairIdRefLiteralInteger,
 }
 
+impl fmt::Display for Operand {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Operand::ImageOperands(ref v) => write!(f, "{:?}", v),
+            Operand::FPFastMathMode(ref v) => write!(f, "{:?}", v),
+            Operand::SelectionControl(ref v) => write!(f, "{:?}", v),
+            Operand::LoopControl(ref v) => write!(f, "{:?}", v),
+            Operand::FunctionControl(ref v) => write!(f, "{:?}", v),
+            Operand::IdMemorySemantics(ref v) => write!(f, "%{:?}", v),
+            Operand::MemoryAccess(ref v) => write!(f, "{:?}", v),
+            Operand::KernelProfilingInfo(ref v) => write!(f, "{:?}", v),
+            Operand::SourceLanguage(ref v) => write!(f, "{:?}", v),
+            Operand::ExecutionModel(ref v) => write!(f, "{:?}", v),
+            Operand::AddressingModel(ref v) => write!(f, "{:?}", v),
+            Operand::MemoryModel(ref v) => write!(f, "{:?}", v),
+            Operand::ExecutionMode(ref v) => write!(f, "{:?}", v),
+            Operand::StorageClass(ref v) => write!(f, "{:?}", v),
+            Operand::Dim(ref v) => write!(f, "{:?}", v),
+            Operand::SamplerAddressingMode(ref v) => write!(f, "{:?}", v),
+            Operand::SamplerFilterMode(ref v) => write!(f, "{:?}", v),
+            Operand::ImageFormat(ref v) => write!(f, "{:?}", v),
+            Operand::ImageChannelOrder(ref v) => write!(f, "{:?}", v),
+            Operand::ImageChannelDataType(ref v) => write!(f, "{:?}", v),
+            Operand::FPRoundingMode(ref v) => write!(f, "{:?}", v),
+            Operand::LinkageType(ref v) => write!(f, "{:?}", v),
+            Operand::AccessQualifier(ref v) => write!(f, "{:?}", v),
+            Operand::FunctionParameterAttribute(ref v) => write!(f, "{:?}", v),
+            Operand::Decoration(ref v) => write!(f, "{:?}", v),
+            Operand::BuiltIn(ref v) => write!(f, "{:?}", v),
+            Operand::IdScope(ref v) => write!(f, "%{:?}", v),
+            Operand::GroupOperation(ref v) => write!(f, "{:?}", v),
+            Operand::KernelEnqueueFlags(ref v) => write!(f, "{:?}", v),
+            Operand::Capability(ref v) => write!(f, "{:?}", v),
+            Operand::IdType(ref v) => write!(f, "%{:?}", v),
+            Operand::IdResult(ref v) => write!(f, "%{:?}", v),
+            Operand::IdRef(ref v) => write!(f, "%{:?}", v),
+            Operand::LiteralInteger(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralString(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralContextDependentNumber(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralExtInstInteger |
+            Operand::LiteralSpecConstantOpInteger |
+            Operand::PairLiteralIntegerIdRef |
+            Operand::PairIdRefLiteralInteger => unimplemented!(),
+        }
+    }
+}
+
 impl Module {
     pub fn new() -> Module {
         Module {
@@ -113,6 +161,52 @@ impl Module {
             types_global_values: vec![],
             functions: vec![],
         }
+    }
+}
+
+impl ModuleHeader {
+    pub fn new(magic_number: Word,
+               version: Word,
+               generator: Word,
+               bound: Word,
+               reserved_word: Word)
+               -> ModuleHeader {
+        ModuleHeader {
+            magic_number: magic_number,
+            version: version,
+            generator: generator,
+            bound: bound,
+            reserved_word: reserved_word,
+        }
+    }
+
+    pub fn version(&self) -> (u8, u8) {
+        (((self.version & 0xff0000) >> 16) as u8, ((self.version & 0xff00) >> 8) as u8)
+    }
+
+    pub fn generator(&self) -> (&str, u16) {
+        let vendor = (self.generator & 0xffff0000) >> 16;
+        let version = (self.generator & 0xffff) as u16;
+        let vendor: &str = match vendor {
+            0 => "Khronos Group",
+            1 => "LunarG",
+            2 => "Valve",
+            3 => "Codeplay",
+            4 => "NVIDIA",
+            5 => "ARM",
+            6 => "LLVM/SPIR-V Translator",
+            7 => "SPIRV-Tools",
+            8 => "Glslang",
+            9 => "Qualcomm",
+            10 => "AMD",
+            11 => "Intel",
+            _ => "Unknown",
+        };
+        (vendor, version)
+    }
+
+    pub fn bound(&self) -> Word {
+        self.bound
     }
 }
 
