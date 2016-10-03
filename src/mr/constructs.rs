@@ -76,6 +76,7 @@ pub enum Operand {
     LoopControl(spirv::LoopControl),
     FunctionControl(spirv::FunctionControl),
     IdMemorySemantics(Word),
+    MemorySemantics(spirv::MemorySemantics),
     MemoryAccess(spirv::MemoryAccess),
     KernelProfilingInfo(spirv::KernelProfilingInfo),
     SourceLanguage(spirv::SourceLanguage),
@@ -97,10 +98,11 @@ pub enum Operand {
     Decoration(spirv::Decoration),
     BuiltIn(spirv::BuiltIn),
     IdScope(Word),
+    Scope(spirv::Scope),
     GroupOperation(spirv::GroupOperation),
     KernelEnqueueFlags(spirv::KernelEnqueueFlags),
     Capability(spirv::Capability),
-    IdType(Word),
+    IdResultType(Word),
     IdResult(Word),
     IdRef(Word),
     LiteralInteger(u32),
@@ -110,6 +112,7 @@ pub enum Operand {
     LiteralSpecConstantOpInteger,
     PairLiteralIntegerIdRef,
     PairIdRefLiteralInteger,
+    PairIdRefIdRef,
 }
 
 impl fmt::Display for Operand {
@@ -121,6 +124,7 @@ impl fmt::Display for Operand {
             Operand::LoopControl(ref v) => write!(f, "{:?}", v),
             Operand::FunctionControl(ref v) => write!(f, "{:?}", v),
             Operand::IdMemorySemantics(ref v) => write!(f, "%{:?}", v),
+            Operand::MemorySemantics(ref v) => write!(f, "{:?}", v),
             Operand::MemoryAccess(ref v) => write!(f, "{:?}", v),
             Operand::KernelProfilingInfo(ref v) => write!(f, "{:?}", v),
             Operand::SourceLanguage(ref v) => write!(f, "{:?}", v),
@@ -142,10 +146,11 @@ impl fmt::Display for Operand {
             Operand::Decoration(ref v) => write!(f, "{:?}", v),
             Operand::BuiltIn(ref v) => write!(f, "{:?}", v),
             Operand::IdScope(ref v) => write!(f, "%{:?}", v),
+            Operand::Scope(ref v) => write!(f, "{:?}", v),
             Operand::GroupOperation(ref v) => write!(f, "{:?}", v),
             Operand::KernelEnqueueFlags(ref v) => write!(f, "{:?}", v),
             Operand::Capability(ref v) => write!(f, "{:?}", v),
-            Operand::IdType(ref v) => write!(f, "%{:?}", v),
+            Operand::IdResultType(ref v) => write!(f, "%{:?}", v),
             Operand::IdResult(ref v) => write!(f, "%{:?}", v),
             Operand::IdRef(ref v) => write!(f, "%{:?}", v),
             Operand::LiteralInteger(ref v) => write!(f, "{:?}", v),
@@ -154,7 +159,8 @@ impl fmt::Display for Operand {
             Operand::LiteralExtInstInteger |
             Operand::LiteralSpecConstantOpInteger |
             Operand::PairLiteralIntegerIdRef |
-            Operand::PairIdRefLiteralInteger => unimplemented!(),
+            Operand::PairIdRefLiteralInteger |
+            Operand::PairIdRefIdRef => unimplemented!(),
         }
     }
 }

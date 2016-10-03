@@ -19,10 +19,25 @@ from __future__ import print_function
 
 import json
 
-AUTO_GEN_COMMENT = '// This rust module is automatically generated from ' \
-    'the SPIR-V JSON grammar:\n' \
-    '//  https://raw.githubusercontent.com/KhronosGroup/SPIRV-Tools/' \
-    'master/source/spirv.core.grammar.json\n'
+COPYRIGHT = '''// Copyright 2016 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.'''
+
+AUTO_GEN_COMMENT = ('// This rust module is automatically generated '
+                    'from the SPIR-V JSON grammar:')
+
+SPIRV_GRAMMAR_URL = ('https://github.com/KhronosGroup/SPIRV-Headers'
+                     '/blob/master/include/spirv/1.1/spirv.core.grammar.json')
 
 
 def convert_operand_quantifier(quantifier):
@@ -100,20 +115,22 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(
         description='Generate SPIR-V grammar tables')
-    parser.add_argument('--spirv-core-grammar', metavar='<path>',
+    parser.add_argument('-i', '--input', metavar='<path>',
                         type=str, required=True,
                         help='input JSON grammar file for core SPIR-V '
                         'instructions')
-    parser.add_argument('--core-grammar-output', metavar='<path>',
+    parser.add_argument('-o', '--output', metavar='<path>',
                         type=str, required=True,
                         help='output file for core SPIR-V instructions')
     args = parser.parse_args()
 
-    with open(args.spirv_core_grammar) as json_file:
+    with open(args.input) as json_file:
         grammar = json.loads(json_file.read())
 
-        core_grammar_output = open(args.core_grammar_output, 'w')
+        core_grammar_output = open(args.output, 'w')
+        print(COPYRIGHT, file=core_grammar_output)
         print(AUTO_GEN_COMMENT, file=core_grammar_output)
+        print('// {}'.format(SPIRV_GRAMMAR_URL), file=core_grammar_output)
         print(generate_operand_kind_table(grammar['operand_kinds']),
               file=core_grammar_output)
         print(generate_instruction_table(grammar['instructions']),

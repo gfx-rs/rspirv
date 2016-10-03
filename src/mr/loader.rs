@@ -36,11 +36,15 @@ type Result<T> = result::Result<T, State>;
 
 fn decode_operand(decoder: &mut BOpDecoder, kind: GOpKind) -> Result<mr::Operand> {
     Ok(match kind {
-        GOpKind::IdType => mr::Operand::IdType(decoder.id().unwrap()),
+        GOpKind::IdResultType => mr::Operand::IdResultType(decoder.id().unwrap()),
         GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
         GOpKind::IdRef |
         GOpKind::IdMemorySemantics |
         GOpKind::IdScope => mr::Operand::IdRef(decoder.id().unwrap()),
+        GOpKind::Scope => mr::Operand::Scope(decoder.scope().unwrap()),
+        GOpKind::MemorySemantics => {
+            mr::Operand::MemorySemantics(decoder.memory_semantics().unwrap())
+        }
         GOpKind::LiteralString => mr::Operand::LiteralString(decoder.string().unwrap()),
         GOpKind::LiteralContextDependentNumber => {
             mr::Operand::LiteralContextDependentNumber(decoder.context_dependent_number().unwrap())
@@ -117,7 +121,8 @@ fn decode_operand(decoder: &mut BOpDecoder, kind: GOpKind) -> Result<mr::Operand
         GOpKind::LiteralExtInstInteger |
         GOpKind::LiteralSpecConstantOpInteger |
         GOpKind::PairLiteralIntegerIdRef |
-        GOpKind::PairIdRefLiteralInteger => {
+        GOpKind::PairIdRefLiteralInteger |
+        GOpKind::PairIdRefIdRef => {
             println!("unimplemented operand kind: {:?}", kind);
             unimplemented!();
         }
@@ -134,7 +139,7 @@ fn decode_words_to_operands(grammar: GInstRef, words: Vec<spirv::Word>) -> Resul
         let logical_operand = &grammar.operands[logical_operand_index];
         if !decoder.empty() {
             match logical_operand.kind {
-                GOpKind::IdType => rtype = decoder.id(),
+                GOpKind::IdResultType => rtype = decoder.id(),
                 GOpKind::IdResult => rid = decoder.id(),
                 _ => {
                     concrete_operands.push(decode_operand(&mut decoder, logical_operand.kind)

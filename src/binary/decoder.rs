@@ -55,6 +55,22 @@ impl OperandDecoder {
     // TODO(antiagainst): in the following methods, we should distinguish None caused by no next
     // word and cannot decode the next word to the expected type.
 
+    pub fn scope(&mut self) -> Option<spirv::Scope> {
+        if let Some(word) = self.next() {
+            spirv::Scope::from_u32(word)
+        } else {
+            None
+        }
+    }
+
+    pub fn memory_semantics(&mut self) -> Option<spirv::MemorySemantics> {
+        if let Some(word) = self.next() {
+            spirv::MemorySemantics::from_bits(word)
+        } else {
+            None
+        }
+    }
+
     pub fn capability(&mut self) -> Option<spirv::Capability> {
         if let Some(word) = self.next() {
             spirv::Capability::from_u32(word)
