@@ -24,7 +24,25 @@ import re
 
 import clang.cindex as libclang
 
-SPIRV_HPP_URL = 'https://www.khronos.org/registry/spir-v/api/1.0/spirv.hpp'
+COPYRIGHT = '''// Copyright 2016 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.'''
+
+AUTOGEN_COMMENT = '// This rust module is automatically generated from ' \
+    'SPIR-V C++ header file:'
+
+SPIRV_HPP_URL = 'https://raw.githubusercontent.com/KhronosGroup/' \
+    'SPIRV-Headers/master/include/spirv/1.1/spirv.hpp'
 
 
 def gen_variable_definition(node):
@@ -94,6 +112,11 @@ def gen_enum_definition(node):
         assert tokens[1].spelling == ','
         case_values.append(tokens[0].spelling)  # Enumerant value
 
+    # Rmove the *Max enumerant at the end of each enum.
+    if case_names[-1].endswith('Max'):
+        case_names.pop()
+        case_values.pop()
+
     # Remove the common prefix (with the enum class) from all enumerants,
     # except those with prefix trimmed will start with numbers.
     common_prefix = os.path.commonprefix(case_names + [enum_class])
@@ -121,7 +144,7 @@ def gen_enum_definition(node):
         cases = itertools.imap('    {} = {},'.format, case_names, case_values)
         return '{attribute}\npub enum {enum_class} {{\n{enumerants}\n}}'.format(
             attribute='#[repr(u32)]\n'
-            '#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]',
+            '#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]',
             enum_class=enum_class,
             enumerants='\n'.join(cases))
 
@@ -140,25 +163,30 @@ def generate_spirv_rs(spirv_hpp_path):
 
     for node in namespace[0].get_children():
         if node.kind is libclang.CursorKind.VAR_DECL:
-            consts.append(gen_variable_definition(node))
+            consts.append('pub {}'.format(gen_variable_definition(node)))
         elif node.kind is libclang.CursorKind.ENUM_DECL:
             enum_def = gen_enum_definition(node)
             if len(enum_def) > 0:
                 enums.append(enum_def)
     return '{allows}\n\n{types}\n\n{consts}\n\n{enums}'.format(
         allows='#![allow(dead_code)]\n#![allow(non_camel_case_types)]',
-        types='pub type Word = u32;\npub type Id = u32;',
+        types='pub type Word = u32;',
         consts='\n'.join(consts),
         enums='\n\n'.join(enums))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Generate spirv.rs from spirv.hpp')
-    parser.add_argument('path', type=str, metavar='<path>',
-                        help='Path to spirv.hpp')
+    parser.add_argument('-i', '--input', metavar='<path>',
+                        type=str, required=True,
+                        help='input spirv.hpp header file')
+    parser.add_argument('-o', '--output', metavar='<path>',
+                        type=str, required=True,
+                        help='output spirv.rs module file')
     args = parser.parse_args()
 
-    print('// This rust module is automatically generated from ',
-          'SPIR-V C++ header file:')
-    print('//   {}\n'.format(SPIRV_HPP_URL))
-    print(generate_spirv_rs(args.path))
+    with open(args.output, 'w') as output:
+        print('{}\n'.format(COPYRIGHT), file=output)
+        print(AUTOGEN_COMMENT, file=output)
+        print('// {}\n'.format(SPIRV_HPP_URL), file=output)
+        print(generate_spirv_rs(args.input), file=output)

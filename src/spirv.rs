@@ -12,23 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This rust module is automatically generated from  SPIR-V C++ header file:
-//   https://www.khronos.org/registry/spir-v/api/1.0/spirv.hpp
+// This rust module is automatically generated from SPIR-V C++ header file:
+// https://raw.githubusercontent.com/KhronosGroup/SPIRV-Headers/master/include/spirv/1.1/spirv.hpp
 
 #![allow(dead_code)]
 #![allow(non_camel_case_types)]
 
 pub type Word = u32;
-pub type Id = u32;
 
-const MAGIC_NUMBER: usize = 0x07230203;
-const VERSION: usize = 0x00010000;
-const REVISION: usize = 4;
-const OP_CODE_MASK: usize = 0xffff;
-const WORD_COUNT_SHIFT: usize = 16;
+pub const MAGIC_NUMBER: usize = 0x07230203;
+pub const VERSION: usize = 0x00010100;
+pub const REVISION: usize = 3;
+pub const OP_CODE_MASK: usize = 0xffff;
+pub const WORD_COUNT_SHIFT: usize = 16;
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum SourceLanguage {
     Unknown = 0,
     ESSL = 1,
@@ -38,7 +37,7 @@ pub enum SourceLanguage {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ExecutionModel {
     Vertex = 0,
     TessellationControl = 1,
@@ -50,7 +49,7 @@ pub enum ExecutionModel {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum AddressingModel {
     Logical = 0,
     Physical32 = 1,
@@ -58,7 +57,7 @@ pub enum AddressingModel {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum MemoryModel {
     Simple = 0,
     GLSL450 = 1,
@@ -66,7 +65,7 @@ pub enum MemoryModel {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ExecutionMode {
     Invocations = 0,
     SpacingEqual = 1,
@@ -99,10 +98,14 @@ pub enum ExecutionMode {
     OutputTriangleStrip = 29,
     VecTypeHint = 30,
     ContractionOff = 31,
+    Initializer = 33,
+    Finalizer = 34,
+    SubgroupSize = 35,
+    SubgroupsPerWorkgroup = 36,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum StorageClass {
     UniformConstant = 0,
     Input = 1,
@@ -119,7 +122,7 @@ pub enum StorageClass {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Dim {
     Dim1D = 0,
     Dim2D = 1,
@@ -131,7 +134,7 @@ pub enum Dim {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum SamplerAddressingMode {
     None = 0,
     ClampToEdge = 1,
@@ -141,14 +144,14 @@ pub enum SamplerAddressingMode {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum SamplerFilterMode {
     Nearest = 0,
     Linear = 1,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ImageFormat {
     Unknown = 0,
     Rgba32f = 1,
@@ -193,7 +196,7 @@ pub enum ImageFormat {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ImageChannelOrder {
     R = 0,
     A = 1,
@@ -214,10 +217,11 @@ pub enum ImageChannelOrder {
     sRGBx = 16,
     sRGBA = 17,
     sBGRA = 18,
+    ABGR = 19,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ImageChannelDataType {
     SnormInt8 = 0,
     SnormInt16 = 1,
@@ -264,7 +268,7 @@ bitflags!{
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum FPRoundingMode {
     RTE = 0,
     RTZ = 1,
@@ -273,14 +277,14 @@ pub enum FPRoundingMode {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum LinkageType {
     Export = 0,
     Import = 1,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum AccessQualifier {
     ReadOnly = 0,
     WriteOnly = 1,
@@ -288,7 +292,7 @@ pub enum AccessQualifier {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum FunctionParameterAttribute {
     Zext = 0,
     Sext = 1,
@@ -301,7 +305,7 @@ pub enum FunctionParameterAttribute {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Decoration {
     RelaxedPrecision = 0,
     SpecId = 1,
@@ -346,10 +350,11 @@ pub enum Decoration {
     NoContraction = 42,
     InputAttachmentIndex = 43,
     Alignment = 44,
+    MaxByteOffset = 45,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum BuiltIn {
     Position = 0,
     PointSize = 1,
@@ -392,6 +397,11 @@ pub enum BuiltIn {
     SubgroupLocalInvocationId = 41,
     VertexIndex = 42,
     InstanceIndex = 43,
+    SubgroupEqMaskKHR = 4416,
+    SubgroupGeMaskKHR = 4417,
+    SubgroupGtMaskKHR = 4418,
+    SubgroupLeMaskKHR = 4419,
+    SubgroupLtMaskKHR = 4420,
 }
 
 bitflags!{
@@ -407,6 +417,8 @@ bitflags!{
         const LOOP_CONTROL_NONE = 0,
         const LOOP_CONTROL_UNROLL = 0x00000001,
         const LOOP_CONTROL_DONT_UNROLL = 0x00000002,
+        const LOOP_CONTROL_DEPENDENCY_INFINITE = 0x00000004,
+        const LOOP_CONTROL_DEPENDENCY_LENGTH = 0x00000008,
     }
 }
 
@@ -446,7 +458,7 @@ bitflags!{
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Scope {
     CrossDevice = 0,
     Device = 1,
@@ -456,7 +468,7 @@ pub enum Scope {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum GroupOperation {
     Reduce = 0,
     InclusiveScan = 1,
@@ -464,7 +476,7 @@ pub enum GroupOperation {
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum KernelEnqueueFlags {
     NoWait = 0,
     WaitKernel = 1,
@@ -479,7 +491,7 @@ bitflags!{
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Capability {
     Matrix = 0,
     Shader = 1,
@@ -537,10 +549,14 @@ pub enum Capability {
     StorageImageReadWithoutFormat = 55,
     StorageImageWriteWithoutFormat = 56,
     MultiViewport = 57,
+    SubgroupDispatch = 58,
+    NamedBarrier = 59,
+    PipeStorage = 60,
+    SubgroupBallotKHR = 4423,
 }
 
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, NumFromPrimitive)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Op {
     Nop = 0,
     Undef = 1,
@@ -836,4 +852,16 @@ pub enum Op {
     AtomicFlagTestAndSet = 318,
     AtomicFlagClear = 319,
     ImageSparseRead = 320,
+    SizeOf = 321,
+    TypePipeStorage = 322,
+    ConstantPipeStorage = 323,
+    CreatePipeFromPipeStorage = 324,
+    GetKernelLocalSizeForSubgroupCount = 325,
+    GetKernelMaxNumSubgroups = 326,
+    TypeNamedBarrier = 327,
+    NamedBarrierInitialize = 328,
+    MemoryNamedBarrier = 329,
+    ModuleProcessed = 330,
+    SubgroupBallotKHR = 4421,
+    SubgroupFirstInvocationKHR = 4422,
 }
