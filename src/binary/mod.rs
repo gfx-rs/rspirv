@@ -21,4 +21,5 @@ pub use self::disassemble::Disassemble;
 
 mod decoder;
 mod disassemble;
+mod error;
 mod parser;

@@ -178,8 +178,7 @@ impl<'a> Parser<'a> {
                                                   .unwrap())
             }
             GOpKind::ExecutionModel => {
-                mr::Operand::ExecutionModel(decoder.decode_execution_model()
-                                                   .unwrap())
+                mr::Operand::ExecutionModel(decoder.execution_model().unwrap())
             }
             GOpKind::SourceLanguage => {
                 mr::Operand::SourceLanguage(decoder.source_language()
@@ -192,7 +191,7 @@ impl<'a> Parser<'a> {
             GOpKind::StorageClass => mr::Operand::StorageClass(decoder.storage_class().unwrap()),
             GOpKind::ImageOperands => mr::Operand::ImageOperands(decoder.image_operands().unwrap()),
             GOpKind::FPFastMathMode => {
-                mr::Operand::FPFastMathMode(decoder.fp_fast_math_mode().unwrap())
+                mr::Operand::FPFastMathMode(decoder.fpfast_math_mode().unwrap())
             }
             GOpKind::SelectionControl => {
                 mr::Operand::SelectionControl(decoder.selection_control().unwrap())
@@ -223,7 +222,7 @@ impl<'a> Parser<'a> {
                                                          .unwrap())
             }
             GOpKind::FPRoundingMode => {
-                mr::Operand::FPRoundingMode(decoder.fp_rounding_mode().unwrap())
+                mr::Operand::FPRoundingMode(decoder.fprounding_mode().unwrap())
             }
             GOpKind::LinkageType => mr::Operand::LinkageType(decoder.linkage_type().unwrap()),
             GOpKind::AccessQualifier => {
