@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::loader::Loader;
 pub use self::loader::State as LoaderState;
 pub use self::constructs::{Module, ModuleHeader, Function, BasicBlock, Instruction, Operand};
+pub use self::loader::load;
 
 mod loader;
 mod constructs;

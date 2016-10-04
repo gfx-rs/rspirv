@@ -12,19 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::producer::Producer;
-pub use self::producer::Error as ProducerError;
-pub use self::producer::Result as ProducerResult;
-
-pub use self::decoder::OperandDecoder;
-
-pub use self::reader::Reader;
-pub use self::reader::State as ReaderState;
-pub use self::reader::Result as ReaderResult;
+pub use self::parser::Consumer;
+pub use self::parser::parse;
+pub use self::parser::ParseAction;
+pub use self::parser::Result as ParseResult;
 
 pub use self::disassemble::Disassemble;
 
 mod decoder;
 mod disassemble;
+mod parser;
 mod producer;
-mod reader;

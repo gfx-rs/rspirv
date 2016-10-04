@@ -52,7 +52,6 @@ fn main() {
 
     f.read_to_end(&mut buffer).unwrap();
 
-    let reader = rspirv::binary::Reader::new();
-    let module = reader.read(buffer).unwrap();
+    let module = rspirv::mr::load(buffer).unwrap();
     println!("{}", module.disassemble());
 }
