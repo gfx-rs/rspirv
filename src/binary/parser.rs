@@ -17,7 +17,6 @@ use grammar;
 use spirv;
 
 use super::decoder;
-use super::producer;
 
 use std::result;
 
@@ -63,14 +62,14 @@ impl<'a> Parser<'a> {
     }
 
     pub fn read(self, binary: Vec<u8>) -> Result<()> {
-        let mut producer = producer::Producer::new(binary);
-        let header = try!(Parser::read_header(&mut producer));
+        let mut decoder = decoder::WordDecoder::new(binary);
+        let header = try!(Parser::read_header(&mut decoder));
         if self.consumer.consume_header(header) == ParseAction::Stop {
             return Ok(());
         }
 
         loop {
-            let result = Parser::read_inst(&mut producer);
+            let result = Parser::read_inst(&mut decoder);
             match result {
                 Ok(inst) => {
                     if self.consumer.consume_instruction(inst) == ParseAction::Stop {
@@ -88,8 +87,8 @@ impl<'a> Parser<'a> {
         ((word >> 16) as u16, (word & 0xffff) as u16)
     }
 
-    fn read_header(producer: &mut producer::Producer) -> Result<mr::ModuleHeader> {
-        if let Ok(words) = producer.get_next_n_words(HEADER_NUM_WORDS) {
+    fn read_header(decoder: &mut decoder::WordDecoder) -> Result<mr::ModuleHeader> {
+        if let Ok(words) = decoder.words(HEADER_NUM_WORDS) {
             if words[0] != MAGIC_NUMBER {
                 return Err(State::HeaderIncorrect);
             }
@@ -99,10 +98,10 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn read_inst(producer: &mut producer::Producer) -> Result<mr::Instruction> {
-        if let Ok(word) = producer.get_next_word() {
+    fn read_inst(decoder: &mut decoder::WordDecoder) -> Result<mr::Instruction> {
+        if let Ok(word) = decoder.word() {
             let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
-            if let Ok(words) = producer.get_next_n_words((wc - 1) as usize) {
+            if let Ok(words) = decoder.words((wc - 1) as usize) {
                 if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
                     Parser::decode_words_to_operands(grammar, words)
                 } else {

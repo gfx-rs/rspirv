@@ -15,8 +15,63 @@
 use spirv;
 
 use num::FromPrimitive;
+use std::{fmt, error, result};
+
+#[derive(Clone, Copy, Debug)]
+pub enum Error {
+    StreamExpected,
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "expected more bytes in the stream")
+    }
+}
+
+impl error::Error for Error {
+    fn description(&self) -> &str {
+        "expected more bytes in the stream"
+    }
+}
+
+pub type Result<T> = result::Result<T, Error>;
 
 const WORD_NUM_BYTES: usize = 4;
+
+pub struct WordDecoder {
+    bytes: Vec<u8>,
+    index: usize,
+}
+
+impl WordDecoder {
+    pub fn new(bytes: Vec<u8>) -> WordDecoder {
+        WordDecoder {
+            bytes: bytes,
+            index: 0,
+        }
+    }
+
+    pub fn word(&mut self) -> Result<spirv::Word> {
+        if self.index >= self.bytes.len() {
+            Err(Error::StreamExpected)
+        } else if self.index + WORD_NUM_BYTES > self.bytes.len() {
+            Err(Error::StreamExpected)
+        } else {
+            self.index += WORD_NUM_BYTES;
+            Ok((0..WORD_NUM_BYTES).fold(0, |word, i| {
+                (word << 8) | (self.bytes[self.index - i - 1]) as u32
+            }))
+        }
+    }
+
+    pub fn words(&mut self, n: usize) -> Result<Vec<spirv::Word>> {
+        let mut words = Vec::new();
+        for _ in 0..n {
+            words.push(try!(self.word()));
+        }
+        Ok(words)
+    }
+}
 
 pub struct OperandDecoder {
     words: Vec<spirv::Word>,
