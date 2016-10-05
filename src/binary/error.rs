@@ -19,12 +19,14 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use spirv;
+
+use collections::string;
 use std::{error, fmt};
 
-#[allow(dead_code)]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Debug)]
 pub enum Error {
     StreamExpected(usize),
+    LimitReached(usize),
     ImageOperandsUnknown(usize, spirv::Word),
     FPFastMathModeUnknown(usize, spirv::Word),
     SelectionControlUnknown(usize, spirv::Word),
@@ -55,25 +57,14 @@ pub enum Error {
     GroupOperationUnknown(usize, spirv::Word),
     KernelEnqueueFlagsUnknown(usize, spirv::Word),
     CapabilityUnknown(usize, spirv::Word),
-    IdResultTypeUnknown(usize, spirv::Word),
-    IdResultUnknown(usize, spirv::Word),
-    IdMemorySemanticsUnknown(usize, spirv::Word),
-    IdScopeUnknown(usize, spirv::Word),
-    IdRefUnknown(usize, spirv::Word),
-    LiteralIntegerUnknown(usize, spirv::Word),
-    LiteralStringUnknown(usize, spirv::Word),
-    LiteralContextDependentNumberUnknown(usize, spirv::Word),
-    LiteralExtInstIntegerUnknown(usize, spirv::Word),
-    LiteralSpecConstantOpIntegerUnknown(usize, spirv::Word),
-    PairLiteralIntegerIdRefUnknown(usize, spirv::Word),
-    PairIdRefLiteralIntegerUnknown(usize, spirv::Word),
-    PairIdRefIdRefUnknown(usize, spirv::Word)
+    DecodeStringFailed(usize, string::FromUtf8Error)
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Error::StreamExpected(index) => write!(f, "expected more bytes in the stream at index {}", index),
+            Error::LimitReached(index) => write!(f, "reached word limit at index {}", index),
             Error::ImageOperandsUnknown(index, word) => write!(f, "unknown value {} for operand kind ImageOperands at index {}", word, index),
             Error::FPFastMathModeUnknown(index, word) => write!(f, "unknown value {} for operand kind FPFastMathMode at index {}", word, index),
             Error::SelectionControlUnknown(index, word) => write!(f, "unknown value {} for operand kind SelectionControl at index {}", word, index),
@@ -104,19 +95,7 @@ impl fmt::Display for Error {
             Error::GroupOperationUnknown(index, word) => write!(f, "unknown value {} for operand kind GroupOperation at index {}", word, index),
             Error::KernelEnqueueFlagsUnknown(index, word) => write!(f, "unknown value {} for operand kind KernelEnqueueFlags at index {}", word, index),
             Error::CapabilityUnknown(index, word) => write!(f, "unknown value {} for operand kind Capability at index {}", word, index),
-            Error::IdResultTypeUnknown(index, word) => write!(f, "unknown value {} for operand kind IdResultType at index {}", word, index),
-            Error::IdResultUnknown(index, word) => write!(f, "unknown value {} for operand kind IdResult at index {}", word, index),
-            Error::IdMemorySemanticsUnknown(index, word) => write!(f, "unknown value {} for operand kind IdMemorySemantics at index {}", word, index),
-            Error::IdScopeUnknown(index, word) => write!(f, "unknown value {} for operand kind IdScope at index {}", word, index),
-            Error::IdRefUnknown(index, word) => write!(f, "unknown value {} for operand kind IdRef at index {}", word, index),
-            Error::LiteralIntegerUnknown(index, word) => write!(f, "unknown value {} for operand kind LiteralInteger at index {}", word, index),
-            Error::LiteralStringUnknown(index, word) => write!(f, "unknown value {} for operand kind LiteralString at index {}", word, index),
-            Error::LiteralContextDependentNumberUnknown(index, word) => write!(f, "unknown value {} for operand kind LiteralContextDependentNumber at index {}", word, index),
-            Error::LiteralExtInstIntegerUnknown(index, word) => write!(f, "unknown value {} for operand kind LiteralExtInstInteger at index {}", word, index),
-            Error::LiteralSpecConstantOpIntegerUnknown(index, word) => write!(f, "unknown value {} for operand kind LiteralSpecConstantOpInteger at index {}", word, index),
-            Error::PairLiteralIntegerIdRefUnknown(index, word) => write!(f, "unknown value {} for operand kind PairLiteralIntegerIdRef at index {}", word, index),
-            Error::PairIdRefLiteralIntegerUnknown(index, word) => write!(f, "unknown value {} for operand kind PairIdRefLiteralInteger at index {}", word, index),
-            Error::PairIdRefIdRefUnknown(index, word) => write!(f, "unknown value {} for operand kind PairIdRefIdRef at index {}", word, index)
+            Error::DecodeStringFailed(index, ref e) => write!(f, "cannot decode string at index {}: {}", index, e)
         }
     }
 }
@@ -129,3 +108,4 @@ impl error::Error for Error {
         }
     }
 }
+

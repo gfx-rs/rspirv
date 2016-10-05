@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![feature(collections)]
 #![feature(custom_derive, plugin)]
 #![plugin(num_macros)]
 
+extern crate collections;
 #[macro_use]
 extern crate bitflags;
 extern crate num;

@@ -62,7 +62,7 @@ impl<'a> Parser<'a> {
     }
 
     pub fn read(self, binary: Vec<u8>) -> Result<()> {
-        let mut decoder = decoder::WordDecoder::new(binary);
+        let mut decoder = decoder::Decoder::new(binary);
         let header = try!(Parser::read_header(&mut decoder));
         if self.consumer.consume_header(header) == ParseAction::Stop {
             return Ok(());
@@ -87,7 +87,7 @@ impl<'a> Parser<'a> {
         ((word >> 16) as u16, (word & 0xffff) as u16)
     }
 
-    fn read_header(decoder: &mut decoder::WordDecoder) -> Result<mr::ModuleHeader> {
+    fn read_header(decoder: &mut decoder::Decoder) -> Result<mr::ModuleHeader> {
         if let Ok(words) = decoder.words(HEADER_NUM_WORDS) {
             if words[0] != MAGIC_NUMBER {
                 return Err(State::HeaderIncorrect);
@@ -98,41 +98,49 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn read_inst(decoder: &mut decoder::WordDecoder) -> Result<mr::Instruction> {
+    fn read_inst(decoder: &mut decoder::Decoder) -> Result<mr::Instruction> {
         if let Ok(word) = decoder.word() {
             let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
-            if let Ok(words) = decoder.words((wc - 1) as usize) {
-                if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
-                    Parser::decode_words_to_operands(grammar, words)
-                } else {
-                    Err(State::OpcodeUnknown)
-                }
+            assert!(wc > 0);
+            if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
+                decoder.set_limit((wc - 1) as usize);
+                let result = Parser::decode_words_to_operands(decoder, grammar);
+                assert!(decoder.limit_reached());
+                decoder.clear_limit();
+                result
             } else {
-                Err(State::InstructionIncomplete)
+                Err(State::OpcodeUnknown)
             }
         } else {
             Err(State::Complete)
         }
     }
 
-    fn decode_words_to_operands(grammar: GInstRef,
-                                words: Vec<spirv::Word>)
+    fn decode_words_to_operands(decoder: &mut decoder::Decoder,
+                                grammar: GInstRef)
                                 -> Result<mr::Instruction> {
-        let mut decoder = decoder::OperandDecoder::new(words);
         let mut rtype = None;
         let mut rid = None;
-        let mut logical_operand_index: usize = 0;
         let mut concrete_operands = Vec::new();
+
+        let mut logical_operand_index: usize = 0;
         while logical_operand_index < grammar.operands.len() {
             let logical_operand = &grammar.operands[logical_operand_index];
-            if !decoder.empty() {
+            let has_more_operands = !decoder.limit_reached();
+            if has_more_operands {
                 match logical_operand.kind {
-                    GOpKind::IdResultType => rtype = decoder.id(),
-                    GOpKind::IdResult => rid = decoder.id(),
+                    GOpKind::IdResultType => rtype = decoder.id().ok(),
+                    GOpKind::IdResult => rid = decoder.id().ok(),
                     _ => {
-                        concrete_operands.push(Parser::decode_operand(&mut decoder,
+                        concrete_operands.push(Parser::decode_operand(decoder,
                                                                       logical_operand.kind)
-                                                   .unwrap())
+                                                   .unwrap());
+                        if let mr::Operand::Decoration(decoration) = *concrete_operands.last()
+                                                                                       .unwrap() {
+                            concrete_operands.append(
+                                &mut Parser::decode_decoration_arguments(
+                                    decoder, decoration).unwrap());
+                        }
                     }
                 }
                 match logical_operand.quantifier {
@@ -150,7 +158,7 @@ impl<'a> Parser<'a> {
         Ok(mr::Instruction::new(grammar, rtype, rid, concrete_operands))
     }
 
-    fn decode_operand(decoder: &mut decoder::OperandDecoder, kind: GOpKind) -> Result<mr::Operand> {
+    fn decode_operand(decoder: &mut decoder::Decoder, kind: GOpKind) -> Result<mr::Operand> {
         Ok(match kind {
             GOpKind::IdResultType => mr::Operand::IdResultType(decoder.id().unwrap()),
             GOpKind::IdResult => mr::Operand::IdResult(decoder.id().unwrap()),
@@ -184,10 +192,7 @@ impl<'a> Parser<'a> {
                 mr::Operand::SourceLanguage(decoder.source_language()
                                                    .unwrap())
             }
-            GOpKind::LiteralInteger => {
-                mr::Operand::LiteralInteger(decoder.literal_integer()
-                                                   .unwrap())
-            }
+            GOpKind::LiteralInteger => mr::Operand::LiteralInteger(decoder.integer().unwrap()),
             GOpKind::StorageClass => mr::Operand::StorageClass(decoder.storage_class().unwrap()),
             GOpKind::ImageOperands => mr::Operand::ImageOperands(decoder.image_operands().unwrap()),
             GOpKind::FPFastMathMode => {
@@ -248,6 +253,19 @@ impl<'a> Parser<'a> {
                 unimplemented!();
             }
         })
+    }
+
+    fn decode_decoration_arguments(decoder: &mut decoder::Decoder,
+                                   decoration: spirv::Decoration)
+                                   -> Result<Vec<mr::Operand>> {
+        match decoration {
+            spirv::Decoration::BuiltIn => {
+                Ok(vec![mr::Operand::BuiltIn(decoder.built_in().unwrap())])
+            }
+            spirv::Decoration::Block => Ok(vec![]),
+            _ => unimplemented!(),
+
+        }
     }
 }
 

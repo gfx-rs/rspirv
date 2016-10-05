@@ -120,30 +120,43 @@ def generate_decode_error(enums):
     kinds = [e['kind'] for e in enums]
 
     # The Rust Error enum.
-    errors = ['{}Unknown(usize, spirv::Word)'.format(k) for k in kinds]
-    definition = ['#[allow(dead_code)]',
-                  '#[derive(Clone, Copy, Debug, PartialEq)]',
+    errors = ['{}Unknown(usize, spirv::Word)'.format(k)
+              for k in kinds
+              if not (k.startswith('Pair') or k.startswith('Id') or
+                      k.startswith('Literal'))]
+    definition = ['#[derive(Debug)]',
                   'pub enum Error {{',
                   '    StreamExpected(usize),',
-                  '    {errors}',
+                  '    LimitReached(usize),',
+                  '    {errors},',
+                  '    {special_errors}',
                   '}}\n']
-    enum = '\n'.join(definition).format(errors=',\n    '.join(errors))
+    enum = '\n'.join(definition).format(
+        errors=',\n    '.join(errors),
+        special_errors='DecodeStringFailed(usize, string::FromUtf8Error)')
 
     # impl fmt::Display for the Error enum.
     errors = ['Error::{}Unknown(index, word) => write!(f, "unknown value {{}} '
               'for operand kind {} at index {{}}", word, index)'.format(k, k)
-              for k in kinds]
+              for k in kinds
+              if not (k.startswith('Pair') or k.startswith('Id') or
+                      k.startswith('Literal'))]
     definition = ['impl fmt::Display for Error {{',
                   '    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{',
                   '        match *self {{',
                   '            Error::StreamExpected(index) => write!(f, '
                   '"expected more bytes in the stream at index {{}}", index),',
-                  '            {errors}',
+                  '            Error::LimitReached(index) => write!(f, '
+                  '"reached word limit at index {{}}", index),',
+                  '            {errors},',
+                  '            {special_errors}',
                   '        }}',
                   '    }}',
                   '}}\n']
     display_impl = '\n'.join(definition).format(
-        errors=',\n            '.join(errors))
+        errors=',\n            '.join(errors),
+        special_errors=('Error::DecodeStringFailed(index, ref e) => write!(f, '
+                        '"cannot decode string at index {}: {}", index, e)'))
 
     # impl error::Error for the Error enum.
     error_impl = '\n'.join([
@@ -155,13 +168,14 @@ def generate_decode_error(enums):
         '            _ => "unknown operand value for the given kind",',
         '        }',
         '    }',
-        '}'])
+        '}\n'])
 
-    no_format = '#![cfg_attr(rustfmt, rustfmt_skip)]'
-    use = 'use spirv;\nuse std::{error, fmt};'
+    no_format = '#![cfg_attr(rustfmt, rustfmt_skip)]\n'
+    use = ('use spirv;\n\n'
+           'use collections::string;\n'
+           'use std::{error, fmt};\n')
 
-    return '{}\n\n{}\n\n{}\n{}\n{}'.format(no_format, use, enum,
-                                           display_impl, error_impl)
+    return '\n'.join([no_format, use, enum, display_impl, error_impl])
 
 
 def convert_name_to_snake_case(variable):
@@ -178,7 +192,7 @@ def generate_decoder(enums):
     # If the operand kind belongs to BitEnum, we use from_bits(), otherwise,
     # from_u32().
     f = ['    pub fn {fname}(&mut self) -> Result<spirv::{kind}> {{',
-         '        if let Some(word) = self.next() {{',
+         '        if let Ok(word) = self.word() {{',
          '            spirv::{kind}::from_{ty}(word)'
          '.ok_or(Error::{kind}Unknown(self.index, word))',
          '        }} else {{',
@@ -196,7 +210,7 @@ def generate_decoder(enums):
                 k.startswith('Literal'))]
     return '\n'.join(
         ['use num::FromPrimitive;\n',
-         'impl OperandDecoder {{',
+         'impl Decoder {{',
          '{functions}',
          '}}']).format(functions='\n\n'.join(functions))
 

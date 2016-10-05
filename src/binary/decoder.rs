@@ -14,28 +14,57 @@
 
 use spirv;
 
-use std::{fmt, error, result};
-
+use std::result;
 use super::error::Error;
 
 pub type Result<T> = result::Result<T, Error>;
 
 const WORD_NUM_BYTES: usize = 4;
 
-pub struct WordDecoder {
+pub struct Decoder {
     bytes: Vec<u8>,
     index: usize, // Index for next byte to decode.
+    limit: Option<usize>,
 }
 
-impl WordDecoder {
-    pub fn new(bytes: Vec<u8>) -> WordDecoder {
-        WordDecoder {
+impl Decoder {
+    pub fn new(bytes: Vec<u8>) -> Decoder {
+        Decoder {
             bytes: bytes,
             index: 0,
+            limit: None,
+        }
+    }
+
+    pub fn set_limit(&mut self, num_words: usize) {
+        self.limit = Some(num_words)
+    }
+
+    pub fn clear_limit(&mut self) {
+        self.limit = None
+    }
+
+    pub fn has_limit(&self) -> bool {
+        self.limit.is_some()
+    }
+
+    pub fn limit_reached(&self) -> bool {
+        if let Some(left) = self.limit {
+            left == 0
+        } else {
+            false
         }
     }
 
     pub fn word(&mut self) -> Result<spirv::Word> {
+        if self.has_limit() {
+            if self.limit_reached() {
+                return Err(Error::LimitReached(self.index));
+            } else {
+                *self.limit.as_mut().unwrap() -= 1
+            }
+        }
+
         if self.index >= self.bytes.len() {
             Err(Error::StreamExpected(self.index))
         } else if self.index + WORD_NUM_BYTES > self.bytes.len() {
@@ -57,44 +86,25 @@ impl WordDecoder {
     }
 }
 
-pub struct OperandDecoder {
-    words: Vec<spirv::Word>,
-    index: usize,
-}
-
-impl Iterator for OperandDecoder {
-    type Item = spirv::Word;
-
-    fn next(&mut self) -> Option<spirv::Word> {
-        if self.empty() {
-            None
-        } else {
-            self.index += 1;
-            Some(self.words[self.index - 1])
-        }
-    }
-}
-
-impl OperandDecoder {
-    pub fn new(words: Vec<spirv::Word>) -> OperandDecoder {
-        OperandDecoder {
-            words: words,
-            index: 0,
-        }
+impl Decoder {
+    pub fn id(&mut self) -> Result<spirv::Word> {
+        self.word()
     }
 
-    pub fn empty(&self) -> bool {
-        self.index >= self.words.len()
-    }
-
-    fn split_word_to_bytes(&self, word: spirv::Word) -> Vec<u8> {
+    /// Splits the given word into a vector of bytes in little-endian format.
+    ///
+    /// NOTE: I know it's duplicate work to group bytes into words and then
+    /// split them again. But it's nice to have word() take full control of
+    /// limit checking.
+    fn split_word_to_bytes(word: spirv::Word) -> Vec<u8> {
         (0..WORD_NUM_BYTES).map(|i| ((word >> (8 * i)) & 0xff) as u8).collect()
     }
 
-    pub fn string(&mut self) -> Option<String> {
-        let mut bytes = Vec::new();
-        while let Some(word) = self.next() {
-            bytes.append(&mut self.split_word_to_bytes(word));
+    pub fn string(&mut self) -> Result<String> {
+        let start_index = self.index;
+        let mut bytes = vec![];
+        while let Ok(word) = self.word() {
+            bytes.append(&mut Decoder::split_word_to_bytes(word));
             if bytes.last() == Some(&0) {
                 break;
             }
@@ -102,20 +112,16 @@ impl OperandDecoder {
         while !bytes.is_empty() && bytes.last() == Some(&0) {
             bytes.pop();
         }
-        String::from_utf8(bytes).ok()
+        String::from_utf8(bytes).map_err(|e| Error::DecodeStringFailed(start_index, e))
     }
 
-    pub fn id(&mut self) -> Option<spirv::Word> {
-        self.next()
+    pub fn integer(&mut self) -> Result<u32> {
+        self.word()
     }
 
-    pub fn literal_integer(&mut self) -> Option<u32> {
-        self.next()
-    }
-
-    pub fn context_dependent_number(&mut self) -> Option<u32> {
-        // TODO(antiagainst): This should return the correct typed number.
-        self.next()
+    // TODO(antiagainst): This should return the correct typed number.
+    pub fn context_dependent_number(&mut self) -> Result<u32> {
+        self.word()
     }
 }
 
