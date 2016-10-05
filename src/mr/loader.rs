@@ -207,26 +207,31 @@ impl binary::Consumer for Loader {
             }
             spirv::Op::FunctionEnd => {
                 if self.function.is_none() {
-                    return ParseAction::Error(Box::new(Error::MismatchedFunctionEnd));
+                    return ParseAction::Error(
+                        Box::new(Error::MismatchedFunctionEnd));
                 }
                 if self.block.is_some() {
-                    return ParseAction::Error(Box::new(Error::UnclosedBasicBlock));
+                    return ParseAction::Error(
+                        Box::new(Error::UnclosedBasicBlock));
                 }
                 self.function.as_mut().unwrap().end = Some(inst);
                 self.module.functions.push(self.function.take().unwrap())
             }
             spirv::Op::FunctionParameter => {
                 if self.function.is_none() {
-                    return ParseAction::Error(Box::new(Error::DetachedFunctionParameter));
+                    return ParseAction::Error(
+                        Box::new(Error::DetachedFunctionParameter));
                 }
                 self.function.as_mut().unwrap().parameters.push(inst);
             }
             spirv::Op::Label => {
                 if self.function.is_none() {
-                    return ParseAction::Error(Box::new(Error::DetachedBasicBlock));
+                    return ParseAction::Error(
+                        Box::new(Error::DetachedBasicBlock));
                 }
                 if self.block.is_some() {
-                    return ParseAction::Error(Box::new(Error::NestedBasicBlock));
+                    return ParseAction::Error(
+                        Box::new(Error::NestedBasicBlock));
                 }
                 self.block = Some(mr::BasicBlock::new(inst))
             }
@@ -234,7 +239,8 @@ impl binary::Consumer for Loader {
                 // Make sure the block exists here. Once the block exists,
                 // we are certain the function exists because the above checks.
                 if self.block.is_none() {
-                    return ParseAction::Error(Box::new(Error::MismatchedTerminator));
+                    return ParseAction::Error(
+                        Box::new(Error::MismatchedTerminator));
                 }
                 self.block
                     .as_mut()
@@ -249,7 +255,8 @@ impl binary::Consumer for Loader {
             }
             _ => {
                 if self.block.is_none() {
-                    return ParseAction::Error(Box::new(Error::DetachedInstruction));
+                    return ParseAction::Error(
+                        Box::new(Error::DetachedInstruction));
                 }
                 self.block
                     .as_mut()

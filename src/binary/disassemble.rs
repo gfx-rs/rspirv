@@ -38,20 +38,20 @@ impl Disassemble for mr::Operand {
 
 fn disas_join<T: Disassemble>(insts: &Vec<T>, delimiter: &str) -> String {
     insts.iter()
-         .map(|ref i| i.disassemble())
-         .collect::<Vec<String>>()
-         .join(delimiter)
+        .map(|ref i| i.disassemble())
+        .collect::<Vec<String>>()
+        .join(delimiter)
 }
 
 impl Disassemble for mr::Instruction {
     fn disassemble(&self) -> String {
         format!("{rid}{opcode}{rtype} {operands}",
                 rid = self.result_id
-                          .map_or(String::new(), |w| format!("%{} = ", w)),
+                    .map_or(String::new(), |w| format!("%{} = ", w)),
                 opcode = format!("Op{}", self.class.opname),
                 // extra space both before and after the reseult type
                 rtype = self.result_type
-                            .map_or(String::new(), |w| format!("  %{} ", w)),
+                    .map_or(String::new(), |w| format!("  %{} ", w)),
                 operands = disas_join(&self.operands, " "))
     }
 }
