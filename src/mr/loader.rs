@@ -31,6 +31,11 @@ pub enum Error {
     UnclosedBasicBlock,
     MismatchedTerminator,
     DetachedInstruction,
+    WrongOpCapabilityOperand,
+    WrongOpExtensionOperand,
+    WrongOpExtInstImportOperand,
+    WrongOpMemoryModelOperand,
+    WrongOpNameOperand,
 }
 
 impl Error {
@@ -55,6 +60,13 @@ impl Error {
             Error::DetachedInstruction => {
                 "found instruction not inside basic block"
             }
+            Error::WrongOpCapabilityOperand => "wrong OpCapability operand",
+            Error::WrongOpExtensionOperand => "wrong OpExtension operand",
+            Error::WrongOpExtInstImportOperand => {
+                "wrong OpExtInstImport operand"
+            }
+            Error::WrongOpMemoryModelOperand => "wrong OpMemoryModel operand",
+            Error::WrongOpNameOperand => "wrong OpName operand",
         }
     }
 }
@@ -92,46 +104,64 @@ impl Loader {
         self.module
     }
 
-    fn require_capability(&mut self, capability: mr::Operand) {
-        if let mr::Operand::Capability(cap) = capability {
-            self.module.capabilities.push(cap)
+    fn require_capability(&mut self,
+                          capability: Option<mr::Operand>)
+                          -> Result<()> {
+        if let Some(mr::Operand::Capability(cap)) = capability {
+            Ok(self.module.capabilities.push(cap))
         } else {
-            // TODO(antiagainst): we should return a suitable error here.
-            panic!()
-        }
-
-    }
-
-    fn enable_extension(&mut self, extension: mr::Operand) {
-        if let mr::Operand::LiteralString(ext) = extension {
-            self.module.extensions.push(ext)
-        } else {
-            panic!()
+            Err(Error::WrongOpCapabilityOperand)
         }
     }
 
-    fn import_ext_inst_set(&mut self, ext_inst_set: mr::Operand) {
-        if let mr::Operand::LiteralString(ext) = ext_inst_set {
-            self.module.ext_inst_imports.push(ext)
+    fn enable_extension(&mut self,
+                        extension: Option<mr::Operand>)
+                        -> Result<()> {
+        if let Some(mr::Operand::LiteralString(ext)) = extension {
+            Ok(self.module.extensions.push(ext))
         } else {
-            panic!()
+            Err(Error::WrongOpExtensionOperand)
         }
     }
 
-    fn attach_name(&mut self, id: mr::Operand, name: mr::Operand) {
-        if let (mr::Operand::IdRef(id_ref),
-                mr::Operand::LiteralString(name_str)) = (id, name) {
+    fn import_ext_inst_set(&mut self,
+                           ext_inst_set: Option<mr::Operand>)
+                           -> Result<()> {
+        if let Some(mr::Operand::LiteralString(ext)) = ext_inst_set {
+            Ok(self.module.ext_inst_imports.push(ext))
+        } else {
+            Err(Error::WrongOpExtInstImportOperand)
+        }
+    }
+
+    fn attach_name(&mut self,
+                   id: Option<mr::Operand>,
+                   name: Option<mr::Operand>)
+                   -> Result<()> {
+        if let (Some(mr::Operand::IdRef(id_ref)),
+                Some(mr::Operand::LiteralString(name_str))) = (id, name) {
             self.module.names.insert(id_ref, name_str);
+            Ok(())
         } else {
-            panic!()
+            Err(Error::WrongOpNameOperand)
         }
     }
 }
 
+/// Returns `$error` if `$condition` evaluates to false.
 macro_rules! if_ret_err {
     ($condition: expr, $error: ident) => (if $condition {
         return ParseAction::Error(Box::new(Error::$error))
     });
+}
+
+/// Converts possible error from the given `$result` to a ParseAction::Error
+/// and returns it.
+macro_rules! try_call {
+    ($result: expr) => (match $result {
+        Ok(_) => (),
+        Err(err) => return ParseAction::Error(Box::new(err))
+    })
 }
 
 impl binary::Consumer for Loader {
@@ -155,34 +185,36 @@ impl binary::Consumer for Loader {
         let opcode = inst.class.opcode;
         match opcode {
             spirv::Op::Capability => {
-                self.require_capability(inst.operands.pop().unwrap())
+                try_call!(self.require_capability(inst.operands.pop()))
             }
             spirv::Op::Extension => {
-                self.enable_extension(inst.operands.pop().unwrap())
+                try_call!(self.enable_extension(inst.operands.pop()))
             }
             spirv::Op::ExtInstImport => {
-                self.import_ext_inst_set(inst.operands.pop().unwrap())
+                try_call!(self.import_ext_inst_set(inst.operands.pop()))
             }
             spirv::Op::MemoryModel => {
                 if let Some(mr::Operand::MemoryModel(model)) = inst.operands
                     .pop() {
                     self.module.memory_model = Some(model)
                 } else {
-                    panic!()
+                    return ParseAction::Error(
+                        Box::new(Error::WrongOpMemoryModelOperand));
                 }
                 if let Some(mr::Operand::AddressingModel(model)) = inst.operands
                     .pop() {
                     self.module.addressing_model = Some(model)
                 } else {
-                    panic!()
+                    return ParseAction::Error(
+                        Box::new(Error::WrongOpMemoryModelOperand));
                 }
             }
             spirv::Op::EntryPoint => self.module.entry_points.push(inst),
             spirv::Op::ExecutionMode => self.module.execution_modes.push(inst),
             spirv::Op::Name => {
-                let name = inst.operands.pop().unwrap();
-                let id = inst.operands.pop().unwrap();
-                self.attach_name(id, name);
+                let name = inst.operands.pop();
+                let id = inst.operands.pop();
+                try_call!(self.attach_name(id, name))
             }
             opcode if grammar::reflect::is_nonlocation_debug(opcode) => {
                 self.module.debugs.push(inst)

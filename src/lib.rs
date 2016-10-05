@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #![feature(collections)]
+#![feature(concat_idents)]
 #![feature(custom_derive, plugin)]
 #![plugin(num_macros)]
 
