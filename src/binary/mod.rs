@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::parser::Consumer;
-pub use self::parser::parse;
-pub use self::parser::ParseAction;
+pub use self::parser::{Consumer, parse};
+pub use self::parser::Action as ParseAction;
 pub use self::parser::Result as ParseResult;
 
 pub use self::disassemble::Disassemble;

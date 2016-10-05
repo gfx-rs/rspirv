@@ -53,18 +53,18 @@ const HEADER_NUM_WORDS: usize = 5;
 const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
 #[derive(Debug)]
-pub enum ParseAction {
+pub enum Action {
     Continue,
     Stop,
     Error(Box<error::Error>),
 }
 
 pub trait Consumer {
-    fn initialize(&mut self) -> ParseAction;
-    fn finalize(&mut self) -> ParseAction;
+    fn initialize(&mut self) -> Action;
+    fn finalize(&mut self) -> Action;
 
-    fn consume_header(&mut self, module: mr::ModuleHeader) -> ParseAction;
-    fn consume_instruction(&mut self, inst: mr::Instruction) -> ParseAction;
+    fn consume_header(&mut self, module: mr::ModuleHeader) -> Action;
+    fn consume_instruction(&mut self, inst: mr::Instruction) -> Action;
 }
 
 pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
@@ -95,15 +95,15 @@ impl<'a> Parser<'a> {
 
     pub fn parse(mut self) -> Result<()> {
         match self.consumer.initialize() {
-            ParseAction::Continue => (),
-            ParseAction::Stop => return Err(State::ConsumerStopRequested),
-            ParseAction::Error(err) => return Err(State::ConsumerError(err)),
+            Action::Continue => (),
+            Action::Stop => return Err(State::ConsumerStopRequested),
+            Action::Error(err) => return Err(State::ConsumerError(err)),
         }
         let header = try!(self.parse_header());
         match self.consumer.consume_header(header) {
-            ParseAction::Continue => (),
-            ParseAction::Stop => return Err(State::ConsumerStopRequested),
-            ParseAction::Error(err) => return Err(State::ConsumerError(err)),
+            Action::Continue => (),
+            Action::Stop => return Err(State::ConsumerStopRequested),
+            Action::Error(err) => return Err(State::ConsumerError(err)),
         }
 
         loop {
@@ -111,11 +111,11 @@ impl<'a> Parser<'a> {
             match result {
                 Ok(inst) => {
                     match self.consumer.consume_instruction(inst) {
-                        ParseAction::Continue => (),
-                        ParseAction::Stop => {
+                        Action::Continue => (),
+                        Action::Stop => {
                             return Err(State::ConsumerStopRequested)
                         }
-                        ParseAction::Error(err) => {
+                        Action::Error(err) => {
                             return Err(State::ConsumerError(err))
                         }
                     }
@@ -125,9 +125,9 @@ impl<'a> Parser<'a> {
             };
         }
         match self.consumer.finalize() {
-            ParseAction::Continue => (),
-            ParseAction::Stop => return Err(State::ConsumerStopRequested),
-            ParseAction::Error(err) => return Err(State::ConsumerError(err)),
+            Action::Continue => (),
+            Action::Stop => return Err(State::ConsumerStopRequested),
+            Action::Error(err) => return Err(State::ConsumerError(err)),
         }
         Ok(())
     }
