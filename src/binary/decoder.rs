@@ -23,7 +23,8 @@ const WORD_NUM_BYTES: usize = 4;
 
 pub struct Decoder {
     bytes: Vec<u8>,
-    index: usize, // Index for next byte to decode.
+    /// Offset for next byte to decode.
+    offset: usize,
     limit: Option<usize>,
 }
 
@@ -31,9 +32,14 @@ impl Decoder {
     pub fn new(bytes: Vec<u8>) -> Decoder {
         Decoder {
             bytes: bytes,
-            index: 0,
+            offset: 0,
             limit: None,
         }
+    }
+
+    /// Returns the offset of the byte to decode.
+    pub fn offset(&self) -> usize {
+        self.offset
     }
 
     pub fn set_limit(&mut self, num_words: usize) {
@@ -59,20 +65,20 @@ impl Decoder {
     pub fn word(&mut self) -> Result<spirv::Word> {
         if self.has_limit() {
             if self.limit_reached() {
-                return Err(Error::LimitReached(self.index));
+                return Err(Error::LimitReached(self.offset));
             } else {
                 *self.limit.as_mut().unwrap() -= 1
             }
         }
 
-        if self.index >= self.bytes.len() {
-            Err(Error::StreamExpected(self.index))
-        } else if self.index + WORD_NUM_BYTES > self.bytes.len() {
-            Err(Error::StreamExpected(self.index))
+        if self.offset >= self.bytes.len() {
+            Err(Error::StreamExpected(self.offset))
+        } else if self.offset + WORD_NUM_BYTES > self.bytes.len() {
+            Err(Error::StreamExpected(self.offset))
         } else {
-            self.index += WORD_NUM_BYTES;
+            self.offset += WORD_NUM_BYTES;
             Ok((0..WORD_NUM_BYTES).fold(0, |word, i| {
-                (word << 8) | (self.bytes[self.index - i - 1]) as u32
+                (word << 8) | (self.bytes[self.offset - i - 1]) as u32
             }))
         }
     }
@@ -101,7 +107,7 @@ impl Decoder {
     }
 
     pub fn string(&mut self) -> Result<String> {
-        let start_index = self.index;
+        let start_index = self.offset;
         let mut bytes = vec![];
         while let Ok(word) = self.word() {
             bytes.append(&mut Decoder::split_word_to_bytes(word));

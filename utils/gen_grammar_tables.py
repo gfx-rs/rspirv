@@ -194,9 +194,9 @@ def generate_operand_decode_methods(enums):
     f = ['    pub fn {fname}(&mut self) -> Result<spirv::{kind}> {{',
          '        if let Ok(word) = self.word() {{',
          '            spirv::{kind}::from_{ty}(word)'
-         '.ok_or(Error::{kind}Unknown(self.index, word))',
+         '.ok_or(Error::{kind}Unknown(self.offset, word))',
          '        }} else {{',
-         '            Err(Error::StreamExpected(self.index))',
+         '            Err(Error::StreamExpected(self.offset))',
          '        }}',
          '    }}']
     functions = [

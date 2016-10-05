@@ -16,10 +16,9 @@ use mr;
 use grammar;
 use spirv;
 
+use std::result;
 use super::decoder;
 use super::error::Error as DecodeError;
-
-use std::result;
 
 use grammar::InstructionTable as GInstTable;
 use grammar::OperandKind as GOpKind;
@@ -30,11 +29,19 @@ type GInstRef = &'static grammar::Instruction<'static>;
 #[derive(Debug)]
 pub enum State {
     Complete,
-    HeaderIncomplete,
+    HeaderIncomplete(DecodeError),
     HeaderIncorrect,
-    InstructionIncomplete,
-    OpcodeUnknown,
-    OperandExpected,
+    EndiannessUnsupported,
+    /// (byte offset, inst index)
+    InstructionIncomplete(usize, usize),
+    /// (byte offset, inst index)
+    WordCountZero(usize, usize),
+    /// (byte offset, inst index, opcode)
+    OpcodeUnknown(usize, usize, u16),
+    /// (byte offset, inst index)
+    OperandExpected(usize, usize),
+    /// (byte offset, inst index)
+    OperandExceeded(usize, usize),
     OperandError(DecodeError),
 }
 
@@ -47,7 +54,6 @@ const MAGIC_NUMBER: spirv::Word = 0x07230203;
 pub enum ParseAction {
     Continue,
     Stop,
-    Fail,
 }
 
 pub trait Consumer {
@@ -55,9 +61,14 @@ pub trait Consumer {
     fn consume_instruction(&mut self, inst: mr::Instruction) -> ParseAction;
 }
 
+pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
+    Parser::new(binary, consumer).parse()
+}
+
 struct Parser<'a> {
     decoder: decoder::Decoder,
     consumer: &'a mut Consumer,
+    inst_index: usize,
 }
 
 macro_rules! try_decode {
@@ -72,6 +83,7 @@ impl<'a> Parser<'a> {
         Parser {
             decoder: decoder::Decoder::new(binary),
             consumer: consumer,
+            inst_index: 0,
         }
     }
 
@@ -102,32 +114,46 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_header(&mut self) -> Result<mr::ModuleHeader> {
-        if let Ok(words) = self.decoder.words(HEADER_NUM_WORDS) {
-            if words[0] != MAGIC_NUMBER {
-                return Err(State::HeaderIncorrect);
+        match self.decoder.words(HEADER_NUM_WORDS) {
+            Ok(words) => {
+                if words[0] != MAGIC_NUMBER {
+                    if words[0] == MAGIC_NUMBER.swap_bytes() {
+                        return Err(State::EndiannessUnsupported);
+                    } else {
+                        return Err(State::HeaderIncorrect);
+                    }
+                }
+                Ok(mr::ModuleHeader::new(words[0],
+                                         words[1],
+                                         words[2],
+                                         words[3],
+                                         words[4]))
             }
-            Ok(mr::ModuleHeader::new(words[0],
-                                     words[1],
-                                     words[2],
-                                     words[3],
-                                     words[4]))
-        } else {
-            Err(State::HeaderIncomplete)
+            Err(err) => Err(State::HeaderIncomplete(err)),
         }
     }
 
     fn parse_inst(&mut self) -> Result<mr::Instruction> {
+        self.inst_index += 1;
         if let Ok(word) = self.decoder.word() {
             let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
-            assert!(wc > 0);
+            if wc == 0 {
+                return Err(State::WordCountZero(self.decoder.offset() - 1,
+                                                self.inst_index));
+            }
             if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
                 self.decoder.set_limit((wc - 1) as usize);
                 let result = self.parse_operands(grammar);
-                assert!(self.decoder.limit_reached());
+                if !self.decoder.limit_reached() {
+                    return Err(State::OperandExceeded(self.decoder.offset(),
+                                                      self.inst_index));
+                }
                 self.decoder.clear_limit();
                 result
             } else {
-                Err(State::OpcodeUnknown)
+                Err(State::OpcodeUnknown(self.decoder.offset() - 1,
+                                         self.inst_index,
+                                         opcode))
             }
         } else {
             Err(State::Complete)
@@ -137,43 +163,42 @@ impl<'a> Parser<'a> {
     fn parse_operands(&mut self, grammar: GInstRef) -> Result<mr::Instruction> {
         let mut rtype = None;
         let mut rid = None;
-        let mut concrete_operands = vec![];
+        let mut coperands = vec![]; // concrete operands
 
-        let mut logical_operand_index: usize = 0;
-        while logical_operand_index < grammar.operands.len() {
-            let logical_operand = &grammar.operands[logical_operand_index];
-            let has_more_operands = !self.decoder.limit_reached();
-            if has_more_operands {
-                match logical_operand.kind {
+        let mut loperand_index: usize = 0; // logical operand index
+        while loperand_index < grammar.operands.len() {
+            let loperand = &grammar.operands[loperand_index];
+            let has_more_coperands = !self.decoder.limit_reached();
+            if has_more_coperands {
+                match loperand.kind {
                     GOpKind::IdResultType => {
                         rtype = Some(try_decode!(self.decoder.id()))
                     }
                     GOpKind::IdResult => {
                         rid = Some(try_decode!(self.decoder.id()))
                     }
-                    _ => concrete_operands.append(
-                        &mut try!(self.parse_operand(logical_operand.kind))),
+                    _ => coperands.append(
+                        &mut try!(self.parse_operand(loperand.kind))),
                 }
-                match logical_operand.quantifier {
-                    GOpCount::One | GOpCount::ZeroOrOne => {
-                        logical_operand_index += 1
-                    }
+                match loperand.quantifier {
+                    GOpCount::One | GOpCount::ZeroOrOne => loperand_index += 1,
                     GOpCount::ZeroOrMore => continue,
                 }
             } else {
                 // We still have logical operands to match but no no more words.
-                match logical_operand.quantifier {
-                    GOpCount::One => return Err(State::OperandExpected),
+                match loperand.quantifier {
+                    GOpCount::One => {
+                        return Err(State::OperandExpected(self.decoder
+                                                              .offset() -
+                                                          1,
+                                                          self.inst_index))
+                    }
                     GOpCount::ZeroOrOne | GOpCount::ZeroOrMore => break,
                 }
             }
         }
-        Ok(mr::Instruction::new(grammar, rtype, rid, concrete_operands))
+        Ok(mr::Instruction::new(grammar, rtype, rid, coperands))
     }
 }
 
 include!("parse_operand.rs");
-
-pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
-    Parser::new(binary, consumer).parse()
-}
