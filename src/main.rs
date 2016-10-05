@@ -54,6 +54,6 @@ fn main() {
 
     match rspirv::mr::load(buffer) {
         Ok(module) => println!("{}", module.disassemble()),
-        Err(err) => println!("{:?}", err),
+        Err(err) => println!("{}", err),
     }
 }

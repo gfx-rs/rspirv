@@ -16,7 +16,7 @@ use mr;
 use grammar;
 use spirv;
 
-use std::{error, result};
+use std::{error, fmt, result};
 use super::decoder;
 use super::error::Error as DecodeError;
 
@@ -45,6 +45,81 @@ pub enum State {
     /// (byte offset, inst index)
     OperandExceeded(usize, usize),
     OperandError(DecodeError),
+}
+
+impl error::Error for State {
+    fn description(&self) -> &str {
+        match *self {
+            State::Complete => "completed parsing",
+            State::ConsumerStopRequested => {
+                "stop parsing requested by consumer"
+            }
+            State::ConsumerError(_) => "consumer error",
+            State::HeaderIncomplete(_) => "incomplete module header",
+            State::HeaderIncorrect => "incorrect module header",
+            State::EndiannessUnsupported => "unsupported endianness",
+            State::InstructionIncomplete(..) => "incomplete instruction",
+            State::WordCountZero(..) => "zero word count found",
+            State::OpcodeUnknown(..) => "unknown opcode",
+            State::OperandExpected(..) => "expected more operands",
+            State::OperandExceeded(..) => "found extra operands",
+            State::OperandError(_) => "operand decoding error",
+        }
+    }
+}
+
+impl fmt::Display for State {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            State::Complete => write!(f, "completed parsing"),
+            State::ConsumerStopRequested => {
+                write!(f, "stop parsing requested by consumer")
+            }
+            State::ConsumerError(ref err) => {
+                write!(f, "consumer error: {}", err)
+            }
+            State::HeaderIncomplete(ref err) => {
+                write!(f, "incomplete module header: {}", err)
+            }
+            State::HeaderIncorrect => write!(f, "incorrect module header"),
+            State::EndiannessUnsupported => write!(f, "unsupported endianness"),
+            State::InstructionIncomplete(offset, index) => {
+                write!(f,
+                       "incomplete instruction #{} at offset {}",
+                       index,
+                       offset)
+            }
+            State::WordCountZero(offset, index) => {
+                write!(f,
+                       "zero word count found for instruction #{} at offset {}",
+                       index,
+                       offset)
+            }
+            State::OpcodeUnknown(offset, index, opcode) => {
+                write!(f,
+                       "unknown opcode ({}) for instruction #{} at offset {}",
+                       opcode,
+                       index,
+                       offset)
+            }
+            State::OperandExpected(offset, index) => {
+                write!(f,
+                       "expected more operands for instruction #{} at offset \
+                        {}",
+                       index,
+                       offset)
+            }
+            State::OperandExceeded(offset, index) => {
+                write!(f,
+                       "found extra operands for instruction #{} at offset {}",
+                       index,
+                       offset)
+            }
+            State::OperandError(ref err) => {
+                write!(f, "operand decoding error: {}", err)
+            }
+        }
+    }
 }
 
 pub type Result<T> = result::Result<T, State>;
