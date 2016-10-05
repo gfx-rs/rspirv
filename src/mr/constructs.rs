@@ -65,7 +65,9 @@ pub struct ModuleHeader {
 /// Memory representation of a SPIR-V function.
 #[derive(Debug)]
 pub struct Function {
+    /// First (defining) instruction in this function.
     pub def: Option<Instruction>,
+    /// Last (ending) instruction in this function.
     pub end: Option<Instruction>,
     pub parameters: Vec<Instruction>,
     pub basic_blocks: Vec<BasicBlock>,
@@ -74,6 +76,7 @@ pub struct Function {
 /// Memory representation of a SPIR-V basic block.
 #[derive(Debug)]
 pub struct BasicBlock {
+    /// The label starting this basic block.
     pub label: Option<Instruction>,
     pub instructions: Vec<Instruction>,
 }
@@ -88,6 +91,7 @@ pub struct Instruction {
 }
 
 impl Module {
+    /// Creates a new empty `Module` instance.
     pub fn new() -> Module {
         Module {
             header: None,
@@ -108,6 +112,7 @@ impl Module {
 }
 
 impl ModuleHeader {
+    /// Creates a new `ModuleHeader` instance.
     pub fn new(magic_number: Word,
                version: Word,
                generator: Word,
@@ -163,6 +168,7 @@ impl ModuleHeader {
 }
 
 impl Function {
+    /// Creates a new empty `Function` instance.
     pub fn new() -> Function {
         Function {
             def: None,
@@ -174,6 +180,7 @@ impl Function {
 }
 
 impl BasicBlock {
+    /// Creates a new empty `BasicBlock` instance.
     pub fn new() -> BasicBlock {
         BasicBlock {
             label: None,
@@ -183,6 +190,7 @@ impl BasicBlock {
 }
 
 impl Instruction {
+    /// Creates a new `Instruction` instance.
     pub fn new(class: &'static grammar::Instruction<'static>,
                result_type: Option<Word>,
                result_id: Option<Word>,

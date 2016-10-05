@@ -198,7 +198,8 @@ def generate_mr_operand_kinds(enums):
     str_kinds = ['{kind}(String)'.format(kind=k) for k in str_kinds]
 
     # The Rust enum.
-    definition = ['#[derive(Debug, PartialEq)]',
+    definition = ['/// Memory representation of a SPIR-V operand.',
+                  '#[derive(Debug, PartialEq)]',
                   'pub enum Operand {{',
                   '    {normal_cases},',
                   '    {id_cases},',

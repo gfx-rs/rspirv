@@ -22,6 +22,7 @@ use spirv;
 
 use std::fmt;
 
+/// Memory representation of a SPIR-V operand.
 #[derive(Debug, PartialEq)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
