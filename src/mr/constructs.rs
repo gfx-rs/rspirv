@@ -17,7 +17,7 @@ use spirv;
 
 use spirv::Word;
 use std::collections::BTreeMap;
-use std::fmt;
+use super::operand::Operand;
 
 /// Memory representation of a SPIR-V module.
 ///
@@ -85,102 +85,6 @@ pub struct Instruction {
     pub result_type: Option<Word>,
     pub result_id: Option<Word>,
     pub operands: Vec<Operand>,
-}
-
-/// Memory representation of a SPIR-V operand.
-#[derive(Debug)]
-pub enum Operand {
-    ImageOperands(spirv::ImageOperands),
-    FPFastMathMode(spirv::FPFastMathMode),
-    SelectionControl(spirv::SelectionControl),
-    LoopControl(spirv::LoopControl),
-    FunctionControl(spirv::FunctionControl),
-    IdMemorySemantics(Word),
-    MemorySemantics(spirv::MemorySemantics),
-    MemoryAccess(spirv::MemoryAccess),
-    KernelProfilingInfo(spirv::KernelProfilingInfo),
-    SourceLanguage(spirv::SourceLanguage),
-    ExecutionModel(spirv::ExecutionModel),
-    AddressingModel(spirv::AddressingModel),
-    MemoryModel(spirv::MemoryModel),
-    ExecutionMode(spirv::ExecutionMode),
-    StorageClass(spirv::StorageClass),
-    Dim(spirv::Dim),
-    SamplerAddressingMode(spirv::SamplerAddressingMode),
-    SamplerFilterMode(spirv::SamplerFilterMode),
-    ImageFormat(spirv::ImageFormat),
-    ImageChannelOrder(spirv::ImageChannelOrder),
-    ImageChannelDataType(spirv::ImageChannelDataType),
-    FPRoundingMode(spirv::FPRoundingMode),
-    LinkageType(spirv::LinkageType),
-    AccessQualifier(spirv::AccessQualifier),
-    FunctionParameterAttribute(spirv::FunctionParameterAttribute),
-    Decoration(spirv::Decoration),
-    BuiltIn(spirv::BuiltIn),
-    IdScope(Word),
-    Scope(spirv::Scope),
-    GroupOperation(spirv::GroupOperation),
-    KernelEnqueueFlags(spirv::KernelEnqueueFlags),
-    Capability(spirv::Capability),
-    IdResultType(Word),
-    IdResult(Word),
-    IdRef(Word),
-    LiteralInteger(u32),
-    LiteralString(String),
-    LiteralContextDependentNumber(u32),
-    LiteralExtInstInteger(u32),
-    LiteralSpecConstantOpInteger(u32),
-}
-
-impl fmt::Display for Operand {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Operand::ImageOperands(ref v) => write!(f, "{:?}", v),
-            Operand::FPFastMathMode(ref v) => write!(f, "{:?}", v),
-            Operand::SelectionControl(ref v) => write!(f, "{:?}", v),
-            Operand::LoopControl(ref v) => write!(f, "{:?}", v),
-            Operand::FunctionControl(ref v) => write!(f, "{:?}", v),
-            Operand::IdMemorySemantics(ref v) => write!(f, "%{:?}", v),
-            Operand::MemorySemantics(ref v) => write!(f, "{:?}", v),
-            Operand::MemoryAccess(ref v) => write!(f, "{:?}", v),
-            Operand::KernelProfilingInfo(ref v) => write!(f, "{:?}", v),
-            Operand::SourceLanguage(ref v) => write!(f, "{:?}", v),
-            Operand::ExecutionModel(ref v) => write!(f, "{:?}", v),
-            Operand::AddressingModel(ref v) => write!(f, "{:?}", v),
-            Operand::MemoryModel(ref v) => write!(f, "{:?}", v),
-            Operand::ExecutionMode(ref v) => write!(f, "{:?}", v),
-            Operand::StorageClass(ref v) => write!(f, "{:?}", v),
-            Operand::Dim(ref v) => write!(f, "{:?}", v),
-            Operand::SamplerAddressingMode(ref v) => write!(f, "{:?}", v),
-            Operand::SamplerFilterMode(ref v) => write!(f, "{:?}", v),
-            Operand::ImageFormat(ref v) => write!(f, "{:?}", v),
-            Operand::ImageChannelOrder(ref v) => write!(f, "{:?}", v),
-            Operand::ImageChannelDataType(ref v) => write!(f, "{:?}", v),
-            Operand::FPRoundingMode(ref v) => write!(f, "{:?}", v),
-            Operand::LinkageType(ref v) => write!(f, "{:?}", v),
-            Operand::AccessQualifier(ref v) => write!(f, "{:?}", v),
-            Operand::FunctionParameterAttribute(ref v) => write!(f, "{:?}", v),
-            Operand::Decoration(ref v) => write!(f, "{:?}", v),
-            Operand::BuiltIn(ref v) => write!(f, "{:?}", v),
-            Operand::IdScope(ref v) => write!(f, "%{:?}", v),
-            Operand::Scope(ref v) => write!(f, "{:?}", v),
-            Operand::GroupOperation(ref v) => write!(f, "{:?}", v),
-            Operand::KernelEnqueueFlags(ref v) => write!(f, "{:?}", v),
-            Operand::Capability(ref v) => write!(f, "{:?}", v),
-            Operand::IdResultType(ref v) => write!(f, "%{:?}", v),
-            Operand::IdResult(ref v) => write!(f, "%{:?}", v),
-            Operand::IdRef(ref v) => write!(f, "%{:?}", v),
-            Operand::LiteralInteger(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralString(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralContextDependentNumber(ref v) => {
-                write!(f, "{:?}", v)
-            }
-            Operand::LiteralExtInstInteger(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralSpecConstantOpInteger(ref v) => {
-                write!(f, "{:?}", v)
-            }
-        }
-    }
 }
 
 impl Module {

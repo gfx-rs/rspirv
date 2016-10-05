@@ -30,8 +30,10 @@
 //! we don't always require valid language constructs.
 
 pub use self::constructs::{BasicBlock, Function, Instruction};
-pub use self::constructs::{Module, ModuleHeader, Operand};
+pub use self::constructs::{Module, ModuleHeader};
 pub use self::loader::load;
+pub use self::operand::Operand;
 
-mod loader;
 mod constructs;
+mod loader;
+mod operand;

@@ -178,6 +178,59 @@ def generate_operand_decode_errors(enums):
     return '\n'.join([no_format, use, enum, display_impl, error_impl])
 
 
+def generate_mr_operand_kinds(enums):
+    """Returns the mr::Operand enum and its implementations."""
+    kinds = [e['kind'] for e in enums]
+    # We do not use Pair kinds in the mr::Operand.
+    kinds = [k for k in kinds if not k.startswith('Pair')]
+
+    id_kinds = [k for k in kinds if k.startswith('Id')]
+    num_kinds = [k for k in kinds
+                 if k.endswith('Integer') or k.endswith('Number')]
+    str_kinds = [k for k in kinds if k.endswith('String')]
+    normal_kinds = [k for k in kinds
+                    if ((k not in id_kinds) and (k not in num_kinds) and
+                        (k not in str_kinds))]
+
+    normal_kinds = ['{k}(spirv::{k})'.format(k=k) for k in normal_kinds]
+    id_kinds = ['{kind}(spirv::Word)'.format(kind=k) for k in id_kinds]
+    num_kinds = ['{kind}(u32)'.format(kind=k) for k in num_kinds]
+    str_kinds = ['{kind}(String)'.format(kind=k) for k in str_kinds]
+
+    # The Rust enum.
+    definition = ['#[derive(Debug, PartialEq)]',
+                  'pub enum Operand {{',
+                  '    {normal_cases},',
+                  '    {id_cases},',
+                  '    {num_cases},',
+                  '    {str_cases}',
+                  '}}\n']
+    enum = '\n'.join(definition).format(
+        normal_cases=',\n    '.join(normal_kinds),
+        id_cases=',\n    '.join(id_kinds),
+        num_cases=',\n    '.join(num_kinds),
+        str_cases=',\n    '.join(str_kinds))
+
+    # impl fmt::Display for the enum.
+    kinds = ['Operand::{}(ref v) => write!(f, "{{:?}}", v)'.format(k)
+             for k in kinds]
+    definition = ['impl fmt::Display for Operand {{',
+                  '    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{',
+                  '        match *self {{',
+                  '            {cases},',
+                  '        }}',
+                  '    }}',
+                  '}}\n']
+    impl = '\n'.join(definition).format(
+        cases=',\n            '.join(kinds))
+
+    no_format = '#![cfg_attr(rustfmt, rustfmt_skip)]\n'
+    use = ('use spirv;\n\n'
+           'use std::fmt;\n')
+
+    return '\n'.join([no_format, use, enum, impl])
+
+
 def convert_symbol_to_snake_case(variable):
     return re.sub(r'([a-z])([A-Z])', r'\1_\2', variable).lower()
 
@@ -222,16 +275,6 @@ def get_decode_method(kind):
     elif kind.startswith('Literal'):
         kind = kind[len('Literal'):]
     return convert_symbol_to_snake_case(kind)
-
-
-def get_pair_kind_elements(kind):
-    assert kind.startswith('Pair')
-    if kind == "PairLiteralIntegerIdRef":
-        return ("LiteralInteger", "IdRef")
-    elif kind == "PairIdRefLiteralInteger":
-        return ("IdRef", "LiteralInteger")
-    elif kind == "PairIdRefIdRef":
-        return ("IdRef", "IdRef")
 
 
 def generate_operand_param_parse_methods(enums):
@@ -361,34 +404,17 @@ def generate_operand_parse_methods(enums):
         functions='\n\n'.join([e[1] for e in further_parse_methods]))
 
 
-def main():
-    import argparse
-    parser = argparse.ArgumentParser(
-        description='Generate SPIR-V grammar tables')
-    parser.add_argument('-i', '--input', metavar='<path>',
-                        type=str, required=True,
-                        help='input JSON file for core SPIR-V grammar')
-    parser.add_argument('-t', '--inst-table-output', metavar='<path>',
-                        type=str, required=True,
-                        help='output file for core SPIR-V instruction table')
-    parser.add_argument('-d', '--operand-decode-output', metavar='<path>',
-                        type=str, required=True,
-                        help='output file for SPIR-V operand decoding methods')
-    parser.add_argument('-e', '--operand-error-output', metavar='<path>',
-                        type=str, required=True,
-                        help='output file for SPIR-V operand decoding errors')
-    parser.add_argument('-p', '--operand-parse-output', metavar='<path>',
-                        type=str, required=True,
-                        help='output file for SPIR-V operand parsing methods')
-    args = parser.parse_args()
-
-    with open(args.input) as json_file:
+def update(grammar_input, inst_table_output, operand_decode_output,
+           operand_error_output, operand_parse_output, mr_operand_output):
+    """Updates all generated tables using the JSON grammar."""
+    with open(grammar_input) as json_file:
         grammar = json.loads(json_file.read())
 
-        core_grammar_output = open(args.inst_table_output, 'w')
-        operand_decode_output = open(args.operand_decode_output, 'w')
-        operand_error_output = open(args.operand_error_output, 'w')
-        operand_parse_output = open(args.operand_parse_output, 'w')
+        core_grammar_output = open(inst_table_output, 'w')
+        operand_decode_output = open(operand_decode_output, 'w')
+        operand_error_output = open(operand_error_output, 'w')
+        operand_parse_output = open(operand_parse_output, 'w')
+        mr_operand_output = open(mr_operand_output, 'w')
 
         print(COPYRIGHT, file=core_grammar_output)
         print(AUTO_GEN_COMMENT, file=core_grammar_output)
@@ -415,6 +441,41 @@ def main():
         print('{}\n'.format(SPIRV_GRAMMAR_URL), file=operand_parse_output)
         print(generate_operand_parse_methods(grammar['operand_kinds']),
               file=operand_parse_output)
+
+        print(COPYRIGHT, file=mr_operand_output)
+        print(AUTO_GEN_COMMENT, file=mr_operand_output)
+        print('{}\n'.format(SPIRV_GRAMMAR_URL), file=mr_operand_output)
+        print(generate_mr_operand_kinds(grammar['operand_kinds']),
+              file=mr_operand_output)
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Generate SPIR-V grammar tables')
+    parser.add_argument('-i', '--input', metavar='<path>',
+                        type=str, required=True,
+                        help='input JSON file for core SPIR-V grammar')
+    parser.add_argument('-t', '--inst-table-output', metavar='<path>',
+                        type=str, required=True,
+                        help='output file for core SPIR-V instruction table')
+    parser.add_argument('-d', '--operand-decode-output', metavar='<path>',
+                        type=str, required=True,
+                        help='output file for SPIR-V operand decoding methods')
+    parser.add_argument('-e', '--operand-error-output', metavar='<path>',
+                        type=str, required=True,
+                        help='output file for SPIR-V operand decoding errors')
+    parser.add_argument('-p', '--operand-parse-output', metavar='<path>',
+                        type=str, required=True,
+                        help='output file for SPIR-V operand parsing methods')
+    parser.add_argument('-m', '--mr-operand-output', metavar='<path>',
+                        type=str, required=True,
+                        help='output file for mr operand definition')
+    args = parser.parse_args()
+
+    update(args.input, args.inst_table_output, args.operand_decode_output,
+           args.operand_error_output, args.operand_parse_output,
+           args.mr_operand_output)
 
 if __name__ == '__main__':
     main()
