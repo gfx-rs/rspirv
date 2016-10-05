@@ -14,7 +14,9 @@
 
 use mr;
 
+/// Trait for disassembling functionalities.
 pub trait Disassemble {
+    /// Disassembles the current object and returns the assembly code.
     fn disassemble(&self) -> String;
 }
 
@@ -60,25 +62,29 @@ impl Disassemble for mr::Instruction {
 
 impl Disassemble for mr::BasicBlock {
     fn disassemble(&self) -> String {
+        let label =
+            self.label.as_ref().map_or(String::new(), |i| i.disassemble());
         format!("{label}\n{insts}",
-                label = self.label.as_ref().unwrap().disassemble(),
+                label = label,
                 insts = disas_join(&self.instructions, "\n"))
     }
 }
 
 impl Disassemble for mr::Function {
     fn disassemble(&self) -> String {
+        let def = self.def.as_ref().map_or(String::new(), |i| i.disassemble());
+        let end = self.end.as_ref().map_or(String::new(), |i| i.disassemble());
         if self.parameters.is_empty() {
             format!("{def}\n{blocks}\n{end}",
-                    def = self.def.as_ref().unwrap().disassemble(),
+                    def = def,
                     blocks = disas_join(&self.basic_blocks, "\n"),
-                    end = self.end.as_ref().unwrap().disassemble())
+                    end = end)
         } else {
             format!("{def}\n{params}\n{blocks}\n{end}",
-                    def = self.def.as_ref().unwrap().disassemble(),
+                    def = def,
                     params = disas_join(&self.parameters, "\n"),
                     blocks = disas_join(&self.basic_blocks, "\n"),
-                    end = self.end.as_ref().unwrap().disassemble())
+                    end = end)
         }
     }
 }
@@ -93,7 +99,9 @@ macro_rules! push {
 impl Disassemble for mr::Module {
     fn disassemble(&self) -> String {
         let mut text = vec![];
-        push!(&mut text, self.header.as_ref().unwrap().disassemble());
+        if self.header.is_some() {
+            push!(&mut text, self.header.as_ref().unwrap().disassemble());
+        }
         push!(&mut text,
               self.capabilities
                   .iter()
@@ -112,10 +120,14 @@ impl Disassemble for mr::Module {
                   .map(|e| format!("OpExtInstImport {:?}", e))
                   .collect::<Vec<String>>()
                   .join("\n"));
-        push!(&mut text,
-              format!("OpMemoryModel {:?} {:?}",
-                      self.addressing_model.unwrap(),
-                      self.memory_model.unwrap()));
+        // Well, addressing model and memory model are both encoded
+        // in OpMemoryModel. But or mr::Module allow only one them exists.
+        if self.addressing_model.is_some() && self.memory_model.is_some() {
+            push!(&mut text,
+                  format!("OpMemoryModel {:?} {:?}",
+                          self.addressing_model.unwrap(),
+                          self.memory_model.unwrap()));
+        }
         push!(&mut text, disas_join(&self.entry_points, "\n"));
         push!(&mut text, disas_join(&self.execution_modes, "\n"));
         push!(&mut text, disas_join(&self.debugs, "\n"));
