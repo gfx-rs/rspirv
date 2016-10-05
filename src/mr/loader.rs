@@ -110,6 +110,14 @@ impl Loader {
         }
     }
 
+    fn import_ext_inst_set(&mut self, ext_inst_set: mr::Operand) {
+        if let mr::Operand::LiteralString(ext) = ext_inst_set {
+            self.module.ext_inst_imports.push(ext)
+        } else {
+            panic!()
+        }
+    }
+
     fn attach_name(&mut self, id: mr::Operand, name: mr::Operand) {
         if let (mr::Operand::IdRef(id_ref),
                 mr::Operand::LiteralString(name_str)) = (id, name) {
@@ -152,13 +160,21 @@ impl binary::Consumer for Loader {
             spirv::Op::Extension => {
                 self.enable_extension(inst.operands.pop().unwrap())
             }
-            spirv::Op::ExtInstImport => self.module.ext_inst_imports.push(inst),
+            spirv::Op::ExtInstImport => {
+                self.import_ext_inst_set(inst.operands.pop().unwrap())
+            }
             spirv::Op::MemoryModel => {
-                let memory = inst.operands.pop().unwrap();
-                let address = inst.operands.pop().unwrap();
-                if let (mr::Operand::AddressingModel(am),
-                        mr::Operand::MemoryModel(mm)) = (address, memory) {
-                    self.module.memory_model = Some((am, mm))
+                if let Some(mr::Operand::MemoryModel(model)) = inst.operands
+                    .pop() {
+                    self.module.memory_model = Some(model)
+                } else {
+                    panic!()
+                }
+                if let Some(mr::Operand::AddressingModel(model)) = inst.operands
+                    .pop() {
+                    self.module.addressing_model = Some(model)
+                } else {
+                    panic!()
                 }
             }
             spirv::Op::EntryPoint => self.module.entry_points.push(inst),
@@ -198,7 +214,9 @@ impl binary::Consumer for Loader {
             spirv::Op::Label => {
                 if_ret_err!(self.function.is_none(), DetachedBasicBlock);
                 if_ret_err!(self.block.is_some(), NestedBasicBlock);
-                self.block = Some(mr::BasicBlock::new(inst))
+                let mut block = mr::BasicBlock::new();
+                block.label = Some(inst);
+                self.block = Some(block)
             }
             opcode if grammar::reflect::is_terminator(opcode) => {
                 // Make sure the block exists here. Once the block exists,

@@ -16,26 +16,43 @@ use grammar;
 use spirv;
 
 use spirv::Word;
-
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fmt;
 
+/// Memory representation of a SPIR-V module.
+///
+/// Most of the fields are just vectors of `Instruction`s, but some fields
+/// store values decomposed from `Instruction`s for better investigation.
+///
+/// The order of its fields basically reveal the requirements in the
+/// [Logical Layout of a Module](https://www.khronos.org/registry/spir-v/
+/// specs/1.1/SPIRV.html#LogicalLayout) of the SPIR-V specification.
 #[derive(Debug)]
 pub struct Module {
     pub header: Option<ModuleHeader>,
     pub capabilities: Vec<spirv::Capability>,
     pub extensions: Vec<String>,
-    pub ext_inst_imports: Vec<Instruction>,
-    pub memory_model: Option<(spirv::AddressingModel, spirv::MemoryModel)>,
+    pub ext_inst_imports: Vec<String>,
+    /// Addressing model. A part of the OpMemoryModel instruction.
+    pub addressing_model: Option<spirv::AddressingModel>,
+    /// Memory model. A part of the OpMemoryModel instruction.
+    pub memory_model: Option<spirv::MemoryModel>,
     pub entry_points: Vec<Instruction>,
     pub execution_modes: Vec<Instruction>,
+    /// All non-location debug instructions except name instructions.
     pub debugs: Vec<Instruction>,
-    pub names: HashMap<Word, String>,
+    /// All OpName and OpMemberName instructions.
+    pub names: BTreeMap<Word, String>,
     pub annotations: Vec<Instruction>,
+    /// All types, constants, and global variables.
+    ///
+    /// As per the specification, they have to be bundled together
+    /// because they can depend on one another.
     pub types_global_values: Vec<Instruction>,
     pub functions: Vec<Function>,
 }
 
+/// Memory representation of a SPIR-V module header.
 #[derive(Debug)]
 pub struct ModuleHeader {
     magic_number: Word,
@@ -45,6 +62,7 @@ pub struct ModuleHeader {
     reserved_word: Word,
 }
 
+/// Memory representation of a SPIR-V function.
 #[derive(Debug)]
 pub struct Function {
     pub def: Option<Instruction>,
@@ -53,12 +71,14 @@ pub struct Function {
     pub basic_blocks: Vec<BasicBlock>,
 }
 
+/// Memory representation of a SPIR-V basic block.
 #[derive(Debug)]
 pub struct BasicBlock {
-    pub label: Instruction,
+    pub label: Option<Instruction>,
     pub instructions: Vec<Instruction>,
 }
 
+/// Memory representation of a SPIR-V instruction.
 #[derive(Debug)]
 pub struct Instruction {
     pub class: &'static grammar::Instruction<'static>,
@@ -67,7 +87,7 @@ pub struct Instruction {
     pub operands: Vec<Operand>,
 }
 
-#[allow(dead_code)]
+/// Memory representation of a SPIR-V operand.
 #[derive(Debug)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
@@ -170,11 +190,12 @@ impl Module {
             capabilities: vec![],
             extensions: vec![],
             ext_inst_imports: vec![],
+            addressing_model: None,
             memory_model: None,
             entry_points: vec![],
             execution_modes: vec![],
             debugs: vec![],
-            names: HashMap::new(),
+            names: BTreeMap::new(),
             annotations: vec![],
             types_global_values: vec![],
             functions: vec![],
@@ -198,11 +219,13 @@ impl ModuleHeader {
         }
     }
 
+    /// Returns the major and minor version numbers as a tuple.
     pub fn version(&self) -> (u8, u8) {
         (((self.version & 0xff0000) >> 16) as u8,
          ((self.version & 0xff00) >> 8) as u8)
     }
 
+    /// Returns the generator's name and version as a tuple.
     pub fn generator(&self) -> (&str, u16) {
         let vendor = (self.generator & 0xffff0000) >> 16;
         let version = (self.generator & 0xffff) as u16;
@@ -224,8 +247,14 @@ impl ModuleHeader {
         (vendor, version)
     }
 
+    /// Returns the id bound.
     pub fn bound(&self) -> Word {
         self.bound
+    }
+
+    /// Sets the id bound to the given `bound`.
+    pub fn set_bound(&mut self, bound: Word) {
+        self.bound = bound
     }
 }
 
@@ -241,9 +270,9 @@ impl Function {
 }
 
 impl BasicBlock {
-    pub fn new(label: Instruction) -> BasicBlock {
+    pub fn new() -> BasicBlock {
         BasicBlock {
-            label: label,
+            label: None,
             instructions: vec![],
         }
     }

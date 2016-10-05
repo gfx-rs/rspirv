@@ -36,6 +36,8 @@ impl Disassemble for mr::Operand {
     }
 }
 
+/// Disassembles each instruction in `insts` and joins them together
+/// with the given `delimiter`.
 fn disas_join<T: Disassemble>(insts: &Vec<T>, delimiter: &str) -> String {
     insts.iter()
         .map(|ref i| i.disassemble())
@@ -59,7 +61,7 @@ impl Disassemble for mr::Instruction {
 impl Disassemble for mr::BasicBlock {
     fn disassemble(&self) -> String {
         format!("{label}\n{insts}",
-                label = self.label.disassemble(),
+                label = self.label.as_ref().unwrap().disassemble(),
                 insts = disas_join(&self.instructions, "\n"))
     }
 }
@@ -81,47 +83,51 @@ impl Disassemble for mr::Function {
     }
 }
 
-fn push_if_non_empty(vec: &mut Vec<String>, st: String) {
-    if !st.is_empty() {
-        vec.push(st)
-    }
+/// Pushes the given value to the given container if the value is not empty.
+macro_rules! push {
+    ($container: expr, $val: expr) => (if !$val.is_empty() {
+        $container.push($val)
+    });
 }
 
 impl Disassemble for mr::Module {
     fn disassemble(&self) -> String {
         let mut text = vec![];
-        push_if_non_empty(&mut text,
-                          self.header.as_ref().unwrap().disassemble());
-        push_if_non_empty(&mut text,
-                          self.capabilities
-                              .iter()
-                              .map(|c| format!("OpCapability {:?}", c))
-                              .collect::<Vec<String>>()
-                              .join("\n"));
-        push_if_non_empty(&mut text,
-                          self.extensions
-                              .iter()
-                              .map(|e| format!("OpExtension {:?}", e))
-                              .collect::<Vec<String>>()
-                              .join("\n"));
-        push_if_non_empty(&mut text, disas_join(&self.ext_inst_imports, "\n"));
-        let (address, memory) = self.memory_model.unwrap();
-        push_if_non_empty(&mut text,
-                          format!("OpMemoryModel {:?} {:?}", address, memory));
-        push_if_non_empty(&mut text, disas_join(&self.entry_points, "\n"));
-        push_if_non_empty(&mut text, disas_join(&self.execution_modes, "\n"));
-        push_if_non_empty(&mut text, disas_join(&self.debugs, "\n"));
-        push_if_non_empty(&mut text,
-                          self.names
-                              .iter()
-                              .map(|(k, v)| format!("OpName {} {:?}", k, v))
-                              .collect::<Vec<String>>()
-                              .join("\n"));
-        // names
-        push_if_non_empty(&mut text, disas_join(&self.annotations, "\n"));
-        push_if_non_empty(&mut text,
-                          disas_join(&self.types_global_values, "\n"));
-        push_if_non_empty(&mut text, disas_join(&self.functions, "\n"));
+        push!(&mut text, self.header.as_ref().unwrap().disassemble());
+        push!(&mut text,
+              self.capabilities
+                  .iter()
+                  .map(|c| format!("OpCapability {:?}", c))
+                  .collect::<Vec<String>>()
+                  .join("\n"));
+        push!(&mut text,
+              self.extensions
+                  .iter()
+                  .map(|e| format!("OpExtension {:?}", e))
+                  .collect::<Vec<String>>()
+                  .join("\n"));
+        push!(&mut text,
+              self.ext_inst_imports
+                  .iter()
+                  .map(|e| format!("OpExtInstImport {:?}", e))
+                  .collect::<Vec<String>>()
+                  .join("\n"));
+        push!(&mut text,
+              format!("OpMemoryModel {:?} {:?}",
+                      self.addressing_model.unwrap(),
+                      self.memory_model.unwrap()));
+        push!(&mut text, disas_join(&self.entry_points, "\n"));
+        push!(&mut text, disas_join(&self.execution_modes, "\n"));
+        push!(&mut text, disas_join(&self.debugs, "\n"));
+        push!(&mut text,
+              self.names
+                  .iter()
+                  .map(|(k, v)| format!("OpName {} {:?}", k, v))
+                  .collect::<Vec<String>>()
+                  .join("\n"));
+        push!(&mut text, disas_join(&self.annotations, "\n"));
+        push!(&mut text, disas_join(&self.types_global_values, "\n"));
+        push!(&mut text, disas_join(&self.functions, "\n"));
         text.join("\n")
     }
 }

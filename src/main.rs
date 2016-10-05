@@ -52,6 +52,8 @@ fn main() {
 
     f.read_to_end(&mut buffer).unwrap();
 
-    let module = rspirv::mr::load(buffer).unwrap();
-    println!("{}", module.disassemble());
+    match rspirv::mr::load(buffer) {
+        Ok(module) => println!("{}", module.disassemble()),
+        Err(err) => println!("{:?}", err),
+    }
 }

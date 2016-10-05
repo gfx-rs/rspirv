@@ -12,6 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Memory representation of various SPIR-V language constructs.
+//!
+//! By language constructs, I mean general language concepts like module,
+//! function, basic block, instruction, and operands. This is different
+//! from the "control flow constructs" mentioned in the SPIR-V
+//! [specification](https://www.khronos.org/registry/spir-v/specs/1.1/
+//! SPIRV.html#_a_id_structuredcontrolflow_a_structured_control_flow).
+//!
+//! This memory representation is designed to be lightweight; there are
+//! no excessive sanity check or cross referrences within each language
+//! construct. It is intended to be used as a plain data vehicle of
+//! SPIR-V language constructs in the memory.
+//!
+//! Required components of a language construct may still be wrapped around
+//! using `Option`; it makes the memory representation more flexible since
+//! we don't always require valid language constructs.
+
 pub use self::constructs::{BasicBlock, Function, Instruction};
 pub use self::constructs::{Module, ModuleHeader, Operand};
 pub use self::loader::load;
