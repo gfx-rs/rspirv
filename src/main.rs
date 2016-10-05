@@ -47,10 +47,10 @@ fn main() {
         return;
     };
 
-    let mut f = fs::File::open(input).unwrap();
+    let mut f = fs::File::open(input).expect("cannot open file");
     let mut buffer = Vec::new();
 
-    f.read_to_end(&mut buffer).unwrap();
+    f.read_to_end(&mut buffer).expect("cannot read file");
 
     match rspirv::mr::load(buffer) {
         Ok(module) => println!("{}", module.disassemble()),
