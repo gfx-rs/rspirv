@@ -152,9 +152,13 @@ impl fmt::Display for Operand {
             Operand::IdRef(ref v) => write!(f, "%{:?}", v),
             Operand::LiteralInteger(ref v) => write!(f, "{:?}", v),
             Operand::LiteralString(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralContextDependentNumber(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralContextDependentNumber(ref v) => {
+                write!(f, "{:?}", v)
+            }
             Operand::LiteralExtInstInteger(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralSpecConstantOpInteger(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralSpecConstantOpInteger(ref v) => {
+                write!(f, "{:?}", v)
+            }
         }
     }
 }
@@ -195,7 +199,8 @@ impl ModuleHeader {
     }
 
     pub fn version(&self) -> (u8, u8) {
-        (((self.version & 0xff0000) >> 16) as u8, ((self.version & 0xff00) >> 8) as u8)
+        (((self.version & 0xff0000) >> 16) as u8,
+         ((self.version & 0xff00) >> 8) as u8)
     }
 
     pub fn generator(&self) -> (&str, u16) {

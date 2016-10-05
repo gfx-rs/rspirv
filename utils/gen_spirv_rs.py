@@ -38,11 +38,12 @@ COPYRIGHT = '''// Copyright 2016 Google Inc.
 // See the License for the specific language governing permissions and
 // limitations under the License.'''
 
-AUTOGEN_COMMENT = '// This rust module is automatically generated from ' \
-    'SPIR-V C++ header file:'
+AUTOGEN_COMMENT = ('// This rust module is automatically generated from '
+                   'SPIR-V C++ header file:')
 
-SPIRV_HPP_URL = 'https://raw.githubusercontent.com/KhronosGroup/' \
-    'SPIRV-Headers/master/include/spirv/1.1/spirv.hpp'
+SPIRV_HPP_URL = ('//   https://raw.githubusercontent.com/KhronosGroup/\n'
+                 '//           SPIRV-Headers/master/include/spirv/1.1/'
+                 'spirv.hpp')
 
 
 def gen_variable_definition(node):
@@ -188,5 +189,5 @@ if __name__ == '__main__':
     with open(args.output, 'w') as output:
         print('{}\n'.format(COPYRIGHT), file=output)
         print(AUTOGEN_COMMENT, file=output)
-        print('// {}\n'.format(SPIRV_HPP_URL), file=output)
+        print('{}\n'.format(SPIRV_HPP_URL), file=output)
         print(generate_spirv_rs(args.input), file=output)

@@ -13,7 +13,8 @@
 // limitations under the License.
 
 pub use self::loader::State as LoaderState;
-pub use self::constructs::{Module, ModuleHeader, Function, BasicBlock, Instruction, Operand};
+pub use self::constructs::{Module, ModuleHeader, Function, BasicBlock,
+                           Instruction, Operand};
 pub use self::loader::load;
 
 mod loader;

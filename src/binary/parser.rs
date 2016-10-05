@@ -85,7 +85,8 @@ impl<'a> Parser<'a> {
             let result = self.parse_inst();
             match result {
                 Ok(inst) => {
-                    if self.consumer.consume_instruction(inst) == ParseAction::Stop {
+                    if self.consumer.consume_instruction(inst) ==
+                       ParseAction::Stop {
                         return Ok(());
                     }
                 }
@@ -105,7 +106,11 @@ impl<'a> Parser<'a> {
             if words[0] != MAGIC_NUMBER {
                 return Err(State::HeaderIncorrect);
             }
-            Ok(mr::ModuleHeader::new(words[0], words[1], words[2], words[3], words[4]))
+            Ok(mr::ModuleHeader::new(words[0],
+                                     words[1],
+                                     words[2],
+                                     words[3],
+                                     words[4]))
         } else {
             Err(State::HeaderIncomplete)
         }
@@ -140,13 +145,19 @@ impl<'a> Parser<'a> {
             let has_more_operands = !self.decoder.limit_reached();
             if has_more_operands {
                 match logical_operand.kind {
-                    GOpKind::IdResultType => rtype = Some(try_decode!(self.decoder.id())),
-                    GOpKind::IdResult => rid = Some(try_decode!(self.decoder.id())),
+                    GOpKind::IdResultType => {
+                        rtype = Some(try_decode!(self.decoder.id()))
+                    }
+                    GOpKind::IdResult => {
+                        rid = Some(try_decode!(self.decoder.id()))
+                    }
                     _ => concrete_operands.append(
                         &mut try!(self.parse_operand(logical_operand.kind))),
                 }
                 match logical_operand.quantifier {
-                    GOpCount::One | GOpCount::ZeroOrOne => logical_operand_index += 1,
+                    GOpCount::One | GOpCount::ZeroOrOne => {
+                        logical_operand_index += 1
+                    }
                     GOpCount::ZeroOrMore => continue,
                 }
             } else {

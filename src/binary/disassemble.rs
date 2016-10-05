@@ -37,16 +37,21 @@ impl Disassemble for mr::Operand {
 }
 
 fn disas_join<T: Disassemble>(insts: &Vec<T>, delimiter: &str) -> String {
-    insts.iter().map(|ref i| i.disassemble()).collect::<Vec<String>>().join(delimiter)
+    insts.iter()
+         .map(|ref i| i.disassemble())
+         .collect::<Vec<String>>()
+         .join(delimiter)
 }
 
 impl Disassemble for mr::Instruction {
     fn disassemble(&self) -> String {
         format!("{rid}{opcode}{rtype} {operands}",
-                rid = self.result_id.map_or(String::new(), |w| format!("%{} = ", w)),
+                rid = self.result_id
+                          .map_or(String::new(), |w| format!("%{} = ", w)),
                 opcode = format!("Op{}", self.class.opname),
                 // extra space both before and after the reseult type
-                rtype = self.result_type.map_or(String::new(), |w| format!("  %{} ", w)),
+                rtype = self.result_type
+                            .map_or(String::new(), |w| format!("  %{} ", w)),
                 operands = disas_join(&self.operands, " "))
     }
 }
@@ -85,7 +90,8 @@ fn push_if_non_empty(vec: &mut Vec<String>, st: String) {
 impl Disassemble for mr::Module {
     fn disassemble(&self) -> String {
         let mut text = vec![];
-        push_if_non_empty(&mut text, self.header.as_ref().unwrap().disassemble());
+        push_if_non_empty(&mut text,
+                          self.header.as_ref().unwrap().disassemble());
         push_if_non_empty(&mut text,
                           self.capabilities
                               .iter()
@@ -113,7 +119,8 @@ impl Disassemble for mr::Module {
                               .join("\n"));
         // names
         push_if_non_empty(&mut text, disas_join(&self.annotations, "\n"));
-        push_if_non_empty(&mut text, disas_join(&self.types_global_values, "\n"));
+        push_if_non_empty(&mut text,
+                          disas_join(&self.types_global_values, "\n"));
         push_if_non_empty(&mut text, disas_join(&self.functions, "\n"));
         text.join("\n")
     }

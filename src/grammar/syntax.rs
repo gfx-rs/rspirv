@@ -36,7 +36,7 @@ pub enum OperandQuantifier {
 }
 
 macro_rules! inst {
-    ($op:ident, [$( $cap:ident ),*], [$( ($kind:ident, $quantifier:ident) ),*]) => {
+    ($op:ident, [$( $cap:ident ),*], [$( ($kind:ident, $quant:ident) ),*]) => {
         Instruction {
             opname: stringify!($op),
             opcode: spirv::Op::$op,
@@ -46,7 +46,7 @@ macro_rules! inst {
             operands: &[
                 $( LogicalOperand {
                     kind: OperandKind::$kind,
-                    quantifier: OperandQuantifier::$quantifier }
+                    quantifier: OperandQuantifier::$quant }
                 ),*
             ],
         }

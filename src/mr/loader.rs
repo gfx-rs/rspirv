@@ -71,7 +71,8 @@ impl Loader {
     }
 
     fn attach_name(&mut self, id: mr::Operand, name: mr::Operand) {
-        if let (mr::Operand::IdRef(id_ref), mr::Operand::LiteralString(name_str)) = (id, name) {
+        if let (mr::Operand::IdRef(id_ref),
+                mr::Operand::LiteralString(name_str)) = (id, name) {
             self.module.names.insert(id_ref, name_str);
         } else {
             panic!()
@@ -89,8 +90,12 @@ impl binary::Consumer for Loader {
         let mut inst = inst;
         let opcode = inst.class.opcode;
         match opcode {
-            spirv::Op::Capability => self.require_capability(inst.operands.pop().unwrap()),
-            spirv::Op::Extension => self.enable_extension(inst.operands.pop().unwrap()),
+            spirv::Op::Capability => {
+                self.require_capability(inst.operands.pop().unwrap())
+            }
+            spirv::Op::Extension => {
+                self.enable_extension(inst.operands.pop().unwrap())
+            }
             spirv::Op::ExtInstImport => {
                 self.module
                     .ext_inst_imports
@@ -99,8 +104,8 @@ impl binary::Consumer for Loader {
             spirv::Op::MemoryModel => {
                 let memory = inst.operands.pop().unwrap();
                 let address = inst.operands.pop().unwrap();
-                if let (mr::Operand::AddressingModel(am), mr::Operand::MemoryModel(mm)) = (address,
-                                                                                           memory) {
+                if let (mr::Operand::AddressingModel(am),
+                        mr::Operand::MemoryModel(mm)) = (address, memory) {
                     self.module.memory_model = Some((am, mm))
                 }
             }
@@ -129,7 +134,8 @@ impl binary::Consumer for Loader {
                     .annotations
                     .push(inst)
             }
-            opcode if grammar::reflect::is_type(opcode) || grammar::reflect::is_constant(opcode) ||
+            opcode if grammar::reflect::is_type(opcode) ||
+                      grammar::reflect::is_constant(opcode) ||
                       grammar::reflect::is_variable(opcode) => {
                 self.module
                     .types_global_values
@@ -158,7 +164,11 @@ impl binary::Consumer for Loader {
                     .unwrap()
                     .instructions
                     .push(inst);
-                self.function.as_mut().unwrap().basic_blocks.push(self.block.take().unwrap())
+                self.function
+                    .as_mut()
+                    .unwrap()
+                    .basic_blocks
+                    .push(self.block.take().unwrap())
             }
             _ => {
                 self.block
