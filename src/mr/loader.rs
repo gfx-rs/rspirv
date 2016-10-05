@@ -17,7 +17,7 @@ use mr;
 use spirv;
 use grammar;
 
-use binary::ParseAction;
+use binary::{ParseAction, ParseResult};
 use std::{error, fmt, result};
 
 #[derive(Debug)]
@@ -33,37 +33,12 @@ pub enum Error {
     DetachedInstruction,
 }
 
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Error::NestedFunction => write!(f, "found nested function"),
-            Error::UnclosedFunction => write!(f, "found unclosed function"),
-            Error::MismatchedFunctionEnd => {
-                write!(f, "found mismatched OpFunctionEnd")
-            }
-            Error::DetachedFunctionParameter => {
-                write!(f,
-                       "found function OpFunctionParameter not inside function")
-            }
-            Error::DetachedBasicBlock => {
-                write!(f, "found basic block not inside function")
-            }
-            Error::NestedBasicBlock => write!(f, "found nested basic block"),
-            Error::UnclosedBasicBlock => {
-                write!(f, "found basic block without terminator")
-            }
-            Error::MismatchedTerminator => {
-                write!(f, "found mismatched terminator")
-            }
-            Error::DetachedInstruction => {
-                write!(f, "found instruction not inside basic block")
-            }
-        }
-    }
-}
-
-impl error::Error for Error {
-    fn description(&self) -> &str {
+impl Error {
+    /// Gives an descriptive string for each error.
+    ///
+    /// This method is intended to be used by fmt::Display and error::Error to
+    /// avoid duplication in implementation. So it's private.
+    fn describe(&self) -> &str {
         match *self {
             Error::NestedFunction => "found nested function",
             Error::UnclosedFunction => "found unclosed function",
@@ -81,6 +56,18 @@ impl error::Error for Error {
                 "found instruction not inside basic block"
             }
         }
+    }
+}
+
+impl error::Error for Error {
+    fn description(&self) -> &str {
+        self.describe()
+    }
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.describe())
     }
 }
 
@@ -107,10 +94,7 @@ impl Loader {
 
     fn require_capability(&mut self, capability: mr::Operand) {
         if let mr::Operand::Capability(cap) = capability {
-            self.module
-                .capabilities
-                .push(cap)
-
+            self.module.capabilities.push(cap)
         } else {
             // TODO(antiagainst): we should return a suitable error here.
             panic!()
@@ -136,18 +120,20 @@ impl Loader {
     }
 }
 
+macro_rules! if_ret_err {
+    ($condition: expr, $error: ident) => (if $condition {
+        return ParseAction::Error(Box::new(Error::$error))
+    });
+}
+
 impl binary::Consumer for Loader {
     fn initialize(&mut self) -> ParseAction {
         ParseAction::Continue
     }
 
     fn finalize(&mut self) -> ParseAction {
-        if self.block.is_some() {
-            return ParseAction::Error(Box::new(Error::UnclosedBasicBlock));
-        }
-        if self.function.is_some() {
-            return ParseAction::Error(Box::new(Error::UnclosedFunction));
-        }
+        if_ret_err!(self.block.is_some(), UnclosedBasicBlock);
+        if_ret_err!(self.function.is_some(), UnclosedFunction);
         ParseAction::Continue
     }
 
@@ -166,11 +152,7 @@ impl binary::Consumer for Loader {
             spirv::Op::Extension => {
                 self.enable_extension(inst.operands.pop().unwrap())
             }
-            spirv::Op::ExtInstImport => {
-                self.module
-                    .ext_inst_imports
-                    .push(inst)
-            }
+            spirv::Op::ExtInstImport => self.module.ext_inst_imports.push(inst),
             spirv::Op::MemoryModel => {
                 let memory = inst.operands.pop().unwrap();
                 let address = inst.operands.pop().unwrap();
@@ -198,55 +180,31 @@ impl binary::Consumer for Loader {
                 self.module.types_global_values.push(inst)
             }
             spirv::Op::Function => {
-                if self.function.is_some() {
-                    return ParseAction::Error(Box::new(Error::NestedFunction));
-                }
+                if_ret_err!(self.function.is_some(), NestedFunction);
                 let mut f = mr::Function::new();
                 f.def = Some(inst);
                 self.function = Some(f)
             }
             spirv::Op::FunctionEnd => {
-                if self.function.is_none() {
-                    return ParseAction::Error(
-                        Box::new(Error::MismatchedFunctionEnd));
-                }
-                if self.block.is_some() {
-                    return ParseAction::Error(
-                        Box::new(Error::UnclosedBasicBlock));
-                }
+                if_ret_err!(self.function.is_none(), MismatchedFunctionEnd);
+                if_ret_err!(self.block.is_some(), UnclosedBasicBlock);
                 self.function.as_mut().unwrap().end = Some(inst);
                 self.module.functions.push(self.function.take().unwrap())
             }
             spirv::Op::FunctionParameter => {
-                if self.function.is_none() {
-                    return ParseAction::Error(
-                        Box::new(Error::DetachedFunctionParameter));
-                }
+                if_ret_err!(self.function.is_none(), DetachedFunctionParameter);
                 self.function.as_mut().unwrap().parameters.push(inst);
             }
             spirv::Op::Label => {
-                if self.function.is_none() {
-                    return ParseAction::Error(
-                        Box::new(Error::DetachedBasicBlock));
-                }
-                if self.block.is_some() {
-                    return ParseAction::Error(
-                        Box::new(Error::NestedBasicBlock));
-                }
+                if_ret_err!(self.function.is_none(), DetachedBasicBlock);
+                if_ret_err!(self.block.is_some(), NestedBasicBlock);
                 self.block = Some(mr::BasicBlock::new(inst))
             }
             opcode if grammar::reflect::is_terminator(opcode) => {
                 // Make sure the block exists here. Once the block exists,
                 // we are certain the function exists because the above checks.
-                if self.block.is_none() {
-                    return ParseAction::Error(
-                        Box::new(Error::MismatchedTerminator));
-                }
-                self.block
-                    .as_mut()
-                    .unwrap()
-                    .instructions
-                    .push(inst);
+                if_ret_err!(self.block.is_none(), MismatchedTerminator);
+                self.block.as_mut().unwrap().instructions.push(inst);
                 self.function
                     .as_mut()
                     .unwrap()
@@ -254,25 +212,16 @@ impl binary::Consumer for Loader {
                     .push(self.block.take().unwrap())
             }
             _ => {
-                if self.block.is_none() {
-                    return ParseAction::Error(
-                        Box::new(Error::DetachedInstruction));
-                }
-                self.block
-                    .as_mut()
-                    .unwrap()
-                    .instructions
-                    .push(inst)
+                if_ret_err!(self.block.is_none(), DetachedInstruction);
+                self.block.as_mut().unwrap().instructions.push(inst)
             }
         }
         ParseAction::Continue
     }
 }
 
-pub fn load(binary: Vec<u8>) -> Option<mr::Module> {
+pub fn load(binary: Vec<u8>) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
-    if let Err(err) = binary::parse(binary, &mut loader) {
-        println!("{:?}", err)
-    }
-    Some(loader.module())
+    try!(binary::parse(binary, &mut loader));
+    Ok(loader.module())
 }
