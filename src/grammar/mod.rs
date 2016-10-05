@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::syntax::{Instruction, InstructionTable, OperandKind,
-                       OperandQuantifier};
+pub use self::syntax::{Instruction, InstructionTable};
+pub use self::syntax::{OperandKind, OperandQuantifier};
 
 pub mod reflect;
 mod syntax;

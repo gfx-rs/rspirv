@@ -16,7 +16,7 @@ use mr;
 use grammar;
 use spirv;
 
-use std::result;
+use std::{error, result};
 use super::decoder;
 use super::error::Error as DecodeError;
 
@@ -29,6 +29,8 @@ type GInstRef = &'static grammar::Instruction<'static>;
 #[derive(Debug)]
 pub enum State {
     Complete,
+    ConsumerStopRequested,
+    ConsumerError(Box<error::Error>),
     HeaderIncomplete(DecodeError),
     HeaderIncorrect,
     EndiannessUnsupported,
@@ -50,13 +52,17 @@ pub type Result<T> = result::Result<T, State>;
 const HEADER_NUM_WORDS: usize = 5;
 const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Debug)]
 pub enum ParseAction {
     Continue,
     Stop,
+    Error(Box<error::Error>),
 }
 
 pub trait Consumer {
+    fn initialize(&mut self) -> ParseAction;
+    fn finalize(&mut self) -> ParseAction;
+
     fn consume_header(&mut self, module: mr::ModuleHeader) -> ParseAction;
     fn consume_instruction(&mut self, inst: mr::Instruction) -> ParseAction;
 }
@@ -88,23 +94,40 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse(mut self) -> Result<()> {
+        match self.consumer.initialize() {
+            ParseAction::Continue => (),
+            ParseAction::Stop => return Err(State::ConsumerStopRequested),
+            ParseAction::Error(err) => return Err(State::ConsumerError(err)),
+        }
         let header = try!(self.parse_header());
-        if self.consumer.consume_header(header) == ParseAction::Stop {
-            return Ok(());
+        match self.consumer.consume_header(header) {
+            ParseAction::Continue => (),
+            ParseAction::Stop => return Err(State::ConsumerStopRequested),
+            ParseAction::Error(err) => return Err(State::ConsumerError(err)),
         }
 
         loop {
             let result = self.parse_inst();
             match result {
                 Ok(inst) => {
-                    if self.consumer.consume_instruction(inst) ==
-                       ParseAction::Stop {
-                        return Ok(());
+                    match self.consumer.consume_instruction(inst) {
+                        ParseAction::Continue => (),
+                        ParseAction::Stop => {
+                            return Err(State::ConsumerStopRequested)
+                        }
+                        ParseAction::Error(err) => {
+                            return Err(State::ConsumerError(err))
+                        }
                     }
                 }
                 Err(State::Complete) => break,
                 Err(error) => return Err(error),
             };
+        }
+        match self.consumer.finalize() {
+            ParseAction::Continue => (),
+            ParseAction::Stop => return Err(State::ConsumerStopRequested),
+            ParseAction::Error(err) => return Err(State::ConsumerError(err)),
         }
         Ok(())
     }

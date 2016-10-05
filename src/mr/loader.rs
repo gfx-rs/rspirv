@@ -17,18 +17,74 @@ use mr;
 use spirv;
 use grammar;
 
-use std::result;
-
 use binary::ParseAction;
+use std::{error, fmt, result};
 
 #[derive(Debug)]
-pub enum State {
-    Normal,
-    OpcodeUnknown,
-    OperandExpected,
+pub enum Error {
+    NestedFunction,
+    UnclosedFunction,
+    MismatchedFunctionEnd,
+    DetachedFunctionParameter,
+    DetachedBasicBlock,
+    NestedBasicBlock,
+    UnclosedBasicBlock,
+    MismatchedTerminator,
+    DetachedInstruction,
 }
 
-type Result<T> = result::Result<T, State>;
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Error::NestedFunction => write!(f, "found nested function"),
+            Error::UnclosedFunction => write!(f, "found unclosed function"),
+            Error::MismatchedFunctionEnd => {
+                write!(f, "found mismatched OpFunctionEnd")
+            }
+            Error::DetachedFunctionParameter => {
+                write!(f,
+                       "found function OpFunctionParameter not inside function")
+            }
+            Error::DetachedBasicBlock => {
+                write!(f, "found basic block not inside function")
+            }
+            Error::NestedBasicBlock => write!(f, "found nested basic block"),
+            Error::UnclosedBasicBlock => {
+                write!(f, "found basic block without terminator")
+            }
+            Error::MismatchedTerminator => {
+                write!(f, "found mismatched terminator")
+            }
+            Error::DetachedInstruction => {
+                write!(f, "found instruction not inside basic block")
+            }
+        }
+    }
+}
+
+impl error::Error for Error {
+    fn description(&self) -> &str {
+        match *self {
+            Error::NestedFunction => "found nested function",
+            Error::UnclosedFunction => "found unclosed function",
+            Error::MismatchedFunctionEnd => "found mismatched OpFunctionEnd",
+            Error::DetachedFunctionParameter => {
+                "found function OpFunctionParameter not inside function"
+            }
+            Error::DetachedBasicBlock => {
+                "found basic block not inside function"
+            }
+            Error::NestedBasicBlock => "found nested basic block",
+            Error::UnclosedBasicBlock => "found basic block without terminator",
+            Error::MismatchedTerminator => "found mismatched terminator",
+            Error::DetachedInstruction => {
+                "found instruction not inside basic block"
+            }
+        }
+    }
+}
+
+type Result<T> = result::Result<T, Error>;
 
 pub struct Loader {
     module: mr::Module,
@@ -81,6 +137,20 @@ impl Loader {
 }
 
 impl binary::Consumer for Loader {
+    fn initialize(&mut self) -> ParseAction {
+        ParseAction::Continue
+    }
+
+    fn finalize(&mut self) -> ParseAction {
+        if self.block.is_some() {
+            return ParseAction::Error(Box::new(Error::UnclosedBasicBlock));
+        }
+        if self.function.is_some() {
+            return ParseAction::Error(Box::new(Error::UnclosedFunction));
+        }
+        ParseAction::Continue
+    }
+
     fn consume_header(&mut self, header: mr::ModuleHeader) -> ParseAction {
         self.module.header = Some(header);
         ParseAction::Continue
@@ -109,56 +179,63 @@ impl binary::Consumer for Loader {
                     self.module.memory_model = Some((am, mm))
                 }
             }
-            spirv::Op::EntryPoint => {
-                self.module
-                    .entry_points
-                    .push(inst)
-            }
-            spirv::Op::ExecutionMode => {
-                self.module
-                    .execution_modes
-                    .push(inst)
-            }
+            spirv::Op::EntryPoint => self.module.entry_points.push(inst),
+            spirv::Op::ExecutionMode => self.module.execution_modes.push(inst),
             spirv::Op::Name => {
                 let name = inst.operands.pop().unwrap();
                 let id = inst.operands.pop().unwrap();
                 self.attach_name(id, name);
             }
             opcode if grammar::reflect::is_nonlocation_debug(opcode) => {
-                self.module
-                    .debugs
-                    .push(inst)
+                self.module.debugs.push(inst)
             }
             opcode if grammar::reflect::is_annotation(opcode) => {
-                self.module
-                    .annotations
-                    .push(inst)
+                self.module.annotations.push(inst)
             }
             opcode if grammar::reflect::is_type(opcode) ||
                       grammar::reflect::is_constant(opcode) ||
                       grammar::reflect::is_variable(opcode) => {
-                self.module
-                    .types_global_values
-                    .push(inst)
+                self.module.types_global_values.push(inst)
             }
             spirv::Op::Function => {
+                if self.function.is_some() {
+                    return ParseAction::Error(Box::new(Error::NestedFunction));
+                }
                 let mut f = mr::Function::new();
                 f.def = Some(inst);
                 self.function = Some(f)
             }
             spirv::Op::FunctionEnd => {
+                if self.function.is_none() {
+                    return ParseAction::Error(Box::new(Error::MismatchedFunctionEnd));
+                }
+                if self.block.is_some() {
+                    return ParseAction::Error(Box::new(Error::UnclosedBasicBlock));
+                }
                 self.function.as_mut().unwrap().end = Some(inst);
                 self.module.functions.push(self.function.take().unwrap())
             }
             spirv::Op::FunctionParameter => {
-                self.function
-                    .as_mut()
-                    .unwrap()
-                    .parameters
-                    .push(inst);
+                if self.function.is_none() {
+                    return ParseAction::Error(Box::new(Error::DetachedFunctionParameter));
+                }
+                self.function.as_mut().unwrap().parameters.push(inst);
             }
-            spirv::Op::Label => self.block = Some(mr::BasicBlock::new(inst)),
+            spirv::Op::Label => {
+                if self.function.is_none() {
+                    return ParseAction::Error(Box::new(Error::DetachedBasicBlock));
+                }
+                if self.block.is_some() {
+                    return ParseAction::Error(Box::new(Error::NestedBasicBlock));
+                }
+                self.block = Some(mr::BasicBlock::new(inst))
+            }
             opcode if grammar::reflect::is_terminator(opcode) => {
+                // Make sure the block exists here. Once the block exists,
+                // we are certain the function exists because the above checks.
+                if self.block.is_none() {
+                    return ParseAction::Error(Box::new(Error::MismatchedTerminator));
+                }
                 self.block
                     .as_mut()
                     .unwrap()
@@ -171,6 +248,9 @@ impl binary::Consumer for Loader {
                     .push(self.block.take().unwrap())
             }
             _ => {
+                if self.block.is_none() {
+                    return ParseAction::Error(Box::new(Error::DetachedInstruction));
+                }
                 self.block
                     .as_mut()
                     .unwrap()
