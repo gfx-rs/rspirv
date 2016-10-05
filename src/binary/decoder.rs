@@ -123,6 +123,14 @@ impl Decoder {
     pub fn context_dependent_number(&mut self) -> Result<u32> {
         self.word()
     }
+
+    pub fn spec_constant_op_integer(&mut self) -> Result<u32> {
+        self.word()
+    }
+
+    pub fn ext_inst_integer(&mut self) -> Result<u32> {
+        self.word()
+    }
 }
 
 include!("decode_operand.rs");

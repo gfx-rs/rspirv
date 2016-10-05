@@ -17,6 +17,7 @@ use grammar;
 use spirv;
 
 use super::decoder;
+use super::error::Error as DecodeError;
 
 use std::result;
 
@@ -26,7 +27,7 @@ use grammar::OperandQuantifier as GOpCount;
 
 type GInstRef = &'static grammar::Instruction<'static>;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug)]
 pub enum State {
     Complete,
     HeaderIncomplete,
@@ -34,6 +35,7 @@ pub enum State {
     InstructionIncomplete,
     OpcodeUnknown,
     OperandExpected,
+    OperandError(DecodeError),
 }
 
 pub type Result<T> = result::Result<T, State>;
@@ -56,6 +58,13 @@ pub trait Consumer {
 struct Parser<'a> {
     decoder: decoder::Decoder,
     consumer: &'a mut Consumer,
+}
+
+macro_rules! try_decode {
+    ($e: expr) => (match $e {
+        Ok(val) => val,
+        Err(err) => return Err(State::OperandError(err))
+    });
 }
 
 impl<'a> Parser<'a> {
@@ -108,7 +117,7 @@ impl<'a> Parser<'a> {
             assert!(wc > 0);
             if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
                 self.decoder.set_limit((wc - 1) as usize);
-                let result = self.decode_words_to_operands(grammar);
+                let result = self.parse_operands(grammar);
                 assert!(self.decoder.limit_reached());
                 self.decoder.clear_limit();
                 result
@@ -120,10 +129,10 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn decode_words_to_operands(&mut self, grammar: GInstRef) -> Result<mr::Instruction> {
+    fn parse_operands(&mut self, grammar: GInstRef) -> Result<mr::Instruction> {
         let mut rtype = None;
         let mut rid = None;
-        let mut concrete_operands = Vec::new();
+        let mut concrete_operands = vec![];
 
         let mut logical_operand_index: usize = 0;
         while logical_operand_index < grammar.operands.len() {
@@ -131,18 +140,10 @@ impl<'a> Parser<'a> {
             let has_more_operands = !self.decoder.limit_reached();
             if has_more_operands {
                 match logical_operand.kind {
-                    GOpKind::IdResultType => rtype = self.decoder.id().ok(),
-                    GOpKind::IdResult => rid = self.decoder.id().ok(),
-                    _ => {
-                        concrete_operands.push(self.decode_operand(logical_operand.kind)
-                                                   .unwrap());
-                        if let mr::Operand::Decoration(decoration) = *concrete_operands.last()
-                                                                                       .unwrap() {
-                            concrete_operands.append(
-                                &mut self.decode_decoration_arguments(
-                                     decoration).unwrap());
-                        }
-                    }
+                    GOpKind::IdResultType => rtype = Some(try_decode!(self.decoder.id())),
+                    GOpKind::IdResult => rid = Some(try_decode!(self.decoder.id())),
+                    _ => concrete_operands.append(
+                        &mut try!(self.parse_operand(logical_operand.kind))),
                 }
                 match logical_operand.quantifier {
                     GOpCount::One | GOpCount::ZeroOrOne => logical_operand_index += 1,
@@ -158,131 +159,9 @@ impl<'a> Parser<'a> {
         }
         Ok(mr::Instruction::new(grammar, rtype, rid, concrete_operands))
     }
-
-    fn decode_operand(&mut self, kind: GOpKind) -> Result<mr::Operand> {
-        Ok(match kind {
-            GOpKind::IdResultType => mr::Operand::IdResultType(self.decoder.id().unwrap()),
-            GOpKind::IdResult => mr::Operand::IdResult(self.decoder.id().unwrap()),
-            GOpKind::IdRef |
-            GOpKind::IdMemorySemantics |
-            GOpKind::IdScope => mr::Operand::IdRef(self.decoder.id().unwrap()),
-            GOpKind::Scope => mr::Operand::Scope(self.decoder.scope().unwrap()),
-            GOpKind::MemorySemantics => {
-                mr::Operand::MemorySemantics(self.decoder.memory_semantics().unwrap())
-            }
-            GOpKind::LiteralString => mr::Operand::LiteralString(self.decoder.string().unwrap()),
-            GOpKind::LiteralContextDependentNumber => {
-                mr::Operand::LiteralContextDependentNumber(self.decoder
-                                                               .context_dependent_number()
-                                                               .unwrap())
-            }
-            GOpKind::Capability => mr::Operand::Capability(self.decoder.capability().unwrap()),
-            GOpKind::Decoration => mr::Operand::Decoration(self.decoder.decoration().unwrap()),
-            GOpKind::AddressingModel => {
-                mr::Operand::AddressingModel(self.decoder
-                                                 .addressing_model()
-                                                 .unwrap())
-            }
-            GOpKind::MemoryModel => mr::Operand::MemoryModel(self.decoder.memory_model().unwrap()),
-            GOpKind::ExecutionMode => {
-                mr::Operand::ExecutionMode(self.decoder
-                                               .execution_mode()
-                                               .unwrap())
-            }
-            GOpKind::ExecutionModel => {
-                mr::Operand::ExecutionModel(self.decoder.execution_model().unwrap())
-            }
-            GOpKind::SourceLanguage => {
-                mr::Operand::SourceLanguage(self.decoder
-                                                .source_language()
-                                                .unwrap())
-            }
-            GOpKind::LiteralInteger => mr::Operand::LiteralInteger(self.decoder.integer().unwrap()),
-            GOpKind::StorageClass => {
-                mr::Operand::StorageClass(self.decoder.storage_class().unwrap())
-            }
-            GOpKind::ImageOperands => {
-                mr::Operand::ImageOperands(self.decoder.image_operands().unwrap())
-            }
-            GOpKind::FPFastMathMode => {
-                mr::Operand::FPFastMathMode(self.decoder.fpfast_math_mode().unwrap())
-            }
-            GOpKind::SelectionControl => {
-                mr::Operand::SelectionControl(self.decoder.selection_control().unwrap())
-            }
-            GOpKind::LoopControl => mr::Operand::LoopControl(self.decoder.loop_control().unwrap()),
-            GOpKind::FunctionControl => {
-                mr::Operand::FunctionControl(self.decoder.function_control().unwrap())
-            }
-            GOpKind::MemoryAccess => {
-                mr::Operand::MemoryAccess(self.decoder.memory_access().unwrap())
-            }
-            GOpKind::KernelProfilingInfo => {
-                mr::Operand::KernelProfilingInfo(self.decoder
-                                                     .kernel_profiling_info()
-                                                     .unwrap())
-            }
-            GOpKind::Dim => mr::Operand::Dim(self.decoder.dim().unwrap()),
-            GOpKind::SamplerAddressingMode => {
-                mr::Operand::SamplerAddressingMode(self.decoder
-                                                       .sampler_addressing_mode()
-                                                       .unwrap())
-            }
-            GOpKind::SamplerFilterMode => {
-                mr::Operand::SamplerFilterMode(self.decoder.sampler_filter_mode().unwrap())
-            }
-            GOpKind::ImageFormat => mr::Operand::ImageFormat(self.decoder.image_format().unwrap()),
-            GOpKind::ImageChannelOrder => {
-                mr::Operand::ImageChannelOrder(self.decoder.image_channel_order().unwrap())
-            }
-            GOpKind::ImageChannelDataType => {
-                mr::Operand::ImageChannelDataType(self.decoder
-                                                      .image_channel_data_type()
-                                                      .unwrap())
-            }
-            GOpKind::FPRoundingMode => {
-                mr::Operand::FPRoundingMode(self.decoder.fprounding_mode().unwrap())
-            }
-            GOpKind::LinkageType => mr::Operand::LinkageType(self.decoder.linkage_type().unwrap()),
-            GOpKind::AccessQualifier => {
-                mr::Operand::AccessQualifier(self.decoder.access_qualifier().unwrap())
-            }
-            GOpKind::FunctionParameterAttribute => {
-                mr::Operand::FunctionParameterAttribute(self.decoder
-                                                            .function_parameter_attribute()
-                                                            .unwrap())
-            }
-            GOpKind::BuiltIn => mr::Operand::BuiltIn(self.decoder.built_in().unwrap()),
-            GOpKind::GroupOperation => {
-                mr::Operand::GroupOperation(self.decoder.group_operation().unwrap())
-            }
-            GOpKind::KernelEnqueueFlags => {
-                mr::Operand::KernelEnqueueFlags(self.decoder.kernel_enqueue_flags().unwrap())
-            }
-            GOpKind::LiteralExtInstInteger |
-            GOpKind::LiteralSpecConstantOpInteger |
-            GOpKind::PairLiteralIntegerIdRef |
-            GOpKind::PairIdRefLiteralInteger |
-            GOpKind::PairIdRefIdRef => {
-                println!("unimplemented operand kind: {:?}", kind);
-                unimplemented!();
-            }
-        })
-    }
-
-    fn decode_decoration_arguments(&mut self,
-                                   decoration: spirv::Decoration)
-                                   -> Result<Vec<mr::Operand>> {
-        match decoration {
-            spirv::Decoration::BuiltIn => {
-                Ok(vec![mr::Operand::BuiltIn(self.decoder.built_in().unwrap())])
-            }
-            spirv::Decoration::Block => Ok(vec![]),
-            _ => unimplemented!(),
-
-        }
-    }
 }
+
+include!("parse_operand.rs");
 
 pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
     Parser::new(binary, consumer).parse()

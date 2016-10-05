@@ -108,11 +108,8 @@ pub enum Operand {
     LiteralInteger(u32),
     LiteralString(String),
     LiteralContextDependentNumber(u32),
-    LiteralExtInstInteger,
-    LiteralSpecConstantOpInteger,
-    PairLiteralIntegerIdRef,
-    PairIdRefLiteralInteger,
-    PairIdRefIdRef,
+    LiteralExtInstInteger(u32),
+    LiteralSpecConstantOpInteger(u32),
 }
 
 impl fmt::Display for Operand {
@@ -156,11 +153,8 @@ impl fmt::Display for Operand {
             Operand::LiteralInteger(ref v) => write!(f, "{:?}", v),
             Operand::LiteralString(ref v) => write!(f, "{:?}", v),
             Operand::LiteralContextDependentNumber(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralExtInstInteger |
-            Operand::LiteralSpecConstantOpInteger |
-            Operand::PairLiteralIntegerIdRef |
-            Operand::PairIdRefLiteralInteger |
-            Operand::PairIdRefIdRef => unimplemented!(),
+            Operand::LiteralExtInstInteger(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralSpecConstantOpInteger(ref v) => write!(f, "{:?}", v),
         }
     }
 }

@@ -174,6 +174,8 @@ impl binary::Consumer for Loader {
 
 pub fn load(binary: Vec<u8>) -> Option<mr::Module> {
     let mut loader = Loader::new();
-    binary::parse(binary, &mut loader);
+    if let Err(err) = binary::parse(binary, &mut loader) {
+        println!("{:?}", err)
+    }
     Some(loader.module())
 }
