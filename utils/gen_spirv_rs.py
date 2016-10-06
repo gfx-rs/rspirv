@@ -41,6 +41,8 @@ COPYRIGHT = '''// Copyright 2016 Google Inc.
 AUTOGEN_COMMENT = ('// This rust module is automatically generated from '
                    'SPIR-V C++ header file:')
 
+MODULE_DOC = '//! The SPIR-V header.'
+
 SPIRV_HPP_URL = ('//   https://raw.githubusercontent.com/KhronosGroup/\n'
                  '//           SPIRV-Headers/master/include/spirv/1.1/'
                  'spirv.hpp')
@@ -170,7 +172,7 @@ def generate_spirv_rs(spirv_hpp_path):
             if len(enum_def) > 0:
                 enums.append(enum_def)
     return '{allows}\n\n{types}\n\n{consts}\n\n{enums}'.format(
-        allows='#![allow(dead_code)]\n#![allow(non_camel_case_types)]',
+        allows='#![allow(non_camel_case_types)]',
         types='pub type Word = u32;',
         consts='\n'.join(consts),
         enums='\n\n'.join(enums))
@@ -190,4 +192,5 @@ if __name__ == '__main__':
         print('{}\n'.format(COPYRIGHT), file=output)
         print(AUTOGEN_COMMENT, file=output)
         print('{}\n'.format(SPIRV_HPP_URL), file=output)
+        print('{}\n'.format(MODULE_DOC), file=output)
         print(generate_spirv_rs(args.input), file=output)

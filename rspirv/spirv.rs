@@ -16,7 +16,8 @@
 //   https://raw.githubusercontent.com/KhronosGroup/
 //           SPIRV-Headers/master/include/spirv/1.1/spirv.hpp
 
-#![allow(dead_code)]
+//! The SPIR-V header.
+
 #![allow(non_camel_case_types)]
 
 pub type Word = u32;
