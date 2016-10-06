@@ -17,8 +17,7 @@
 //! By language constructs, I mean general language concepts like module,
 //! function, basic block, instruction, and operands. This is different
 //! from the "control flow constructs" mentioned in the SPIR-V
-//! [specification](https://www.khronos.org/registry/spir-v/specs/1.1/
-//! SPIRV.html#_a_id_structuredcontrolflow_a_structured_control_flow).
+//! [specification](https://goo.gl/YQRcZT).
 //!
 //! This memory representation is designed to be lightweight; there are
 //! no excessive sanity check or cross referrences within each language

@@ -21,14 +21,30 @@ pub type Result<T> = result::Result<T, Error>;
 
 const WORD_NUM_BYTES: usize = 4;
 
+/// The binary decoder.
+///
+/// Takes in a vector of bytes, and serves requests for raw SPIR-V words
+/// or values of a specific SPIR-V enum type.
+///
+/// This decoder is low-level; it has no knowledge of the SPIR-V grammar.
+/// Given a vector of bytes, it solely responds to word decoding requests
+/// via method calls: both raw words requests and decoding the raw words
+/// into a value of a specific SPIR-V enum type.
+///
+/// It also provides a limit mechanism. Users can set a limit, and then
+/// requesting words. If that limit is reached before the end of the
+/// stream, `Error::LimitReached` will be returned.
 pub struct Decoder {
+    /// Raw bytes to decode
     bytes: Vec<u8>,
-    /// Offset for next byte to decode.
+    /// Offset for next byte to decode
     offset: usize,
+    /// Remaining limit of number of words before error
     limit: Option<usize>,
 }
 
 impl Decoder {
+    /// Creates a new `Decoder` instance.
     pub fn new(bytes: Vec<u8>) -> Decoder {
         Decoder {
             bytes: bytes,
@@ -37,31 +53,12 @@ impl Decoder {
         }
     }
 
-    /// Returns the offset of the byte to decode.
+    /// Returns the offset of the byte to decode next.
     pub fn offset(&self) -> usize {
         self.offset
     }
 
-    pub fn set_limit(&mut self, num_words: usize) {
-        self.limit = Some(num_words)
-    }
-
-    pub fn clear_limit(&mut self) {
-        self.limit = None
-    }
-
-    pub fn has_limit(&self) -> bool {
-        self.limit.is_some()
-    }
-
-    pub fn limit_reached(&self) -> bool {
-        if let Some(left) = self.limit {
-            left == 0
-        } else {
-            false
-        }
-    }
-
+    /// Decodes and returns the next raw SPIR-V word.
     pub fn word(&mut self) -> Result<spirv::Word> {
         if self.has_limit() {
             if self.limit_reached() {
@@ -83,6 +80,7 @@ impl Decoder {
         }
     }
 
+    /// Decodes and returns the next `n` raw SPIR-V words.
     pub fn words(&mut self, n: usize) -> Result<Vec<spirv::Word>> {
         let mut words = Vec::new();
         for _ in 0..n {
@@ -93,6 +91,38 @@ impl Decoder {
 }
 
 impl Decoder {
+    /// Sets the limit to `num_words` words.
+    ///
+    /// The decoder will return `Error::LimitReached` after `num_words` words
+    /// have been requested, if having not consumed the whole stream.
+    pub fn set_limit(&mut self, num_words: usize) {
+        self.limit = Some(num_words)
+    }
+
+    /// Clear the previously set limit (if any).
+    pub fn clear_limit(&mut self) {
+        self.limit = None
+    }
+
+    /// Returns true if a limit has been set on this decoder.
+    pub fn has_limit(&self) -> bool {
+        self.limit.is_some()
+    }
+
+    /// Returns true if the previously set limit has been reached.
+    ///
+    /// This will always return false if no limit has been ever set.
+    pub fn limit_reached(&self) -> bool {
+        if let Some(left) = self.limit {
+            left == 0
+        } else {
+            false
+        }
+    }
+}
+
+impl Decoder {
+    /// Decodes and returns the next SPIR-V word as an id.
     pub fn id(&mut self) -> Result<spirv::Word> {
         self.word()
     }
@@ -106,6 +136,10 @@ impl Decoder {
         (0..WORD_NUM_BYTES).map(|i| ((word >> (8 * i)) & 0xff) as u8).collect()
     }
 
+    /// Decodes and returns a literal string.
+    ///
+    /// This method will consume as many words as necessary, util a null
+    /// character (`\0`) is reached, or errored out.
     pub fn string(&mut self) -> Result<String> {
         let start_index = self.offset;
         let mut bytes = vec![];
@@ -122,19 +156,27 @@ impl Decoder {
             .map_err(|e| Error::DecodeStringFailed(start_index, e))
     }
 
+    /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// literal integer.
     pub fn integer(&mut self) -> Result<u32> {
         self.word()
     }
 
+    /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// context-dependent number.
     // TODO(antiagainst): This should return the correct typed number.
     pub fn context_dependent_number(&mut self) -> Result<u32> {
         self.word()
     }
 
+    /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// spec-constant-op integer.
     pub fn spec_constant_op_integer(&mut self) -> Result<u32> {
         self.word()
     }
 
+    /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// extended-instruction-set number.
     pub fn ext_inst_integer(&mut self) -> Result<u32> {
         self.word()
     }

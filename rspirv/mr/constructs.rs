@@ -25,8 +25,8 @@ use super::operand::Operand;
 /// store values decomposed from `Instruction`s for better investigation.
 ///
 /// The order of its fields basically reveal the requirements in the
-/// [Logical Layout of a Module](https://www.khronos.org/registry/spir-v/
-/// specs/1.1/SPIRV.html#LogicalLayout) of the SPIR-V specification.
+/// [Logical Layout of a Module](https://goo.gl/2kVnfX) of the SPIR-V
+/// of the SPIR-V specification.
 #[derive(Debug)]
 pub struct Module {
     pub header: Option<ModuleHeader>,

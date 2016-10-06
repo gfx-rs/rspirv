@@ -245,7 +245,9 @@ def generate_operand_decode_methods(enums):
     # Method definition for decoding values of a particular operand kind.
     # If the operand kind belongs to BitEnum, we use from_bits(), otherwise,
     # from_u32().
-    f = ['    pub fn {fname}(&mut self) -> Result<spirv::{kind}> {{',
+    f = ['    /// Decodes and returns the next SPIR-V word as a SPIR-V',
+         '    /// [{kind}](../spirv/enum.{kind}.html) value.',
+         '    pub fn {fname}(&mut self) -> Result<spirv::{kind}> {{',
          '        if let Ok(word) = self.word() {{',
          '            spirv::{kind}::from_{ty}(word)'
          '.ok_or(Error::{kind}Unknown(self.offset, word))',
