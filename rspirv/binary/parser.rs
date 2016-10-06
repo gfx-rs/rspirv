@@ -26,24 +26,32 @@ use grammar::OperandQuantifier as GOpCount;
 
 type GInstRef = &'static grammar::Instruction<'static>;
 
+/// Parser State.
 #[derive(Debug)]
 pub enum State {
+    /// Parsing completed
     Complete,
+    /// Consumer requested to stop parse
     ConsumerStopRequested,
+    /// Consumer errored out with the given error
     ConsumerError(Box<error::Error>),
+    /// Incomplete module header
     HeaderIncomplete(DecodeError),
+    /// Incorrect module header
     HeaderIncorrect,
+    /// Unsupported endianness
     EndiannessUnsupported,
-    /// (byte offset, inst index)
+    /// Incomplete instruction at (byte offset, inst index)
     InstructionIncomplete(usize, usize),
-    /// (byte offset, inst index)
+    /// Zero instruction word count at (byte offset, inst index)
     WordCountZero(usize, usize),
-    /// (byte offset, inst index, opcode)
+    /// Unknown opcode at (byte offset, inst index, opcode)
     OpcodeUnknown(usize, usize, u16),
-    /// (byte offset, inst index)
+    /// Expected more operands (byte offset, inst index)
     OperandExpected(usize, usize),
-    /// (byte offset, inst index)
+    /// found redundant operands (byte offset, inst index)
     OperandExceeded(usize, usize),
+    /// Errored out when decoding operand with the given error
     OperandError(DecodeError),
 }
 
@@ -127,31 +135,65 @@ pub type Result<T> = result::Result<T, State>;
 const HEADER_NUM_WORDS: usize = 5;
 const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
+/// Orders consumer sent to the parser after each consuming call.
 #[derive(Debug)]
 pub enum Action {
+    /// Continue the parsing
     Continue,
+    /// Normally stop the parsing
     Stop,
+    /// Error out with the given error
     Error(Box<error::Error>),
 }
 
+/// The binary consumer trait.
+///
+/// The parser will call `initialize` before parsing the SPIR-V binary and
+/// `finalize` after successfully parsing the whle binary.
+///
+/// After successfully parsing the module header, `consume_header` will be
+/// called. After successfully parsing an instruction, `consume_instruction`
+/// will be called.
+///
+/// The consumer can use [`Action`](enum.ParseAction.html) to control the
+/// parsing process.
 pub trait Consumer {
+    /// Intialize the consumer.
     fn initialize(&mut self) -> Action;
+    /// Finalize the consumer.
     fn finalize(&mut self) -> Action;
 
+    /// Consume the module header.
     fn consume_header(&mut self, module: mr::ModuleHeader) -> Action;
+    /// Consume the given instruction.
     fn consume_instruction(&mut self, inst: mr::Instruction) -> Action;
 }
 
+/// Parses the given `binary` and consumes the module using the given
+/// `consumer`.
 pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
     Parser::new(binary, consumer).parse()
 }
 
-struct Parser<'a> {
+/// The SPIR-V binary parser.
+///
+/// Takes in a vector of bytes and a consumer, this parser will invoke the
+/// consume methods on the consumer for the module header and each
+/// instruction parsed.
+///
+/// Different from the [`Decoder`](struct.Decoder.html),
+/// this parser is high-level; it has knowlege of the SPIR-V grammar.
+/// It will parse instructions according to SPIR-V grammar.
+pub struct Parser<'a> {
     decoder: decoder::Decoder,
     consumer: &'a mut Consumer,
+    /// The index of the current instructions
+    ///
+    /// Starting from 1, 0 means invalid
     inst_index: usize,
 }
 
+/// Tries to decode `$e` and returns the error if errored out.
 macro_rules! try_decode {
     ($e: expr) => (match $e {
         Ok(val) => val,
@@ -160,6 +202,8 @@ macro_rules! try_decode {
 }
 
 impl<'a> Parser<'a> {
+    /// Creates a new parser to parse the given `binary` and send the module
+    /// header and instructions to the given `consumer`.
     pub fn new(binary: Vec<u8>, consumer: &'a mut Consumer) -> Parser<'a> {
         Parser {
             decoder: decoder::Decoder::new(binary),
@@ -168,6 +212,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    /// Does the parsing.
     pub fn parse(mut self) -> Result<()> {
         match self.consumer.initialize() {
             Action::Continue => (),

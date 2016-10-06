@@ -21,12 +21,13 @@ pub type Result<T> = result::Result<T, Error>;
 
 const WORD_NUM_BYTES: usize = 4;
 
-/// The binary decoder.
+/// The SPIR-V binary decoder.
 ///
 /// Takes in a vector of bytes, and serves requests for raw SPIR-V words
 /// or values of a specific SPIR-V enum type.
 ///
-/// This decoder is low-level; it has no knowledge of the SPIR-V grammar.
+/// Different from the [`Parser`](struct.Parser.html),
+/// this decoder is low-level; it has no knowledge of the SPIR-V grammar.
 /// Given a vector of bytes, it solely responds to word decoding requests
 /// via method calls: both raw words requests and decoding the raw words
 /// into a value of a specific SPIR-V enum type.
