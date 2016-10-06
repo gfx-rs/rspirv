@@ -69,7 +69,9 @@ pub struct Function {
     pub def: Option<Instruction>,
     /// Last (ending) instruction in this function.
     pub end: Option<Instruction>,
+    /// Function parameters.
     pub parameters: Vec<Instruction>,
+    /// Basic blocks in this function.
     pub basic_blocks: Vec<BasicBlock>,
 }
 
@@ -78,15 +80,20 @@ pub struct Function {
 pub struct BasicBlock {
     /// The label starting this basic block.
     pub label: Option<Instruction>,
+    /// Instructions in this basic block.
     pub instructions: Vec<Instruction>,
 }
 
 /// Memory representation of a SPIR-V instruction.
 #[derive(Debug)]
 pub struct Instruction {
+    /// The class (grammar specification) of this instruction.
     pub class: &'static grammar::Instruction<'static>,
+    /// Result type id.
     pub result_type: Option<Word>,
+    /// Result id.
     pub result_id: Option<Word>,
+    /// Operands.
     pub operands: Vec<Operand>,
 }
 
