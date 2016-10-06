@@ -106,7 +106,7 @@ def generate_operand_kind_table(enums):
     """Returns the Rust enum containing all SPIR-V operand kinds."""
     enums = [e['kind'] for e in enums]
 
-    definition = ['#[allow(dead_code)]',
+    definition = ['/// All operand kinds in SPIR-V grammar.',
                   '#[derive(Clone, Copy, Debug)]',
                   'pub enum OperandKind {{',
                   '    {kinds}',

@@ -14,27 +14,42 @@
 
 use spirv;
 
+/// Grammar for a SPIR-V instruction.
 #[derive(Debug)]
 pub struct Instruction<'a> {
+    /// Opname.
     pub opname: &'a str,
+    /// Opcode.
     pub opcode: spirv::Op,
+    /// Capabilities required for this instruction.
     pub capabilities: &'a [spirv::Capability],
+    /// Logical operands for this instruction.
+    ///
+    /// This includes result type id and result id.
     pub operands: &'a [LogicalOperand],
 }
 
+/// Grammar for a SPIR-V logical operand.
 #[derive(Debug)]
 pub struct LogicalOperand {
+    /// The kind of this logical operand.
     pub kind: OperandKind,
+    /// The repeat specification for this logical operand.
     pub quantifier: OperandQuantifier,
 }
 
+/// The repeat specification for a SPIR-V logical operand.
 #[derive(Clone, Copy, Debug)]
 pub enum OperandQuantifier {
+    /// This operand appears exactly one time.
     One,
+    /// This operand can appear zero or one time.
     ZeroOrOne,
+    /// This operand can appear zero or more times.
     ZeroOrMore,
 }
 
+/// Declares the grammar for an SPIR-V instruction.
 macro_rules! inst {
     ($op:ident, [$( $cap:ident ),*], [$( ($kind:ident, $quant:ident) ),*]) => {
         Instruction {
@@ -53,9 +68,14 @@ macro_rules! inst {
     }
 }
 
+/// The table for all SPIR-V instructions.
+///
+/// This table is staic data stored in the library.
 pub struct InstructionTable;
 
 impl InstructionTable {
+    /// Looks up the given `opcode` in the instruction table and returns
+    /// a reference to the instruction grammar entry if found.
     pub fn lookup_opcode(opcode: u16) -> Option<&'static Instruction<'static>> {
         INSTRUCTION_TABLE.iter().find(|&inst| (inst.opcode as u16) == opcode)
     }

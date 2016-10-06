@@ -16,7 +16,7 @@
 //   https://github.com/KhronosGroup/SPIRV-Headers/
 //           blob/master/include/spirv/1.1/spirv.core.grammar.json
 
-#[allow(dead_code)]
+/// All operand kinds in SPIR-V grammar.
 #[derive(Clone, Copy, Debug)]
 pub enum OperandKind {
     ImageOperands,

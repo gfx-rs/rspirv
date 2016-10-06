@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! The module containing the whole SPIR-V syntax grammar.
+//!
+//! It defines the syntax grammar of all instructions (their layouts
+//! and operands).
+//!
+//! It also provides many reflect functions.
+
 pub use self::syntax::{Instruction, InstructionTable};
 pub use self::syntax::{OperandKind, OperandQuantifier};
 

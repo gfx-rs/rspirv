@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Refect functions for SPIR-V instructions.
+
 use spirv;
 
+/// Returns true if the given opcode is for a location debug instruction.
 pub fn is_location_debug(opcode: spirv::Op) -> bool {
     match opcode {
         spirv::Op::Line | spirv::Op::NoLine => true,
@@ -21,6 +24,7 @@ pub fn is_location_debug(opcode: spirv::Op) -> bool {
     }
 }
 
+/// Returns true if the given opcode is for a non-location debug instruction.
 pub fn is_nonlocation_debug(opcode: spirv::Op) -> bool {
     match opcode {
         spirv::Op::SourceContinued |
@@ -33,10 +37,12 @@ pub fn is_nonlocation_debug(opcode: spirv::Op) -> bool {
     }
 }
 
+/// Returns true if the given opcode is for a debug instruction.
 pub fn is_debug(opcode: spirv::Op) -> bool {
     is_location_debug(opcode) || is_nonlocation_debug(opcode)
 }
 
+/// Returns true if the given opcode is for an annotation instruction.
 pub fn is_annotation(opcode: spirv::Op) -> bool {
     match opcode {
         spirv::Op::Decorate |
@@ -49,6 +55,7 @@ pub fn is_annotation(opcode: spirv::Op) -> bool {
 }
 
 
+/// Returns true if the given opcode is for a type-declaring instruction.
 pub fn is_type(opcode: spirv::Op) -> bool {
     match opcode {
         spirv::Op::TypeVoid |
@@ -76,6 +83,7 @@ pub fn is_type(opcode: spirv::Op) -> bool {
     }
 }
 
+/// Returns true if the given opcode is for a constant-defining instruction.
 pub fn is_constant(opcode: spirv::Op) -> bool {
     match opcode {
         spirv::Op::ConstantTrue |
@@ -93,10 +101,12 @@ pub fn is_constant(opcode: spirv::Op) -> bool {
     }
 }
 
+/// Returns true if the given opcode is for a variable-defining instruction.
 pub fn is_variable(opcode: spirv::Op) -> bool {
     opcode == spirv::Op::Variable
 }
 
+/// Returns true if the given opcode is for a terminator instruction.
 pub fn is_terminator(opcode: spirv::Op) -> bool {
     match opcode {
         spirv::Op::Phi |
