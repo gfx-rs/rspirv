@@ -1,0 +1,14 @@
+[package]
+name = "rspirv-dis"
+version = "0.1.0"
+authors = ["Lei Zhang <antiagainst@gmail.com>"]
+
+[[bin]]
+name = "rspirv-dis"
+path = "main.rs"
+
+[dependencies]
+getopts = "0.2"
+
+[dependencies.rspirv]
+path="../rspirv"

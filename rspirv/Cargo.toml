@@ -1,0 +1,12 @@
+[package]
+name = "rspirv"
+version = "0.1.0"
+authors = ["Lei Zhang <antiagainst@gmail.com>"]
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+bitflags = "0.6"
+num = "0.1"
+num-macros = "0.1"

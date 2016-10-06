@@ -30,7 +30,7 @@ directory = os.path.dirname(os.path.realpath(__file__))
 script = imp.load_source('gen_tables',
                          os.path.join(directory, 'gen_grammar_tables.py'))
 
-src = os.path.join(directory, '..', 'src')
+src = os.path.join(directory, '..', 'rspirv')
 inst_table_output = os.path.join(src, 'grammar/table.rs')
 operand_decode_output = os.path.join(src, 'binary/decode_operand.rs')
 operand_error_output = os.path.join(src, 'binary/error.rs')
