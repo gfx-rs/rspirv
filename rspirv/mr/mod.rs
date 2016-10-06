@@ -30,7 +30,7 @@
 
 pub use self::constructs::{BasicBlock, Function, Instruction};
 pub use self::constructs::{Module, ModuleHeader};
-pub use self::loader::load;
+pub use self::loader::{Error, load, Loader};
 pub use self::operand::Operand;
 
 mod constructs;

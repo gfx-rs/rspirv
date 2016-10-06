@@ -20,6 +20,7 @@ use grammar;
 use binary::{ParseAction, ParseResult};
 use std::{error, fmt, result};
 
+/// Memory representation loading errors.
 #[derive(Debug)]
 pub enum Error {
     NestedFunction,
@@ -85,6 +86,13 @@ impl fmt::Display for Error {
 
 type Result<T> = result::Result<T, Error>;
 
+/// The memory representation loader.
+///
+/// Constructs a [`Module`](struct.Module.html) from the module header and
+/// instructions.
+///
+/// It implements the [`Consumer`](../binary/trait.Consumer.html) trait and
+/// works with the [`Parser`](../binary/struct.Parser.html).
 pub struct Loader {
     module: mr::Module,
     function: Option<mr::Function>,
@@ -92,6 +100,7 @@ pub struct Loader {
 }
 
 impl Loader {
+    /// Creates a new empty loader.
     pub fn new() -> Loader {
         Loader {
             module: mr::Module::new(),
@@ -100,6 +109,7 @@ impl Loader {
         }
     }
 
+    /// Returns the `Module` under construction.
     pub fn module(self) -> mr::Module {
         self.module
     }
@@ -270,6 +280,8 @@ impl binary::Consumer for Loader {
     }
 }
 
+/// Loads the SPIR-V `binary` into memory and returns a
+/// [`Module`](struct.Module.html).
 pub fn load(binary: Vec<u8>) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
     try!(binary::parse(binary, &mut loader));
