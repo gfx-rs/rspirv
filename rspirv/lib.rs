@@ -12,6 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Library APIs for SPIR-V module processing functionalities.
+//!
+//! This library provides:
+//!
+//! * The [SPIR-V header](spirv/index.html) (all SPIR-V structs, enums,
+//!   and constants)
+//! * The whole SPIR-V [grammar](grammar/index.html) (instruction layouts
+//!   and their operands)
+//! * A [memory representation](mr/index.html) of SPIR-V modules
+//! * A SPIR-V [binary](binary/index.html) loading and parsing Rust module
+
 #![feature(collections)]
 #![feature(concat_idents)]
 #![feature(custom_derive, plugin)]
