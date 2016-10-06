@@ -34,7 +34,8 @@ const WORD_NUM_BYTES: usize = 4;
 ///
 /// It also provides a limit mechanism. Users can set a limit, and then
 /// requesting words. If that limit is reached before the end of the
-/// stream, `Error::LimitReached` will be returned.
+/// stream, [`State::LimitReached`](enum.ParseState.html) will be
+/// returned.
 pub struct Decoder {
     /// Raw bytes to decode
     bytes: Vec<u8>,
@@ -94,8 +95,9 @@ impl Decoder {
 impl Decoder {
     /// Sets the limit to `num_words` words.
     ///
-    /// The decoder will return `Error::LimitReached` after `num_words` words
-    /// have been requested, if having not consumed the whole stream.
+    /// The decoder will return [`State::LimitReached`](enum.ParseState.html)
+    /// after `num_words` words have been requested, if having not consumed
+    /// the whole stream.
     pub fn set_limit(&mut self, num_words: usize) {
         self.limit = Some(num_words)
     }

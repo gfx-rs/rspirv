@@ -280,8 +280,7 @@ impl binary::Consumer for Loader {
     }
 }
 
-/// Loads the SPIR-V `binary` into memory and returns a
-/// [`Module`](struct.Module.html).
+/// Loads the SPIR-V `binary` into memory and returns a `Module`.
 pub fn load(binary: Vec<u8>) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
     try!(binary::parse(binary, &mut loader));
