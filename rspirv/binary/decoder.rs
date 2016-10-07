@@ -36,6 +36,18 @@ const WORD_NUM_BYTES: usize = 4;
 /// requesting words. If that limit is reached before the end of the
 /// stream, [`State::LimitReached`](enum.ParseState.html) will be
 /// returned.
+///
+/// # Errors
+///
+/// For its methods, there can be the following errors:
+///
+/// * `Error::LimitReached(offset)` if the most recent limit has reached.
+/// * `Error::StreamExpected(offset)` if more bytes are needed to decode
+///    the next word.
+/// * `Error::<spirv-enum>Unknown(offset, value)` if failed to decode the
+///    next word as the given `<spirv-enum>`.
+///
+/// All errors contain the byte offset of the word failed decoding.
 pub struct Decoder {
     /// Raw bytes to decode
     bytes: Vec<u8>,
@@ -186,3 +198,55 @@ impl Decoder {
 }
 
 include!("decode_operand.rs");
+
+#[cfg(test)]
+mod tests {
+    use spirv;
+
+    use super::Decoder;
+    use binary::error::Error;
+
+    #[test]
+    fn test_decoding_word_from_one_bytes() {
+        let mut d = Decoder::new(vec![1]);
+        assert_eq!(Err(Error::StreamExpected(0)), d.word());
+    }
+
+    #[test]
+    fn test_decoding_word_from_two_bytes() {
+        let mut d = Decoder::new(vec![1, 2]);
+        assert_eq!(Err(Error::StreamExpected(0)), d.word());
+    }
+
+    #[test]
+    fn test_decoding_word_from_three_bytes() {
+        let mut d = Decoder::new(vec![1, 2, 3]);
+        assert_eq!(Err(Error::StreamExpected(0)), d.word());
+    }
+
+    #[test]
+    fn test_decoding_word_from_four_bytes() {
+        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78]);
+        assert_eq!(Ok(0x78563412), d.word());
+    }
+
+    #[test]
+    fn test_decoding_words() {
+        let mut d = Decoder::new(
+            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef]);
+        assert_eq!(Ok(vec![0x78563412, 0xefcdab90]), d.words(2));
+    }
+
+    #[test]
+    fn test_decoding_source_language() {
+        let mut d = Decoder::new(vec![0x02, 0x00, 0x00, 0x00]);
+        assert_eq!(Ok(spirv::SourceLanguage::GLSL), d.source_language());
+    }
+
+    #[test]
+    fn test_decoding_unknown_execution_model() {
+        let mut d = Decoder::new(vec![0xef, 0xbe, 0xad, 0xde]);
+        assert_eq!(Err(Error::ExecutionModelUnknown(0, 0xdeadbeef)),
+                   d.execution_model());
+    }
+}
