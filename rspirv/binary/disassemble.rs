@@ -34,7 +34,12 @@ impl Disassemble for mr::ModuleHeader {
 
 impl Disassemble for mr::Operand {
     fn disassemble(&self) -> String {
-        format!("{}", self)
+        match *self {
+            mr::Operand::IdMemorySemantics(v) |
+            mr::Operand::IdScope(v) |
+            mr::Operand::IdRef(v) => format!("%{}", v),
+            _ => format!("{}", self),
+        }
     }
 }
 
@@ -134,7 +139,7 @@ impl Disassemble for mr::Module {
         push!(&mut text,
               self.names
                   .iter()
-                  .map(|(k, v)| format!("OpName {} {:?}", k, v))
+                  .map(|(k, v)| format!("OpName %{} {:?}", k, v))
                   .collect::<Vec<String>>()
                   .join("\n"));
         push!(&mut text, disas_join(&self.annotations, "\n"));
