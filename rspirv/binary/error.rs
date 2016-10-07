@@ -20,10 +20,9 @@
 
 use spirv;
 
-use collections::string;
 use std::{error, fmt};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Error {
     StreamExpected(usize),
     LimitReached(usize),
@@ -57,7 +56,12 @@ pub enum Error {
     GroupOperationUnknown(usize, spirv::Word),
     KernelEnqueueFlagsUnknown(usize, spirv::Word),
     CapabilityUnknown(usize, spirv::Word),
-    DecodeStringFailed(usize, string::FromUtf8Error)
+    /// Failed to decode a string.
+
+    /// For structured error handling, the second element could be
+    /// `string::FromUtf8Error`, but the will prohibit the compiler
+    /// from generating `PartialEq` for this enum.
+    DecodeStringFailed(usize, String)
 }
 
 impl fmt::Display for Error {

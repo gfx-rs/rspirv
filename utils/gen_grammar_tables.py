@@ -124,7 +124,7 @@ def generate_operand_decode_errors(enums):
               for k in kinds
               if not (k.startswith('Pair') or k.startswith('Id') or
                       k.startswith('Literal'))]
-    definition = ['#[derive(Debug)]',
+    definition = ['#[derive(Debug, PartialEq)]',
                   'pub enum Error {{',
                   '    StreamExpected(usize),',
                   '    LimitReached(usize),',
@@ -133,7 +133,12 @@ def generate_operand_decode_errors(enums):
                   '}}\n']
     enum = '\n'.join(definition).format(
         errors=',\n    '.join(errors),
-        special_errors='DecodeStringFailed(usize, string::FromUtf8Error)')
+        special_errors=('/// Failed to decode a string.\n\n'
+                        '    /// For structured error handling, the second '
+                        'element could be\n    /// `string::FromUtf8Error`, '
+                        'but the will prohibit the compiler\n    /// from '
+                        'generating `PartialEq` for this enum.\n'
+                        '    DecodeStringFailed(usize, String)'))
 
     # impl fmt::Display for the Error enum.
     errors = ['Error::{}Unknown(index, word) => write!(f, "unknown value {{}} '
@@ -172,7 +177,6 @@ def generate_operand_decode_errors(enums):
 
     no_format = '#![cfg_attr(rustfmt, rustfmt_skip)]\n'
     use = ('use spirv;\n\n'
-           'use collections::string;\n'
            'use std::{error, fmt};\n')
 
     return '\n'.join([no_format, use, enum, display_impl, error_impl])

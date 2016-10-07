@@ -155,8 +155,8 @@ impl Decoder {
         while !bytes.is_empty() && bytes.last() == Some(&0) {
             bytes.pop();
         }
-        String::from_utf8(bytes)
-            .map_err(|e| Error::DecodeStringFailed(start_index, e))
+        String::from_utf8(bytes).map_err(
+                |e| Error::DecodeStringFailed(start_index, format!("{}", e)))
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
