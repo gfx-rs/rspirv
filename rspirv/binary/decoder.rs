@@ -24,7 +24,11 @@ const WORD_NUM_BYTES: usize = 4;
 /// The SPIR-V binary decoder.
 ///
 /// Takes in a vector of bytes, and serves requests for raw SPIR-V words
-/// or values of a specific SPIR-V enum type.
+/// or values of a specific SPIR-V enum type. Successful decoding will
+/// surely consume the number of words decoded, while unsuccessful decoding
+/// may consume any number of bytes.
+///
+/// TODO: The decoder should not conume words if an error occurs.
 ///
 /// Different from the [`Parser`](struct.Parser.html),
 /// this decoder is low-level; it has no knowledge of the SPIR-V grammar.
@@ -153,12 +157,14 @@ impl Decoder {
 
     /// Decodes and returns a literal string.
     ///
-    /// This method will consume as many words as necessary, util a null
-    /// character (`\0`) is reached, or errored out.
+    /// This method will consume as many words as necessary until finding a
+    /// null character (`\0`), or reaching the limit or end of the stream
+    /// and erroring out.
     pub fn string(&mut self) -> Result<String> {
-        let start_index = self.offset;
+        let start_offset = self.offset;
         let mut bytes = vec![];
-        while let Ok(word) = self.word() {
+        loop {
+            let word = try!(self.word());
             bytes.append(&mut Decoder::split_word_to_bytes(word));
             if bytes.last() == Some(&0) {
                 break;
@@ -168,7 +174,7 @@ impl Decoder {
             bytes.pop();
         }
         String::from_utf8(bytes).map_err(
-                |e| Error::DecodeStringFailed(start_index, format!("{}", e)))
+                |e| Error::DecodeStringFailed(start_offset, format!("{}", e)))
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
@@ -233,8 +239,37 @@ mod tests {
     #[test]
     fn test_decoding_words() {
         let mut d = Decoder::new(
-            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef]);
+            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+                 0x01, 0x23, 0x45, 0x67, 0x89, 0xfe, 0xdc, 0xba]);
         assert_eq!(Ok(vec![0x78563412, 0xefcdab90]), d.words(2));
+        assert_eq!(Ok(vec![0x67452301]), d.words(1));
+        assert_eq!(Ok(vec![0xbadcfe89]), d.words(1));
+    }
+
+    #[test]
+    fn test_decoding_string() {
+        {
+            let mut d = Decoder::new(vec![0x00, 0x00, 0x00, 0x00]);
+            assert_eq!(Ok(String::new()), d.string());
+        }
+        {
+            let mut d = Decoder::new(b"ok".to_vec());
+            assert_eq!(Err(Error::StreamExpected(0)), d.string());
+        }
+        {
+            let mut d = Decoder::new(b"ok\0\0".to_vec());
+            assert_eq!(Ok("ok".to_string()), d.string());
+        }
+        {
+            let mut d = Decoder::new(b"ok\0\0rust\0\0\0\0rocks\0\0\0".to_vec());
+            assert_eq!(Ok("ok".to_string()), d.string());
+            assert_eq!(Ok("rust".to_string()), d.string());
+            assert_eq!(Ok("rocks".to_string()), d.string());
+        }
+        {
+            let mut d = Decoder::new(b"I..don't know..\0".to_vec());
+            assert_eq!(Ok("I..don't know..".to_string()), d.string());
+        }
     }
 
     #[test]
@@ -248,5 +283,85 @@ mod tests {
         let mut d = Decoder::new(vec![0xef, 0xbe, 0xad, 0xde]);
         assert_eq!(Err(Error::ExecutionModelUnknown(0, 0xdeadbeef)),
                    d.execution_model());
+    }
+
+    #[test]
+    fn test_offset() {
+        let mut d = Decoder::new(
+            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
+                 0x01, 0x23, 0x45, 0x67, 0x89, 0xfe, 0xdc, 0xba,
+                 0x01, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff]);
+
+        assert_eq!(0, d.offset());
+        assert!(d.words(1).is_ok());
+        assert_eq!(4, d.offset());
+        assert!(d.words(2).is_ok());
+        assert_eq!(12, d.offset());
+        assert!(d.words(1).is_ok());
+        assert_eq!(16, d.offset());
+
+        assert!(d.source_language().is_ok());
+        assert_eq!(20, d.offset());
+
+        assert!(d.execution_model().is_err());
+        assert_eq!(24, d.offset());
+    }
+
+    #[test]
+    fn test_decoding_after_errors() {
+        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78]);
+        assert_eq!(Ok(0x78563412), d.word());
+        assert_eq!(Err(Error::StreamExpected(4)), d.word());
+        assert_eq!(Err(Error::StreamExpected(4)), d.word());
+        assert_eq!(Err(Error::StreamExpected(4)), d.word());
+    }
+
+    #[test]
+    fn test_limit() {
+        let mut v = vec![];
+        for _ in 0..12 {
+            v.push(0xff);
+        }
+        let mut d = Decoder::new(v);
+
+        assert!(!d.has_limit());
+        assert!(!d.limit_reached());
+
+        d.set_limit(4);
+        assert!(d.has_limit());
+        assert!(!d.limit_reached());
+
+        d.clear_limit();
+        assert!(!d.has_limit());
+        assert!(!d.limit_reached());
+
+        d.set_limit(2);
+        assert!(d.has_limit());
+        assert!(!d.limit_reached());
+        assert_eq!(Ok(0xffffffff), d.word());
+        assert!(d.has_limit());
+        assert!(!d.limit_reached());
+        assert_eq!(Ok(0xffffffff), d.word());
+        assert!(d.has_limit());
+        assert!(d.limit_reached());
+        assert_eq!(Err(Error::LimitReached(8)), d.word());
+        assert!(d.has_limit());
+        assert!(d.limit_reached());
+        assert_eq!(Err(Error::LimitReached(8)), d.word());
+        assert!(d.has_limit());
+        assert!(d.limit_reached());
+
+        d.clear_limit();
+        assert_eq!(Ok(0xffffffff), d.word());
+        assert!(!d.has_limit());
+        assert!(!d.limit_reached());
+
+        d.set_limit(0);
+        assert_eq!(Err(Error::LimitReached(12)), d.word());
+        assert!(d.has_limit());
+        assert!(d.limit_reached());
+
+        d.clear_limit();
+        assert_eq!(Err(Error::StreamExpected(12)), d.word());
     }
 }
