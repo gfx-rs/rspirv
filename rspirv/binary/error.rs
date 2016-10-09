@@ -22,6 +22,7 @@ use spirv;
 
 use std::{error, fmt};
 
+/// Decoder Error.
 #[derive(Debug, PartialEq)]
 pub enum Error {
     StreamExpected(usize),

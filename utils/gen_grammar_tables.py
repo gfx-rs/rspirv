@@ -124,7 +124,8 @@ def generate_operand_decode_errors(enums):
               for k in kinds
               if not (k.startswith('Pair') or k.startswith('Id') or
                       k.startswith('Literal'))]
-    definition = ['#[derive(Debug, PartialEq)]',
+    definition = ['/// Decoder Error.',
+                  '#[derive(Debug, PartialEq)]',
                   'pub enum Error {{',
                   '    StreamExpected(usize),',
                   '    LimitReached(usize),',
