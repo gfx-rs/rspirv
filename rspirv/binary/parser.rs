@@ -345,3 +345,73 @@ impl<'a> Parser<'a> {
 }
 
 include!("parse_operand.rs");
+
+#[cfg(test)]
+mod tests {
+    use mr;
+
+    use binary::error::Error;
+    use super::{Action, Consumer, Parser, State};
+
+    // TODO: It's unfortunate that we have these numbers directly coded here
+    // and repeat them in the following tests. Should have a better way.
+    #[cfg_attr(rustfmt, rustfmt_skip)]
+    static ZERO_BOUND_HEADER: &'static [u8] = &[
+        // Magic number.           Version number: 1.0.
+        0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
+        // Generator number: 0.    Bound: 0.
+        0x00, 0x00, 0x00, 0x00,    0x00, 0x00, 0x00, 0x00,
+        // Reserved word: 0.
+        0x00, 0x00, 0x00, 0x00];
+
+    struct RetainingConsumer {
+        pub header: Option<mr::ModuleHeader>,
+        pub insts: Vec<mr::Instruction>,
+    }
+
+    impl RetainingConsumer {
+        fn new() -> RetainingConsumer {
+            RetainingConsumer {
+                header: None,
+                insts: vec![],
+            }
+        }
+    }
+
+    impl Consumer for RetainingConsumer {
+        fn initialize(&mut self) -> Action {
+            Action::Continue
+        }
+        fn finalize(&mut self) -> Action {
+            Action::Continue
+        }
+
+        fn consume_header(&mut self, header: mr::ModuleHeader) -> Action {
+            self.header = Some(header);
+            Action::Continue
+        }
+        fn consume_instruction(&mut self, inst: mr::Instruction) -> Action {
+            self.insts.push(inst);
+            Action::Continue
+        }
+    }
+
+    #[test]
+    fn test_parse_empty_binary() {
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(vec![], &mut c);
+        assert_matches!(p.parse(),
+                        Err(State::HeaderIncomplete(Error::StreamExpected(0))));
+    }
+
+    #[test]
+    fn test_parse_complete_header() {
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(Some(mr::ModuleHeader::new(0x07230203, 0x00010000, 0, 0, 0)),
+                   c.header);
+    }
+}

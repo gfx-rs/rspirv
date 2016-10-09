@@ -33,6 +33,10 @@ extern crate collections;
 extern crate bitflags;
 extern crate num;
 
+#[cfg(test)]
+#[macro_use]
+extern crate assert_matches;
+
 pub mod binary;
 pub mod grammar;
 pub mod mr;

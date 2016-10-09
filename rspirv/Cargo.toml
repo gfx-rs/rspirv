@@ -13,3 +13,6 @@ path = "lib.rs"
 bitflags = "0.6"
 num = "0.1"
 num-macros = "0.1"
+
+[dev-dependencies]
+assert_matches = "1.0"
