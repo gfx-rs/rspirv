@@ -26,7 +26,12 @@ use grammar::OperandQuantifier as GOpCount;
 
 type GInstRef = &'static grammar::Instruction<'static>;
 
+const WORD_NUM_BYTES: usize = 4;
+
 /// Parser State.
+///
+/// Most of the error variants will retain the error location for both byte
+/// offset (starting from 0) and instruction number (starting from 1).
 #[derive(Debug)]
 pub enum State {
     /// Parsing completed
@@ -41,15 +46,13 @@ pub enum State {
     HeaderIncorrect,
     /// Unsupported endianness
     EndiannessUnsupported,
-    /// Incomplete instruction at (byte offset, inst index)
-    InstructionIncomplete(usize, usize),
-    /// Zero instruction word count at (byte offset, inst index)
+    /// Zero instruction word count at (byte offset, inst number)
     WordCountZero(usize, usize),
-    /// Unknown opcode at (byte offset, inst index, opcode)
+    /// Unknown opcode at (byte offset, inst number, opcode)
     OpcodeUnknown(usize, usize, u16),
-    /// Expected more operands (byte offset, inst index)
+    /// Expected more operands (byte offset, inst number)
     OperandExpected(usize, usize),
-    /// found redundant operands (byte offset, inst index)
+    /// found redundant operands (byte offset, inst number)
     OperandExceeded(usize, usize),
     /// Errored out when decoding operand with the given error
     OperandError(DecodeError),
@@ -66,7 +69,6 @@ impl error::Error for State {
             State::HeaderIncomplete(_) => "incomplete module header",
             State::HeaderIncorrect => "incorrect module header",
             State::EndiannessUnsupported => "unsupported endianness",
-            State::InstructionIncomplete(..) => "incomplete instruction",
             State::WordCountZero(..) => "zero word count found",
             State::OpcodeUnknown(..) => "unknown opcode",
             State::OperandExpected(..) => "expected more operands",
@@ -91,12 +93,6 @@ impl fmt::Display for State {
             }
             State::HeaderIncorrect => write!(f, "incorrect module header"),
             State::EndiannessUnsupported => write!(f, "unsupported endianness"),
-            State::InstructionIncomplete(offset, index) => {
-                write!(f,
-                       "incomplete instruction #{} at offset {}",
-                       index,
-                       offset)
-            }
             State::WordCountZero(offset, index) => {
                 write!(f,
                        "zero word count found for instruction #{} at offset {}",
@@ -281,7 +277,8 @@ impl<'a> Parser<'a> {
         if let Ok(word) = self.decoder.word() {
             let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
             if wc == 0 {
-                return Err(State::WordCountZero(self.decoder.offset() - 1,
+                return Err(State::WordCountZero(self.decoder.offset() -
+                                                WORD_NUM_BYTES,
                                                 self.inst_index));
             }
             if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
@@ -294,7 +291,8 @@ impl<'a> Parser<'a> {
                 self.decoder.clear_limit();
                 result
             } else {
-                Err(State::OpcodeUnknown(self.decoder.offset() - 1,
+                Err(State::OpcodeUnknown(self.decoder.offset() -
+                                         WORD_NUM_BYTES,
                                          self.inst_index,
                                          opcode))
             }
@@ -332,8 +330,7 @@ impl<'a> Parser<'a> {
                 match loperand.quantifier {
                     GOpCount::One => {
                         return Err(State::OperandExpected(self.decoder
-                                                              .offset() -
-                                                          1,
+                                                              .offset(),
                                                           self.inst_index))
                     }
                     GOpCount::ZeroOrOne | GOpCount::ZeroOrMore => break,
@@ -349,10 +346,11 @@ include!("parse_operand.rs");
 #[cfg(test)]
 mod tests {
     use mr;
+    use spirv;
 
     use binary::error::Error;
     use std::{error, fmt};
-    use super::{Action, Consumer, Parser, State};
+    use super::{Action, Consumer, Parser, State, WORD_NUM_BYTES};
 
     // TODO: It's unfortunate that we have these numbers directly coded here
     // and repeat them in the following tests. Should have a better way.
@@ -395,6 +393,58 @@ mod tests {
         }
     }
 
+    // TODO: Should put this function and its duplicate in the decoder in
+    // a utility module.
+    fn w2b(word: spirv::Word) -> Vec<u8> {
+        (0..WORD_NUM_BYTES)
+            .map(|i| ((word >> (8 * i)) & 0xff) as u8)
+            .collect()
+    }
+
+    /// A simple module builder for testing purpose.
+    struct ModuleBuilder {
+        insts: Vec<u8>,
+    }
+    impl ModuleBuilder {
+        fn new() -> ModuleBuilder {
+            ModuleBuilder { insts: ZERO_BOUND_HEADER.to_vec() }
+        }
+
+        /// Appends an instruction with the given `opcode` and `operands` into
+        /// the module.
+        fn inst(&mut self, opcode: spirv::Op, operands: Vec<u32>) {
+            let count: u32 = operands.len() as u32 + 1;
+            self.insts.append(&mut w2b((count << 16) | (opcode as u32)));
+            for o in operands {
+                self.insts.append(&mut w2b(o));
+            }
+        }
+
+        /// Returns the module being constructed.
+        fn get(self) -> Vec<u8> {
+            self.insts
+        }
+    }
+
+    #[test]
+    fn test_module_builder() {
+        let mut b = ModuleBuilder::new();
+        // OpNop
+        b.inst(spirv::Op::Nop, vec![]);
+        // OpCapability Int16
+        b.inst(spirv::Op::Capability, vec![22]);
+        // OpMemoryModel Logical GLSL450
+        b.inst(spirv::Op::MemoryModel, vec![0, 1]);
+        let mut module = ZERO_BOUND_HEADER.to_vec();
+        module.append(&mut vec![0x00, 0x00, 0x01, 0x00]); // OpNop
+        module.append(&mut vec![0x11, 0x00, 0x02, 0x00]); // OpCapability
+        module.append(&mut vec![0x16, 0x00, 0x00, 0x00]); // Int16
+        module.append(&mut vec![0x0e, 0x00, 0x03, 0x00]); // OpMemoryModel
+        module.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // Logical
+        module.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // GLSL450
+        assert_eq!(module, b.get());
+    }
+
     #[test]
     fn test_parse_empty_binary() {
         let mut c = RetainingConsumer::new();
@@ -412,6 +462,64 @@ mod tests {
         }
         assert_eq!(Some(mr::ModuleHeader::new(0x07230203, 0x00010000, 0, 0, 0)),
                    c.header);
+    }
+
+    #[test]
+    fn test_parse_one_inst() {
+        let mut c = RetainingConsumer::new();
+        {
+            let mut b = ModuleBuilder::new();
+            // OpMemoryModel Logical GLSL450
+            b.inst(spirv::Op::MemoryModel, vec![0, 1]);
+            let p = Parser::new(b.get(), &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("MemoryModel", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(
+            vec![mr::Operand::AddressingModel(spirv::AddressingModel::Logical),
+                 mr::Operand::MemoryModel(spirv::MemoryModel::GLSL450)],
+            inst.operands);
+    }
+
+    #[test]
+    fn test_parse_zero_word_count() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // OpNop with word count 0
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(v, &mut c);
+        // The first instruction starts at byte offset 20.
+        assert_matches!(p.parse(), Err(State::WordCountZero(20, 1)));
+    }
+
+    #[test]
+    fn test_parse_extra_operand() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x00, 0x00, 0x01, 0x00]); // OpNop with word count 1
+        v.append(&mut vec![0x00, 0x00, 0x02, 0x00]); // OpNop with word count 2
+        v.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // A bogus operand
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(v, &mut c);
+        // The bogus operand to the second OpNop instruction starts at
+        // byte offset (20 + 4 + 4).
+        assert_matches!(p.parse(), Err(State::OperandExceeded(28, 2)));
+    }
+
+    #[test]
+    fn test_parse_missing_operand() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x00, 0x00, 0x01, 0x00]); // OpNop with word count 1
+        v.append(&mut vec![0x0e, 0x00, 0x03, 0x00]); // OpMemoryModel
+        v.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // Logical
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(v, &mut c);
+        // The missing operand to the OpMemoryModel instruction starts at
+        // byte offset (20 + 4 + 4 + 4).
+        assert_matches!(p.parse(),
+                        Err(State::OperandError(Error::StreamExpected(32))));
     }
 
     #[derive(Debug)]
@@ -536,10 +644,10 @@ mod tests {
 
     #[test]
     fn test_consumer_parse_inst_error() {
+        let mut b = ModuleBuilder::new();
+        b.inst(spirv::Op::Nop, vec![]);
         let mut c = ParseInstErrorConsumer {};
-        let mut v = ZERO_BOUND_HEADER.to_vec();
-        v.append(&mut vec![0x00, 0x00, 0x01, 0x00]);  // OpNop
-        let p = Parser::new(v, &mut c);
+        let p = Parser::new(b.get(), &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
         if let Err(State::ConsumerError(err)) = ret {
