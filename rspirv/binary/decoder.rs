@@ -173,8 +173,9 @@ impl Decoder {
         while !bytes.is_empty() && bytes.last() == Some(&0) {
             bytes.pop();
         }
-        String::from_utf8(bytes).map_err(
-                |e| Error::DecodeStringFailed(start_offset, format!("{}", e)))
+        String::from_utf8(bytes).map_err(|e| {
+            Error::DecodeStringFailed(start_offset, format!("{}", e))
+        })
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
@@ -238,9 +239,10 @@ mod tests {
 
     #[test]
     fn test_decoding_words() {
-        let mut d = Decoder::new(
-            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
-                 0x01, 0x23, 0x45, 0x67, 0x89, 0xfe, 0xdc, 0xba]);
+        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
+                                      0x90, 0xab, 0xcd, 0xef,
+                                      0x01, 0x23, 0x45, 0x67,
+                                      0x89, 0xfe, 0xdc, 0xba]);
         assert_eq!(Ok(vec![0x78563412, 0xefcdab90]), d.words(2));
         assert_eq!(Ok(vec![0x67452301]), d.words(1));
         assert_eq!(Ok(vec![0xbadcfe89]), d.words(1));
@@ -287,10 +289,12 @@ mod tests {
 
     #[test]
     fn test_offset() {
-        let mut d = Decoder::new(
-            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef,
-                 0x01, 0x23, 0x45, 0x67, 0x89, 0xfe, 0xdc, 0xba,
-                 0x01, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff]);
+        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
+                                      0x90, 0xab, 0xcd, 0xef,
+                                      0x01, 0x23, 0x45, 0x67,
+                                      0x89, 0xfe, 0xdc, 0xba,
+                                      0x01, 0x00, 0x00, 0x00,
+                                      0xff, 0xff, 0xff, 0xff]);
 
         assert_eq!(0, d.offset());
         assert!(d.words(1).is_ok());

@@ -205,14 +205,15 @@ impl binary::Consumer for Loader {
             }
             spirv::Op::MemoryModel => {
                 if let Some(mr::Operand::MemoryModel(model)) = inst.operands
-                    .pop() {
+                                                                   .pop() {
                     self.module.memory_model = Some(model)
                 } else {
                     return ParseAction::Error(
                         Box::new(Error::WrongOpMemoryModelOperand));
                 }
-                if let Some(mr::Operand::AddressingModel(model)) = inst.operands
-                    .pop() {
+                if let Some(mr::Operand::AddressingModel(model)) =
+                       inst.operands
+                           .pop() {
                     self.module.addressing_model = Some(model)
                 } else {
                     return ParseAction::Error(

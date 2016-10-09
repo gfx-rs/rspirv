@@ -460,7 +460,11 @@ mod tests {
             let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
-        assert_eq!(Some(mr::ModuleHeader::new(0x07230203, 0x00010000, 0, 0, 0)),
+        assert_eq!(Some(mr::ModuleHeader::new(0x07230203,
+                                              0x00010000,
+                                              0,
+                                              0,
+                                              0)),
                    c.header);
     }
 
