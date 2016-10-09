@@ -351,6 +351,7 @@ mod tests {
     use mr;
 
     use binary::error::Error;
+    use std::{error, fmt};
     use super::{Action, Consumer, Parser, State};
 
     // TODO: It's unfortunate that we have these numbers directly coded here
@@ -368,7 +369,6 @@ mod tests {
         pub header: Option<mr::ModuleHeader>,
         pub insts: Vec<mr::Instruction>,
     }
-
     impl RetainingConsumer {
         fn new() -> RetainingConsumer {
             RetainingConsumer {
@@ -377,7 +377,6 @@ mod tests {
             }
         }
     }
-
     impl Consumer for RetainingConsumer {
         fn initialize(&mut self) -> Action {
             Action::Continue
@@ -413,5 +412,141 @@ mod tests {
         }
         assert_eq!(Some(mr::ModuleHeader::new(0x07230203, 0x00010000, 0, 0, 0)),
                    c.header);
+    }
+
+    #[derive(Debug)]
+    struct ErrorString(&'static str);
+    impl error::Error for ErrorString {
+        fn description(&self) -> &str {
+            "consumer error"
+        }
+    }
+    impl fmt::Display for ErrorString {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            let &ErrorString(ref s) = self;
+            write!(f, "{}", s)
+        }
+    }
+
+    struct InitializeErrorConsumer;
+    impl Consumer for InitializeErrorConsumer {
+        fn initialize(&mut self) -> Action {
+            Action::Error(Box::new(ErrorString("init error")))
+        }
+        fn finalize(&mut self) -> Action {
+            Action::Continue
+        }
+        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+            Action::Continue
+        }
+        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+            Action::Continue
+        }
+    }
+
+    #[test]
+    fn test_consumer_initialize_error() {
+        let mut c = InitializeErrorConsumer {};
+        let p = Parser::new(vec![], &mut c);
+        let ret = p.parse();
+        assert_matches!(ret, Err(State::ConsumerError(_)));
+        if let Err(State::ConsumerError(err)) = ret {
+            assert_eq!("consumer error", err.description());
+            assert_eq!("init error", format!("{}", err));
+        } else {
+            assert!(false);
+        }
+    }
+
+    struct FinalizeErrorConsumer;
+    impl Consumer for FinalizeErrorConsumer {
+        fn initialize(&mut self) -> Action {
+            Action::Continue
+        }
+        fn finalize(&mut self) -> Action {
+            Action::Error(Box::new(ErrorString("fin error")))
+        }
+        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+            Action::Continue
+        }
+        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+            Action::Continue
+        }
+    }
+
+    #[test]
+    fn test_consumer_finalize_error() {
+        let mut c = FinalizeErrorConsumer {};
+        let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
+        let ret = p.parse();
+        assert_matches!(ret, Err(State::ConsumerError(_)));
+        if let Err(State::ConsumerError(err)) = ret {
+            assert_eq!("consumer error", err.description());
+            assert_eq!("fin error", format!("{}", err));
+        } else {
+            assert!(false);
+        }
+    }
+
+    struct ParseHeaderErrorConsumer;
+    impl Consumer for ParseHeaderErrorConsumer {
+        fn initialize(&mut self) -> Action {
+            Action::Continue
+        }
+        fn finalize(&mut self) -> Action {
+            Action::Continue
+        }
+        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+            Action::Error(Box::new(ErrorString("parse header error")))
+        }
+        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+            Action::Continue
+        }
+    }
+
+    #[test]
+    fn test_consumer_parse_header_error() {
+        let mut c = ParseHeaderErrorConsumer {};
+        let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
+        let ret = p.parse();
+        assert_matches!(ret, Err(State::ConsumerError(_)));
+        if let Err(State::ConsumerError(err)) = ret {
+            assert_eq!("consumer error", err.description());
+            assert_eq!("parse header error", format!("{}", err));
+        } else {
+            assert!(false);
+        }
+    }
+
+    struct ParseInstErrorConsumer;
+    impl Consumer for ParseInstErrorConsumer {
+        fn initialize(&mut self) -> Action {
+            Action::Continue
+        }
+        fn finalize(&mut self) -> Action {
+            Action::Continue
+        }
+        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+            Action::Continue
+        }
+        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+            Action::Error(Box::new(ErrorString("parse inst error")))
+        }
+    }
+
+    #[test]
+    fn test_consumer_parse_inst_error() {
+        let mut c = ParseInstErrorConsumer {};
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x00, 0x00, 0x01, 0x00]);  // OpNop
+        let p = Parser::new(v, &mut c);
+        let ret = p.parse();
+        assert_matches!(ret, Err(State::ConsumerError(_)));
+        if let Err(State::ConsumerError(err)) = ret {
+            assert_eq!("consumer error", err.description());
+            assert_eq!("parse inst error", format!("{}", err));
+        } else {
+            assert!(false);
+        }
     }
 }
