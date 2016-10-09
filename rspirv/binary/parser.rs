@@ -446,7 +446,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_empty_binary() {
+    fn test_parsing_empty_binary() {
         let mut c = RetainingConsumer::new();
         let p = Parser::new(vec![], &mut c);
         assert_matches!(p.parse(),
@@ -454,7 +454,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_complete_header() {
+    fn test_parsing_complete_header() {
         let mut c = RetainingConsumer::new();
         {
             let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
@@ -465,7 +465,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_one_inst() {
+    fn test_parsing_one_inst() {
         let mut c = RetainingConsumer::new();
         {
             let mut b = ModuleBuilder::new();
@@ -486,7 +486,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_zero_word_count() {
+    fn test_parsing_zero_word_count() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // OpNop with word count 0
         let mut c = RetainingConsumer::new();
@@ -496,7 +496,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_extra_operand() {
+    fn test_parsing_extra_operand() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x00, 0x00, 0x01, 0x00]); // OpNop with word count 1
         v.append(&mut vec![0x00, 0x00, 0x02, 0x00]); // OpNop with word count 2
@@ -509,7 +509,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_missing_operand() {
+    fn test_parsing_missing_operand() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x00, 0x00, 0x01, 0x00]); // OpNop with word count 1
         v.append(&mut vec![0x0e, 0x00, 0x03, 0x00]); // OpMemoryModel
