@@ -17,6 +17,7 @@ branches:
 script:
   - cd dis/
   - cargo build --verbose
+  - cd ../rspirv/
   - cargo test --verbose
 
 notifications:
