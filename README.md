@@ -1,6 +1,8 @@
 rspirv
 ======
 
+[![Build Status](https://travis-ci.org/google/rspirv.svg?branch=master)](https://travis-ci.org/google/rspirv)
+
 **R**u**s**t implementation of S**PIR**-**V** module processing
 functionalities. It aims to provide:
 

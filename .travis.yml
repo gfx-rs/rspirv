@@ -1,0 +1,27 @@
+language: rust
+
+sudo: false
+os:
+  - linux
+  - osx
+rust:
+  - nightly
+
+matrix:
+  fast_finish: true
+
+branches:
+  only:
+    - master
+
+script:
+  - cd dis/
+  - cargo build --verbose
+  - cargo test --verbose
+
+notifications:
+  email:
+    recipients:
+      - antiagainst@gmail.com
+    on_success: change
+    on_failure: always
