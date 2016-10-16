@@ -29,10 +29,16 @@ This project uses features only enabled in nightly versions of the Rust
 compiler; so to build it, a nightly version of the compiler is required.
 
 ```sh
-# In the root source directory
+git clone git@github.com:google/rspirv.git
+
+# Build the disassembler
 cd rspirv/dis
-Cargo build # build the disassembler and its dependencies
-Cargo doc   # build the documentation
+Cargo build
+
+# Build the core library and its doc
+cd rspirv/rspirv
+Cargo build
+Cargo doc
 ```
 
 Example

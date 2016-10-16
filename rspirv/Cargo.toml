@@ -3,8 +3,11 @@ name = "rspirv"
 version = "0.1.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
+description = "Rust library APIs for SPIR-V module manipulation"
+repository = "https://github.com/google/rspirv"
 readme = "../README.md"
 license = "Apache-2.0"
+keywords = ["spirv", "vulkan", "opencl"]
 
 [lib]
 path = "lib.rs"
