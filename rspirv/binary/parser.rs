@@ -454,6 +454,33 @@ mod tests {
     }
 
     #[test]
+    fn test_parsing_incomplete_header() {
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(vec![0x03, 0x02, 0x23, 0x07], &mut c);
+        assert_matches!(p.parse(),
+                        Err(State::HeaderIncomplete(Error::StreamExpected(4))));
+    }
+
+    #[test]
+    fn test_parsing_unsupported_endianness() {
+        let mut module = ZERO_BOUND_HEADER.to_vec();
+        module.as_mut_slice().swap(0, 3);
+        module.as_mut_slice().swap(1, 2);
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(module, &mut c);
+        assert_matches!(p.parse(), Err(State::EndiannessUnsupported));
+    }
+
+    #[test]
+    fn test_parsing_wrong_magic_number() {
+        let mut module = ZERO_BOUND_HEADER.to_vec();
+        module[0] = 0x00;
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(module, &mut c);
+        assert_matches!(p.parse(), Err(State::HeaderIncorrect));
+    }
+
+    #[test]
     fn test_parsing_complete_header() {
         let mut c = RetainingConsumer::new();
         {
