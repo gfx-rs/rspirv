@@ -3,6 +3,8 @@ name = "rspirv"
 version = "0.1.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
+build = "build.rs"
+
 description = "Rust library APIs for SPIR-V module manipulation"
 repository = "https://github.com/google/rspirv"
 readme = "../README.md"
@@ -16,6 +18,11 @@ path = "lib.rs"
 bitflags = "0.6"
 num = "0.1"
 num-macros = "0.1"
+
+[build-dependencies]
+regex = "0.1"
+serde = "0.8"
+serde_json = "0.8"
 
 [dev-dependencies]
 assert_matches = "1.0"
