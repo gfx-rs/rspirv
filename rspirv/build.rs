@@ -47,8 +47,7 @@ fn gen_bit_enum_operand_kind(value: &Value) -> String {
     let object = value.as_object().unwrap();
     let kind = object.get("kind").unwrap().as_str().unwrap();
     let enumerants = object.get("enumerants").unwrap().as_array().unwrap();
-    let elements: Vec<String> = enumerants.iter()
-                                          .map(|ref element| {
+    let elements: Vec<String> = enumerants.iter().map(|ref element| {
         let enumerant = element.as_object().unwrap();
         let symbol = enumerant.get("enumerant").unwrap().as_str().unwrap();
         let value = enumerant.get("value").unwrap().as_str().unwrap();
@@ -56,8 +55,7 @@ fn gen_bit_enum_operand_kind(value: &Value) -> String {
                 constantify_name(kind),
                 constantify_name(symbol),
                 value)
-    })
-                                          .collect();
+    }).collect();
     return format!("bitflags!{{\n    pub flags {kind} : u32 \
                     {{\n{enumerants}\n    }}\n}}\n",
                    kind = kind,
@@ -69,8 +67,7 @@ fn gen_value_enum_operand_kind(value: &Value) -> String {
     let object = value.as_object().unwrap();
     let kind = object.get("kind").unwrap().as_str().unwrap();
     let enumerants = object.get("enumerants").unwrap().as_array().unwrap();
-    let elements: Vec<String> = enumerants.iter()
-                                          .map(|ref element| {
+    let elements: Vec<String> = enumerants.iter().map(|ref element| {
         let enumerant = element.as_object().unwrap();
         let symbol = enumerant.get("enumerant").unwrap().as_str().unwrap();
         let value = enumerant.get("value").unwrap().as_u64().unwrap();
@@ -81,8 +78,7 @@ fn gen_value_enum_operand_kind(value: &Value) -> String {
         } else {
             format!("    {} = {},", symbol, value)
         }
-    })
-                                          .collect();
+    }).collect();
     return format!("{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n",
                    attribute = VAULE_ENUM_ATTRIBUTE,
                    kind = kind,
@@ -170,13 +166,12 @@ fn main() {
     // Get the instruction table.
     let instructions = root.get("instructions").unwrap().as_array().unwrap();
     let opcodes: Vec<String> = instructions.iter()
-                                           .map(|ref inst| {
+        .map(|ref inst| {
         let instruction = inst.as_object().unwrap();
         let opname = instruction.get("opname").unwrap().as_str().unwrap();
         let opcode = instruction.get("opcode").unwrap();
         format!("    {} = {},", &opname[2..], opcode)
-    })
-                                           .collect();
+    }).collect();
     let opcode_enum = format!("{attribute}\npub enum Op {{\n{opcodes}\n}}\n",
                               attribute = VAULE_ENUM_ATTRIBUTE,
                               opcodes = opcodes.join("\n"));
