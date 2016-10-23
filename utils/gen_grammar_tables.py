@@ -116,41 +116,6 @@ def convert_symbol_to_snake_case(variable):
     return re.sub(r'([a-z])([A-Z])', r'\1_\2', variable).lower()
 
 
-def generate_operand_decode_methods(enums):
-    """Returns the implementation of various operand decoding methods."""
-    kinds = [e['kind'] for e in enums]
-    bitflag_kinds = set([e['kind'] for e in enums
-                         if e['category'] == 'BitEnum'])
-
-    # Method definition for decoding values of a particular operand kind.
-    # If the operand kind belongs to BitEnum, we use from_bits(), otherwise,
-    # from_u32().
-    f = ['    /// Decodes and returns the next SPIR-V word as a SPIR-V',
-         '    /// {kind} value.',
-         '    pub fn {fname}(&mut self) -> Result<spirv::{kind}> {{',
-         '        if let Ok(word) = self.word() {{',
-         '            spirv::{kind}::from_{ty}(word)'
-         '.ok_or(Error::{kind}Unknown(self.offset - WORD_NUM_BYTES, word))',
-         '        }} else {{',
-         '            Err(Error::StreamExpected(self.offset))',
-         '        }}',
-         '    }}']
-    functions = [
-        '\n'.join(f).format(fname=convert_symbol_to_snake_case(k),
-                            kind=k,
-                            ty="bits" if k in bitflag_kinds else "u32")
-        for k in kinds
-        # For kinds whose values may occupy more than one word, we need to
-        # implement manually.
-        if not (k.startswith('Pair') or k.startswith('Id') or
-                k.startswith('Literal'))]
-    return '\n'.join(
-        ['use num::FromPrimitive;\n',
-         'impl Decoder {{',
-         '{functions}',
-         '}}']).format(functions='\n\n'.join(functions))
-
-
 def get_decode_method(kind):
     assert not kind.startswith('Pair')
     if kind.startswith('Id'):
@@ -287,21 +252,13 @@ def generate_operand_parse_methods(enums):
         functions='\n\n'.join([e[1] for e in further_parse_methods]))
 
 
-def update(grammar_input, operand_decode_output,
-           operand_error_output, operand_parse_output):
+def update(grammar_input, operand_error_output, operand_parse_output):
     """Updates all generated tables using the JSON grammar."""
     with open(grammar_input) as json_file:
         grammar = json.loads(json_file.read())
 
-        operand_decode_output = open(operand_decode_output, 'w')
         operand_error_output = open(operand_error_output, 'w')
         operand_parse_output = open(operand_parse_output, 'w')
-
-        print(COPYRIGHT, file=operand_decode_output)
-        print(AUTO_GEN_COMMENT, file=operand_decode_output)
-        print('{}\n'.format(SPIRV_GRAMMAR_URL), file=operand_decode_output)
-        print(generate_operand_decode_methods(grammar['operand_kinds']),
-              file=operand_decode_output)
 
         print(COPYRIGHT, file=operand_error_output)
         print(AUTO_GEN_COMMENT, file=operand_error_output)
@@ -334,8 +291,7 @@ def main():
                         help='output file for SPIR-V operand parsing methods')
     args = parser.parse_args()
 
-    update(args.input, args.operand_decode_output,
-           args.operand_error_output, args.operand_parse_output)
+    update(args.input, args.operand_error_output, args.operand_parse_output)
 
 if __name__ == '__main__':
     main()

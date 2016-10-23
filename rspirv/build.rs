@@ -35,13 +35,11 @@ static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 
 static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
 
-/// Converts the given `name` to comply with the constant naming style in Rust.
-///
-/// For example, "aCamelCaseName" will be changed to "A_CAMEL_CASE_NAME".
-fn constantify_name(name: &str) -> String {
+/// Converts the given `symbol` to use snake case style.
+fn split_words_with_underscore(symbol: &str) -> String {
     // Two named capture groups: the lowercase letter and the uppercase letter.
     let re = Regex::new(r"(?P<l>[:lower:])(?P<u>[:upper:])").unwrap();
-    re.replace_all(name, "$l-$u").replace("-", "_").to_uppercase()
+    re.replace_all(symbol, "$l-$u").replace("-", "_")
 }
 
 fn gen_bit_enum_operand_kind(value: &Value) -> String {
@@ -53,8 +51,8 @@ fn gen_bit_enum_operand_kind(value: &Value) -> String {
         let symbol = enumerant.get("enumerant").unwrap().as_str().unwrap();
         let value = enumerant.get("value").unwrap().as_str().unwrap();
         format!("        const {}_{} = {},",
-                constantify_name(kind),
-                constantify_name(symbol),
+                split_words_with_underscore(kind).to_uppercase(),
+                split_words_with_underscore(symbol).to_uppercase(),
                 value)
     }).collect();
     format!("bitflags!{{\n    pub flags {kind} : u32 \
@@ -339,12 +337,61 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
                         kind=element)
             }).collect();
         let impl_code = format!(
-            "impl fmt::Display for Operand {{\n    \
-             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n        \
-             match *self {{\n{cases}\n        }}\n    }}\n}}\n",
+            "impl fmt::Display for Operand {{\n\
+             {s:4}fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n\
+             {s:8}match *self {{\n{cases}\n{s:8}}}\n{s:4}}}\n}}\n",
+             s="",
              cases=cases.join("\n"));
         file.write_all(&impl_code.into_bytes()).unwrap();
     }
+}
+
+/// Writes the generated operand decoding methods for binary::Decoder by
+/// parsing the given JSON object `value` to the file with the given `filename`.
+///
+/// `value` is expected to be the "operand_kinds" array of the SPIR-V grammar.
+fn write_operand_decode_methods(value: &Value, filename: &str) {
+    let mut file = fs::File::create(filename).unwrap();
+
+    write_copyright_autogen_comment(&mut file);
+
+    file.write_all(b"use num::FromPrimitive;\n\n").unwrap();
+
+    let kinds = value.as_array().unwrap();
+    let methods: Vec<String> =
+        kinds.iter().filter(|ref element| {
+            let kind = element.as_object().unwrap();
+            let kind = kind.get("kind").unwrap().as_str().unwrap();
+            // For kinds whose values may occupy more than one word, we need to
+            // implement manually.
+            !(kind.starts_with("Pair") ||
+              kind.starts_with("Id") ||
+              kind.starts_with("Literal"))
+        }).map(|ref element| {
+            let kind = element.as_object().unwrap();
+            let category = kind.get("category").unwrap().as_str().unwrap();
+            let kind = kind.get("kind").unwrap().as_str().unwrap();
+            // Method definition for decoding values of a particular operand
+            // kind. If the operand kind belongs to BitEnum, we use from_bits(),
+            // otherwise, from_u32().
+            format!(
+                "{s:4}/// Decodes and returns the next SPIR-V word as\n\
+                 {s:4}/// a SPIR-V {kind} value.\n\
+                 {s:4}pub fn {fname}(&mut self) -> Result<spirv::{kind}> {{\n\
+                 {s:8}if let Ok(word) = self.word() {{\n\
+                     {s:12}spirv::{kind}::from_{ty}(word).ok_or(Error::\
+                     {kind}Unknown(self.offset - WORD_NUM_BYTES, word))\n\
+                 {s:8}}} else {{\n\
+                     {s:12}Err(Error::StreamExpected(self.offset))\n\
+                 {s:8}}}\n{s:4}}}\n",
+                 s="",
+                 fname=split_words_with_underscore(kind).to_lowercase(),
+                 kind=kind,
+                 ty=if category == "BitEnum" { "bits" } else { "u32" })
+        }).collect();
+
+    let impl_code = format!("impl Decoder {{\n{}}}\n", methods.join("\n"));
+    file.write_all(&impl_code.into_bytes()).unwrap();
 }
 
 fn main() {
@@ -379,6 +426,9 @@ fn main() {
         let filename = path.to_str().unwrap();
         write_grammar_inst_table_operand_kinds(&grammar, filename);
     }
+
+    let root = grammar.as_object().unwrap();
+
     {
         // Path to the generated operands kind in memory representation.
         path.pop();
@@ -386,7 +436,16 @@ fn main() {
         path.push("mr");
         path.push("operand.rs");
         let filename = path.to_str().unwrap();
-        let root = grammar.as_object().unwrap();
         write_mr_operand_kinds(root.get("operand_kinds").unwrap(), filename);
+    }
+
+    {
+        // Path to the generated operands kind in memory representation.
+        path.pop();
+        path.pop();
+        path.push("binary");
+        path.push("decode_operand.rs");
+        let filename = path.to_str().unwrap();
+        write_operand_decode_methods(root.get("operand_kinds").unwrap(), filename);
     }
 }
