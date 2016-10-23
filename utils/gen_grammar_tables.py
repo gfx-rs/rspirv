@@ -43,77 +43,6 @@ SPIRV_GRAMMAR_URL = ('//   https://github.com/KhronosGroup/SPIRV-Headers/\n'
                      'spirv.core.grammar.json')
 
 
-def convert_operand_quantifier(quantifier):
-    assert quantifier in ['', '?', '*']
-
-    if quantifier == '':
-        return 'One'
-    if quantifier == '?':
-        return 'ZeroOrOne'
-    if quantifier == '*':
-        return 'ZeroOrMore'
-
-
-class InstInitializer(object):
-    """Instances holds a SPIR-V instruction suitable for printing
-    as the initializer."""
-
-    def __init__(self, opname, caps, operands):
-        """Initialization.
-
-        Arguments:
-          - opname: opcode name (with the 'Op' prefix)
-          - caps: a sequence of capability names required by this opcode
-          - operands: a sequence of (operand-kind, operand-quantifier) tuples
-        """
-        assert opname.startswith('Op')
-        self.opname = opname[2:]  # Remove the 'Op' prefix
-        self.caps = caps
-        self.operands = [(o[0], convert_operand_quantifier(o[1]))
-                         for o in operands]
-
-    def __str__(self):
-        operand_strs = ['({}, {})'.format(*o) for o in self.operands]
-
-        template = ['inst!({opname}', '[{caps}]', '[{operands}])']
-        return ', '.join(template).format(
-            opname=self.opname,
-            caps=', '.join(self.caps),
-            operands=', '.join(operand_strs))
-
-
-def generate_instruction(inst):
-    """Returns the Rust initializer for the given SPIR-V instruction."""
-    opname = inst['opname']
-    caps = inst.get('capabilities', [])
-    operands = inst.get('operands', {})
-    operands = [(o['kind'], o.get('quantifier', '')) for o in operands]
-
-    return str(InstInitializer(opname, caps, operands))
-
-
-def generate_instruction_table(inst_table):
-    """Returns the info table containing all SPIR-V instructions."""
-    table = [
-        '#[cfg_attr(rustfmt, rustfmt_skip)]\n',
-        "static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[\n    ",
-        ',\n    '.join([generate_instruction(inst) for inst in inst_table]),
-        '\n];']
-    return ''.join(table)
-
-
-def generate_operand_kind_table(enums):
-    """Returns the Rust enum containing all SPIR-V operand kinds."""
-    enums = [e['kind'] for e in enums]
-
-    definition = ['/// All operand kinds in SPIR-V grammar.',
-                  '#[derive(Clone, Copy, Debug)]',
-                  'pub enum OperandKind {{',
-                  '    {kinds}',
-                  '}}\n']
-    return '\n'.join(definition).format(kinds=',\n    '.join(enums))
-
-
 def generate_operand_decode_errors(enums):
     """Returns the Rust Error enum containing all errors for decoding
     SPIR-V operand values and its implementations."""
@@ -412,25 +341,16 @@ def generate_operand_parse_methods(enums):
         functions='\n\n'.join([e[1] for e in further_parse_methods]))
 
 
-def update(grammar_input, inst_table_output, operand_decode_output,
+def update(grammar_input, operand_decode_output,
            operand_error_output, operand_parse_output, mr_operand_output):
     """Updates all generated tables using the JSON grammar."""
     with open(grammar_input) as json_file:
         grammar = json.loads(json_file.read())
 
-        core_grammar_output = open(inst_table_output, 'w')
         operand_decode_output = open(operand_decode_output, 'w')
         operand_error_output = open(operand_error_output, 'w')
         operand_parse_output = open(operand_parse_output, 'w')
         mr_operand_output = open(mr_operand_output, 'w')
-
-        print(COPYRIGHT, file=core_grammar_output)
-        print(AUTO_GEN_COMMENT, file=core_grammar_output)
-        print('{}\n'.format(SPIRV_GRAMMAR_URL), file=core_grammar_output)
-        print(generate_operand_kind_table(grammar['operand_kinds']),
-              file=core_grammar_output)
-        print(generate_instruction_table(grammar['instructions']),
-              file=core_grammar_output)
 
         print(COPYRIGHT, file=operand_decode_output)
         print(AUTO_GEN_COMMENT, file=operand_decode_output)
@@ -464,9 +384,6 @@ def main():
     parser.add_argument('-i', '--input', metavar='<path>',
                         type=str, required=True,
                         help='input JSON file for core SPIR-V grammar')
-    parser.add_argument('-t', '--inst-table-output', metavar='<path>',
-                        type=str, required=True,
-                        help='output file for core SPIR-V instruction table')
     parser.add_argument('-d', '--operand-decode-output', metavar='<path>',
                         type=str, required=True,
                         help='output file for SPIR-V operand decoding methods')
@@ -481,7 +398,7 @@ def main():
                         help='output file for mr operand definition')
     args = parser.parse_args()
 
-    update(args.input, args.inst_table_output, args.operand_decode_output,
+    update(args.input, args.operand_decode_output,
            args.operand_error_output, args.operand_parse_output,
            args.mr_operand_output)
 

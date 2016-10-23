@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This rust module is automatically generated from SPIR-V C++ header file:
-//   https://raw.githubusercontent.com/KhronosGroup/
-//           SPIRV-Headers/master/include/spirv/1.1/spirv.hpp
+// This rust module is automatically generated from the SPIR-V JSON grammar:
+//   https://github.com/KhronosGroup/SPIRV-Headers/
+//           blob/master/include/spirv/1.1/spirv.core.grammar.json
 
 //! The SPIR-V header.
 

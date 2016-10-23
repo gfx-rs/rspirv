@@ -24,15 +24,16 @@ static COPYRIGHT : &'static str = "\
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static AUTOGEN_COMMENT : &'static str = "\
-// This rust module is automatically generated from SPIR-V C++ header file:
-//   https://raw.githubusercontent.com/KhronosGroup/
-//           SPIRV-Headers/master/include/spirv/1.1/spirv.hpp";
+// This rust module is automatically generated from the SPIR-V JSON grammar:
+//   https://github.com/KhronosGroup/SPIRV-Headers/
+//           blob/master/include/spirv/1.1/spirv.core.grammar.json";
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]";
 
+static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
 
 /// Converts the given name to comply with the constant naming style in Rust.
 ///
@@ -99,6 +100,59 @@ fn gen_operand_kind(value: &Value) -> String {
     } else {
         String::new()
     }
+}
+
+fn convert_quantifier(quantifier: &str) -> &str {
+    if quantifier == "" {
+        "One"
+    } else if quantifier == "?" {
+        "ZeroOrOne"
+    } else {
+        "ZeroOrMore"
+    }
+}
+
+/// Returns the code for the whole instruction table by parsing the given
+/// JSON object.
+///
+/// The JSON object is expected to be the "instructions" object of the
+/// SPIR-V grammar.
+fn gen_instruction_table(value: &Value) -> String {
+    let object = value.as_array().unwrap();
+    let empty_array = Value::Array(vec![]);
+    let empty_string = Value::String(String::new());
+    // Vector for strings for all instructions.
+    let elements: Vec<String> = object.iter().map(|ref element| {
+        let inst = element.as_object().unwrap();
+        let opname = inst.get("opname").unwrap().as_str().unwrap();
+        let caps =
+            inst.get("capabilities").unwrap_or(&empty_array)
+                .as_array().unwrap();
+        let caps: Vec<String> = caps.iter().map(|ref cap| {
+            format!("{}", cap.as_str().unwrap())
+        }).collect();
+        let operands =
+            inst.get("operands").unwrap_or(&empty_array)
+                .as_array().unwrap();
+        // Vector of strings for all operands.
+        let operands: Vec<String> = operands.iter().map(|ref e| {
+            let operand = e.as_object().unwrap();
+            let kind = operand.get("kind").unwrap().as_str().unwrap();
+            let quantifier =
+                operand.get("quantifier").unwrap_or(&empty_string)
+                    .as_str().unwrap();
+            format!("({}, {})", kind, convert_quantifier(quantifier))
+        }).collect();
+        format!("    inst!({opname}, [{caps}], [{operands}]),",
+                // Omit the "Op" prefix.
+                opname=&opname[2..],
+                caps=caps.join(", "),
+                operands=operands.join(", "))
+    }).collect();
+    format!("{skip}\nstatic INSTRUCTION_TABLE: \
+             &'static [Instruction<'static>] = &[\n{insts}\n];\n",
+            skip=RUSTFMT_SKIP,
+            insts=elements.join("\n"))
 }
 
 fn main() {
@@ -185,6 +239,43 @@ fn main() {
                                       attribute = VAULE_ENUM_ATTRIBUTE,
                                       opcodes = opcodes.join("\n"));
             file.write_all(&opcode_enum.into_bytes()).unwrap();
+        }
+    }
+
+    {
+        // Path to the generated instruction table.
+        path.pop();
+        path.push("grammar");
+        path.push("table.rs");
+        let filename = path.to_str().unwrap();
+        let mut file = fs::File::create(filename).unwrap();
+
+        { // Copyright, documentation.
+            file.write_all(COPYRIGHT.as_bytes()).unwrap();
+            file.write_all(b"\n\n").unwrap();
+            file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
+            file.write_all(b"\n\n").unwrap();
+        }
+
+        { // Enum for all operand kinds.
+            let kinds = root.get("operand_kinds").unwrap().as_array().unwrap();
+            let elements: Vec<String> = kinds.iter().map(|ref element| {
+                let kind = element.as_object().unwrap();
+                let kind = kind.get("kind").unwrap().as_str().unwrap();
+                format!("    {},", kind)
+            }).collect();
+            let kind_enum = format!(
+                "/// All operand kinds in the SPIR-V grammar.\n\
+                 #[derive(Clone, Copy, Debug, PartialEq, Eq)]\n\
+                 pub enum OperandKind {{\n{}\n}}\n",
+                elements.join("\n"));
+            file.write_all(&kind_enum.into_bytes()).unwrap();
+            file.write_all(b"\n").unwrap();
+        }
+
+        { // Instruction table.
+        let table = gen_instruction_table(root.get("instructions").unwrap());
+        file.write_all(&table.into_bytes()).unwrap();
         }
     }
 }

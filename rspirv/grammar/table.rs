@@ -16,8 +16,8 @@
 //   https://github.com/KhronosGroup/SPIRV-Headers/
 //           blob/master/include/spirv/1.1/spirv.core.grammar.json
 
-/// All operand kinds in SPIR-V grammar.
-#[derive(Clone, Copy, Debug)]
+/// All operand kinds in the SPIR-V grammar.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum OperandKind {
     ImageOperands,
     FPFastMathMode,
@@ -61,7 +61,7 @@ pub enum OperandKind {
     LiteralSpecConstantOpInteger,
     PairLiteralIntegerIdRef,
     PairIdRefLiteralInteger,
-    PairIdRefIdRef
+    PairIdRefIdRef,
 }
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -371,5 +371,5 @@ static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[
     inst!(MemoryNamedBarrier, [NamedBarrier], [(IdRef, One), (IdScope, One), (IdMemorySemantics, One)]),
     inst!(ModuleProcessed, [], [(LiteralString, One)]),
     inst!(SubgroupBallotKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
-    inst!(SubgroupFirstInvocationKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)])
+    inst!(SubgroupFirstInvocationKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
 ];

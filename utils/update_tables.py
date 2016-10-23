@@ -25,11 +25,10 @@ script = imp.load_source('gen_tables',
 
 src = os.path.join(directory, '..', 'rspirv')
 grammar_input = os.path.join(src, 'external/spirv.core.grammar.json')
-inst_table_output = os.path.join(src, 'grammar/table.rs')
 operand_decode_output = os.path.join(src, 'binary/decode_operand.rs')
 operand_error_output = os.path.join(src, 'binary/error.rs')
 operand_parse_output = os.path.join(src, 'binary/parse_operand.rs')
 mr_operand_output = os.path.join(src, 'mr/operand.rs')
 
-script.update(grammar_input, inst_table_output, operand_decode_output,
-              operand_error_output, operand_parse_output, mr_operand_output)
+script.update(grammar_input, operand_decode_output, operand_error_output,
+              operand_parse_output, mr_operand_output)
