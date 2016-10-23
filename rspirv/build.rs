@@ -35,9 +35,9 @@ static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 
 static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
 
-/// Converts the given name to comply with the constant naming style in Rust.
+/// Converts the given `name` to comply with the constant naming style in Rust.
 ///
-/// For example, aCamelCaseName is changed to A_CAMEL_CASE_NAME.
+/// For example, "aCamelCaseName" will be changed to "A_CAMEL_CASE_NAME".
 fn constantify_name(name: &str) -> String {
     // Two named capture groups: the lowercase letter and the uppercase letter.
     let re = Regex::new(r"(?P<l>[:lower:])(?P<u>[:upper:])").unwrap();
@@ -86,10 +86,10 @@ fn gen_value_enum_operand_kind(value: &Value) -> String {
 }
 
 /// Returns the code defining the enum for an operand kind by parsing
-/// the given JSON object.
+/// the given JSON object `value`.
 ///
-/// The JSON object is expected to be an element in the "operand_kind"
-/// array of the SPIR-V grammar.
+/// `value` is expected to be an element in the "operand_kind" array
+/// of the SPIR-V grammar.
 fn gen_operand_kind(value: &Value) -> String {
     let object = value.as_object().unwrap();
     let category = object.get("category").unwrap().as_str().unwrap();
@@ -99,6 +99,81 @@ fn gen_operand_kind(value: &Value) -> String {
         gen_value_enum_operand_kind(value)
     } else {
         String::new()
+    }
+}
+
+fn write_copyright_autogen_comment(file: &mut fs::File) {
+    file.write_all(COPYRIGHT.as_bytes()).unwrap();
+    file.write_all(b"\n\n").unwrap();
+    file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
+    file.write_all(b"\n\n").unwrap();
+}
+
+/// Writes the generated SPIR-V header from parsing the given JSON object
+/// `grammar` to the file with the given `filename`.
+///
+/// `grammar` is expected to be the root object of the SPIR-V grammar.
+fn write_spirv_header(grammar: &Value, filename: &str) {
+    let root = grammar.as_object().unwrap();
+    let mut file = fs::File::create(filename).unwrap();
+
+    { // Copyright, documentation.
+        write_copyright_autogen_comment(&mut file);
+        file.write_all(b"//! The SPIR-V header.").unwrap();
+        file.write_all(b"\n\n").unwrap();
+        file.write_all(b"#![allow(non_camel_case_types)]").unwrap();
+        file.write_all(b"\n\n").unwrap();
+    }
+    { // constants.
+        file.write_all(b"pub type Word = u32;\n").unwrap();
+        let magic_number =
+            root.get("magic_number").unwrap().as_str().unwrap();
+        let major_version =
+            root.get("major_version").unwrap().as_u64().unwrap();
+        let minor_version =
+            root.get("minor_version").unwrap().as_u64().unwrap();
+        let revision = root.get("revision").unwrap().as_u64().unwrap();
+        let constants = format!("pub const MAGIC_NUMBER: u32 = {};\n\
+                                 pub const MAJOR_VERSION: u32 = {};\n\
+                                 pub const MINOR_VERSION: u32 = {};\n\
+                                 pub const REVISION: u32 = {};\n",
+                                magic_number,
+                                major_version,
+                                minor_version,
+                                revision);
+        file.write_all(&constants.into_bytes())
+            .unwrap();
+        file.write_all(b"\n").unwrap();
+
+    }
+    { // Operand kinds.
+        let operand_kinds =
+            root.get("operand_kinds").unwrap().as_array().unwrap();
+        for kind in operand_kinds.iter() {
+            let operand_kind = gen_operand_kind(kind);
+            if !operand_kind.is_empty() {
+            file.write_all(&operand_kind.into_bytes()).unwrap();
+            file.write_all(b"\n").unwrap();
+            }
+        }
+    }
+    { // Opcodes.
+        // Get the instruction table.
+        let insts = root.get("instructions").unwrap().as_array().unwrap();
+        let opcodes: Vec<String> = insts.iter()
+            .map(|ref inst| {
+            let instruction = inst.as_object().unwrap();
+            let opname =
+                instruction.get("opname").unwrap().as_str().unwrap();
+            let opcode = instruction.get("opcode").unwrap();
+            // Omit the "Op" prefix.
+            format!("    {} = {},", &opname[2..], opcode)
+        }).collect();
+        let opcode_enum = format!("{attribute}\npub enum Op \
+                                   {{\n{opcodes}\n}}\n",
+                                  attribute = VAULE_ENUM_ATTRIBUTE,
+                                  opcodes = opcodes.join("\n"));
+        file.write_all(&opcode_enum.into_bytes()).unwrap();
     }
 }
 
@@ -113,10 +188,9 @@ fn convert_quantifier(quantifier: &str) -> &str {
 }
 
 /// Returns the code for the whole instruction table by parsing the given
-/// JSON object.
+/// JSON object `value`.
 ///
-/// The JSON object is expected to be the "instructions" object of the
-/// SPIR-V grammar.
+/// `value` is expected to be the "instructions" array of the SPIR-V grammar.
 fn gen_instruction_table(value: &Value) -> String {
     let object = value.as_array().unwrap();
     let empty_array = Value::Array(vec![]);
@@ -155,6 +229,124 @@ fn gen_instruction_table(value: &Value) -> String {
             insts=elements.join("\n"))
 }
 
+/// Writes the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
+/// from parsing the given JSON object `grammar` to the file with the given
+/// `filename`.
+///
+/// `grammar` is expected to be the root object of the SPIR-V grammar.
+fn write_grammar_inst_table_operand_kinds(grammar: &Value, filename: &str) {
+    let root = grammar.as_object().unwrap();
+    let mut file = fs::File::create(filename).unwrap();
+
+    write_copyright_autogen_comment(&mut file);
+
+    { // Enum for all operand kinds.
+        let kinds = root.get("operand_kinds").unwrap().as_array().unwrap();
+        let elements: Vec<String> = kinds.iter().map(|ref element| {
+            let kind = element.as_object().unwrap();
+            let kind = kind.get("kind").unwrap().as_str().unwrap();
+            format!("    {},", kind)
+        }).collect();
+        let kind_enum = format!(
+            "/// All operand kinds in the SPIR-V grammar.\n\
+             #[derive(Clone, Copy, Debug, PartialEq, Eq)]\n\
+             pub enum OperandKind {{\n{}\n}}\n",
+            elements.join("\n"));
+        file.write_all(&kind_enum.into_bytes()).unwrap();
+        file.write_all(b"\n").unwrap();
+    }
+
+    { // Instruction table.
+        let table = gen_instruction_table(root.get("instructions").unwrap());
+        file.write_all(&table.into_bytes()).unwrap();
+    }
+}
+
+/// Writes the generated mr::Operand and its fmt::Display implementation from
+/// parsing the given JSON object `value` to the file with the given `filename`.
+///
+/// `value` is expected to be the "operand_kinds" array of the SPIR-V grammar.
+fn write_mr_operand_kinds(value: &Value, filename: &str) {
+    let mut file = fs::File::create(filename).unwrap();
+
+    write_copyright_autogen_comment(&mut file);
+
+    { // Attributes, uses.
+        file.write_all(b"#![cfg_attr(rustfmt, rustfmt_skip)]\n\n").unwrap();
+        file.write_all(b"use spirv;\nuse std::fmt;\n\n").unwrap();
+    }
+
+    let object = value.as_array().unwrap();
+    let kinds: Vec<&str> =
+        object.iter().filter(|ref element| {
+            let kind = element.as_object().unwrap();
+            // Pair kinds are not used in mr::Operands.
+            !kind.get("kind").unwrap().as_str().unwrap().starts_with("Pair")
+        }).map(|ref element| {
+            let kind = element.as_object().unwrap();
+            kind.get("kind").unwrap().as_str().unwrap()
+        }).collect();
+
+    { // Enum for all operand kinds in memory representation.
+        let id_kinds: Vec<String> =
+            kinds.iter().filter(|ref element| {
+                element.starts_with("Id")
+            }).map(|ref element| {
+                format!("    {}(spirv::Word),", element)
+            }).collect();
+        let num_kinds: Vec<String> =
+            kinds.iter().filter(|ref element| {
+                element.ends_with("Integer") || element.ends_with("Number")
+            }).map(|ref element| {
+                format!("    {}(u32),", element)
+            }).collect();
+        let str_kinds: Vec<String> =
+            kinds.iter().filter(|ref element| {
+                element.ends_with("String")
+            }).map(|ref element| {
+                format!("    {}(String),", element)
+            }).collect();
+        let enum_kinds: Vec<String> =
+            kinds.iter().filter(|ref element| {
+                !(element.starts_with("Id") ||
+                  element.ends_with("String") ||
+                  element.ends_with("Integer") ||
+                  element.ends_with("Number"))
+            }).map(|ref element| {
+                format!("    {k}(spirv::{k}),", k=element)
+            }).collect();
+
+        let kind_enum = format!(
+            "/// Memory representation of a SPIR-V operand.\n\
+             #[derive(Debug, PartialEq)]\n\
+             pub enum Operand {{\n\
+             {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\
+             }}\n",
+             enum_kinds=enum_kinds.join("\n"),
+             id_kinds=id_kinds.join("\n"),
+             num_kinds=num_kinds.join("\n"),
+             str_kinds=str_kinds.join("\n"));
+        file.write_all(&kind_enum.into_bytes()).unwrap();
+        file.write_all(b"\n").unwrap();
+    }
+
+    { // impl fmt::Display for mr::Operand.
+        let cases: Vec<String> =
+            kinds.iter().map(|ref element| {
+                format!("{space:12}Operand::{kind}(ref v) => \
+                         write!(f, \"{{:?}}\", v),",
+                        space="",
+                        kind=element)
+            }).collect();
+        let impl_code = format!(
+            "impl fmt::Display for Operand {{\n    \
+             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n        \
+             match *self {{\n{cases}\n        }}\n    }}\n}}\n",
+             cases=cases.join("\n"));
+        file.write_all(&impl_code.into_bytes()).unwrap();
+    }
+}
+
 fn main() {
     // Path to the grammar file.
     let mut path = path::PathBuf::from(file!());
@@ -169,7 +361,6 @@ fn main() {
         file.read_to_string(&mut contents).unwrap();
     }
     let grammar: Value = serde_json::from_str(&contents).unwrap();
-    let root = grammar.as_object().unwrap();
 
     {
         // Path to the generated SPIR-V header file.
@@ -177,69 +368,7 @@ fn main() {
         path.pop();
         path.push("spirv.rs");
         let filename = path.to_str().unwrap();
-        let mut file = fs::File::create(filename).unwrap();
-
-        { // Copyright, documentation.
-            file.write_all(COPYRIGHT.as_bytes()).unwrap();
-            file.write_all(b"\n\n").unwrap();
-            file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
-            file.write_all(b"\n\n").unwrap();
-            file.write_all(b"//! The SPIR-V header.").unwrap();
-            file.write_all(b"\n\n").unwrap();
-            file.write_all(b"#![allow(non_camel_case_types)]").unwrap();
-            file.write_all(b"\n\n").unwrap();
-        }
-        { // constants.
-            file.write_all(b"pub type Word = u32;\n").unwrap();
-            let magic_number =
-                root.get("magic_number").unwrap().as_str().unwrap();
-            let major_version =
-                root.get("major_version").unwrap().as_u64().unwrap();
-            let minor_version =
-                root.get("minor_version").unwrap().as_u64().unwrap();
-            let revision = root.get("revision").unwrap().as_u64().unwrap();
-            let constants = format!("pub const MAGIC_NUMBER: u32 = {};\n\
-                                     pub const MAJOR_VERSION: u32 = {};\n\
-                                     pub const MINOR_VERSION: u32 = {};\n\
-                                     pub const REVISION: u32 = {};\n",
-                                    magic_number,
-                                    major_version,
-                                    minor_version,
-                                    revision);
-            file.write_all(&constants.into_bytes())
-                .unwrap();
-            file.write_all(b"\n").unwrap();
-
-        }
-        { // Operand kinds.
-            let operand_kinds =
-                root.get("operand_kinds").unwrap().as_array().unwrap();
-            for kind in operand_kinds.iter() {
-                let operand_kind = gen_operand_kind(kind);
-                if !operand_kind.is_empty() {
-                file.write_all(&operand_kind.into_bytes()).unwrap();
-                file.write_all(b"\n").unwrap();
-                }
-            }
-        }
-        { // Opcodes.
-            // Get the instruction table.
-            let insts = root.get("instructions").unwrap().as_array().unwrap();
-            let opcodes: Vec<String> = insts.iter()
-                .map(|ref inst| {
-                let instruction = inst.as_object().unwrap();
-                let opname =
-                    instruction.get("opname").unwrap().as_str().unwrap();
-                let opcode = instruction.get("opcode").unwrap();
-                // Omit the "Op" prefix.
-                format!("    {} = {},", &opname[2..], opcode)
-            }).collect();
-            let opcode_enum = format!("{attribute}\npub enum Op \
-                                       {{\n{opcodes}\n}}\n",
-                                      attribute = VAULE_ENUM_ATTRIBUTE,
-                                      opcodes = opcodes.join("\n"));
-            file.write_all(&opcode_enum.into_bytes()).unwrap();
-        }
+        write_spirv_header(&grammar, filename);
     }
 
     {
@@ -248,37 +377,8 @@ fn main() {
         path.push("grammar");
         path.push("table.rs");
         let filename = path.to_str().unwrap();
-        let mut file = fs::File::create(filename).unwrap();
-
-        { // Copyright, documentation.
-            file.write_all(COPYRIGHT.as_bytes()).unwrap();
-            file.write_all(b"\n\n").unwrap();
-            file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
-            file.write_all(b"\n\n").unwrap();
-        }
-
-        { // Enum for all operand kinds.
-            let kinds = root.get("operand_kinds").unwrap().as_array().unwrap();
-            let elements: Vec<String> = kinds.iter().map(|ref element| {
-                let kind = element.as_object().unwrap();
-                let kind = kind.get("kind").unwrap().as_str().unwrap();
-                format!("    {},", kind)
-            }).collect();
-            let kind_enum = format!(
-                "/// All operand kinds in the SPIR-V grammar.\n\
-                 #[derive(Clone, Copy, Debug, PartialEq, Eq)]\n\
-                 pub enum OperandKind {{\n{}\n}}\n",
-                elements.join("\n"));
-            file.write_all(&kind_enum.into_bytes()).unwrap();
-            file.write_all(b"\n").unwrap();
-        }
-
-        { // Instruction table.
-        let table = gen_instruction_table(root.get("instructions").unwrap());
-        file.write_all(&table.into_bytes()).unwrap();
-        }
+        write_grammar_inst_table_operand_kinds(&grammar, filename);
     }
-
     {
         // Path to the generated operands kind in memory representation.
         path.pop();
@@ -286,88 +386,7 @@ fn main() {
         path.push("mr");
         path.push("operand.rs");
         let filename = path.to_str().unwrap();
-        let mut file = fs::File::create(filename).unwrap();
-
-        { // Copyright, documentation.
-            file.write_all(COPYRIGHT.as_bytes()).unwrap();
-            file.write_all(b"\n\n").unwrap();
-            file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
-            file.write_all(b"\n\n").unwrap();
-        }
-
-        { // Attributes, uses.
-            file.write_all(b"#![cfg_attr(rustfmt, rustfmt_skip)]\n\n").unwrap();
-            file.write_all(b"use spirv;\nuse std::fmt;\n\n").unwrap();
-        }
-
-        let object = root.get("operand_kinds").unwrap().as_array().unwrap();
-        let kinds: Vec<&str> =
-            object.iter().filter(|ref element| {
-                let kind = element.as_object().unwrap();
-                // Pair kinds are not used in mr::Operands.
-                !kind.get("kind").unwrap().as_str().unwrap().starts_with("Pair")
-            }).map(|ref element| {
-                let kind = element.as_object().unwrap();
-                kind.get("kind").unwrap().as_str().unwrap()
-            }).collect();
-
-        { // Enum for all operand kinds in memory representation.
-            let id_kinds: Vec<String> =
-                kinds.iter().filter(|ref element| {
-                    element.starts_with("Id")
-                }).map(|ref element| {
-                    format!("    {}(spirv::Word),", element)
-                }).collect();
-            let num_kinds: Vec<String> =
-                kinds.iter().filter(|ref element| {
-                    element.ends_with("Integer") || element.ends_with("Number")
-                }).map(|ref element| {
-                    format!("    {}(u32),", element)
-                }).collect();
-            let str_kinds: Vec<String> =
-                kinds.iter().filter(|ref element| {
-                    element.ends_with("String")
-                }).map(|ref element| {
-                    format!("    {}(String),", element)
-                }).collect();
-            let enum_kinds: Vec<String> =
-                kinds.iter().filter(|ref element| {
-                    !(element.starts_with("Id") ||
-                      element.ends_with("String") ||
-                      element.ends_with("Integer") ||
-                      element.ends_with("Number"))
-                }).map(|ref element| {
-                    format!("    {k}(spirv::{k}),", k=element)
-                }).collect();
-
-            let kind_enum = format!(
-                "/// Memory representation of a SPIR-V operand.\n\
-                 #[derive(Debug, PartialEq)]\n\
-                 pub enum Operand {{\n\
-                 {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\
-                 }}\n",
-                 enum_kinds=enum_kinds.join("\n"),
-                 id_kinds=id_kinds.join("\n"),
-                 num_kinds=num_kinds.join("\n"),
-                 str_kinds=str_kinds.join("\n"));
-            file.write_all(&kind_enum.into_bytes()).unwrap();
-            file.write_all(b"\n").unwrap();
-        }
-
-        { // impl fmt::Display for mr::Operand.
-            let cases: Vec<String> =
-                kinds.iter().map(|ref element| {
-                    format!("{space:12}Operand::{kind}(ref v) => \
-                             write!(f, \"{{:?}}\", v),",
-                            space="",
-                            kind=element)
-                }).collect();
-            let impl_code = format!(
-                "impl fmt::Display for Operand {{\n    \
-                 fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n        \
-                 match *self {{\n{cases}\n        }}\n    }}\n}}\n",
-                 cases=cases.join("\n"));
-            file.write_all(&impl_code.into_bytes()).unwrap();
-        }
+        let root = grammar.as_object().unwrap();
+        write_mr_operand_kinds(root.get("operand_kinds").unwrap(), filename);
     }
 }
