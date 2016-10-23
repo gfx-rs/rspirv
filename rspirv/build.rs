@@ -278,4 +278,96 @@ fn main() {
         file.write_all(&table.into_bytes()).unwrap();
         }
     }
+
+    {
+        // Path to the generated operands kind in memory representation.
+        path.pop();
+        path.pop();
+        path.push("mr");
+        path.push("operand.rs");
+        let filename = path.to_str().unwrap();
+        let mut file = fs::File::create(filename).unwrap();
+
+        { // Copyright, documentation.
+            file.write_all(COPYRIGHT.as_bytes()).unwrap();
+            file.write_all(b"\n\n").unwrap();
+            file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
+            file.write_all(b"\n\n").unwrap();
+        }
+
+        { // Attributes, uses.
+            file.write_all(b"#![cfg_attr(rustfmt, rustfmt_skip)]\n\n").unwrap();
+            file.write_all(b"use spirv;\nuse std::fmt;\n\n").unwrap();
+        }
+
+        let object = root.get("operand_kinds").unwrap().as_array().unwrap();
+        let kinds: Vec<&str> =
+            object.iter().filter(|ref element| {
+                let kind = element.as_object().unwrap();
+                // Pair kinds are not used in mr::Operands.
+                !kind.get("kind").unwrap().as_str().unwrap().starts_with("Pair")
+            }).map(|ref element| {
+                let kind = element.as_object().unwrap();
+                kind.get("kind").unwrap().as_str().unwrap()
+            }).collect();
+
+        { // Enum for all operand kinds in memory representation.
+            let id_kinds: Vec<String> =
+                kinds.iter().filter(|ref element| {
+                    element.starts_with("Id")
+                }).map(|ref element| {
+                    format!("    {}(spirv::Word),", element)
+                }).collect();
+            let num_kinds: Vec<String> =
+                kinds.iter().filter(|ref element| {
+                    element.ends_with("Integer") || element.ends_with("Number")
+                }).map(|ref element| {
+                    format!("    {}(u32),", element)
+                }).collect();
+            let str_kinds: Vec<String> =
+                kinds.iter().filter(|ref element| {
+                    element.ends_with("String")
+                }).map(|ref element| {
+                    format!("    {}(String),", element)
+                }).collect();
+            let enum_kinds: Vec<String> =
+                kinds.iter().filter(|ref element| {
+                    !(element.starts_with("Id") ||
+                      element.ends_with("String") ||
+                      element.ends_with("Integer") ||
+                      element.ends_with("Number"))
+                }).map(|ref element| {
+                    format!("    {k}(spirv::{k}),", k=element)
+                }).collect();
+
+            let kind_enum = format!(
+                "/// Memory representation of a SPIR-V operand.\n\
+                 #[derive(Debug, PartialEq)]\n\
+                 pub enum Operand {{\n\
+                 {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\
+                 }}\n",
+                 enum_kinds=enum_kinds.join("\n"),
+                 id_kinds=id_kinds.join("\n"),
+                 num_kinds=num_kinds.join("\n"),
+                 str_kinds=str_kinds.join("\n"));
+            file.write_all(&kind_enum.into_bytes()).unwrap();
+            file.write_all(b"\n").unwrap();
+        }
+
+        { // impl fmt::Display for mr::Operand.
+            let cases: Vec<String> =
+                kinds.iter().map(|ref element| {
+                    format!("{space:12}Operand::{kind}(ref v) => \
+                             write!(f, \"{{:?}}\", v),",
+                            space="",
+                            kind=element)
+                }).collect();
+            let impl_code = format!(
+                "impl fmt::Display for Operand {{\n    \
+                 fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n        \
+                 match *self {{\n{cases}\n        }}\n    }}\n}}\n",
+                 cases=cases.join("\n"));
+            file.write_all(&impl_code.into_bytes()).unwrap();
+        }
+    }
 }

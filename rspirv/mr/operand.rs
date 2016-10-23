@@ -19,7 +19,6 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use spirv;
-
 use std::fmt;
 
 /// Memory representation of a SPIR-V operand.
@@ -64,7 +63,7 @@ pub enum Operand {
     LiteralContextDependentNumber(u32),
     LiteralExtInstInteger(u32),
     LiteralSpecConstantOpInteger(u32),
-    LiteralString(String)
+    LiteralString(String),
 }
 
 impl fmt::Display for Operand {
@@ -113,4 +112,3 @@ impl fmt::Display for Operand {
         }
     }
 }
-
