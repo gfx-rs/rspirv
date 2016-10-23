@@ -43,75 +43,6 @@ SPIRV_GRAMMAR_URL = ('//   https://github.com/KhronosGroup/SPIRV-Headers/\n'
                      'spirv.core.grammar.json')
 
 
-def generate_operand_decode_errors(enums):
-    """Returns the Rust Error enum containing all errors for decoding
-    SPIR-V operand values and its implementations."""
-    kinds = [e['kind'] for e in enums]
-
-    # The Rust Error enum.
-    errors = ['{}Unknown(usize, spirv::Word)'.format(k)
-              for k in kinds
-              if not (k.startswith('Pair') or k.startswith('Id') or
-                      k.startswith('Literal'))]
-    definition = ['/// Decoder Error.',
-                  '#[derive(Debug, PartialEq)]',
-                  'pub enum Error {{',
-                  '    StreamExpected(usize),',
-                  '    LimitReached(usize),',
-                  '    {errors},',
-                  '    {special_errors}',
-                  '}}\n']
-    enum = '\n'.join(definition).format(
-        errors=',\n    '.join(errors),
-        special_errors=('/// Failed to decode a string.\n\n'
-                        '    /// For structured error handling, the second '
-                        'element could be\n    /// `string::FromUtf8Error`, '
-                        'but the will prohibit the compiler\n    /// from '
-                        'generating `PartialEq` for this enum.\n'
-                        '    DecodeStringFailed(usize, String)'))
-
-    # impl fmt::Display for the Error enum.
-    errors = ['Error::{}Unknown(index, word) => write!(f, "unknown value {{}} '
-              'for operand kind {} at index {{}}", word, index)'.format(k, k)
-              for k in kinds
-              if not (k.startswith('Pair') or k.startswith('Id') or
-                      k.startswith('Literal'))]
-    definition = ['impl fmt::Display for Error {{',
-                  '    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{',
-                  '        match *self {{',
-                  '            Error::StreamExpected(index) => write!(f, '
-                  '"expected more bytes in the stream at index {{}}", index),',
-                  '            Error::LimitReached(index) => write!(f, '
-                  '"reached word limit at index {{}}", index),',
-                  '            {errors},',
-                  '            {special_errors}',
-                  '        }}',
-                  '    }}',
-                  '}}\n']
-    display_impl = '\n'.join(definition).format(
-        errors=',\n            '.join(errors),
-        special_errors=('Error::DecodeStringFailed(index, ref e) => write!(f, '
-                        '"cannot decode string at index {}: {}", index, e)'))
-
-    # impl error::Error for the Error enum.
-    error_impl = '\n'.join([
-        'impl error::Error for Error {',
-        '    fn description(&self) -> &str {',
-        '        match *self {',
-        '            Error::StreamExpected(_) => '
-        '"expected more bytes in the stream",',
-        '            _ => "unknown operand value for the given kind",',
-        '        }',
-        '    }',
-        '}\n'])
-
-    no_format = '#![cfg_attr(rustfmt, rustfmt_skip)]\n'
-    use = ('use spirv;\n\n'
-           'use std::{error, fmt};\n')
-
-    return '\n'.join([no_format, use, enum, display_impl, error_impl])
-
-
 def convert_symbol_to_snake_case(variable):
     return re.sub(r'([a-z])([A-Z])', r'\1_\2', variable).lower()
 
@@ -252,19 +183,12 @@ def generate_operand_parse_methods(enums):
         functions='\n\n'.join([e[1] for e in further_parse_methods]))
 
 
-def update(grammar_input, operand_error_output, operand_parse_output):
+def update(grammar_input, operand_parse_output):
     """Updates all generated tables using the JSON grammar."""
     with open(grammar_input) as json_file:
         grammar = json.loads(json_file.read())
 
-        operand_error_output = open(operand_error_output, 'w')
         operand_parse_output = open(operand_parse_output, 'w')
-
-        print(COPYRIGHT, file=operand_error_output)
-        print(AUTO_GEN_COMMENT, file=operand_error_output)
-        print('{}\n'.format(SPIRV_GRAMMAR_URL), file=operand_error_output)
-        print(generate_operand_decode_errors(grammar['operand_kinds']),
-              file=operand_error_output)
 
         print(COPYRIGHT, file=operand_parse_output)
         print(AUTO_GEN_COMMENT, file=operand_parse_output)
@@ -283,15 +207,12 @@ def main():
     parser.add_argument('-d', '--operand-decode-output', metavar='<path>',
                         type=str, required=True,
                         help='output file for SPIR-V operand decoding methods')
-    parser.add_argument('-e', '--operand-error-output', metavar='<path>',
-                        type=str, required=True,
-                        help='output file for SPIR-V operand decoding errors')
     parser.add_argument('-p', '--operand-parse-output', metavar='<path>',
                         type=str, required=True,
                         help='output file for SPIR-V operand parsing methods')
     args = parser.parse_args()
 
-    update(args.input, args.operand_error_output, args.operand_parse_output)
+    update(args.input, args.operand_parse_output)
 
 if __name__ == '__main__':
     main()

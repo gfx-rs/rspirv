@@ -19,7 +19,6 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use spirv;
-
 use std::{error, fmt};
 
 /// Decoder Error.
@@ -58,11 +57,11 @@ pub enum Error {
     KernelEnqueueFlagsUnknown(usize, spirv::Word),
     CapabilityUnknown(usize, spirv::Word),
     /// Failed to decode a string.
-
+    ///
     /// For structured error handling, the second element could be
     /// `string::FromUtf8Error`, but the will prohibit the compiler
     /// from generating `PartialEq` for this enum.
-    DecodeStringFailed(usize, String)
+    DecodeStringFailed(usize, String),
 }
 
 impl fmt::Display for Error {
@@ -100,7 +99,7 @@ impl fmt::Display for Error {
             Error::GroupOperationUnknown(index, word) => write!(f, "unknown value {} for operand kind GroupOperation at index {}", word, index),
             Error::KernelEnqueueFlagsUnknown(index, word) => write!(f, "unknown value {} for operand kind KernelEnqueueFlags at index {}", word, index),
             Error::CapabilityUnknown(index, word) => write!(f, "unknown value {} for operand kind Capability at index {}", word, index),
-            Error::DecodeStringFailed(index, ref e) => write!(f, "cannot decode string at index {}: {}", index, e)
+            Error::DecodeStringFailed(index, ref e) => write!(f, "cannot decode string at index {}: {}", index, e),
         }
     }
 }
@@ -113,4 +112,3 @@ impl error::Error for Error {
         }
     }
 }
-

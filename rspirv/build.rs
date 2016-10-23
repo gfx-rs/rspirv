@@ -34,6 +34,7 @@ static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]";
 
 static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
+static RUSTFMT_SKIP_BANG: &'static str = "#![cfg_attr(rustfmt, rustfmt_skip)]";
 
 /// Converts the given `symbol` to use snake case style.
 fn split_words_with_underscore(symbol: &str) -> String {
@@ -117,10 +118,8 @@ fn write_spirv_header(grammar: &Value, filename: &str) {
 
     { // Copyright, documentation.
         write_copyright_autogen_comment(&mut file);
-        file.write_all(b"//! The SPIR-V header.").unwrap();
-        file.write_all(b"\n\n").unwrap();
-        file.write_all(b"#![allow(non_camel_case_types)]").unwrap();
-        file.write_all(b"\n\n").unwrap();
+        file.write_all(b"//! The SPIR-V header.\n\n").unwrap();
+        file.write_all(b"#![allow(non_camel_case_types)]\n\n").unwrap();
     }
     { // constants.
         file.write_all(b"pub type Word = u32;\n").unwrap();
@@ -270,8 +269,8 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
     write_copyright_autogen_comment(&mut file);
 
     { // Attributes, uses.
-        file.write_all(b"#![cfg_attr(rustfmt, rustfmt_skip)]\n\n").unwrap();
-        file.write_all(b"use spirv;\nuse std::fmt;\n\n").unwrap();
+        file.write_all(RUSTFMT_SKIP_BANG.as_bytes()).unwrap();
+        file.write_all(b"\n\nuse spirv;\nuse std::fmt;\n\n").unwrap();
     }
 
     let object = value.as_array().unwrap();
@@ -344,6 +343,95 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
              cases=cases.join("\n"));
         file.write_all(&impl_code.into_bytes()).unwrap();
     }
+}
+
+/// Writes the generated operand decoding errors for binary::Decoder by
+/// parsing the given JSON object `value` to the file with the given `filename`.
+///
+/// `value` is expected to be the "operand_kinds" array of the SPIR-V grammar.
+fn write_operand_decode_errors(value: &Value, filename: &str) {
+    let mut file = fs::File::create(filename).unwrap();
+
+    { // Comments, attributes, uses.
+        write_copyright_autogen_comment(&mut file);
+        file.write_all(RUSTFMT_SKIP_BANG.as_bytes()).unwrap();
+        file.write_all(b"\n\nuse spirv;\nuse std::{error, fmt};\n\n").unwrap();
+    }
+
+    let kinds = value.as_array().unwrap();
+    let kinds: Vec<&str> =
+        kinds.iter().filter(|ref element| {
+            let kind = element.as_object().unwrap();
+            let kind = kind.get("kind").unwrap().as_str().unwrap();
+            !(kind.starts_with("Pair") ||
+              kind.starts_with("Id") ||
+              kind.starts_with("Literal"))
+        }).map(|ref element| {
+            let kind = element.as_object().unwrap();
+            kind.get("kind").unwrap().as_str().unwrap()
+        }).collect();
+
+    // The Error enum.
+    let errors: Vec<String> =
+        kinds.iter().map(|ref element| {
+            format!("    {}Unknown(usize, spirv::Word),", element)
+        }).collect();
+    let error_enum = format!(
+        "/// Decoder Error.\n\
+         #[derive(Debug, PartialEq)]\n\
+         pub enum Error {{\n\
+         {s:4}StreamExpected(usize),\n\
+         {s:4}LimitReached(usize),\n\
+         {errors}\n\
+         {s:4}/// Failed to decode a string.\n\
+         {s:4}///\n\
+         {s:4}/// For structured error handling, the second element could be\n\
+         {s:4}/// `string::FromUtf8Error`, but the will prohibit the compiler\n\
+         {s:4}/// from generating `PartialEq` for this enum.\n\
+         {s:4}DecodeStringFailed(usize, String),\n\
+         }}\n",
+        s="",
+        errors=errors.join("\n"));
+    file.write_all(&error_enum.into_bytes()).unwrap();
+    file.write_all(b"\n").unwrap();
+
+    // impl fmt::Display for the Error enum.
+    let errors: Vec<String> =
+        kinds.iter().map(|ref element| {
+            format!("{s:12}Error::{kind}Unknown(index, word) => write!(\
+                     f, \"unknown value {{}} for operand kind {kind} \
+                     at index {{}}\", word, index),",
+                    s="",
+                    kind=element)
+        }).collect();
+    let display_impl = format!(
+        "impl fmt::Display for Error {{\n\
+         {s:4}fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n\
+         {s:8}match *self {{\n\
+         {s:12}Error::StreamExpected(index) => write!(f, \"expected more \
+             bytes in the stream at index {{}}\", index),\n\
+         {s:12}Error::LimitReached(index) => write!(f, \"reached word limit \
+             at index {{}}\", index),\n\
+         {errors}\n\
+         {s:12}Error::DecodeStringFailed(index, ref e) => write!(f, \
+             \"cannot decode string at index {{}}: {{}}\", index, e),\n\
+         {s:8}}}\n{s:4}}}\n}}\n",
+        s="",
+        errors=errors.join("\n"));
+    file.write_all(&display_impl.into_bytes()).unwrap();
+    file.write_all(b"\n").unwrap();
+
+    // impl error::Error for the Error enum.
+    let error_impl = format!(
+        "impl error::Error for Error {{\n\
+         {s:4}fn description(&self) -> &str {{\n\
+         {s:8}match *self {{\n\
+         {s:12}Error::StreamExpected(_) => \"expected more bytes \
+             in the stream\",\n\
+         {s:12}_ => \"unknown operand value for the given kind\",\n\
+         {s:8}}}\n{s:4}}}\n}}\n",
+        s="");
+    file.write_all(&error_impl.into_bytes()).unwrap();
 }
 
 /// Writes the generated operand decoding methods for binary::Decoder by
@@ -428,6 +516,7 @@ fn main() {
     }
 
     let root = grammar.as_object().unwrap();
+    let operand_kinds = root.get("operand_kinds").unwrap();
 
     {
         // Path to the generated operands kind in memory representation.
@@ -436,16 +525,24 @@ fn main() {
         path.push("mr");
         path.push("operand.rs");
         let filename = path.to_str().unwrap();
-        write_mr_operand_kinds(root.get("operand_kinds").unwrap(), filename);
+        write_mr_operand_kinds(operand_kinds, filename);
     }
 
     {
-        // Path to the generated operands kind in memory representation.
+        // Path to the generated decoding errors.
         path.pop();
         path.pop();
         path.push("binary");
+        path.push("error.rs");
+        let filename = path.to_str().unwrap();
+        write_operand_decode_errors(operand_kinds, filename);
+    }
+
+    {
+        // Path to the generated operand decoding methods.
+        path.pop();
         path.push("decode_operand.rs");
         let filename = path.to_str().unwrap();
-        write_operand_decode_methods(root.get("operand_kinds").unwrap(), filename);
+        write_operand_decode_methods(operand_kinds, filename);
     }
 }
