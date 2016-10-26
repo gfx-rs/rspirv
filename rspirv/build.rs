@@ -36,11 +36,15 @@ static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
 static RUSTFMT_SKIP_BANG: &'static str = "#![cfg_attr(rustfmt, rustfmt_skip)]";
 
-/// Converts the given `symbol` to use snake case style.
 fn split_words_with_underscore(symbol: &str) -> String {
     // Two named capture groups: the lowercase letter and the uppercase letter.
     let re = Regex::new(r"(?P<l>[:lower:])(?P<u>[:upper:])").unwrap();
     re.replace_all(symbol, "$l-$u").replace("-", "_")
+}
+
+/// Converts the given `symbol` to use snake case style.
+fn convert_symbol_to_snake_case(symbol: &str) -> String {
+    split_words_with_underscore(symbol).to_lowercase()
 }
 
 fn gen_bit_enum_operand_kind(value: &Value) -> String {
@@ -473,12 +477,196 @@ fn write_operand_decode_methods(value: &Value, filename: &str) {
                      {s:12}Err(Error::StreamExpected(self.offset))\n\
                  {s:8}}}\n{s:4}}}\n",
                  s="",
-                 fname=split_words_with_underscore(kind).to_lowercase(),
+                 fname=convert_symbol_to_snake_case(kind),
                  kind=kind,
                  ty=if category == "BitEnum" { "bits" } else { "u32" })
         }).collect();
 
     let impl_code = format!("impl Decoder {{\n{}}}\n", methods.join("\n"));
+    file.write_all(&impl_code.into_bytes()).unwrap();
+}
+
+/// Returns the name of the method for decoding the given operand `kind`.
+fn get_decode_method(kind: &str) -> String {
+    if kind.starts_with("Id") {
+        return "id".to_string()
+    }
+
+    let mut kind = kind;
+    if kind.starts_with("Literal") {
+        kind = &kind["Literal".len()..]
+    }
+    convert_symbol_to_snake_case(kind)
+}
+
+/// Generates the methods for parsing parameters of operand kind enumerants.
+/// Returns a vector of tuples, with the first element being the enumerant
+/// symbol, and the second element being a list of parameter kinds to that
+/// enumerant.
+///
+/// `value` is expected to be the "operand_kinds" array of the SPIR-V grammar.
+fn gen_operand_param_parse_methods(value: &Value) -> Vec<(String, String)> {
+    let empty_array = Value::Array(vec![]);
+    let kinds = value.as_array().unwrap();
+    kinds.iter().filter(|ref element| {
+        // Filter out all the operand kinds without any enumerants.
+        element.as_object().unwrap().get("enumerants").is_some()
+    }).filter_map(|ref element| {
+        let kind = element.as_object().unwrap();
+        let category = kind.get("category").unwrap().as_str().unwrap();
+        let enumerants = kind.get("enumerants").unwrap().as_array().unwrap();
+        let kind = kind.get("kind").unwrap().as_str().unwrap();
+        // Get the symbol and all the parameters for each enumerant.
+        let pairs: Vec<(String, Vec<String>)> =
+            enumerants.iter().filter_map(|ref element| {
+                let object = element.as_object().unwrap();
+                let symbol = object.get("enumerant").unwrap().as_str().unwrap();
+                let params = object.get("parameters").unwrap_or(&empty_array);
+                let params = params.as_array().unwrap();
+                let params: Vec<String> = params.iter().map(|ref element| {
+                    let param = element.as_object().unwrap();
+                    param.get("kind").unwrap().as_str().unwrap().to_string()
+                }).collect();
+                if params.is_empty() {
+                    // Filter out enumerants without further parameters.
+                    None
+                } else {
+                    Some((symbol.to_string(),  params))
+                }
+            }).collect();
+
+        if pairs.is_empty() {
+            // Skip those operand kinds that don't have parameters for
+            // further parsing.
+            return None
+        }
+
+        let method =
+            if category == "BitEnum" {
+                // BitEnums are unimplemented right now.
+                format!(
+                    "{s:4}#[allow(unused_variables)]\n\
+                     {s:4}fn parse_{k}_arguments(&mut self, {k}: \
+                         spirv::{kind}) -> Result<Vec<mr::Operand>> {{\n\
+                         {s:8}unimplemented!()\n\
+                     {s:4}}}",
+                    s="",
+                    k=convert_symbol_to_snake_case(kind),
+                    kind=kind)
+            } else {  // ValueEnum
+                let cases = pairs.into_iter().map(|(symbol, params)| {
+                    let params: Vec<String> = params.iter().map(|ref element| {
+                        format!("mr::Operand::{kind}(\
+                                 try_decode!(self.decoder.{decode}()))",
+                                kind=element,
+                                decode=get_decode_method(element))
+                    }).collect();
+                    format!(
+                        "{s:12}spirv::{kind}::{symbol} => vec![{params}],",
+                        s="", kind=kind, symbol=symbol,
+                        params=params.join(", "))
+                }).collect::<Vec<String>>();
+                format!(
+                    "{s:4}fn parse_{k}_arguments(&mut self, {k}: spirv::{kind})\
+                         {s:1}-> Result<Vec<mr::Operand>> {{\n\
+                         {s:8}Ok(match {k} {{\n\
+                            {cases}\n\
+                            {s:12}_ => vec![]\n\
+                         {s:8}}})\n\
+                     {s:4}}}",
+                    s="", kind=kind,
+                    k=convert_symbol_to_snake_case(kind),
+                    cases=cases.join("\n"))
+            };
+        Some((kind.to_string(), method))
+    }).collect()
+}
+
+/// Writes the generated operand parsing methods for binary::Parser by
+/// parsing the given JSON object `value` to the file with the given `filename`.
+///
+/// `value` is expected to be the "operand_kinds" array of the SPIR-V grammar.
+fn write_operand_parse_methods(value: &Value, filename: &str) {
+    let mut file = fs::File::create(filename).unwrap();
+
+    write_copyright_autogen_comment(&mut file);
+
+    // Operand kinds whose enumerants have parameters. For these kinds, we need
+    // to decode more than just the enumerants themselves.
+    let (further_parse_kinds, further_parse_methods): (Vec<_>, Vec<_>) =
+        gen_operand_param_parse_methods(value).iter().cloned().unzip();
+    let further_parse_cases: Vec<String> =
+        further_parse_kinds.iter().map(|ref kind| {
+            format!(
+                "{s:12}GOpKind::{kind} => {{\n\
+                 {s:16}let val = try_decode!(self.decoder.{decode}());\n\
+                 {s:16}let mut ops = vec![mr::Operand::{kind}(val)];\n\
+                 {s:16}ops.append(&mut try!(self.parse_{k}_arguments(val)));\n\
+                 {s:16}ops\n\
+                 {s:12}}}",
+                s="",
+                kind=kind,
+                k=convert_symbol_to_snake_case(kind),
+                decode=get_decode_method(kind))
+        }).collect();
+
+    // Logic operands that expand to concrete operand pairs,
+    // that is, those operand kinds with 'Pair' name prefix.
+    // We only have three cases. So hard code it.
+    let pair_kinds = vec![
+        ("LiteralInteger", "IdRef"),
+        ("IdRef", "LiteralInteger"),
+        ("IdRef", "IdRef"),
+    ];
+    let pair_cases: Vec<String> = pair_kinds.iter().map(|&(k0, k1)| {
+        format!("{s:12}GOpKind::{kind} => {{\n\
+                 {s:16}vec![\
+                 mr::Operand::{k0}(try_decode!(self.decoder.{m0}())), \
+                 mr::Operand::{k1}(try_decode!(self.decoder.{m1}()))\
+                 ]\n{s:12}}}",
+                s="",
+                kind=format!("Pair{}{}", k0, k1), k0=k0, k1=k1,
+                m0=get_decode_method(k0), m1=get_decode_method(k1))
+    }).collect();
+
+    // For the rest operand kinds, which takes exactly one word.
+    let normal_cases: Vec<String> =
+        value.as_array().unwrap().iter().filter_map(|ref element| {
+            let kind = element.as_object().unwrap();
+            let kind = kind.get("kind").unwrap().as_str().unwrap();
+            if further_parse_kinds.iter().any(|ref k| k == &kind) ||
+                kind.starts_with("Pair") {
+                    None
+                } else {
+                    Some(kind)
+                }
+        }).map(|ref kind| {
+            format!(
+                "{s:12}GOpKind::{kind} => vec![mr::Operand::{kind}\
+                 (try_decode!(self.decoder.{decode}()))],",
+                 s="",
+                 kind=kind,
+                 decode=get_decode_method(kind))
+        }).collect();
+
+    let impl_code = format!(
+        "impl<'a> Parser<'a> {{\n\
+         {s:4}fn parse_operand(&mut self, kind: GOpKind) \
+             -> Result<Vec<mr::Operand>> {{\n\
+             {s:8}Ok(match kind {{\n\
+                 {normal_cases}\n\
+                 {pair_cases}\n\
+                 {further_parse_cases}\n\
+             {s:8}}})\n\
+         {s:4}}}\n\n\
+         {functions}\n\
+         }}",
+        s="",
+        normal_cases=normal_cases.join("\n"),
+        pair_cases=pair_cases.join("\n"),
+        further_parse_cases=further_parse_cases.join("\n"),
+        functions=further_parse_methods.join("\n\n"));
+
     file.write_all(&impl_code.into_bytes()).unwrap();
 }
 
@@ -544,5 +732,12 @@ fn main() {
         path.push("decode_operand.rs");
         let filename = path.to_str().unwrap();
         write_operand_decode_methods(operand_kinds, filename);
+    }
+    {
+        // Path to the generated operand parsing methods.
+        path.pop();
+        path.push("parse_operand.rs");
+        let filename = path.to_str().unwrap();
+        write_operand_parse_methods(operand_kinds, filename);
     }
 }

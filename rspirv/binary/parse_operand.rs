@@ -16,7 +16,6 @@
 //   https://github.com/KhronosGroup/SPIRV-Headers/
 //           blob/master/include/spirv/1.1/spirv.core.grammar.json
 
-
 impl<'a> Parser<'a> {
     fn parse_operand(&mut self, kind: GOpKind) -> Result<Vec<mr::Operand>> {
         Ok(match kind {
