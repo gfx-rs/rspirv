@@ -553,6 +553,114 @@ mod tests {
                         Err(State::OperandError(Error::StreamExpected(32))));
     }
 
+    #[test]
+    fn test_parsing_operand_parameters() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x47, 0x00, 0x04, 0x00]); // OpDecorate
+        v.append(&mut vec![0x05, 0x00, 0x00, 0x00]); // id 5
+        v.append(&mut vec![0x0b, 0x00, 0x00, 0x00]); // BuiltIn
+        v.append(&mut vec![0x06, 0x00, 0x00, 0x00]); // InstanceId
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Decorate", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(vec![mr::Operand::IdRef(5),
+                        mr::Operand::Decoration(spirv::Decoration::BuiltIn),
+                        mr::Operand::BuiltIn(spirv::BuiltIn::InstanceId)],
+                   inst.operands);
+    }
+
+    #[test]
+    fn test_parsing_missing_operand_parameters() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x47, 0x00, 0x03, 0x00]); // OpDecorate
+        v.append(&mut vec![0x05, 0x00, 0x00, 0x00]); // id 5
+        v.append(&mut vec![0x0b, 0x00, 0x00, 0x00]); // BuiltIn
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(v, &mut c);
+        assert_matches!(p.parse(),
+                        Err(State::OperandError(Error::StreamExpected(32))));
+    }
+
+    #[test]
+    fn test_parsing_with_all_optional_operands() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x03, 0x00, 0x05, 0x00]); // OpSource
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // GLSL
+        v.append(&mut vec![0xc2, 0x01, 0x00, 0x00]); // 450 (0x1c2)
+        v.append(&mut vec![0x06, 0x00, 0x00, 0x00]); // File id
+        v.append(&mut b"wow".to_vec());              // Source
+        v.push(0x00);                                // EOS
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Source", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(
+            vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                 mr::Operand::LiteralInteger(450),
+                 mr::Operand::IdRef(6),
+                 mr::Operand::LiteralString("wow".to_string())],
+            inst.operands);
+    }
+
+    #[test]
+    fn test_parsing_missing_one_optional_operand() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x03, 0x00, 0x04, 0x00]); // OpSource
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // GLSL
+        v.append(&mut vec![0xc2, 0x01, 0x00, 0x00]); // 450 (0x1c2)
+        v.append(&mut vec![0x06, 0x00, 0x00, 0x00]); // File id
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Source", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(
+            vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                 mr::Operand::LiteralInteger(450),
+                 mr::Operand::IdRef(6)],
+            inst.operands);
+    }
+
+    #[test]
+    fn test_parsing_missing_two_optional_operands() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x03, 0x00, 0x03, 0x00]); // OpSource
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // GLSL
+        v.append(&mut vec![0xc2, 0x01, 0x00, 0x00]); // 450 (0x1c2)
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Source", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(
+            vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                 mr::Operand::LiteralInteger(450)],
+            inst.operands);
+    }
+
     #[derive(Debug)]
     struct ErrorString(&'static str);
     impl error::Error for ErrorString {
