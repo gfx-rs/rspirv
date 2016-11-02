@@ -24,7 +24,8 @@ Status
 This project is far from being complete; it's in a very early stage of
 development. However, the memory representation of SPIR-V modules is defined
 and a SPIR-V binary module disassemebler is provided, although lacking the
-support for some features like 64-bit integers and extended instruction sets.
+support for some features like extended instruction sets and 64-bit selectors
+in `OpSwitch`.
 
 Getting and building rspirv
 ---------------------------

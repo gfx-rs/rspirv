@@ -14,7 +14,7 @@
 
 use spirv;
 
-use std::result;
+use std::{mem, result};
 use super::error::Error;
 
 pub type Result<T> = result::Result<T, Error>;
@@ -193,6 +193,22 @@ impl Decoder {
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// literal floating point number.
+    pub fn float32(&mut self) -> Result<f32> {
+        let val = try!(self.word());
+        Ok(unsafe { mem::transmute::<u32, f32>(val) })
+    }
+
+    /// Decodes and returns the next two SPIR-V words as a 64-bit
+    /// literal floating point number.
+    pub fn float64(&mut self) -> Result<f64> {
+        let low = try!(self.word());
+        let high = try!(self.word());
+        let val = ((high as u64) << 32) | (low as u64);
+        Ok(unsafe { mem::transmute::<u64, f64>(val) })
+    }
+
+    /// Decodes and returns the next SPIR-V word as a 32-bit
     /// context-dependent number.
     // TODO(antiagainst): This should return the correct typed number.
     pub fn context_dependent_number(&mut self) -> Result<u32> {
@@ -218,6 +234,7 @@ include!("decode_operand.rs");
 mod tests {
     use spirv;
 
+    use std::mem;
     use super::Decoder;
     use binary::error::Error;
 
@@ -375,5 +392,47 @@ mod tests {
 
         d.clear_limit();
         assert_eq!(Err(Error::StreamExpected(12)), d.word());
+    }
+
+    #[test]
+    fn test_decode_int64() {
+        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab,
+                                      0xcd, 0xef]);
+        assert_eq!(Ok(0xefcdab9078563412), d.int64());
+
+        let mut d = Decoder::new(get_f32_bit_pattern(-12.34));
+        assert_eq!(Ok(-12.34), d.float32());
+    }
+
+    fn get_f32_bit_pattern(val: f32) -> Vec<u8> {
+        let val = unsafe { mem::transmute::<f32, u32>(val) };
+        Decoder::split_word_to_bytes(val)
+    }
+
+    #[test]
+    fn test_decode_float32() {
+        let mut d = Decoder::new(get_f32_bit_pattern(42.42));
+        assert_eq!(Ok(42.42), d.float32());
+
+        let mut d = Decoder::new(get_f32_bit_pattern(-12.34));
+        assert_eq!(Ok(-12.34), d.float32());
+    }
+
+    fn get_f64_bit_pattern(val: f64) -> Vec<u8> {
+        let val = unsafe { mem::transmute::<f64, u64>(val) };
+        let mut low = Decoder::split_word_to_bytes((val & 0xffffffff) as u32);
+        let mut high =
+            Decoder::split_word_to_bytes(((val >> 32) & 0xffffffff) as u32);
+        low.append(&mut high);
+        low
+    }
+
+    #[test]
+    fn test_decode_float64() {
+        let mut d = Decoder::new(get_f64_bit_pattern(42.42));
+        assert_eq!(Ok(42.42), d.float64());
+
+        let mut d = Decoder::new(get_f64_bit_pattern(-12.34));
+        assert_eq!(Ok(-12.34), d.float64());
     }
 }

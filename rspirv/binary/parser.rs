@@ -16,7 +16,7 @@ use mr;
 use grammar;
 use spirv;
 
-use std::{error, fmt, result};
+use std::{collections, error, fmt, result};
 use super::decoder;
 use super::error::Error as DecodeError;
 
@@ -56,6 +56,8 @@ pub enum State {
     OperandExceeded(usize, usize),
     /// Errored out when decoding operand with the given error
     OperandError(DecodeError),
+    /// Unsupported type (byte offset, inst number)
+    TypeUnsupported(usize, usize),
 }
 
 impl error::Error for State {
@@ -74,6 +76,7 @@ impl error::Error for State {
             State::OperandExpected(..) => "expected more operands",
             State::OperandExceeded(..) => "found extra operands",
             State::OperandError(_) => "operand decoding error",
+            State::TypeUnsupported(..) => "unsupported type",
         }
     }
 }
@@ -121,6 +124,12 @@ impl fmt::Display for State {
             }
             State::OperandError(ref err) => {
                 write!(f, "operand decoding error: {}", err)
+            }
+            State::TypeUnsupported(offset, index) => {
+                write!(f,
+                       "unsupported type for instruction #{} at offset {}",
+                       index,
+                       offset)
             }
         }
     }
@@ -171,6 +180,65 @@ pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
     Parser::new(binary, consumer).parse()
 }
 
+// TODO: Add support for other types.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum Type {
+    /// Integer type (size, signed).
+    Integer(u32, bool),
+    Float(u32),
+}
+
+/// Tracks ids to their types.
+///
+/// If the type of an id cannot be resolved due to some reason, this will
+/// silently ignore that id instead of erroring out.
+#[derive(Debug)]
+struct TypeTracker {
+    /// Mapping from an id to its type.
+    ///
+    /// Ids for both defining and using types are all kept here.
+    types: collections::HashMap<spirv::Word, Type>,
+}
+
+impl TypeTracker {
+    pub fn new() -> TypeTracker {
+        TypeTracker { types: collections::HashMap::new() }
+    }
+
+    pub fn track(&mut self, inst: &mr::Instruction) {
+        if let Some(rid) = inst.result_id {
+            if grammar::reflect::is_type(inst.class.opcode) {
+                match inst.class.opcode {
+                    spirv::Op::TypeInt => {
+                        if let (&mr::Operand::LiteralInt32(bits),
+                                &mr::Operand::LiteralInt32(sign)) =
+                               (&inst.operands[0], &inst.operands[1]) {
+                            self.types
+                                .insert(rid, Type::Integer(bits, sign == 1));
+                        }
+                    }
+                    spirv::Op::TypeFloat => {
+                        if let mr::Operand::LiteralInt32(bits) =
+                               inst.operands[0] {
+                            self.types.insert(rid, Type::Float(bits));
+                        }
+                    }
+                    // TODO: handle the other types here.
+                    _ => (),
+                }
+            } else {
+                inst.result_type
+                    .and_then(|t| self.resolve(t))
+                    .map(|t| self.types.insert(rid, t));
+            }
+        }
+    }
+
+    pub fn resolve(&self, id: spirv::Word) -> Option<Type> {
+        self.types.get(&id).map(|t| *t)
+    }
+}
+
 /// The SPIR-V binary parser.
 ///
 /// Takes in a vector of bytes and a consumer, this parser will invoke the
@@ -183,6 +251,7 @@ pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
 pub struct Parser<'a> {
     decoder: decoder::Decoder,
     consumer: &'a mut Consumer,
+    type_tracker: TypeTracker,
     /// The index of the current instructions
     ///
     /// Starting from 1, 0 means invalid
@@ -204,6 +273,7 @@ impl<'a> Parser<'a> {
         Parser {
             decoder: decoder::Decoder::new(binary),
             consumer: consumer,
+            type_tracker: TypeTracker::new(),
             inst_index: 0,
         }
     }
@@ -226,6 +296,7 @@ impl<'a> Parser<'a> {
             let result = self.parse_inst();
             match result {
                 Ok(inst) => {
+                    self.type_tracker.track(&inst);
                     match self.consumer.consume_instruction(inst) {
                         Action::Continue => (),
                         Action::Stop => {
@@ -301,6 +372,47 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn parse_literal(&mut self, type_id: spirv::Word) -> Result<mr::Operand> {
+        let tracked_type = self.type_tracker.resolve(type_id);
+        match tracked_type {
+            Some(t) => {
+                match t {
+                    Type::Integer(size, _) => {
+                        match size {
+                            32 => Ok(mr::Operand::LiteralInt32(
+                                    try_decode!(self.decoder.int32()))),
+                            64 => Ok(mr::Operand::LiteralInt64(
+                                    try_decode!(self.decoder.int64()))),
+                            _ => {
+                                Err(State::TypeUnsupported(self.decoder
+                                                               .offset(),
+                                                           self.inst_index))
+                            }
+                        }
+                    }
+                    Type::Float(size) => {
+                        match size {
+                            32 => Ok(mr::Operand::LiteralFloat32(
+                                    try_decode!(self.decoder.float32()))),
+                            64 => Ok(mr::Operand::LiteralFloat64(
+                                    try_decode!(self.decoder.float64()))),
+                            _ => {
+                                Err(State::TypeUnsupported(self.decoder
+                                                               .offset(),
+                                                           self.inst_index))
+                            }
+                        }
+                    }
+                }
+            }
+            // Treat as a normal SPIR-V word if we don't know the type.
+            // TODO: find a better way to handle this.
+            None => {
+                Ok(mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())))
+            }
+        }
+    }
+
     fn parse_operands(&mut self, grammar: GInstRef) -> Result<mr::Instruction> {
         let mut rtype = None;
         let mut rid = None;
@@ -317,6 +429,17 @@ impl<'a> Parser<'a> {
                     }
                     GOpKind::IdResult => {
                         rid = Some(try_decode!(self.decoder.id()))
+                    }
+                    GOpKind::LiteralContextDependentNumber => {
+                        // Only constant defining instructions use this kind.
+                        // If it is not true, that means the grammar is wrong
+                        // or has changed.
+                        assert!(grammar.opcode == spirv::Op::Constant ||
+                                grammar.opcode == spirv::Op::SpecConstant);
+                        let id = rtype.expect("internal error: \
+                            should already decoded result type id \
+                            before context dependent number");
+                        coperands.push(try!(self.parse_literal(id)))
                     }
                     _ => coperands.append(
                         &mut try!(self.parse_operand(loperand.kind))),
@@ -349,7 +472,7 @@ mod tests {
     use spirv;
 
     use binary::error::Error;
-    use std::{error, fmt};
+    use std::{error, fmt, mem};
     use super::{Action, Consumer, Parser, State, WORD_NUM_BYTES};
 
     // TODO: It's unfortunate that we have these numbers directly coded here
@@ -795,5 +918,122 @@ mod tests {
         } else {
             assert!(false);
         }
+    }
+
+    #[test]
+    fn test_parsing_int32() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x15, 0x00, 0x04, 0x00]); // OpTypeInt
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
+        v.append(&mut vec![0x20, 0x00, 0x00, 0x00]); // 32
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // 1 (signed)
+
+        v.append(&mut vec![0x2b, 0x00, 0x04, 0x00]); // OpConstant
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
+        v.append(&mut vec![0x12, 0x34, 0x56, 0x78]);
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(2, c.insts.len());
+        let inst = &c.insts[1];
+        assert_eq!("Constant", inst.class.opname);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(vec![mr::Operand::LiteralInt32(0x78563412)], inst.operands);
+    }
+
+    #[test]
+    fn test_parsing_int64() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x15, 0x00, 0x04, 0x00]); // OpTypeInt
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
+        v.append(&mut vec![0x40, 0x00, 0x00, 0x00]); // 64
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // 1 (signed)
+
+        v.append(&mut vec![0x2b, 0x00, 0x05, 0x00]); // OpConstant
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
+        v.append(&mut vec![0x12, 0x34, 0x56, 0x78]);
+        v.append(&mut vec![0x90, 0xab, 0xcd, 0xef]);
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(2, c.insts.len());
+        let inst = &c.insts[1];
+        assert_eq!("Constant", inst.class.opname);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(vec![mr::Operand::LiteralInt64(0xefcdab9078563412)],
+                   inst.operands);
+    }
+
+    fn split_word_to_bytes(word: spirv::Word) -> Vec<u8> {
+        (0..WORD_NUM_BYTES).map(|i| ((word >> (8 * i)) & 0xff) as u8).collect()
+    }
+
+    fn get_f32_bit_pattern(val: f32) -> Vec<u8> {
+        let val = unsafe { mem::transmute::<f32, u32>(val) };
+        split_word_to_bytes(val)
+    }
+
+    fn get_f64_bit_pattern(val: f64) -> Vec<u8> {
+        let val = unsafe { mem::transmute::<f64, u64>(val) };
+        let mut low = split_word_to_bytes((val & 0xffffffff) as u32);
+        let mut high = split_word_to_bytes(((val >> 32) & 0xffffffff) as u32);
+        low.append(&mut high);
+        low
+    }
+
+    #[test]
+    fn test_parsing_float32() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x16, 0x00, 0x03, 0x00]); // OpTypeFloat
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
+        v.append(&mut vec![0x20, 0x00, 0x00, 0x00]); // 32
+
+        v.append(&mut vec![0x2b, 0x00, 0x04, 0x00]); // OpConstant
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
+        v.append(&mut get_f32_bit_pattern(42.42));
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(2, c.insts.len());
+        let inst = &c.insts[1];
+        assert_eq!("Constant", inst.class.opname);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(vec![mr::Operand::LiteralFloat32(42.42)], inst.operands);
+    }
+
+    #[test]
+    fn test_parsing_float64() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x16, 0x00, 0x03, 0x00]); // OpTypeFloat
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
+        v.append(&mut vec![0x40, 0x00, 0x00, 0x00]); // 64
+
+        v.append(&mut vec![0x2b, 0x00, 0x05, 0x00]); // OpConstant
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
+        v.append(&mut get_f64_bit_pattern(-12.34));
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(2, c.insts.len());
+        let inst = &c.insts[1];
+        assert_eq!("Constant", inst.class.opname);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(vec![mr::Operand::LiteralFloat64(-12.34)], inst.operands);
     }
 }
