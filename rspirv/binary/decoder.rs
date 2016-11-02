@@ -17,6 +17,8 @@ use spirv;
 use std::{mem, result};
 use super::error::Error;
 
+use utils::num::u32_to_bytes;
+
 pub type Result<T> = result::Result<T, Error>;
 
 const WORD_NUM_BYTES: usize = 4;
@@ -146,15 +148,6 @@ impl Decoder {
         self.word()
     }
 
-    /// Splits the given word into a vector of bytes in little-endian format.
-    ///
-    /// NOTE: I know it's duplicate work to group bytes into words and then
-    /// split them again. But it's nice to have word() take full control of
-    /// limit checking.
-    fn split_word_to_bytes(word: spirv::Word) -> Vec<u8> {
-        (0..WORD_NUM_BYTES).map(|i| ((word >> (8 * i)) & 0xff) as u8).collect()
-    }
-
     /// Decodes and returns a literal string.
     ///
     /// This method will consume as many words as necessary until finding a
@@ -165,7 +158,7 @@ impl Decoder {
         let mut bytes = vec![];
         loop {
             let word = try!(self.word());
-            bytes.append(&mut Decoder::split_word_to_bytes(word));
+            bytes.append(&mut u32_to_bytes(word));
             if bytes.last() == Some(&0) {
                 break;
             }
@@ -234,9 +227,11 @@ include!("decode_operand.rs");
 mod tests {
     use spirv;
 
-    use std::mem;
     use super::Decoder;
     use binary::error::Error;
+
+    use utils::num::f32_to_bytes;
+    use utils::num::f64_to_bytes;
 
     #[test]
     fn test_decoding_word_from_one_bytes() {
@@ -396,43 +391,29 @@ mod tests {
 
     #[test]
     fn test_decode_int64() {
-        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab,
-                                      0xcd, 0xef]);
+        let mut d = Decoder::new(
+            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef]);
         assert_eq!(Ok(0xefcdab9078563412), d.int64());
 
-        let mut d = Decoder::new(get_f32_bit_pattern(-12.34));
+        let mut d = Decoder::new(f32_to_bytes(-12.34));
         assert_eq!(Ok(-12.34), d.float32());
-    }
-
-    fn get_f32_bit_pattern(val: f32) -> Vec<u8> {
-        let val = unsafe { mem::transmute::<f32, u32>(val) };
-        Decoder::split_word_to_bytes(val)
     }
 
     #[test]
     fn test_decode_float32() {
-        let mut d = Decoder::new(get_f32_bit_pattern(42.42));
+        let mut d = Decoder::new(f32_to_bytes(42.42));
         assert_eq!(Ok(42.42), d.float32());
 
-        let mut d = Decoder::new(get_f32_bit_pattern(-12.34));
+        let mut d = Decoder::new(f32_to_bytes(-12.34));
         assert_eq!(Ok(-12.34), d.float32());
-    }
-
-    fn get_f64_bit_pattern(val: f64) -> Vec<u8> {
-        let val = unsafe { mem::transmute::<f64, u64>(val) };
-        let mut low = Decoder::split_word_to_bytes((val & 0xffffffff) as u32);
-        let mut high =
-            Decoder::split_word_to_bytes(((val >> 32) & 0xffffffff) as u32);
-        low.append(&mut high);
-        low
     }
 
     #[test]
     fn test_decode_float64() {
-        let mut d = Decoder::new(get_f64_bit_pattern(42.42));
+        let mut d = Decoder::new(f64_to_bytes(42.42));
         assert_eq!(Ok(42.42), d.float64());
 
-        let mut d = Decoder::new(get_f64_bit_pattern(-12.34));
+        let mut d = Decoder::new(f64_to_bytes(-12.34));
         assert_eq!(Ok(-12.34), d.float64());
     }
 }

@@ -472,8 +472,11 @@ mod tests {
     use spirv;
 
     use binary::error::Error;
-    use std::{error, fmt, mem};
+    use std::{error, fmt};
     use super::{Action, Consumer, Parser, State, WORD_NUM_BYTES};
+
+    use utils::num::f32_to_bytes;
+    use utils::num::f64_to_bytes;
 
     // TODO: It's unfortunate that we have these numbers directly coded here
     // and repeat them in the following tests. Should have a better way.
@@ -972,23 +975,6 @@ mod tests {
                    inst.operands);
     }
 
-    fn split_word_to_bytes(word: spirv::Word) -> Vec<u8> {
-        (0..WORD_NUM_BYTES).map(|i| ((word >> (8 * i)) & 0xff) as u8).collect()
-    }
-
-    fn get_f32_bit_pattern(val: f32) -> Vec<u8> {
-        let val = unsafe { mem::transmute::<f32, u32>(val) };
-        split_word_to_bytes(val)
-    }
-
-    fn get_f64_bit_pattern(val: f64) -> Vec<u8> {
-        let val = unsafe { mem::transmute::<f64, u64>(val) };
-        let mut low = split_word_to_bytes((val & 0xffffffff) as u32);
-        let mut high = split_word_to_bytes(((val >> 32) & 0xffffffff) as u32);
-        low.append(&mut high);
-        low
-    }
-
     #[test]
     fn test_parsing_float32() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
@@ -999,7 +985,7 @@ mod tests {
         v.append(&mut vec![0x2b, 0x00, 0x04, 0x00]); // OpConstant
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
         v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
-        v.append(&mut get_f32_bit_pattern(42.42));
+        v.append(&mut f32_to_bytes(42.42));
         let mut c = RetainingConsumer::new();
         {
             let p = Parser::new(v, &mut c);
@@ -1023,7 +1009,7 @@ mod tests {
         v.append(&mut vec![0x2b, 0x00, 0x05, 0x00]); // OpConstant
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
         v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
-        v.append(&mut get_f64_bit_pattern(-12.34));
+        v.append(&mut f64_to_bytes(-12.34));
         let mut c = RetainingConsumer::new();
         {
             let p = Parser::new(v, &mut c);
