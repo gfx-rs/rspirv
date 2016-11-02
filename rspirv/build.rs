@@ -661,18 +661,19 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                 m0=get_decode_method(k0), m1=get_decode_method(k1))
     }).collect();
 
+    // These kinds are manually handled.
+    let manual_kinds = vec!["IdResultType", "IdResult",
+                            "LiteralContextDependentNumber",
+                            "LiteralSpecConstantOpInteger"];
+
     // For the rest operand kinds, which takes exactly one word.
     let normal_cases: Vec<String> =
         value.as_array().unwrap().iter().filter_map(|ref element| {
             let kind = element.as_object().unwrap();
             let kind = kind.get("kind").unwrap().as_str().unwrap();
             if further_parse_kinds.iter().any(|ref k| k == &kind) ||
-                // Pair cases, IdResultType, and IdResult are not used
-                // in mr::Operand.
-                kind.starts_with("Pair") ||
-                kind == "IdResultType" ||
-                kind == "IdResult" ||
-                kind == "LiteralSpecConstantOpInteger" {
+                manual_kinds.iter().any(|k| *k == kind) ||
+                kind.starts_with("Pair") {
                     None
                 } else {
                     Some(kind)
@@ -686,10 +687,8 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                  decode=get_decode_method(kind))
         }).collect();
 
-    let unused_cases = vec!["IdResultType", "IdResult",
-                            "LiteralSpecConstantOpInteger"];
     let unused_cases: Vec<String> =
-        unused_cases.iter().map(|element| {
+        manual_kinds.iter().map(|element| {
             format!("{s:12}GOpKind::{k} => panic!(),  // not handled here",
                     s="", k=element)
         }).collect();

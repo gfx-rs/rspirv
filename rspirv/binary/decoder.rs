@@ -202,19 +202,6 @@ impl Decoder {
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
-    /// context-dependent number.
-    // TODO(antiagainst): This should return the correct typed number.
-    pub fn context_dependent_number(&mut self) -> Result<u32> {
-        self.word()
-    }
-
-    /// Decodes and returns the next SPIR-V word as a 32-bit
-    /// spec-constant-op integer.
-    pub fn spec_constant_op_integer(&mut self) -> Result<u32> {
-        self.word()
-    }
-
-    /// Decodes and returns the next SPIR-V word as a 32-bit
     /// extended-instruction-set number.
     pub fn ext_inst_integer(&mut self) -> Result<u32> {
         self.word()
