@@ -308,7 +308,7 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
             "    LiteralFloat32(f32),",
             "    LiteralFloat64(f64),",
             "    LiteralExtInstInteger(u32),",
-            "    LiteralSpecConstantOpInteger(u32),"];
+            "    LiteralSpecConstantOpInteger(spirv::Op),"];
         let str_kinds: Vec<String> =
             kinds.iter().filter(|ref element| {
                 element.ends_with("String")
@@ -671,7 +671,8 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                 // in mr::Operand.
                 kind.starts_with("Pair") ||
                 kind == "IdResultType" ||
-                kind == "IdResult" {
+                kind == "IdResult" ||
+                kind == "LiteralSpecConstantOpInteger" {
                     None
                 } else {
                     Some(kind)
@@ -685,9 +686,11 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                  decode=get_decode_method(kind))
         }).collect();
 
+    let unused_cases = vec!["IdResultType", "IdResult",
+                            "LiteralSpecConstantOpInteger"];
     let unused_cases: Vec<String> =
-        vec!["IdResultType", "IdResult"].iter().map(|element| {
-            format!("{s:12}GOpKind::{k} => panic!(),  // not stored as operand",
+        unused_cases.iter().map(|element| {
+            format!("{s:12}GOpKind::{k} => panic!(),  // not handled here",
                     s="", k=element)
         }).collect();
 

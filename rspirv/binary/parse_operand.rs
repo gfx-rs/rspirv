@@ -51,7 +51,6 @@ impl<'a> Parser<'a> {
             GOpKind::LiteralString => vec![mr::Operand::LiteralString(try_decode!(self.decoder.string()))],
             GOpKind::LiteralContextDependentNumber => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.context_dependent_number()))],
             GOpKind::LiteralExtInstInteger => vec![mr::Operand::LiteralExtInstInteger(try_decode!(self.decoder.ext_inst_integer()))],
-            GOpKind::LiteralSpecConstantOpInteger => vec![mr::Operand::LiteralSpecConstantOpInteger(try_decode!(self.decoder.spec_constant_op_integer()))],
             GOpKind::PairLiteralIntegerIdRef => {
                 vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())), mr::Operand::IdRef(try_decode!(self.decoder.id()))]
             }
@@ -91,8 +90,9 @@ impl<'a> Parser<'a> {
                 ops.append(&mut try!(self.parse_decoration_arguments(val)));
                 ops
             }
-            GOpKind::IdResultType => panic!(),  // not stored as operand
-            GOpKind::IdResult => panic!(),  // not stored as operand
+            GOpKind::IdResultType => panic!(),  // not handled here
+            GOpKind::IdResult => panic!(),  // not handled here
+            GOpKind::LiteralSpecConstantOpInteger => panic!(),  // not handled here
         })
     }
 

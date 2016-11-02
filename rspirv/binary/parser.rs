@@ -58,6 +58,8 @@ pub enum State {
     OperandError(DecodeError),
     /// Unsupported type (byte offset, inst number)
     TypeUnsupported(usize, usize),
+    /// Incorrect SpecConstantOp Integer (byte offset, inst number)
+    SpecConstantOpIntegerIncorrect(usize, usize),
 }
 
 impl error::Error for State {
@@ -77,6 +79,9 @@ impl error::Error for State {
             State::OperandExceeded(..) => "found extra operands",
             State::OperandError(_) => "operand decoding error",
             State::TypeUnsupported(..) => "unsupported type",
+            State::SpecConstantOpIntegerIncorrect(..) => {
+                "incorrect SpecConstantOp Integer"
+            }
         }
     }
 }
@@ -128,6 +133,13 @@ impl fmt::Display for State {
             State::TypeUnsupported(offset, index) => {
                 write!(f,
                        "unsupported type for instruction #{} at offset {}",
+                       index,
+                       offset)
+            }
+            State::SpecConstantOpIntegerIncorrect(offset, index) => {
+                write!(f,
+                       "incorrect SpecConstantOp number for instruction #{} \
+                        at offset {}",
                        index,
                        offset)
             }
@@ -413,6 +425,27 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn parse_spec_constant_op(&mut self) -> Result<Vec<mr::Operand>> {
+        let mut operands = vec![];
+
+        let number = try_decode!(self.decoder.int32());
+        if let Some(g) = GInstTable::lookup_opcode(number as u16) {
+            // TODO: check whether this opcode is allowed here.
+            operands.push(mr::Operand::LiteralSpecConstantOpInteger(g.opcode));
+            // We need id parameters to this SpecConstantOp.
+            for ref operand in g.operands {
+                if operand.kind == GOpKind::IdRef {
+                    operands.push(
+                        mr::Operand::IdRef(try_decode!(self.decoder.id())))
+                }
+            }
+            Ok(operands)
+        } else {
+            Err(State::SpecConstantOpIntegerIncorrect(
+                    self.decoder.offset(), self.inst_index))
+        }
+    }
+
     fn parse_operands(&mut self, grammar: GInstRef) -> Result<mr::Instruction> {
         let mut rtype = None;
         let mut rid = None;
@@ -440,6 +473,10 @@ impl<'a> Parser<'a> {
                             should already decoded result type id \
                             before context dependent number");
                         coperands.push(try!(self.parse_literal(id)))
+                    }
+                    GOpKind::LiteralSpecConstantOpInteger => {
+                        coperands.append(
+                            &mut try!(self.parse_spec_constant_op()))
                     }
                     _ => coperands.append(
                         &mut try!(self.parse_operand(loperand.kind))),
@@ -1021,5 +1058,46 @@ mod tests {
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
         assert_eq!(vec![mr::Operand::LiteralFloat64(-12.34)], inst.operands);
+    }
+
+    #[test]
+    fn test_parsing_spec_constant_op() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x34, 0x00, 0x05, 0x00]); // OpTypeFloat
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
+        v.append(&mut vec![0x7e, 0x00, 0x00, 0x00]); // OpSNegate
+        v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // id ref: 3
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("SpecConstantOp", inst.class.opname);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(
+            vec![mr::Operand::LiteralSpecConstantOpInteger(spirv::Op::SNegate),
+                 mr::Operand::IdRef(3)],
+            inst.operands);
+    }
+
+    #[test]
+    fn test_parsing_spec_constant_op_missing_parameter() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x34, 0x00, 0x05, 0x00]); // OpTypeFloat
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
+        v.append(&mut vec![0x80, 0x00, 0x00, 0x00]); // OpIAdd
+        v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // id ref: 3
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(v, &mut c);
+        assert_matches!(
+            p.parse(),
+            // The header has 5 words, the above instruction has 5 words,
+            // so in total 40 bytes.
+            Err(State::OperandError(Error::LimitReached(40))));
     }
 }

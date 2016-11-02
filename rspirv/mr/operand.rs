@@ -62,7 +62,7 @@ pub enum Operand {
     LiteralFloat32(f32),
     LiteralFloat64(f64),
     LiteralExtInstInteger(u32),
-    LiteralSpecConstantOpInteger(u32),
+    LiteralSpecConstantOpInteger(spirv::Op),
     LiteralString(String),
 }
 
