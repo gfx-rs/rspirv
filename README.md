@@ -9,6 +9,10 @@ functionalities. It aims to provide:
 * APIs for processing SPIR-V modules
 * Command line tools building on top of the APIs for common processing tasks
 
+[SPIR-V][spirv] is a common intermediate language for representing graphics
+shaders and compute kernels for multiple Khronos APIs, such as Vulkan,
+OpenGL, and OpenCL.
+
 ### Disclaimer
 
 This is not an official Google product (experimental or otherwise), it is just
@@ -64,3 +68,5 @@ Contributions
 ### Authors
 
 This project is initialized and mainly developed by Lei Zhang (@antiagainst).
+
+[spirv]: https://www.khronos.org/registry/spir-v/
