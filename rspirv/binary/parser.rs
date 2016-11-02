@@ -609,7 +609,7 @@ mod tests {
         assert_eq!(None, inst.result_id);
         assert_eq!(
             vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                 mr::Operand::LiteralInteger(450),
+                 mr::Operand::LiteralInt32(450),
                  mr::Operand::IdRef(6),
                  mr::Operand::LiteralString("wow".to_string())],
             inst.operands);
@@ -634,7 +634,7 @@ mod tests {
         assert_eq!(None, inst.result_id);
         assert_eq!(
             vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                 mr::Operand::LiteralInteger(450),
+                 mr::Operand::LiteralInt32(450),
                  mr::Operand::IdRef(6)],
             inst.operands);
     }
@@ -657,7 +657,7 @@ mod tests {
         assert_eq!(None, inst.result_id);
         assert_eq!(
             vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                 mr::Operand::LiteralInteger(450)],
+                 mr::Operand::LiteralInt32(450)],
             inst.operands);
     }
 

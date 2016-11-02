@@ -180,8 +180,16 @@ impl Decoder {
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
     /// literal integer.
-    pub fn integer(&mut self) -> Result<u32> {
+    pub fn int32(&mut self) -> Result<u32> {
         self.word()
+    }
+
+    /// Decodes and returns the next two SPIR-V words as a 64-bit
+    /// literal integer.
+    pub fn int64(&mut self) -> Result<u64> {
+        let low = try!(self.word());
+        let high = try!(self.word());
+        Ok(((high as u64) << 32) | (low as u64))
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit

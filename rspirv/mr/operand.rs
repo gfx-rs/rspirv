@@ -59,8 +59,10 @@ pub enum Operand {
     IdMemorySemantics(spirv::Word),
     IdScope(spirv::Word),
     IdRef(spirv::Word),
-    LiteralInteger(u32),
-    LiteralContextDependentNumber(u32),
+    LiteralInt32(u32),
+    LiteralInt64(u64),
+    LiteralFloat32(f32),
+    LiteralFloat64(f64),
     LiteralExtInstInteger(u32),
     LiteralSpecConstantOpInteger(u32),
     LiteralString(String),
@@ -104,11 +106,13 @@ impl fmt::Display for Operand {
             Operand::IdMemorySemantics(ref v) => write!(f, "{:?}", v),
             Operand::IdScope(ref v) => write!(f, "{:?}", v),
             Operand::IdRef(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralInteger(ref v) => write!(f, "{:?}", v),
             Operand::LiteralString(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralContextDependentNumber(ref v) => write!(f, "{:?}", v),
             Operand::LiteralExtInstInteger(ref v) => write!(f, "{:?}", v),
             Operand::LiteralSpecConstantOpInteger(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralInt32(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralInt64(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralFloat32(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralFloat64(ref v) => write!(f, "{:?}", v),
         }
     }
 }

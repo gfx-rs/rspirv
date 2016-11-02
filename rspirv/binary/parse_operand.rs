@@ -49,16 +49,16 @@ impl<'a> Parser<'a> {
             GOpKind::IdMemorySemantics => vec![mr::Operand::IdMemorySemantics(try_decode!(self.decoder.id()))],
             GOpKind::IdScope => vec![mr::Operand::IdScope(try_decode!(self.decoder.id()))],
             GOpKind::IdRef => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
-            GOpKind::LiteralInteger => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
+            GOpKind::LiteralInteger => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             GOpKind::LiteralString => vec![mr::Operand::LiteralString(try_decode!(self.decoder.string()))],
-            GOpKind::LiteralContextDependentNumber => vec![mr::Operand::LiteralContextDependentNumber(try_decode!(self.decoder.context_dependent_number()))],
+            GOpKind::LiteralContextDependentNumber => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.context_dependent_number()))],
             GOpKind::LiteralExtInstInteger => vec![mr::Operand::LiteralExtInstInteger(try_decode!(self.decoder.ext_inst_integer()))],
             GOpKind::LiteralSpecConstantOpInteger => vec![mr::Operand::LiteralSpecConstantOpInteger(try_decode!(self.decoder.spec_constant_op_integer()))],
             GOpKind::PairLiteralIntegerIdRef => {
-                vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer())), mr::Operand::IdRef(try_decode!(self.decoder.id()))]
+                vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())), mr::Operand::IdRef(try_decode!(self.decoder.id()))]
             }
             GOpKind::PairIdRefLiteralInteger => {
-                vec![mr::Operand::IdRef(try_decode!(self.decoder.id())), mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))]
+                vec![mr::Operand::IdRef(try_decode!(self.decoder.id())), mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))]
             }
             GOpKind::PairIdRefIdRef => {
                 vec![mr::Operand::IdRef(try_decode!(self.decoder.id())), mr::Operand::IdRef(try_decode!(self.decoder.id()))]
@@ -113,39 +113,39 @@ impl<'a> Parser<'a> {
 
     fn parse_execution_mode_arguments(&mut self, execution_mode: spirv::ExecutionMode) -> Result<Vec<mr::Operand>> {
         Ok(match execution_mode {
-            spirv::ExecutionMode::Invocations => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::ExecutionMode::LocalSize => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer())), mr::Operand::LiteralInteger(try_decode!(self.decoder.integer())), mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::ExecutionMode::LocalSizeHint => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer())), mr::Operand::LiteralInteger(try_decode!(self.decoder.integer())), mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::ExecutionMode::OutputVertices => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::ExecutionMode::VecTypeHint => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::ExecutionMode::SubgroupSize => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::ExecutionMode::SubgroupsPerWorkgroup => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
+            spirv::ExecutionMode::Invocations => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::ExecutionMode::LocalSize => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())), mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())), mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::ExecutionMode::LocalSizeHint => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())), mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())), mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::ExecutionMode::OutputVertices => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::ExecutionMode::VecTypeHint => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::ExecutionMode::SubgroupSize => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::ExecutionMode::SubgroupsPerWorkgroup => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             _ => vec![]
         })
     }
 
     fn parse_decoration_arguments(&mut self, decoration: spirv::Decoration) -> Result<Vec<mr::Operand>> {
         Ok(match decoration {
-            spirv::Decoration::SpecId => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::ArrayStride => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::MatrixStride => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
+            spirv::Decoration::SpecId => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::ArrayStride => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::MatrixStride => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::Decoration::BuiltIn => vec![mr::Operand::BuiltIn(try_decode!(self.decoder.built_in()))],
-            spirv::Decoration::Stream => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::Location => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::Component => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::Index => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::Binding => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::DescriptorSet => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::Offset => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::XfbBuffer => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::XfbStride => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
+            spirv::Decoration::Stream => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::Location => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::Component => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::Index => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::Binding => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::DescriptorSet => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::Offset => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::XfbBuffer => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::XfbStride => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::Decoration::FuncParamAttr => vec![mr::Operand::FunctionParameterAttribute(try_decode!(self.decoder.function_parameter_attribute()))],
             spirv::Decoration::FPRoundingMode => vec![mr::Operand::FPRoundingMode(try_decode!(self.decoder.fprounding_mode()))],
             spirv::Decoration::FPFastMathMode => vec![mr::Operand::FPFastMathMode(try_decode!(self.decoder.fpfast_math_mode()))],
             spirv::Decoration::LinkageAttributes => vec![mr::Operand::LiteralString(try_decode!(self.decoder.string())), mr::Operand::LinkageType(try_decode!(self.decoder.linkage_type()))],
-            spirv::Decoration::InputAttachmentIndex => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::Alignment => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
-            spirv::Decoration::MaxByteOffset => vec![mr::Operand::LiteralInteger(try_decode!(self.decoder.integer()))],
+            spirv::Decoration::InputAttachmentIndex => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::Alignment => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::MaxByteOffset => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             _ => vec![]
         })
     }

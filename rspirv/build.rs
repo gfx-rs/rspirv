@@ -279,13 +279,16 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
 
     let object = value.as_array().unwrap();
     let kinds: Vec<&str> =
-        object.iter().filter(|ref element| {
-            let kind = element.as_object().unwrap();
-            // Pair kinds are not used in mr::Operands.
-            !kind.get("kind").unwrap().as_str().unwrap().starts_with("Pair")
-        }).map(|ref element| {
+        object.iter().map(|ref element| {
             let kind = element.as_object().unwrap();
             kind.get("kind").unwrap().as_str().unwrap()
+        }).filter(|element| {
+            // Pair kinds are not used in mr::Operand.
+            // LiteralContextDependentNumber is replaced by suitable literals.
+            // LiteralInteger is replaced by LiteralInt32.
+            !(element.starts_with("Pair") ||
+              *element == "LiteralContextDependentNumber" ||
+              *element == "LiteralInteger")
         }).collect();
 
     { // Enum for all operand kinds in memory representation.
@@ -295,12 +298,13 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
             }).map(|ref element| {
                 format!("    {}(spirv::Word),", element)
             }).collect();
-        let num_kinds: Vec<String> =
-            kinds.iter().filter(|ref element| {
-                element.ends_with("Integer") || element.ends_with("Number")
-            }).map(|ref element| {
-                format!("    {}(u32),", element)
-            }).collect();
+        let num_kinds: Vec<&str> = vec![
+            "    LiteralInt32(u32),",
+            "    LiteralInt64(u64),",
+            "    LiteralFloat32(f32),",
+            "    LiteralFloat64(f64),",
+            "    LiteralExtInstInteger(u32),",
+            "    LiteralSpecConstantOpInteger(u32),"];
         let str_kinds: Vec<String> =
             kinds.iter().filter(|ref element| {
                 element.ends_with("String")
@@ -332,6 +336,11 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
     }
 
     { // impl fmt::Display for mr::Operand.
+        let mut kinds = kinds;
+        kinds.push("LiteralInt32");
+        kinds.push("LiteralInt64");
+        kinds.push("LiteralFloat32");
+        kinds.push("LiteralFloat64");
         let cases: Vec<String> =
             kinds.iter().map(|ref element| {
                 format!("{space:12}Operand::{kind}(ref v) => \
@@ -486,7 +495,8 @@ fn write_operand_decode_methods(value: &Value, filename: &str) {
     file.write_all(&impl_code.into_bytes()).unwrap();
 }
 
-/// Returns the name of the method for decoding the given operand `kind`.
+/// Returns the name of the method for decoding the given operand `kind`
+/// in grammar.
 fn get_decode_method(kind: &str) -> String {
     if kind.starts_with("Id") {
         return "id".to_string()
@@ -494,9 +504,25 @@ fn get_decode_method(kind: &str) -> String {
 
     let mut kind = kind;
     if kind.starts_with("Literal") {
-        kind = &kind["Literal".len()..]
+        kind = &kind["Literal".len()..];
+        if kind == "Integer" {
+            return "int32".to_string()
+        }
     }
     convert_symbol_to_snake_case(kind)
+}
+
+/// Returns the corresponding operand kind in memory representation for the
+/// given operand `kind` in the grammar.
+fn get_mr_operand_kind(kind: &str) -> &str {
+    if kind == "LiteralInteger" {
+        "LiteralInt32"
+    } else if kind == "LiteralContextDependentNumber" {
+        // TODO: should use the correct type to decode
+        "LiteralInt32"
+    } else {
+        kind
+    }
 }
 
 /// Generates the methods for parsing parameters of operand kind enumerants.
@@ -558,7 +584,7 @@ fn gen_operand_param_parse_methods(value: &Value) -> Vec<(String, String)> {
                     let params: Vec<String> = params.iter().map(|ref element| {
                         format!("mr::Operand::{kind}(\
                                  try_decode!(self.decoder.{decode}()))",
-                                kind=element,
+                                kind=get_mr_operand_kind(element),
                                 decode=get_decode_method(element))
                     }).collect();
                     format!(
@@ -625,7 +651,9 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                  mr::Operand::{k1}(try_decode!(self.decoder.{m1}()))\
                  ]\n{s:12}}}",
                 s="",
-                kind=format!("Pair{}{}", k0, k1), k0=k0, k1=k1,
+                kind=format!("Pair{}{}", k0, k1),
+                k0=get_mr_operand_kind(k0),
+                k1=get_mr_operand_kind(k1),
                 m0=get_decode_method(k0), m1=get_decode_method(k1))
     }).collect();
 
@@ -642,10 +670,10 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                 }
         }).map(|ref kind| {
             format!(
-                "{s:12}GOpKind::{kind} => vec![mr::Operand::{kind}\
+                "{s:12}GOpKind::{gkind} => vec![mr::Operand::{mkind}\
                  (try_decode!(self.decoder.{decode}()))],",
                  s="",
-                 kind=kind,
+                 gkind=kind, mkind=get_mr_operand_kind(kind),
                  decode=get_decode_method(kind))
         }).collect();
 
