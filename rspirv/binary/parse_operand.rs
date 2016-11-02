@@ -44,8 +44,6 @@ impl<'a> Parser<'a> {
             GOpKind::GroupOperation => vec![mr::Operand::GroupOperation(try_decode!(self.decoder.group_operation()))],
             GOpKind::KernelEnqueueFlags => vec![mr::Operand::KernelEnqueueFlags(try_decode!(self.decoder.kernel_enqueue_flags()))],
             GOpKind::Capability => vec![mr::Operand::Capability(try_decode!(self.decoder.capability()))],
-            GOpKind::IdResultType => vec![mr::Operand::IdResultType(try_decode!(self.decoder.id()))],
-            GOpKind::IdResult => vec![mr::Operand::IdResult(try_decode!(self.decoder.id()))],
             GOpKind::IdMemorySemantics => vec![mr::Operand::IdMemorySemantics(try_decode!(self.decoder.id()))],
             GOpKind::IdScope => vec![mr::Operand::IdScope(try_decode!(self.decoder.id()))],
             GOpKind::IdRef => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
@@ -93,6 +91,8 @@ impl<'a> Parser<'a> {
                 ops.append(&mut try!(self.parse_decoration_arguments(val)));
                 ops
             }
+            GOpKind::IdResultType => panic!(),  // not stored as operand
+            GOpKind::IdResult => panic!(),  // not stored as operand
         })
     }
 

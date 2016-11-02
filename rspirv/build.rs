@@ -286,9 +286,13 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
             // Pair kinds are not used in mr::Operand.
             // LiteralContextDependentNumber is replaced by suitable literals.
             // LiteralInteger is replaced by LiteralInt32.
+            // IdResult and IdResultType are not stored as operands in
+            // memory representation.
             !(element.starts_with("Pair") ||
               *element == "LiteralContextDependentNumber" ||
-              *element == "LiteralInteger")
+              *element == "LiteralInteger" ||
+              *element == "IdResult" ||
+              *element == "IdResultType")
         }).collect();
 
     { // Enum for all operand kinds in memory representation.
@@ -663,7 +667,11 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
             let kind = element.as_object().unwrap();
             let kind = kind.get("kind").unwrap().as_str().unwrap();
             if further_parse_kinds.iter().any(|ref k| k == &kind) ||
-                kind.starts_with("Pair") {
+                // Pair cases, IdResultType, and IdResult are not used
+                // in mr::Operand.
+                kind.starts_with("Pair") ||
+                kind == "IdResultType" ||
+                kind == "IdResult" {
                     None
                 } else {
                     Some(kind)
@@ -677,6 +685,12 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                  decode=get_decode_method(kind))
         }).collect();
 
+    let unused_cases: Vec<String> =
+        vec!["IdResultType", "IdResult"].iter().map(|element| {
+            format!("{s:12}GOpKind::{k} => panic!(),  // not stored as operand",
+                    s="", k=element)
+        }).collect();
+
     let impl_code = format!(
         "impl<'a> Parser<'a> {{\n\
          {s:4}fn parse_operand(&mut self, kind: GOpKind) \
@@ -685,6 +699,7 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                  {normal_cases}\n\
                  {pair_cases}\n\
                  {further_parse_cases}\n\
+                 {unused_cases}\n\
              {s:8}}})\n\
          {s:4}}}\n\n\
          {functions}\n\
@@ -693,6 +708,7 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
         normal_cases=normal_cases.join("\n"),
         pair_cases=pair_cases.join("\n"),
         further_parse_cases=further_parse_cases.join("\n"),
+        unused_cases=unused_cases.join("\n"),
         functions=further_parse_methods.join("\n\n"));
 
     file.write_all(&impl_code.into_bytes()).unwrap();
