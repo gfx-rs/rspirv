@@ -3,7 +3,7 @@ extern crate serde_json;
 
 use regex::Regex;
 use serde_json::Value;
-use std::{fs, path};
+use std::{env, fs, path};
 use std::io::{Read, Write};
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -718,8 +718,7 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
 
 fn main() {
     // Path to the grammar file.
-    let mut path = path::PathBuf::from(file!());
-    path.pop();
+    let mut path = path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     path.push("external");
     path.push("spirv.core.grammar.json");
 
