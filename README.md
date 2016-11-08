@@ -29,8 +29,8 @@ development. I plan to implement serveral functionalities:
 - [ ] SPIR-V module assemebler
 - [x] SPIR-V binary module loader
 - [x] SPIR-V binary module disassemebler
-- [ ] (maybe) HLSL/GLSL to SPIR-V frontend
-- [ ] (maybe) SPIR-V MR to LLVM IR transformation
+- [ ] HLSL/GLSL to SPIR-V frontend (maybe)
+- [ ] SPIR-V MR to LLVM IR transformation (maybe)
 
 Right now the SPIR-V binary module disassemebler still lacks support for some
 features like extended instruction sets and 64-bit selectors in `OpSwitch`.
@@ -76,9 +76,11 @@ Contributions
 
 ### Authors
 
-This project is initialized and mainly developed by Lei Zhang (@antiagainst).
+This project is initialized and mainly developed by Lei Zhang
+([@antiagainst][antiagainst]).
 
 [spirv]: https://www.khronos.org/registry/spir-v/
 [vulkan]: https://www.khronos.org/vulkan/
 [opengl]: https://www.opengl.org/
 [opencl]: https://www.khronos.org/opencl/
+[antiagainst]: https://github.com/antiagainst
