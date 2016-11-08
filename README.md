@@ -10,8 +10,8 @@ functionalities. It aims to provide:
 * Command line tools building on top of the APIs for common processing tasks
 
 [SPIR-V][spirv] is a common intermediate language for representing graphics
-shaders and compute kernels for multiple Khronos APIs, such as Vulkan,
-OpenGL, and OpenCL.
+shaders and compute kernels for multiple Khronos APIs, such as [Vulkan][vulkan],
+[OpenGL][opengl], and [OpenCL][opencl].
 
 ### Disclaimer
 
@@ -22,10 +22,18 @@ Status
 ------
 
 This project is far from being complete; it's in a very early stage of
-development. However, the memory representation of SPIR-V modules is defined
-and a SPIR-V binary module disassemebler is provided, although lacking the
-support for some features like extended instruction sets and 64-bit selectors
-in `OpSwitch`.
+development. I plan to implement serveral functionalities:
+
+- [x] SPIR-V memory representation (MR)
+- [ ] SPIR-V module builder
+- [ ] SPIR-V module assemebler
+- [x] SPIR-V binary module loader
+- [x] SPIR-V binary module disassemebler
+- [ ] (maybe) HLSL/GLSL to SPIR-V frontend
+- [ ] (maybe) SPIR-V MR to LLVM IR transformation
+
+Right now the SPIR-V binary module disassemebler still lacks support for some
+features like extended instruction sets and 64-bit selectors in `OpSwitch`.
 
 Getting and building rspirv
 ---------------------------
@@ -71,3 +79,6 @@ Contributions
 This project is initialized and mainly developed by Lei Zhang (@antiagainst).
 
 [spirv]: https://www.khronos.org/registry/spir-v/
+[vulkan]: https://www.khronos.org/vulkan/
+[opengl]: https://www.opengl.org/
+[opencl]: https://www.khronos.org/opencl/
