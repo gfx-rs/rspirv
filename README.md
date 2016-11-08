@@ -74,6 +74,9 @@ match rspirv::mr::load(buffer) {
 Contributions
 -------------
 
+This project is licensed under the [Apache 2](LICENSE) license. Please see
+[CONTRIBUTING](CONTRIBUTING.md) before contributing.
+
 ### Authors
 
 This project is initialized and mainly developed by Lei Zhang
