@@ -27,6 +27,7 @@ pub const MINOR_VERSION: u32 = 1;
 pub const REVISION: u32 = 2;
 
 bitflags!{
+    /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
     pub flags ImageOperands : u32 {
         const IMAGE_OPERANDS_NONE = 0x0000,
         const IMAGE_OPERANDS_BIAS = 0x0001,
@@ -41,6 +42,7 @@ bitflags!{
 }
 
 bitflags!{
+    /// SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)
     pub flags FPFastMathMode : u32 {
         const FPFAST_MATH_MODE_NONE = 0x0000,
         const FPFAST_MATH_MODE_NOT_NA_N = 0x0001,
@@ -52,6 +54,7 @@ bitflags!{
 }
 
 bitflags!{
+    /// SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_selection_control_a_selection_control)
     pub flags SelectionControl : u32 {
         const SELECTION_CONTROL_NONE = 0x0000,
         const SELECTION_CONTROL_FLATTEN = 0x0001,
@@ -60,6 +63,7 @@ bitflags!{
 }
 
 bitflags!{
+    /// SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_loop_control_a_loop_control)
     pub flags LoopControl : u32 {
         const LOOP_CONTROL_NONE = 0x0000,
         const LOOP_CONTROL_UNROLL = 0x0001,
@@ -70,6 +74,7 @@ bitflags!{
 }
 
 bitflags!{
+    /// SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_function_control_a_function_control)
     pub flags FunctionControl : u32 {
         const FUNCTION_CONTROL_NONE = 0x0000,
         const FUNCTION_CONTROL_INLINE = 0x0001,
@@ -80,6 +85,7 @@ bitflags!{
 }
 
 bitflags!{
+    /// SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)
     pub flags MemorySemantics : u32 {
         const MEMORY_SEMANTICS_RELAXED = 0x0000,
         const MEMORY_SEMANTICS_NONE = 0x0000,
@@ -97,6 +103,7 @@ bitflags!{
 }
 
 bitflags!{
+    /// SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_memory_access_a_memory_access)
     pub flags MemoryAccess : u32 {
         const MEMORY_ACCESS_NONE = 0x0000,
         const MEMORY_ACCESS_VOLATILE = 0x0001,
@@ -106,12 +113,14 @@ bitflags!{
 }
 
 bitflags!{
+    /// SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)
     pub flags KernelProfilingInfo : u32 {
         const KERNEL_PROFILING_INFO_NONE = 0x0000,
         const KERNEL_PROFILING_INFO_CMD_EXEC_TIME = 0x0001,
     }
 }
 
+/// SPIR-V operand kind: [SourceLanguage](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_source_language_a_source_language)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum SourceLanguage {
@@ -122,6 +131,7 @@ pub enum SourceLanguage {
     OpenCL_CPP = 4,
 }
 
+/// SPIR-V operand kind: [ExecutionModel](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_execution_model_a_execution_model)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ExecutionModel {
@@ -134,6 +144,7 @@ pub enum ExecutionModel {
     Kernel = 6,
 }
 
+/// SPIR-V operand kind: [AddressingModel](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_addressing_model_a_addressing_model)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum AddressingModel {
@@ -142,6 +153,7 @@ pub enum AddressingModel {
     Physical64 = 2,
 }
 
+/// SPIR-V operand kind: [MemoryModel](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_memory_model_a_memory_model)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum MemoryModel {
@@ -150,6 +162,7 @@ pub enum MemoryModel {
     OpenCL = 2,
 }
 
+/// SPIR-V operand kind: [ExecutionMode](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_execution_mode_a_execution_mode)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ExecutionMode {
@@ -190,6 +203,7 @@ pub enum ExecutionMode {
     SubgroupsPerWorkgroup = 36,
 }
 
+/// SPIR-V operand kind: [StorageClass](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_storage_class_a_storage_class)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum StorageClass {
@@ -207,6 +221,7 @@ pub enum StorageClass {
     Image = 11,
 }
 
+/// SPIR-V operand kind: [Dim](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_dim_a_dim)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Dim {
@@ -219,6 +234,7 @@ pub enum Dim {
     DimSubpassData = 6,
 }
 
+/// SPIR-V operand kind: [SamplerAddressingMode](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_sampler_addressing_mode_a_sampler_addressing_mode)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum SamplerAddressingMode {
@@ -229,6 +245,7 @@ pub enum SamplerAddressingMode {
     RepeatMirrored = 4,
 }
 
+/// SPIR-V operand kind: [SamplerFilterMode](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_sampler_filter_mode_a_sampler_filter_mode)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum SamplerFilterMode {
@@ -236,6 +253,7 @@ pub enum SamplerFilterMode {
     Linear = 1,
 }
 
+/// SPIR-V operand kind: [ImageFormat](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_format_a_image_format)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ImageFormat {
@@ -281,6 +299,7 @@ pub enum ImageFormat {
     R8ui = 39,
 }
 
+/// SPIR-V operand kind: [ImageChannelOrder](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_channel_order_a_image_channel_order)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ImageChannelOrder {
@@ -306,6 +325,7 @@ pub enum ImageChannelOrder {
     ABGR = 19,
 }
 
+/// SPIR-V operand kind: [ImageChannelDataType](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_channel_data_type_a_image_channel_data_type)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum ImageChannelDataType {
@@ -328,6 +348,7 @@ pub enum ImageChannelDataType {
     UnormInt101010_2 = 16,
 }
 
+/// SPIR-V operand kind: [FPRoundingMode](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_fp_rounding_mode_a_fp_rounding_mode)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum FPRoundingMode {
@@ -337,6 +358,7 @@ pub enum FPRoundingMode {
     RTN = 3,
 }
 
+/// SPIR-V operand kind: [LinkageType](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_linkage_type_a_linkage_type)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum LinkageType {
@@ -344,6 +366,7 @@ pub enum LinkageType {
     Import = 1,
 }
 
+/// SPIR-V operand kind: [AccessQualifier](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_access_qualifier_a_access_qualifier)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum AccessQualifier {
@@ -352,6 +375,7 @@ pub enum AccessQualifier {
     ReadWrite = 2,
 }
 
+/// SPIR-V operand kind: [FunctionParameterAttribute](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_function_parameter_attribute_a_function_parameter_attribute)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum FunctionParameterAttribute {
@@ -365,6 +389,7 @@ pub enum FunctionParameterAttribute {
     NoReadWrite = 7,
 }
 
+/// SPIR-V operand kind: [Decoration](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_decoration_a_decoration)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Decoration {
@@ -414,6 +439,7 @@ pub enum Decoration {
     MaxByteOffset = 45,
 }
 
+/// SPIR-V operand kind: [BuiltIn](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_built_in_a_built_in)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum BuiltIn {
@@ -468,6 +494,7 @@ pub enum BuiltIn {
     DrawIndex = 4426,
 }
 
+/// SPIR-V operand kind: [Scope](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_scope_a_scope)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Scope {
@@ -478,6 +505,7 @@ pub enum Scope {
     Invocation = 4,
 }
 
+/// SPIR-V operand kind: [GroupOperation](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_group_operation_a_group_operation)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum GroupOperation {
@@ -486,6 +514,7 @@ pub enum GroupOperation {
     ExclusiveScan = 2,
 }
 
+/// SPIR-V operand kind: [KernelEnqueueFlags](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_kernel_enqueue_flags_a_kernel_enqueue_flags)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum KernelEnqueueFlags {
@@ -494,6 +523,7 @@ pub enum KernelEnqueueFlags {
     WaitWorkGroup = 2,
 }
 
+/// SPIR-V operand kind: [Capability](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_capability_a_capability)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Capability {
@@ -560,6 +590,7 @@ pub enum Capability {
     DrawParameters = 4427,
 }
 
+/// SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_instructions_a_instructions) opcodes
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]
 pub enum Op {

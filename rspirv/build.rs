@@ -65,6 +65,21 @@ fn convert_symbol_to_snake_case(symbol: &str) -> String {
     split_words_with_underscore(symbol).to_lowercase()
 }
 
+/// Returns the markdown string containing a link to the spec for the given
+/// operand `kind`.
+fn get_spec_link(kind: &str) -> String {
+    let mut symbol = convert_symbol_to_snake_case(kind);
+    if symbol.starts_with("fp") {
+        // Special case for FPFastMathMode and FPRoundingMode.
+        symbol = symbol.replace("fp", "fp_");
+    }
+    format!("[{text}]({link})",
+            text = kind,
+            link = format!("https://www.khronos.org/registry/spir-v/\
+                            specs/1.1/SPIRV.html#_a_id_{}_a_{}",
+                           symbol, symbol))
+}
+
 fn gen_bit_enum_operand_kind(value: &Value) -> String {
     let object = value.as_object().unwrap();
     let kind = object.get("kind").unwrap().as_str().unwrap();
@@ -78,8 +93,9 @@ fn gen_bit_enum_operand_kind(value: &Value) -> String {
                 split_words_with_underscore(symbol).to_uppercase(),
                 value)
     }).collect();
-    format!("bitflags!{{\n    pub flags {kind} : u32 \
+    format!("bitflags!{{\n    {doc}\n    pub flags {kind} : u32 \
              {{\n{enumerants}\n    }}\n}}\n",
+            doc = format!("/// SPIR-V operand kind: {}", get_spec_link(kind)),
             kind = kind,
             enumerants = elements.join("\n"))
 }
@@ -100,7 +116,8 @@ fn gen_value_enum_operand_kind(value: &Value) -> String {
             format!("    {} = {},", symbol, value)
         }
     }).collect();
-    format!("{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n",
+    format!("{doc}\n{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n",
+            doc = format!("/// SPIR-V operand kind: {}", get_spec_link(kind)),
             attribute = VAULE_ENUM_ATTRIBUTE,
             kind = kind,
             enumerants = elements.join("\n"))
@@ -188,8 +205,10 @@ fn write_spirv_header(grammar: &Value, filename: &str) {
             // Omit the "Op" prefix.
             format!("    {} = {},", &opname[2..], opcode)
         }).collect();
-        let opcode_enum = format!("{attribute}\npub enum Op \
+        let opcode_enum = format!("/// SPIR-V {link} opcodes\n\
+                                   {attribute}\npub enum Op \
                                    {{\n{opcodes}\n}}\n",
+                                   link = get_spec_link("instructions"),
                                   attribute = VAULE_ENUM_ATTRIBUTE,
                                   opcodes = opcodes.join("\n"));
         file.write_all(&opcode_enum.into_bytes()).unwrap();
