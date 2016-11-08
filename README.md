@@ -20,6 +20,11 @@ shaders and compute kernels for multiple Khronos APIs, such as [Vulkan][vulkan],
 This is not an official Google product (experimental or otherwise), it is just
 code that happens to be owned by Google.
 
+Documentation
+-------------
+
+[![Documentation](https://docs.rs/rspirv/badge.svg)](https://docs.rs/rspirv)
+
 Status
 ------
 
