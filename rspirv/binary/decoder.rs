@@ -54,6 +54,23 @@ const WORD_NUM_BYTES: usize = 4;
 ///    next word as the given `<spirv-enum>`.
 ///
 /// All errors contain the byte offset of the word failed decoding.
+///
+/// # Examples
+///
+/// ```
+/// use rspirv::binary::{Decoder, DecodeError};
+/// use rspirv::spirv::SourceLanguage;
+///
+/// let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
+///                               0x90, 0xab, 0xcd, 0xef,
+///                               0x02, 0x00, 0x00, 0x00]);
+///
+/// assert_eq!(Ok(0x78563412), d.word());
+/// assert_eq!(Ok(0xefcdab90), d.word());
+/// assert_eq!(Ok(SourceLanguage::GLSL), d.source_language());
+///
+/// assert_eq!(Err(DecodeError::StreamExpected(12)), d.word());
+/// ```
 pub struct Decoder {
     /// Raw bytes to decode
     bytes: Vec<u8>,

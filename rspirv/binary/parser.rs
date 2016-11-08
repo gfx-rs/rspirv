@@ -260,6 +260,36 @@ impl TypeTracker {
 /// Different from the [`Decoder`](struct.Decoder.html),
 /// this parser is high-level; it has knowlege of the SPIR-V grammar.
 /// It will parse instructions according to SPIR-V grammar.
+///
+/// # Examples
+///
+/// ```
+/// use rspirv::binary::Parser;
+/// use rspirv::mr::Loader;
+/// use rspirv::spirv::{AddressingModel, MemoryModel};
+///
+/// let bin = vec![
+///     // Magic number.           Version number: 1.0.
+///     0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
+///     // Generator number: 0.    Bound: 0.
+///     0x00, 0x00, 0x00, 0x00,    0x00, 0x00, 0x00, 0x00,
+///     // Reserved word: 0.
+///     0x00, 0x00, 0x00, 0x00,
+///     // OpMemoryModel.          Logical.
+///     0x0e, 0x00, 0x03, 0x00,    0x00, 0x00, 0x00, 0x00,
+///     // GLSL450.
+///     0x01, 0x00, 0x00, 0x00];
+/// let mut loader = Loader::new();
+/// {
+///     let mut p = Parser::new(bin, &mut loader);
+///     p.parse().unwrap();
+/// }
+/// let module = loader.module();
+///
+/// assert_eq!((1, 0), module.header.unwrap().version());
+/// assert_eq!(AddressingModel::Logical, module.addressing_model.unwrap());
+/// assert_eq!(MemoryModel::GLSL450, module.memory_model.unwrap());
+/// ```
 pub struct Parser<'a> {
     decoder: decoder::Decoder,
     consumer: &'a mut Consumer,
