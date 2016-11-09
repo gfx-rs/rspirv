@@ -42,23 +42,23 @@ development. I plan to implement serveral functionalities:
 Right now the SPIR-V binary module disassemebler still lacks support for some
 features like extended instruction sets and 64-bit selectors in `OpSwitch`.
 
-Getting and building rspirv
----------------------------
+Usage
+-----
 
 This project uses features only enabled in nightly versions of the Rust
 compiler; so to build it, a nightly version of the compiler is required.
 
-```sh
-git clone git@github.com:google/rspirv.git
+First add to your `Cargo.toml`:
 
-# Build the disassembler
-cd rspirv/dis
-Cargo build
+```toml
+[dependencies]
+rspirv = "0.1"
+```
 
-# Build the core library and its doc
-cd rspirv/rspirv
-Cargo build
-Cargo doc
+Then add to your crate root:
+
+```rust
+extern crate rspirv;
 ```
 
 Example
