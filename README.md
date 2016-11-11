@@ -3,7 +3,6 @@ rspirv
 
 [![Version](https://img.shields.io/crates/v/rspirv.svg)](https://crates.io/crates/rspirv)
 [![Documentation](https://docs.rs/rspirv/badge.svg)](https://docs.rs/rspirv)
-
 [![Build Status](https://travis-ci.org/google/rspirv.svg?branch=master)](https://travis-ci.org/google/rspirv)
 
 **R**u**s**t implementation of S**PIR**-**V** module processing
