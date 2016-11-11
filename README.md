@@ -1,9 +1,10 @@
 rspirv
 ======
 
-[![Build Status](https://travis-ci.org/google/rspirv.svg?branch=master)](https://travis-ci.org/google/rspirv)
 [![Version](https://img.shields.io/crates/v/rspirv.svg)](https://crates.io/crates/rspirv)
+[![Documentation](https://docs.rs/rspirv/badge.svg)](https://docs.rs/rspirv)
 
+[![Build Status](https://travis-ci.org/google/rspirv.svg?branch=master)](https://travis-ci.org/google/rspirv)
 
 **R**u**s**t implementation of S**PIR**-**V** module processing
 functionalities. It aims to provide:
@@ -23,6 +24,11 @@ code that happens to be owned by Google.
 Documentation
 -------------
 
+The current implementation supports SPIR-V 1.1 (Revision 4). The Khronos
+SPIR-V [JSON grammar][grammar] is leveraged to generate parts of the source
+code using [`build.rs`](rspirv/build.rs).
+
+Detailed documentation about the APIs in this crate is available at
 [![Documentation](https://docs.rs/rspirv/badge.svg)](https://docs.rs/rspirv)
 
 Status
@@ -94,3 +100,4 @@ This project is initialized and mainly developed by Lei Zhang
 [opengl]: https://www.opengl.org/
 [opencl]: https://www.khronos.org/opencl/
 [antiagainst]: https://github.com/antiagainst
+[grammar]: https://github.com/KhronosGroup/SPIRV-Headers/tree/master/include/spirv
