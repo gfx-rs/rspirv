@@ -18,14 +18,16 @@ use std::mem;
 
 /// Splits the given u32 `value` into a vector of bytes in little-endian format.
 pub fn u32_to_bytes(val: u32) -> Vec<u8> {
-    (0..mem::size_of::<u32>()).map(
-        |i| ((val >> (8 * i)) & 0xff) as u8).collect()
+    (0..mem::size_of::<u32>())
+        .map(|i| ((val >> (8 * i)) & 0xff) as u8)
+        .collect()
 }
 
 /// Splits the given u64 `value` into a vector of bytes in little-endian format.
 pub fn u64_to_bytes(val: u64) -> Vec<u8> {
-    (0..mem::size_of::<u64>()).map(
-        |i| ((val >> (8 * i)) & 0xff) as u8).collect()
+    (0..mem::size_of::<u64>())
+        .map(|i| ((val >> (8 * i)) & 0xff) as u8)
+        .collect()
 }
 
 /// Gets the bit pattern of the given f32 `value` as a vector of bytes

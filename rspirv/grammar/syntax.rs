@@ -29,6 +29,18 @@ pub struct Instruction<'a> {
     pub operands: &'a [LogicalOperand],
 }
 
+/// Grammar for an extended instruction.
+pub struct ExtendedInstruction<'a> {
+    /// OpName.
+    pub opname: &'a str,
+    /// Opcode.
+    pub opcode: spirv::Word,
+    /// Capabilities required for this instruction.
+    pub capabilities: &'a [spirv::Capability],
+    /// Logical operands for this instruction.
+    pub operands: &'a [LogicalOperand],
+}
+
 /// Grammar for a SPIR-V logical operand.
 #[derive(Debug)]
 pub struct LogicalOperand {
@@ -68,7 +80,27 @@ macro_rules! inst {
     }
 }
 
-/// The table for all SPIR-V instructions.
+/// Declares the grammar for an extended instruction instruction.
+macro_rules! ext_inst {
+    ($opname:ident, $opcode: expr, [$( $cap:ident ),*],
+     [$( ($kind:ident, $quant:ident) ),*]) => {
+        ExtendedInstruction {
+            opname: stringify!($opname),
+            opcode: $opcode,
+            capabilities: &[
+                $( spirv::Capability::$cap ),*
+            ],
+            operands: &[
+                $( LogicalOperand {
+                    kind: OperandKind::$kind,
+                    quantifier: OperandQuantifier::$quant }
+                ),*
+            ],
+        }
+    }
+}
+
+/// The table for all SPIR-V core instructions.
 ///
 /// This table is staic data stored in the library.
 pub struct InstructionTable;
@@ -82,3 +114,20 @@ impl InstructionTable {
 }
 
 include!("table.rs");
+
+/// The table for all GLSLstd450 extended instructions.
+///
+/// This table is staic data stored in the library.
+pub struct GlslStd450InstructionTable;
+
+impl GlslStd450InstructionTable {
+    /// Looks up the given `opcode` in the instruction table and returns
+    /// a reference to the instruction grammar entry if found.
+    pub fn lookup_opcode(opcode: u32)
+                         -> Option<&'static ExtendedInstruction<'static>> {
+        GLSL_STD_450_INSTRUCTION_TABLE.iter()
+                                      .find(|&inst| inst.opcode == opcode)
+    }
+}
+
+include!("glsl_std_450.rs");

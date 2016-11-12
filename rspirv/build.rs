@@ -229,7 +229,10 @@ fn convert_quantifier(quantifier: &str) -> &str {
 /// JSON object `value`.
 ///
 /// `value` is expected to be the "instructions" array of the SPIR-V grammar.
-fn gen_instruction_table(value: &Value) -> String {
+/// `name` is the name of the generated table.
+/// `is_ext` indicates whether the grammar is for an extended instruction
+/// set.
+fn gen_instruction_table(value: &Value, name: &str, is_ext: bool) -> String {
     let object = value.as_array().unwrap();
     let empty_array = Value::Array(vec![]);
     let empty_string = Value::String(String::new());
@@ -237,6 +240,7 @@ fn gen_instruction_table(value: &Value) -> String {
     let elements: Vec<String> = object.iter().map(|ref element| {
         let inst = element.as_object().unwrap();
         let opname = inst.get("opname").unwrap().as_str().unwrap();
+        let opcode = inst.get("opcode").unwrap().as_u64().unwrap();
         let caps =
             inst.get("capabilities").unwrap_or(&empty_array)
                 .as_array().unwrap();
@@ -255,16 +259,27 @@ fn gen_instruction_table(value: &Value) -> String {
                     .as_str().unwrap();
             format!("({}, {})", kind, convert_quantifier(quantifier))
         }).collect();
-        format!("    inst!({opname}, [{caps}], [{operands}]),",
-                // Omit the "Op" prefix.
-                opname=&opname[2..],
-                caps=caps.join(", "),
-                operands=operands.join(", "))
+        if is_ext {
+            format!("    ext_inst!({name}, {code}, [{caps}], [{operands}]),",
+                    // Omit the "Op" prefix.
+                    name = &opname,
+                    code = opcode,
+                    caps = caps.join(", "),
+                    operands = operands.join(", "))
+        } else {
+            format!("    inst!({opname}, [{caps}], [{operands}]),",
+                    // Omit the "Op" prefix.
+                    opname = &opname[2..],
+                    caps = caps.join(", "),
+                    operands = operands.join(", "))
+        }
     }).collect();
-    format!("{skip}\nstatic INSTRUCTION_TABLE: \
-             &'static [Instruction<'static>] = &[\n{insts}\n];\n",
-            skip=RUSTFMT_SKIP,
-            insts=elements.join("\n"))
+    format!("{skip}\nstatic {name}: \
+             &'static [{ext}Instruction<'static>] = &[\n{insts}\n];\n",
+            skip = RUSTFMT_SKIP,
+            name = name,
+            ext = if is_ext { "Extended" } else { "" },
+            insts = elements.join("\n"))
 }
 
 /// Writes the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
@@ -295,7 +310,8 @@ fn write_grammar_inst_table_operand_kinds(grammar: &Value, filename: &str) {
     }
 
     { // Instruction table.
-        let table = gen_instruction_table(root.get("instructions").unwrap());
+        let table = gen_instruction_table(
+            root.get("instructions").unwrap(), "INSTRUCTION_TABLE", false);
         file.write_all(&table.into_bytes()).unwrap();
     }
 }
@@ -753,8 +769,26 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
     file.write_all(&impl_code.into_bytes()).unwrap();
 }
 
+/// Writes the generated instruction table for GLSLstd450 extended instruction
+/// set from parsing the given JSON object `grammar` to the file with the
+/// given `filename`.
+///
+/// `grammar` is expected to be the root object of the GLSLstd450 extended
+/// instruction set grammar.
+fn write_glsl_std_450_inst_table(grammar: &Value, filename: &str) {
+    let root = grammar.as_object().unwrap();
+    let mut file = fs::File::create(filename).unwrap();
+
+    write_copyright_autogen_comment(&mut file);
+
+    let table = gen_instruction_table(
+        root.get("instructions").unwrap(), "GLSL_STD_450_INSTRUCTION_TABLE",
+        true);
+    file.write_all(&table.into_bytes()).unwrap();
+}
+
 fn main() {
-    // Path to the grammar file.
+    // Path to the SPIR-V core grammar file.
     let mut path = path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     path.push("external");
     path.push("spirv.core.grammar.json");
@@ -821,5 +855,28 @@ fn main() {
         path.push("parse_operand.rs");
         let filename = path.to_str().unwrap();
         write_operand_parse_methods(operand_kinds, filename);
+    }
+
+    // For GLSLstd450 extended instruction set.
+    path.pop();
+    path.pop();
+    path.push("external");
+    path.push("extinst.glsl.std.450.grammar.json");
+    {
+        let filename = path.to_str().unwrap();
+        let mut file = fs::File::open(filename).unwrap();
+        contents.clear();
+        file.read_to_string(&mut contents).unwrap();
+    }
+    let grammar: Value = serde_json::from_str(&contents).unwrap();
+
+    {
+        // Path to the generated GLSLstd450 extended instruction set header.
+        path.pop();
+        path.pop();
+        path.push("grammar");
+        path.push("glsl_std_450.rs");
+        let filename = path.to_str().unwrap();
+        write_glsl_std_450_inst_table(&grammar, filename);
     }
 }
