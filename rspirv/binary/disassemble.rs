@@ -13,6 +13,9 @@
 // limitations under the License.
 
 use mr;
+use spirv;
+
+use super::tracker;
 
 /// Trait for disassembling functionalities.
 pub trait Disassemble {
@@ -76,6 +79,11 @@ impl Disassemble for mr::BasicBlock {
 }
 
 impl Disassemble for mr::Function {
+    /// Disassembles this module and returns the disassembly text.
+    ///
+    /// This method will try to link information together to be wise. E.g.,
+    /// If the extended instruction set is recognized, the symbolic opcode for
+    /// instructions in it will be shown.
     fn disassemble(&self) -> String {
         let def = self.def.as_ref().map_or(String::new(), |i| i.disassemble());
         let end = self.end.as_ref().map_or(String::new(), |i| i.disassemble());
@@ -103,6 +111,11 @@ macro_rules! push {
 
 impl Disassemble for mr::Module {
     fn disassemble(&self) -> String {
+        let mut ext_inst_set_tracker = tracker::ExtInstSetTracker::new();
+        for i in &self.ext_inst_imports {
+            ext_inst_set_tracker.track(i)
+        }
+
         let mut text = vec![];
         if self.header.is_some() {
             push!(&mut text, self.header.as_ref().unwrap().disassemble());
@@ -139,7 +152,67 @@ impl Disassemble for mr::Module {
                   .join("\n"));
         push!(&mut text, disas_join(&self.annotations, "\n"));
         push!(&mut text, disas_join(&self.types_global_values, "\n"));
-        push!(&mut text, disas_join(&self.functions, "\n"));
+
+        // TODO: Code here is essentially duplicated.
+        for f in &self.functions {
+            push!(&mut text,
+                  f.def.as_ref().map_or(String::new(), |i| i.disassemble()));
+            push!(&mut text, disas_join(&f.parameters, "\n"));
+            for bb in &f.basic_blocks {
+                push!(&mut text,
+                      bb.label
+                        .as_ref()
+                        .map_or(String::new(), |i| i.disassemble()));
+                for inst in &bb.instructions {
+                    match inst.class.opcode {
+                        spirv::Op::ExtInst => {
+                            push!(&mut text,
+                                  disas_ext_inst(inst, &ext_inst_set_tracker))
+                        }
+                        _ => push!(&mut text, inst.disassemble()),
+                    }
+                }
+            }
+            push!(&mut text,
+                  f.end.as_ref().map_or(String::new(), |i| i.disassemble()));
+        }
+
         text.join("\n")
+    }
+}
+
+fn disas_ext_inst(inst: &mr::Instruction,
+                  ext_inst_set_tracker: &tracker::ExtInstSetTracker)
+                  -> String {
+    if inst.operands.len() < 2 {
+        return inst.disassemble()
+    }
+    if let (&mr::Operand::IdRef(id),
+            &mr::Operand::LiteralExtInstInteger(opcode)) =
+           (&inst.operands[0], &inst.operands[1]) {
+        if !ext_inst_set_tracker.have(id) {
+            return inst.disassemble()
+        }
+        if let Some(grammar) = ext_inst_set_tracker.resolve(id, opcode) {
+            let mut operands = vec![];
+            operands.push(inst.operands[0].disassemble());
+            operands.push(grammar.opname.to_string());
+            for operand in &inst.operands[2..] {
+                operands.push(operand.disassemble())
+            }
+            format!("{rid}{opcode}{rtype} {operands}",
+                    rid = inst.result_id
+                              .map_or(String::new(),
+                                      |w| format!("%{} = ", w)),
+                    opcode = format!("Op{}", inst.class.opname),
+                    rtype = inst.result_type
+                                .map_or(String::new(),
+                                        |w| format!("  %{} ", w)),
+                    operands = operands.join(" "))
+        } else {
+            inst.disassemble()
+        }
+    } else {
+        inst.disassemble()
     }
 }
