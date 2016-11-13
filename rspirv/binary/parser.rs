@@ -16,9 +16,10 @@ use mr;
 use grammar;
 use spirv;
 
-use std::{collections, error, fmt, result};
+use std::{error, fmt, result};
 use super::decoder;
 use super::error::Error as DecodeError;
+use super::tracker::{Type, TypeTracker};
 
 use grammar::InstructionTable as GInstTable;
 use grammar::OperandKind as GOpKind;
@@ -190,65 +191,6 @@ pub trait Consumer {
 /// `consumer`.
 pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
     Parser::new(binary, consumer).parse()
-}
-
-// TODO: Add support for other types.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-enum Type {
-    /// Integer type (size, signed).
-    Integer(u32, bool),
-    Float(u32),
-}
-
-/// Tracks ids to their types.
-///
-/// If the type of an id cannot be resolved due to some reason, this will
-/// silently ignore that id instead of erroring out.
-#[derive(Debug)]
-struct TypeTracker {
-    /// Mapping from an id to its type.
-    ///
-    /// Ids for both defining and using types are all kept here.
-    types: collections::HashMap<spirv::Word, Type>,
-}
-
-impl TypeTracker {
-    pub fn new() -> TypeTracker {
-        TypeTracker { types: collections::HashMap::new() }
-    }
-
-    pub fn track(&mut self, inst: &mr::Instruction) {
-        if let Some(rid) = inst.result_id {
-            if grammar::reflect::is_type(inst.class.opcode) {
-                match inst.class.opcode {
-                    spirv::Op::TypeInt => {
-                        if let (&mr::Operand::LiteralInt32(bits),
-                                &mr::Operand::LiteralInt32(sign)) =
-                               (&inst.operands[0], &inst.operands[1]) {
-                            self.types
-                                .insert(rid, Type::Integer(bits, sign == 1));
-                        }
-                    }
-                    spirv::Op::TypeFloat => {
-                        if let mr::Operand::LiteralInt32(bits) =
-                               inst.operands[0] {
-                            self.types.insert(rid, Type::Float(bits));
-                        }
-                    }
-                    // TODO: handle the other types here.
-                    _ => (),
-                }
-            } else {
-                inst.result_type
-                    .and_then(|t| self.resolve(t))
-                    .map(|t| self.types.insert(rid, t));
-            }
-        }
-    }
-
-    pub fn resolve(&self, id: spirv::Word) -> Option<Type> {
-        self.types.get(&id).map(|t| *t)
-    }
 }
 
 /// The SPIR-V binary parser.
