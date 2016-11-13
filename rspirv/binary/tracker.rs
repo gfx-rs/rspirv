@@ -44,21 +44,16 @@ impl ExtInstSetTracker {
     /// If the given extended instruction set is not recognized, it will
     /// be silently ignored.
     pub fn track(&mut self, inst: &mr::Instruction) {
-        if inst.class.opcode != spirv::Op::ExtInstImport {
+        if inst.class.opcode != spirv::Op::ExtInstImport ||
+            inst.result_id.is_none() ||
+            inst.operands.is_empty() {
             return;
         }
         if let mr::Operand::LiteralString(ref s) = inst.operands[0] {
             if s == "GLSL.std.450" {
-                self.sets.insert(inst.result_id
-                                     .expect("internal error: parser should \
-                                              have already checked the \
-                                              syntax"),
+                self.sets.insert(inst.result_id.unwrap(),
                                  ExtInstSet::GlslStd450);
             }
-        } else {
-            // The parser should already checked the well-formedness
-            // of the OpExtInstImport instruction.
-            unreachable!()
         }
     }
 
