@@ -135,12 +135,6 @@ impl Disassemble for mr::Module {
         push!(&mut text, disas_join(&self.entry_points, "\n"));
         push!(&mut text, disas_join(&self.execution_modes, "\n"));
         push!(&mut text, disas_join(&self.debugs, "\n"));
-        push!(&mut text,
-              self.names
-                  .iter()
-                  .map(|(k, v)| format!("OpName %{} {:?}", k, v))
-                  .collect::<Vec<String>>()
-                  .join("\n"));
         push!(&mut text, disas_join(&self.annotations, "\n"));
         push!(&mut text, disas_join(&self.types_global_values, "\n"));
 

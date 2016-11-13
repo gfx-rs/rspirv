@@ -16,7 +16,6 @@ use grammar;
 use spirv;
 
 use spirv::Word;
-use std::collections::BTreeMap;
 use super::operand::Operand;
 
 /// Memory representation of a SPIR-V module.
@@ -39,10 +38,9 @@ pub struct Module {
     pub memory_model: Option<spirv::MemoryModel>,
     pub entry_points: Vec<Instruction>,
     pub execution_modes: Vec<Instruction>,
-    /// All non-location debug instructions except name instructions.
+    /// All non-location debug instructions.
     pub debugs: Vec<Instruction>,
-    /// All OpName and OpMemberName instructions.
-    pub names: BTreeMap<Word, String>,
+    /// All annotation instructions.
     pub annotations: Vec<Instruction>,
     /// All types, constants, and global variables.
     ///
@@ -110,7 +108,6 @@ impl Module {
             entry_points: vec![],
             execution_modes: vec![],
             debugs: vec![],
-            names: BTreeMap::new(),
             annotations: vec![],
             types_global_values: vec![],
             functions: vec![],

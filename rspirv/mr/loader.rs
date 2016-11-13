@@ -113,19 +113,6 @@ impl Loader {
     pub fn module(self) -> mr::Module {
         self.module
     }
-
-    fn attach_name(&mut self,
-                   id: Option<mr::Operand>,
-                   name: Option<mr::Operand>)
-                   -> Result<()> {
-        if let (Some(mr::Operand::IdRef(id_ref)),
-                Some(mr::Operand::LiteralString(name_str))) = (id, name) {
-            self.module.names.insert(id_ref, name_str);
-            Ok(())
-        } else {
-            Err(Error::WrongOpNameOperand)
-        }
-    }
 }
 
 /// Returns `$error` if `$condition` evaluates to false.
@@ -185,11 +172,6 @@ impl binary::Consumer for Loader {
             }
             spirv::Op::EntryPoint => self.module.entry_points.push(inst),
             spirv::Op::ExecutionMode => self.module.execution_modes.push(inst),
-            spirv::Op::Name => {
-                let name = inst.operands.pop();
-                let id = inst.operands.pop();
-                try_call!(self.attach_name(id, name))
-            }
             opcode if grammar::reflect::is_nonlocation_debug(opcode) => {
                 self.module.debugs.push(inst)
             }
