@@ -114,16 +114,6 @@ impl Loader {
         self.module
     }
 
-    fn require_capability(&mut self,
-                          capability: Option<mr::Operand>)
-                          -> Result<()> {
-        if let Some(mr::Operand::Capability(cap)) = capability {
-            Ok(self.module.capabilities.push(cap))
-        } else {
-            Err(Error::WrongOpCapabilityOperand)
-        }
-    }
-
     fn attach_name(&mut self,
                    id: Option<mr::Operand>,
                    name: Option<mr::Operand>)
@@ -174,9 +164,7 @@ impl binary::Consumer for Loader {
         let mut inst = inst;
         let opcode = inst.class.opcode;
         match opcode {
-            spirv::Op::Capability => {
-                try_call!(self.require_capability(inst.operands.pop()))
-            }
+            spirv::Op::Capability => self.module.capabilities.push(inst),
             spirv::Op::Extension => self.module.extensions.push(inst),
             spirv::Op::ExtInstImport => self.module.ext_inst_imports.push(inst),
             spirv::Op::MemoryModel => {

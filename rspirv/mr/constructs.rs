@@ -30,7 +30,7 @@ use super::operand::Operand;
 #[derive(Debug)]
 pub struct Module {
     pub header: Option<ModuleHeader>,
-    pub capabilities: Vec<spirv::Capability>,
+    pub capabilities: Vec<Instruction>,
     pub extensions: Vec<Instruction>,
     pub ext_inst_imports: Vec<Instruction>,
     /// Addressing model. A part of the OpMemoryModel instruction.

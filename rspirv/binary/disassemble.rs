@@ -120,12 +120,8 @@ impl Disassemble for mr::Module {
         if self.header.is_some() {
             push!(&mut text, self.header.as_ref().unwrap().disassemble());
         }
-        push!(&mut text,
-              self.capabilities
-                  .iter()
-                  .map(|c| format!("OpCapability {:?}", c))
-                  .collect::<Vec<String>>()
-                  .join("\n"));
+
+        push!(&mut text, disas_join(&self.capabilities, "\n"));
         push!(&mut text, disas_join(&self.extensions, "\n"));
         push!(&mut text, disas_join(&self.ext_inst_imports, "\n"));
         // Well, addressing model and memory model are both encoded
