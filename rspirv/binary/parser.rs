@@ -206,7 +206,7 @@ pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
 ///
 /// ```
 /// use rspirv::binary::Parser;
-/// use rspirv::mr::Loader;
+/// use rspirv::mr::{Loader, Operand};
 /// use rspirv::spirv::{AddressingModel, MemoryModel};
 ///
 /// let bin = vec![
@@ -228,8 +228,11 @@ pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
 /// let module = loader.module();
 ///
 /// assert_eq!((1, 0), module.header.unwrap().version());
-/// assert_eq!(AddressingModel::Logical, module.addressing_model.unwrap());
-/// assert_eq!(MemoryModel::GLSL450, module.memory_model.unwrap());
+/// let m = module.memory_model.as_ref().unwrap();
+/// assert_eq!(Operand::AddressingModel(AddressingModel::Logical),
+///            m.operands[0]);
+/// assert_eq!(Operand::MemoryModel(MemoryModel::GLSL450),
+///            m.operands[1]);
 /// ```
 pub struct Parser<'a> {
     decoder: decoder::Decoder,

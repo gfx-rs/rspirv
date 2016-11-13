@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use grammar;
-use spirv;
 
 use spirv::Word;
 use super::operand::Operand;
@@ -28,15 +27,22 @@ use super::operand::Operand;
 /// of the SPIR-V specification.
 #[derive(Debug)]
 pub struct Module {
+    /// The module header.
     pub header: Option<ModuleHeader>,
+    /// All OpCapability instructions.
     pub capabilities: Vec<Instruction>,
+    /// All OpExtension instructions.
     pub extensions: Vec<Instruction>,
+    /// All OpExtInstImport instructions.
     pub ext_inst_imports: Vec<Instruction>,
-    /// Addressing model. A part of the OpMemoryModel instruction.
-    pub addressing_model: Option<spirv::AddressingModel>,
-    /// Memory model. A part of the OpMemoryModel instruction.
-    pub memory_model: Option<spirv::MemoryModel>,
+    /// The OpMemoryModel instruction.
+    ///
+    /// Although it is required by the specification to appear exactly once
+    /// per module, we keep it optional here to allow flexibility.
+    pub memory_model: Option<Instruction>,
+    /// All entry point declarations, using OpEntryPoint.
     pub entry_points: Vec<Instruction>,
+    /// All execution mode declarations, using OpExecutionMode.
     pub execution_modes: Vec<Instruction>,
     /// All non-location debug instructions.
     pub debugs: Vec<Instruction>,
@@ -47,6 +53,7 @@ pub struct Module {
     /// As per the specification, they have to be bundled together
     /// because they can depend on one another.
     pub types_global_values: Vec<Instruction>,
+    /// All functions.
     pub functions: Vec<Function>,
 }
 
@@ -103,7 +110,6 @@ impl Module {
             capabilities: vec![],
             extensions: vec![],
             ext_inst_imports: vec![],
-            addressing_model: None,
             memory_model: None,
             entry_points: vec![],
             execution_modes: vec![],

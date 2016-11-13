@@ -148,28 +148,12 @@ impl binary::Consumer for Loader {
     }
 
     fn consume_instruction(&mut self, inst: mr::Instruction) -> ParseAction {
-        let mut inst = inst;
         let opcode = inst.class.opcode;
         match opcode {
             spirv::Op::Capability => self.module.capabilities.push(inst),
             spirv::Op::Extension => self.module.extensions.push(inst),
             spirv::Op::ExtInstImport => self.module.ext_inst_imports.push(inst),
-            spirv::Op::MemoryModel => {
-                if let Some(mr::Operand::MemoryModel(model)) = inst.operands
-                    .pop() {
-                    self.module.memory_model = Some(model)
-                } else {
-                    return ParseAction::Error(
-                        Box::new(Error::WrongOpMemoryModelOperand));
-                }
-                if let Some(mr::Operand::AddressingModel(model)) = inst.operands
-                    .pop() {
-                    self.module.addressing_model = Some(model)
-                } else {
-                    return ParseAction::Error(
-                        Box::new(Error::WrongOpMemoryModelOperand));
-                }
-            }
+            spirv::Op::MemoryModel => self.module.memory_model = Some(inst),
             spirv::Op::EntryPoint => self.module.entry_points.push(inst),
             spirv::Op::ExecutionMode => self.module.execution_modes.push(inst),
             opcode if grammar::reflect::is_nonlocation_debug(opcode) => {

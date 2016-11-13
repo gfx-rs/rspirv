@@ -124,14 +124,10 @@ impl Disassemble for mr::Module {
         push!(&mut text, disas_join(&self.capabilities, "\n"));
         push!(&mut text, disas_join(&self.extensions, "\n"));
         push!(&mut text, disas_join(&self.ext_inst_imports, "\n"));
-        // Well, addressing model and memory model are both encoded
-        // in OpMemoryModel. But or mr::Module allow only one them exists.
-        if self.addressing_model.is_some() && self.memory_model.is_some() {
-            push!(&mut text,
-                  format!("OpMemoryModel {:?} {:?}",
-                          self.addressing_model.unwrap(),
-                          self.memory_model.unwrap()));
-        }
+        push!(&mut text,
+              self.memory_model
+                  .as_ref()
+                  .map_or(String::new(), |i| i.disassemble()));
         push!(&mut text, disas_join(&self.entry_points, "\n"));
         push!(&mut text, disas_join(&self.execution_modes, "\n"));
         push!(&mut text, disas_join(&self.debugs, "\n"));
