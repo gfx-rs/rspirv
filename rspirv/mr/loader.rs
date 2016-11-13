@@ -124,16 +124,6 @@ impl Loader {
         }
     }
 
-    fn enable_extension(&mut self,
-                        extension: Option<mr::Operand>)
-                        -> Result<()> {
-        if let Some(mr::Operand::LiteralString(ext)) = extension {
-            Ok(self.module.extensions.push(ext))
-        } else {
-            Err(Error::WrongOpExtensionOperand)
-        }
-    }
-
     fn attach_name(&mut self,
                    id: Option<mr::Operand>,
                    name: Option<mr::Operand>)
@@ -187,9 +177,7 @@ impl binary::Consumer for Loader {
             spirv::Op::Capability => {
                 try_call!(self.require_capability(inst.operands.pop()))
             }
-            spirv::Op::Extension => {
-                try_call!(self.enable_extension(inst.operands.pop()))
-            }
+            spirv::Op::Extension => self.module.extensions.push(inst),
             spirv::Op::ExtInstImport => self.module.ext_inst_imports.push(inst),
             spirv::Op::MemoryModel => {
                 if let Some(mr::Operand::MemoryModel(model)) = inst.operands

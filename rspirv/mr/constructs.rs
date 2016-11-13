@@ -31,7 +31,7 @@ use super::operand::Operand;
 pub struct Module {
     pub header: Option<ModuleHeader>,
     pub capabilities: Vec<spirv::Capability>,
-    pub extensions: Vec<String>,
+    pub extensions: Vec<Instruction>,
     pub ext_inst_imports: Vec<Instruction>,
     /// Addressing model. A part of the OpMemoryModel instruction.
     pub addressing_model: Option<spirv::AddressingModel>,
