@@ -134,16 +134,6 @@ impl Loader {
         }
     }
 
-    fn import_ext_inst_set(&mut self,
-                           ext_inst_set: Option<mr::Operand>)
-                           -> Result<()> {
-        if let Some(mr::Operand::LiteralString(ext)) = ext_inst_set {
-            Ok(self.module.ext_inst_imports.push(ext))
-        } else {
-            Err(Error::WrongOpExtInstImportOperand)
-        }
-    }
-
     fn attach_name(&mut self,
                    id: Option<mr::Operand>,
                    name: Option<mr::Operand>)
@@ -200,9 +190,7 @@ impl binary::Consumer for Loader {
             spirv::Op::Extension => {
                 try_call!(self.enable_extension(inst.operands.pop()))
             }
-            spirv::Op::ExtInstImport => {
-                try_call!(self.import_ext_inst_set(inst.operands.pop()))
-            }
+            spirv::Op::ExtInstImport => self.module.ext_inst_imports.push(inst),
             spirv::Op::MemoryModel => {
                 if let Some(mr::Operand::MemoryModel(model)) = inst.operands
                     .pop() {

@@ -119,12 +119,7 @@ impl Disassemble for mr::Module {
                   .map(|e| format!("OpExtension {:?}", e))
                   .collect::<Vec<String>>()
                   .join("\n"));
-        push!(&mut text,
-              self.ext_inst_imports
-                  .iter()
-                  .map(|e| format!("OpExtInstImport {:?}", e))
-                  .collect::<Vec<String>>()
-                  .join("\n"));
+        push!(&mut text, disas_join(&self.ext_inst_imports, "\n"));
         // Well, addressing model and memory model are both encoded
         // in OpMemoryModel. But or mr::Module allow only one them exists.
         if self.addressing_model.is_some() && self.memory_model.is_some() {
