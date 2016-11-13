@@ -151,7 +151,6 @@ impl fmt::Display for State {
 pub type Result<T> = result::Result<T, State>;
 
 const HEADER_NUM_WORDS: usize = 5;
-const MAGIC_NUMBER: spirv::Word = 0x07230203;
 
 /// Orders consumer sent to the parser after each consuming call.
 #[derive(Debug)]
@@ -310,8 +309,8 @@ impl<'a> Parser<'a> {
     fn parse_header(&mut self) -> Result<mr::ModuleHeader> {
         match self.decoder.words(HEADER_NUM_WORDS) {
             Ok(words) => {
-                if words[0] != MAGIC_NUMBER {
-                    if words[0] == MAGIC_NUMBER.swap_bytes() {
+                if words[0] != spirv::MAGIC_NUMBER {
+                    if words[0] == spirv::MAGIC_NUMBER.swap_bytes() {
                         return Err(State::EndiannessUnsupported);
                     } else {
                         return Err(State::HeaderIncorrect);
