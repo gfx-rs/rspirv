@@ -12,10 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This rust module is automatically generated from the SPIR-V JSON grammar:
-//   https://github.com/KhronosGroup/SPIRV-Headers/
-//           blob/master/include/spirv/1.1/spirv.core.grammar.json
-
 extern crate regex;
 extern crate serde_json;
 
@@ -42,9 +38,9 @@ static COPYRIGHT : &'static str = "\
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static AUTOGEN_COMMENT : &'static str = "\
-// This rust module is automatically generated from the SPIR-V JSON grammar:
-//   https://github.com/KhronosGroup/SPIRV-Headers/
-//           blob/master/include/spirv/1.1/spirv.core.grammar.json";
+// AUTOMATICALLY GENERATED from the SPIR-V JSON grammar:
+//   external/spirv.core.grammar.json.
+// DO NOT MODIFY!";
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static VAULE_ENUM_ATTRIBUTE: &'static str = "\
