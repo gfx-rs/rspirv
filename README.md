@@ -172,9 +172,9 @@ This project is initialized and mainly developed by Lei Zhang
 [me]: https://github.com/antiagainst
 [json-grammar]: https://github.com/KhronosGroup/SPIRV-Headers/tree/master/include/spirv
 [spirv-tools]: https://github.com/KhronosGroup/SPIRV-Tools
-[doc-mr]: https://docs.rs/rspirv/0.1.0/rspirv/mr/index.html
-[doc-parser]: https://docs.rs/rspirv/0.1.0/rspirv/binary/struct.Parser.html
-[doc-header]: https://docs.rs/rspirv/0.1.0/rspirv/spirv/index.html
-[doc-grammar]: https://docs.rs/rspirv/0.1.0/rspirv/grammar/index.html
-[doc-binary]: https://docs.rs/rspirv/0.1.0/rspirv/binary/index.html
-[doc-consumer]: https://docs.rs/rspirv/0.1.0/rspirv/binary/trait.Consumer.html
+[doc-mr]: https://docs.rs/rspirv/0.2.0/rspirv/mr/index.html
+[doc-parser]: https://docs.rs/rspirv/0.2.0/rspirv/binary/struct.Parser.html
+[doc-header]: https://docs.rs/rspirv/0.2.0/rspirv/spirv/index.html
+[doc-grammar]: https://docs.rs/rspirv/0.2.0/rspirv/grammar/index.html
+[doc-binary]: https://docs.rs/rspirv/0.2.0/rspirv/binary/index.html
+[doc-consumer]: https://docs.rs/rspirv/0.2.0/rspirv/binary/trait.Consumer.html
