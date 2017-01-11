@@ -45,7 +45,7 @@ static AUTOGEN_COMMENT : &'static str = "\
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, NumFromPrimitive)]";
+#[derive(Clone, Copy, Debug, PartialEq, Eq, FromPrimitive)]";
 
 static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
 static RUSTFMT_SKIP_BANG: &'static str = "#![cfg_attr(rustfmt, rustfmt_skip)]";

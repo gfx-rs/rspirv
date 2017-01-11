@@ -17,8 +17,8 @@ path = "lib.rs"
 
 [dependencies]
 bitflags = "0.6"
-num = { git = "https://github.com/rust-num/num" }
-num-macros = { git = "https://github.com/rust-num/num" }
+num = "0.1"
+num-derive = "0.1"
 
 [build-dependencies]
 regex = "0.1"

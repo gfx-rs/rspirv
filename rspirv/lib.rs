@@ -26,12 +26,12 @@
 #![feature(collections)]
 #![feature(custom_derive, plugin)]
 
-#![plugin(num_macros)]
-
 extern crate collections;
 #[macro_use]
 extern crate bitflags;
 extern crate num;
+#[macro_use]
+extern crate num_derive;
 
 #[cfg(test)]
 #[macro_use]
