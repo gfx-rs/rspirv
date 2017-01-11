@@ -18,7 +18,7 @@ use spirv;
 use grammar;
 
 use binary::{ParseAction, ParseResult};
-use std::{error, fmt, result};
+use std::{error, fmt};
 
 /// Memory representation loading errors.
 #[derive(Debug)]
@@ -83,8 +83,6 @@ impl fmt::Display for Error {
         write!(f, "{}", self.describe())
     }
 }
-
-type Result<T> = result::Result<T, Error>;
 
 /// The memory representation loader.
 ///
