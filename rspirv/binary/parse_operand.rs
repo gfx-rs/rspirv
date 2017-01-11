@@ -96,19 +96,49 @@ impl<'a> Parser<'a> {
         })
     }
 
-    #[allow(unused_variables)]
     fn parse_image_operands_arguments(&mut self, image_operands: spirv::ImageOperands) -> Result<Vec<mr::Operand>> {
-        unimplemented!()
+        let mut params = vec![];
+        if image_operands.contains(spirv::IMAGE_OPERANDS_BIAS) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::IMAGE_OPERANDS_LOD) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::IMAGE_OPERANDS_GRAD) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id())), mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::IMAGE_OPERANDS_CONST_OFFSET) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::IMAGE_OPERANDS_OFFSET) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::IMAGE_OPERANDS_CONST_OFFSETS) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::IMAGE_OPERANDS_SAMPLE) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::IMAGE_OPERANDS_MIN_LOD) {
+            params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
+        }
+        Ok(params)
     }
 
-    #[allow(unused_variables)]
     fn parse_loop_control_arguments(&mut self, loop_control: spirv::LoopControl) -> Result<Vec<mr::Operand>> {
-        unimplemented!()
+        let mut params = vec![];
+        if loop_control.contains(spirv::LOOP_CONTROL_DEPENDENCY_LENGTH) {
+            params.append(&mut vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))]);
+        }
+        Ok(params)
     }
 
-    #[allow(unused_variables)]
     fn parse_memory_access_arguments(&mut self, memory_access: spirv::MemoryAccess) -> Result<Vec<mr::Operand>> {
-        unimplemented!()
+        let mut params = vec![];
+        if memory_access.contains(spirv::MEMORY_ACCESS_ALIGNED) {
+            params.append(&mut vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))]);
+        }
+        Ok(params)
     }
 
     fn parse_execution_mode_arguments(&mut self, execution_mode: spirv::ExecutionMode) -> Result<Vec<mr::Operand>> {

@@ -1074,4 +1074,116 @@ mod tests {
             // so in total 40 bytes.
             Err(State::OperandError(Error::LimitReached(40))));
     }
+
+    #[test]
+    fn test_parsing_bitmasks_requiring_params_no_mem_access() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x3e, 0x00, 0x03, 0x00]); // OpStore
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // pointer: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // object: 2
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Store", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(vec![mr::Operand::IdRef(1), mr::Operand::IdRef(2)],
+                   inst.operands);
+    }
+    #[test]
+    fn test_parsing_bitmasks_requiring_params_mem_access_no_param() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x3e, 0x00, 0x04, 0x00]); // OpStore
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // pointer: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // object: 2
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // Volatile
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Store", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(vec![mr::Operand::IdRef(1), mr::Operand::IdRef(2),
+                        mr::Operand::MemoryAccess(
+                            spirv::MEMORY_ACCESS_VOLATILE)],
+                   inst.operands);
+    }
+    #[test]
+    fn test_parsing_bitmasks_requiring_params_mem_access_with_param() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x3e, 0x00, 0x05, 0x00]); // OpStore
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // pointer: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // object: 2
+        v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // Volatile & Aligned
+        v.append(&mut vec![0x04, 0x00, 0x00, 0x00]); // alignment
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Store", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(vec![mr::Operand::IdRef(1), mr::Operand::IdRef(2),
+                        mr::Operand::MemoryAccess(
+                            spirv::MemoryAccess::from_bits(3).unwrap()),
+                        mr::Operand::LiteralInt32(4)],
+                   inst.operands);
+    }
+    #[test]
+    fn test_parsing_bitmasks_requiring_params_mem_access_missing_param() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x3e, 0x00, 0x04, 0x00]); // OpStore
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // pointer: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // object: 2
+        v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // Volatile & Aligned
+        let mut c = RetainingConsumer::new();
+        let p = Parser::new(v, &mut c);
+        assert_matches!(
+            p.parse(),
+            // The header has 5 words, the above instruction has 4 words,
+            // so in total 36 bytes.
+            Err(State::OperandError(Error::LimitReached(36))));
+    }
+    #[test]
+    fn test_parsing_bitmasks_requiring_params_img_operands_param_order() {
+        let mut v = ZERO_BOUND_HEADER.to_vec();
+        v.append(&mut vec![0x63, 0x00, 0x08, 0x00]); // OpStore
+        v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // image: 1
+        v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // coordinate: 2
+        v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // texel: 3
+        v.append(&mut vec![0x05, 0x00, 0x00, 0x00]); // Bias & GRAD
+        v.append(&mut vec![0xaa, 0x00, 0x00, 0x00]); // bias
+        v.append(&mut vec![0xbb, 0x00, 0x00, 0x00]); // dx
+        v.append(&mut vec![0xcc, 0x00, 0x00, 0x00]); // dy
+        let mut c = RetainingConsumer::new();
+        {
+            let p = Parser::new(v, &mut c);
+            assert_matches!(p.parse(), Ok(()));
+        }
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("ImageWrite", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(vec![mr::Operand::IdRef(1),
+                        mr::Operand::IdRef(2),
+                        mr::Operand::IdRef(3),
+                        mr::Operand::ImageOperands(
+                            spirv::ImageOperands::from_bits(5).unwrap()),
+                        mr::Operand::IdRef(0xaa),
+                        mr::Operand::IdRef(0xbb),
+                        mr::Operand::IdRef(0xcc)],
+                   inst.operands);
+    }
 }

@@ -61,14 +61,14 @@ fn split_words_with_underscore(symbol: &str) -> String {
 }
 
 /// Converts the given `symbol` to use snake case style.
-fn convert_symbol_to_snake_case(symbol: &str) -> String {
+fn snake_casify(symbol: &str) -> String {
     split_words_with_underscore(symbol).to_lowercase()
 }
 
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
-    let mut symbol = convert_symbol_to_snake_case(kind);
+    let mut symbol = snake_casify(kind);
     if symbol.starts_with("fp") {
         // Special case for FPFastMathMode and FPRoundingMode.
         symbol = symbol.replace("fp", "fp_");
@@ -543,7 +543,7 @@ fn write_operand_decode_methods(value: &Value, filename: &str) {
                      {s:12}Err(Error::StreamExpected(self.offset))\n\
                  {s:8}}}\n{s:4}}}\n",
                  s="",
-                 fname=convert_symbol_to_snake_case(kind),
+                 fname=snake_casify(kind),
                  kind=kind,
                  ty=if category == "BitEnum" { "bits" } else { "u32" })
         }).collect();
@@ -566,7 +566,7 @@ fn get_decode_method(kind: &str) -> String {
             return "int32".to_string()
         }
     }
-    convert_symbol_to_snake_case(kind)
+    snake_casify(kind)
 }
 
 /// Returns the corresponding operand kind in memory representation for the
@@ -626,16 +626,41 @@ fn gen_operand_param_parse_methods(value: &Value) -> Vec<(String, String)> {
 
         let method =
             if category == "BitEnum" {
-                // BitEnums are unimplemented right now.
+                // For each operand kind in the BitEnum category, its
+                // enumerants are bit masks. If a certain bit having associated
+                // parameters is set, we also need to decode the corresponding
+                // parameters. E.g., for MemoryAccess Aigned, an additional
+                // LiteralInteger, which stands for the known alignment, should
+                // be decoded.
+
+                let lo_kind = snake_casify(kind);
+                let up_kind = lo_kind.to_uppercase();
+
+                // Compose bit-set-clear check for each bit requiring
+                // associated parameters.
+                let cases = pairs.into_iter().map(|(symbol, params)| {
+                    let params: Vec<String> = params.iter().map(|ref element| {
+                        format!("mr::Operand::{kind}(\
+                                 try_decode!(self.decoder.{decode}()))",
+                                kind=get_mr_operand_kind(element),
+                                decode=get_decode_method(element))
+                    }).collect();
+                    format!(
+                        "{s:8}if {arg}.contains(spirv::{k}_{bit}) {{\n\
+                             {s:12}params.append(&mut vec![{params}]);\n\
+                         {s:8}}}",
+                        s="", arg=lo_kind, k=up_kind,
+                        bit=snake_casify(&symbol).to_uppercase(),
+                        params=params.join(", "))
+                }).collect::<Vec<String>>();
                 format!(
-                    "{s:4}#[allow(unused_variables)]\n\
-                     {s:4}fn parse_{k}_arguments(&mut self, {k}: \
+                    "{s:4}fn parse_{k}_arguments(&mut self, {k}: \
                          spirv::{kind}) -> Result<Vec<mr::Operand>> {{\n\
-                         {s:8}unimplemented!()\n\
+                         {s:8}let mut params = vec![];\n\
+                         {cases}\n\
+                         {s:8}Ok(params)\n\
                      {s:4}}}",
-                    s="",
-                    k=convert_symbol_to_snake_case(kind),
-                    kind=kind)
+                    s="", cases=cases.join("\n"), k=lo_kind, kind=kind)
             } else {  // ValueEnum
                 let cases = pairs.into_iter().map(|(symbol, params)| {
                     let params: Vec<String> = params.iter().map(|ref element| {
@@ -658,7 +683,7 @@ fn gen_operand_param_parse_methods(value: &Value) -> Vec<(String, String)> {
                          {s:8}}})\n\
                      {s:4}}}",
                     s="", kind=kind,
-                    k=convert_symbol_to_snake_case(kind),
+                    k=snake_casify(kind),
                     cases=cases.join("\n"))
             };
         Some((kind.to_string(), method))
@@ -689,7 +714,7 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
                  {s:12}}}",
                 s="",
                 kind=kind,
-                k=convert_symbol_to_snake_case(kind),
+                k=snake_casify(kind),
                 decode=get_decode_method(kind))
         }).collect();
 
