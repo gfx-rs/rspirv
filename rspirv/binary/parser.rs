@@ -220,7 +220,7 @@ pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
 ///     0x0e, 0x00, 0x03, 0x00,    0x00, 0x00, 0x00, 0x00,
 ///     // GLSL450.
 ///     0x01, 0x00, 0x00, 0x00];
-/// let mut loader = Loader::new();
+/// let mut loader = Loader::new();  // You can use your own consumer here.
 /// {
 ///     let mut p = Parser::new(bin, &mut loader);
 ///     p.parse().unwrap();
