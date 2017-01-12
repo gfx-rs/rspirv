@@ -4,6 +4,7 @@ rspirv
 [![Version](https://img.shields.io/crates/v/rspirv.svg)](https://crates.io/crates/rspirv)
 [![Documentation](https://docs.rs/rspirv/badge.svg)](https://docs.rs/rspirv)
 [![Build Status](https://travis-ci.org/google/rspirv.svg?branch=master)](https://travis-ci.org/google/rspirv)
+[![Build status](https://ci.appveyor.com/api/projects/status/qc9p4bjrbw4osyho/branch/master?svg=true)](https://ci.appveyor.com/project/antiagainst/rspirv/branch/master)
 
 **R**u**s**t implementation of S**PIR**-**V** module processing functionalities.
 It aims to provide:
