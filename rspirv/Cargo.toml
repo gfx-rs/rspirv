@@ -16,7 +16,7 @@ keywords = ["spirv", "vulkan", "opengl", "opencl"]
 path = "lib.rs"
 
 [dependencies]
-bitflags = "0.6"
+bitflags = "0.7"
 num = "0.1"
 num-derive = "0.1"
 
