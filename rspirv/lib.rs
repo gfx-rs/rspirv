@@ -24,7 +24,7 @@
 //! * A SPIR-V [binary](binary/index.html) loading and parsing Rust module
 
 #![feature(collections)]
-#![feature(custom_derive, plugin)]
+#![feature(proc_macro)]
 
 extern crate collections;
 #[macro_use]
