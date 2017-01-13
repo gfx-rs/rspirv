@@ -50,15 +50,10 @@ static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
 static RUSTFMT_SKIP_BANG: &'static str = "#![cfg_attr(rustfmt, rustfmt_skip)]";
 
-fn split_words_with_underscore(symbol: &str) -> String {
-    // Two named capture groups: the lowercase letter and the uppercase letter.
-    let re = Regex::new(r"(?P<l>[:lower:])(?P<u>[:upper:])").unwrap();
-    re.replace_all(symbol, "$l-$u").replace("-", "_")
-}
-
 /// Converts the given `symbol` to use snake case style.
 fn snake_casify(symbol: &str) -> String {
-    split_words_with_underscore(symbol).to_lowercase()
+    let re = Regex::new(r"(?P<l>[a-z])(?P<u>[A-Z])").unwrap();
+    re.replace_all(symbol, "$l-$u").replace("-", "_").to_lowercase()
 }
 
 /// Returns the markdown string containing a link to the spec for the given
@@ -85,8 +80,8 @@ fn gen_bit_enum_operand_kind(value: &Value) -> String {
         let symbol = enumerant.get("enumerant").unwrap().as_str().unwrap();
         let value = enumerant.get("value").unwrap().as_str().unwrap();
         format!("        const {}_{} = {},",
-                split_words_with_underscore(kind).to_uppercase(),
-                split_words_with_underscore(symbol).to_uppercase(),
+                snake_casify(kind).to_uppercase(),
+                snake_casify(symbol).to_uppercase(),
                 value)
     }).collect();
     format!("bitflags!{{\n    {doc}\n    pub flags {kind} : u32 \
