@@ -471,7 +471,7 @@ impl<'a> Parser<'a> {
                 }
             }
         }
-        Ok(mr::Instruction::new(grammar, rtype, rid, coperands))
+        Ok(mr::Instruction::new(grammar.opcode, rtype, rid, coperands))
     }
 }
 

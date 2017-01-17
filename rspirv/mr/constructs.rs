@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use grammar;
+use spirv;
 
 use spirv::Word;
 use super::operand::Operand;
@@ -201,13 +202,13 @@ impl BasicBlock {
 
 impl Instruction {
     /// Creates a new `Instruction` instance.
-    pub fn new(class: &'static grammar::Instruction<'static>,
+    pub fn new(opcode: spirv::Op,
                result_type: Option<Word>,
                result_id: Option<Word>,
                operands: Vec<Operand>)
                -> Instruction {
         Instruction {
-            class: class,
+            class: grammar::InstructionTable::get(opcode),
             result_type: result_type,
             result_id: result_id,
             operands: operands,
