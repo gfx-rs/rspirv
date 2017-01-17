@@ -149,7 +149,9 @@ fn write_spirv_header(grammar: &Value, filename: &str) {
     { // Copyright, documentation.
         write_copyright_autogen_comment(&mut file);
         file.write_all(b"//! The SPIR-V header.\n\n").unwrap();
-        file.write_all(b"#![allow(non_camel_case_types)]\n\n").unwrap();
+        file.write_all(b"#![allow(non_camel_case_types)]\n").unwrap();
+        file.write_all(RUSTFMT_SKIP_BANG.as_bytes()).unwrap();
+        file.write_all(b"\n\n").unwrap();
     }
     { // constants.
         file.write_all(b"pub type Word = u32;\n").unwrap();

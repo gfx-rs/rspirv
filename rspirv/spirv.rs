@@ -19,6 +19,7 @@
 //! The SPIR-V header.
 
 #![allow(non_camel_case_types)]
+#![cfg_attr(rustfmt, rustfmt_skip)]
 
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
