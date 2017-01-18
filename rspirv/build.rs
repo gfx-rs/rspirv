@@ -479,9 +479,11 @@ fn write_mr_builder_types(insts: &Value, filename: &str) {
                 None
             } else if quant == "?" {
                 Some(format!(
-                        "{s:8}self.module.types_global_values.last_mut()\
-                           .expect(\"internal error\").operands\
-                           .push(mr::Operand::{kind}({name}.unwrap()))",
+                        "{s:8}if {name}.is_some() {{\n\
+                           {s:12}self.module.types_global_values.last_mut()\
+                             .expect(\"internal error\").operands\
+                             .push(mr::Operand::{kind}({name}.unwrap()))\n\
+                         {s:8}}}",
                         s="", kind=kind, name=name))
             } else {
                 Some(format!(
@@ -500,13 +502,13 @@ fn write_mr_builder_types(insts: &Value, filename: &str) {
                    {s:8}self.module.types_global_values.push(\
                       mr::Instruction::new(spirv::Op::{opcode}, \
                       None, Some(id), vec![{init}]));\n\
-                   {extras}{x}\n\
+                   {extras}{x}\
                    {s:8}id\n\
                  {s:4}}}",
                 s="", sep=if param_list.len() != 0 { ", " } else { "" },
                 opcode=&opname[2..], name=snake_casify(&opname[2..]),
                 param=param_list, init=init_list, extras=extras,
-                x=if extras.len() != 0 { ";" } else { "" })
+                x=if extras.len() != 0 { ";\n" } else { "" })
     }).collect();
     let impl_code = format!("impl Builder {{\n{}\n}}", elements.join("\n\n"));
     file.write_all(&impl_code.into_bytes()).unwrap();

@@ -22,7 +22,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeVoid, None, Some(id), vec![]));
-
         id
     }
 
@@ -31,7 +30,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeBool, None, Some(id), vec![]));
-
         id
     }
 
@@ -40,7 +38,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeInt, None, Some(id), vec![mr::Operand::LiteralInt32(width), mr::Operand::LiteralInt32(signedness)]));
-
         id
     }
 
@@ -49,7 +46,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeFloat, None, Some(id), vec![mr::Operand::LiteralInt32(width)]));
-
         id
     }
 
@@ -58,7 +54,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeVector, None, Some(id), vec![mr::Operand::IdRef(component_type), mr::Operand::LiteralInt32(component_count)]));
-
         id
     }
 
@@ -67,7 +62,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeMatrix, None, Some(id), vec![mr::Operand::IdRef(column_type), mr::Operand::LiteralInt32(column_count)]));
-
         id
     }
 
@@ -76,7 +70,9 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeImage, None, Some(id), vec![mr::Operand::IdRef(sampled_type), mr::Operand::Dim(dim), mr::Operand::LiteralInt32(depth), mr::Operand::LiteralInt32(arrayed), mr::Operand::LiteralInt32(ms), mr::Operand::LiteralInt32(sampled), mr::Operand::ImageFormat(image_format)]));
-        self.module.types_global_values.last_mut().expect("internal error").operands.push(mr::Operand::AccessQualifier(access_qualifier.unwrap()));
+        if access_qualifier.is_some() {
+            self.module.types_global_values.last_mut().expect("internal error").operands.push(mr::Operand::AccessQualifier(access_qualifier.unwrap()))
+        };
         id
     }
 
@@ -85,7 +81,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeSampler, None, Some(id), vec![]));
-
         id
     }
 
@@ -94,7 +89,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeSampledImage, None, Some(id), vec![mr::Operand::IdRef(image_type)]));
-
         id
     }
 
@@ -103,7 +97,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeArray, None, Some(id), vec![mr::Operand::IdRef(element_type), mr::Operand::IdRef(length)]));
-
         id
     }
 
@@ -112,7 +105,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeRuntimeArray, None, Some(id), vec![mr::Operand::IdRef(element_type)]));
-
         id
     }
 
@@ -132,7 +124,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeOpaque, None, Some(id), vec![mr::Operand::LiteralString(type_name)]));
-
         id
     }
 
@@ -141,7 +132,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypePointer, None, Some(id), vec![mr::Operand::StorageClass(storage_class), mr::Operand::IdRef(pointee_type)]));
-
         id
     }
 
@@ -161,7 +151,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeEvent, None, Some(id), vec![]));
-
         id
     }
 
@@ -170,7 +159,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeDeviceEvent, None, Some(id), vec![]));
-
         id
     }
 
@@ -179,7 +167,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeReserveId, None, Some(id), vec![]));
-
         id
     }
 
@@ -188,7 +175,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeQueue, None, Some(id), vec![]));
-
         id
     }
 
@@ -197,7 +183,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypePipe, None, Some(id), vec![mr::Operand::AccessQualifier(qualifier)]));
-
         id
     }
 
@@ -206,7 +191,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeForwardPointer, None, Some(id), vec![mr::Operand::StorageClass(storage_class)]));
-
         id
     }
 
@@ -215,7 +199,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypePipeStorage, None, Some(id), vec![]));
-
         id
     }
 
@@ -224,7 +207,6 @@ impl Builder {
         let id = self.next_id;
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeNamedBarrier, None, Some(id), vec![]));
-
         id
     }
 }
