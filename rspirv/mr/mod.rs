@@ -28,11 +28,13 @@
 //! using `Option`; it makes the memory representation more flexible since
 //! we don't always require valid language constructs.
 
+pub use self::builder::Builder;
 pub use self::constructs::{BasicBlock, Function, Instruction};
 pub use self::constructs::{Module, ModuleHeader};
 pub use self::loader::{Error, load, Loader};
 pub use self::operand::Operand;
 
+mod builder;
 mod constructs;
 mod loader;
 mod operand;

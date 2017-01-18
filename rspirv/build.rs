@@ -408,6 +408,110 @@ fn write_mr_operand_kinds(value: &Value, filename: &str) {
     }
 }
 
+/// Writes the generated build methods for SPIR-V types from parsing the given
+/// JSON object `value` to the file with the given `filename`.
+///
+/// `value` is expected to be the "instructions" array of the SPIR-V grammar.
+fn write_mr_builder_types(insts: &Value, filename: &str) {
+    let mut file = fs::File::create(filename).unwrap();
+
+    write_copyright_autogen_comment(&mut file);
+
+    let object = insts.as_array().unwrap();
+    let empty_array = Value::Array(vec![]);
+    let empty_string = Value::String(String::new());
+
+    // Generate build methods for all types.
+    let elements: Vec<String> = object.iter().filter(|ref element| {
+        let inst = element.as_object().unwrap();
+        let opname = inst.get("opname").unwrap().as_str().unwrap();
+        opname.starts_with("OpType")
+    }).map(|ref element| {
+        let inst = element.as_object().unwrap();
+        let opname = inst.get("opname").unwrap().as_str().unwrap();
+        let operands =
+            inst.get("operands").unwrap_or(&empty_array)
+                .as_array().unwrap();
+        // Get the kind, name, and quantifier for all operands.
+        let operands: Vec<(&str, String, String)> =
+            operands.iter().skip(1).map(|ref e| {
+                let operand = e.as_object().unwrap();
+                let kind = operand.get("kind").unwrap().as_str().unwrap();
+                let mut name =
+                    operand.get("name").unwrap_or(&empty_string)
+                        .as_str().unwrap()
+                        .replace("'", "").replace(" ", "_");
+                if name.len() == 0 {
+                    name = snake_casify(kind)
+                }
+                let quantifier =
+                    operand.get("quantifier").unwrap_or(&empty_string)
+                        .as_str().unwrap().to_string();
+                (kind, snake_casify(&name), quantifier)
+        }).collect();
+        // Parameter list for this build method.
+        let param_list =
+            operands.iter().map(|&(ref kind, ref name, ref quant)| {
+                let kind = get_enum_underlying_type(kind);
+                if quant == "" {
+                    format!("{}: {}", name, kind)
+                } else if quant == "?" {
+                    format!("{}: Option<{}>", name, kind)
+                } else {
+                    format!("{}: Vec<{}>", name, kind)
+                }
+            }).collect::<Vec<_>>().join(", ");
+        // Initializer list for constructing the operands parameter
+        // for Instruction.
+        let init_list =
+            operands.iter().filter_map(|&(ref kind, ref name, ref quant)| {
+                if quant == "" {
+                    let kind = get_mr_operand_kind(kind);
+                    Some(format!("mr::Operand::{}({})", kind, name))
+                } else {
+                    None
+                }
+            }).collect::<Vec<_>>().join(", ");
+        // Parameters that are not single values thus need special treatment.
+        let extras = operands.iter().filter_map(|&(kind, ref name, ref quant)| {
+            let kind = get_mr_operand_kind(kind);
+            if quant == "" {
+                None
+            } else if quant == "?" {
+                Some(format!(
+                        "{s:8}self.module.types_global_values.last_mut()\
+                           .expect(\"internal error\").operands\
+                           .push(mr::Operand::{kind}({name}.unwrap()))",
+                        s="", kind=kind, name=name))
+            } else {
+                Some(format!(
+                        "{s:8}for v in {name} {{\n\
+                         {s:12}self.module.types_global_values.last_mut()\
+                           .expect(\"internal error\").operands\
+                           .push(mr::Operand::{kind}(v))\n\
+                         {s:8}}}",
+                        s="", kind=kind, name=name))
+            }
+        }).collect::<Vec<_>>().join(";\n");
+        format!("{s:4}/// Creates {opcode} and returns the result id.\n\
+                 {s:4}pub fn {name}(&mut self{sep}{param}) -> spirv::Word {{\n\
+                   {s:8}let id = self.next_id;\n\
+                   {s:8}self.next_id += 1;\n\
+                   {s:8}self.module.types_global_values.push(\
+                      mr::Instruction::new(spirv::Op::{opcode}, \
+                      None, Some(id), vec![{init}]));\n\
+                   {extras}{x}\n\
+                   {s:8}id\n\
+                 {s:4}}}",
+                s="", sep=if param_list.len() != 0 { ", " } else { "" },
+                opcode=&opname[2..], name=snake_casify(&opname[2..]),
+                param=param_list, init=init_list, extras=extras,
+                x=if extras.len() != 0 { ";" } else { "" })
+    }).collect();
+    let impl_code = format!("impl Builder {{\n{}\n}}", elements.join("\n\n"));
+    file.write_all(&impl_code.into_bytes()).unwrap();
+}
+
 /// Writes the generated operand decoding errors for binary::Decoder by
 /// parsing the given JSON object `value` to the file with the given `filename`.
 ///
@@ -572,6 +676,18 @@ fn get_mr_operand_kind(kind: &str) -> &str {
         "LiteralInt32"
     } else {
         kind
+    }
+}
+
+/// Returns the underlying type used in operand kind enums for the operand
+/// kind `kind` in the grammar.
+fn get_enum_underlying_type(kind: &str) -> String {
+    if kind.starts_with("Id") || kind == "LiteralInteger" {
+        "spirv::Word".to_string()
+    } else if kind == "LiteralString" {
+        "String".to_string()
+    } else {
+        format!("spirv::{}", kind)
     }
 }
 
@@ -838,6 +954,7 @@ fn main() {
     }
 
     let root = grammar.as_object().unwrap();
+    let instructions = root.get("instructions").unwrap();
     let operand_kinds = root.get("operand_kinds").unwrap();
 
     {
@@ -848,6 +965,14 @@ fn main() {
         path.push("operand.rs");
         let filename = path.to_str().unwrap();
         write_mr_operand_kinds(operand_kinds, filename);
+    }
+
+    {
+        // Path to the generated builder for memory representation.
+        path.pop();
+        path.push("build_type.rs");
+        let filename = path.to_str().unwrap();
+        write_mr_builder_types(instructions, filename);
     }
 
     {

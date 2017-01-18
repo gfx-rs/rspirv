@@ -261,7 +261,7 @@
       "opcode" : 30,
       "operands" : [
         { "kind" : "IdResult" },
-        { "kind" : "IdRef",    "quantifier" : "*", "name" : "'Member 0 type', +\n'member 1 type', +\n..." }
+        { "kind" : "IdRef",    "quantifier" : "*", "name" : "Field Types" }
       ]
     },
     {
@@ -269,7 +269,7 @@
       "opcode" : 31,
       "operands" : [
         { "kind" : "IdResult" },
-        { "kind" : "LiteralString", "name" : "The name of the opaque type." }
+        { "kind" : "LiteralString", "name" : "Type Name" }
       ],
       "capabilities" : [ "Kernel" ]
     },
@@ -279,7 +279,7 @@
       "operands" : [
         { "kind" : "IdResult" },
         { "kind" : "StorageClass" },
-        { "kind" : "IdRef",        "name" : "'Type'" }
+        { "kind" : "IdRef",        "name" : "Pointee Type" }
       ]
     },
     {
@@ -288,7 +288,7 @@
       "operands" : [
         { "kind" : "IdResult" },
         { "kind" : "IdRef",                        "name" : "'Return Type'" },
-        { "kind" : "IdRef",    "quantifier" : "*", "name" : "'Parameter 0 Type', +\n'Parameter 1 Type', +\n..." }
+        { "kind" : "IdRef",    "quantifier" : "*", "name" : "Parameter Types" }
       ]
     },
     {
