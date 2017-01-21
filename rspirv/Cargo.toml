@@ -3,7 +3,7 @@ name = "rspirv"
 version = "0.2.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
-build = "build.rs"
+build = "build/build.rs"
 
 description = "Rust library APIs for SPIR-V module manipulation"
 documentation = "https://docs.rs/rspirv"
