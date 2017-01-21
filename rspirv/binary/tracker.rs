@@ -53,15 +53,14 @@ impl TypeTracker {
                 match inst.class.opcode {
                     spirv::Op::TypeInt => {
                         if let (&mr::Operand::LiteralInt32(bits),
-                                &mr::Operand::LiteralInt32(sign)) =
-                               (&inst.operands[0], &inst.operands[1]) {
+                                &mr::Operand::LiteralInt32(sign)) = (&inst.operands[0],
+                                                                     &inst.operands[1]) {
                             self.types
                                 .insert(rid, Type::Integer(bits, sign == 1));
                         }
                     }
                     spirv::Op::TypeFloat => {
-                        if let mr::Operand::LiteralInt32(bits) =
-                               inst.operands[0] {
+                        if let mr::Operand::LiteralInt32(bits) = inst.operands[0] {
                             self.types.insert(rid, Type::Float(bits));
                         }
                     }
@@ -103,15 +102,14 @@ impl ExtInstSetTracker {
     /// If the given extended instruction set is not recognized, it will
     /// be silently ignored.
     pub fn track(&mut self, inst: &mr::Instruction) {
-        if inst.class.opcode != spirv::Op::ExtInstImport ||
-            inst.result_id.is_none() ||
-            inst.operands.is_empty() {
+        if inst.class.opcode != spirv::Op::ExtInstImport || inst.result_id.is_none() ||
+           inst.operands.is_empty() {
             return;
         }
         if let mr::Operand::LiteralString(ref s) = inst.operands[0] {
             if s == "GLSL.std.450" {
-                self.sets.insert(inst.result_id.unwrap(),
-                                 ExtInstSet::GlslStd450);
+                self.sets
+                    .insert(inst.result_id.unwrap(), ExtInstSet::GlslStd450);
             }
         }
     }
@@ -126,10 +124,7 @@ impl ExtInstSetTracker {
     ///
     /// This method will return `None` for both untracked instruction
     /// sets and unknown opcode in tracked instruction sets.
-    pub fn resolve(&self,
-                   set: spirv::Word,
-                   opcode: spirv::Word)
-                   -> Option<GExtInstRef> {
+    pub fn resolve(&self, set: spirv::Word, opcode: spirv::Word) -> Option<GExtInstRef> {
         if let Some(ext_inst_set) = self.sets.get(&set) {
             match *ext_inst_set {
                 ExtInstSet::GlslStd450 => GGlInstTable::lookup_opcode(opcode),

@@ -67,9 +67,7 @@ impl error::Error for State {
     fn description(&self) -> &str {
         match *self {
             State::Complete => "completed parsing",
-            State::ConsumerStopRequested => {
-                "stop parsing requested by consumer"
-            }
+            State::ConsumerStopRequested => "stop parsing requested by consumer",
             State::ConsumerError(_) => "consumer error",
             State::HeaderIncomplete(_) => "incomplete module header",
             State::HeaderIncorrect => "incorrect module header",
@@ -80,9 +78,7 @@ impl error::Error for State {
             State::OperandExceeded(..) => "found extra operands",
             State::OperandError(_) => "operand decoding error",
             State::TypeUnsupported(..) => "unsupported type",
-            State::SpecConstantOpIntegerIncorrect(..) => {
-                "incorrect SpecConstantOp Integer"
-            }
+            State::SpecConstantOpIntegerIncorrect(..) => "incorrect SpecConstantOp Integer",
         }
     }
 }
@@ -91,15 +87,9 @@ impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             State::Complete => write!(f, "completed parsing"),
-            State::ConsumerStopRequested => {
-                write!(f, "stop parsing requested by consumer")
-            }
-            State::ConsumerError(ref err) => {
-                write!(f, "consumer error: {}", err)
-            }
-            State::HeaderIncomplete(ref err) => {
-                write!(f, "incomplete module header: {}", err)
-            }
+            State::ConsumerStopRequested => write!(f, "stop parsing requested by consumer"),
+            State::ConsumerError(ref err) => write!(f, "consumer error: {}", err),
+            State::HeaderIncomplete(ref err) => write!(f, "incomplete module header: {}", err),
             State::HeaderIncorrect => write!(f, "incorrect module header"),
             State::EndiannessUnsupported => write!(f, "unsupported endianness"),
             State::WordCountZero(offset, index) => {
@@ -128,9 +118,7 @@ impl fmt::Display for State {
                        index,
                        offset)
             }
-            State::OperandError(ref err) => {
-                write!(f, "operand decoding error: {}", err)
-            }
+            State::OperandError(ref err) => write!(f, "operand decoding error: {}", err),
             State::TypeUnsupported(offset, index) => {
                 write!(f,
                        "unsupported type for instruction #{} at offset {}",
@@ -139,8 +127,7 @@ impl fmt::Display for State {
             }
             State::SpecConstantOpIntegerIncorrect(offset, index) => {
                 write!(f,
-                       "incorrect SpecConstantOp number for instruction #{} \
-                        at offset {}",
+                       "incorrect SpecConstantOp number for instruction #{} at offset {}",
                        index,
                        offset)
             }
@@ -285,12 +272,8 @@ impl<'a> Parser<'a> {
                     self.type_tracker.track(&inst);
                     match self.consumer.consume_instruction(inst) {
                         Action::Continue => (),
-                        Action::Stop => {
-                            return Err(State::ConsumerStopRequested)
-                        }
-                        Action::Error(err) => {
-                            return Err(State::ConsumerError(err))
-                        }
+                        Action::Stop => return Err(State::ConsumerStopRequested),
+                        Action::Error(err) => return Err(State::ConsumerError(err)),
                     }
                 }
                 Err(State::Complete) => break,
@@ -319,11 +302,7 @@ impl<'a> Parser<'a> {
                         return Err(State::HeaderIncorrect);
                     }
                 }
-                Ok(mr::ModuleHeader::new(words[0],
-                                         words[1],
-                                         words[2],
-                                         words[3],
-                                         words[4]))
+                Ok(mr::ModuleHeader::new(words[0], words[1], words[2], words[3], words[4]))
             }
             Err(err) => Err(State::HeaderIncomplete(err)),
         }
@@ -334,22 +313,19 @@ impl<'a> Parser<'a> {
         if let Ok(word) = self.decoder.word() {
             let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
             if wc == 0 {
-                return Err(State::WordCountZero(self.decoder.offset() -
-                                                WORD_NUM_BYTES,
+                return Err(State::WordCountZero(self.decoder.offset() - WORD_NUM_BYTES,
                                                 self.inst_index));
             }
             if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
                 self.decoder.set_limit((wc - 1) as usize);
                 let result = self.parse_operands(grammar);
                 if !self.decoder.limit_reached() {
-                    return Err(State::OperandExceeded(self.decoder.offset(),
-                                                      self.inst_index));
+                    return Err(State::OperandExceeded(self.decoder.offset(), self.inst_index));
                 }
                 self.decoder.clear_limit();
                 result
             } else {
-                Err(State::OpcodeUnknown(self.decoder.offset() -
-                                         WORD_NUM_BYTES,
+                Err(State::OpcodeUnknown(self.decoder.offset() - WORD_NUM_BYTES,
                                          self.inst_index,
                                          opcode))
             }
@@ -365,27 +341,23 @@ impl<'a> Parser<'a> {
                 match t {
                     Type::Integer(size, _) => {
                         match size {
-                            32 => Ok(mr::Operand::LiteralInt32(
-                                    try_decode!(self.decoder.int32()))),
-                            64 => Ok(mr::Operand::LiteralInt64(
-                                    try_decode!(self.decoder.int64()))),
+                            32 => Ok(mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))),
+                            64 => Ok(mr::Operand::LiteralInt64(try_decode!(self.decoder.int64()))),
                             _ => {
-                                Err(State::TypeUnsupported(self.decoder
-                                                               .offset(),
-                                                           self.inst_index))
+                                Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
                             }
                         }
                     }
                     Type::Float(size) => {
                         match size {
-                            32 => Ok(mr::Operand::LiteralFloat32(
-                                    try_decode!(self.decoder.float32()))),
-                            64 => Ok(mr::Operand::LiteralFloat64(
-                                    try_decode!(self.decoder.float64()))),
+                            32 => {
+                                Ok(mr::Operand::LiteralFloat32(try_decode!(self.decoder.float32())))
+                            }
+                            64 => {
+                                Ok(mr::Operand::LiteralFloat64(try_decode!(self.decoder.float64())))
+                            }
                             _ => {
-                                Err(State::TypeUnsupported(self.decoder
-                                                               .offset(),
-                                                           self.inst_index))
+                                Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
                             }
                         }
                     }
@@ -393,9 +365,7 @@ impl<'a> Parser<'a> {
             }
             // Treat as a normal SPIR-V word if we don't know the type.
             // TODO: find a better way to handle this.
-            None => {
-                Ok(mr::Operand::LiteralInt32(try_decode!(self.decoder.int32())))
-            }
+            None => Ok(mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))),
         }
     }
 
@@ -409,14 +379,12 @@ impl<'a> Parser<'a> {
             // We need id parameters to this SpecConstantOp.
             for ref operand in g.operands {
                 if operand.kind == GOpKind::IdRef {
-                    operands.push(
-                        mr::Operand::IdRef(try_decode!(self.decoder.id())))
+                    operands.push(mr::Operand::IdRef(try_decode!(self.decoder.id())))
                 }
             }
             Ok(operands)
         } else {
-            Err(State::SpecConstantOpIntegerIncorrect(
-                    self.decoder.offset(), self.inst_index))
+            Err(State::SpecConstantOpIntegerIncorrect(self.decoder.offset(), self.inst_index))
         }
     }
 
@@ -431,12 +399,8 @@ impl<'a> Parser<'a> {
             let has_more_coperands = !self.decoder.limit_reached();
             if has_more_coperands {
                 match loperand.kind {
-                    GOpKind::IdResultType => {
-                        rtype = Some(try_decode!(self.decoder.id()))
-                    }
-                    GOpKind::IdResult => {
-                        rid = Some(try_decode!(self.decoder.id()))
-                    }
+                    GOpKind::IdResultType => rtype = Some(try_decode!(self.decoder.id())),
+                    GOpKind::IdResult => rid = Some(try_decode!(self.decoder.id())),
                     GOpKind::LiteralContextDependentNumber => {
                         // Only constant defining instructions use this kind.
                         // If it is not true, that means the grammar is wrong
@@ -444,16 +408,13 @@ impl<'a> Parser<'a> {
                         assert!(grammar.opcode == spirv::Op::Constant ||
                                 grammar.opcode == spirv::Op::SpecConstant);
                         let id = rtype.expect("internal error: \
-                            should already decoded result type id \
-                            before context dependent number");
+                            should already decoded result type id before context dependent number");
                         coperands.push(try!(self.parse_literal(id)))
                     }
                     GOpKind::LiteralSpecConstantOpInteger => {
-                        coperands.append(
-                            &mut try!(self.parse_spec_constant_op()))
+                        coperands.append(&mut try!(self.parse_spec_constant_op()))
                     }
-                    _ => coperands.append(
-                        &mut try!(self.parse_operand(loperand.kind))),
+                    _ => coperands.append(&mut try!(self.parse_operand(loperand.kind))),
                 }
                 match loperand.quantifier {
                     GOpCount::One | GOpCount::ZeroOrOne => loperand_index += 1,
@@ -463,9 +424,7 @@ impl<'a> Parser<'a> {
                 // We still have logical operands to match but no no more words.
                 match loperand.quantifier {
                     GOpCount::One => {
-                        return Err(State::OperandExpected(self.decoder
-                                                              .offset(),
-                                                          self.inst_index))
+                        return Err(State::OperandExpected(self.decoder.offset(), self.inst_index))
                     }
                     GOpCount::ZeroOrOne | GOpCount::ZeroOrMore => break,
                 }
@@ -624,11 +583,7 @@ mod tests {
             let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
-        assert_eq!(Some(mr::ModuleHeader::new(0x07230203,
-                                              0x00010000,
-                                              0,
-                                              0,
-                                              0)),
+        assert_eq!(Some(mr::ModuleHeader::new(0x07230203, 0x00010000, 0, 0, 0)),
                    c.header);
     }
 
@@ -647,10 +602,9 @@ mod tests {
         assert_eq!("MemoryModel", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(
-            vec![mr::Operand::AddressingModel(spirv::AddressingModel::Logical),
-                 mr::Operand::MemoryModel(spirv::MemoryModel::GLSL450)],
-            inst.operands);
+        assert_eq!(vec![mr::Operand::AddressingModel(spirv::AddressingModel::Logical),
+                        mr::Operand::MemoryModel(spirv::MemoryModel::GLSL450)],
+                   inst.operands);
     }
 
     #[test]
@@ -744,12 +698,11 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(
-            vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                 mr::Operand::LiteralInt32(450),
-                 mr::Operand::IdRef(6),
-                 mr::Operand::LiteralString("wow".to_string())],
-            inst.operands);
+        assert_eq!(vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                        mr::Operand::LiteralInt32(450),
+                        mr::Operand::IdRef(6),
+                        mr::Operand::LiteralString("wow".to_string())],
+                   inst.operands);
     }
 
     #[test]
@@ -769,11 +722,10 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(
-            vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                 mr::Operand::LiteralInt32(450),
-                 mr::Operand::IdRef(6)],
-            inst.operands);
+        assert_eq!(vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                        mr::Operand::LiteralInt32(450),
+                        mr::Operand::IdRef(6)],
+                   inst.operands);
     }
 
     #[test]
@@ -792,10 +744,9 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(
-            vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                 mr::Operand::LiteralInt32(450)],
-            inst.operands);
+        assert_eq!(vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                        mr::Operand::LiteralInt32(450)],
+                   inst.operands);
     }
 
     #[derive(Debug)]
@@ -1052,10 +1003,9 @@ mod tests {
         assert_eq!("SpecConstantOp", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(
-            vec![mr::Operand::LiteralSpecConstantOpInteger(spirv::Op::SNegate),
-                 mr::Operand::IdRef(3)],
-            inst.operands);
+        assert_eq!(vec![mr::Operand::LiteralSpecConstantOpInteger(spirv::Op::SNegate),
+                        mr::Operand::IdRef(3)],
+                   inst.operands);
     }
 
     #[test]
@@ -1068,11 +1018,10 @@ mod tests {
         v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // id ref: 3
         let mut c = RetainingConsumer::new();
         let p = Parser::new(v, &mut c);
-        assert_matches!(
-            p.parse(),
-            // The header has 5 words, the above instruction has 5 words,
-            // so in total 40 bytes.
-            Err(State::OperandError(Error::LimitReached(40))));
+        assert_matches!(p.parse(),
+                        // The header has 5 words, the above instruction has 5 words,
+                        // so in total 40 bytes.
+                        Err(State::OperandError(Error::LimitReached(40))));
     }
 
     #[test]
@@ -1111,9 +1060,9 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(1), mr::Operand::IdRef(2),
-                        mr::Operand::MemoryAccess(
-                            spirv::MEMORY_ACCESS_VOLATILE)],
+        assert_eq!(vec![mr::Operand::IdRef(1),
+                        mr::Operand::IdRef(2),
+                        mr::Operand::MemoryAccess(spirv::MEMORY_ACCESS_VOLATILE)],
                    inst.operands);
     }
     #[test]
@@ -1134,9 +1083,9 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(1), mr::Operand::IdRef(2),
-                        mr::Operand::MemoryAccess(
-                            spirv::MemoryAccess::from_bits(3).unwrap()),
+        assert_eq!(vec![mr::Operand::IdRef(1),
+                        mr::Operand::IdRef(2),
+                        mr::Operand::MemoryAccess(spirv::MemoryAccess::from_bits(3).unwrap()),
                         mr::Operand::LiteralInt32(4)],
                    inst.operands);
     }
@@ -1149,11 +1098,10 @@ mod tests {
         v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // Volatile & Aligned
         let mut c = RetainingConsumer::new();
         let p = Parser::new(v, &mut c);
-        assert_matches!(
-            p.parse(),
-            // The header has 5 words, the above instruction has 4 words,
-            // so in total 36 bytes.
-            Err(State::OperandError(Error::LimitReached(36))));
+        assert_matches!(p.parse(),
+                        // The header has 5 words, the above instruction has 4 words,
+                        // so in total 36 bytes.
+                        Err(State::OperandError(Error::LimitReached(36))));
     }
     #[test]
     fn test_parsing_bitmasks_requiring_params_img_operands_param_order() {
@@ -1179,8 +1127,7 @@ mod tests {
         assert_eq!(vec![mr::Operand::IdRef(1),
                         mr::Operand::IdRef(2),
                         mr::Operand::IdRef(3),
-                        mr::Operand::ImageOperands(
-                            spirv::ImageOperands::from_bits(5).unwrap()),
+                        mr::Operand::ImageOperands(spirv::ImageOperands::from_bits(5).unwrap()),
                         mr::Operand::IdRef(0xaa),
                         mr::Operand::IdRef(0xbb),
                         mr::Operand::IdRef(0xcc)],

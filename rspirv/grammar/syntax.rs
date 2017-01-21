@@ -116,8 +116,8 @@ impl InstructionTable {
     /// `opcode`.
     pub fn get(opcode: spirv::Op) -> &'static Instruction<'static> {
         INSTRUCTION_TABLE.iter()
-            .find(|&inst| (inst.opcode == opcode))
-            .expect("internal error")
+                         .find(|&inst| (inst.opcode == opcode))
+                         .expect("internal error")
     }
 }
 
@@ -131,10 +131,9 @@ pub struct GlslStd450InstructionTable;
 impl GlslStd450InstructionTable {
     /// Looks up the given `opcode` in the instruction table and returns
     /// a reference to the instruction grammar entry if found.
-    pub fn lookup_opcode(opcode: u32)
-                         -> Option<&'static ExtendedInstruction<'static>> {
+    pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
         GLSL_STD_450_INSTRUCTION_TABLE.iter()
-            .find(|&inst| inst.opcode == opcode)
+                                      .find(|&inst| inst.opcode == opcode)
     }
 }
 

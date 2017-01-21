@@ -141,8 +141,7 @@ impl ModuleHeader {
 
     /// Returns the major and minor version numbers as a tuple.
     pub fn version(&self) -> (u8, u8) {
-        (((self.version & 0xff0000) >> 16) as u8,
-         ((self.version & 0xff00) >> 8) as u8)
+        (((self.version & 0xff0000) >> 16) as u8, ((self.version & 0xff00) >> 8) as u8)
     }
 
     /// Returns the generator's name and version as a tuple.

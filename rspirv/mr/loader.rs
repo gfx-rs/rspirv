@@ -52,20 +52,14 @@ impl Error {
             Error::DetachedFunctionParameter => {
                 "found function OpFunctionParameter not inside function"
             }
-            Error::DetachedBasicBlock => {
-                "found basic block not inside function"
-            }
+            Error::DetachedBasicBlock => "found basic block not inside function",
             Error::NestedBasicBlock => "found nested basic block",
             Error::UnclosedBasicBlock => "found basic block without terminator",
             Error::MismatchedTerminator => "found mismatched terminator",
-            Error::DetachedInstruction => {
-                "found instruction not inside basic block"
-            }
+            Error::DetachedInstruction => "found instruction not inside basic block",
             Error::WrongOpCapabilityOperand => "wrong OpCapability operand",
             Error::WrongOpExtensionOperand => "wrong OpExtension operand",
-            Error::WrongOpExtInstImportOperand => {
-                "wrong OpExtInstImport operand"
-            }
+            Error::WrongOpExtInstImportOperand => "wrong OpExtInstImport operand",
             Error::WrongOpMemoryModelOperand => "wrong OpMemoryModel operand",
             Error::WrongOpNameOperand => "wrong OpName operand",
         }
@@ -157,11 +151,8 @@ impl binary::Consumer for Loader {
             opcode if grammar::reflect::is_nonlocation_debug(opcode) => {
                 self.module.debugs.push(inst)
             }
-            opcode if grammar::reflect::is_annotation(opcode) => {
-                self.module.annotations.push(inst)
-            }
-            opcode if grammar::reflect::is_type(opcode) ||
-                      grammar::reflect::is_constant(opcode) ||
+            opcode if grammar::reflect::is_annotation(opcode) => self.module.annotations.push(inst),
+            opcode if grammar::reflect::is_type(opcode) || grammar::reflect::is_constant(opcode) ||
                       grammar::reflect::is_variable(opcode) => {
                 self.module.types_global_values.push(inst)
             }

@@ -50,28 +50,29 @@ impl Disassemble for mr::Operand {
 /// with the given `delimiter`.
 fn disas_join<T: Disassemble>(insts: &Vec<T>, delimiter: &str) -> String {
     insts.iter()
-        .map(|ref i| i.disassemble())
-        .collect::<Vec<String>>()
-        .join(delimiter)
+         .map(|ref i| i.disassemble())
+         .collect::<Vec<String>>()
+         .join(delimiter)
 }
 
 impl Disassemble for mr::Instruction {
     fn disassemble(&self) -> String {
         format!("{rid}{opcode}{rtype} {operands}",
                 rid = self.result_id
-                    .map_or(String::new(), |w| format!("%{} = ", w)),
+                          .map_or(String::new(), |w| format!("%{} = ", w)),
                 opcode = format!("Op{}", self.class.opname),
                 // extra space both before and after the reseult type
                 rtype = self.result_type
-                    .map_or(String::new(), |w| format!("  %{} ", w)),
+                            .map_or(String::new(), |w| format!("  %{} ", w)),
                 operands = disas_join(&self.operands, " "))
     }
 }
 
 impl Disassemble for mr::BasicBlock {
     fn disassemble(&self) -> String {
-        let label =
-            self.label.as_ref().map_or(String::new(), |i| i.disassemble());
+        let label = self.label
+                        .as_ref()
+                        .map_or(String::new(), |i| i.disassemble());
         format!("{label}\n{insts}",
                 label = label,
                 insts = disas_join(&self.instructions, "\n"))
@@ -147,8 +148,7 @@ impl Disassemble for mr::Module {
                 for inst in &bb.instructions {
                     match inst.class.opcode {
                         spirv::Op::ExtInst => {
-                            push!(&mut text,
-                                  disas_ext_inst(inst, &ext_inst_set_tracker))
+                            push!(&mut text, disas_ext_inst(inst, &ext_inst_set_tracker))
                         }
                         _ => push!(&mut text, inst.disassemble()),
                     }
@@ -166,13 +166,12 @@ fn disas_ext_inst(inst: &mr::Instruction,
                   ext_inst_set_tracker: &tracker::ExtInstSetTracker)
                   -> String {
     if inst.operands.len() < 2 {
-        return inst.disassemble()
+        return inst.disassemble();
     }
-    if let (&mr::Operand::IdRef(id),
-            &mr::Operand::LiteralExtInstInteger(opcode)) =
+    if let (&mr::Operand::IdRef(id), &mr::Operand::LiteralExtInstInteger(opcode)) =
            (&inst.operands[0], &inst.operands[1]) {
         if !ext_inst_set_tracker.have(id) {
-            return inst.disassemble()
+            return inst.disassemble();
         }
         if let Some(grammar) = ext_inst_set_tracker.resolve(id, opcode) {
             let mut operands = vec![];
@@ -183,12 +182,10 @@ fn disas_ext_inst(inst: &mr::Instruction,
             }
             format!("{rid}{opcode}{rtype} {operands}",
                     rid = inst.result_id
-                              .map_or(String::new(),
-                                      |w| format!("%{} = ", w)),
+                              .map_or(String::new(), |w| format!("%{} = ", w)),
                     opcode = format!("Op{}", inst.class.opname),
                     rtype = inst.result_type
-                                .map_or(String::new(),
-                                        |w| format!("  %{} ", w)),
+                                .map_or(String::new(), |w| format!("  %{} ", w)),
                     operands = operands.join(" "))
         } else {
             inst.disassemble()

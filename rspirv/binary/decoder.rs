@@ -183,9 +183,8 @@ impl Decoder {
         while !bytes.is_empty() && bytes.last() == Some(&0) {
             bytes.pop();
         }
-        String::from_utf8(bytes).map_err(|e| {
-            Error::DecodeStringFailed(start_offset, format!("{}", e))
-        })
+        String::from_utf8(bytes)
+            .map_err(|e| Error::DecodeStringFailed(start_offset, format!("{}", e)))
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
@@ -262,6 +261,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn test_decoding_words() {
         let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
                                       0x90, 0xab, 0xcd, 0xef,
@@ -312,6 +312,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn test_offset() {
         let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
                                       0x90, 0xab, 0xcd, 0xef,
@@ -394,9 +395,10 @@ mod tests {
     }
 
     #[test]
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn test_decode_int64() {
-        let mut d = Decoder::new(
-            vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef]);
+        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
+                                      0x90, 0xab, 0xcd, 0xef]);
         assert_eq!(Ok(0xefcdab9078563412), d.int64());
 
         let mut d = Decoder::new(f32_to_bytes(-12.34));
