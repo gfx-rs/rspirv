@@ -23,6 +23,7 @@ num-derive = "0.1"
 [build-dependencies]
 regex = "0.2"
 serde = "0.8"
+serde_derive = "0.8"
 serde_json = "0.8"
 
 [dev-dependencies]

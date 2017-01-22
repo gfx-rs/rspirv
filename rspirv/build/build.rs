@@ -13,7 +13,12 @@
 // limitations under the License.
 
 extern crate regex;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 extern crate serde_json;
+
+mod structs;
 
 use regex::Regex;
 use serde_json::Value;
@@ -935,6 +940,7 @@ fn main() {
         let mut file = fs::File::open(filename).unwrap();
         file.read_to_string(&mut contents).unwrap();
     }
+    let _: structs::Grammar = serde_json::from_str(&contents).unwrap();
     let grammar: Value = serde_json::from_str(&contents).unwrap();
 
     {
