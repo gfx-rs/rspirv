@@ -59,3 +59,16 @@ pub fn snake_casify(symbol: &str) -> String {
     let re = regex::Regex::new(r"(?P<l>[a-z])(?P<u>[A-Z])").unwrap();
     re.replace_all(symbol, "$l-$u").replace("-", "_").to_lowercase()
 }
+
+/// Returns the corresponding operand kind in memory representation for the
+/// given operand `kind` in the grammar.
+pub fn get_mr_operand_kind(kind: &str) -> &str {
+    if kind == "LiteralInteger" {
+        "LiteralInt32"
+    } else if kind == "LiteralContextDependentNumber" {
+        // TODO: should use the correct type to decode
+        "LiteralInt32"
+    } else {
+        kind
+    }
+}

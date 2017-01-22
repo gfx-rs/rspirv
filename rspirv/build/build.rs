@@ -18,6 +18,7 @@ extern crate serde_derive;
 extern crate serde_json;
 
 mod header;
+mod memrepr;
 mod structs;
 mod table;
 mod utils;
@@ -27,217 +28,6 @@ use std::{env, fs, path};
 use std::io::{Read, Write};
 
 use utils::*;
-
-/// Writes the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
-/// from parsing the given JSON object `grammar` to the file with the given
-/// `filename`.
-///
-/// `grammar` is expected to be the root object of the SPIR-V grammar.
-
-/// Writes the generated mr::Operand and its fmt::Display implementation from
-/// parsing the given JSON object `value` to the file with the given `filename`.
-///
-/// `value` is expected to be the "operand_kinds" array of the SPIR-V grammar.
-fn write_mr_operand_kinds(value: &Value, filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
-
-    { // Attributes, uses.
-        file.write_all(RUSTFMT_SKIP_BANG.as_bytes()).unwrap();
-        file.write_all(b"\n\nuse spirv;\nuse std::fmt;\n\n").unwrap();
-    }
-
-    let object = value.as_array().unwrap();
-    let kinds: Vec<&str> =
-        object.iter().map(|ref element| {
-            let kind = element.as_object().unwrap();
-            kind.get("kind").unwrap().as_str().unwrap()
-        }).filter(|element| {
-            // Pair kinds are not used in mr::Operand.
-            // LiteralContextDependentNumber is replaced by suitable literals.
-            // LiteralInteger is replaced by LiteralInt32.
-            // IdResult and IdResultType are not stored as operands in
-            // memory representation.
-            !(element.starts_with("Pair") ||
-              *element == "LiteralContextDependentNumber" ||
-              *element == "LiteralInteger" ||
-              *element == "IdResult" ||
-              *element == "IdResultType")
-        }).collect();
-
-    { // Enum for all operand kinds in memory representation.
-        let id_kinds: Vec<String> =
-            kinds.iter().filter(|ref element| {
-                element.starts_with("Id")
-            }).map(|ref element| {
-                format!("    {}(spirv::Word),", element)
-            }).collect();
-        let num_kinds: Vec<&str> = vec![
-            "    LiteralInt32(u32),",
-            "    LiteralInt64(u64),",
-            "    LiteralFloat32(f32),",
-            "    LiteralFloat64(f64),",
-            "    LiteralExtInstInteger(u32),",
-            "    LiteralSpecConstantOpInteger(spirv::Op),"];
-        let str_kinds: Vec<String> =
-            kinds.iter().filter(|ref element| {
-                element.ends_with("String")
-            }).map(|ref element| {
-                format!("    {}(String),", element)
-            }).collect();
-        let enum_kinds: Vec<String> =
-            kinds.iter().filter(|ref element| {
-                !(element.starts_with("Id") ||
-                  element.ends_with("String") ||
-                  element.ends_with("Integer") ||
-                  element.ends_with("Number"))
-            }).map(|ref element| {
-                format!("    {k}(spirv::{k}),", k=element)
-            }).collect();
-
-        let kind_enum = format!(
-            "/// Memory representation of a SPIR-V operand.\n\
-             #[derive(Debug, PartialEq)]\n\
-             pub enum Operand {{\n\
-             {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\
-             }}\n",
-             enum_kinds=enum_kinds.join("\n"),
-             id_kinds=id_kinds.join("\n"),
-             num_kinds=num_kinds.join("\n"),
-             str_kinds=str_kinds.join("\n"));
-        file.write_all(&kind_enum.into_bytes()).unwrap();
-        file.write_all(b"\n").unwrap();
-    }
-
-    { // impl fmt::Display for mr::Operand.
-        let mut kinds = kinds;
-        kinds.push("LiteralInt32");
-        kinds.push("LiteralInt64");
-        kinds.push("LiteralFloat32");
-        kinds.push("LiteralFloat64");
-        let cases: Vec<String> =
-            kinds.iter().map(|ref element| {
-                format!("{space:12}Operand::{kind}(ref v) => \
-                         write!(f, \"{{:?}}\", v),",
-                        space="",
-                        kind=element)
-            }).collect();
-        let impl_code = format!(
-            "impl fmt::Display for Operand {{\n\
-             {s:4}fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n\
-             {s:8}match *self {{\n{cases}\n{s:8}}}\n{s:4}}}\n}}\n",
-             s="",
-             cases=cases.join("\n"));
-        file.write_all(&impl_code.into_bytes()).unwrap();
-    }
-}
-
-/// Writes the generated build methods for SPIR-V types from parsing the given
-/// JSON object `value` to the file with the given `filename`.
-///
-/// `value` is expected to be the "instructions" array of the SPIR-V grammar.
-fn write_mr_builder_types(insts: &Value, filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
-
-    let object = insts.as_array().unwrap();
-    let empty_array = Value::Array(vec![]);
-    let empty_string = Value::String(String::new());
-
-    // Generate build methods for all types.
-    let elements: Vec<String> = object.iter().filter(|ref element| {
-        let inst = element.as_object().unwrap();
-        let opname = inst.get("opname").unwrap().as_str().unwrap();
-        opname.starts_with("OpType")
-    }).map(|ref element| {
-        let inst = element.as_object().unwrap();
-        let opname = inst.get("opname").unwrap().as_str().unwrap();
-        let operands =
-            inst.get("operands").unwrap_or(&empty_array)
-                .as_array().unwrap();
-        // Get the kind, name, and quantifier for all operands.
-        let operands: Vec<(&str, String, String)> =
-            operands.iter().skip(1).map(|ref e| {
-                let operand = e.as_object().unwrap();
-                let kind = operand.get("kind").unwrap().as_str().unwrap();
-                let mut name =
-                    operand.get("name").unwrap_or(&empty_string)
-                        .as_str().unwrap()
-                        .replace("'", "").replace(" ", "_");
-                if name.len() == 0 {
-                    name = snake_casify(kind)
-                }
-                let quantifier =
-                    operand.get("quantifier").unwrap_or(&empty_string)
-                        .as_str().unwrap().to_string();
-                (kind, snake_casify(&name), quantifier)
-        }).collect();
-        // Parameter list for this build method.
-        let param_list =
-            operands.iter().map(|&(ref kind, ref name, ref quant)| {
-                let kind = get_enum_underlying_type(kind);
-                if quant == "" {
-                    format!("{}: {}", name, kind)
-                } else if quant == "?" {
-                    format!("{}: Option<{}>", name, kind)
-                } else {
-                    format!("{}: Vec<{}>", name, kind)
-                }
-            }).collect::<Vec<_>>().join(", ");
-        // Initializer list for constructing the operands parameter
-        // for Instruction.
-        let init_list =
-            operands.iter().filter_map(|&(ref kind, ref name, ref quant)| {
-                if quant == "" {
-                    let kind = get_mr_operand_kind(kind);
-                    Some(format!("mr::Operand::{}({})", kind, name))
-                } else {
-                    None
-                }
-            }).collect::<Vec<_>>().join(", ");
-        // Parameters that are not single values thus need special treatment.
-        let extras = operands.iter().filter_map(|&(kind, ref name, ref quant)| {
-            let kind = get_mr_operand_kind(kind);
-            if quant == "" {
-                None
-            } else if quant == "?" {
-                Some(format!(
-                        "{s:8}if {name}.is_some() {{\n\
-                           {s:12}self.module.types_global_values.last_mut()\
-                             .expect(\"internal error\").operands\
-                             .push(mr::Operand::{kind}({name}.unwrap()))\n\
-                         {s:8}}}",
-                        s="", kind=kind, name=name))
-            } else {
-                Some(format!(
-                        "{s:8}for v in {name} {{\n\
-                         {s:12}self.module.types_global_values.last_mut()\
-                           .expect(\"internal error\").operands\
-                           .push(mr::Operand::{kind}(v))\n\
-                         {s:8}}}",
-                        s="", kind=kind, name=name))
-            }
-        }).collect::<Vec<_>>().join(";\n");
-        format!("{s:4}/// Creates {opcode} and returns the result id.\n\
-                 {s:4}pub fn {name}(&mut self{sep}{param}) -> spirv::Word {{\n\
-                   {s:8}let id = self.next_id;\n\
-                   {s:8}self.next_id += 1;\n\
-                   {s:8}self.module.types_global_values.push(\
-                      mr::Instruction::new(spirv::Op::{opcode}, \
-                      None, Some(id), vec![{init}]));\n\
-                   {extras}{x}\
-                   {s:8}id\n\
-                 {s:4}}}",
-                s="", sep=if param_list.len() != 0 { ", " } else { "" },
-                opcode=&opname[2..], name=snake_casify(&opname[2..]),
-                param=param_list, init=init_list, extras=extras,
-                x=if extras.len() != 0 { ";\n" } else { "" })
-    }).collect();
-    let impl_code = format!("impl Builder {{\n{}\n}}", elements.join("\n\n"));
-    file.write_all(&impl_code.into_bytes()).unwrap();
-}
 
 /// Writes the generated operand decoding errors for binary::Decoder by
 /// parsing the given JSON object `value` to the file with the given `filename`.
@@ -391,31 +181,6 @@ fn get_decode_method(kind: &str) -> String {
         }
     }
     snake_casify(kind)
-}
-
-/// Returns the corresponding operand kind in memory representation for the
-/// given operand `kind` in the grammar.
-fn get_mr_operand_kind(kind: &str) -> &str {
-    if kind == "LiteralInteger" {
-        "LiteralInt32"
-    } else if kind == "LiteralContextDependentNumber" {
-        // TODO: should use the correct type to decode
-        "LiteralInt32"
-    } else {
-        kind
-    }
-}
-
-/// Returns the underlying type used in operand kind enums for the operand
-/// kind `kind` in the grammar.
-fn get_enum_underlying_type(kind: &str) -> String {
-    if kind.starts_with("Id") || kind == "LiteralInteger" {
-        "spirv::Word".to_string()
-    } else if kind == "LiteralString" {
-        "String".to_string()
-    } else {
-        format!("spirv::{}", kind)
-    }
 }
 
 /// Generates the methods for parsing parameters of operand kind enumerants.
@@ -662,12 +427,6 @@ fn main() {
         table::write_grammar_inst_table_operand_kinds(&grammar, filename);
     }
 
-    let grammar: Value = serde_json::from_str(&contents).unwrap();
-
-    let root = grammar.as_object().unwrap();
-    let instructions = root.get("instructions").unwrap();
-    let operand_kinds = root.get("operand_kinds").unwrap();
-
     {
         // Path to the generated operands kind in memory representation.
         path.pop();
@@ -675,7 +434,7 @@ fn main() {
         path.push("mr");
         path.push("operand.rs");
         let filename = path.to_str().unwrap();
-        write_mr_operand_kinds(operand_kinds, filename);
+        memrepr::write_mr_operand_kinds(&grammar.operand_kinds, filename);
     }
 
     {
@@ -683,8 +442,13 @@ fn main() {
         path.pop();
         path.push("build_type.rs");
         let filename = path.to_str().unwrap();
-        write_mr_builder_types(instructions, filename);
+        memrepr::write_mr_builder_types(&grammar.instructions, filename);
     }
+
+    let grammar: Value = serde_json::from_str(&contents).unwrap();
+
+    let root = grammar.as_object().unwrap();
+    let operand_kinds = root.get("operand_kinds").unwrap();
 
     {
         // Path to the generated decoding errors.

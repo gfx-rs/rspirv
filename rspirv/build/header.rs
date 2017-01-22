@@ -67,10 +67,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> String {
 }
 
 /// Returns the code defining the enum for an operand kind by parsing
-/// the given JSON object `value`.
-///
-/// `value` is expected to be an element in the "operand_kind" array
-/// of the SPIR-V grammar.
+/// the given SPIR-V `grammar`.
 fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<String> {
     if grammar.category == "BitEnum" {
         Some(gen_bit_enum_operand_kind(grammar))

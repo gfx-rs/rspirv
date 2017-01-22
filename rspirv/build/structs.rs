@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// Rust structs for deserializing the SPIR-V JSON grammar.
+
 use serde::de;
 use std::{result, str};
 
