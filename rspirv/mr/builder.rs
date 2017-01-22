@@ -103,13 +103,15 @@ impl Builder {
         Ok(id)
     }
 
-    fn end_basic_block(&mut self) {
+    fn end_basic_block(&mut self, inst: mr::Instruction) -> BuildResult<()> {
         if self.basic_block.is_none() {
-            panic!("internal error: end_basic_block() called without enclosing basic block");
+            return Err(Error::MismatchedTerminator);
         }
 
-        self.function.as_mut().unwrap().basic_blocks.push(self.basic_block.take().unwrap());
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(self.function.as_mut().unwrap().basic_blocks.push(self.basic_block.take().unwrap()))
     }
 }
 
 include!("build_type.rs");
+include!("build_terminator.rs");

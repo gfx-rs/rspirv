@@ -16,6 +16,93 @@ use structs;
 
 use utils::*;
 
+static TERMINATORS: &'static [&'static str] = &[
+    "OpBranch", "OpBranchConditional", "OpSwitch", "OpKill",
+    "OpReturn", "OpReturnValue", "OpUnreachable"];
+
+fn get_param_name(param: &structs::Operand) -> String {
+    if param.name.len() == 0 {
+        snake_casify(&param.kind)
+    } else {
+        snake_casify(&param.name.replace("'", "").replace(" ", "_"))
+    }
+}
+
+fn get_param_list(params: &[structs::Operand]) -> Vec<String> {
+    params.iter().map(|param| {
+        let name = get_param_name(param);
+        let kind = get_enum_underlying_type(&param.kind);
+        if param.quantifier == "" {
+            format!("{}: {}", name, kind)
+        } else if param.quantifier == "?" {
+            format!("{}: Option<{}>", name, kind)
+        } else {
+            format!("{}: Vec<{}>", name, kind)
+        }
+    }).collect()
+}
+
+fn get_function_name(opname: &str) -> String {
+    if opname == "OpReturn" {
+        "ret".to_string()
+    } else if opname == "OpReturnValue" {
+        "ret_value".to_string()
+    } else {
+        snake_casify(&opname[2..]).to_string()
+    }
+}
+
+/// Returns the initializer list for all the parameters required to appear
+/// once and only once.
+fn get_init_list(params: &[structs::Operand]) -> Vec<String> {
+    params.iter().filter_map(|param| {
+        if param.quantifier == "" {
+            let name = get_param_name(param);
+            let kind = get_mr_operand_kind(&param.kind);
+            Some(format!("mr::Operand::{}({})", kind, name))
+        } else {
+            None
+        }
+    }).collect()
+}
+
+fn get_push_extras(params: &[structs::Operand], container: &str)
+                   -> Vec<String> {
+    params.iter().filter_map(|param| {
+        let name = get_param_name(param);
+        if param.quantifier == "" {
+            None
+        } else if param.quantifier == "?" {
+            let kind = get_mr_operand_kind(&param.kind);
+            Some(format!(
+                    "{s:8}if {name}.is_some() {{\n\
+                       {s:12}{container}\
+                         .push(mr::Operand::{kind}({name}.unwrap()))\n\
+                     {s:8}}}",
+                    s="", kind=kind, name=name, container=container))
+        } else {
+            // TODO: Ouch! Bad smell. This has special case treatment yet
+            // still doesn't solve 64-bit selectors in OpSwitch.
+            if param.kind == "PairLiteralIntegerIdRef" {
+                Some(format!(
+                        "{s:8}for v in {name} {{\n\
+                         {s:12}{container}.push(mr::Operand::LiteralInt32(v.0));\n\
+                         {s:12}{container}.push(mr::Operand::IdRef(v.1));\n\
+                         {s:8}}}",
+                        s="", name=name, container=container))
+            } else {
+                let kind = get_mr_operand_kind(&param.kind);
+                Some(format!(
+                        "{s:8}for v in {name} {{\n\
+                         {s:12}{container}\
+                           .push(mr::Operand::{kind}(v))\n\
+                         {s:8}}}",
+                        s="", kind=kind, name=name, container=container))
+            }
+        }
+    }).collect()
+}
+
 /// Returns the underlying type used in operand kind enums for the operand
 /// kind `kind` in the grammar.
 fn get_enum_underlying_type(kind: &str) -> String {
@@ -23,6 +110,8 @@ fn get_enum_underlying_type(kind: &str) -> String {
         "spirv::Word".to_string()
     } else if kind == "LiteralString" {
         "String".to_string()
+    } else if kind == "PairLiteralIntegerIdRef" {
+        "(spirv::Word, spirv::Word)".to_string()
     } else {
         format!("spirv::{}", kind)
     }
@@ -122,59 +211,15 @@ pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
     let elements: Vec<String> = grammar.iter().filter(|inst| {
         inst.opname.starts_with("OpType")
     }).map(|inst| {
-        // Get the kind, name, and quantifier for all operands.
-        let operands: Vec<(&str, String, &str)> =
-            inst.operands.iter().skip(1).map(|e| {
-                let mut name = e.name.replace("'", "").replace(" ", "_");
-                if name.len() == 0 {
-                    name = snake_casify(&e.kind)
-                }
-                (e.kind.as_str(), snake_casify(&name), e.quantifier.as_str())
-        }).collect();
         // Parameter list for this build method.
-        let param_list = operands.iter().map(|&(kind, ref name, quant)| {
-            let kind = get_enum_underlying_type(kind);
-            if quant == "" {
-                format!("{}: {}", name, kind)
-            } else if quant == "?" {
-                format!("{}: Option<{}>", name, kind)
-            } else {
-                format!("{}: Vec<{}>", name, kind)
-            }
-        }).collect::<Vec<_>>().join(", ");
+        let param_list = get_param_list(&inst.operands[1..]).join(", ");
         // Initializer list for constructing the operands parameter
         // for Instruction.
-        let init_list = operands.iter().filter_map(|&(kind, ref name, quant)| {
-            if quant == "" {
-                let kind = get_mr_operand_kind(kind);
-                Some(format!("mr::Operand::{}({})", kind, name))
-            } else {
-                None
-            }
-        }).collect::<Vec<_>>().join(", ");
+        let init_list = get_init_list(&inst.operands[1..]).join(", ");
         // Parameters that are not single values thus need special treatment.
-        let extras = operands.iter().filter_map(|&(kind, ref name, quant)| {
-            let kind = get_mr_operand_kind(&kind);
-            if quant == "" {
-                None
-            } else if quant == "?" {
-                Some(format!(
-                        "{s:8}if {name}.is_some() {{\n\
-                           {s:12}self.module.types_global_values.last_mut()\
-                             .expect(\"internal error\").operands\
-                             .push(mr::Operand::{kind}({name}.unwrap()))\n\
-                         {s:8}}}",
-                        s="", kind=kind, name=name))
-            } else {
-                Some(format!(
-                        "{s:8}for v in {name} {{\n\
-                         {s:12}self.module.types_global_values.last_mut()\
-                           .expect(\"internal error\").operands\
-                           .push(mr::Operand::{kind}(v))\n\
-                         {s:8}}}",
-                        s="", kind=kind, name=name))
-            }
-        }).collect::<Vec<_>>().join(";\n");
+        let extras = get_push_extras(&inst.operands[1..],
+                                     "self.module.types_global_values.last_mut()\
+                                     .expect(\"interal error\").operands").join(";\n");
         format!("{s:4}/// Creates {opcode} and returns the result id.\n\
                  {s:4}pub fn {name}(&mut self{sep}{param}) -> spirv::Word {{\n\
                    {s:8}let id = self.next_id;\n\
@@ -193,6 +238,36 @@ pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
                 init=init_list,
                 extras=extras,
                 x=if extras.len() != 0 { ";\n" } else { "" })
+    }).collect();
+    format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
+}
+
+pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>)
+                                 -> String {
+    // Generate build methods for all types.
+    let elements: Vec<String> = grammar.iter().filter(|inst| {
+        TERMINATORS.iter().find(|t| inst.opname == **t).is_some()
+    }).map(|inst| {
+        let params = get_param_list(&inst.operands).join(", ");
+        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        format!("{s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<()> {{\n\
+                   {s:8}if self.basic_block.is_none() {{\n\
+                     {s:12}return Err(Error::MismatchedTerminator);\n\
+                   {s:8}}}\n\n\
+                   {s:8}let {m}inst = mr::Instruction::new(\
+                     spirv::Op::{opcode}, None, None, vec![{init}]);\n\
+                   {extras}{y}\
+                   {s:8}self.end_basic_block(inst)\n\
+                 {s:4}}}",
+                s="",
+                name=get_function_name(&inst.opname),
+                params=params,
+                extras=extras,
+                m=if extras.len() == 0 { "" } else { "mut " },
+                x=if params.len() == 0 { "" } else { ", " },
+                y=if extras.len() != 0 { ";\n" } else { "" },
+                init=get_init_list(&inst.operands).join(", "),
+                opcode=(&inst.opname[2..]))
     }).collect();
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }

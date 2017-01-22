@@ -87,6 +87,13 @@ fn main() {
         let c = memrepr::gen_mr_builder_types(&grammar.instructions);
         write!(c, path);
     }
+    {
+        // Path to the generated builder for memory representation.
+        path.pop();
+        path.push("build_terminator.rs");
+        let c = memrepr::gen_mr_builder_terminator(&grammar.instructions);
+        write!(c, path);
+    }
 
     {
         // Path to the generated decoding errors.

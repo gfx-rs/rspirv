@@ -71,7 +71,7 @@ impl Builder {
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeImage, None, Some(id), vec![mr::Operand::IdRef(sampled_type), mr::Operand::Dim(dim), mr::Operand::LiteralInt32(depth), mr::Operand::LiteralInt32(arrayed), mr::Operand::LiteralInt32(ms), mr::Operand::LiteralInt32(sampled), mr::Operand::ImageFormat(image_format)]));
         if access_qualifier.is_some() {
-            self.module.types_global_values.last_mut().expect("internal error").operands.push(mr::Operand::AccessQualifier(access_qualifier.unwrap()))
+            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::AccessQualifier(access_qualifier.unwrap()))
         };
         id
     }
@@ -114,7 +114,7 @@ impl Builder {
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeStruct, None, Some(id), vec![]));
         for v in field_types {
-            self.module.types_global_values.last_mut().expect("internal error").operands.push(mr::Operand::IdRef(v))
+            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::IdRef(v))
         };
         id
     }
@@ -141,7 +141,7 @@ impl Builder {
         self.next_id += 1;
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeFunction, None, Some(id), vec![mr::Operand::IdRef(return_type)]));
         for v in parameter_types {
-            self.module.types_global_values.last_mut().expect("internal error").operands.push(mr::Operand::IdRef(v))
+            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::IdRef(v))
         };
         id
     }
