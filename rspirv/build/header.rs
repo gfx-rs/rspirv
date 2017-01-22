@@ -34,7 +34,7 @@ fn get_spec_link(kind: &str) -> String {
 }
 
 fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
-    let elements: Vec<String> = grammar.enumerants.iter().map(|ref enumerant| {
+    let elements: Vec<String> = grammar.enumerants.iter().map(|enumerant| {
         format!("        const {}_{} = {},",
                 snake_casify(&grammar.kind).to_uppercase(),
                 snake_casify(&enumerant.symbol).to_uppercase(),
@@ -49,7 +49,7 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
 }
 
 fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> String {
-    let elements: Vec<String> = grammar.enumerants.iter().map(|ref enumerant| {
+    let elements: Vec<String> = grammar.enumerants.iter().map(|enumerant| {
         // Special case for Dim. Its enumerants can start with a digit.
         // So prefix with the kind name here.
         if grammar.kind == "Dim" {
@@ -113,7 +113,7 @@ pub fn write_spirv_header(grammar: &structs::Grammar, filename: &str) {
     }
     { // Opcodes.
         // Get the instruction table.
-        let opcodes: Vec<String> = grammar.instructions.iter().map(|ref inst| {
+        let opcodes: Vec<String> = grammar.instructions.iter().map(|inst| {
             // Omit the "Op" prefix.
             format!("    {} = {},", &inst.opname[2..], inst.opcode)
         }).collect();

@@ -38,9 +38,9 @@ fn gen_instruction_table(grammar: &Vec<structs::Instruction>,
                          name: &str, is_ext: bool)
                          -> String {
     // Vector for strings for all instructions.
-    let elements: Vec<String> = grammar.iter().map(|ref inst| {
+    let elements: Vec<String> = grammar.iter().map(|inst| {
         // Vector of strings for all operands.
-        let operands: Vec<String> = inst.operands.iter().map(|ref e| {
+        let operands: Vec<String> = inst.operands.iter().map(|e| {
             format!("({}, {})", e.kind, convert_quantifier(&e.quantifier))
         }).collect();
         if is_ext {
@@ -77,7 +77,7 @@ pub fn write_grammar_inst_table_operand_kinds(grammar: &structs::Grammar,
 
     { // Enum for all operand kinds.
         let elements: Vec<String> =
-            grammar.operand_kinds.iter().map(|ref kind| {
+            grammar.operand_kinds.iter().map(|kind| {
                 format!("    {},", kind.kind)
             }).collect();
         let kind_enum = format!(

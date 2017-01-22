@@ -44,7 +44,7 @@ pub fn write_mr_operand_kinds(grammar: &Vec<structs::OperandKind>,
         file.write_all(b"\n\nuse spirv;\nuse std::fmt;\n\n").unwrap();
     }
 
-    let kinds: Vec<&str> = grammar.iter().map(|ref element| {
+    let kinds: Vec<&str> = grammar.iter().map(|element| {
             element.kind.as_str()
         }).filter(|element| {
             // Pair kinds are not used in mr::Operand.
@@ -59,9 +59,9 @@ pub fn write_mr_operand_kinds(grammar: &Vec<structs::OperandKind>,
         }).collect();
 
     { // Enum for all operand kinds in memory representation.
-        let id_kinds: Vec<String> = kinds.iter().filter(|ref element| {
+        let id_kinds: Vec<String> = kinds.iter().filter(|element| {
             element.starts_with("Id")
-        }).map(|ref element| {
+        }).map(|element| {
             format!("    {}(spirv::Word),", element)
         }).collect();
         let num_kinds: Vec<&str> = vec![
@@ -71,17 +71,17 @@ pub fn write_mr_operand_kinds(grammar: &Vec<structs::OperandKind>,
             "    LiteralFloat64(f64),",
             "    LiteralExtInstInteger(u32),",
             "    LiteralSpecConstantOpInteger(spirv::Op),"];
-        let str_kinds: Vec<String> = kinds.iter().filter(|ref element| {
+        let str_kinds: Vec<String> = kinds.iter().filter(|element| {
             element.ends_with("String")
-        }).map(|ref element| {
+        }).map(|element| {
             format!("    {}(String),", element)
         }).collect();
-        let enum_kinds: Vec<String> = kinds.iter().filter(|ref element| {
+        let enum_kinds: Vec<String> = kinds.iter().filter(|element| {
             !(element.starts_with("Id") ||
               element.ends_with("String") ||
               element.ends_with("Integer") ||
               element.ends_with("Number"))
-        }).map(|ref element| {
+        }).map(|element| {
             format!("    {k}(spirv::{k}),", k=element)
         }).collect();
 
@@ -103,7 +103,7 @@ pub fn write_mr_operand_kinds(grammar: &Vec<structs::OperandKind>,
         kinds.append(&mut vec!["LiteralInt32", "LiteralInt64",
                                "LiteralFloat32", "LiteralFloat64"]);
         let cases: Vec<String> =
-            kinds.iter().map(|ref element| {
+            kinds.iter().map(|element| {
                 format!("{space:12}Operand::{kind}(ref v) => \
                          write!(f, \"{{:?}}\", v),",
                         space="",
@@ -128,12 +128,12 @@ pub fn write_mr_builder_types(grammar: &Vec<structs::Instruction>,
     write_copyright_autogen_comment(&mut file);
 
     // Generate build methods for all types.
-    let elements: Vec<String> = grammar.iter().filter(|ref inst| {
+    let elements: Vec<String> = grammar.iter().filter(|inst| {
         inst.opname.starts_with("OpType")
-    }).map(|ref inst| {
+    }).map(|inst| {
         // Get the kind, name, and quantifier for all operands.
         let operands: Vec<(&str, String, &str)> =
-            inst.operands.iter().skip(1).map(|ref e| {
+            inst.operands.iter().skip(1).map(|e| {
                 let mut name = e.name.replace("'", "").replace(" ", "_");
                 if name.len() == 0 {
                     name = snake_casify(&e.kind)
