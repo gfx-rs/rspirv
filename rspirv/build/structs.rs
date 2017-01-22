@@ -69,10 +69,14 @@ pub struct Grammar {
     pub operand_kinds: Vec<OperandKind>,
 }
 
+/// The struct that represents either a number or a string.
+///
+/// It is defined as a struct instead of enum to ease usage, although
+/// essentially it is an enum.
 #[derive(Debug, Deserialize)]
-pub enum EnumValue {
-    Num(u32),
-    Str(String),
+pub struct EnumValue {
+    pub number: u32,
+    pub string: String,
 }
 
 /// Deserializes a field that can either be a number or a string into a EnumValue.
@@ -83,11 +87,17 @@ fn num_or_str<D: de::Deserializer>(d: &mut D) -> result::Result<EnumValue, D::Er
         type Value = EnumValue;
 
         fn visit_str<E: de::Error>(&mut self, value: &str) -> result::Result<EnumValue, E> {
-            Ok(EnumValue::Str(value.to_string()))
+            Ok(EnumValue {
+                number: 0,
+                string: value.to_string(),
+            })
         }
 
         fn visit_u64<E: de::Error>(&mut self, value: u64) -> result::Result<EnumValue, E> {
-            Ok(EnumValue::Num(value as u32))
+            Ok(EnumValue {
+                number: value as u32,
+                string: String::new(),
+            })
         }
     }
 
