@@ -19,6 +19,7 @@ extern crate serde_json;
 
 mod header;
 mod structs;
+mod table;
 mod utils;
 
 use serde_json::Value;
@@ -27,106 +28,11 @@ use std::io::{Read, Write};
 
 use utils::*;
 
-fn convert_quantifier(quantifier: &str) -> &str {
-    if quantifier == "" {
-        "One"
-    } else if quantifier == "?" {
-        "ZeroOrOne"
-    } else {
-        "ZeroOrMore"
-    }
-}
-
-/// Returns the code for the whole instruction table by parsing the given
-/// JSON object `value`.
-///
-/// `value` is expected to be the "instructions" array of the SPIR-V grammar.
-/// `name` is the name of the generated table.
-/// `is_ext` indicates whether the grammar is for an extended instruction
-/// set.
-fn gen_instruction_table(value: &Value, name: &str, is_ext: bool) -> String {
-    let object = value.as_array().unwrap();
-    let empty_array = Value::Array(vec![]);
-    let empty_string = Value::String(String::new());
-    // Vector for strings for all instructions.
-    let elements: Vec<String> = object.iter().map(|ref element| {
-        let inst = element.as_object().unwrap();
-        let opname = inst.get("opname").unwrap().as_str().unwrap();
-        let opcode = inst.get("opcode").unwrap().as_u64().unwrap();
-        let caps =
-            inst.get("capabilities").unwrap_or(&empty_array)
-                .as_array().unwrap();
-        let caps: Vec<String> = caps.iter().map(|ref cap| {
-            format!("{}", cap.as_str().unwrap())
-        }).collect();
-        let operands =
-            inst.get("operands").unwrap_or(&empty_array)
-                .as_array().unwrap();
-        // Vector of strings for all operands.
-        let operands: Vec<String> = operands.iter().map(|ref e| {
-            let operand = e.as_object().unwrap();
-            let kind = operand.get("kind").unwrap().as_str().unwrap();
-            let quantifier =
-                operand.get("quantifier").unwrap_or(&empty_string)
-                    .as_str().unwrap();
-            format!("({}, {})", kind, convert_quantifier(quantifier))
-        }).collect();
-        if is_ext {
-            format!("    ext_inst!({name}, {code}, [{caps}], [{operands}]),",
-                    // Omit the "Op" prefix.
-                    name = &opname,
-                    code = opcode,
-                    caps = caps.join(", "),
-                    operands = operands.join(", "))
-        } else {
-            format!("    inst!({opname}, [{caps}], [{operands}]),",
-                    // Omit the "Op" prefix.
-                    opname = &opname[2..],
-                    caps = caps.join(", "),
-                    operands = operands.join(", "))
-        }
-    }).collect();
-    format!("{skip}\nstatic {name}: \
-             &'static [{ext}Instruction<'static>] = &[\n{insts}\n];\n",
-            skip = RUSTFMT_SKIP,
-            name = name,
-            ext = if is_ext { "Extended" } else { "" },
-            insts = elements.join("\n"))
-}
-
 /// Writes the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
 /// from parsing the given JSON object `grammar` to the file with the given
 /// `filename`.
 ///
 /// `grammar` is expected to be the root object of the SPIR-V grammar.
-fn write_grammar_inst_table_operand_kinds(grammar: &Value, filename: &str) {
-    let root = grammar.as_object().unwrap();
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
-
-    { // Enum for all operand kinds.
-        let kinds = root.get("operand_kinds").unwrap().as_array().unwrap();
-        let elements: Vec<String> = kinds.iter().map(|ref element| {
-            let kind = element.as_object().unwrap();
-            let kind = kind.get("kind").unwrap().as_str().unwrap();
-            format!("    {},", kind)
-        }).collect();
-        let kind_enum = format!(
-            "/// All operand kinds in the SPIR-V grammar.\n\
-             #[derive(Clone, Copy, Debug, PartialEq, Eq)]\n\
-             pub enum OperandKind {{\n{}\n}}\n",
-            elements.join("\n"));
-        file.write_all(&kind_enum.into_bytes()).unwrap();
-        file.write_all(b"\n").unwrap();
-    }
-
-    { // Instruction table.
-        let table = gen_instruction_table(
-            root.get("instructions").unwrap(), "INSTRUCTION_TABLE", false);
-        file.write_all(&table.into_bytes()).unwrap();
-    }
-}
 
 /// Writes the generated mr::Operand and its fmt::Display implementation from
 /// parsing the given JSON object `value` to the file with the given `filename`.
@@ -724,24 +630,6 @@ fn write_operand_parse_methods(value: &Value, filename: &str) {
     file.write_all(&impl_code.into_bytes()).unwrap();
 }
 
-/// Writes the generated instruction table for GLSLstd450 extended instruction
-/// set from parsing the given JSON object `grammar` to the file with the
-/// given `filename`.
-///
-/// `grammar` is expected to be the root object of the GLSLstd450 extended
-/// instruction set grammar.
-fn write_glsl_std_450_inst_table(grammar: &Value, filename: &str) {
-    let root = grammar.as_object().unwrap();
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
-
-    let table = gen_instruction_table(
-        root.get("instructions").unwrap(), "GLSL_STD_450_INSTRUCTION_TABLE",
-        true);
-    file.write_all(&table.into_bytes()).unwrap();
-}
-
 fn main() {
     // Path to the SPIR-V core grammar file.
     let mut path = path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
@@ -765,16 +653,16 @@ fn main() {
         header::write_spirv_header(&grammar, filename);
     }
 
-    let grammar: Value = serde_json::from_str(&contents).unwrap();
-
     {
         // Path to the generated instruction table.
         path.pop();
         path.push("grammar");
         path.push("table.rs");
         let filename = path.to_str().unwrap();
-        write_grammar_inst_table_operand_kinds(&grammar, filename);
+        table::write_grammar_inst_table_operand_kinds(&grammar, filename);
     }
+
+    let grammar: Value = serde_json::from_str(&contents).unwrap();
 
     let root = grammar.as_object().unwrap();
     let instructions = root.get("instructions").unwrap();
@@ -828,13 +716,14 @@ fn main() {
     path.pop();
     path.push("external");
     path.push("extinst.glsl.std.450.grammar.json");
+
     {
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         contents.clear();
         file.read_to_string(&mut contents).unwrap();
     }
-    let grammar: Value = serde_json::from_str(&contents).unwrap();
+    let grammar: structs::GlslGrammar = serde_json::from_str(&contents).unwrap();
 
     {
         // Path to the generated GLSLstd450 extended instruction set header.
@@ -843,6 +732,6 @@ fn main() {
         path.push("grammar");
         path.push("glsl_std_450.rs");
         let filename = path.to_str().unwrap();
-        write_glsl_std_450_inst_table(&grammar, filename);
+        table::write_glsl_std_450_inst_table(&grammar, filename);
     }
 }

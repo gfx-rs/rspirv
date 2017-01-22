@@ -69,6 +69,14 @@ pub struct Grammar {
     pub operand_kinds: Vec<OperandKind>,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct GlslGrammar {
+    pub copyright: Vec<String>,
+    pub version: u32,
+    pub revision: u32,
+    pub instructions:  Vec<Instruction>,
+}
+
 /// The struct that represents either a number or a string.
 ///
 /// It is defined as a struct instead of enum to ease usage, although
