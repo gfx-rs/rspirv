@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::fs;
-use std::io::Write;
 use structs;
 
 use utils::*;
@@ -66,14 +64,11 @@ fn gen_instruction_table(grammar: &Vec<structs::Instruction>,
             insts = elements.join("\n"))
 }
 
-/// Writes the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
-/// from walking the given SPIR-V `grammar` to the file with the given
-/// `filename`.
-pub fn write_grammar_inst_table_operand_kinds(grammar: &structs::Grammar,
-                                              filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
+/// Returns the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
+/// by walking the given SPIR-V `grammar`.
+pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar)
+                                            -> String {
+    let mut ret = String::new();
 
     { // Enum for all operand kinds.
         let elements: Vec<String> =
@@ -85,25 +80,21 @@ pub fn write_grammar_inst_table_operand_kinds(grammar: &structs::Grammar,
              #[derive(Clone, Copy, Debug, PartialEq, Eq)]\n\
              pub enum OperandKind {{\n{}\n}}\n\n",
             elements.join("\n"));
-        file.write_all(&kind_enum.into_bytes()).unwrap();
+        ret.push_str(&kind_enum);
     }
 
     { // Instruction table.
         let table = gen_instruction_table(
             &grammar.instructions, "INSTRUCTION_TABLE", false);
-        file.write_all(&table.into_bytes()).unwrap();
+        ret.push_str(&table);
     }
+
+    ret
 }
 
 /// Writes the generated instruction table for GLSLstd450 extended instruction
 /// set from `grammar` to the file with the given `filename`.
-pub fn write_glsl_std_450_inst_table(grammar: &structs::GlslGrammar,
-                                     filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
-
-    let table = gen_instruction_table(
-        &grammar.instructions, "GLSL_STD_450_INSTRUCTION_TABLE", true);
-    file.write_all(&table.into_bytes()).unwrap();
+pub fn gen_glsl_std_450_inst_table(grammar: &structs::GlslGrammar) -> String {
+    gen_instruction_table(
+        &grammar.instructions, "GLSL_STD_450_INSTRUCTION_TABLE", true)
 }

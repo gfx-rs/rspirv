@@ -25,7 +25,18 @@ mod table;
 mod utils;
 
 use std::{env, fs, path};
-use std::io::Read;
+use std::io::{Read, Write};
+use utils::write_copyright_autogen_comment;
+
+macro_rules! write {
+    ($content: expr, $path: expr) => {
+        {
+            let mut f = fs::File::create($path.to_str().unwrap()).unwrap();
+            write_copyright_autogen_comment(&mut f);
+            f.write_all(&$content.into_bytes()).unwrap();
+        }
+    }
+}
 
 fn main() {
     // Path to the SPIR-V core grammar file.
@@ -46,8 +57,8 @@ fn main() {
         path.pop();
         path.pop();
         path.push("spirv.rs");
-        let filename = path.to_str().unwrap();
-        header::write_spirv_header(&grammar, filename);
+        let c = header::gen_spirv_header(&grammar);
+        write!(c, path);
     }
 
     {
@@ -55,8 +66,8 @@ fn main() {
         path.pop();
         path.push("grammar");
         path.push("table.rs");
-        let filename = path.to_str().unwrap();
-        table::write_grammar_inst_table_operand_kinds(&grammar, filename);
+        let c = table::gen_grammar_inst_table_operand_kinds(&grammar);
+        write!(c, path);
     }
 
     {
@@ -65,16 +76,16 @@ fn main() {
         path.pop();
         path.push("mr");
         path.push("operand.rs");
-        let filename = path.to_str().unwrap();
-        memrepr::write_mr_operand_kinds(&grammar.operand_kinds, filename);
+        let c = memrepr::gen_mr_operand_kinds(&grammar.operand_kinds);
+        write!(c, path);
     }
 
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_type.rs");
-        let filename = path.to_str().unwrap();
-        memrepr::write_mr_builder_types(&grammar.instructions, filename);
+        let c = memrepr::gen_mr_builder_types(&grammar.instructions);
+        write!(c, path);
     }
 
     {
@@ -83,23 +94,23 @@ fn main() {
         path.pop();
         path.push("binary");
         path.push("error.rs");
-        let filename = path.to_str().unwrap();
-        binary::write_operand_decode_errors(&grammar.operand_kinds, filename);
+        let c = binary::gen_operand_decode_errors(&grammar.operand_kinds);
+        write!(c, path);
     }
 
     {
         // Path to the generated operand decoding methods.
         path.pop();
         path.push("decode_operand.rs");
-        let filename = path.to_str().unwrap();
-        binary::write_operand_decode_methods(&grammar.operand_kinds, filename);
+        let c = binary::gen_operand_decode_methods(&grammar.operand_kinds);
+        write!(c, path);
     }
     {
         // Path to the generated operand parsing methods.
         path.pop();
         path.push("parse_operand.rs");
-        let filename = path.to_str().unwrap();
-        binary::write_operand_parse_methods(&grammar.operand_kinds, filename);
+        let c = binary::gen_operand_parse_methods(&grammar.operand_kinds);
+        write!(c, path);
     }
 
     // For GLSLstd450 extended instruction set.
@@ -122,7 +133,7 @@ fn main() {
         path.pop();
         path.push("grammar");
         path.push("glsl_std_450.rs");
-        let filename = path.to_str().unwrap();
-        table::write_glsl_std_450_inst_table(&grammar, filename);
+        let c = table::gen_glsl_std_450_inst_table(&grammar);
+        write!(c, path);
     }
 }

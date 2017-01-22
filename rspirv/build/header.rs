@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::fs;
-use std::io::Write;
 use structs;
 
 use utils::*;
@@ -78,16 +76,15 @@ fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<String> {
     }
 }
 
-/// Writes the generated SPIR-V header to the file with the given `filename`.
-pub fn write_spirv_header(grammar: &structs::Grammar, filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
+/// Returns the generated SPIR-V header.
+pub fn gen_spirv_header(grammar: &structs::Grammar) -> String {
+    let mut ret = String::new();
 
     { // Copyright, documentation.
-        write_copyright_autogen_comment(&mut file);
-        file.write_all(b"//! The SPIR-V header.\n\n").unwrap();
-        file.write_all(b"#![allow(non_camel_case_types)]\n").unwrap();
-        file.write_all(RUSTFMT_SKIP_BANG.as_bytes()).unwrap();
-        file.write_all(b"\n\n").unwrap();
+        ret.push_str("//! The SPIR-V header.\n\n");
+        ret.push_str("#![allow(non_camel_case_types)]\n");
+        ret.push_str(RUSTFMT_SKIP_BANG);
+        ret.push_str("\n\n");
     }
     { // constants and types.
         let globals = format!("pub type Word = u32;\n\
@@ -99,15 +96,15 @@ pub fn write_spirv_header(grammar: &structs::Grammar, filename: &str) {
                               grammar.major_version,
                               grammar.minor_version,
                               grammar.revision);
-        file.write_all(&globals.into_bytes()).unwrap();
+        ret.push_str(&globals);
     }
     { // Operand kinds.
         for kind in &grammar.operand_kinds {
             let operand_kind = gen_operand_kind(kind);
             if operand_kind.is_some() {
                 let kind = operand_kind.unwrap();
-                file.write_all(&kind.into_bytes()).unwrap();
-                file.write_all(b"\n").unwrap();
+                ret.push_str(&kind);
+                ret.push('\n');
             }
         }
     }
@@ -123,6 +120,8 @@ pub fn write_spirv_header(grammar: &structs::Grammar, filename: &str) {
                                   link = get_spec_link("instructions"),
                                   attribute = VAULE_ENUM_ATTRIBUTE,
                                   opcodes = opcodes.join("\n"));
-        file.write_all(&opcode_enum.into_bytes()).unwrap();
+        ret.push_str(&opcode_enum);
     }
+
+    ret
 }

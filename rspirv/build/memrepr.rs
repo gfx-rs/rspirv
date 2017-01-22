@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::fs;
-use std::io::Write;
 use structs;
 
 use utils::*;
@@ -30,18 +28,14 @@ fn get_enum_underlying_type(kind: &str) -> String {
     }
 }
 
-/// Writes the generated mr::Operand and its fmt::Display implementation from
-/// walking the given SPIR-V operand kinds `grammar` to the file with the
-/// given `filename`.
-pub fn write_mr_operand_kinds(grammar: &Vec<structs::OperandKind>,
-                              filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
+/// Returns the generated mr::Operand and its fmt::Display implementation by
+/// walking the given SPIR-V operand kinds `grammar`.
+pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
+    let mut ret = String::new();
 
     { // Attributes, uses.
-        file.write_all(RUSTFMT_SKIP_BANG.as_bytes()).unwrap();
-        file.write_all(b"\n\nuse spirv;\nuse std::fmt;\n\n").unwrap();
+        ret.push_str(RUSTFMT_SKIP_BANG);
+        ret.push_str("\n\nuse spirv;\nuse std::fmt;\n\n");
     }
 
     let kinds: Vec<&str> = grammar.iter().map(|element| {
@@ -95,7 +89,7 @@ pub fn write_mr_operand_kinds(grammar: &Vec<structs::OperandKind>,
              id_kinds=id_kinds.join("\n"),
              num_kinds=num_kinds.join("\n"),
              str_kinds=str_kinds.join("\n"));
-        file.write_all(&kind_enum.into_bytes()).unwrap();
+        ret.push_str(&kind_enum);
     }
 
     { // impl fmt::Display for mr::Operand.
@@ -115,18 +109,15 @@ pub fn write_mr_operand_kinds(grammar: &Vec<structs::OperandKind>,
              {s:8}match *self {{\n{cases}\n{s:8}}}\n{s:4}}}\n}}\n",
              s="",
              cases=cases.join("\n"));
-        file.write_all(&impl_code.into_bytes()).unwrap();
+        ret.push_str(&impl_code);
     }
+
+    ret
 }
 
-/// Writes the generated build methods for SPIR-V types from walking the given
-/// SPIR-V instructions `grammar` to the file with the given `filename`.
-pub fn write_mr_builder_types(grammar: &Vec<structs::Instruction>,
-                              filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
-
+/// Returns the generated build methods for SPIR-V types by walking the given
+/// SPIR-V instructions `grammar`.
+pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.iter().filter(|inst| {
         inst.opname.starts_with("OpType")
@@ -203,7 +194,5 @@ pub fn write_mr_builder_types(grammar: &Vec<structs::Instruction>,
                 extras=extras,
                 x=if extras.len() != 0 { ";\n" } else { "" })
     }).collect();
-    let impl_code = format!("impl Builder {{\n{}\n}}", elements.join("\n\n"));
-    file.write_all(&impl_code.into_bytes()).unwrap();
+    format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
-

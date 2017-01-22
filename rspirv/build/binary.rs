@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::fs;
-use std::io::Write;
 use structs;
 
 use utils::*;
@@ -35,17 +33,15 @@ fn get_decode_method(kind: &str) -> String {
     snake_casify(kind)
 }
 
-/// Writes the generated operand decoding errors for binary::Decoder by
-/// walking the given SPIR-V operand kinds `grammar` to the file with
-/// the given `filename`.
-pub fn write_operand_decode_errors(grammar: &Vec<structs::OperandKind>,
-                                   filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
+/// Returns the generated operand decoding errors for binary::Decoder by
+/// walking the given SPIR-V operand kinds `grammar`.
+pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>)
+                                 -> String {
+    let mut ret = String::new();
 
     { // Comments, attributes, uses.
-        write_copyright_autogen_comment(&mut file);
-        file.write_all(RUSTFMT_SKIP_BANG.as_bytes()).unwrap();
-        file.write_all(b"\n\nuse spirv;\nuse std::{error, fmt};\n\n").unwrap();
+        ret.push_str(RUSTFMT_SKIP_BANG);
+        ret.push_str("\n\nuse spirv;\nuse std::{error, fmt};\n\n");
     }
 
     let kinds: Vec<&str> = grammar.iter().filter(|element| {
@@ -75,7 +71,7 @@ pub fn write_operand_decode_errors(grammar: &Vec<structs::OperandKind>,
          {s:4}DecodeStringFailed(usize, String),\n\
          }}\n\n",
         s="", errors=errors.join("\n"));
-    file.write_all(&error_enum.into_bytes()).unwrap();
+    ret.push_str(&error_enum);
 
     // impl fmt::Display for the Error enum.
     let errors: Vec<String> = kinds.iter().map(|element| {
@@ -98,7 +94,7 @@ pub fn write_operand_decode_errors(grammar: &Vec<structs::OperandKind>,
              \"cannot decode string at index {{}}: {{}}\", index, e),\n\
          {s:8}}}\n{s:4}}}\n}}\n\n",
         s="", errors=errors.join("\n"));
-    file.write_all(&display_impl.into_bytes()).unwrap();
+    ret.push_str(&display_impl);
 
     // impl error::Error for the Error enum.
     let error_impl = format!(
@@ -110,19 +106,18 @@ pub fn write_operand_decode_errors(grammar: &Vec<structs::OperandKind>,
          {s:12}_ => \"unknown operand value for the given kind\",\n\
          {s:8}}}\n{s:4}}}\n}}\n",
         s="");
-    file.write_all(&error_impl.into_bytes()).unwrap();
+    ret.push_str(&error_impl);
+
+    ret
 }
 
-/// Writes the generated operand decoding methods for binary::Decoder by
-/// walking the given SPIR-V operand kinds `grammar to the file with
-/// the given `filename`.
-pub fn write_operand_decode_methods(grammar: &Vec<structs::OperandKind>,
-                                    filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
+/// Returns the generated operand decoding methods for binary::Decoder by
+/// walking the given SPIR-V operand kinds `grammar.
+pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>)
+                                  -> String {
+    let mut ret = String::new();
 
-    write_copyright_autogen_comment(&mut file);
-
-    file.write_all(b"use num::FromPrimitive;\n\n").unwrap();
+    ret.push_str("use num::FromPrimitive;\n\n");
 
     let methods: Vec<String> = grammar.iter().filter(|element| {
         // For kinds whose values may occupy more than one word, we need to
@@ -149,9 +144,9 @@ pub fn write_operand_decode_methods(grammar: &Vec<structs::OperandKind>,
              kind=element.kind,
              ty=if element.category == "BitEnum" { "bits" } else { "u32" })
     }).collect();
+    ret.push_str(&format!("impl Decoder {{\n{}}}\n", methods.join("\n")));
 
-    let impl_code = format!("impl Decoder {{\n{}}}\n", methods.join("\n"));
-    file.write_all(&impl_code.into_bytes()).unwrap();
+    ret
 }
 
 /// Generates the methods for parsing parameters of operand kind enumerants.
@@ -250,15 +245,10 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
     }).collect()
 }
 
-/// Writes the generated operand parsing methods for binary::Parser by
-/// walking the given SPIR-V operand kinds `grammar` to the file with
-/// the given `filename`.
-pub fn write_operand_parse_methods(grammar: &Vec<structs::OperandKind>,
-                                   filename: &str) {
-    let mut file = fs::File::create(filename).unwrap();
-
-    write_copyright_autogen_comment(&mut file);
-
+/// Returns the generated operand parsing methods for binary::Parser by
+/// walking the given SPIR-V operand kinds `grammar`.
+pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>)
+                                 -> String {
     // Operand kinds whose enumerants have parameters. For these kinds, we need
     // to decode more than just the enumerants themselves.
     let (further_parse_kinds, further_parse_methods): (Vec<_>, Vec<_>) =
@@ -329,7 +319,7 @@ pub fn write_operand_parse_methods(grammar: &Vec<structs::OperandKind>,
                     s="", k=element)
         }).collect();
 
-    let impl_code = format!(
+    format!(
         "impl<'a> Parser<'a> {{\n\
          {s:4}fn parse_operand(&mut self, kind: GOpKind) \
              -> Result<Vec<mr::Operand>> {{\n\
@@ -347,7 +337,5 @@ pub fn write_operand_parse_methods(grammar: &Vec<structs::OperandKind>,
         pair_cases=pair_cases.join("\n"),
         further_parse_cases=further_parse_cases.join("\n"),
         unused_cases=unused_cases.join("\n"),
-        functions=further_parse_methods.join("\n\n"));
-
-    file.write_all(&impl_code.into_bytes()).unwrap();
+        functions=further_parse_methods.join("\n\n"))
 }
