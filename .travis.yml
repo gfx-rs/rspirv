@@ -15,10 +15,12 @@ branches:
     - master
 
 script:
-  - cd dis/
+  - cd rspirv/
   - cargo build --verbose
-  - cd ../rspirv/
+  - cargo build --features regen
   - cargo test --verbose
+  - cd ../dis/
+  - cargo build
 
 notifications:
   email:
