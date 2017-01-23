@@ -251,9 +251,6 @@ pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>)
         let params = get_param_list(&inst.operands).join(", ");
         let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
         format!("{s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<()> {{\n\
-                   {s:8}if self.basic_block.is_none() {{\n\
-                     {s:12}return Err(Error::MismatchedTerminator);\n\
-                   {s:8}}}\n\n\
                    {s:8}let {m}inst = mr::Instruction::new(\
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                    {extras}{y}\
