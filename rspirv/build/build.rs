@@ -39,6 +39,11 @@ macro_rules! write {
 }
 
 fn main() {
+    if !cfg!(regen) {
+        println!("use existing code to compile since 'regen' not specified");
+        return
+    }
+
     // Path to the SPIR-V core grammar file.
     let mut path = path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     path.push("external");
