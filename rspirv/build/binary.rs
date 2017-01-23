@@ -20,14 +20,14 @@ use utils::*;
 /// in grammar.
 fn get_decode_method(kind: &str) -> String {
     if kind.starts_with("Id") {
-        return "id".to_string()
+        return "id".to_string();
     }
 
     let mut kind = kind;
     if kind.starts_with("Literal") {
         kind = &kind["Literal".len()..];
         if kind == "Integer" {
-            return "int32".to_string()
+            return "int32".to_string();
         }
     }
     snake_casify(kind)
@@ -247,8 +247,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
 
 /// Returns the generated operand parsing methods for binary::Parser by
 /// walking the given SPIR-V operand kinds `grammar`.
-pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>)
-                                 -> String {
+pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String {
     // Operand kinds whose enumerants have parameters. For these kinds, we need
     // to decode more than just the enumerants themselves.
     let (further_parse_kinds, further_parse_methods): (Vec<_>, Vec<_>) =

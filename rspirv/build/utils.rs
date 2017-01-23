@@ -39,11 +39,6 @@ static AUTOGEN_COMMENT : &'static str = "\
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!";
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
-pub static VAULE_ENUM_ATTRIBUTE: &'static str = "\
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, FromPrimitive)]";
-
 pub static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
 pub static RUSTFMT_SKIP_BANG: &'static str = "#![cfg_attr(rustfmt, rustfmt_skip)]";
 

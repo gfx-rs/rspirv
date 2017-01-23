@@ -67,7 +67,7 @@ pub struct Grammar {
     pub major_version: u32,
     pub minor_version: u32,
     pub revision: u32,
-    pub instructions:  Vec<Instruction>,
+    pub instructions: Vec<Instruction>,
     pub operand_kinds: Vec<OperandKind>,
 }
 
@@ -76,7 +76,7 @@ pub struct GlslGrammar {
     pub copyright: Vec<String>,
     pub version: u32,
     pub revision: u32,
-    pub instructions:  Vec<Instruction>,
+    pub instructions: Vec<Instruction>,
 }
 
 /// The struct that represents either a number or a string.

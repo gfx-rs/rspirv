@@ -16,6 +16,9 @@ use structs;
 
 use utils::*;
 
+static VAULE_ENUM_ATTRIBUTE: &'static str = "\
+#[repr(u32)]\n#[derive(Clone, Copy, Debug, PartialEq, Eq, FromPrimitive)]";
+
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
@@ -114,13 +117,12 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> String {
             // Omit the "Op" prefix.
             format!("    {} = {},", &inst.opname[2..], inst.opcode)
         }).collect();
-        let opcode_enum = format!("/// SPIR-V {link} opcodes\n\
-                                   {attribute}\npub enum Op \
-                                   {{\n{opcodes}\n}}\n",
-                                  link = get_spec_link("instructions"),
-                                  attribute = VAULE_ENUM_ATTRIBUTE,
-                                  opcodes = opcodes.join("\n"));
-        ret.push_str(&opcode_enum);
+        ret.push_str(&format!("/// SPIR-V {link} opcodes\n\
+                               {attribute}\n\
+                               pub enum Op {{\n{opcodes}\n}}\n",
+                              link = get_spec_link("instructions"),
+                              attribute = VAULE_ENUM_ATTRIBUTE,
+                              opcodes = opcodes.join("\n")));
     }
 
     ret
