@@ -70,7 +70,8 @@ pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>)
          {s:4}/// from generating `PartialEq` for this enum.\n\
          {s:4}DecodeStringFailed(usize, String),\n\
          }}\n\n",
-        s="", errors=errors.join("\n"));
+        s = "",
+        errors = errors.join("\n"));
     ret.push_str(&error_enum);
 
     // impl fmt::Display for the Error enum.
@@ -78,8 +79,8 @@ pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>)
         format!("{s:12}Error::{kind}Unknown(index, word) => write!(\
                  f, \"unknown value {{}} for operand kind {kind} \
                  at index {{}}\", word, index),",
-                s="",
-                kind=element)
+                s = "",
+                kind = element)
     }).collect();
     let display_impl = format!(
         "impl fmt::Display for Error {{\n\
@@ -93,7 +94,8 @@ pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>)
          {s:12}Error::DecodeStringFailed(index, ref e) => write!(f, \
              \"cannot decode string at index {{}}: {{}}\", index, e),\n\
          {s:8}}}\n{s:4}}}\n}}\n\n",
-        s="", errors=errors.join("\n"));
+        s = "",
+        errors = errors.join("\n"));
     ret.push_str(&display_impl);
 
     // impl error::Error for the Error enum.
@@ -105,7 +107,7 @@ pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>)
              in the stream\",\n\
          {s:12}_ => \"unknown operand value for the given kind\",\n\
          {s:8}}}\n{s:4}}}\n}}\n",
-        s="");
+        s = "");
     ret.push_str(&error_impl);
 
     ret
@@ -139,10 +141,10 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>)
              {s:8}}} else {{\n\
                  {s:12}Err(Error::StreamExpected(self.offset))\n\
              {s:8}}}\n{s:4}}}\n",
-             s="",
-             fname=snake_casify(&element.kind),
-             kind=element.kind,
-             ty=if element.category == "BitEnum" { "bits" } else { "u32" })
+             s = "",
+             fname = snake_casify(&element.kind),
+             kind = element.kind,
+             ty = if element.category == "BitEnum" { "bits" } else { "u32" })
     }).collect();
     ret.push_str(&format!("impl Decoder {{\n{}}}\n", methods.join("\n")));
 
@@ -154,7 +156,7 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>)
 /// symbol, and the second element being a list of parameter kinds to that
 /// enumerant.
 fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
-                                   -> Vec<(String, String)> {
+                                   -> Vec<(&str, String)> {
     grammar.iter().filter(|element| {
         // Filter out all the operand kinds without any enumerants.
         element.enumerants.len() != 0
@@ -197,16 +199,18 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
                 let params: Vec<String> = params.iter().map(|element| {
                     format!("mr::Operand::{kind}(\
                              try_decode!(self.decoder.{decode}()))",
-                            kind=get_mr_operand_kind(element),
-                            decode=get_decode_method(element))
+                            kind = get_mr_operand_kind(element),
+                            decode = get_decode_method(element))
                 }).collect();
                 format!(
                     "{s:8}if {arg}.contains(spirv::{k}_{bit}) {{\n\
                          {s:12}params.append(&mut vec![{params}]);\n\
                      {s:8}}}",
-                    s="", arg=lo_kind, k=up_kind,
-                    bit=snake_casify(&symbol).to_uppercase(),
-                    params=params.join(", "))
+                    s = "",
+                    arg = lo_kind,
+                    k = up_kind,
+                    bit = snake_casify(&symbol).to_uppercase(),
+                    params = params.join(", "))
             }).collect();
             format!(
                 "{s:4}fn parse_{k}_arguments(&mut self, {k}: \
@@ -215,19 +219,24 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
                      {cases}\n\
                      {s:8}Ok(params)\n\
                  {s:4}}}",
-                s="", cases=cases.join("\n"), k=lo_kind, kind=kind)
+                s = "",
+                cases = cases.join("\n"),
+                k = lo_kind,
+                kind = kind)
         } else {  // ValueEnum
             let cases: Vec<String> = pairs.into_iter().map(|(symbol, params)| {
                 let params: Vec<String> = params.iter().map(|element| {
                     format!("mr::Operand::{kind}(\
                              try_decode!(self.decoder.{decode}()))",
-                            kind=get_mr_operand_kind(element),
-                            decode=get_decode_method(element))
+                            kind = get_mr_operand_kind(element),
+                            decode = get_decode_method(element))
                 }).collect();
                 format!(
                     "{s:12}spirv::{kind}::{symbol} => vec![{params}],",
-                    s="", kind=kind, symbol=symbol,
-                    params=params.join(", "))
+                    s = "",
+                    kind = kind,
+                    symbol = symbol,
+                    params = params.join(", "))
             }).collect();
             format!(
                 "{s:4}fn parse_{k}_arguments(&mut self, {k}: spirv::{kind})\
@@ -237,11 +246,12 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
                         {s:12}_ => vec![]\n\
                      {s:8}}})\n\
                  {s:4}}}",
-                s="", kind=kind,
-                k=snake_casify(kind),
-                cases=cases.join("\n"))
+                s = "",
+                kind = kind,
+                k = snake_casify(kind),
+                cases = cases.join("\n"))
         };
-        Some((kind.to_string(), method))
+        Some((kind, method))
     }).collect()
 }
 
@@ -261,10 +271,10 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
                  {s:16}ops.append(&mut try!(self.parse_{k}_arguments(val)));\n\
                  {s:16}ops\n\
                  {s:12}}}",
-                s="",
-                kind=kind,
-                k=snake_casify(kind),
-                decode=get_decode_method(kind))
+                s = "",
+                kind = kind,
+                k = snake_casify(kind),
+                decode = get_decode_method(kind))
         }).collect();
 
     // Logic operands that expand to concrete operand pairs,
@@ -281,11 +291,11 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
                  mr::Operand::{k0}(try_decode!(self.decoder.{m0}())), \
                  mr::Operand::{k1}(try_decode!(self.decoder.{m1}()))\
                  ]\n{s:12}}}",
-                s="",
-                kind=format!("Pair{}{}", k0, k1),
-                k0=get_mr_operand_kind(k0),
-                k1=get_mr_operand_kind(k1),
-                m0=get_decode_method(k0), m1=get_decode_method(k1))
+                s = "",
+                kind = format!("Pair{}{}", k0, k1),
+                k0 = get_mr_operand_kind(k0),
+                k1 = get_mr_operand_kind(k1),
+                m0 = get_decode_method(k0), m1=get_decode_method(k1))
     }).collect();
 
     // These kinds are manually handled.
@@ -306,16 +316,17 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
         format!(
             "{s:12}GOpKind::{gkind} => vec![mr::Operand::{mkind}\
              (try_decode!(self.decoder.{decode}()))],",
-             s="",
-             gkind=kind,
-             mkind=get_mr_operand_kind(kind),
-             decode=get_decode_method(kind))
+             s = "",
+             gkind = kind,
+             mkind = get_mr_operand_kind(kind),
+             decode = get_decode_method(kind))
     }).collect();
 
-    let unused_cases: Vec<String> =
+    let manual_cases: Vec<String> =
         manual_kinds.iter().map(|element| {
             format!("{s:12}GOpKind::{k} => panic!(),  // not handled here",
-                    s="", k=element)
+                    s = "",
+                    k = element)
         }).collect();
 
     format!(
@@ -326,15 +337,15 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
                  {normal_cases}\n\
                  {pair_cases}\n\
                  {further_parse_cases}\n\
-                 {unused_cases}\n\
+                 {manual_cases}\n\
              {s:8}}})\n\
          {s:4}}}\n\n\
          {functions}\n\
          }}",
-        s="",
-        normal_cases=normal_cases.join("\n"),
-        pair_cases=pair_cases.join("\n"),
-        further_parse_cases=further_parse_cases.join("\n"),
-        unused_cases=unused_cases.join("\n"),
-        functions=further_parse_methods.join("\n\n"))
+        s = "",
+        normal_cases = normal_cases.join("\n"),
+        pair_cases = pair_cases.join("\n"),
+        further_parse_cases = further_parse_cases.join("\n"),
+        manual_cases = manual_cases.join("\n"),
+        functions = further_parse_methods.join("\n\n"))
 }

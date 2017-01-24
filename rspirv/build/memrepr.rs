@@ -76,10 +76,12 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
             let kind = get_mr_operand_kind(&param.kind);
             Some(format!(
                     "{s:8}if {name}.is_some() {{\n\
-                       {s:12}{container}\
-                         .push(mr::Operand::{kind}({name}.unwrap()))\n\
+                     {s:12}{container}.push(mr::Operand::{kind}({name}.unwrap()))\n\
                      {s:8}}}",
-                    s="", kind=kind, name=name, container=container))
+                    s = "",
+                    kind = kind,
+                    name = name,
+                    container = container))
         } else {
             // TODO: Ouch! Bad smell. This has special case treatment yet
             // still doesn't solve 64-bit selectors in OpSwitch.
@@ -89,15 +91,19 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
                          {s:12}{container}.push(mr::Operand::LiteralInt32(v.0));\n\
                          {s:12}{container}.push(mr::Operand::IdRef(v.1));\n\
                          {s:8}}}",
-                        s="", name=name, container=container))
+                        s = "",
+                        name = name,
+                        container = container))
             } else {
                 let kind = get_mr_operand_kind(&param.kind);
                 Some(format!(
                         "{s:8}for v in {name} {{\n\
-                         {s:12}{container}\
-                           .push(mr::Operand::{kind}(v))\n\
+                         {s:12}{container}.push(mr::Operand::{kind}(v))\n\
                          {s:8}}}",
-                        s="", kind=kind, name=name, container=container))
+                        s = "",
+                        kind = kind,
+                        name = name,
+                        container = container))
             }
         }
     }).collect()
@@ -174,10 +180,10 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
              pub enum Operand {{\n\
              {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\
              }}\n\n",
-             enum_kinds=enum_kinds.join("\n"),
-             id_kinds=id_kinds.join("\n"),
-             num_kinds=num_kinds.join("\n"),
-             str_kinds=str_kinds.join("\n"));
+             enum_kinds = enum_kinds.join("\n"),
+             id_kinds = id_kinds.join("\n"),
+             num_kinds = num_kinds.join("\n"),
+             str_kinds = str_kinds.join("\n"));
         ret.push_str(&kind_enum);
     }
 
@@ -187,17 +193,17 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
                                "LiteralFloat32", "LiteralFloat64"]);
         let cases: Vec<String> =
             kinds.iter().map(|element| {
-                format!("{space:12}Operand::{kind}(ref v) => \
+                format!("{s:12}Operand::{kind}(ref v) => \
                          write!(f, \"{{:?}}\", v),",
-                        space="",
-                        kind=element)
+                        s = "",
+                        kind = element)
             }).collect();
         let impl_code = format!(
             "impl fmt::Display for Operand {{\n\
              {s:4}fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n\
              {s:8}match *self {{\n{cases}\n{s:8}}}\n{s:4}}}\n}}\n",
-             s="",
-             cases=cases.join("\n"));
+             s = "",
+             cases = cases.join("\n"));
         ret.push_str(&impl_code);
     }
 
@@ -222,22 +228,22 @@ pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
                                      .expect(\"interal error\").operands").join(";\n");
         format!("{s:4}/// Creates {opcode} and returns the result id.\n\
                  {s:4}pub fn {name}(&mut self{sep}{param}) -> spirv::Word {{\n\
-                   {s:8}let id = self.next_id;\n\
-                   {s:8}self.next_id += 1;\n\
-                   {s:8}self.module.types_global_values.push(\
-                      mr::Instruction::new(spirv::Op::{opcode}, \
-                      None, Some(id), vec![{init}]));\n\
-                   {extras}{x}\
-                   {s:8}id\n\
+                 {s:8}let id = self.next_id;\n\
+                 {s:8}self.next_id += 1;\n\
+                 {s:8}self.module.types_global_values.push(\
+                     mr::Instruction::new(spirv::Op::{opcode}, \
+                     None, Some(id), vec![{init}]));\n\
+                 {extras}{x}\
+                 {s:8}id\n\
                  {s:4}}}",
-                s="",
-                sep=if param_list.len() != 0 { ", " } else { "" },
-                opcode=&inst.opname[2..],
-                name=snake_casify(&inst.opname[2..]),
-                param=param_list,
-                init=init_list,
-                extras=extras,
-                x=if extras.len() != 0 { ";\n" } else { "" })
+                s = "",
+                sep = if param_list.len() != 0 { ", " } else { "" },
+                opcode = &inst.opname[2..],
+                name = snake_casify(&inst.opname[2..]),
+                param = param_list,
+                init = init_list,
+                extras = extras,
+                x = if extras.len() != 0 { ";\n" } else { "" })
     }).collect();
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
@@ -251,20 +257,20 @@ pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>)
         let params = get_param_list(&inst.operands).join(", ");
         let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
         format!("{s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<()> {{\n\
-                   {s:8}let {m}inst = mr::Instruction::new(\
+                 {s:8}let {m}inst = mr::Instruction::new(\
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
-                   {extras}{y}\
-                   {s:8}self.end_basic_block(inst)\n\
+                 {extras}{y}\
+                 {s:8}self.end_basic_block(inst)\n\
                  {s:4}}}",
-                s="",
-                name=get_function_name(&inst.opname),
-                params=params,
-                extras=extras,
-                m=if extras.len() == 0 { "" } else { "mut " },
-                x=if params.len() == 0 { "" } else { ", " },
-                y=if extras.len() != 0 { ";\n" } else { "" },
-                init=get_init_list(&inst.operands).join(", "),
-                opcode=(&inst.opname[2..]))
+                s = "",
+                name = get_function_name(&inst.opname),
+                params = params,
+                extras = extras,
+                m = if extras.len() == 0 { "" } else { "mut " },
+                x = if params.len() == 0 { "" } else { ", " },
+                y = if extras.len() != 0 { ";\n" } else { "" },
+                init = get_init_list(&inst.operands).join(", "),
+                opcode = &inst.opname[2..])
     }).collect();
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
