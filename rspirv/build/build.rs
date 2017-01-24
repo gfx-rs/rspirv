@@ -39,7 +39,7 @@ macro_rules! write {
 }
 
 fn main() {
-    if !cfg!(regen) {
+    if env::var("CARGO_FEATURE_REGEN").is_err() {
         println!("use existing code to compile since 'regen' not specified");
         return
     }
