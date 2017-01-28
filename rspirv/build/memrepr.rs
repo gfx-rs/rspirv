@@ -37,7 +37,7 @@ fn get_param_list(params: &[structs::Operand]) -> Vec<String> {
         } else if param.quantifier == "?" {
             format!("{}: Option<{}>", name, kind)
         } else {
-            format!("{}: Vec<{}>", name, kind)
+            format!("{}: &[{}]", name, kind)
         }
     }).collect()
 }
@@ -98,7 +98,7 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
                 let kind = get_mr_operand_kind(&param.kind);
                 Some(format!(
                         "{s:8}for v in {name} {{\n\
-                         {s:12}{container}.push(mr::Operand::{kind}(v))\n\
+                         {s:12}{container}.push(mr::Operand::{kind}(*v))\n\
                          {s:8}}}",
                         s = "",
                         kind = kind,

@@ -158,12 +158,12 @@ impl Builder {
                        execution_model: spirv::ExecutionModel,
                        entry_point: spirv::Word,
                        name: String,
-                       interface: &Vec<spirv::Word>) {
+                       interface: &[spirv::Word]) {
         let mut operands = vec![mr::Operand::ExecutionModel(execution_model),
                                 mr::Operand::IdRef(entry_point),
                                 mr::Operand::LiteralString(name)];
-        for &v in interface {
-            operands.push(mr::Operand::IdRef(v));
+        for v in interface {
+            operands.push(mr::Operand::IdRef(*v));
         }
 
         let inst = mr::Instruction::new(spirv::Op::EntryPoint, None, None, operands);
@@ -173,11 +173,11 @@ impl Builder {
     pub fn execution_mode(&mut self,
                           entry_point: spirv::Word,
                           execution_mode: spirv::ExecutionMode,
-                          params: &Vec<u32>) {
+                          params: &[u32]) {
         let mut operands = vec![mr::Operand::IdRef(entry_point),
                                 mr::Operand::ExecutionMode(execution_mode)];
-        for &v in params {
-            operands.push(mr::Operand::LiteralInt32(v));
+        for v in params {
+            operands.push(mr::Operand::LiteralInt32(*v));
         }
 
         let inst = mr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);

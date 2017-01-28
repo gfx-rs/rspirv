@@ -98,11 +98,11 @@ impl Builder {
     }
 
     /// Creates TypeStruct and returns the result id.
-    pub fn type_struct(&mut self, field_types: Vec<spirv::Word>) -> spirv::Word {
+    pub fn type_struct(&mut self, field_types: &[spirv::Word]) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeStruct, None, Some(id), vec![]));
         for v in field_types {
-            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::IdRef(v))
+            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::IdRef(*v))
         };
         id
     }
@@ -122,11 +122,11 @@ impl Builder {
     }
 
     /// Creates TypeFunction and returns the result id.
-    pub fn type_function(&mut self, return_type: spirv::Word, parameter_types: Vec<spirv::Word>) -> spirv::Word {
+    pub fn type_function(&mut self, return_type: spirv::Word, parameter_types: &[spirv::Word]) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeFunction, None, Some(id), vec![mr::Operand::IdRef(return_type)]));
         for v in parameter_types {
-            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::IdRef(v))
+            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::IdRef(*v))
         };
         id
     }
