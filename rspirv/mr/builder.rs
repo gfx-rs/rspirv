@@ -50,6 +50,13 @@ impl Builder {
         self.module
     }
 
+    #[inline(always)]
+    fn id(&mut self) -> spirv::Word {
+        let id = self.next_id;
+        self.next_id += 1;
+        id
+    }
+
     /// Begins building of a new function.
     pub fn begin_function(&mut self,
                           return_type: spirv::Word,
@@ -60,8 +67,7 @@ impl Builder {
             return Err(Error::NestedFunction);
         }
 
-        let id = self.next_id;
-        self.next_id += 1;
+        let id = self.id();
 
         let mut f = mr::Function::new();
         f.def = Some(mr::Instruction::new(spirv::Op::Function,
@@ -93,8 +99,7 @@ impl Builder {
             return Err(Error::NestedBasicBlock);
         }
 
-        let id = self.next_id;
-        self.next_id += 1;
+        let id = self.id();
 
         let mut bb = mr::BasicBlock::new();
         bb.label = Some(mr::Instruction::new(spirv::Op::Label, None, None, vec![]));
@@ -110,6 +115,73 @@ impl Builder {
 
         self.basic_block.as_mut().unwrap().instructions.push(inst);
         Ok(self.function.as_mut().unwrap().basic_blocks.push(self.basic_block.take().unwrap()))
+    }
+
+    pub fn capability(&mut self, capability: spirv::Capability) {
+        let inst = mr::Instruction::new(spirv::Op::Capability,
+                                        None,
+                                        None,
+                                        vec![mr::Operand::Capability(capability)]);
+        self.module.capabilities.push(inst);
+    }
+
+    pub fn extension(&mut self, extension: String) {
+        let inst = mr::Instruction::new(spirv::Op::Extension,
+                                        None,
+                                        None,
+                                        vec![mr::Operand::LiteralString(extension)]);
+        self.module.extensions.push(inst);
+    }
+
+    pub fn ext_inst_import(&mut self, extended_inst_set: String) -> spirv::Word {
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::ExtInstImport,
+                                        None,
+                                        Some(id),
+                                        vec![mr::Operand::LiteralString(extended_inst_set)]);
+        self.module.ext_inst_imports.push(inst);
+        id
+    }
+
+    pub fn memory_model(&mut self,
+                        addressing_model: spirv::AddressingModel,
+                        memory_model: spirv::MemoryModel) {
+        let inst = mr::Instruction::new(spirv::Op::MemoryModel,
+                                        None,
+                                        None,
+                                        vec![mr::Operand::AddressingModel(addressing_model),
+                                             mr::Operand::MemoryModel(memory_model)]);
+        self.module.memory_model = Some(inst);
+    }
+
+    pub fn entry_point(&mut self,
+                       execution_model: spirv::ExecutionModel,
+                       entry_point: spirv::Word,
+                       name: String,
+                       interface: &Vec<spirv::Word>) {
+        let mut operands = vec![mr::Operand::ExecutionModel(execution_model),
+                                mr::Operand::IdRef(entry_point),
+                                mr::Operand::LiteralString(name)];
+        for &v in interface {
+            operands.push(mr::Operand::IdRef(v));
+        }
+
+        let inst = mr::Instruction::new(spirv::Op::EntryPoint, None, None, operands);
+        self.module.entry_points.push(inst);
+    }
+
+    pub fn execution_mode(&mut self,
+                          entry_point: spirv::Word,
+                          execution_mode: spirv::ExecutionMode,
+                          params: &Vec<u32>) {
+        let mut operands = vec![mr::Operand::IdRef(entry_point),
+                                mr::Operand::ExecutionMode(execution_mode)];
+        for &v in params {
+            operands.push(mr::Operand::LiteralInt32(v));
+        }
+
+        let inst = mr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);
+        self.module.execution_modes.push(inst);
     }
 }
 

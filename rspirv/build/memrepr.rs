@@ -48,7 +48,7 @@ fn get_function_name(opname: &str) -> String {
     } else if opname == "OpReturnValue" {
         "ret_value".to_string()
     } else {
-        snake_casify(&opname[2..]).to_string()
+        snake_casify(&opname[2..])
     }
 }
 
@@ -228,8 +228,7 @@ pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
                                      .expect(\"interal error\").operands").join(";\n");
         format!("{s:4}/// Creates {opcode} and returns the result id.\n\
                  {s:4}pub fn {name}(&mut self{sep}{param}) -> spirv::Word {{\n\
-                 {s:8}let id = self.next_id;\n\
-                 {s:8}self.next_id += 1;\n\
+                 {s:8}let id = self.id();\n\
                  {s:8}self.module.types_global_values.push(\
                      mr::Instruction::new(spirv::Op::{opcode}, \
                      None, Some(id), vec![{init}]));\n\
