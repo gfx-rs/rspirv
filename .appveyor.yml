@@ -4,6 +4,8 @@ version: "{build}"
 
 environment:
   matrix:
+    - channel: stable
+      target: x86_64-pc-windows-msvc
     - channel: nightly
       target: x86_64-pc-windows-msvc
 

@@ -71,8 +71,9 @@ The SPIR-V binary module parser is almost feature complete; the only feature
 Usage
 -----
 
-This project uses features only enabled in nightly versions of the Rust
-compiler; so to build it, a nightly version of the compiler is required.
+This project uses custom derive, which became available in the stable channel
+since [1.15][rust-1.15]. So to compile with a compiler from the stable channel,
+please make sure that the version is >= 1.15.
 
 First add to your `Cargo.toml`:
 
@@ -179,3 +180,4 @@ This project is initialized and mainly developed by Lei Zhang
 [doc-grammar]: https://docs.rs/rspirv/0.2.0/rspirv/grammar/index.html
 [doc-binary]: https://docs.rs/rspirv/0.2.0/rspirv/binary/index.html
 [doc-consumer]: https://docs.rs/rspirv/0.2.0/rspirv/binary/trait.Consumer.html
+[rust-1.15]: https://blog.rust-lang.org/2017/02/02/Rust-1.15.html
