@@ -18,7 +18,7 @@
 
 use num::FromPrimitive;
 
-impl Decoder {
+impl<'a> Decoder<'a> {
     /// Decodes and returns the next SPIR-V word as
     /// a SPIR-V ImageOperands value.
     pub fn image_operands(&mut self) -> Result<spirv::ImageOperands> {

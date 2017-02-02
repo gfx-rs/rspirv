@@ -61,9 +61,10 @@ const WORD_NUM_BYTES: usize = 4;
 /// use rspirv::binary::{Decoder, DecodeError};
 /// use rspirv::spirv::SourceLanguage;
 ///
-/// let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
-///                               0x90, 0xab, 0xcd, 0xef,
-///                               0x02, 0x00, 0x00, 0x00]);
+/// let v = vec![0x12, 0x34, 0x56, 0x78,
+///              0x90, 0xab, 0xcd, 0xef,
+///              0x02, 0x00, 0x00, 0x00];
+/// let mut d = Decoder::new(&v);
 ///
 /// assert_eq!(Ok(0x78563412), d.word());
 /// assert_eq!(Ok(0xefcdab90), d.word());
@@ -71,18 +72,18 @@ const WORD_NUM_BYTES: usize = 4;
 ///
 /// assert_eq!(Err(DecodeError::StreamExpected(12)), d.word());
 /// ```
-pub struct Decoder {
+pub struct Decoder<'a> {
     /// Raw bytes to decode
-    bytes: Vec<u8>,
+    bytes: &'a [u8],
     /// Offset for next byte to decode
     offset: usize,
     /// Remaining limit of number of words before error
     limit: Option<usize>,
 }
 
-impl Decoder {
+impl<'a> Decoder<'a> {
     /// Creates a new `Decoder` instance.
-    pub fn new(bytes: Vec<u8>) -> Decoder {
+    pub fn new(bytes: &'a [u8]) -> Decoder<'a> {
         Decoder {
             bytes: bytes,
             offset: 0,
@@ -127,7 +128,7 @@ impl Decoder {
     }
 }
 
-impl Decoder {
+impl<'a> Decoder<'a> {
     /// Sets the limit to `num_words` words.
     ///
     /// The decoder will return [`State::LimitReached`](enum.ParseState.html)
@@ -159,7 +160,7 @@ impl Decoder {
     }
 }
 
-impl Decoder {
+impl<'a> Decoder<'a> {
     /// Decodes and returns the next SPIR-V word as an id.
     pub fn id(&mut self) -> Result<spirv::Word> {
         self.word()
@@ -238,35 +239,40 @@ mod tests {
 
     #[test]
     fn test_decoding_word_from_one_bytes() {
-        let mut d = Decoder::new(vec![1]);
+        let b = vec![1];
+        let mut d = Decoder::new(&b);
         assert_eq!(Err(Error::StreamExpected(0)), d.word());
     }
 
     #[test]
     fn test_decoding_word_from_two_bytes() {
-        let mut d = Decoder::new(vec![1, 2]);
+        let b = vec![1, 2];
+        let mut d = Decoder::new(&b);
         assert_eq!(Err(Error::StreamExpected(0)), d.word());
     }
 
     #[test]
     fn test_decoding_word_from_three_bytes() {
-        let mut d = Decoder::new(vec![1, 2, 3]);
+        let b = vec![1, 2, 3];
+        let mut d = Decoder::new(&b);
         assert_eq!(Err(Error::StreamExpected(0)), d.word());
     }
 
     #[test]
     fn test_decoding_word_from_four_bytes() {
-        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78]);
+        let b = vec![0x12, 0x34, 0x56, 0x78];
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(0x78563412), d.word());
     }
 
     #[test]
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn test_decoding_words() {
-        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
-                                      0x90, 0xab, 0xcd, 0xef,
-                                      0x01, 0x23, 0x45, 0x67,
-                                      0x89, 0xfe, 0xdc, 0xba]);
+        let b = vec![0x12, 0x34, 0x56, 0x78,
+                     0x90, 0xab, 0xcd, 0xef,
+                     0x01, 0x23, 0x45, 0x67,
+                     0x89, 0xfe, 0xdc, 0xba];
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(vec![0x78563412, 0xefcdab90]), d.words(2));
         assert_eq!(Ok(vec![0x67452301]), d.words(1));
         assert_eq!(Ok(vec![0xbadcfe89]), d.words(1));
@@ -275,38 +281,45 @@ mod tests {
     #[test]
     fn test_decoding_string() {
         {
-            let mut d = Decoder::new(vec![0x00, 0x00, 0x00, 0x00]);
+            let b = vec![0x00, 0x00, 0x00, 0x00];
+            let mut d = Decoder::new(&b);
             assert_eq!(Ok(String::new()), d.string());
         }
         {
-            let mut d = Decoder::new(b"ok".to_vec());
+            let b = b"ok".to_vec();
+            let mut d = Decoder::new(&b);
             assert_eq!(Err(Error::StreamExpected(0)), d.string());
         }
         {
-            let mut d = Decoder::new(b"ok\0\0".to_vec());
+            let b = b"ok\0\0".to_vec();
+            let mut d = Decoder::new(&b);
             assert_eq!(Ok("ok".to_string()), d.string());
         }
         {
-            let mut d = Decoder::new(b"ok\0\0rust\0\0\0\0rocks\0\0\0".to_vec());
+            let b = b"ok\0\0rust\0\0\0\0rocks\0\0\0".to_vec();
+            let mut d = Decoder::new(&b);
             assert_eq!(Ok("ok".to_string()), d.string());
             assert_eq!(Ok("rust".to_string()), d.string());
             assert_eq!(Ok("rocks".to_string()), d.string());
         }
         {
-            let mut d = Decoder::new(b"I..don't know..\0".to_vec());
+            let b = b"I..don't know..\0".to_vec();
+            let mut d = Decoder::new(&b);
             assert_eq!(Ok("I..don't know..".to_string()), d.string());
         }
     }
 
     #[test]
     fn test_decoding_source_language() {
-        let mut d = Decoder::new(vec![0x02, 0x00, 0x00, 0x00]);
+        let b = vec![0x02, 0x00, 0x00, 0x00];
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(spirv::SourceLanguage::GLSL), d.source_language());
     }
 
     #[test]
     fn test_decoding_unknown_execution_model() {
-        let mut d = Decoder::new(vec![0xef, 0xbe, 0xad, 0xde]);
+        let b = vec![0xef, 0xbe, 0xad, 0xde];
+        let mut d = Decoder::new(&b);
         assert_eq!(Err(Error::ExecutionModelUnknown(0, 0xdeadbeef)),
                    d.execution_model());
     }
@@ -314,12 +327,13 @@ mod tests {
     #[test]
     #[cfg_attr(rustfmt, rustfmt_skip)]
     fn test_offset() {
-        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
-                                      0x90, 0xab, 0xcd, 0xef,
-                                      0x01, 0x23, 0x45, 0x67,
-                                      0x89, 0xfe, 0xdc, 0xba,
-                                      0x01, 0x00, 0x00, 0x00,
-                                      0xff, 0xff, 0xff, 0xff]);
+        let b = vec![0x12, 0x34, 0x56, 0x78,
+                     0x90, 0xab, 0xcd, 0xef,
+                     0x01, 0x23, 0x45, 0x67,
+                     0x89, 0xfe, 0xdc, 0xba,
+                     0x01, 0x00, 0x00, 0x00,
+                     0xff, 0xff, 0xff, 0xff];
+        let mut d = Decoder::new(&b);
 
         assert_eq!(0, d.offset());
         assert!(d.words(1).is_ok());
@@ -338,7 +352,8 @@ mod tests {
 
     #[test]
     fn test_decoding_after_errors() {
-        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78]);
+        let b = vec![0x12, 0x34, 0x56, 0x78];
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(0x78563412), d.word());
         assert_eq!(Err(Error::StreamExpected(4)), d.word());
         assert_eq!(Err(Error::StreamExpected(4)), d.word());
@@ -351,7 +366,7 @@ mod tests {
         for _ in 0..12 {
             v.push(0xff);
         }
-        let mut d = Decoder::new(v);
+        let mut d = Decoder::new(&v);
 
         assert!(!d.has_limit());
         assert!(!d.limit_reached());
@@ -395,31 +410,35 @@ mod tests {
     }
 
     #[test]
-    #[cfg_attr(rustfmt, rustfmt_skip)]
     fn test_decode_int64() {
-        let mut d = Decoder::new(vec![0x12, 0x34, 0x56, 0x78,
-                                      0x90, 0xab, 0xcd, 0xef]);
+        let b = vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef];
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(0xefcdab9078563412), d.int64());
 
-        let mut d = Decoder::new(f32_to_bytes(-12.34));
+        let b = f32_to_bytes(-12.34);
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(-12.34), d.float32());
     }
 
     #[test]
     fn test_decode_float32() {
-        let mut d = Decoder::new(f32_to_bytes(42.42));
+        let b = f32_to_bytes(42.42);
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(42.42), d.float32());
 
-        let mut d = Decoder::new(f32_to_bytes(-12.34));
+        let b = f32_to_bytes(-12.34);
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(-12.34), d.float32());
     }
 
     #[test]
     fn test_decode_float64() {
-        let mut d = Decoder::new(f64_to_bytes(42.42));
+        let b = f64_to_bytes(42.42);
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(42.42), d.float64());
 
-        let mut d = Decoder::new(f64_to_bytes(-12.34));
+        let b = f64_to_bytes(-12.34);
+        let mut d = Decoder::new(&b);
         assert_eq!(Ok(-12.34), d.float64());
     }
 }

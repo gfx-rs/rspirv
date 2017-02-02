@@ -109,7 +109,7 @@ let buffer: Vec<u8> = vec![
     // GLSL450.
     0x01, 0x00, 0x00, 0x00];
 
-match rspirv::mr::load(buffer) {
+match rspirv::mr::load(&buffer) {
     Ok(module) => println!("{}", module.disassemble()),
     Err(err) => println!("{}", err),
 }
@@ -143,7 +143,7 @@ let bin = vec![
     0x01, 0x00, 0x00, 0x00];
 let mut loader = Loader::new();  // You can use your own consumer here.
 {
-    let mut p = Parser::new(bin, &mut loader);
+    let mut p = Parser::new(&bin, &mut loader);
     p.parse().unwrap();
 }
 let module = loader.module();

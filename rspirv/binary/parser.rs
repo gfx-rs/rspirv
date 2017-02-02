@@ -175,7 +175,7 @@ pub trait Consumer {
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
+pub fn parse(binary: &[u8], consumer: &mut Consumer) -> Result<()> {
     Parser::new(binary, consumer).parse()
 }
 
@@ -209,7 +209,7 @@ pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
 ///     0x01, 0x00, 0x00, 0x00];
 /// let mut loader = Loader::new();  // You can use your own consumer here.
 /// {
-///     let mut p = Parser::new(bin, &mut loader);
+///     let mut p = Parser::new(&bin, &mut loader);
 ///     p.parse().unwrap();
 /// }
 /// let module = loader.module();
@@ -221,9 +221,9 @@ pub fn parse(binary: Vec<u8>, consumer: &mut Consumer) -> Result<()> {
 /// assert_eq!(Operand::MemoryModel(MemoryModel::GLSL450),
 ///            m.operands[1]);
 /// ```
-pub struct Parser<'a> {
-    decoder: decoder::Decoder,
-    consumer: &'a mut Consumer,
+pub struct Parser<'c, 'd> {
+    decoder: decoder::Decoder<'d>,
+    consumer: &'c mut Consumer,
     type_tracker: TypeTracker,
     /// The index of the current instructions
     ///
@@ -239,10 +239,10 @@ macro_rules! try_decode {
     });
 }
 
-impl<'a> Parser<'a> {
+impl<'c, 'd> Parser<'c, 'd> {
     /// Creates a new parser to parse the given `binary` and send the module
     /// header and instructions to the given `consumer`.
-    pub fn new(binary: Vec<u8>, consumer: &'a mut Consumer) -> Parser<'a> {
+    pub fn new(binary: &'d [u8], consumer: &'c mut Consumer) -> Parser<'c, 'd> {
         Parser {
             decoder: decoder::Decoder::new(binary),
             consumer: consumer,
@@ -517,8 +517,8 @@ mod tests {
         }
 
         /// Returns the module being constructed.
-        fn get(self) -> Vec<u8> {
-            self.insts
+        fn get(&self) -> &[u8] {
+            &self.insts
         }
     }
 
@@ -543,16 +543,18 @@ mod tests {
 
     #[test]
     fn test_parsing_empty_binary() {
+        let v = vec![];
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(vec![], &mut c);
+        let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
                         Err(State::HeaderIncomplete(Error::StreamExpected(0))));
     }
 
     #[test]
     fn test_parsing_incomplete_header() {
+        let v = vec![0x03, 0x02, 0x23, 0x07];
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(vec![0x03, 0x02, 0x23, 0x07], &mut c);
+        let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
                         Err(State::HeaderIncomplete(Error::StreamExpected(4))));
     }
@@ -563,7 +565,7 @@ mod tests {
         module.as_mut_slice().swap(0, 3);
         module.as_mut_slice().swap(1, 2);
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(module, &mut c);
+        let p = Parser::new(&module, &mut c);
         assert_matches!(p.parse(), Err(State::EndiannessUnsupported));
     }
 
@@ -572,7 +574,7 @@ mod tests {
         let mut module = ZERO_BOUND_HEADER.to_vec();
         module[0] = 0x00;
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(module, &mut c);
+        let p = Parser::new(&module, &mut c);
         assert_matches!(p.parse(), Err(State::HeaderIncorrect));
     }
 
@@ -580,7 +582,7 @@ mod tests {
     fn test_parsing_complete_header() {
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
+            let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(Some(mr::ModuleHeader::new(0x07230203, 0x00010000, 0, 0, 0)),
@@ -612,7 +614,7 @@ mod tests {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // OpNop with word count 0
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(v, &mut c);
+        let p = Parser::new(&v, &mut c);
         // The first instruction starts at byte offset 20.
         assert_matches!(p.parse(), Err(State::WordCountZero(20, 1)));
     }
@@ -624,7 +626,7 @@ mod tests {
         v.append(&mut vec![0x00, 0x00, 0x02, 0x00]); // OpNop with word count 2
         v.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // A bogus operand
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(v, &mut c);
+        let p = Parser::new(&v, &mut c);
         // The bogus operand to the second OpNop instruction starts at
         // byte offset (20 + 4 + 4).
         assert_matches!(p.parse(), Err(State::OperandExceeded(28, 2)));
@@ -637,7 +639,7 @@ mod tests {
         v.append(&mut vec![0x0e, 0x00, 0x03, 0x00]); // OpMemoryModel
         v.append(&mut vec![0x00, 0x00, 0x00, 0x00]); // Logical
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(v, &mut c);
+        let p = Parser::new(&v, &mut c);
         // The missing operand to the OpMemoryModel instruction starts at
         // byte offset (20 + 4 + 4 + 4).
         assert_matches!(p.parse(),
@@ -653,7 +655,7 @@ mod tests {
         v.append(&mut vec![0x06, 0x00, 0x00, 0x00]); // InstanceId
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -674,7 +676,7 @@ mod tests {
         v.append(&mut vec![0x05, 0x00, 0x00, 0x00]); // id 5
         v.append(&mut vec![0x0b, 0x00, 0x00, 0x00]); // BuiltIn
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(v, &mut c);
+        let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
                         Err(State::OperandError(Error::StreamExpected(32))));
     }
@@ -690,7 +692,7 @@ mod tests {
         v.push(0x00);                                // EOS
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -714,7 +716,7 @@ mod tests {
         v.append(&mut vec![0x06, 0x00, 0x00, 0x00]); // File id
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -736,7 +738,7 @@ mod tests {
         v.append(&mut vec![0xc2, 0x01, 0x00, 0x00]); // 450 (0x1c2)
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -781,8 +783,9 @@ mod tests {
 
     #[test]
     fn test_consumer_initialize_error() {
+        let v = vec![];
         let mut c = InitializeErrorConsumer {};
-        let p = Parser::new(vec![], &mut c);
+        let p = Parser::new(&v, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
         if let Err(State::ConsumerError(err)) = ret {
@@ -812,7 +815,7 @@ mod tests {
     #[test]
     fn test_consumer_finalize_error() {
         let mut c = FinalizeErrorConsumer {};
-        let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
+        let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
         if let Err(State::ConsumerError(err)) = ret {
@@ -842,7 +845,7 @@ mod tests {
     #[test]
     fn test_consumer_parse_header_error() {
         let mut c = ParseHeaderErrorConsumer {};
-        let p = Parser::new(ZERO_BOUND_HEADER.to_vec(), &mut c);
+        let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
         if let Err(State::ConsumerError(err)) = ret {
@@ -899,7 +902,7 @@ mod tests {
         v.append(&mut vec![0x12, 0x34, 0x56, 0x78]);
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(2, c.insts.len());
@@ -925,7 +928,7 @@ mod tests {
         v.append(&mut vec![0x90, 0xab, 0xcd, 0xef]);
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(2, c.insts.len());
@@ -950,7 +953,7 @@ mod tests {
         v.append(&mut f32_to_bytes(42.42));
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(2, c.insts.len());
@@ -974,7 +977,7 @@ mod tests {
         v.append(&mut f64_to_bytes(-12.34));
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(2, c.insts.len());
@@ -995,7 +998,7 @@ mod tests {
         v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // id ref: 3
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -1017,7 +1020,7 @@ mod tests {
         v.append(&mut vec![0x80, 0x00, 0x00, 0x00]); // OpIAdd
         v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // id ref: 3
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(v, &mut c);
+        let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
                         // The header has 5 words, the above instruction has 5 words,
                         // so in total 40 bytes.
@@ -1032,7 +1035,7 @@ mod tests {
         v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // object: 2
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -1052,7 +1055,7 @@ mod tests {
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // Volatile
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -1075,7 +1078,7 @@ mod tests {
         v.append(&mut vec![0x04, 0x00, 0x00, 0x00]); // alignment
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());
@@ -1097,7 +1100,7 @@ mod tests {
         v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // object: 2
         v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // Volatile & Aligned
         let mut c = RetainingConsumer::new();
-        let p = Parser::new(v, &mut c);
+        let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
                         // The header has 5 words, the above instruction has 4 words,
                         // so in total 36 bytes.
@@ -1116,7 +1119,7 @@ mod tests {
         v.append(&mut vec![0xcc, 0x00, 0x00, 0x00]); // dy
         let mut c = RetainingConsumer::new();
         {
-            let p = Parser::new(v, &mut c);
+            let p = Parser::new(&v, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
         assert_eq!(1, c.insts.len());

@@ -146,7 +146,7 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>)
              kind = element.kind,
              ty = if element.category == "BitEnum" { "bits" } else { "u32" })
     }).collect();
-    ret.push_str(&format!("impl Decoder {{\n{}}}\n", methods.join("\n")));
+    ret.push_str(&format!("impl<'a> Decoder<'a> {{\n{}}}\n", methods.join("\n")));
 
     ret
 }
@@ -330,7 +330,7 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
         }).collect();
 
     format!(
-        "impl<'a> Parser<'a> {{\n\
+        "impl<'c, 'd> Parser<'c, 'd> {{\n\
          {s:4}fn parse_operand(&mut self, kind: GOpKind) \
              -> Result<Vec<mr::Operand>> {{\n\
              {s:8}Ok(match kind {{\n\

@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-impl<'a> Parser<'a> {
+impl<'c, 'd> Parser<'c, 'd> {
     fn parse_operand(&mut self, kind: GOpKind) -> Result<Vec<mr::Operand>> {
         Ok(match kind {
             GOpKind::FPFastMathMode => vec![mr::Operand::FPFastMathMode(try_decode!(self.decoder.fpfast_math_mode()))],

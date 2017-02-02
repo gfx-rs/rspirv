@@ -52,7 +52,7 @@ fn main() {
 
     f.read_to_end(&mut buffer).expect("cannot read file");
 
-    match rspirv::mr::load(buffer) {
+    match rspirv::mr::load(&buffer) {
         Ok(module) => println!("{}", module.disassemble()),
         Err(err) => println!("{}", err),
     }
