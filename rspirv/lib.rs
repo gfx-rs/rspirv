@@ -23,9 +23,6 @@
 //! * A [memory representation](mr/index.html) of SPIR-V modules
 //! * A SPIR-V [binary](binary/index.html) loading and parsing Rust module
 
-#![feature(collections)]
-
-extern crate collections;
 #[macro_use]
 extern crate bitflags;
 extern crate num;
