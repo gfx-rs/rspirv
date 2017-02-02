@@ -15,7 +15,7 @@
 /// Rust structs for deserializing the SPIR-V JSON grammar.
 
 use serde::de;
-use std::{result, str};
+use std::{fmt, result, str};
 
 #[derive(Debug, Deserialize)]
 pub struct Operand {
@@ -90,20 +90,24 @@ pub struct EnumValue {
 }
 
 /// Deserializes a field that can either be a number or a string into a EnumValue.
-fn num_or_str<D: de::Deserializer>(d: &mut D) -> result::Result<EnumValue, D::Error> {
+fn num_or_str<D: de::Deserializer>(d: D) -> result::Result<EnumValue, D::Error> {
     struct NumOrStr;
 
     impl de::Visitor for NumOrStr {
         type Value = EnumValue;
 
-        fn visit_str<E: de::Error>(&mut self, value: &str) -> result::Result<EnumValue, E> {
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            write!(formatter, "either a number or a string")
+        }
+
+        fn visit_str<E: de::Error>(self, value: &str) -> result::Result<EnumValue, E> {
             Ok(EnumValue {
                 number: 0,
                 string: value.to_string(),
             })
         }
 
-        fn visit_u64<E: de::Error>(&mut self, value: u64) -> result::Result<EnumValue, E> {
+        fn visit_u64<E: de::Error>(self, value: u64) -> result::Result<EnumValue, E> {
             Ok(EnumValue {
                 number: value as u32,
                 string: String::new(),
