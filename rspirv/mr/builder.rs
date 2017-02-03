@@ -268,3 +268,40 @@ impl Builder {
         id
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use mr;
+    use spirv;
+    use super::Builder;
+
+    fn has_only_one_pre_inst(module: &mr::Module) -> bool {
+        if !module.functions.is_empty() {
+            return false;
+        }
+        (module.capabilities.len() + module.extensions.len() + module.ext_inst_imports.len() +
+         module.entry_points.len() + module.types_global_values.len() +
+         module.execution_modes.len() + module.debugs.len() + module.annotations.len()) +
+        (if module.memory_model.is_some() {
+            1
+        } else {
+            0
+        }) == 1
+    }
+
+    #[test]
+    fn test_memory_model() {
+        let mut b = Builder::new();
+        b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+        let m = b.module();
+        assert!(m.memory_model.is_some());
+        let inst = m.memory_model.as_ref().unwrap();
+        assert!(has_only_one_pre_inst(&m));
+        assert_eq!("MemoryModel", inst.class.opname);
+        assert_eq!(2, inst.operands.len());
+        assert_eq!(mr::Operand::AddressingModel(spirv::AddressingModel::Logical),
+                   inst.operands[0]);
+        assert_eq!(mr::Operand::MemoryModel(spirv::MemoryModel::Simple),
+                   inst.operands[1]);
+    }
+}
