@@ -37,7 +37,7 @@ fn get_param_list(params: &[structs::Operand]) -> Vec<String> {
         } else if param.quantifier == "?" {
             format!("{}: Option<{}>", name, kind)
         } else {
-            format!("{}: &[{}]", name, kind)
+            format!("{}: Vec<{}>", name, kind)
         }
     }).collect()
 }
@@ -98,7 +98,7 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
                 let kind = get_mr_operand_kind(&param.kind);
                 Some(format!(
                         "{s:8}for v in {name} {{\n\
-                         {s:12}{container}.push(mr::Operand::{kind}(*v))\n\
+                         {s:12}{container}.push(mr::Operand::{kind}(v))\n\
                          {s:8}}}",
                         s = "",
                         kind = kind,
@@ -226,7 +226,7 @@ pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
         let extras = get_push_extras(&inst.operands[1..],
                                      "self.module.types_global_values.last_mut()\
                                      .expect(\"interal error\").operands").join(";\n");
-        format!("{s:4}/// Creates {opcode} and returns the result id.\n\
+        format!("{s:4}/// Appends an Op{opcode} instruction and returns the result id.\n\
                  {s:4}pub fn {name}(&mut self{sep}{param}) -> spirv::Word {{\n\
                  {s:8}let id = self.id();\n\
                  {s:8}self.module.types_global_values.push(\
@@ -255,7 +255,8 @@ pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>)
     }).map(|inst| {
         let params = get_param_list(&inst.operands).join(", ");
         let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
-        format!("{s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<()> {{\n\
+        format!("{s:4}/// Appends an Op{opcode} instruction and ends the current basic block.\n\
+                 {s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<()> {{\n\
                  {s:8}let {m}inst = mr::Instruction::new(\
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                  {extras}{y}\

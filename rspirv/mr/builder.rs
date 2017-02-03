@@ -50,6 +50,7 @@ impl Builder {
         self.module
     }
 
+    /// Returns the next unused id.
     #[inline(always)]
     fn id(&mut self) -> spirv::Word {
         let id = self.next_id;
@@ -117,6 +118,7 @@ impl Builder {
         Ok(self.function.as_mut().unwrap().basic_blocks.push(self.basic_block.take().unwrap()))
     }
 
+    /// Appends an OpCapability instruction.
     pub fn capability(&mut self, capability: spirv::Capability) {
         let inst = mr::Instruction::new(spirv::Op::Capability,
                                         None,
@@ -125,6 +127,7 @@ impl Builder {
         self.module.capabilities.push(inst);
     }
 
+    /// Appends an OpExtension instruction.
     pub fn extension(&mut self, extension: String) {
         let inst = mr::Instruction::new(spirv::Op::Extension,
                                         None,
@@ -133,6 +136,7 @@ impl Builder {
         self.module.extensions.push(inst);
     }
 
+    /// Appends an OpExtInstImport instruction and returns the result id.
     pub fn ext_inst_import(&mut self, extended_inst_set: String) -> spirv::Word {
         let id = self.id();
         let inst = mr::Instruction::new(spirv::Op::ExtInstImport,
@@ -143,6 +147,7 @@ impl Builder {
         id
     }
 
+    /// Appends an OpMemoryModel instruction.
     pub fn memory_model(&mut self,
                         addressing_model: spirv::AddressingModel,
                         memory_model: spirv::MemoryModel) {
@@ -154,30 +159,32 @@ impl Builder {
         self.module.memory_model = Some(inst);
     }
 
+    /// Appends an OpEntryPoint instruction.
     pub fn entry_point(&mut self,
                        execution_model: spirv::ExecutionModel,
                        entry_point: spirv::Word,
                        name: String,
-                       interface: &[spirv::Word]) {
+                       interface: Vec<spirv::Word>) {
         let mut operands = vec![mr::Operand::ExecutionModel(execution_model),
                                 mr::Operand::IdRef(entry_point),
                                 mr::Operand::LiteralString(name)];
         for v in interface {
-            operands.push(mr::Operand::IdRef(*v));
+            operands.push(mr::Operand::IdRef(v));
         }
 
         let inst = mr::Instruction::new(spirv::Op::EntryPoint, None, None, operands);
         self.module.entry_points.push(inst);
     }
 
+    /// Appends an OpExecutionMode instruction.
     pub fn execution_mode(&mut self,
                           entry_point: spirv::Word,
                           execution_mode: spirv::ExecutionMode,
-                          params: &[u32]) {
+                          params: Vec<u32>) {
         let mut operands = vec![mr::Operand::IdRef(entry_point),
                                 mr::Operand::ExecutionMode(execution_mode)];
         for v in params {
-            operands.push(mr::Operand::LiteralInt32(*v));
+            operands.push(mr::Operand::LiteralInt32(v));
         }
 
         let inst = mr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);
@@ -189,7 +196,7 @@ include!("build_type.rs");
 include!("build_terminator.rs");
 
 impl Builder {
-    /// Creates an OpDecorate instruction and returns the result id.
+    /// Appends an OpDecorate instruction and returns the result id.
     pub fn decorate(&mut self,
                     target: spirv::Word,
                     decoration: spirv::Decoration,
@@ -204,7 +211,7 @@ impl Builder {
         id
     }
 
-    /// Creates an OpMemberDecorate instruction and returns the result id.
+    /// Appends an OpMemberDecorate instruction and returns the result id.
     pub fn member_decorate(&mut self,
                            structure: spirv::Word,
                            member: spirv::Word,
@@ -222,7 +229,7 @@ impl Builder {
         id
     }
 
-    /// Creates an OpDecorationGroup instruction and returns the result id.
+    /// Appends an OpDecorationGroup instruction and returns the result id.
     pub fn decoration_group(&mut self) -> spirv::Word {
         let id = self.id();
         self.module
@@ -231,7 +238,7 @@ impl Builder {
         id
     }
 
-    /// Creates an OpGroupDecorate instruction and returns the result id.
+    /// Appends an OpGroupDecorate instruction and returns the result id.
     pub fn group_decorate(&mut self, group: spirv::Word, targets: Vec<spirv::Word>) -> spirv::Word {
         let id = self.id();
         let mut operands = vec![mr::Operand::IdRef(group)];
@@ -244,7 +251,7 @@ impl Builder {
         id
     }
 
-    /// Creates an OpGroupMemberDecorate instruction and returns the result id.
+    /// Appends an OpGroupMemberDecorate instruction and returns the result id.
     pub fn group_member_decorate(&mut self,
                                  group: spirv::Word,
                                  targets: Vec<(spirv::Word, u32)>)
