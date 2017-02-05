@@ -47,7 +47,7 @@ according to the [grammar][doc-grammar], the parsed instructions are sent to
 the [consumer][doc-consumer].
 
 The Khronos SPIR-V [JSON grammar][json-grammar] is leveraged to generate parts
-of the source code using [`build.rs`](rspirv/build.rs).
+of the source code using [`build.rs`](rspirv/build/build.rs).
 
 Detailed documentation about the APIs in this crate is available at
 [![Documentation](https://docs.rs/rspirv/badge.svg)](https://docs.rs/rspirv).
