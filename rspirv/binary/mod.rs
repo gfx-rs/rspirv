@@ -26,7 +26,7 @@
 
 pub use self::decoder::Decoder;
 pub use self::error::Error as DecodeError;
-pub use self::parser::{Consumer, parse, Parser};
+pub use self::parser::{Consumer, parse_bytes, parse_words, Parser};
 pub use self::parser::Action as ParseAction;
 pub use self::parser::Result as ParseResult;
 pub use self::parser::State as ParseState;

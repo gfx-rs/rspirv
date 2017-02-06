@@ -200,8 +200,15 @@ impl binary::Consumer for Loader {
 }
 
 /// Loads the SPIR-V `binary` into memory and returns a `Module`.
-pub fn load(binary: &[u8]) -> ParseResult<mr::Module> {
+pub fn load_bytes(binary: &[u8]) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
-    try!(binary::parse(binary, &mut loader));
+    try!(binary::parse_bytes(binary, &mut loader));
+    Ok(loader.module())
+}
+
+/// Loads the SPIR-V `binary` into memory and returns a `Module`.
+pub fn load_words(binary: &[u32]) -> ParseResult<mr::Module> {
+    let mut loader = Loader::new();
+    try!(binary::parse_words(binary, &mut loader));
     Ok(loader.module())
 }

@@ -16,7 +16,7 @@ use mr;
 use grammar;
 use spirv;
 
-use std::{error, fmt, result};
+use std::{error, fmt, result, slice};
 use super::decoder;
 use super::error::Error as DecodeError;
 use super::tracker::{Type, TypeTracker};
@@ -175,8 +175,16 @@ pub trait Consumer {
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse(binary: &[u8], consumer: &mut Consumer) -> Result<()> {
+pub fn parse_bytes(binary: &[u8], consumer: &mut Consumer) -> Result<()> {
     Parser::new(binary, consumer).parse()
+}
+
+/// Parses the given `binary` and consumes the module using the given
+/// `consumer`.
+pub fn parse_words(binary: &[u32], consumer: &mut Consumer) -> Result<()> {
+    let len = binary.len() * 4;
+    let buf = unsafe { slice::from_raw_parts(binary.as_ptr() as *const u8, len) };
+    Parser::new(buf, consumer).parse()
 }
 
 /// The SPIR-V binary parser.
@@ -443,7 +451,7 @@ mod tests {
 
     use binary::error::Error;
     use std::{error, fmt};
-    use super::{Action, Consumer, Parser, State, WORD_NUM_BYTES};
+    use super::{Action, Consumer, parse_words, Parser, State, WORD_NUM_BYTES};
 
     use utils::num::f32_to_bytes;
     use utils::num::f64_to_bytes;
@@ -1134,6 +1142,20 @@ mod tests {
                         mr::Operand::IdRef(0xaa),
                         mr::Operand::IdRef(0xbb),
                         mr::Operand::IdRef(0xcc)],
+                   inst.operands);
+    }
+
+    #[test]
+    fn test_parse_words() {
+        let words = vec![0x07230203, 0x01000000, 0, 0, 0, 0x00020011, 0x00000016];
+        let mut c = RetainingConsumer::new();
+        assert_matches!(parse_words(&words, &mut c), Ok(()));
+        assert_eq!(1, c.insts.len());
+        let inst = &c.insts[0];
+        assert_eq!("Capability", inst.class.opname);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(vec![mr::Operand::Capability(spirv::Capability::Int16)],
                    inst.operands);
     }
 }
