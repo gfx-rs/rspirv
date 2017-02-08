@@ -16,7 +16,9 @@ install:
   - rustc -vV && cargo -vV
 
 build_script:
-  - cd rspirv
+  - cd spirv
+  - cargo build --verbose
+  - cd ..\rspirv
   - cargo build --verbose
   - cargo build --features regen
   - cd ..\dis

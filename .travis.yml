@@ -16,7 +16,9 @@ branches:
     - master
 
 script:
-  - cd rspirv/
+  - cd spirv/
+  - cargo build --verbose
+  - cd ../rspirv/
   - cargo build --verbose
   - cargo build --features regen
   - cargo test --verbose
