@@ -31,7 +31,8 @@ use utils::write_copyright_autogen_comment;
 macro_rules! write {
     ($content: expr, $path: expr) => {
         {
-            let mut f = fs::File::create($path.to_str().unwrap()).unwrap();
+            let p = $path.to_str().unwrap();
+            let mut f = fs::File::create(p).expect(&format!("cannot open file: {}", p));
             write_copyright_autogen_comment(&mut f);
             f.write_all(&$content.into_bytes()).unwrap();
         }
@@ -61,6 +62,8 @@ fn main() {
         // Path to the generated SPIR-V header file.
         path.pop();
         path.pop();
+        path.pop();
+        path.push("spirv");
         path.push("spirv.rs");
         let c = header::gen_spirv_header(&grammar);
         write!(c, path);
@@ -69,6 +72,8 @@ fn main() {
     {
         // Path to the generated instruction table.
         path.pop();
+        path.pop();
+        path.push("rspirv");
         path.push("grammar");
         path.push("table.rs");
         let c = table::gen_grammar_inst_table_operand_kinds(&grammar);

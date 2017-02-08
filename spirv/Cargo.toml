@@ -1,0 +1,19 @@
+[package]
+name = "spirv_headers"
+version = "1.1.2"
+authors = ["Lei Zhang <antiagainst@gmail.com>"]
+
+description = "Rust definition of SPIR-V structs and enums"
+documentation = "https://docs.rs/spirv-headers"
+repository = "https://github.com/google/rspirv"
+readme = "../README.md"
+license = "Apache-2.0"
+keywords = ["spirv", "definition", "struct", "enum"]
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+bitflags = "0.7"
+num = "0.1"
+num-derive = "0.1"

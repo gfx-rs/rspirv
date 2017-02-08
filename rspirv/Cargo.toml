@@ -21,9 +21,11 @@ default = []
 regen = []
 
 [dependencies]
-bitflags = "0.7"
 num = "0.1"
 num-derive = "0.1"
+
+[dependencies.spirv_headers]
+path = "../spirv"
 
 [build-dependencies]
 regex = "0.2"

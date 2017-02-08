@@ -1,9 +1,10 @@
 [root]
-name = "rspirv-dis"
-version = "0.1.0"
+name = "spirv_headers"
+version = "1.1.2"
 dependencies = [
- "getopts 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
- "rspirv 0.2.0",
+ "bitflags 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)",
+ "num-derive 0.1.39 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -176,13 +177,21 @@ name = "rspirv"
 version = "0.2.0"
 dependencies = [
  "assert_matches 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "bitflags 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)",
  "num-derive 0.1.39 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 0.9.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 0.9.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 0.9.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spirv_headers 1.1.2",
+]
+
+[[package]]
+name = "rspirv-dis"
+version = "0.1.0"
+dependencies = [
+ "getopts 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rspirv 0.2.0",
 ]
 
 [[package]]

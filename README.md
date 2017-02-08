@@ -126,34 +126,39 @@ match rspirv::mr::load(&buffer) {
 Parsing a SPIR-V binary module:
 
 ```rust
+extern crate rspirv;
+extern crate spirv_headers as spirv;
+
+use spirv::{AddressingModel, MemoryModel};
 use rspirv::binary::Parser;
 use rspirv::mr::{Loader, Operand};
-use rspirv::spirv::{AddressingModel, MemoryModel};
 
-let bin = vec![
-    // Magic number.           Version number: 1.0.
-    0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
-    // Generator number: 0.    Bound: 0.
-    0x00, 0x00, 0x00, 0x00,    0x00, 0x00, 0x00, 0x00,
-    // Reserved word: 0.
-    0x00, 0x00, 0x00, 0x00,
-    // OpMemoryModel.          Logical.
-    0x0e, 0x00, 0x03, 0x00,    0x00, 0x00, 0x00, 0x00,
-    // GLSL450.
-    0x01, 0x00, 0x00, 0x00];
-let mut loader = Loader::new();  // You can use your own consumer here.
-{
-    let mut p = Parser::new(&bin, &mut loader);
-    p.parse().unwrap();
+fn main() {
+    let bin = vec![
+        // Magic number.           Version number: 1.0.
+        0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
+        // Generator number: 0.    Bound: 0.
+        0x00, 0x00, 0x00, 0x00,    0x00, 0x00, 0x00, 0x00,
+        // Reserved word: 0.
+        0x00, 0x00, 0x00, 0x00,
+        // OpMemoryModel.          Logical.
+        0x0e, 0x00, 0x03, 0x00,    0x00, 0x00, 0x00, 0x00,
+        // GLSL450.
+        0x01, 0x00, 0x00, 0x00];
+    let mut loader = Loader::new();  // You can use your own consumer here.
+    {
+        let mut p = Parser::new(&bin, &mut loader);
+        p.parse().unwrap();
+    }
+    let module = loader.module();
+
+    assert_eq!((1, 0), module.header.unwrap().version());
+    let m = module.memory_model.as_ref().unwrap();
+    assert_eq!(Operand::AddressingModel(AddressingModel::Logical),
+               m.operands[0]);
+    assert_eq!(Operand::MemoryModel(MemoryModel::GLSL450),
+               m.operands[1]);
 }
-let module = loader.module();
-
-assert_eq!((1, 0), module.header.unwrap().version());
-let m = module.memory_model.as_ref().unwrap();
-assert_eq!(Operand::AddressingModel(AddressingModel::Logical),
-           m.operands[0]);
-assert_eq!(Operand::MemoryModel(MemoryModel::GLSL450),
-           m.operands[1]);
 ```
 
 Contributions

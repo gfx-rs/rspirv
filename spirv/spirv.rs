@@ -16,11 +16,6 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-//! The SPIR-V header.
-
-#![allow(non_camel_case_types)]
-#![cfg_attr(rustfmt, rustfmt_skip)]
-
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;

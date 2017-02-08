@@ -83,12 +83,6 @@ fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<String> {
 pub fn gen_spirv_header(grammar: &structs::Grammar) -> String {
     let mut ret = String::new();
 
-    { // Copyright, documentation.
-        ret.push_str("//! The SPIR-V header.\n\n");
-        ret.push_str("#![allow(non_camel_case_types)]\n");
-        ret.push_str(RUSTFMT_SKIP_BANG);
-        ret.push_str("\n\n");
-    }
     { // constants and types.
         let globals = format!("pub type Word = u32;\n\
                                pub const MAGIC_NUMBER: u32 = {};\n\

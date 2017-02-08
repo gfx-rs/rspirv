@@ -1,4 +1,4 @@
-// Copyright 2016 Google Inc.
+// Copyright 2017 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,25 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Library APIs for SPIR-V module processing functionalities.
+//! The SPIR-V header.
 //!
-//! This library provides:
+//! This crate contains Rust definitions of all SPIR-V structs, enums,
+//! and constants.
 //!
-//! * The whole SPIR-V [grammar](grammar/index.html) (instruction layouts
-//!   and their operands)
-//! * A [memory representation](mr/index.html) of SPIR-V modules
-//! * A SPIR-V [binary](binary/index.html) loading and parsing Rust module
+//! The version of this crate is the version of SPIR-V it contains.
 
-#[cfg(test)]
+#![allow(non_camel_case_types)]
+#![cfg_attr(rustfmt, rustfmt_skip)]
+
 #[macro_use]
-extern crate assert_matches;
+extern crate bitflags;
 extern crate num;
 #[macro_use]
 extern crate num_derive;
-extern crate spirv_headers as spirv;
 
-pub mod binary;
-pub mod grammar;
-pub mod mr;
-
-mod utils;
+include!("spirv.rs");
