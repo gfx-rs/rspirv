@@ -109,18 +109,17 @@ let buffer: Vec<u8> = vec![
     // GLSL450.
     0x01, 0x00, 0x00, 0x00];
 
-match rspirv::mr::load(&buffer) {
-    Ok(module) => println!("{}", module.disassemble()),
-    Err(err) => println!("{}", err),
-}
+let dis = match rspirv::mr::load_bytes(&buffer) {
+    Ok(module) => module.disassemble(),
+    Err(err) => format!("{}", err),
+};
 
-// Output:
-//
-// ; SPIRV
-// ; Version: 1.0
-// ; Generator: Khronos Group
-// ; Bound: 0
-// OpMemoryModel Logical GLSL450
+assert_eq!(dis,
+           "; SPIR-V\n\
+            ; Version: 1.0\n\
+            ; Generator: Khronos Group\n\
+            ; Bound: 0\n\
+            OpMemoryModel Logical GLSL450");
 ```
 
 Building a SPIR-V binary module:

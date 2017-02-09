@@ -200,6 +200,37 @@ impl binary::Consumer for Loader {
 }
 
 /// Loads the SPIR-V `binary` into memory and returns a `Module`.
+///
+/// # Examples
+///
+/// ```
+/// use rspirv;
+/// use rspirv::binary::Disassemble;
+///
+/// let buffer: Vec<u8> = vec![
+///     // Magic number.           Version number: 1.0.
+///     0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
+///     // Generator number: 0.    Bound: 0.
+///     0x00, 0x00, 0x00, 0x00,    0x00, 0x00, 0x00, 0x00,
+///     // Reserved word: 0.
+///     0x00, 0x00, 0x00, 0x00,
+///     // OpMemoryModel.          Logical.
+///     0x0e, 0x00, 0x03, 0x00,    0x00, 0x00, 0x00, 0x00,
+///     // GLSL450.
+///     0x01, 0x00, 0x00, 0x00];
+///
+/// let dis = match rspirv::mr::load_bytes(&buffer) {
+///     Ok(module) => module.disassemble(),
+///     Err(err) => format!("{}", err),
+/// };
+///
+/// assert_eq!(dis,
+///            "; SPIR-V\n\
+///             ; Version: 1.0\n\
+///             ; Generator: Khronos Group\n\
+///             ; Bound: 0\n\
+///             OpMemoryModel Logical GLSL450");
+/// ```
 pub fn load_bytes(binary: &[u8]) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
     try!(binary::parse_bytes(binary, &mut loader));
@@ -207,6 +238,36 @@ pub fn load_bytes(binary: &[u8]) -> ParseResult<mr::Module> {
 }
 
 /// Loads the SPIR-V `binary` into memory and returns a `Module`.
+///
+/// # Examples
+///
+/// ```
+/// use rspirv;
+/// use rspirv::binary::Disassemble;
+///
+/// let buffer: Vec<u32> = vec![
+///     0x07230203,  // Magic number
+///     0x00010000,  // Version number: 1.0
+///     0x00000000,  // Generator number: 0
+///     0x00000000,  // Bound: 0
+///     0x00000000,  // Reserved word: 0
+///     0x0003000e,  // OpMemoryModel
+///     0x00000000,  // Logical
+///     0x00000001,  // GLSL450
+/// ];
+///
+/// let dis = match rspirv::mr::load_words(&buffer) {
+///     Ok(module) => module.disassemble(),
+///     Err(err) => format!("{}", err),
+/// };
+///
+/// assert_eq!(dis,
+///            "; SPIR-V\n\
+///             ; Version: 1.0\n\
+///             ; Generator: Khronos Group\n\
+///             ; Bound: 0\n\
+///             OpMemoryModel Logical GLSL450");
+/// ```
 pub fn load_words(binary: &[u32]) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
     try!(binary::parse_words(binary, &mut loader));
