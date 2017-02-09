@@ -32,35 +32,35 @@ impl Builder {
     }
 
     /// Appends an OpTypeInt instruction and returns the result id.
-    pub fn type_int(&mut self, width: spirv::Word, signedness: spirv::Word) -> spirv::Word {
+    pub fn type_int(&mut self, width: u32, signedness: u32) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeInt, None, Some(id), vec![mr::Operand::LiteralInt32(width), mr::Operand::LiteralInt32(signedness)]));
         id
     }
 
     /// Appends an OpTypeFloat instruction and returns the result id.
-    pub fn type_float(&mut self, width: spirv::Word) -> spirv::Word {
+    pub fn type_float(&mut self, width: u32) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeFloat, None, Some(id), vec![mr::Operand::LiteralInt32(width)]));
         id
     }
 
     /// Appends an OpTypeVector instruction and returns the result id.
-    pub fn type_vector(&mut self, component_type: spirv::Word, component_count: spirv::Word) -> spirv::Word {
+    pub fn type_vector(&mut self, component_type: spirv::Word, component_count: u32) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeVector, None, Some(id), vec![mr::Operand::IdRef(component_type), mr::Operand::LiteralInt32(component_count)]));
         id
     }
 
     /// Appends an OpTypeMatrix instruction and returns the result id.
-    pub fn type_matrix(&mut self, column_type: spirv::Word, column_count: spirv::Word) -> spirv::Word {
+    pub fn type_matrix(&mut self, column_type: spirv::Word, column_count: u32) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeMatrix, None, Some(id), vec![mr::Operand::IdRef(column_type), mr::Operand::LiteralInt32(column_count)]));
         id
     }
 
     /// Appends an OpTypeImage instruction and returns the result id.
-    pub fn type_image(&mut self, sampled_type: spirv::Word, dim: spirv::Dim, depth: spirv::Word, arrayed: spirv::Word, ms: spirv::Word, sampled: spirv::Word, image_format: spirv::ImageFormat, access_qualifier: Option<spirv::AccessQualifier>) -> spirv::Word {
+    pub fn type_image(&mut self, sampled_type: spirv::Word, dim: spirv::Dim, depth: u32, arrayed: u32, ms: u32, sampled: u32, image_format: spirv::ImageFormat, access_qualifier: Option<spirv::AccessQualifier>) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeImage, None, Some(id), vec![mr::Operand::IdRef(sampled_type), mr::Operand::Dim(dim), mr::Operand::LiteralInt32(depth), mr::Operand::LiteralInt32(arrayed), mr::Operand::LiteralInt32(ms), mr::Operand::LiteralInt32(sampled), mr::Operand::ImageFormat(image_format)]));
         if access_qualifier.is_some() {

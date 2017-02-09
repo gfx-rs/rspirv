@@ -132,7 +132,7 @@
         { "kind" : "IdResult" },
         { "kind" : "IdRef",                                     "name" : "'Set'" },
         { "kind" : "LiteralExtInstInteger",                     "name" : "'Instruction'" },
-        { "kind" : "IdRef",                 "quantifier" : "*", "name" : "'Operand 1', +\n'Operand 2', +\n..." }
+        { "kind" : "IdRef",                 "quantifier" : "*", "name" : "Operands" }
       ]
     },
     {
@@ -516,7 +516,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",                            "name" : "'Function'" },
-        { "kind" : "IdRef",        "quantifier" : "*", "name" : "'Argument 0', +\n'Argument 1', +\n..." }
+        { "kind" : "IdRef",        "quantifier" : "*", "name" : "Arguments" }
       ]
     },
     {

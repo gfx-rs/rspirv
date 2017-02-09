@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+extern crate regex;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -102,6 +103,13 @@ fn main() {
         path.pop();
         path.push("build_terminator.rs");
         let c = memrepr::gen_mr_builder_terminator(&grammar.instructions);
+        write!(c, path);
+    }
+    {
+        // Path to the generated builder for memory representation.
+        path.pop();
+        path.push("build_norm_insts.rs");
+        let c = memrepr::gen_mr_builder_normal_insts(&grammar.instructions);
         write!(c, path);
     }
 

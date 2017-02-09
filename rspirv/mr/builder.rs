@@ -329,6 +329,8 @@ impl Builder {
     }
 }
 
+include!("build_norm_insts.rs");
+
 #[cfg(test)]
 mod tests {
     use mr;

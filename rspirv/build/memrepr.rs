@@ -14,30 +14,43 @@
 
 use structs;
 
+use regex::Regex;
 use utils::*;
 
+/// Returns a suitable name for the given parameter.
 fn get_param_name(param: &structs::Operand) -> String {
     if param.name.len() == 0 {
-        snake_casify(&param.kind)
+        if param.kind == "IdResultType" {
+            "result_type".to_string()
+        } else {
+            snake_casify(&param.kind)
+        }
     } else {
-        snake_casify(&param.name.replace("'", "").replace(" ", "_"))
+        let re = Regex::new(r"\W").unwrap();
+        snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""))
     }
 }
 
+/// Returns the parameter list excluding result id.
 fn get_param_list(params: &[structs::Operand]) -> Vec<String> {
-    params.iter().map(|param| {
+    params.iter().filter_map(|param| {
         let name = get_param_name(param);
         let kind = get_enum_underlying_type(&param.kind);
-        if param.quantifier == "" {
-            format!("{}: {}", name, kind)
-        } else if param.quantifier == "?" {
-            format!("{}: Option<{}>", name, kind)
+        if param.kind == "IdResult" {
+            None
         } else {
-            format!("{}: Vec<{}>", name, kind)
+            Some(if param.quantifier == "" {
+                format!("{}: {}", name, kind)
+                } else if param.quantifier == "?" {
+                    format!("{}: Option<{}>", name, kind)
+                } else {
+                    format!("{}: Vec<{}>", name, kind)
+                })
         }
     }).collect()
 }
 
+/// Returns a suitable function name for the given `opname`.
 fn get_function_name(opname: &str) -> String {
     if opname == "OpReturn" {
         "ret".to_string()
@@ -53,9 +66,14 @@ fn get_function_name(opname: &str) -> String {
 fn get_init_list(params: &[structs::Operand]) -> Vec<String> {
     params.iter().filter_map(|param| {
         if param.quantifier == "" {
-            let name = get_param_name(param);
-            let kind = get_mr_operand_kind(&param.kind);
-            Some(format!("mr::Operand::{}({})", kind, name))
+            if param.kind == "IdResult" || param.kind == "IdResultType" {
+                // These two operands are not stored in the operand field.
+                None
+            } else {
+                let name = get_param_name(param);
+                let kind = get_mr_operand_kind(&param.kind);
+                Some(format!("mr::Operand::{}({})", kind, name))
+            }
         } else {
             None
         }
@@ -90,6 +108,15 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
                         s = "",
                         name = name,
                         container = container))
+            } else if param.kind == "PairIdRefIdRef" {
+                Some(format!(
+                        "{s:8}for v in {name} {{\n\
+                         {s:12}{container}.push(mr::Operand::IdRef(v.0));\n\
+                         {s:12}{container}.push(mr::Operand::IdRef(v.1));\n\
+                         {s:8}}}",
+                        s = "",
+                        name = name,
+                        container = container))
             } else {
                 let kind = get_mr_operand_kind(&param.kind);
                 Some(format!(
@@ -108,11 +135,21 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
 /// Returns the underlying type used in operand kind enums for the operand
 /// kind `kind` in the grammar.
 fn get_enum_underlying_type(kind: &str) -> String {
-    if kind.starts_with("Id") || kind == "LiteralInteger" {
+    if kind.starts_with("Id") {
         "spirv::Word".to_string()
+    } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
+        "u32".to_string()
+    } else if kind == "LiteralSpecConstantOpInteger" {
+        "spirv::Op".to_string()
+    } else if kind == "LiteralContextDependentNumber" {
+        panic!("this kind is not expected to be handled here")
     } else if kind == "LiteralString" {
         "String".to_string()
     } else if kind == "PairLiteralIntegerIdRef" {
+        "(u32, spirv::Word)".to_string()
+    } else if kind == "PairIdRefLiteralInteger" {
+        "(spirv::Word, u32)".to_string()
+    } else if kind == "PairIdRefIdRef" {
         "(spirv::Word, spirv::Word)".to_string()
     } else {
         format!("spirv::{}", kind)
@@ -243,8 +280,7 @@ pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>)
-                                 -> String {
+pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>) -> String {
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.iter().filter(|inst| {
         inst.class == "Terminator"
@@ -267,6 +303,62 @@ pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>)
                 y = if extras.len() != 0 { ";\n" } else { "" },
                 init = get_init_list(&inst.operands).join(", "),
                 opcode = &inst.opname[2..])
+    }).collect();
+    format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
+}
+
+pub fn gen_mr_builder_normal_insts(grammar: &Vec<structs::Instruction>) -> String {
+    // Generate build methods for all types.
+    let elements: Vec<String> = grammar.iter().filter(|inst| {
+        inst.class == ""
+    }).map(|inst| {
+        let params = get_param_list(&inst.operands).join(", ");
+        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        if !inst.operands.is_empty() && inst.operands[0].kind == "IdResultType" {
+            // For normal instructions, they either have both result type and
+            // result id or have none.
+            format!("{s:4}/// Appends an Op{opcode} instruction to the current basic block.\n\
+                     {s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<spirv::Word> {{\n\
+                     {s:8}if self.basic_block.is_none() {{\n\
+                     {s:12}return Err(Error::DetachedInstruction);\n\
+                     {s:8}}}\n\
+                     {s:8}let id = self.id();\n\
+                     {s:8}let {m}inst = mr::Instruction::new(\
+                         spirv::Op::{opcode}, Some(result_type), Some(id), vec![{init}]);\n\
+                     {extras}{y}\
+                     {s:8}self.basic_block.as_mut().unwrap().instructions.push(inst);\n\
+                     {s:8}Ok(id)\n\
+                     {s:4}}}",
+                    s = "",
+                    name = get_function_name(&inst.opname),
+                    extras = extras,
+                    params = params,
+                    x = if params.len() == 0 { "" } else { ", " },
+                    m = if extras.len() == 0 { "" } else { "mut " },
+                    y = if extras.len() != 0 { ";\n" } else { "" },
+                    init = get_init_list(&inst.operands).join(", "),
+                    opcode = &inst.opname[2..])
+        } else {
+            format!("{s:4}/// Appends an Op{opcode} instruction to the current basic block.\n\
+                     {s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<()> {{\n\
+                     {s:8}if self.basic_block.is_none() {{\n\
+                     {s:12}return Err(Error::DetachedInstruction);\n\
+                     {s:8}}}\n\
+                     {s:8}let {m}inst = mr::Instruction::new(\
+                         spirv::Op::{opcode}, None, None, vec![{init}]);\n\
+                     {extras}{y}\
+                     {s:8}Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))\n\
+                     {s:4}}}",
+                    s = "",
+                    name = get_function_name(&inst.opname),
+                    extras = extras,
+                    params = params,
+                    x = if params.len() == 0 { "" } else { ", " },
+                    m = if extras.len() == 0 { "" } else { "mut " },
+                    y = if extras.len() != 0 { ";\n" } else { "" },
+                    init = get_init_list(&inst.operands).join(", "),
+                    opcode = &inst.opname[2..])
+        }
     }).collect();
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
