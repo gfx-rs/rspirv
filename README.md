@@ -58,7 +58,7 @@ Status
 I plan to implement serveral functionalities:
 
 - [x] SPIR-V [memory representation][doc-mr] (MR)
-- [ ] SPIR-V module builder
+- [x] SPIR-V module builder
 - [ ] SPIR-V module assemebler
 - [x] SPIR-V binary module [parser][doc-parser]
 - [x] SPIR-V binary module disassemebler
