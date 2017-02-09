@@ -27,6 +27,12 @@
 //! Required components of a language construct may still be wrapped around
 //! using `Option`; it makes the memory representation more flexible since
 //! we don't always require valid language constructs.
+//!
+//! Apart from definitions of various language constructs, this module also
+//! provides a [loader](struct.Loader.html) for loading SPIR-V binaries
+//! (together with the [parser](../binary/struct.Parser.html)) and a
+//! [builder](struct.Builder.html) for building a SPIR-V memory representation
+//! interactively.
 
 pub use self::builder::Builder;
 pub use self::constructs::{BasicBlock, Function, Instruction};

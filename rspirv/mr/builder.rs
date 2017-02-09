@@ -27,13 +27,24 @@ type BuildResult<T> = result::Result<T, Error>;
 /// Constructs a [`Module`](struct.Module.html) by aggregating results from
 /// method calls for various instructions.
 ///
+/// If a SPIR-V instruction has result id, the build method for it will return
+/// an result id automatically assigned from the builder.
+///
+/// Instructions belonging to the module (e.g., `OpDecorate`) can be appended
+/// at any time, no matter that a basic block is currently under construction
+/// or not. Intructions that can appear both in the module and basic block
+/// (e.g., `OpVariable`) will be inserted to the current basic block under
+/// construction first, if any.
+///
+/// # Errors
+///
 /// Methods in the builder implement little sanity check; only appending
 /// instructions that violates the module structure is guarded. So methods
 /// possibly returning errors are basically those related to function and basic
-/// block construction. Instructions belonging to the module can be appended
-/// at any time, regardless building a basic block or not. Intructions that
-/// can appear both in the module and basic block will be inserted to the
-/// current basic block under construction first, if any.
+/// block construction (e.g., `OpFunction` and `OpLabel`).
+///
+/// Errors returned are enumerants related to function structure from the
+/// [`Error`](enum.Error.html) enum.
 ///
 /// # Examples
 ///
@@ -48,7 +59,11 @@ type BuildResult<T> = result::Result<T, Error>;
 ///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
 ///     let void = b.type_void();
 ///     let voidf = b.type_function(void, vec![void]);
-///     b.begin_function(void, spirv::FUNCTION_CONTROL_NONE, voidf).unwrap();
+///     b.begin_function(void,
+///                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
+///                       spirv::FUNCTION_CONTROL_CONST),
+///                      voidf)
+///      .unwrap();
 ///     b.begin_basic_block().unwrap();
 ///     b.ret().unwrap();
 ///     b.end_function().unwrap();
@@ -57,7 +72,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///                "OpMemoryModel Logical Simple\n\
 ///                 %1 = OpTypeVoid\n\
 ///                 %2 = OpTypeFunction %1 %1\n\
-///                 %3 = OpFunction  %1  None %2\n\
+///                 %3 = OpFunction  %1  DontInline|Const %2\n\
 ///                 %4 = OpLabel\n\
 ///                 OpReturn\n\
 ///                 OpFunctionEnd");

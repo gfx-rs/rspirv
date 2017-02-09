@@ -18,8 +18,10 @@
 //!
 //! * The whole SPIR-V [grammar](grammar/index.html) (instruction layouts
 //!   and their operands)
-//! * A [memory representation](mr/index.html) of SPIR-V modules
-//! * A SPIR-V [binary](binary/index.html) loading and parsing Rust module
+//! * A [memory representation](mr/index.html) of SPIR-V modules and its
+//!   loader and builder
+//! * SPIR-V [binary](binary/index.html) module decoding and parsing
+//!   functionalities
 
 #[cfg(test)]
 #[macro_use]

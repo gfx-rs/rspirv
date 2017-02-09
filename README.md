@@ -123,6 +123,39 @@ match rspirv::mr::load(&buffer) {
 // OpMemoryModel Logical GLSL450
 ```
 
+Building a SPIR-V binary module:
+
+```rust
+extern crate rspirv;
+extern crate spirv_headers as spirv;
+
+use rspirv::binary::Disassemble;
+
+fn main() {
+    let mut b = rspirv::mr::Builder::new();
+    b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+    let void = b.type_void();
+    let voidf = b.type_function(void, vec![void]);
+    b.begin_function(void,
+                     (spirv::FUNCTION_CONTROL_DONT_INLINE |
+                      spirv::FUNCTION_CONTROL_CONST),
+                     voidf)
+     .unwrap();
+    b.begin_basic_block().unwrap();
+    b.ret().unwrap();
+    b.end_function().unwrap();
+
+    assert_eq!(b.module().disassemble(),
+               "OpMemoryModel Logical Simple\n\
+                %1 = OpTypeVoid\n\
+                %2 = OpTypeFunction %1 %1\n\
+                %3 = OpFunction  %1  DontInline|Const %2\n\
+                %4 = OpLabel\n\
+                OpReturn\n\
+                OpFunctionEnd");
+}
+```
+
 Parsing a SPIR-V binary module:
 
 ```rust
