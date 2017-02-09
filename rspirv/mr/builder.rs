@@ -55,12 +55,12 @@ type BuildResult<T> = result::Result<T, Error>;
 ///
 ///     assert_eq!(b.module().disassemble(),
 ///                "OpMemoryModel Logical Simple\n\
-///                 %1 = OpTypeVoid \n\
+///                 %1 = OpTypeVoid\n\
 ///                 %2 = OpTypeFunction %1 %1\n\
 ///                 %3 = OpFunction  %1   %2\n\
-///                 %4 = OpLabel \n\
-///                 OpReturn \n\
-///                 OpFunctionEnd ");
+///                 %4 = OpLabel\n\
+///                 OpReturn\n\
+///                 OpFunctionEnd");
 /// }
 /// ```
 pub struct Builder {

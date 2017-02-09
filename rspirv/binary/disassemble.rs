@@ -57,13 +57,18 @@ fn disas_join<T: Disassemble>(insts: &Vec<T>, delimiter: &str) -> String {
 
 impl Disassemble for mr::Instruction {
     fn disassemble(&self) -> String {
-        format!("{rid}{opcode}{rtype} {operands}",
+        format!("{rid}{opcode}{rtype}{space}{operands}",
                 rid = self.result_id
                           .map_or(String::new(), |w| format!("%{} = ", w)),
                 opcode = format!("Op{}", self.class.opname),
                 // extra space both before and after the reseult type
                 rtype = self.result_type
                             .map_or(String::new(), |w| format!("  %{} ", w)),
+                space = if !self.operands.is_empty() {
+                    " "
+                } else {
+                    ""
+                },
                 operands = disas_join(&self.operands, " "))
     }
 }
