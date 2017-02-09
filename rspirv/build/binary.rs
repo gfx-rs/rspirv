@@ -349,3 +349,35 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
         manual_cases = manual_cases.join("\n"),
         functions = further_parse_methods.join("\n\n"))
 }
+
+pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> String {
+    let elements: Vec<String> = grammar.iter().filter(|kind| {
+        kind.category == "BitEnum"
+    }).map(|kind| {
+        let kind_name = snake_casify(&kind.kind);
+        let checks: Vec<String> = kind.enumerants.iter().filter_map(|enumerant| {
+            if enumerant.value.string == "0x0000" {
+                None
+            } else {
+                Some((format!("{}_{}", kind_name, snake_casify(&enumerant.symbol)).to_uppercase(),
+                      &enumerant.symbol))
+            }
+        }).map(|(check, show)| {
+            format!("        if self.contains(spirv::{}) {{ bits.push(\"{}\") }}", check, show)
+        }).collect();
+
+        format!("impl Disassemble for spirv::{kind} {{\n\
+                 {s:4}fn disassemble(&self) -> String {{\n\
+                 {s:8}if self.is_empty() {{ return \"None\".to_string() }}\n\
+                 {s:8}let mut bits = vec![];\n\
+                 {checks}\n\
+                 {s:8}bits.join(\"|\")\n\
+                 {s:4}}}\n\
+                 }}",
+                s = " ",
+                kind = kind.kind,
+                checks = checks.join("\n"))
+    }).collect();
+
+    elements.join("\n\n")
+}

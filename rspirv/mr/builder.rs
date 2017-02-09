@@ -57,7 +57,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///                "OpMemoryModel Logical Simple\n\
 ///                 %1 = OpTypeVoid\n\
 ///                 %2 = OpTypeFunction %1 %1\n\
-///                 %3 = OpFunction  %1   %2\n\
+///                 %3 = OpFunction  %1  None %2\n\
 ///                 %4 = OpLabel\n\
 ///                 OpReturn\n\
 ///                 OpFunctionEnd");

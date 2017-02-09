@@ -35,12 +35,22 @@ impl Disassemble for mr::ModuleHeader {
     }
 }
 
+include!("disas_operand.rs");
+
 impl Disassemble for mr::Operand {
     fn disassemble(&self) -> String {
         match *self {
             mr::Operand::IdMemorySemantics(v) |
             mr::Operand::IdScope(v) |
             mr::Operand::IdRef(v) => format!("%{}", v),
+            mr::Operand::ImageOperands(v) => v.disassemble(),
+            mr::Operand::FPFastMathMode(v) => v.disassemble(),
+            mr::Operand::SelectionControl(v) => v.disassemble(),
+            mr::Operand::LoopControl(v) => v.disassemble(),
+            mr::Operand::FunctionControl(v) => v.disassemble(),
+            mr::Operand::MemorySemantics(v) => v.disassemble(),
+            mr::Operand::MemoryAccess(v) => v.disassemble(),
+            mr::Operand::KernelProfilingInfo(v) => v.disassemble(),
             _ => format!("{}", self),
         }
     }
@@ -197,5 +207,39 @@ fn disas_ext_inst(inst: &mr::Instruction,
         }
     } else {
         inst.disassemble()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use mr;
+    use spirv;
+
+    use binary::Disassemble;
+
+    #[test]
+    fn test_disassemble_operand_function_control() {
+        let o = mr::Operand::FunctionControl(spirv::FUNCTION_CONTROL_NONE);
+        assert_eq!("None", o.disassemble());
+        let o = mr::Operand::FunctionControl(spirv::FUNCTION_CONTROL_INLINE);
+        assert_eq!("Inline", o.disassemble());
+        let o = mr::Operand::FunctionControl(spirv::FUNCTION_CONTROL_INLINE |
+                                             spirv::FUNCTION_CONTROL_PURE);
+        assert_eq!("Inline|Pure", o.disassemble());
+        let o = mr::Operand::FunctionControl(spirv::FunctionControl::all());
+        assert_eq!("Inline|DontInline|Pure|Const", o.disassemble());
+    }
+
+    #[test]
+    fn test_disassemble_operand_memory_semantics() {
+        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_NONE);
+        assert_eq!("None", o.disassemble());
+        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_RELAXED);
+        assert_eq!("None", o.disassemble());
+        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_RELEASE);
+        assert_eq!("Release", o.disassemble());
+        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_RELEASE |
+                                             spirv::MEMORY_SEMANTICS_WORKGROUP_MEMORY);
+        assert_eq!("Release|WorkgroupMemory", o.disassemble());
     }
 }

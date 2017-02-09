@@ -158,6 +158,13 @@ fn main() {
         let c = binary::gen_operand_parse_methods(&grammar.operand_kinds);
         write!(c, path);
     }
+    {
+        // Path to the generated operand parsing methods.
+        path.pop();
+        path.push("disas_operand.rs");
+        let c = binary::gen_disas_bit_enum_operands(&grammar.operand_kinds);
+        write!(c, path);
+    }
 
     // For GLSLstd450 extended instruction set.
     path.pop();
