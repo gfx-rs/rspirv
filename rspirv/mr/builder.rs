@@ -91,6 +91,20 @@ impl Builder {
         Ok(self.module.functions.push(f))
     }
 
+    /// Declares a formal parameter for the current function.
+    pub fn function_parameter(&mut self, result_type: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.function.is_none() {
+            return Err(Error::DetachedFunctionParameter);
+        }
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::FunctionParameter,
+                                        Some(result_type),
+                                        Some(id),
+                                        vec![]);
+        self.function.as_mut().unwrap().parameters.push(inst);
+        Ok(id)
+    }
+
     /// Begins building of a new basic block.
     pub fn begin_basic_block(&mut self) -> BuildResult<spirv::Word> {
         if self.function.is_none() {
