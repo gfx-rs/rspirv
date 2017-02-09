@@ -329,6 +329,45 @@ impl Builder {
     }
 }
 
+impl Builder {
+    /// Appends an OpCapability instruction to either the current basic block
+    /// or the module if no basic block is under construction.
+    pub fn variable(&mut self,
+                    result_type: spirv::Word,
+                    storage_class: spirv::StorageClass,
+                    initializer: Option<spirv::Word>)
+                    -> spirv::Word {
+        let id = self.id();
+        let mut operands = vec![mr::Operand::StorageClass(storage_class)];
+        match initializer {
+            Some(val) => operands.push(mr::Operand::IdRef(val)),
+            None => (),
+        }
+        let inst = mr::Instruction::new(
+            spirv::Op::Variable, Some(result_type), Some(id), operands);
+
+        match self.basic_block {
+            Some(ref mut bb) => bb.instructions.push(inst),
+            None => self.module.types_global_values.push(inst),
+        }
+        id
+    }
+
+    /// Appends an OpUndef instruction to either the current basic block
+    /// or the module if no basic block is under construction.
+    pub fn undef(&mut self, result_type: spirv::Word) -> spirv::Word {
+        let id = self.id();
+        let inst = mr::Instruction::new(
+            spirv::Op::Undef, Some(result_type), Some(id), vec![]);
+
+        match self.basic_block {
+            Some(ref mut bb) => bb.instructions.push(inst),
+            None => self.module.types_global_values.push(inst),
+        }
+        id
+    }
+}
+
 include!("build_norm_insts.rs");
 
 #[cfg(test)]
