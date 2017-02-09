@@ -89,8 +89,9 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
         } else if param.quantifier == "?" {
             let kind = get_mr_operand_kind(&param.kind);
             Some(format!(
-                    "{s:8}if {name}.is_some() {{\n\
-                     {s:12}{container}.push(mr::Operand::{kind}({name}.unwrap()))\n\
+                    "{s:8}match {name} {{\n\
+                     {s:12}Some(v) => {container}.push(mr::Operand::{kind}(v)),\n\
+                     {s:12}None => (),\n\
                      {s:8}}}",
                     s = "",
                     kind = kind,

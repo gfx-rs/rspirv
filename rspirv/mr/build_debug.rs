@@ -26,11 +26,13 @@ impl Builder {
     /// Appends an OpSource instruction.
     pub fn source(&mut self, source_language: spirv::SourceLanguage, version: u32, file: Option<spirv::Word>, source: Option<String>) {
         let mut inst = mr::Instruction::new(spirv::Op::Source, None, None, vec![mr::Operand::SourceLanguage(source_language), mr::Operand::LiteralInt32(version)]);
-        if file.is_some() {
-            inst.operands.push(mr::Operand::IdRef(file.unwrap()))
+        match file {
+            Some(v) => inst.operands.push(mr::Operand::IdRef(v)),
+            None => (),
         };
-        if source.is_some() {
-            inst.operands.push(mr::Operand::LiteralString(source.unwrap()))
+        match source {
+            Some(v) => inst.operands.push(mr::Operand::LiteralString(v)),
+            None => (),
         };
         self.module.debugs.push(inst);
     }
