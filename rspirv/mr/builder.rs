@@ -193,6 +193,7 @@ impl Builder {
 }
 
 include!("build_type.rs");
+include!("build_constant.rs");
 include!("build_terminator.rs");
 
 impl Builder {
@@ -330,6 +331,54 @@ impl Builder {
 }
 
 impl Builder {
+    /// Appends an OpConstant instruction with the given 32-bit float `value`.
+    /// or the module if no basic block is under construction.
+    pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::Constant,
+                                        Some(result_type),
+                                        Some(id),
+                                        vec![mr::Operand::LiteralFloat32(value)]);
+        self.module.types_global_values.push(inst);
+        id
+    }
+
+    /// Appends an OpConstant instruction with the given 32-bit integer `value`.
+    /// or the module if no basic block is under construction.
+    pub fn constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::Constant,
+                                        Some(result_type),
+                                        Some(id),
+                                        vec![mr::Operand::LiteralInt32(value)]);
+        self.module.types_global_values.push(inst);
+        id
+    }
+
+    /// Appends an OpSpecConstant instruction with the given 32-bit float `value`.
+    /// or the module if no basic block is under construction.
+    pub fn spec_constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::SpecConstant,
+                                        Some(result_type),
+                                        Some(id),
+                                        vec![mr::Operand::LiteralFloat32(value)]);
+        self.module.types_global_values.push(inst);
+        id
+    }
+
+    /// Appends an OpSpecConstant instruction with the given 32-bit integer `value`.
+    /// or the module if no basic block is under construction.
+    pub fn spec_constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::SpecConstant,
+                                        Some(result_type),
+                                        Some(id),
+                                        vec![mr::Operand::LiteralInt32(value)]);
+        self.module.types_global_values.push(inst);
+        id
+    }
+
     /// Appends an OpCapability instruction to either the current basic block
     /// or the module if no basic block is under construction.
     pub fn variable(&mut self,
@@ -343,8 +392,7 @@ impl Builder {
             Some(val) => operands.push(mr::Operand::IdRef(val)),
             None => (),
         }
-        let inst = mr::Instruction::new(
-            spirv::Op::Variable, Some(result_type), Some(id), operands);
+        let inst = mr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
 
         match self.basic_block {
             Some(ref mut bb) => bb.instructions.push(inst),
@@ -357,8 +405,7 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn undef(&mut self, result_type: spirv::Word) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(
-            spirv::Op::Undef, Some(result_type), Some(id), vec![]);
+        let inst = mr::Instruction::new(spirv::Op::Undef, Some(result_type), Some(id), vec![]);
 
         match self.basic_block {
             Some(ref mut bb) => bb.instructions.push(inst),

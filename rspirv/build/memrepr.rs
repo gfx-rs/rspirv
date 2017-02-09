@@ -308,7 +308,8 @@ pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>) -> String 
 }
 
 pub fn gen_mr_builder_normal_insts(grammar: &Vec<structs::Instruction>) -> String {
-    // Generate build methods for all types.
+    // Generate build methods for all normal instructions (instructions must be
+    // in some basic block).
     let elements: Vec<String> = grammar.iter().filter(|inst| {
         inst.class == ""
     }).map(|inst| {
@@ -359,6 +360,35 @@ pub fn gen_mr_builder_normal_insts(grammar: &Vec<structs::Instruction>) -> Strin
                     init = get_init_list(&inst.operands).join(", "),
                     opcode = &inst.opname[2..])
         }
+    }).collect();
+    format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
+}
+
+pub fn gen_mr_builder_constants(grammar: &Vec<structs::Instruction>) -> String {
+    // Generate build methods for all constants.
+    let elements: Vec<String> = grammar.iter().filter(|inst| {
+        inst.class == "Constant" && inst.opname != "OpConstant" && inst.opname != "OpSpecConstant"
+    }).map(|inst| {
+        let params = get_param_list(&inst.operands).join(", ");
+        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        format!("{s:4}/// Appends an Op{opcode} instruction.\n\
+                 {s:4}pub fn {name}(&mut self{x}{params}) -> spirv::Word {{\n\
+                 {s:8}let id = self.id();\n\
+                 {s:8}let {m}inst = mr::Instruction::new(\
+                     spirv::Op::{opcode}, Some(result_type), Some(id), vec![{init}]);\n\
+                 {extras}{y}\
+                 {s:8}self.module.types_global_values.push(inst);\n\
+                 {s:8}id\n\
+                 {s:4}}}",
+                s = "",
+                name = get_function_name(&inst.opname),
+                extras = extras,
+                params = params,
+                x = if params.len() == 0 { "" } else { ", " },
+                m = if extras.len() == 0 { "" } else { "mut " },
+                y = if extras.len() != 0 { ";\n" } else { "" },
+                init = get_init_list(&inst.operands).join(", "),
+                opcode = &inst.opname[2..])
     }).collect();
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
