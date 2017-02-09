@@ -25,8 +25,44 @@ type BuildResult<T> = result::Result<T, Error>;
 /// The memory representation builder.
 ///
 /// Constructs a [`Module`](struct.Module.html) by aggregating results from
-/// method calls for various instructions. Most of the methods return the
-/// SPIR-V id assigned for that SPIR-V instruction.
+/// method calls for various instructions.
+///
+/// Methods in the builder implement little sanity check; only appending
+/// instructions that violates the module structure is guarded. So methods
+/// possibly returning errors are basically those related to function and basic
+/// block construction. Instructions belonging to the module can be appended
+/// at any time, regardless building a basic block or not. Intructions that
+/// can appear both in the module and basic block will be inserted to the
+/// current basic block under construction first, if any.
+///
+/// # Examples
+///
+/// ```
+/// extern crate rspirv;
+/// extern crate spirv_headers as spirv;
+///
+/// use rspirv::binary::Disassemble;
+///
+/// fn main() {
+///     let mut b = rspirv::mr::Builder::new();
+///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+///     let void = b.type_void();
+///     let voidf = b.type_function(void, vec![void]);
+///     b.begin_function(void, spirv::FUNCTION_CONTROL_NONE, voidf).unwrap();
+///     b.begin_basic_block().unwrap();
+///     b.ret().unwrap();
+///     b.end_function().unwrap();
+///
+///     assert_eq!(b.module().disassemble(),
+///                "OpMemoryModel Logical Simple\n\
+///                 %1 = OpTypeVoid \n\
+///                 %2 = OpTypeFunction %1 %1\n\
+///                 %3 = OpFunction  %1   %2\n\
+///                 %4 = OpLabel \n\
+///                 OpReturn \n\
+///                 OpFunctionEnd ");
+/// }
+/// ```
 pub struct Builder {
     module: mr::Module,
     next_id: u32,
@@ -117,7 +153,7 @@ impl Builder {
         let id = self.id();
 
         let mut bb = mr::BasicBlock::new();
-        bb.label = Some(mr::Instruction::new(spirv::Op::Label, None, None, vec![]));
+        bb.label = Some(mr::Instruction::new(spirv::Op::Label, None, Some(id), vec![]));
 
         self.basic_block = Some(bb);
         Ok(id)
