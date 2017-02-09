@@ -34,6 +34,7 @@
       "opcode" : 0
     },
     {
+      "class": "Variable",
       "opname" : "OpUndef",
       "opcode" : 1,
       "operands" : [
@@ -42,6 +43,7 @@
       ]
     },
     {
+      "class": "Debug",
       "opname" : "OpSourceContinued",
       "opcode" : 2,
       "operands" : [
@@ -49,6 +51,7 @@
       ]
     },
     {
+      "class": "Debug",
       "opname" : "OpSource",
       "opcode" : 3,
       "operands" : [
@@ -59,6 +62,7 @@
       ]
     },
     {
+      "class": "Debug",
       "opname" : "OpSourceExtension",
       "opcode" : 4,
       "operands" : [
@@ -66,6 +70,7 @@
       ]
     },
     {
+      "class": "Debug",
       "opname" : "OpName",
       "opcode" : 5,
       "operands" : [
@@ -74,6 +79,7 @@
       ]
     },
     {
+      "class": "Debug",
       "opname" : "OpMemberName",
       "opcode" : 6,
       "operands" : [
@@ -83,6 +89,7 @@
       ]
     },
     {
+      "class": "Debug",
       "opname" : "OpString",
       "opcode" : 7,
       "operands" : [
@@ -91,6 +98,7 @@
       ]
     },
     {
+      "class": "DebugLine",
       "opname" : "OpLine",
       "opcode" : 8,
       "operands" : [
@@ -100,6 +108,7 @@
       ]
     },
     {
+      "class": "ExtensionDecl",
       "opname" : "OpExtension",
       "opcode" : 10,
       "operands" : [
@@ -107,6 +116,7 @@
       ]
     },
     {
+      "class": "ExtensionDecl",
       "opname" : "OpExtInstImport",
       "opcode" : 11,
       "operands" : [
@@ -126,6 +136,7 @@
       ]
     },
     {
+      "class": "ModeSetting",
       "opname" : "OpMemoryModel",
       "opcode" : 14,
       "operands" : [
@@ -134,6 +145,7 @@
       ]
     },
     {
+      "class": "ModeSetting",
       "opname" : "OpEntryPoint",
       "opcode" : 15,
       "operands" : [
@@ -144,6 +156,7 @@
       ]
     },
     {
+      "class": "ModeSetting",
       "opname" : "OpExecutionMode",
       "opcode" : 16,
       "operands" : [
@@ -152,6 +165,7 @@
       ]
     },
     {
+      "class": "ModeSetting",
       "opname" : "OpCapability",
       "opcode" : 17,
       "operands" : [
@@ -159,6 +173,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeVoid",
       "opcode" : 19,
       "operands" : [
@@ -166,6 +181,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeBool",
       "opcode" : 20,
       "operands" : [
@@ -173,6 +189,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeInt",
       "opcode" : 21,
       "operands" : [
@@ -182,6 +199,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeFloat",
       "opcode" : 22,
       "operands" : [
@@ -190,6 +208,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeVector",
       "opcode" : 23,
       "operands" : [
@@ -199,6 +218,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeMatrix",
       "opcode" : 24,
       "operands" : [
@@ -209,6 +229,7 @@
       "capabilities" : [ "Matrix" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeImage",
       "opcode" : 25,
       "operands" : [
@@ -224,6 +245,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeSampler",
       "opcode" : 26,
       "operands" : [
@@ -231,6 +253,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeSampledImage",
       "opcode" : 27,
       "operands" : [
@@ -239,6 +262,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeArray",
       "opcode" : 28,
       "operands" : [
@@ -248,6 +272,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeRuntimeArray",
       "opcode" : 29,
       "operands" : [
@@ -257,6 +282,7 @@
       "capabilities" : [ "Shader" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeStruct",
       "opcode" : 30,
       "operands" : [
@@ -265,6 +291,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeOpaque",
       "opcode" : 31,
       "operands" : [
@@ -274,6 +301,7 @@
       "capabilities" : [ "Kernel" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypePointer",
       "opcode" : 32,
       "operands" : [
@@ -283,6 +311,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeFunction",
       "opcode" : 33,
       "operands" : [
@@ -292,6 +321,7 @@
       ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeEvent",
       "opcode" : 34,
       "operands" : [
@@ -300,6 +330,7 @@
       "capabilities" : [ "Kernel" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeDeviceEvent",
       "opcode" : 35,
       "operands" : [
@@ -308,6 +339,7 @@
       "capabilities" : [ "DeviceEnqueue" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeReserveId",
       "opcode" : 36,
       "operands" : [
@@ -316,6 +348,7 @@
       "capabilities" : [ "Pipes" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeQueue",
       "opcode" : 37,
       "operands" : [
@@ -324,6 +357,7 @@
       "capabilities" : [ "DeviceEnqueue" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypePipe",
       "opcode" : 38,
       "operands" : [
@@ -333,6 +367,7 @@
       "capabilities" : [ "Pipes" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeForwardPointer",
       "opcode" : 39,
       "operands" : [
@@ -342,6 +377,7 @@
       "capabilities" : [ "Addresses" ]
     },
     {
+      "class": "Constant",
       "opname" : "OpConstantTrue",
       "opcode" : 41,
       "operands" : [
@@ -350,6 +386,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpConstantFalse",
       "opcode" : 42,
       "operands" : [
@@ -358,6 +395,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpConstant",
       "opcode" : 43,
       "operands" : [
@@ -367,6 +405,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpConstantComposite",
       "opcode" : 44,
       "operands" : [
@@ -376,6 +415,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpConstantSampler",
       "opcode" : 45,
       "operands" : [
@@ -388,6 +428,7 @@
       "capabilities" : [ "LiteralSampler" ]
     },
     {
+      "class": "Constant",
       "opname" : "OpConstantNull",
       "opcode" : 46,
       "operands" : [
@@ -396,6 +437,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpSpecConstantTrue",
       "opcode" : 48,
       "operands" : [
@@ -404,6 +446,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpSpecConstantFalse",
       "opcode" : 49,
       "operands" : [
@@ -412,6 +455,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpSpecConstant",
       "opcode" : 50,
       "operands" : [
@@ -421,6 +465,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpSpecConstantComposite",
       "opcode" : 51,
       "operands" : [
@@ -430,6 +475,7 @@
       ]
     },
     {
+      "class": "Constant",
       "opname" : "OpSpecConstantOp",
       "opcode" : 52,
       "operands" : [
@@ -439,6 +485,7 @@
       ]
     },
     {
+      "class": "FunctionStruct",
       "opname" : "OpFunction",
       "opcode" : 54,
       "operands" : [
@@ -449,6 +496,7 @@
       ]
     },
     {
+      "class": "FunctionStruct",
       "opname" : "OpFunctionParameter",
       "opcode" : 55,
       "operands" : [
@@ -457,6 +505,7 @@
       ]
     },
     {
+      "class": "FunctionStruct",
       "opname" : "OpFunctionEnd",
       "opcode" : 56
     },
@@ -471,6 +520,7 @@
       ]
     },
     {
+      "class": "Variable",
       "opname" : "OpVariable",
       "opcode" : 59,
       "operands" : [
@@ -596,6 +646,7 @@
       "capabilities" : [ "Addresses" ]
     },
     {
+      "class": "Annotation",
       "opname" : "OpDecorate",
       "opcode" : 71,
       "operands" : [
@@ -604,6 +655,7 @@
       ]
     },
     {
+      "class": "Annotation",
       "opname" : "OpMemberDecorate",
       "opcode" : 72,
       "operands" : [
@@ -613,6 +665,7 @@
       ]
     },
     {
+      "class": "Annotation",
       "opname" : "OpDecorationGroup",
       "opcode" : 73,
       "operands" : [
@@ -620,6 +673,7 @@
       ]
     },
     {
+      "class": "Annotation",
       "opname" : "OpGroupDecorate",
       "opcode" : 74,
       "operands" : [
@@ -628,6 +682,7 @@
       ]
     },
     {
+      "class": "Annotation",
       "opname" : "OpGroupMemberDecorate",
       "opcode" : 75,
       "operands" : [
@@ -2245,6 +2300,7 @@
       ]
     },
     {
+      "class": "FunctionStruct",
       "opname" : "OpLabel",
       "opcode" : 248,
       "operands" : [
@@ -2252,6 +2308,7 @@
       ]
     },
     {
+      "class": "Terminator",
       "opname" : "OpBranch",
       "opcode" : 249,
       "operands" : [
@@ -2259,6 +2316,7 @@
       ]
     },
     {
+      "class": "Terminator",
       "opname" : "OpBranchConditional",
       "opcode" : 250,
       "operands" : [
@@ -2269,6 +2327,7 @@
       ]
     },
     {
+      "class": "Terminator",
       "opname" : "OpSwitch",
       "opcode" : 251,
       "operands" : [
@@ -2278,15 +2337,18 @@
       ]
     },
     {
+      "class": "Terminator",
       "opname" : "OpKill",
       "opcode" : 252,
       "capabilities" : [ "Shader" ]
     },
     {
+      "class": "Terminator",
       "opname" : "OpReturn",
       "opcode" : 253
     },
     {
+      "class": "Terminator",
       "opname" : "OpReturnValue",
       "opcode" : 254,
       "operands" : [
@@ -2294,6 +2356,7 @@
       ]
     },
     {
+      "class": "Terminator",
       "opname" : "OpUnreachable",
       "opcode" : 255
     },
@@ -2971,6 +3034,7 @@
       "capabilities" : [ "SparseResidency" ]
     },
     {
+      "class": "DebugLine",
       "opname" : "OpNoLine",
       "opcode" : 317
     },
@@ -3019,6 +3083,7 @@
       "capabilities" : [ "Addresses" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypePipeStorage",
       "opcode" : 322,
       "operands" : [
@@ -3027,6 +3092,7 @@
       "capabilities" : [ "PipeStorage" ]
     },
     {
+      "class": "Constant",
       "opname" : "OpConstantPipeStorage",
       "opcode" : 323,
       "operands" : [
@@ -3076,6 +3142,7 @@
       "capabilities" : [ "SubgroupDispatch" ]
     },
     {
+      "class": "Type",
       "opname" : "OpTypeNamedBarrier",
       "opcode" : 327,
       "operands" : [
@@ -3104,6 +3171,7 @@
       "capabilities" : [ "NamedBarrier" ]
     },
     {
+      "class": "Debug",
       "opname" : "OpModuleProcessed",
       "opcode" : 330,
       "operands" : [

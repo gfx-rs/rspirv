@@ -16,10 +16,6 @@ use structs;
 
 use utils::*;
 
-static TERMINATORS: &'static [&'static str] = &[
-    "OpBranch", "OpBranchConditional", "OpSwitch", "OpKill",
-    "OpReturn", "OpReturnValue", "OpUnreachable"];
-
 fn get_param_name(param: &structs::Operand) -> String {
     if param.name.len() == 0 {
         snake_casify(&param.kind)
@@ -215,7 +211,7 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
 pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.iter().filter(|inst| {
-        inst.opname.starts_with("OpType")
+        inst.class == "Type"
     }).map(|inst| {
         // Parameter list for this build method.
         let param_list = get_param_list(&inst.operands[1..]).join(", ");
@@ -251,7 +247,7 @@ pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>)
                                  -> String {
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.iter().filter(|inst| {
-        TERMINATORS.iter().find(|t| inst.opname == **t).is_some()
+        inst.class == "Terminator"
     }).map(|inst| {
         let params = get_param_list(&inst.operands).join(", ");
         let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");

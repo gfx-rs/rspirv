@@ -28,6 +28,8 @@ pub struct Operand {
 
 #[derive(Debug, Deserialize)]
 pub struct Instruction {
+    #[serde(default)]
+    pub class: String,
     pub opname: String,
     pub opcode: u32,
     #[serde(default)]
