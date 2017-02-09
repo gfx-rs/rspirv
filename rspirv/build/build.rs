@@ -108,6 +108,13 @@ fn main() {
     {
         // Path to the generated builder for memory representation.
         path.pop();
+        path.push("build_annotation.rs");
+        let c = memrepr::gen_mr_builder_annotation(&grammar.instructions);
+        write!(c, path);
+    }
+    {
+        // Path to the generated builder for memory representation.
+        path.pop();
         path.push("build_constant.rs");
         let c = memrepr::gen_mr_builder_constants(&grammar.instructions);
         write!(c, path);

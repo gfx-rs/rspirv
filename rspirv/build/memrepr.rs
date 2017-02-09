@@ -109,6 +109,15 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
                         s = "",
                         name = name,
                         container = container))
+            } else if param.kind == "PairIdRefLiteralInteger" {
+                Some(format!(
+                        "{s:8}for v in {name} {{\n\
+                         {s:12}{container}.push(mr::Operand::IdRef(v.0));\n\
+                         {s:12}{container}.push(mr::Operand::LiteralInt32(v.1));\n\
+                         {s:8}}}",
+                        s = "",
+                        name = name,
+                        container = container))
             } else if param.kind == "PairIdRefIdRef" {
                 Some(format!(
                         "{s:8}for v in {name} {{\n\
@@ -407,6 +416,33 @@ pub fn gen_mr_builder_debug(grammar: &Vec<structs::Instruction>) -> String {
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                  {extras}{y}\
                  {s:8}self.module.debugs.push(inst);\n\
+                 {s:4}}}",
+                s = "",
+                name = get_function_name(&inst.opname),
+                extras = extras,
+                params = params,
+                x = if params.len() == 0 { "" } else { ", " },
+                m = if extras.len() == 0 { "" } else { "mut " },
+                y = if extras.len() != 0 { ";\n" } else { "" },
+                init = get_init_list(&inst.operands).join(", "),
+                opcode = &inst.opname[2..])
+    }).collect();
+    format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
+}
+
+pub fn gen_mr_builder_annotation(grammar: &Vec<structs::Instruction>) -> String {
+    // Generate build methods for all constants.
+    let elements: Vec<String> = grammar.iter().filter(|inst| {
+        inst.class == "Annotation" && inst.opname != "OpDecorationGroup"
+    }).map(|inst| {
+        let params = get_param_list(&inst.operands).join(", ");
+        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        format!("{s:4}/// Appends an Op{opcode} instruction.\n\
+                 {s:4}pub fn {name}(&mut self{x}{params}) {{\n\
+                 {s:8}let {m}inst = mr::Instruction::new(\
+                     spirv::Op::{opcode}, None, None, vec![{init}]);\n\
+                 {extras}{y}\
+                 {s:8}self.module.annotations.push(inst);\n\
                  {s:4}}}",
                 s = "",
                 name = get_function_name(&inst.opname),
