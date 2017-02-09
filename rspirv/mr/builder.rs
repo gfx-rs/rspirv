@@ -195,6 +195,7 @@ impl Builder {
 include!("build_type.rs");
 include!("build_constant.rs");
 include!("build_terminator.rs");
+include!("build_debug.rs");
 
 impl Builder {
     pub fn string(&mut self, s: String) -> spirv::Word {
@@ -206,53 +207,12 @@ impl Builder {
         id
     }
 
-    pub fn source(&mut self,
-                  language: spirv::SourceLanguage,
-                  version: u32,
-                  file: Option<spirv::Word>,
-                  source: Option<String>) {
-        let mut operands = vec![mr::Operand::SourceLanguage(language),
-                                mr::Operand::LiteralInt32(version)];
-        match file {
-            Some(f) => operands.push(mr::Operand::IdRef(f)),
-            None => (),
-        }
-        match source {
-            Some(s) => operands.push(mr::Operand::LiteralString(s)),
-            None => (),
-        }
-        self.module.debugs.push(mr::Instruction::new(spirv::Op::Source, None, None, operands));
+    #[allow(unused_variables)]
+    pub fn line(&mut self, file: spirv::Word, line: spirv::Word, column: spirv::Word) {
+        unimplemented!()
     }
-
-    pub fn source_extension(&mut self, extension: String) {
-        self.module.debugs.push(mr::Instruction::new(spirv::Op::SourceExtension,
-                                                     None,
-                                                     None,
-                                                     vec![mr::Operand::LiteralString(extension)]));
-    }
-
-    pub fn source_continued(&mut self, source: String) {
-        self.module.debugs.push(mr::Instruction::new(spirv::Op::SourceContinued,
-                                                     None,
-                                                     None,
-                                                     vec![mr::Operand::LiteralString(source)]));
-    }
-
-    pub fn name(&mut self, target: spirv::Word, name: String) {
-        self.module.debugs.push(mr::Instruction::new(spirv::Op::Name,
-                                                     None,
-                                                     None,
-                                                     vec![mr::Operand::IdRef(target),
-                                                          mr::Operand::LiteralString(name)]));
-    }
-
-    pub fn member_name(&mut self, target_type: spirv::Word, member: u32, name: String) {
-        self.module.debugs.push(mr::Instruction::new(spirv::Op::MemberName,
-                                                     None,
-                                                     None,
-                                                     vec![mr::Operand::IdRef(target_type),
-                                                          mr::Operand::LiteralInt32(member),
-                                                          mr::Operand::LiteralString(name)]));
+    pub fn no_line(&mut self) {
+        unimplemented!()
     }
 }
 

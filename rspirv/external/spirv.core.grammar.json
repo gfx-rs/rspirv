@@ -83,7 +83,7 @@
       "opname" : "OpMemberName",
       "opcode" : 6,
       "operands" : [
-        { "kind" : "IdRef",          "name" : "'Type'" },
+        { "kind" : "IdRef",          "name" : "'TargetType'" },
         { "kind" : "LiteralInteger", "name" : "'Member'" },
         { "kind" : "LiteralString",  "name" : "'Name'" }
       ]

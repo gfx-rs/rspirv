@@ -115,6 +115,13 @@ fn main() {
     {
         // Path to the generated builder for memory representation.
         path.pop();
+        path.push("build_debug.rs");
+        let c = memrepr::gen_mr_builder_debug(&grammar.instructions);
+        write!(c, path);
+    }
+    {
+        // Path to the generated builder for memory representation.
+        path.pop();
         path.push("build_norm_insts.rs");
         let c = memrepr::gen_mr_builder_normal_insts(&grammar.instructions);
         write!(c, path);
