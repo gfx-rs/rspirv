@@ -20,6 +20,10 @@ default = []
 # Regenerate all suitable code from the JSON grammar file.
 regen = []
 
+[badges]
+travis-ci = { repository = "google/rspirv" }
+appveyor = { repository = "antiagainst/rspirv" }
+
 [dependencies]
 num = "0.1"
 num-derive = "0.1"
