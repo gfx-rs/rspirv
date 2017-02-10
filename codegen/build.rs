@@ -20,7 +20,7 @@ extern crate serde_json;
 
 mod binary;
 mod header;
-mod memrepr;
+mod mr;
 mod structs;
 mod table;
 mod utils;
@@ -82,7 +82,7 @@ fn main() {
         path.pop();
         path.push("mr");
         path.push("operand.rs");
-        let c = memrepr::gen_mr_operand_kinds(&grammar.operand_kinds);
+        let c = mr::gen_mr_operand_kinds(&grammar.operand_kinds);
         write!(c, path);
     }
 
@@ -90,42 +90,42 @@ fn main() {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_type.rs");
-        let c = memrepr::gen_mr_builder_types(&grammar.instructions);
+        let c = mr::gen_mr_builder_types(&grammar.instructions);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_terminator.rs");
-        let c = memrepr::gen_mr_builder_terminator(&grammar.instructions);
+        let c = mr::gen_mr_builder_terminator(&grammar.instructions);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_annotation.rs");
-        let c = memrepr::gen_mr_builder_annotation(&grammar.instructions);
+        let c = mr::gen_mr_builder_annotation(&grammar.instructions);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_constant.rs");
-        let c = memrepr::gen_mr_builder_constants(&grammar.instructions);
+        let c = mr::gen_mr_builder_constants(&grammar.instructions);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_debug.rs");
-        let c = memrepr::gen_mr_builder_debug(&grammar.instructions);
+        let c = mr::gen_mr_builder_debug(&grammar.instructions);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_norm_insts.rs");
-        let c = memrepr::gen_mr_builder_normal_insts(&grammar.instructions);
+        let c = mr::gen_mr_builder_normal_insts(&grammar.instructions);
         write!(c, path);
     }
 
