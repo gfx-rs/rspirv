@@ -1,0 +1,54 @@
+core of the rspirv project
+==========================
+
+[![Crate][img-crate-rspirv]][crate-rspirv]
+[![Documentation][img-doc-rspirv]][doc-rspirv]
+
+The core crate of the rspirv project providing APIs for processing SPIR-V
+modules:
+* The whole [SPIR-V grammar][doc-grammar] (instruction layouts and their
+  operands)
+* A [memory representation][doc-mr] of SPIR-V modules and its loader and builder
+* SPIR-V [binary][doc-binary] module decoding and parsing functionalities
+
+This crate defines a common SPIR-V [memory representation][doc-mr] (MR) as the
+medium for various purposes. It also provides a [builder][doc-builder] to
+build the MR iteractively and a [parser][doc-parser] to parse a given SPIR-V
+binary module into its MR.
+The [parser][doc-parser] handles decoding and parsing of SPIR-V binary modules
+according to the [grammar][doc-grammar], the parsed instructions are sent to
+the [consumer][doc-consumer].
+
+Usage
+-----
+
+First add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+rspirv = "0.3"
+```
+
+Then add to your crate root:
+
+```rust
+extern crate rspirv;
+```
+
+Examples
+--------
+
+Please see the [documentation][doc-rspirv] and project's
+[README][project-readme] for examples.
+
+[img-crate-rspirv]: https://img.shields.io/crates/v/rspirv.svg
+[img-doc-rspirv]: https://docs.rs/rspirv/badge.svg
+[crate-rspirv]: https://crates.io/crates/rspirv
+[doc-rspirv]: https://docs.rs/rspirv
+[project-readme]: https://github.com/google/rspirv/blob/master/README.md
+[doc-grammar]: https://docs.rs/rspirv/0.3.0/rspirv/grammar/index.html
+[doc-mr]: https://docs.rs/rspirv/0.3.0/rspirv/mr/index.html
+[doc-builder]: https://docs.rs/rspirv/0.3.0/rspirv/mr/struct.Builder.html
+[doc-binary]: https://docs.rs/rspirv/0.3.0/rspirv/binary/index.html
+[doc-parser]: https://docs.rs/rspirv/0.3.0/rspirv/binary/struct.Parser.html
+[doc-consumer]: https://docs.rs/rspirv/0.3.0/rspirv/binary/trait.Consumer.html
