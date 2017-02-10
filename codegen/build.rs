@@ -169,6 +169,8 @@ fn main() {
     // For GLSLstd450 extended instruction set.
     path.pop();
     path.pop();
+    path.pop();
+    path.push("codegen");
     path.push("external");
     path.push("extinst.glsl.std.450.grammar.json");
 
@@ -184,6 +186,8 @@ fn main() {
         // Path to the generated GLSLstd450 extended instruction set header.
         path.pop();
         path.pop();
+        path.pop();
+        path.push("rspirv");
         path.push("grammar");
         path.push("glsl_std_450.rs");
         let c = table::gen_glsl_std_450_inst_table(&grammar);

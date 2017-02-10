@@ -179,11 +179,18 @@ dependencies = [
  "assert_matches 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)",
  "num-derive 0.1.39 (registry+https://github.com/rust-lang/crates.io-index)",
+ "spirv_headers 1.1.2",
+]
+
+[[package]]
+name = "rspirv-codegen"
+version = "0.1.0"
+dependencies = [
+ "assert_matches 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 0.9.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_derive 0.9.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 0.9.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "spirv_headers 1.1.2",
 ]
 
 [[package]]

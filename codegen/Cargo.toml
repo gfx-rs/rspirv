@@ -1,0 +1,30 @@
+[package]
+name = "rspirv-codegen"
+version = "0.1.0"
+authors = ["Lei Zhang <antiagainst@gmail.com>"]
+
+build = "build.rs"
+
+description = "Code generation module for rspirv"
+documentation = "https://docs.rs/rspirv"
+repository = "https://github.com/google/rspirv"
+readme = "README.md"
+license = "Apache-2.0"
+keywords = ["spirv", "grammar", "codegen"]
+
+[lib]
+path = "lib.rs"
+
+[features]
+default = []
+# Regenerate all suitable code from the JSON grammar file.
+regen = []
+
+[build-dependencies]
+regex = "0.2"
+serde = "0.9"
+serde_derive = "0.9"
+serde_json = "0.9"
+
+[dev-dependencies]
+assert_matches = "1.0"

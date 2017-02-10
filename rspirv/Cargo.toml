@@ -3,8 +3,6 @@ name = "rspirv"
 version = "0.3.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
-build = "build/build.rs"
-
 description = "Rust library APIs for SPIR-V module manipulation"
 documentation = "https://docs.rs/rspirv"
 repository = "https://github.com/google/rspirv"
@@ -14,11 +12,6 @@ keywords = ["spirv", "vulkan", "opengl", "opencl"]
 
 [lib]
 path = "lib.rs"
-
-[features]
-default = []
-# Regenerate all suitable code from the JSON grammar file.
-regen = []
 
 [badges]
 travis-ci = { repository = "google/rspirv" }
@@ -31,12 +24,6 @@ num-derive = "0.1"
 [dependencies.spirv_headers]
 version = "1.1.2"
 path = "../spirv"
-
-[build-dependencies]
-regex = "0.2"
-serde = "0.9"
-serde_derive = "0.9"
-serde_json = "0.9"
 
 [dev-dependencies]
 assert_matches = "1.0"

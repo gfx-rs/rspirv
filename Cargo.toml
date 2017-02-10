@@ -1,2 +1,2 @@
 [workspace]
-members = ["spirv", "rspirv", "dis"]
+members = ["codegen", "spirv", "rspirv", "dis"]
