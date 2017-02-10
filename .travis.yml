@@ -16,11 +16,12 @@ branches:
     - master
 
 script:
-  - cd spirv/
+  - cd codegen/
+  - cargo build --verbose
+  - cd ../spirv/
   - cargo build --verbose
   - cd ../rspirv/
   - cargo build --verbose
-  - cargo build --features regen
   - cargo test --verbose
   - cd ../dis/
   - cargo build
