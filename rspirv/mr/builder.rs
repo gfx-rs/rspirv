@@ -28,13 +28,22 @@ type BuildResult<T> = result::Result<T, Error>;
 /// method calls for various instructions.
 ///
 /// If a SPIR-V instruction has result id, the build method for it will return
-/// an result id automatically assigned from the builder.
+/// a result id automatically assigned from the builder.
 ///
 /// Instructions belonging to the module (e.g., `OpDecorate`) can be appended
 /// at any time, no matter that a basic block is currently under construction
 /// or not. Intructions that can appear both in the module and basic block
 /// (e.g., `OpVariable`) will be inserted to the current basic block under
 /// construction first, if any.
+///
+/// For instructions forward referencing an id, to avoid id collision, you can
+/// either
+///
+/// * first append the target instruction generating that id and then append the
+///   forward referencing instruction; or
+/// * use the `id()` method to get an unused id from the builder, use it in the
+///   forward referencing instruction, and then later fix up the target
+///   instruction's result id.
 ///
 /// # Errors
 ///
@@ -103,7 +112,7 @@ impl Builder {
 
     /// Returns the next unused id.
     #[inline(always)]
-    fn id(&mut self) -> spirv::Word {
+    pub fn id(&mut self) -> spirv::Word {
         let id = self.next_id;
         self.next_id += 1;
         id
