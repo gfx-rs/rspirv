@@ -15,11 +15,6 @@ keywords = ["spirv", "grammar", "codegen"]
 [lib]
 path = "lib.rs"
 
-[features]
-default = []
-# Regenerate all suitable code from the JSON grammar file.
-regen = []
-
 [build-dependencies]
 regex = "0.2"
 serde = "0.9"
