@@ -15,8 +15,9 @@
 use grammar;
 use spirv;
 
+use mr::Operand;
 use spirv::Word;
-use super::operand::Operand;
+use std::iter;
 
 /// Memory representation of a SPIR-V module.
 ///
@@ -103,6 +104,35 @@ pub struct Instruction {
     pub operands: Vec<Operand>,
 }
 
+/// Instruction iterator.
+pub struct InstIter<'i> {
+    instructions: Vec<&'i Instruction>,
+    index: usize,
+}
+
+impl<'i> InstIter<'i> {
+    pub fn new(insts: Vec<&'i Instruction>) -> InstIter<'i> {
+        InstIter {
+            instructions: insts,
+            index: 0,
+        }
+    }
+}
+
+impl<'i> iter::Iterator for InstIter<'i> {
+    type Item = &'i Instruction;
+
+    fn next(&mut self) -> Option<&'i Instruction> {
+        if self.index < self.instructions.len() {
+            let inst = self.instructions[self.index];
+            self.index += 1;
+            Some(inst)
+        } else {
+            None
+        }
+    }
+}
+
 impl Module {
     /// Creates a new empty `Module` instance.
     pub fn new() -> Module {
@@ -119,6 +149,35 @@ impl Module {
             types_global_values: vec![],
             functions: vec![],
         }
+    }
+
+    /// Returns an iterator over all global instructions.
+    ///
+    /// This method internally creates a vector of references to all global
+    /// instructions, therefore it has some overheads.
+    pub fn global_inst_iter(&self) -> InstIter {
+        let mut insts = vec![];
+        let mut i: Vec<&Instruction> = self.capabilities.iter().collect();
+        insts.append(&mut i);
+        let mut i: Vec<&Instruction> = self.extensions.iter().collect();
+        insts.append(&mut i);
+        let mut i: Vec<&Instruction> = self.ext_inst_imports.iter().collect();
+        insts.append(&mut i);
+        match self.memory_model {
+            Some(ref i) => insts.push(&i),
+            None => (),
+        }
+        let mut i: Vec<&Instruction> = self.entry_points.iter().collect();
+        insts.append(&mut i);
+        let mut i: Vec<&Instruction> = self.execution_modes.iter().collect();
+        insts.append(&mut i);
+        let mut i: Vec<&Instruction> = self.debugs.iter().collect();
+        insts.append(&mut i);
+        let mut i: Vec<&Instruction> = self.annotations.iter().collect();
+        insts.append(&mut i);
+        let mut i: Vec<&Instruction> = self.types_global_values.iter().collect();
+        insts.append(&mut i);
+        InstIter::new(insts)
     }
 }
 

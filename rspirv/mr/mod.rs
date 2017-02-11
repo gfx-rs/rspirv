@@ -35,7 +35,7 @@
 //! interactively.
 
 pub use self::builder::Builder;
-pub use self::constructs::{BasicBlock, Function, Instruction};
+pub use self::constructs::{BasicBlock, Function, Instruction, InstIter};
 pub use self::constructs::{Module, ModuleHeader};
 pub use self::loader::{Error, load_bytes, load_words, Loader};
 pub use self::operand::Operand;
