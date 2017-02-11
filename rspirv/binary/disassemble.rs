@@ -133,22 +133,16 @@ impl Disassemble for mr::Module {
         }
 
         let mut text = vec![];
-        if self.header.is_some() {
-            push!(&mut text, self.header.as_ref().unwrap().disassemble());
+        match self.header {
+            Some(ref header) => push!(&mut text, header.disassemble()),
+            None => (),
         }
 
-        push!(&mut text, disas_join(&self.capabilities, "\n"));
-        push!(&mut text, disas_join(&self.extensions, "\n"));
-        push!(&mut text, disas_join(&self.ext_inst_imports, "\n"));
-        push!(&mut text,
-              self.memory_model
-                  .as_ref()
-                  .map_or(String::new(), |i| i.disassemble()));
-        push!(&mut text, disas_join(&self.entry_points, "\n"));
-        push!(&mut text, disas_join(&self.execution_modes, "\n"));
-        push!(&mut text, disas_join(&self.debugs, "\n"));
-        push!(&mut text, disas_join(&self.annotations, "\n"));
-        push!(&mut text, disas_join(&self.types_global_values, "\n"));
+        let global_insts = self.global_inst_iter()
+                               .map(|i| i.disassemble())
+                               .collect::<Vec<String>>()
+                               .join("\n");
+        push!(&mut text, global_insts);
 
         // TODO: Code here is essentially duplicated.
         for f in &self.functions {
@@ -241,5 +235,57 @@ mod tests {
         let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_RELEASE |
                                              spirv::MEMORY_SEMANTICS_WORKGROUP_MEMORY);
         assert_eq!("Release|WorkgroupMemory", o.disassemble());
+    }
+
+    #[test]
+    fn test_disassemble_module_one_inst_in_each_section() {
+        let mut b = mr::Builder::new();
+
+        b.capability(spirv::Capability::Shader);
+        b.extension("awesome-extension".to_string());
+        b.ext_inst_import("GLSL.std.450".to_string());
+        b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+        b.source(spirv::SourceLanguage::GLSL, 450, None, None);
+
+        let void = b.type_void();
+        let float32 = b.type_float(32);
+        let voidfvoid = b.type_function(void, vec![void]);
+
+        let f = b.begin_function(void,
+                                 (spirv::FUNCTION_CONTROL_DONT_INLINE |
+                                  spirv::FUNCTION_CONTROL_CONST),
+                                 voidfvoid)
+                 .unwrap();
+        b.begin_basic_block().unwrap();
+        let var = b.variable(float32, spirv::StorageClass::Function, None);
+        b.ret().unwrap();
+        b.end_function().unwrap();
+
+        b.entry_point(spirv::ExecutionModel::Fragment,
+                      f,
+                      "main".to_string(),
+                      vec![]);
+        b.execution_mode(f, spirv::ExecutionMode::OriginUpperLeft, vec![]);
+        b.name(f, "main".to_string());
+        b.decorate(var, spirv::Decoration::RelaxedPrecision);
+
+        assert_eq!(b.module().disassemble(),
+                   "OpCapability Shader\n\
+                    OpExtension \"awesome-extension\"\n\
+                    %1 = OpExtInstImport \"GLSL.std.450\"\n\
+                    OpMemoryModel Logical Simple\n\
+                    OpEntryPoint Fragment %5 \"main\"\n\
+                    OpExecutionMode %5 OriginUpperLeft\n\
+                    OpSource GLSL 450\n\
+                    OpName %5 \"main\"\n\
+                    OpDecorate %7 RelaxedPrecision\n\
+                    %2 = OpTypeVoid\n\
+                    %3 = OpTypeFloat 32\n\
+                    %4 = OpTypeFunction %2 %2\n\
+                    %5 = OpFunction  %2  DontInline|Const %4\n\
+                    %6 = OpLabel\n\
+                    %7 = OpVariable  %3  Function\n\
+                    OpReturn\n\
+                    OpFunctionEnd");
     }
 }
