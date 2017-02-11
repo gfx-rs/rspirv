@@ -62,11 +62,11 @@ pub struct Module {
 /// Memory representation of a SPIR-V module header.
 #[derive(Debug, PartialEq)]
 pub struct ModuleHeader {
-    magic_number: Word,
-    version: Word,
-    generator: Word,
-    bound: Word,
-    reserved_word: Word,
+    pub magic_number: Word,
+    pub version: Word,
+    pub generator: Word,
+    pub bound: Word,
+    pub reserved_word: Word,
 }
 
 /// Memory representation of a SPIR-V function.
