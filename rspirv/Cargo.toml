@@ -20,7 +20,7 @@ appveyor = { repository = "antiagainst/rspirv" }
 [dependencies]
 num = "0.1"
 num-derive = "0.1"
-spirv_headers = "1.1.2"
+spirv_headers = "1.1"
 
 [dev-dependencies]
 assert_matches = "1.0"

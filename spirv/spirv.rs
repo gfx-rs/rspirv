@@ -20,7 +20,7 @@ pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
 pub const MINOR_VERSION: u32 = 1;
-pub const REVISION: u32 = 2;
+pub const REVISION: u32 = 3;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
