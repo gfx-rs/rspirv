@@ -6,7 +6,7 @@ authors = ["Lei Zhang <antiagainst@gmail.com>"]
 description = "Rust library APIs for SPIR-V module manipulation"
 documentation = "https://docs.rs/rspirv"
 repository = "https://github.com/google/rspirv"
-readme = "../README.md"
+readme = "README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "vulkan", "opengl", "opencl"]
 
