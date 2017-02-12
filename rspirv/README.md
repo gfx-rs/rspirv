@@ -6,6 +6,7 @@ core of the rspirv project
 
 The core crate of the rspirv project providing APIs for processing SPIR-V
 modules:
+
 * The whole [SPIR-V grammar][doc-grammar] (instruction layouts and their
   operands)
 * A [memory representation][doc-mr] of SPIR-V modules and its loader and builder
