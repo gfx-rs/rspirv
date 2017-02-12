@@ -22,6 +22,60 @@
 //!   loader and builder
 //! * SPIR-V [binary](binary/index.html) module decoding and parsing
 //!   functionalities
+//!
+//! # Examples
+//!
+//! Building a SPIR-V module, assembling it, parsing it, and then
+//! disassembling it:
+//!
+//! ```
+//! extern crate rspirv;
+//! extern crate spirv_headers as spirv;
+//!
+//! use rspirv::binary::Assemble;
+//! use rspirv::binary::Disassemble;
+//!
+//! fn main() {
+//!     // Building
+//!     let mut b = rspirv::mr::Builder::new();
+//!     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::GLSL450);
+//!     let void = b.type_void();
+//!     let voidf = b.type_function(void, vec![void]);
+//!     b.begin_function(void,
+//!                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
+//!                       spirv::FUNCTION_CONTROL_CONST),
+//!                      voidf)
+//!      .unwrap();
+//!     b.begin_basic_block().unwrap();
+//!     b.ret().unwrap();
+//!     b.end_function().unwrap();
+//!     let module = b.module();
+//!
+//!     // Assembling
+//!     let code = module.assemble();
+//!     assert!(code.len() > 20);  // Module header contains 5 words
+//!     assert_eq!(spirv::MAGIC_NUMBER, code[0]);
+//!
+//!     // Parsing
+//!     let mut loader = rspirv::mr::Loader::new();
+//!     rspirv::binary::parse_words(&code, &mut loader).unwrap();
+//!     let module = loader.module();
+//!
+//!     // Disassembling
+//!     assert_eq!(module.disassemble(),
+//!                "; SPIR-V\n\
+//!                 ; Version: 1.1\n\
+//!                 ; Generator: Unknown\n\
+//!                 ; Bound: 5\n\
+//!                 OpMemoryModel Logical GLSL450\n\
+//!                 %1 = OpTypeVoid\n\
+//!                 %2 = OpTypeFunction %1 %1\n\
+//!                 %3 = OpFunction  %1  DontInline|Const %2\n\
+//!                 %4 = OpLabel\n\
+//!                 OpReturn\n\
+//!                 OpFunctionEnd");
+//! }
+//! ```
 
 #[cfg(test)]
 #[macro_use]
