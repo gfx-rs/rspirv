@@ -211,9 +211,9 @@ This project is initialized and mainly developed by Lei Zhang
 [me]: https://github.com/antiagainst
 [json-grammar]: https://github.com/KhronosGroup/SPIRV-Headers/tree/master/include/spirv
 [spirv-tools]: https://github.com/KhronosGroup/SPIRV-Tools
-[doc-mr]: https://docs.rs/rspirv/0.3.0/rspirv/mr/index.html
-[doc-builder]: https://docs.rs/rspirv/0.3.0/rspirv/mr/struct.Builder.html
-[doc-parser]: https://docs.rs/rspirv/0.3.0/rspirv/binary/struct.Parser.html
-[doc-grammar]: https://docs.rs/rspirv/0.3.0/rspirv/grammar/index.html
-[doc-binary]: https://docs.rs/rspirv/0.3.0/rspirv/binary/index.html
+[doc-mr]: https://docs.rs/rspirv/0.3/rspirv/mr/index.html
+[doc-builder]: https://docs.rs/rspirv/0.3/rspirv/mr/struct.Builder.html
+[doc-parser]: https://docs.rs/rspirv/0.3/rspirv/binary/struct.Parser.html
+[doc-grammar]: https://docs.rs/rspirv/0.3/rspirv/grammar/index.html
+[doc-binary]: https://docs.rs/rspirv/0.3/rspirv/binary/index.html
 [rust-1.15]: https://blog.rust-lang.org/2017/02/02/Rust-1.15.html

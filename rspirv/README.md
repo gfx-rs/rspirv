@@ -46,9 +46,9 @@ Please see the [documentation][doc-rspirv] and project's
 [crate-rspirv]: https://crates.io/crates/rspirv
 [doc-rspirv]: https://docs.rs/rspirv
 [project-readme]: https://github.com/google/rspirv/blob/master/README.md
-[doc-grammar]: https://docs.rs/rspirv/0.3.0/rspirv/grammar/index.html
-[doc-mr]: https://docs.rs/rspirv/0.3.0/rspirv/mr/index.html
-[doc-builder]: https://docs.rs/rspirv/0.3.0/rspirv/mr/struct.Builder.html
-[doc-binary]: https://docs.rs/rspirv/0.3.0/rspirv/binary/index.html
-[doc-parser]: https://docs.rs/rspirv/0.3.0/rspirv/binary/struct.Parser.html
-[doc-consumer]: https://docs.rs/rspirv/0.3.0/rspirv/binary/trait.Consumer.html
+[doc-grammar]: https://docs.rs/rspirv/0.3/rspirv/grammar/index.html
+[doc-mr]: https://docs.rs/rspirv/0.3/rspirv/mr/index.html
+[doc-builder]: https://docs.rs/rspirv/0.3/rspirv/mr/struct.Builder.html
+[doc-binary]: https://docs.rs/rspirv/0.3/rspirv/binary/index.html
+[doc-parser]: https://docs.rs/rspirv/0.3/rspirv/binary/struct.Parser.html
+[doc-consumer]: https://docs.rs/rspirv/0.3/rspirv/binary/trait.Consumer.html
