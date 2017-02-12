@@ -133,6 +133,10 @@ fn main() {
     b.end_function().unwrap();
 
     assert_eq!(b.module().disassemble(),
+               "; SPIR-V\n\
+                ; Version: 1.1\n\
+                ; Generator: Unknown\n\
+                ; Bound: 5\n\
                "OpMemoryModel Logical Simple\n\
                 %1 = OpTypeVoid\n\
                 %2 = OpTypeFunction %1 %1\n\
