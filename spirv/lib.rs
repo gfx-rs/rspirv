@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#![doc(html_root_url = "https://docs.rs/spirv_headers/1.1/")]
+
 //! The SPIR-V header.
 //!
 //! This crate contains Rust definitions of all SPIR-V structs, enums,
