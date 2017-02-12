@@ -47,6 +47,28 @@ pub fn f64_to_bytes(val: f64) -> Vec<u8> {
     low
 }
 
+/// Collects at most the first 4 bytes from the given `values` into a 32-bit
+/// unsigned integer following the little-endian convention.
+pub fn bytes_to_u32_le(values: &[u8]) -> u32 {
+    let len = if values.len() < 4 {
+        values.len()
+    } else {
+        4
+    };
+    let mut word = 0u32;
+    for i in 0..len {
+        word = (word << 8) | (values[len - i - 1] as u32);
+    }
+    word
+}
+
+/// Bitwisely casts the given f32 `value` to u32.
+/// in little-endian format.
+#[inline(always)]
+pub fn f32_to_u32(value: f32) -> u32 {
+    unsafe { mem::transmute::<f32, u32>(value) }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -66,5 +88,14 @@ mod test {
     fn test_f32_to_bytes() {
         // Bit pattern for 0.575 is 0x3f133333.
         assert_eq!(vec![0x33, 0x33, 0x13, 0x3f], f32_to_bytes(0.575));
+    }
+
+    #[test]
+    fn test_bytes_to_u32_le() {
+        assert_eq!(0x78563412u32, bytes_to_u32_le(&[0x12, 0x34, 0x56, 0x78]));
+        assert_eq!(0x563412u32, bytes_to_u32_le(&[0x12, 0x34, 0x56]));
+        assert_eq!(0x3412u32, bytes_to_u32_le(&[0x12, 0x34]));
+        assert_eq!(0x12u32, bytes_to_u32_le(&[0x12]));
+        assert_eq!(0x0u32, bytes_to_u32_le(&[]));
     }
 }

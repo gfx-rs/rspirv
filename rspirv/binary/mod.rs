@@ -32,7 +32,9 @@ pub use self::parser::Result as ParseResult;
 pub use self::parser::State as ParseState;
 
 pub use self::disassemble::Disassemble;
+pub use self::assemble::Assemble;
 
+mod assemble;
 mod decoder;
 mod disassemble;
 mod error;
