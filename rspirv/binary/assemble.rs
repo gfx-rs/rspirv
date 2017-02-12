@@ -232,4 +232,41 @@ mod tests {
                    mr::Instruction::new(spirv::Op::IAdd, Some(0xab), Some(0xcd), operands)
                        .assemble());
     }
+
+    #[test]
+    fn test_assemble_function() {
+        let mut b = mr::Builder::new();
+        b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+        let void = b.type_void();
+        let voidfvoid = b.type_function(void, vec![void]);
+        b.begin_function(void, spirv::FUNCTION_CONTROL_CONST, voidfvoid).unwrap();
+        b.begin_basic_block().unwrap();
+        b.ret().unwrap();
+        b.end_function().unwrap();
+
+        assert_eq!(vec![0x07230203,
+                        (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
+                        0xffffffff,
+                        5,
+                        0,
+                        wc_op(3, spirv::Op::MemoryModel),
+                        spirv::AddressingModel::Logical as u32,
+                        spirv::MemoryModel::Simple as u32,
+                        wc_op(2, spirv::Op::TypeVoid),
+                        1,
+                        wc_op(4, spirv::Op::TypeFunction),
+                        2,
+                        1,
+                        1,
+                        wc_op(5, spirv::Op::Function),
+                        1,
+                        3,
+                        spirv::FUNCTION_CONTROL_CONST.bits(),
+                        2,
+                        wc_op(2, spirv::Op::Label),
+                        4,
+                        wc_op(1, spirv::Op::Return),
+                        wc_op(1, spirv::Op::FunctionEnd)],
+                   b.module().assemble());
+    }
 }

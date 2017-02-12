@@ -270,7 +270,11 @@ mod tests {
         b.decorate(var, spirv::Decoration::RelaxedPrecision);
 
         assert_eq!(b.module().disassemble(),
-                   "OpCapability Shader\n\
+                   "; SPIR-V\n\
+                    ; Version: 1.1\n\
+                    ; Generator: Unknown\n\
+                    ; Bound: 8\n\
+                    OpCapability Shader\n\
                     OpExtension \"awesome-extension\"\n\
                     %1 = OpExtInstImport \"GLSL.std.450\"\n\
                     OpMemoryModel Logical Simple\n\

@@ -78,7 +78,11 @@ type BuildResult<T> = result::Result<T, Error>;
 ///     b.end_function().unwrap();
 ///
 ///     assert_eq!(b.module().disassemble(),
-///                "OpMemoryModel Logical Simple\n\
+///                "; SPIR-V\n\
+///                 ; Version: 1.1\n\
+///                 ; Generator: Unknown\n\
+///                 ; Bound: 5\n\
+///                 OpMemoryModel Logical Simple\n\
 ///                 %1 = OpTypeVoid\n\
 ///                 %2 = OpTypeFunction %1 %1\n\
 ///                 %3 = OpFunction  %1  DontInline|Const %2\n\
@@ -107,7 +111,16 @@ impl Builder {
 
     /// Returns the `Module` under construction.
     pub fn module(self) -> mr::Module {
-        self.module
+        let version = (spirv::MAJOR_VERSION << 16) | (spirv::MAJOR_VERSION << 8);
+        let mut module = self.module;
+        module.header = Some(mr::ModuleHeader::new(spirv::MAGIC_NUMBER,
+                                                   version,
+                                                   // We don't have a generator number yet
+                                                   0xffffffff,
+                                                   self.next_id,
+                                                   0));
+
+        module
     }
 
     /// Returns the next unused id.
