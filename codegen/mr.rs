@@ -17,6 +17,24 @@ use structs;
 use regex::Regex;
 use utils::*;
 
+/// Returns true if the given operand kind can potentially have additional
+/// parameters.
+#[inline(always)]
+pub fn has_additional_params(grammar: &structs::OperandKind) -> bool {
+    grammar.enumerants.iter().any(|e| !e.parameters.is_empty())
+}
+
+/// Returns true if the given operand can potentially have additional
+/// parameters.
+pub fn operand_has_additional_params(operand: &structs::Operand,
+                                     kinds: &[structs::OperandKind])
+                                     -> bool {
+    kinds.iter()
+         .find(|kind| kind.kind == operand.kind)
+         .map_or(false, |kind| has_additional_params(kind))
+
+}
+
 /// Returns a suitable name for the given parameter.
 fn get_param_name(param: &structs::Operand) -> String {
     if param.name.len() == 0 {
@@ -32,8 +50,8 @@ fn get_param_name(param: &structs::Operand) -> String {
 }
 
 /// Returns the parameter list excluding result id.
-fn get_param_list(params: &[structs::Operand]) -> Vec<String> {
-    params.iter().filter_map(|param| {
+fn get_param_list(params: &[structs::Operand], kinds: &[structs::OperandKind]) -> Vec<String> {
+    let mut list: Vec<String> = params.iter().filter_map(|param| {
         let name = get_param_name(param);
         let kind = get_enum_underlying_type(&param.kind);
         if param.kind == "IdResult" {
@@ -47,7 +65,15 @@ fn get_param_list(params: &[structs::Operand]) -> Vec<String> {
                     format!("{}: Vec<{}>", name, kind)
                 })
         }
-    }).collect()
+    }).collect();
+    // The last operand may require additional parameters.
+    match params.last() {
+        Some(o) => if operand_has_additional_params(o, kinds) {
+            list.push("mut additional_params: Vec<mr::Operand>".to_string());
+        },
+        None => (),
+    }
+    list
 }
 
 /// Returns a suitable function name for the given `opname`.
@@ -80,9 +106,11 @@ fn get_init_list(params: &[structs::Operand]) -> Vec<String> {
     }).collect()
 }
 
-fn get_push_extras(params: &[structs::Operand], container: &str)
+fn get_push_extras(params: &[structs::Operand],
+                   kinds: &[structs::OperandKind],
+                   container: &str)
                    -> Vec<String> {
-    params.iter().filter_map(|param| {
+    let mut list: Vec<String> = params.iter().filter_map(|param| {
         let name = get_param_name(param);
         if param.quantifier == "" {
             None
@@ -139,7 +167,16 @@ fn get_push_extras(params: &[structs::Operand], container: &str)
                         container = container))
             }
         }
-    }).collect()
+    }).collect();
+    // The last operand may require additional parameters.
+    match params.last() {
+        Some(o) => if operand_has_additional_params(o, kinds) {
+            list.push(format!("{s:8}{container}.append(&mut additional_params)",
+                              s = "", container = container));
+        },
+        None => (),
+    }
+    list
 }
 
 /// Returns the underlying type used in operand kind enums for the operand
@@ -255,18 +292,20 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
 
 /// Returns the generated build methods for SPIR-V types by walking the given
 /// SPIR-V instructions `grammar`.
-pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
+pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> String {
+    let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
-    let elements: Vec<String> = grammar.iter().filter(|inst| {
+    let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
         inst.class == "Type"
     }).map(|inst| {
         // Parameter list for this build method.
-        let param_list = get_param_list(&inst.operands[1..]).join(", ");
+        let param_list = get_param_list(&inst.operands[1..], kinds).join(", ");
         // Initializer list for constructing the operands parameter
         // for Instruction.
         let init_list = get_init_list(&inst.operands[1..]).join(", ");
         // Parameters that are not single values thus need special treatment.
         let extras = get_push_extras(&inst.operands[1..],
+                                     kinds,
                                      "self.module.types_global_values.last_mut()\
                                      .expect(\"interal error\").operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction and returns the result id.\n\
@@ -290,13 +329,14 @@ pub fn gen_mr_builder_types(grammar: &Vec<structs::Instruction>) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>) -> String {
+pub fn gen_mr_builder_terminator(grammar: &structs::Grammar) -> String {
+    let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
-    let elements: Vec<String> = grammar.iter().filter(|inst| {
+    let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
         inst.class == "Terminator"
     }).map(|inst| {
-        let params = get_param_list(&inst.operands).join(", ");
-        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        let params = get_param_list(&inst.operands, kinds).join(", ");
+        let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction and ends the current basic block.\n\
                  {s:4}pub fn {name}(&mut self{x}{params}) -> BuildResult<()> {{\n\
                  {s:8}let {m}inst = mr::Instruction::new(\
@@ -317,14 +357,15 @@ pub fn gen_mr_builder_terminator(grammar: &Vec<structs::Instruction>) -> String 
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_normal_insts(grammar: &Vec<structs::Instruction>) -> String {
+pub fn gen_mr_builder_normal_insts(grammar: &structs::Grammar) -> String {
+    let kinds = &grammar.operand_kinds;
     // Generate build methods for all normal instructions (instructions must be
     // in some basic block).
-    let elements: Vec<String> = grammar.iter().filter(|inst| {
+    let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
         inst.class == ""
     }).map(|inst| {
-        let params = get_param_list(&inst.operands).join(", ");
-        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        let params = get_param_list(&inst.operands, kinds).join(", ");
+        let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         if !inst.operands.is_empty() && inst.operands[0].kind == "IdResultType" {
             // For normal instructions, they either have both result type and
             // result id or have none.
@@ -374,13 +415,14 @@ pub fn gen_mr_builder_normal_insts(grammar: &Vec<structs::Instruction>) -> Strin
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_constants(grammar: &Vec<structs::Instruction>) -> String {
+pub fn gen_mr_builder_constants(grammar: &structs::Grammar) -> String {
+    let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
-    let elements: Vec<String> = grammar.iter().filter(|inst| {
+    let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
         inst.class == "Constant" && inst.opname != "OpConstant" && inst.opname != "OpSpecConstant"
     }).map(|inst| {
-        let params = get_param_list(&inst.operands).join(", ");
-        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        let params = get_param_list(&inst.operands, kinds).join(", ");
+        let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
                  {s:4}pub fn {name}(&mut self{x}{params}) -> spirv::Word {{\n\
                  {s:8}let id = self.id();\n\
@@ -403,13 +445,14 @@ pub fn gen_mr_builder_constants(grammar: &Vec<structs::Instruction>) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_debug(grammar: &Vec<structs::Instruction>) -> String {
+pub fn gen_mr_builder_debug(grammar: &structs::Grammar) -> String {
+    let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
-    let elements: Vec<String> = grammar.iter().filter(|inst| {
+    let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
         inst.class == "Debug" && inst.opname != "OpString"
     }).map(|inst| {
-        let params = get_param_list(&inst.operands).join(", ");
-        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        let params = get_param_list(&inst.operands, kinds).join(", ");
+        let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
                  {s:4}pub fn {name}(&mut self{x}{params}) {{\n\
                  {s:8}let {m}inst = mr::Instruction::new(\
@@ -430,13 +473,14 @@ pub fn gen_mr_builder_debug(grammar: &Vec<structs::Instruction>) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_annotation(grammar: &Vec<structs::Instruction>) -> String {
+pub fn gen_mr_builder_annotation(grammar: &structs::Grammar) -> String {
+    let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
-    let elements: Vec<String> = grammar.iter().filter(|inst| {
+    let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
         inst.class == "Annotation" && inst.opname != "OpDecorationGroup"
     }).map(|inst| {
-        let params = get_param_list(&inst.operands).join(", ");
-        let extras = get_push_extras(&inst.operands, "inst.operands").join(";\n");
+        let params = get_param_list(&inst.operands, kinds).join(", ");
+        let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
                  {s:4}pub fn {name}(&mut self{x}{params}) {{\n\
                  {s:8}let {m}inst = mr::Instruction::new(\

@@ -90,42 +90,42 @@ fn main() {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_type.rs");
-        let c = mr::gen_mr_builder_types(&grammar.instructions);
+        let c = mr::gen_mr_builder_types(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_terminator.rs");
-        let c = mr::gen_mr_builder_terminator(&grammar.instructions);
+        let c = mr::gen_mr_builder_terminator(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_annotation.rs");
-        let c = mr::gen_mr_builder_annotation(&grammar.instructions);
+        let c = mr::gen_mr_builder_annotation(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_constant.rs");
-        let c = mr::gen_mr_builder_constants(&grammar.instructions);
+        let c = mr::gen_mr_builder_constants(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_debug.rs");
-        let c = mr::gen_mr_builder_debug(&grammar.instructions);
+        let c = mr::gen_mr_builder_debug(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
         path.pop();
         path.push("build_norm_insts.rs");
-        let c = mr::gen_mr_builder_normal_insts(&grammar.instructions);
+        let c = mr::gen_mr_builder_normal_insts(&grammar);
         write!(c, path);
     }
 

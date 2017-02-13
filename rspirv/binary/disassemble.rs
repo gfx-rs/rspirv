@@ -267,7 +267,7 @@ mod tests {
                       vec![]);
         b.execution_mode(f, spirv::ExecutionMode::OriginUpperLeft, vec![]);
         b.name(f, "main".to_string());
-        b.decorate(var, spirv::Decoration::RelaxedPrecision);
+        b.decorate(var, spirv::Decoration::RelaxedPrecision, vec![]);
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
