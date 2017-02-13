@@ -406,7 +406,7 @@ mod tests {
     use spirv;
     use super::Builder;
 
-    fn has_only_one_pre_inst(module: &mr::Module) -> bool {
+    fn has_only_one_global_inst(module: &mr::Module) -> bool {
         if !module.functions.is_empty() {
             return false;
         }
@@ -428,12 +428,48 @@ mod tests {
         let m = b.module();
         assert!(m.memory_model.is_some());
         let inst = m.memory_model.as_ref().unwrap();
-        assert!(has_only_one_pre_inst(&m));
+        assert!(has_only_one_global_inst(&m));
         assert_eq!("MemoryModel", inst.class.opname);
         assert_eq!(2, inst.operands.len());
         assert_eq!(mr::Operand::AddressingModel(spirv::AddressingModel::Logical),
                    inst.operands[0]);
         assert_eq!(mr::Operand::MemoryModel(spirv::MemoryModel::Simple),
                    inst.operands[1]);
+    }
+
+    #[test]
+    fn test_decoration_no_additional_params() {
+        let mut b = Builder::new();
+        b.member_decorate(1, 0, spirv::Decoration::RelaxedPrecision, vec![]);
+        let m = b.module();
+        assert!(has_only_one_global_inst(&m));
+        let inst = m.annotations.last().unwrap();
+        assert_eq!("MemberDecorate", inst.class.opname);
+        assert_eq!(3, inst.operands.len());
+        assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
+        assert_eq!(mr::Operand::LiteralInt32(0), inst.operands[1]);
+        assert_eq!(mr::Operand::Decoration(spirv::Decoration::RelaxedPrecision),
+                   inst.operands[2]);
+    }
+
+    #[test]
+    fn test_decoration_with_additional_params() {
+        let mut b = Builder::new();
+        b.decorate(1,
+                   spirv::Decoration::LinkageAttributes,
+                   vec![mr::Operand::LiteralString("name".to_string()),
+                        mr::Operand::LinkageType(spirv::LinkageType::Export)]);
+        let m = b.module();
+        assert!(has_only_one_global_inst(&m));
+        let inst = m.annotations.last().unwrap();
+        assert_eq!("Decorate", inst.class.opname);
+        assert_eq!(4, inst.operands.len());
+        assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
+        assert_eq!(mr::Operand::Decoration(spirv::Decoration::LinkageAttributes),
+                   inst.operands[1]);
+        assert_eq!(mr::Operand::LiteralString("name".to_string()),
+                   inst.operands[2]);
+        assert_eq!(mr::Operand::LinkageType(spirv::LinkageType::Export),
+                   inst.operands[3]);
     }
 }
