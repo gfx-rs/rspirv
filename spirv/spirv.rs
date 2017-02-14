@@ -41,7 +41,7 @@ bitflags!{
     /// SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)
     pub flags FPFastMathMode : u32 {
         const FPFAST_MATH_MODE_NONE = 0x0000,
-        const FPFAST_MATH_MODE_NOT_NA_N = 0x0001,
+        const FPFAST_MATH_MODE_NOT_NAN = 0x0001,
         const FPFAST_MATH_MODE_NOT_INF = 0x0002,
         const FPFAST_MATH_MODE_NSZ = 0x0004,
         const FPFAST_MATH_MODE_ALLOW_RECIP = 0x0008,

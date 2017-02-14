@@ -36,9 +36,14 @@ fn get_spec_link(kind: &str) -> String {
 
 fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
     let elements: Vec<String> = grammar.enumerants.iter().map(|enumerant| {
+        // Special treatment for "NaN"
+        let mut symbol = snake_casify(&enumerant.symbol);
+        if &symbol == "not_na_n" {
+            symbol = "not_nan".to_string()
+        }
         format!("        const {}_{} = {},",
                 snake_casify(&grammar.kind).to_uppercase(),
-                snake_casify(&enumerant.symbol).to_uppercase(),
+                symbol.to_uppercase(),
                 enumerant.value.string)
     }).collect();
     format!("bitflags!{{\n    {doc}\n    pub flags {kind} : u32 \
