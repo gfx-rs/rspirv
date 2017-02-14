@@ -404,6 +404,8 @@ include!("build_norm_insts.rs");
 mod tests {
     use mr;
     use spirv;
+
+    use std::f32;
     use super::Builder;
 
     fn has_only_one_global_inst(module: &mr::Module) -> bool {
@@ -471,5 +473,117 @@ mod tests {
                    inst.operands[2]);
         assert_eq!(mr::Operand::LinkageType(spirv::LinkageType::Export),
                    inst.operands[3]);
+    }
+
+    #[test]
+    fn test_constant_f32() {
+        let mut b = Builder::new();
+        let float = b.type_float(32);
+        // Normal numbers
+        b.constant_f32(float, 3.14);
+        b.constant_f32(float, 2e-10);
+        // Zero
+        b.constant_f32(float, 0.);
+        // Inf
+        b.constant_f32(float, f32::NEG_INFINITY);
+        // Subnormal numbers
+        b.constant_f32(float, -1.0e-40_f32);
+        // Nan
+        b.constant_f32(float, f32::NAN);
+        let m = b.module();
+        assert_eq!(7, m.types_global_values.len());
+
+        let inst = &m.types_global_values[1];
+        assert_eq!(spirv::Op::Constant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(3.14), inst.operands[0]);
+
+        let inst = &m.types_global_values[2];
+        assert_eq!(spirv::Op::Constant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(3), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(2e-10), inst.operands[0]);
+
+        let inst = &m.types_global_values[3];
+        assert_eq!(spirv::Op::Constant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(4), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(0.), inst.operands[0]);
+
+        let inst = &m.types_global_values[4];
+        assert_eq!(spirv::Op::Constant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(5), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(f32::NEG_INFINITY),
+                   inst.operands[0]);
+
+        let inst = &m.types_global_values[5];
+        assert_eq!(spirv::Op::Constant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(6), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(-1.0e-40_f32), inst.operands[0]);
+
+        let inst = &m.types_global_values[6];
+        assert_eq!(spirv::Op::Constant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(7), inst.result_id);
+        // NaN != NaN
+        match inst.operands[0] {
+            mr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
+            _ => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_spec_constant_f32() {
+        let mut b = Builder::new();
+        let float = b.type_float(32);
+        // Normal numbers
+        b.spec_constant_f32(float, 10.);
+        // Zero
+        b.spec_constant_f32(float, -0.);
+        // Inf
+        b.spec_constant_f32(float, f32::INFINITY);
+        // Subnormal numbers
+        b.spec_constant_f32(float, 1.0e-40_f32);
+        // Nan
+        b.spec_constant_f32(float, f32::NAN);
+        let m = b.module();
+        assert_eq!(6, m.types_global_values.len());
+
+        let inst = &m.types_global_values[1];
+        assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(10.), inst.operands[0]);
+
+        let inst = &m.types_global_values[2];
+        assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(3), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(-0.), inst.operands[0]);
+
+        let inst = &m.types_global_values[3];
+        assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(4), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(f32::INFINITY), inst.operands[0]);
+
+        let inst = &m.types_global_values[4];
+        assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(5), inst.result_id);
+        assert_eq!(mr::Operand::LiteralFloat32(1.0e-40_f32), inst.operands[0]);
+
+        let inst = &m.types_global_values[5];
+        assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
+        assert_eq!(Some(1), inst.result_type);
+        assert_eq!(Some(6), inst.result_id);
+        // NaN != NaN
+        match inst.operands[0] {
+            mr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
+            _ => assert!(false),
+        }
     }
 }
