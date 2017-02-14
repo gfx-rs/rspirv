@@ -36,7 +36,7 @@ impl Disassemble for spirv::FPFastMathMode {
     fn disassemble(&self) -> String {
         if self.is_empty() { return "None".to_string() }
         let mut bits = vec![];
-        if self.contains(spirv::FPFAST_MATH_MODE_NOT_NA_N) { bits.push("NotNaN") }
+        if self.contains(spirv::FPFAST_MATH_MODE_NOT_NAN) { bits.push("NotNaN") }
         if self.contains(spirv::FPFAST_MATH_MODE_NOT_INF) { bits.push("NotInf") }
         if self.contains(spirv::FPFAST_MATH_MODE_NSZ) { bits.push("NSZ") }
         if self.contains(spirv::FPFAST_MATH_MODE_ALLOW_RECIP) { bits.push("AllowRecip") }

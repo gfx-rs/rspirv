@@ -354,13 +354,16 @@ pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> Strin
     let elements: Vec<String> = grammar.iter().filter(|kind| {
         kind.category == "BitEnum"
     }).map(|kind| {
-        let kind_name = snake_casify(&kind.kind);
         let checks: Vec<String> = kind.enumerants.iter().filter_map(|enumerant| {
             if enumerant.value.string == "0x0000" {
                 None
             } else {
-                Some((format!("{}_{}", kind_name, snake_casify(&enumerant.symbol)).to_uppercase(),
-                      &enumerant.symbol))
+                let kind_name = snake_casify(&kind.kind).to_uppercase();
+                let mut symbol = snake_casify(&enumerant.symbol).to_uppercase();
+                if &symbol == "NOT_NA_N" {
+                    symbol = "NOT_NAN".to_string()
+                }
+                Some((format!("{}_{}", kind_name, symbol), &enumerant.symbol))
             }
         }).map(|(check, show)| {
             format!("        if self.contains(spirv::{}) {{ bits.push(\"{}\") }}", check, show)
