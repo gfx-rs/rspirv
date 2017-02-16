@@ -426,9 +426,9 @@ mod tests {
         assert!(has_only_one_global_inst(&m));
         assert_eq!("MemoryModel", inst.class.opname);
         assert_eq!(2, inst.operands.len());
-        assert_eq!(mr::Operand::AddressingModel(spirv::AddressingModel::Logical),
+        assert_eq!(mr::Operand::from(spirv::AddressingModel::Logical),
                    inst.operands[0]);
-        assert_eq!(mr::Operand::MemoryModel(spirv::MemoryModel::Simple),
+        assert_eq!(mr::Operand::from(spirv::MemoryModel::Simple),
                    inst.operands[1]);
     }
 
@@ -442,8 +442,8 @@ mod tests {
         assert_eq!("MemberDecorate", inst.class.opname);
         assert_eq!(3, inst.operands.len());
         assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
-        assert_eq!(mr::Operand::LiteralInt32(0), inst.operands[1]);
-        assert_eq!(mr::Operand::Decoration(spirv::Decoration::RelaxedPrecision),
+        assert_eq!(mr::Operand::from(0u32), inst.operands[1]);
+        assert_eq!(mr::Operand::from(spirv::Decoration::RelaxedPrecision),
                    inst.operands[2]);
     }
 
@@ -452,19 +452,19 @@ mod tests {
         let mut b = Builder::new();
         b.decorate(1,
                    spirv::Decoration::LinkageAttributes,
-                   vec![mr::Operand::LiteralString("name".to_string()),
-                        mr::Operand::LinkageType(spirv::LinkageType::Export)]);
+                   vec![mr::Operand::from("name"),
+                        mr::Operand::from(spirv::LinkageType::Export)]);
         let m = b.module();
         assert!(has_only_one_global_inst(&m));
         let inst = m.annotations.last().unwrap();
         assert_eq!("Decorate", inst.class.opname);
         assert_eq!(4, inst.operands.len());
         assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
-        assert_eq!(mr::Operand::Decoration(spirv::Decoration::LinkageAttributes),
+        assert_eq!(mr::Operand::from(spirv::Decoration::LinkageAttributes),
                    inst.operands[1]);
-        assert_eq!(mr::Operand::LiteralString("name".to_string()),
+        assert_eq!(mr::Operand::from("name"),
                    inst.operands[2]);
-        assert_eq!(mr::Operand::LinkageType(spirv::LinkageType::Export),
+        assert_eq!(mr::Operand::from(spirv::LinkageType::Export),
                    inst.operands[3]);
     }
 
@@ -490,32 +490,32 @@ mod tests {
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(3.14), inst.operands[0]);
+        assert_eq!(mr::Operand::from(3.14f32), inst.operands[0]);
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(3), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(2e-10), inst.operands[0]);
+        assert_eq!(mr::Operand::from(2e-10_f32), inst.operands[0]);
 
         let inst = &m.types_global_values[3];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(4), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(0.), inst.operands[0]);
+        assert_eq!(mr::Operand::from(0.0f32), inst.operands[0]);
 
         let inst = &m.types_global_values[4];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(5), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(f32::NEG_INFINITY),
+        assert_eq!(mr::Operand::from(f32::NEG_INFINITY),
                    inst.operands[0]);
 
         let inst = &m.types_global_values[5];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(6), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(-1.0e-40_f32), inst.operands[0]);
+        assert_eq!(mr::Operand::from(-1.0e-40_f32), inst.operands[0]);
 
         let inst = &m.types_global_values[6];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
@@ -549,25 +549,25 @@ mod tests {
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(10.), inst.operands[0]);
+        assert_eq!(mr::Operand::from(10.0f32), inst.operands[0]);
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(3), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(-0.), inst.operands[0]);
+        assert_eq!(mr::Operand::from(-0.0f32), inst.operands[0]);
 
         let inst = &m.types_global_values[3];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(4), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(f32::INFINITY), inst.operands[0]);
+        assert_eq!(mr::Operand::from(f32::INFINITY), inst.operands[0]);
 
         let inst = &m.types_global_values[4];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(5), inst.result_id);
-        assert_eq!(mr::Operand::LiteralFloat32(1.0e-40_f32), inst.operands[0]);
+        assert_eq!(mr::Operand::from(1.0e-40_f32), inst.operands[0]);
 
         let inst = &m.types_global_values[5];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
