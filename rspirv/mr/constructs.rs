@@ -299,6 +299,12 @@ impl convert::From<f64> for Operand {
     }
 }
 
+impl convert::From<spirv::Op> for Operand {
+    fn from(val: spirv::Op) -> Self {
+        Operand::LiteralSpecConstantOpInteger(val)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use mr;
@@ -338,5 +344,11 @@ mod tests {
                    mr::Operand::from(spirv::BuiltIn::Position));
         assert_eq!(mr::Operand::Capability(spirv::Capability::Pipes),
                    mr::Operand::from(spirv::Capability::Pipes));
+    }
+
+    #[test]
+    fn test_convert_from_op() {
+        assert_eq!(mr::Operand::LiteralSpecConstantOpInteger(spirv::Op::IAdd),
+                   mr::Operand::from(spirv::Op::IAdd));
     }
 }
