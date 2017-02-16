@@ -31,7 +31,7 @@ impl Disassemble for mr::ModuleHeader {
                 major,
                 minor,
                 vendor,
-                self.bound())
+                self.bound)
     }
 }
 

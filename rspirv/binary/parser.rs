@@ -221,12 +221,12 @@ pub fn parse_words(binary: &[u32], consumer: &mut Consumer) -> Result<()> {
 ///         0x01, 0x00, 0x00, 0x00];
 ///     let mut loader = Loader::new();  // You can use your own consumer here.
 ///     {
-///         let mut p = Parser::new(&bin, &mut loader);
+///         let p = Parser::new(&bin, &mut loader);
 ///         p.parse().unwrap();
 ///     }
 ///     let module = loader.module();
 ///
-///     assert_eq!((1, 0), module.header.unwrap().version());
+///     assert_eq!((1, 1), module.header.unwrap().version());
 ///     let m = module.memory_model.as_ref().unwrap();
 ///     assert_eq!(Operand::AddressingModel(AddressingModel::Logical),
 ///                m.operands[0]);
@@ -315,7 +315,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                         return Err(State::HeaderIncorrect);
                     }
                 }
-                Ok(mr::ModuleHeader::new(words[0], words[1], words[2], words[3], words[4]))
+                Ok(mr::ModuleHeader::new(words[3]))
             }
             Err(err) => Err(State::HeaderIncomplete(err)),
         }
@@ -598,7 +598,7 @@ mod tests {
             let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
-        assert_eq!(Some(mr::ModuleHeader::new(0x07230203, 0x00010000, 0, 0, 0)),
+        assert_eq!(Some(mr::ModuleHeader::new(0)),
                    c.header);
     }
 

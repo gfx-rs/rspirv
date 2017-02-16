@@ -184,18 +184,13 @@ impl Module {
 
 impl ModuleHeader {
     /// Creates a new `ModuleHeader` instance.
-    pub fn new(magic_number: Word,
-               version: Word,
-               generator: Word,
-               bound: Word,
-               reserved_word: Word)
-               -> ModuleHeader {
+    pub fn new(bound: Word) -> ModuleHeader {
         ModuleHeader {
-            magic_number: magic_number,
-            version: version,
-            generator: generator,
+            magic_number: spirv::MAGIC_NUMBER,
+            version: (spirv::MAJOR_VERSION << 16) | (spirv::MAJOR_VERSION << 8),
+            generator: 0xffffffff, // We don't have a generator number yet
             bound: bound,
-            reserved_word: reserved_word,
+            reserved_word: 0,
         }
     }
 
@@ -206,24 +201,26 @@ impl ModuleHeader {
 
     /// Returns the generator's name and version as a tuple.
     pub fn generator(&self) -> (&str, u16) {
-        let vendor = (self.generator & 0xffff0000) >> 16;
+        let tool = (self.generator & 0xffff0000) >> 16;
         let version = (self.generator & 0xffff) as u16;
-        let vendor: &str = match vendor {
-            0 => "Khronos Group",
+        let tool: &str = match tool {
+            0 => "The Khronos Group",
             1 => "LunarG",
             2 => "Valve",
             3 => "Codeplay",
             4 => "NVIDIA",
             5 => "ARM",
             6 => "LLVM/SPIR-V Translator",
-            7 => "SPIRV-Tools",
+            7 => "SPIR-V Tools Assembler",
             8 => "Glslang",
             9 => "Qualcomm",
             10 => "AMD",
             11 => "Intel",
+            12 => "Imagination",
+            13 => "Shaderc",
             _ => "Unknown",
         };
-        (vendor, version)
+        (tool, version)
     }
 }
 

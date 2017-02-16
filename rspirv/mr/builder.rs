@@ -111,15 +111,8 @@ impl Builder {
 
     /// Returns the `Module` under construction.
     pub fn module(self) -> mr::Module {
-        let version = (spirv::MAJOR_VERSION << 16) | (spirv::MAJOR_VERSION << 8);
         let mut module = self.module;
-        module.header = Some(mr::ModuleHeader::new(spirv::MAGIC_NUMBER,
-                                                   version,
-                                                   // We don't have a generator number yet
-                                                   0xffffffff,
-                                                   self.next_id,
-                                                   0));
-
+        module.header = Some(mr::ModuleHeader::new(self.next_id));
         module
     }
 

@@ -226,8 +226,8 @@ impl binary::Consumer for Loader {
 ///
 /// assert_eq!(dis,
 ///            "; SPIR-V\n\
-///             ; Version: 1.0\n\
-///             ; Generator: Khronos Group\n\
+///             ; Version: 1.1\n\
+///             ; Generator: Unknown\n\
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
@@ -263,8 +263,8 @@ pub fn load_bytes(binary: &[u8]) -> ParseResult<mr::Module> {
 ///
 /// assert_eq!(dis,
 ///            "; SPIR-V\n\
-///             ; Version: 1.0\n\
-///             ; Generator: Khronos Group\n\
+///             ; Version: 1.1\n\
+///             ; Generator: Unknown\n\
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
