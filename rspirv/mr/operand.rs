@@ -16,11 +16,6 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-#![cfg_attr(rustfmt, rustfmt_skip)]
-
-use spirv;
-use std::fmt;
-
 /// Memory representation of a SPIR-V operand.
 #[derive(Debug, PartialEq)]
 pub enum Operand {
@@ -64,6 +59,186 @@ pub enum Operand {
     LiteralExtInstInteger(u32),
     LiteralSpecConstantOpInteger(spirv::Op),
     LiteralString(String),
+}
+
+impl convert::From<spirv::ImageOperands> for Operand {
+    fn from(val: spirv::ImageOperands) -> Self {
+        Operand::ImageOperands(val)
+    }
+}
+
+impl convert::From<spirv::FPFastMathMode> for Operand {
+    fn from(val: spirv::FPFastMathMode) -> Self {
+        Operand::FPFastMathMode(val)
+    }
+}
+
+impl convert::From<spirv::SelectionControl> for Operand {
+    fn from(val: spirv::SelectionControl) -> Self {
+        Operand::SelectionControl(val)
+    }
+}
+
+impl convert::From<spirv::LoopControl> for Operand {
+    fn from(val: spirv::LoopControl) -> Self {
+        Operand::LoopControl(val)
+    }
+}
+
+impl convert::From<spirv::FunctionControl> for Operand {
+    fn from(val: spirv::FunctionControl) -> Self {
+        Operand::FunctionControl(val)
+    }
+}
+
+impl convert::From<spirv::MemorySemantics> for Operand {
+    fn from(val: spirv::MemorySemantics) -> Self {
+        Operand::MemorySemantics(val)
+    }
+}
+
+impl convert::From<spirv::MemoryAccess> for Operand {
+    fn from(val: spirv::MemoryAccess) -> Self {
+        Operand::MemoryAccess(val)
+    }
+}
+
+impl convert::From<spirv::KernelProfilingInfo> for Operand {
+    fn from(val: spirv::KernelProfilingInfo) -> Self {
+        Operand::KernelProfilingInfo(val)
+    }
+}
+
+impl convert::From<spirv::SourceLanguage> for Operand {
+    fn from(val: spirv::SourceLanguage) -> Self {
+        Operand::SourceLanguage(val)
+    }
+}
+
+impl convert::From<spirv::ExecutionModel> for Operand {
+    fn from(val: spirv::ExecutionModel) -> Self {
+        Operand::ExecutionModel(val)
+    }
+}
+
+impl convert::From<spirv::AddressingModel> for Operand {
+    fn from(val: spirv::AddressingModel) -> Self {
+        Operand::AddressingModel(val)
+    }
+}
+
+impl convert::From<spirv::MemoryModel> for Operand {
+    fn from(val: spirv::MemoryModel) -> Self {
+        Operand::MemoryModel(val)
+    }
+}
+
+impl convert::From<spirv::ExecutionMode> for Operand {
+    fn from(val: spirv::ExecutionMode) -> Self {
+        Operand::ExecutionMode(val)
+    }
+}
+
+impl convert::From<spirv::StorageClass> for Operand {
+    fn from(val: spirv::StorageClass) -> Self {
+        Operand::StorageClass(val)
+    }
+}
+
+impl convert::From<spirv::Dim> for Operand {
+    fn from(val: spirv::Dim) -> Self {
+        Operand::Dim(val)
+    }
+}
+
+impl convert::From<spirv::SamplerAddressingMode> for Operand {
+    fn from(val: spirv::SamplerAddressingMode) -> Self {
+        Operand::SamplerAddressingMode(val)
+    }
+}
+
+impl convert::From<spirv::SamplerFilterMode> for Operand {
+    fn from(val: spirv::SamplerFilterMode) -> Self {
+        Operand::SamplerFilterMode(val)
+    }
+}
+
+impl convert::From<spirv::ImageFormat> for Operand {
+    fn from(val: spirv::ImageFormat) -> Self {
+        Operand::ImageFormat(val)
+    }
+}
+
+impl convert::From<spirv::ImageChannelOrder> for Operand {
+    fn from(val: spirv::ImageChannelOrder) -> Self {
+        Operand::ImageChannelOrder(val)
+    }
+}
+
+impl convert::From<spirv::ImageChannelDataType> for Operand {
+    fn from(val: spirv::ImageChannelDataType) -> Self {
+        Operand::ImageChannelDataType(val)
+    }
+}
+
+impl convert::From<spirv::FPRoundingMode> for Operand {
+    fn from(val: spirv::FPRoundingMode) -> Self {
+        Operand::FPRoundingMode(val)
+    }
+}
+
+impl convert::From<spirv::LinkageType> for Operand {
+    fn from(val: spirv::LinkageType) -> Self {
+        Operand::LinkageType(val)
+    }
+}
+
+impl convert::From<spirv::AccessQualifier> for Operand {
+    fn from(val: spirv::AccessQualifier) -> Self {
+        Operand::AccessQualifier(val)
+    }
+}
+
+impl convert::From<spirv::FunctionParameterAttribute> for Operand {
+    fn from(val: spirv::FunctionParameterAttribute) -> Self {
+        Operand::FunctionParameterAttribute(val)
+    }
+}
+
+impl convert::From<spirv::Decoration> for Operand {
+    fn from(val: spirv::Decoration) -> Self {
+        Operand::Decoration(val)
+    }
+}
+
+impl convert::From<spirv::BuiltIn> for Operand {
+    fn from(val: spirv::BuiltIn) -> Self {
+        Operand::BuiltIn(val)
+    }
+}
+
+impl convert::From<spirv::Scope> for Operand {
+    fn from(val: spirv::Scope) -> Self {
+        Operand::Scope(val)
+    }
+}
+
+impl convert::From<spirv::GroupOperation> for Operand {
+    fn from(val: spirv::GroupOperation) -> Self {
+        Operand::GroupOperation(val)
+    }
+}
+
+impl convert::From<spirv::KernelEnqueueFlags> for Operand {
+    fn from(val: spirv::KernelEnqueueFlags) -> Self {
+        Operand::KernelEnqueueFlags(val)
+    }
+}
+
+impl convert::From<spirv::Capability> for Operand {
+    fn from(val: spirv::Capability) -> Self {
+        Operand::Capability(val)
+    }
 }
 
 impl fmt::Display for Operand {

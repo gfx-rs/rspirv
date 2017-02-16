@@ -15,9 +15,8 @@
 use grammar;
 use spirv;
 
-use mr::Operand;
 use spirv::Word;
-use std::iter;
+use std::{convert, fmt, iter};
 
 /// Memory representation of a SPIR-V module.
 ///
@@ -132,6 +131,8 @@ impl<'i> iter::Iterator for InstIter<'i> {
         }
     }
 }
+
+include!("operand.rs");
 
 impl Module {
     /// Creates a new empty `Module` instance.
@@ -271,5 +272,84 @@ impl Instruction {
             result_id: result_id,
             operands: operands,
         }
+    }
+}
+
+// Sadly cannot use impl<T: Into<String>> here.
+impl<'a> convert::From<&'a str> for Operand {
+    fn from(val: &'a str) -> Self {
+        Operand::LiteralString(val.to_string())
+    }
+}
+
+impl convert::From<String> for Operand {
+    fn from(val: String) -> Self {
+        Operand::LiteralString(val)
+    }
+}
+
+impl convert::From<u32> for Operand {
+    fn from(val: u32) -> Self {
+        Operand::LiteralInt32(val)
+    }
+}
+
+impl convert::From<u64> for Operand {
+    fn from(val: u64) -> Self {
+        Operand::LiteralInt64(val)
+    }
+}
+
+impl convert::From<f32> for Operand {
+    fn from(val: f32) -> Self {
+        Operand::LiteralFloat32(val)
+    }
+}
+
+impl convert::From<f64> for Operand {
+    fn from(val: f64) -> Self {
+        Operand::LiteralFloat64(val)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use mr;
+    use spirv;
+
+    #[test]
+    fn test_convert_from_string() {
+        assert_eq!(mr::Operand::LiteralString("wow".to_string()),
+                   mr::Operand::from("wow"));
+        assert_eq!(mr::Operand::LiteralString("wow".to_string()),
+                   mr::Operand::from("wow".to_string()));
+    }
+
+    #[test]
+    fn test_convert_from_numbers() {
+        assert_eq!(mr::Operand::LiteralInt32(16u32), mr::Operand::from(16u32));
+        assert_eq!(mr::Operand::LiteralInt64(128934u64),
+                   mr::Operand::from(128934u64));
+        assert_eq!(mr::Operand::LiteralFloat32(3.14f32),
+                   mr::Operand::from(3.14f32));
+        assert_eq!(mr::Operand::LiteralFloat64(10.4235f64),
+                   mr::Operand::from(10.4235f64));
+    }
+
+    #[test]
+    fn test_convert_from_bit_enums() {
+        assert_eq!(mr::Operand::LoopControl(spirv::LOOP_CONTROL_DONT_UNROLL |
+                                            spirv::LOOP_CONTROL_UNROLL),
+                   mr::Operand::from(spirv::LOOP_CONTROL_DONT_UNROLL | spirv::LOOP_CONTROL_UNROLL));
+        assert_eq!(mr::Operand::MemoryAccess(spirv::MEMORY_ACCESS_NONE),
+                   mr::Operand::from(spirv::MEMORY_ACCESS_NONE));
+    }
+
+    #[test]
+    fn test_convert_from_value_enums() {
+        assert_eq!(mr::Operand::BuiltIn(spirv::BuiltIn::Position),
+                   mr::Operand::from(spirv::BuiltIn::Position));
+        assert_eq!(mr::Operand::Capability(spirv::Capability::Pipes),
+                   mr::Operand::from(spirv::Capability::Pipes));
     }
 }

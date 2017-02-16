@@ -208,11 +208,6 @@ fn get_enum_underlying_type(kind: &str) -> String {
 pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
     let mut ret = String::new();
 
-    { // Attributes, uses.
-        ret.push_str(RUSTFMT_SKIP_BANG);
-        ret.push_str("\n\nuse spirv;\nuse std::fmt;\n\n");
-    }
-
     let kinds: Vec<&str> = grammar.iter().map(|element| {
             element.kind.as_str()
         }).filter(|element| {
@@ -265,6 +260,22 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
              num_kinds = num_kinds.join("\n"),
              str_kinds = str_kinds.join("\n"));
         ret.push_str(&kind_enum);
+    }
+
+    { // Impl std::convert::From for mr::Operand
+        let cases: Vec<String> = kinds.iter().filter(|element| {
+            !(element.starts_with("Id") ||
+              element.ends_with("String") ||
+              element.ends_with("Integer") ||
+              element.ends_with("Number"))
+        }).map(|element| {
+            format!("impl convert::From<spirv::{kind}> for Operand {{\n\
+                     {s:4}fn from(val: spirv::{kind}) -> Self {{\n\
+                     {s:8}Operand::{kind}(val)\n\
+                     {s:4}}}\n\
+                     }}\n\n", s = "", kind = element)
+        }).collect();
+        ret.push_str(&cases.join(""));
     }
 
     { // impl fmt::Display for mr::Operand.
