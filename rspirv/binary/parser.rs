@@ -175,15 +175,15 @@ pub trait Consumer {
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse_bytes(binary: &[u8], consumer: &mut Consumer) -> Result<()> {
-    Parser::new(binary, consumer).parse()
+pub fn parse_bytes<T: AsRef<[u8]>>(binary: T, consumer: &mut Consumer) -> Result<()> {
+    Parser::new(binary.as_ref(), consumer).parse()
 }
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse_words(binary: &[u32], consumer: &mut Consumer) -> Result<()> {
-    let len = binary.len() * 4;
-    let buf = unsafe { slice::from_raw_parts(binary.as_ptr() as *const u8, len) };
+pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut Consumer) -> Result<()> {
+    let len = binary.as_ref().len() * 4;
+    let buf = unsafe { slice::from_raw_parts(binary.as_ref().as_ptr() as *const u8, len) };
     Parser::new(buf, consumer).parse()
 }
 

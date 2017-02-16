@@ -219,7 +219,7 @@ impl binary::Consumer for Loader {
 ///     // GLSL450.
 ///     0x01, 0x00, 0x00, 0x00];
 ///
-/// let dis = match rspirv::mr::load_bytes(&buffer) {
+/// let dis = match rspirv::mr::load_bytes(buffer) {
 ///     Ok(module) => module.disassemble(),
 ///     Err(err) => format!("{}", err),
 /// };
@@ -231,7 +231,7 @@ impl binary::Consumer for Loader {
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
-pub fn load_bytes(binary: &[u8]) -> ParseResult<mr::Module> {
+pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
     try!(binary::parse_bytes(binary, &mut loader));
     Ok(loader.module())
@@ -256,7 +256,7 @@ pub fn load_bytes(binary: &[u8]) -> ParseResult<mr::Module> {
 ///     0x00000001,  // GLSL450
 /// ];
 ///
-/// let dis = match rspirv::mr::load_words(&buffer) {
+/// let dis = match rspirv::mr::load_words(buffer) {
 ///     Ok(module) => module.disassemble(),
 ///     Err(err) => format!("{}", err),
 /// };
@@ -268,7 +268,7 @@ pub fn load_bytes(binary: &[u8]) -> ParseResult<mr::Module> {
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
-pub fn load_words(binary: &[u32]) -> ParseResult<mr::Module> {
+pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
     try!(binary::parse_words(binary, &mut loader));
     Ok(loader.module())
