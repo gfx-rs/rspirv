@@ -225,16 +225,6 @@ impl ModuleHeader {
         };
         (vendor, version)
     }
-
-    /// Returns the id bound.
-    pub fn bound(&self) -> Word {
-        self.bound
-    }
-
-    /// Sets the id bound to the given `bound`.
-    pub fn set_bound(&mut self, bound: Word) {
-        self.bound = bound
-    }
 }
 
 impl Function {
