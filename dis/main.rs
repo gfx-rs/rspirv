@@ -12,41 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate getopts;
+extern crate clap;
 extern crate rspirv;
 
-use std::env;
 use std::fs;
 use std::io::Read;
 
 use rspirv::binary::Disassemble;
 
-fn print_usage(program: &str, opts: getopts::Options) {
-    let brief = format!("Usage: {} [options] <spirv-binary>", program);
-    print!("{}", opts.usage(&brief));
-}
-
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let program = args[0].clone();
+    let matches = clap::App::new("rspirv-dis")
+        .version(env!("CARGO_PKG_VERSION"))
+        .about("SPIR-V binary module disassembler from the rspirv project")
+        .arg(clap::Arg::with_name("input").index(1).required(true))
+        .get_matches();
 
-    let mut opts = getopts::Options::new();
-    opts.optflag("h", "help", "Print help message.");
-    let matches = match opts.parse(&args[1..]) {
-        Ok(m) => m,
-        Err(f) => panic!(f.to_string()),
-    };
-    if matches.opt_present("h") {
-        print_usage(&program, opts);
-        return;
-    }
-    let input = if matches.free.len() == 1 {
-        &matches.free[0]
-    } else {
-        print_usage(&program, opts);
-        return;
-    };
-
+    let input = matches.value_of("input").unwrap();
     let mut f = fs::File::open(input).expect("cannot open file");
     let mut buffer = Vec::new();
 
