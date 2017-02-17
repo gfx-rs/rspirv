@@ -79,15 +79,13 @@
 //! }
 //! ```
 
-#![cfg_attr(feature="clippy", feature(plugin))]
-#![cfg_attr(feature="clippy", plugin(clippy))]
+#![cfg_attr(feature = "clippy", feature(plugin))]
+#![cfg_attr(feature = "clippy", plugin(clippy))]
 
 #[cfg(test)]
 #[macro_use]
 extern crate assert_matches;
 extern crate num;
-#[macro_use]
-extern crate num_derive;
 extern crate spirv_headers as spirv;
 
 pub mod binary;

@@ -26,7 +26,7 @@ use std::{convert, fmt, iter};
 /// The order of its fields basically reveal the requirements in the
 /// [Logical Layout of a Module](https://goo.gl/2kVnfX) of the SPIR-V
 /// of the SPIR-V specification.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Module {
     /// The module header.
     pub header: Option<ModuleHeader>,
@@ -69,7 +69,7 @@ pub struct ModuleHeader {
 }
 
 /// Memory representation of a SPIR-V function.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Function {
     /// First (defining) instruction in this function.
     pub def: Option<Instruction>,
@@ -82,7 +82,7 @@ pub struct Function {
 }
 
 /// Memory representation of a SPIR-V basic block.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct BasicBlock {
     /// The label starting this basic block.
     pub label: Option<Instruction>,
@@ -164,9 +164,8 @@ impl Module {
         insts.append(&mut i);
         let mut i: Vec<&Instruction> = self.ext_inst_imports.iter().collect();
         insts.append(&mut i);
-        match self.memory_model {
-            Some(ref i) => insts.push(&i),
-            None => (),
+        if let Some(ref i) = self.memory_model {
+            insts.push(i);
         }
         let mut i: Vec<&Instruction> = self.entry_points.iter().collect();
         insts.append(&mut i);

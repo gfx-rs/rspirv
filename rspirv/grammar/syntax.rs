@@ -123,7 +123,7 @@ impl InstructionTable {
 
 include!("table.rs");
 
-/// The table for all GLSLstd450 extended instructions.
+/// The table for all `GLSLstd450` extended instructions.
 ///
 /// This table is staic data stored in the library.
 pub struct GlslStd450InstructionTable;

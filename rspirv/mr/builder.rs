@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![allow(dead_code)]
+#![cfg_attr(feature = "clippy", allow(too_many_arguments))]
 
 use mr;
 use spirv;
@@ -91,6 +91,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///                 OpFunctionEnd");
 /// }
 /// ```
+#[derive(Default)]
 pub struct Builder {
     module: mr::Module,
     next_id: u32,
@@ -117,7 +118,6 @@ impl Builder {
     }
 
     /// Returns the next unused id.
-    #[inline(always)]
     pub fn id(&mut self) -> spirv::Word {
         let id = self.next_id;
         self.next_id += 1;
@@ -364,9 +364,8 @@ impl Builder {
                     -> spirv::Word {
         let id = self.id();
         let mut operands = vec![mr::Operand::StorageClass(storage_class)];
-        match initializer {
-            Some(val) => operands.push(mr::Operand::IdRef(val)),
-            None => (),
+        if let Some(val) = initializer {
+            operands.push(mr::Operand::IdRef(val));
         }
         let inst = mr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
 
@@ -452,8 +451,7 @@ mod tests {
         let mut b = Builder::new();
         b.decorate(1,
                    spirv::Decoration::LinkageAttributes,
-                   vec![mr::Operand::from("name"),
-                        mr::Operand::from(spirv::LinkageType::Export)]);
+                   vec![mr::Operand::from("name"), mr::Operand::from(spirv::LinkageType::Export)]);
         let m = b.module();
         assert!(has_only_one_global_inst(&m));
         let inst = m.annotations.last().unwrap();
@@ -462,8 +460,7 @@ mod tests {
         assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
         assert_eq!(mr::Operand::from(spirv::Decoration::LinkageAttributes),
                    inst.operands[1]);
-        assert_eq!(mr::Operand::from("name"),
-                   inst.operands[2]);
+        assert_eq!(mr::Operand::from("name"), inst.operands[2]);
         assert_eq!(mr::Operand::from(spirv::LinkageType::Export),
                    inst.operands[3]);
     }
@@ -508,8 +505,7 @@ mod tests {
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(5), inst.result_id);
-        assert_eq!(mr::Operand::from(f32::NEG_INFINITY),
-                   inst.operands[0]);
+        assert_eq!(mr::Operand::from(f32::NEG_INFINITY), inst.operands[0]);
 
         let inst = &m.types_global_values[5];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);

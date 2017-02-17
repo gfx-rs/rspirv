@@ -241,7 +241,6 @@ dependencies = [
  "assert_matches 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clippy 0.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)",
- "num-derive 0.1.39 (registry+https://github.com/rust-lang/crates.io-index)",
  "spirv_headers 1.1.4",
 ]
 

@@ -111,9 +111,7 @@ impl<'a> Decoder<'a> {
             }
         }
 
-        if self.offset >= self.bytes.len() {
-            Err(Error::StreamExpected(self.offset))
-        } else if self.offset + WORD_NUM_BYTES > self.bytes.len() {
+        if self.offset >= self.bytes.len() || self.offset + WORD_NUM_BYTES > self.bytes.len() {
             Err(Error::StreamExpected(self.offset))
         } else {
             self.offset += WORD_NUM_BYTES;

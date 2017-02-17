@@ -85,6 +85,7 @@ impl fmt::Display for Error {
 ///
 /// It implements the [`Consumer`](../binary/trait.Consumer.html) trait and
 /// works with the [`Parser`](../binary/struct.Parser.html).
+#[derive(Default)]
 pub struct Loader {
     module: mr::Module,
     function: Option<mr::Function>,

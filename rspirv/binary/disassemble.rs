@@ -58,9 +58,9 @@ impl Disassemble for mr::Operand {
 
 /// Disassembles each instruction in `insts` and joins them together
 /// with the given `delimiter`.
-fn disas_join<T: Disassemble>(insts: &Vec<T>, delimiter: &str) -> String {
+fn disas_join<T: Disassemble>(insts: &[T], delimiter: &str) -> String {
     insts.iter()
-         .map(|ref i| i.disassemble())
+         .map(|i| i.disassemble())
          .collect::<Vec<String>>()
          .join(delimiter)
 }
@@ -133,9 +133,8 @@ impl Disassemble for mr::Module {
         }
 
         let mut text = vec![];
-        match self.header {
-            Some(ref header) => push!(&mut text, header.disassemble()),
-            None => (),
+        if let Some(ref header) = self.header {
+            push!(&mut text, header.disassemble());
         }
 
         let global_insts = self.global_inst_iter()

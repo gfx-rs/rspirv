@@ -390,7 +390,7 @@ impl<'c, 'd> Parser<'c, 'd> {
             // TODO: check whether this opcode is allowed here.
             operands.push(mr::Operand::LiteralSpecConstantOpInteger(g.opcode));
             // We need id parameters to this SpecConstantOp.
-            for ref operand in g.operands {
+            for operand in g.operands {
                 if operand.kind == GOpKind::IdRef {
                     operands.push(mr::Operand::IdRef(try_decode!(self.decoder.id())))
                 }
@@ -598,8 +598,7 @@ mod tests {
             let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
-        assert_eq!(Some(mr::ModuleHeader::new(0)),
-                   c.header);
+        assert_eq!(Some(mr::ModuleHeader::new(0)), c.header);
     }
 
     #[test]

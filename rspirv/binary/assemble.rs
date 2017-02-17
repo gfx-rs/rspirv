@@ -74,11 +74,11 @@ impl Assemble for mr::Operand {
             mr::Operand::IdMemorySemantics(v) |
             mr::Operand::IdScope(v) |
             mr::Operand::IdRef(v) |
-            mr::Operand::LiteralInt32(v) => vec![v],
+            mr::Operand::LiteralInt32(v) |
+            mr::Operand::LiteralExtInstInteger(v) => vec![v],
             mr::Operand::LiteralInt64(_) => unimplemented!(),
             mr::Operand::LiteralFloat32(v) => vec![f32_to_u32(v)],
             mr::Operand::LiteralFloat64(_) => unimplemented!(),
-            mr::Operand::LiteralExtInstInteger(v) => vec![v],
             mr::Operand::LiteralSpecConstantOpInteger(v) => vec![v as u32],
             mr::Operand::LiteralString(ref v) => assemble_str(v),
         }
@@ -88,18 +88,16 @@ impl Assemble for mr::Operand {
 impl Assemble for mr::Instruction {
     fn assemble(&self) -> Vec<u32> {
         let mut code = vec![self.class.opcode as u32];
-        match self.result_type {
-            Some(r) => code.push(r),
-            None => (),
+        if let Some(r) = self.result_type {
+            code.push(r);
         }
-        match self.result_id {
-            Some(r) => code.push(r),
-            None => (),
+        if let Some(r) = self.result_id {
+            code.push(r);
         }
         for operand in &self.operands {
             code.append(&mut operand.assemble());
         }
-        code[0] = ((code.len() as u32) << 16) | code[0];
+        code[0] |= (code.len() as u32) << 16;
         code
     }
 }
@@ -107,9 +105,8 @@ impl Assemble for mr::Instruction {
 impl Assemble for mr::BasicBlock {
     fn assemble(&self) -> Vec<u32> {
         let mut code = vec![];
-        match self.label {
-            Some(ref l) => code.append(&mut l.assemble()),
-            None => (),
+        if let Some(ref l) = self.label {
+            code.append(&mut l.assemble());
         }
         for inst in &self.instructions {
             code.append(&mut inst.assemble());
@@ -121,16 +118,14 @@ impl Assemble for mr::BasicBlock {
 impl Assemble for mr::Function {
     fn assemble(&self) -> Vec<u32> {
         let mut code = vec![];
-        match self.def {
-            Some(ref d) => code.append(&mut d.assemble()),
-            None => (),
+        if let Some(ref d) = self.def {
+            code.append(&mut d.assemble());
         }
         for bb in &self.basic_blocks {
             code.append(&mut bb.assemble());
         }
-        match self.end {
-            Some(ref e) => code.append(&mut e.assemble()),
-            None => (),
+        if let Some(ref e) = self.end {
+            code.append(&mut e.assemble());
         }
         code
     }

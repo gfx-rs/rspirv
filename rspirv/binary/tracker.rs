@@ -76,7 +76,7 @@ impl TypeTracker {
     }
 
     pub fn resolve(&self, id: spirv::Word) -> Option<Type> {
-        self.types.get(&id).map(|t| *t)
+        self.types.get(&id).cloned()
     }
 }
 

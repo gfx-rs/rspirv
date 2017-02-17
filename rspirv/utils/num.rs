@@ -64,7 +64,6 @@ pub fn bytes_to_u32_le(values: &[u8]) -> u32 {
 
 /// Bitwisely casts the given f32 `value` to u32.
 /// in little-endian format.
-#[inline(always)]
 pub fn f32_to_u32(value: f32) -> u32 {
     unsafe { mem::transmute::<f32, u32>(value) }
 }
