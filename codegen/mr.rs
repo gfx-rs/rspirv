@@ -67,11 +67,10 @@ fn get_param_list(params: &[structs::Operand], kinds: &[structs::OperandKind]) -
         }
     }).collect();
     // The last operand may require additional parameters.
-    match params.last() {
-        Some(o) => if operand_has_additional_params(o, kinds) {
+    if let Some(o) = params.last() {
+        if operand_has_additional_params(o, kinds) {
             list.push("mut additional_params: Vec<mr::Operand>".to_string());
-        },
-        None => (),
+        }
     }
     list
 }
@@ -117,9 +116,8 @@ fn get_push_extras(params: &[structs::Operand],
         } else if param.quantifier == "?" {
             let kind = get_mr_operand_kind(&param.kind);
             Some(format!(
-                    "{s:8}match {name} {{\n\
-                     {s:12}Some(v) => {container}.push(mr::Operand::{kind}(v)),\n\
-                     {s:12}None => (),\n\
+                    "{s:8}if let Some(v) = {name} {{\n\
+                     {s:12}{container}.push(mr::Operand::{kind}(v));\n\
                      {s:8}}}",
                     s = "",
                     kind = kind,
@@ -169,12 +167,11 @@ fn get_push_extras(params: &[structs::Operand],
         }
     }).collect();
     // The last operand may require additional parameters.
-    match params.last() {
-        Some(o) => if operand_has_additional_params(o, kinds) {
+    if let Some(o) =  params.last() {
+        if operand_has_additional_params(o, kinds) {
             list.push(format!("{s:8}{container}.append(&mut additional_params)",
                               s = "", container = container));
-        },
-        None => (),
+        }
     }
     list
 }

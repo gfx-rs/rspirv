@@ -72,9 +72,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::Load, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer)]);
-        match memory_access {
-            Some(v) => inst.operands.push(mr::Operand::MemoryAccess(v)),
-            None => (),
+        if let Some(v) = memory_access {
+            inst.operands.push(mr::Operand::MemoryAccess(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -87,9 +86,8 @@ impl Builder {
             return Err(Error::DetachedInstruction);
         }
         let mut inst = mr::Instruction::new(spirv::Op::Store, None, None, vec![mr::Operand::IdRef(pointer), mr::Operand::IdRef(object)]);
-        match memory_access {
-            Some(v) => inst.operands.push(mr::Operand::MemoryAccess(v)),
-            None => (),
+        if let Some(v) = memory_access {
+            inst.operands.push(mr::Operand::MemoryAccess(v));
         };
         inst.operands.append(&mut additional_params);
         Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
@@ -101,9 +99,8 @@ impl Builder {
             return Err(Error::DetachedInstruction);
         }
         let mut inst = mr::Instruction::new(spirv::Op::CopyMemory, None, None, vec![mr::Operand::IdRef(target), mr::Operand::IdRef(source)]);
-        match memory_access {
-            Some(v) => inst.operands.push(mr::Operand::MemoryAccess(v)),
-            None => (),
+        if let Some(v) = memory_access {
+            inst.operands.push(mr::Operand::MemoryAccess(v));
         };
         inst.operands.append(&mut additional_params);
         Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
@@ -115,9 +112,8 @@ impl Builder {
             return Err(Error::DetachedInstruction);
         }
         let mut inst = mr::Instruction::new(spirv::Op::CopyMemorySized, None, None, vec![mr::Operand::IdRef(target), mr::Operand::IdRef(source), mr::Operand::IdRef(size)]);
-        match memory_access {
-            Some(v) => inst.operands.push(mr::Operand::MemoryAccess(v)),
-            None => (),
+        if let Some(v) = memory_access {
+            inst.operands.push(mr::Operand::MemoryAccess(v));
         };
         inst.operands.append(&mut additional_params);
         Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
@@ -319,9 +315,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSampleImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -347,9 +342,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSampleDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -375,9 +369,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -403,9 +396,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -431,9 +423,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageFetch, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -447,9 +438,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(component)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -463,9 +453,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageDrefGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -479,9 +468,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageRead, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -494,9 +482,8 @@ impl Builder {
             return Err(Error::DetachedInstruction);
         }
         let mut inst = mr::Instruction::new(spirv::Op::ImageWrite, None, None, vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(texel)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
@@ -2446,9 +2433,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -2474,9 +2460,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -2502,9 +2487,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -2530,9 +2514,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -2558,9 +2541,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseFetch, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -2574,9 +2556,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(component)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -2590,9 +2571,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseDrefGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -2637,9 +2617,8 @@ impl Builder {
         }
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ImageSparseRead, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
-        match image_operands {
-            Some(v) => inst.operands.push(mr::Operand::ImageOperands(v)),
-            None => (),
+        if let Some(v) = image_operands {
+            inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.append(&mut additional_params);
         self.basic_block.as_mut().unwrap().instructions.push(inst);

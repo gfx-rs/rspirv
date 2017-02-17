@@ -63,9 +63,8 @@ impl Builder {
     pub fn type_image(&mut self, sampled_type: spirv::Word, dim: spirv::Dim, depth: u32, arrayed: u32, ms: u32, sampled: u32, image_format: spirv::ImageFormat, access_qualifier: Option<spirv::AccessQualifier>) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeImage, None, Some(id), vec![mr::Operand::IdRef(sampled_type), mr::Operand::Dim(dim), mr::Operand::LiteralInt32(depth), mr::Operand::LiteralInt32(arrayed), mr::Operand::LiteralInt32(ms), mr::Operand::LiteralInt32(sampled), mr::Operand::ImageFormat(image_format)]));
-        match access_qualifier {
-            Some(v) => self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::AccessQualifier(v)),
-            None => (),
+        if let Some(v) = access_qualifier {
+            self.module.types_global_values.last_mut().expect("interal error").operands.push(mr::Operand::AccessQualifier(v));
         };
         id
     }
