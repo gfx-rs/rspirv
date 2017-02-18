@@ -372,4 +372,8 @@ static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[
     inst!(ModuleProcessed, [], [(LiteralString, One)]),
     inst!(SubgroupBallotKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
     inst!(SubgroupFirstInvocationKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
+    inst!(SubgroupAllKHR, [SubgroupVoteKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
+    inst!(SubgroupAnyKHR, [SubgroupVoteKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
+    inst!(SubgroupAllEqualKHR, [SubgroupVoteKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
+    inst!(SubgroupReadInvocationKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One), (IdRef, One)]),
 ];

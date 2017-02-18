@@ -20,7 +20,7 @@ pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
 pub const MINOR_VERSION: u32 = 1;
-pub const REVISION: u32 = 3;
+pub const REVISION: u32 = 5;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
@@ -584,6 +584,7 @@ pub enum Capability {
     PipeStorage = 60,
     SubgroupBallotKHR = 4423,
     DrawParameters = 4427,
+    SubgroupVoteKHR = 4431,
 }
 
 /// SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_instructions_a_instructions) opcodes
@@ -896,4 +897,8 @@ pub enum Op {
     ModuleProcessed = 330,
     SubgroupBallotKHR = 4421,
     SubgroupFirstInvocationKHR = 4422,
+    SubgroupAllKHR = 4428,
+    SubgroupAnyKHR = 4429,
+    SubgroupAllEqualKHR = 4430,
+    SubgroupReadInvocationKHR = 4432,
 }

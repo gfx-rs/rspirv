@@ -27,7 +27,7 @@
   "magic_number" : "0x07230203",
   "major_version" : 1,
   "minor_version" : 1,
-  "revision" : 3,
+  "revision" : 5,
   "instructions" : [
     {
       "opname" : "OpNop",
@@ -3197,6 +3197,47 @@
         { "kind" : "IdRef", "name" : "'Value'" }
       ],
       "capabilities" : [ "SubgroupBallotKHR" ]
+    },
+    {
+      "opname" : "OpSubgroupAllKHR",
+      "opcode" : 4428,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Predicate'" }
+      ],
+      "capabilities" : [ "SubgroupVoteKHR" ]
+    },
+    {
+      "opname" : "OpSubgroupAnyKHR",
+      "opcode" : 4429,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Predicate'" }
+      ],
+      "capabilities" : [ "SubgroupVoteKHR" ]
+    },
+    {
+      "opname" : "OpSubgroupAllEqualKHR",
+      "opcode" : 4430,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Predicate'" }
+      ],
+      "capabilities" : [ "SubgroupVoteKHR" ]
+    },
+    {
+      "opname" : "OpSubgroupReadInvocationKHR",
+      "opcode" : 4432,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Value'" },
+        { "kind" : "IdRef", "name" : "'Index'" }
+      ],
+      "capabilities" : [ "SubgroupBallotKHR" ]
     }
   ],
   "operand_kinds" : [
@@ -5335,6 +5376,11 @@
           "enumerant" : "DrawParameters",
           "value" : 4427,
           "extensions" : [ "SPV_KHR_shader_draw_parameters" ]
+        },
+        {
+          "enumerant" : "SubgroupVoteKHR",
+          "value" : 4431,
+          "extensions" : [ "SPV_KHR_subgroup_vote" ]
         }
       ]
     },

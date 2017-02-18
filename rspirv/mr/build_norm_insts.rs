@@ -2710,4 +2710,48 @@ impl Builder {
         self.basic_block.as_mut().unwrap().instructions.push(inst);
         Ok(id)
     }
+
+    /// Appends an OpSubgroupAllKHR instruction to the current basic block.
+    pub fn subgroup_all_khr(&mut self, result_type: spirv::Word, predicate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::SubgroupAllKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(predicate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpSubgroupAnyKHR instruction to the current basic block.
+    pub fn subgroup_any_khr(&mut self, result_type: spirv::Word, predicate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::SubgroupAnyKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(predicate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpSubgroupAllEqualKHR instruction to the current basic block.
+    pub fn subgroup_all_equal_khr(&mut self, result_type: spirv::Word, predicate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::SubgroupAllEqualKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(predicate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpSubgroupReadInvocationKHR instruction to the current basic block.
+    pub fn subgroup_read_invocation_khr(&mut self, result_type: spirv::Word, value: spirv::Word, index: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = self.id();
+        let inst = mr::Instruction::new(spirv::Op::SubgroupReadInvocationKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(value), mr::Operand::IdRef(index)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
 }
