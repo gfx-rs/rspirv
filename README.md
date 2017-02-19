@@ -137,7 +137,7 @@ fn main() {
                 ; Version: 1.1\n\
                 ; Generator: Unknown\n\
                 ; Bound: 5\n\
-               "OpMemoryModel Logical Simple\n\
+                OpMemoryModel Logical Simple\n\
                 %1 = OpTypeVoid\n\
                 %2 = OpTypeFunction %1 %1\n\
                 %3 = OpFunction  %1  DontInline|Const %2\n\
