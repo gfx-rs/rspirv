@@ -51,19 +51,17 @@ fn get_param_name(param: &structs::Operand) -> String {
 
 /// Returns the parameter list excluding result id.
 fn get_param_list(params: &[structs::Operand], kinds: &[structs::OperandKind]) -> Vec<String> {
-    let mut list: Vec<String> = params.iter().filter_map(|param| {
+    let mut list: Vec<String> = params.iter().map(|param| {
         let name = get_param_name(param);
         let kind = get_enum_underlying_type(&param.kind);
         if param.kind == "IdResult" {
-            None
+            "result_id: Option<spirv::Word>".to_string()
+        } else if param.quantifier == "" {
+            format!("{}: {}", name, kind)
+        } else if param.quantifier == "?" {
+            format!("{}: Option<{}>", name, kind)
         } else {
-            Some(if param.quantifier == "" {
-                format!("{}: {}", name, kind)
-                } else if param.quantifier == "?" {
-                    format!("{}: Option<{}>", name, kind)
-                } else {
-                    format!("{}: Vec<{}>", name, kind)
-                })
+            format!("{}: Vec<{}>", name, kind)
         }
     }).collect();
     // The last operand may require additional parameters.
@@ -92,7 +90,7 @@ fn get_init_list(params: &[structs::Operand]) -> Vec<String> {
     params.iter().filter_map(|param| {
         if param.quantifier == "" {
             if param.kind == "IdResult" || param.kind == "IdResultType" {
-                // These two operands are not stored in the operand field.
+                // These two operands are not stored in the operands field.
                 None
             } else {
                 let name = get_param_name(param);
@@ -304,10 +302,10 @@ pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
-        inst.class == "Type"
+        inst.class == "Type" && inst.opname != "OpTypeForwardPointer"
     }).map(|inst| {
         // Parameter list for this build method.
-        let param_list = get_param_list(&inst.operands[1..], kinds).join(", ");
+        let param_list = get_param_list(&inst.operands, kinds).join(", ");
         // Initializer list for constructing the operands parameter
         // for Instruction.
         let init_list = get_init_list(&inst.operands[1..]).join(", ");
@@ -318,7 +316,10 @@ pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> String {
                                      .expect(\"interal error\").operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction and returns the result id.\n\
                  {s:4}pub fn {name}(&mut self{sep}{param}) -> spirv::Word {{\n\
-                 {s:8}let id = self.id();\n\
+                 {s:8}let id = match result_id {{\n\
+                 {s:12}Some(v) => v,\n\
+                 {s:12}None => self.id(),\n\
+                 {s:8}}};\n\
                  {s:8}self.module.types_global_values.push(\
                      mr::Instruction::new(spirv::Op::{opcode}, \
                      None, Some(id), vec![{init}]));\n\
@@ -382,7 +383,10 @@ pub fn gen_mr_builder_normal_insts(grammar: &structs::Grammar) -> String {
                      {s:8}if self.basic_block.is_none() {{\n\
                      {s:12}return Err(Error::DetachedInstruction);\n\
                      {s:8}}}\n\
-                     {s:8}let id = self.id();\n\
+                     {s:8}let id = match result_id {{\n\
+                     {s:12}Some(v) => v,\n\
+                     {s:12}None => self.id(),\n\
+                     {s:8}}};\n\
                      {s:8}let {m}inst = mr::Instruction::new(\
                          spirv::Op::{opcode}, Some(result_type), Some(id), vec![{init}]);\n\
                      {extras}{y}\
@@ -433,7 +437,10 @@ pub fn gen_mr_builder_constants(grammar: &structs::Grammar) -> String {
         let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
                  {s:4}pub fn {name}(&mut self{x}{params}) -> spirv::Word {{\n\
-                 {s:8}let id = self.id();\n\
+                 {s:8}let id = match result_id {{\n\
+                 {s:12}Some(v) => v,\n\
+                 {s:12}None => self.id(),\n\
+                 {s:8}}};\n\
                  {s:8}let {m}inst = mr::Instruction::new(\
                      spirv::Op::{opcode}, Some(result_type), Some(id), vec![{init}]);\n\
                  {extras}{y}\

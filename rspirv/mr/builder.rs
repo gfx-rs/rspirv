@@ -66,8 +66,8 @@ type BuildResult<T> = result::Result<T, Error>;
 /// fn main() {
 ///     let mut b = rspirv::mr::Builder::new();
 ///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
-///     let void = b.type_void();
-///     let voidf = b.type_function(void, vec![void]);
+///     let void = b.type_void(None);
+///     let voidf = b.type_function(None, void, vec![void]);
 ///     b.begin_function(void,
 ///                      None,
 ///                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
@@ -142,7 +142,7 @@ impl Builder {
 
         let id = match function_id {
             Some(v) => v,
-            None => self.id()
+            None => self.id(),
         };
 
         let mut f = mr::Function::new();
@@ -195,7 +195,7 @@ impl Builder {
 
         let id = match label_id {
             Some(v) => v,
-            None => self.id()
+            None => self.id(),
         };
 
         let mut bb = mr::BasicBlock::new();
@@ -323,6 +323,19 @@ impl Builder {
 }
 
 impl Builder {
+    /// Appends an OpTypeForwardPointer instruction.
+    pub fn type_forward_pointer(&mut self,
+                                pointer_type: spirv::Word,
+                                storage_class: spirv::StorageClass) {
+        self.module
+            .types_global_values
+            .push(mr::Instruction::new(spirv::Op::TypeForwardPointer,
+                                       None,
+                                       None,
+                                       vec![mr::Operand::IdRef(pointer_type),
+                                            mr::Operand::StorageClass(storage_class)]));
+    }
+
     /// Appends an OpConstant instruction with the given 32-bit float `value`.
     /// or the module if no basic block is under construction.
     pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
@@ -375,10 +388,14 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn variable(&mut self,
                     result_type: spirv::Word,
+                    result_id: Option<spirv::Word>,
                     storage_class: spirv::StorageClass,
                     initializer: Option<spirv::Word>)
                     -> spirv::Word {
-        let id = self.id();
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
         let mut operands = vec![mr::Operand::StorageClass(storage_class)];
         if let Some(val) = initializer {
             operands.push(mr::Operand::IdRef(val));
@@ -394,8 +411,14 @@ impl Builder {
 
     /// Appends an OpUndef instruction to either the current basic block
     /// or the module if no basic block is under construction.
-    pub fn undef(&mut self, result_type: spirv::Word) -> spirv::Word {
-        let id = self.id();
+    pub fn undef(&mut self,
+                 result_type: spirv::Word,
+                 result_id: Option<spirv::Word>)
+                 -> spirv::Word {
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
         let inst = mr::Instruction::new(spirv::Op::Undef, Some(result_type), Some(id), vec![]);
 
         match self.basic_block {
@@ -484,7 +507,7 @@ mod tests {
     #[test]
     fn test_constant_f32() {
         let mut b = Builder::new();
-        let float = b.type_float(32);
+        let float = b.type_float(None, 32);
         // Normal numbers
         b.constant_f32(float, 3.14);
         b.constant_f32(float, 2e-10);
@@ -543,7 +566,7 @@ mod tests {
     #[test]
     fn test_spec_constant_f32() {
         let mut b = Builder::new();
-        let float = b.type_float(32);
+        let float = b.type_float(None, 32);
         // Normal numbers
         b.spec_constant_f32(float, 10.);
         // Zero

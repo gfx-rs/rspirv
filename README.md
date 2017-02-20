@@ -97,7 +97,7 @@ let buffer: Vec<u8> = vec![
     // GLSL450.
     0x01, 0x00, 0x00, 0x00];
 
-let dis = match rspirv::mr::load_bytes(&buffer) {
+let dis = match rspirv::mr::load_bytes(buffer) {
     Ok(module) => module.disassemble(),
     Err(err) => format!("{}", err),
 };
@@ -121,14 +121,15 @@ use rspirv::binary::Disassemble;
 fn main() {
     let mut b = rspirv::mr::Builder::new();
     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
-    let void = b.type_void();
-    let voidf = b.type_function(void, vec![void]);
+    let void = b.type_void(None);
+    let voidf = b.type_function(None, void, vec![void]);
     b.begin_function(void,
+                     None,
                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
                       spirv::FUNCTION_CONTROL_CONST),
                      voidf)
      .unwrap();
-    b.begin_basic_block().unwrap();
+    b.begin_basic_block(None).unwrap();
     b.ret().unwrap();
     b.end_function().unwrap();
 
@@ -171,7 +172,7 @@ fn main() {
         0x01, 0x00, 0x00, 0x00];
     let mut loader = Loader::new();  // You can use your own consumer here.
     {
-        let mut p = Parser::new(&bin, &mut loader);
+        let p = Parser::new(&bin, &mut loader);
         p.parse().unwrap();
     }
     let module = loader.module();
