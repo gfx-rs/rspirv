@@ -461,11 +461,14 @@ include!("build_norm_insts.rs");
 
 #[cfg(test)]
 mod tests {
+    use binary;
     use mr;
     use spirv;
 
     use std::f32;
     use super::Builder;
+
+    use binary::Disassemble;
 
     fn has_only_one_global_inst(module: &mr::Module) -> bool {
         if !module.functions.is_empty() {
@@ -641,5 +644,107 @@ mod tests {
             mr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
             _ => assert!(false),
         }
+    }
+
+    #[test]
+    fn test_forward_ref_pointer_type() {
+        let mut b = Builder::new();
+        let float = b.type_float(32); // 1
+        // Let builder generate
+        let p1 = b.type_pointer(None, spirv::StorageClass::Input, float); // 2
+        // We supply
+        let pointee = b.id(); // 3
+        b.type_forward_pointer(pointee, spirv::StorageClass::Output);
+        let p2 = b.type_pointer(Some(pointee), spirv::StorageClass::Output, float);
+        let m = b.module();
+        assert_eq!(1, float);
+        assert_eq!(2, p1);
+        assert_eq!(pointee, p2); // Return the same id
+        assert_eq!(4, m.types_global_values.len());
+
+        let inst = &m.types_global_values[0];
+        assert_eq!(spirv::Op::TypeFloat, inst.class.opcode);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(Some(1), inst.result_id);
+        assert_eq!(vec![mr::Operand::LiteralInt32(32)], inst.operands);
+
+        let inst = &m.types_global_values[1];
+        assert_eq!(spirv::Op::TypePointer, inst.class.opcode);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(Some(2), inst.result_id);
+        assert_eq!(vec![mr::Operand::from(spirv::StorageClass::Input), mr::Operand::IdRef(1)],
+                   inst.operands);
+
+        let inst = &m.types_global_values[2];
+        assert_eq!(spirv::Op::TypeForwardPointer, inst.class.opcode);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(None, inst.result_id);
+        assert_eq!(vec![mr::Operand::IdRef(3), mr::Operand::from(spirv::StorageClass::Output)],
+                   inst.operands);
+
+        let inst = &m.types_global_values[3];
+        assert_eq!(spirv::Op::TypePointer, inst.class.opcode);
+        assert_eq!(None, inst.result_type);
+        assert_eq!(Some(3), inst.result_id);
+        assert_eq!(vec![mr::Operand::from(spirv::StorageClass::Output), mr::Operand::IdRef(1)],
+                   inst.operands);
+    }
+
+    #[test]
+    fn test_forward_ref_phi() {
+        let mut b = Builder::new();
+
+        let float = b.type_float(32);
+        assert_eq!(1, float);
+        let f32ff32 = b.type_function(float, vec![float]);
+        assert_eq!(2, f32ff32);
+        let c0 = b.constant_f32(float, 0.0f32);
+        assert_eq!(3, c0);
+
+        let fid = b.begin_function(float, None, spirv::FUNCTION_CONTROL_NONE, f32ff32).unwrap();
+        assert_eq!(4, fid);
+
+        let epid = b.begin_basic_block(None).unwrap(); // Entry block id
+        assert_eq!(5, epid);
+        let target1 = b.id();
+        assert_eq!(6, target1);
+        assert!(b.branch(target1).is_ok());
+
+        let pbid = b.begin_basic_block(Some(target1)).unwrap(); // Phi block id
+        assert_eq!(target1, pbid);
+        let target2 = b.id();
+        assert_eq!(7, target2);
+        let fr_add = b.id();
+        assert_eq!(8, fr_add);
+        // OpPhi can forward reference ids for both labels and results
+        let phi = b.phi(float,
+                        None,
+                        // From above, from this, from below
+                        vec![(c0, epid), (fr_add, pbid), (c0, target2)])
+                   .unwrap();
+        assert_eq!(9, phi);
+        let res_add = b.fadd(float, Some(fr_add), c0, c0).unwrap();
+        assert_eq!(res_add, fr_add);
+        assert!(b.branch(target2).is_ok());
+
+        let exid = b.begin_basic_block(Some(target2)).unwrap(); // Exit block id
+        assert_eq!(exid, target2);
+        assert!(b.ret_value(c0).is_ok());
+
+        assert!(b.end_function().is_ok());
+
+        let m = b.module();
+        assert_eq!(1, m.functions.len());
+        assert_eq!(m.functions.first().unwrap().disassemble(),
+                   "%4 = OpFunction  %1  None %2\n\
+                    %5 = OpLabel\n\
+                    OpBranch %6\n\
+                    %6 = OpLabel\n\
+                    %9 = OpPhi  %1  %3 %5 %8 %6 %3 %7\n\
+                    %8 = OpFAdd  %1  %3 %3\n\
+                    OpBranch %7\n\
+                    %7 = OpLabel\n\
+                    OpReturnValue %3\n\
+                    OpFunctionEnd");
     }
 }
