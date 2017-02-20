@@ -246,9 +246,9 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         b.source(spirv::SourceLanguage::GLSL, 450, None, None);
 
-        let void = b.type_void(None);
-        let float32 = b.type_float(None, 32);
-        let voidfvoid = b.type_function(None, void, vec![void]);
+        let void = b.type_void();
+        let float32 = b.type_float(32);
+        let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b.begin_function(void,
                                  None,

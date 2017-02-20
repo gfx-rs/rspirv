@@ -41,8 +41,8 @@
 //!     // Building
 //!     let mut b = rspirv::mr::Builder::new();
 //!     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::GLSL450);
-//!     let void = b.type_void(None);
-//!     let voidf = b.type_function(None, void, vec![void]);
+//!     let void = b.type_void();
+//!     let voidf = b.type_function(void, vec![void]);
 //!     b.begin_function(void,
 //!                      None,
 //!                      (spirv::FUNCTION_CONTROL_DONT_INLINE |

@@ -66,8 +66,8 @@ type BuildResult<T> = result::Result<T, Error>;
 /// fn main() {
 ///     let mut b = rspirv::mr::Builder::new();
 ///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
-///     let void = b.type_void(None);
-///     let voidf = b.type_function(None, void, vec![void]);
+///     let void = b.type_void();
+///     let voidf = b.type_function(void, vec![void]);
 ///     b.begin_function(void,
 ///                      None,
 ///                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
@@ -336,6 +336,27 @@ impl Builder {
                                             mr::Operand::StorageClass(storage_class)]));
     }
 
+    /// Appends an OpTypePointer instruction and returns the result id.
+    pub fn type_pointer(&mut self,
+                        result_id: Option<spirv::Word>,
+                        storage_class: spirv::StorageClass,
+                        pointee_type: spirv::Word)
+                        -> spirv::Word {
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        self.module
+            .types_global_values
+            .push(mr::Instruction::new(spirv::Op::TypePointer,
+                                       None,
+                                       Some(id),
+                                       vec![mr::Operand::StorageClass(storage_class),
+                                            mr::Operand::IdRef(pointee_type)]));
+        id
+    }
+
+
     /// Appends an OpConstant instruction with the given 32-bit float `value`.
     /// or the module if no basic block is under construction.
     pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
@@ -507,7 +528,7 @@ mod tests {
     #[test]
     fn test_constant_f32() {
         let mut b = Builder::new();
-        let float = b.type_float(None, 32);
+        let float = b.type_float(32);
         // Normal numbers
         b.constant_f32(float, 3.14);
         b.constant_f32(float, 2e-10);
@@ -566,7 +587,7 @@ mod tests {
     #[test]
     fn test_spec_constant_f32() {
         let mut b = Builder::new();
-        let float = b.type_float(None, 32);
+        let float = b.type_float(32);
         // Normal numbers
         b.spec_constant_f32(float, 10.);
         // Zero
