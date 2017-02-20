@@ -27,23 +27,30 @@ type BuildResult<T> = result::Result<T, Error>;
 /// Constructs a [`Module`](struct.Module.html) by aggregating results from
 /// method calls for various instructions.
 ///
-/// If a SPIR-V instruction has result id, the build method for it will return
-/// a result id automatically assigned from the builder.
+/// This builder is designed to be low level; its build methods' signatures
+/// basically reflects the layout of the corresponding SPIR-V instructions
+/// faithfully.
+///
+/// If a SPIR-V instruction generates a result id and the result id can be
+/// forward referenced, the build method will take an optional `result_id`
+/// parameter. Filling it with `Some(val)` will instruct the builder to use
+/// the given `val` as the result id. For other cases, an unsed result id
+/// will be automatically assigned from the builder.
+///
+/// So for instructions forward referencing an id, to avoid id collision,
+/// you can either
+///
+/// * first append the target instruction generating that id and then append the
+///   forward referencing instruction; or
+/// * use the `id()` method to get an unused id from the builder, use it in the
+///   forward referencing instruction, and then later fill the optional
+///   `result_id` parameter of the target instruction with the same id.
 ///
 /// Instructions belonging to the module (e.g., `OpDecorate`) can be appended
 /// at any time, no matter that a basic block is currently under construction
 /// or not. Intructions that can appear both in the module and basic block
 /// (e.g., `OpVariable`) will be inserted to the current basic block under
 /// construction first, if any.
-///
-/// For instructions forward referencing an id, to avoid id collision, you can
-/// either
-///
-/// * first append the target instruction generating that id and then append the
-///   forward referencing instruction; or
-/// * use the `id()` method to get an unused id from the builder, use it in the
-///   forward referencing instruction, and then later fix up the target
-///   instruction's result id.
 ///
 /// # Errors
 ///
