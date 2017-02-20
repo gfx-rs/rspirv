@@ -44,11 +44,12 @@
 //!     let void = b.type_void();
 //!     let voidf = b.type_function(void, vec![void]);
 //!     b.begin_function(void,
+//!                      None,
 //!                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
 //!                       spirv::FUNCTION_CONTROL_CONST),
 //!                      voidf)
 //!      .unwrap();
-//!     b.begin_basic_block().unwrap();
+//!     b.begin_basic_block(None).unwrap();
 //!     b.ret().unwrap();
 //!     b.end_function().unwrap();
 //!     let module = b.module();

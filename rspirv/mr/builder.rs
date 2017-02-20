@@ -69,11 +69,12 @@ type BuildResult<T> = result::Result<T, Error>;
 ///     let void = b.type_void();
 ///     let voidf = b.type_function(void, vec![void]);
 ///     b.begin_function(void,
+///                      None,
 ///                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
 ///                       spirv::FUNCTION_CONTROL_CONST),
 ///                      voidf)
 ///      .unwrap();
-///     b.begin_basic_block().unwrap();
+///     b.begin_basic_block(None).unwrap();
 ///     b.ret().unwrap();
 ///     b.end_function().unwrap();
 ///
@@ -125,8 +126,13 @@ impl Builder {
     }
 
     /// Begins building of a new function.
+    ///
+    /// If `function_id` is `Some(val)`, then `val` will be used as the result
+    /// id of the function under construction; otherwise, an unused result id
+    /// will be automatically assigned.
     pub fn begin_function(&mut self,
                           return_type: spirv::Word,
+                          function_id: Option<spirv::Word>,
                           control: spirv::FunctionControl,
                           function_type: spirv::Word)
                           -> BuildResult<spirv::Word> {
@@ -134,7 +140,10 @@ impl Builder {
             return Err(Error::NestedFunction);
         }
 
-        let id = self.id();
+        let id = match function_id {
+            Some(v) => v,
+            None => self.id()
+        };
 
         let mut f = mr::Function::new();
         f.def = Some(mr::Instruction::new(spirv::Op::Function,
@@ -172,7 +181,11 @@ impl Builder {
     }
 
     /// Begins building of a new basic block.
-    pub fn begin_basic_block(&mut self) -> BuildResult<spirv::Word> {
+    ///
+    /// If `label_id` is `Some(val)`, then `val` will be used as the result
+    /// id for the `OpLabel` instruction begining this basic block; otherwise,
+    /// a unused result id will be automatically assigned.
+    pub fn begin_basic_block(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
         if self.function.is_none() {
             return Err(Error::DetachedBasicBlock);
         }
@@ -180,7 +193,10 @@ impl Builder {
             return Err(Error::NestedBasicBlock);
         }
 
-        let id = self.id();
+        let id = match label_id {
+            Some(v) => v,
+            None => self.id()
+        };
 
         let mut bb = mr::BasicBlock::new();
         bb.label = Some(mr::Instruction::new(spirv::Op::Label, None, Some(id), vec![]));

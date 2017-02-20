@@ -251,11 +251,12 @@ mod tests {
         let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b.begin_function(void,
+                                 None,
                                  (spirv::FUNCTION_CONTROL_DONT_INLINE |
                                   spirv::FUNCTION_CONTROL_CONST),
                                  voidfvoid)
                  .unwrap();
-        b.begin_basic_block().unwrap();
+        b.begin_basic_block(None).unwrap();
         let var = b.variable(float32, spirv::StorageClass::Function, None);
         b.ret().unwrap();
         b.end_function().unwrap();

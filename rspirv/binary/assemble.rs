@@ -234,8 +234,8 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         let void = b.type_void();
         let voidfvoid = b.type_function(void, vec![void]);
-        b.begin_function(void, spirv::FUNCTION_CONTROL_CONST, voidfvoid).unwrap();
-        b.begin_basic_block().unwrap();
+        b.begin_function(void, None, spirv::FUNCTION_CONTROL_CONST, voidfvoid).unwrap();
+        b.begin_basic_block(None).unwrap();
         b.ret().unwrap();
         b.end_function().unwrap();
 
