@@ -79,48 +79,19 @@ please make sure that the version is >= 1.15.
 Examples
 --------
 
-Loading a SPIR-V binary module into memory and printing its disassembly:
-
-```rust
-use rspirv;
-use rspirv::binary::Disassemble;
-
-let buffer: Vec<u8> = vec![
-    // Magic number.           Version number: 1.0.
-    0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
-    // Generator number: 0.    Bound: 0.
-    0x00, 0x00, 0x00, 0x00,    0x00, 0x00, 0x00, 0x00,
-    // Reserved word: 0.
-    0x00, 0x00, 0x00, 0x00,
-    // OpMemoryModel.          Logical.
-    0x0e, 0x00, 0x03, 0x00,    0x00, 0x00, 0x00, 0x00,
-    // GLSL450.
-    0x01, 0x00, 0x00, 0x00];
-
-let dis = match rspirv::mr::load_bytes(buffer) {
-    Ok(module) => module.disassemble(),
-    Err(err) => format!("{}", err),
-};
-
-assert_eq!(dis,
-           "; SPIR-V\n\
-            ; Version: 1.1\n\
-            ; Generator: Unknown\n\
-            ; Bound: 0\n\
-            OpMemoryModel Logical GLSL450");
-```
-
-Building a SPIR-V binary module:
+Building a SPIR-V module, assembling it, parsing it, and then disassembling it:
 
 ```rust
 extern crate rspirv;
 extern crate spirv_headers as spirv;
 
+use rspirv::binary::Assemble;
 use rspirv::binary::Disassemble;
 
 fn main() {
+    // Building
     let mut b = rspirv::mr::Builder::new();
-    b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+    b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::GLSL450);
     let void = b.type_void();
     let voidf = b.type_function(void, vec![void]);
     b.begin_function(void,
@@ -132,57 +103,31 @@ fn main() {
     b.begin_basic_block(None).unwrap();
     b.ret().unwrap();
     b.end_function().unwrap();
+    let module = b.module();
 
-    assert_eq!(b.module().disassemble(),
+    // Assembling
+    let code = module.assemble();
+    assert!(code.len() > 20);  // Module header contains 5 words
+    assert_eq!(spirv::MAGIC_NUMBER, code[0]);
+
+    // Parsing
+    let mut loader = rspirv::mr::Loader::new();
+    rspirv::binary::parse_words(&code, &mut loader).unwrap();
+    let module = loader.module();
+
+    // Disassembling
+    assert_eq!(module.disassemble(),
                "; SPIR-V\n\
                 ; Version: 1.1\n\
                 ; Generator: Unknown\n\
                 ; Bound: 5\n\
-                OpMemoryModel Logical Simple\n\
+                OpMemoryModel Logical GLSL450\n\
                 %1 = OpTypeVoid\n\
                 %2 = OpTypeFunction %1 %1\n\
                 %3 = OpFunction  %1  DontInline|Const %2\n\
                 %4 = OpLabel\n\
                 OpReturn\n\
                 OpFunctionEnd");
-}
-```
-
-Parsing a SPIR-V binary module:
-
-```rust
-extern crate rspirv;
-extern crate spirv_headers as spirv;
-
-use spirv::{AddressingModel, MemoryModel};
-use rspirv::binary::Parser;
-use rspirv::mr::{Loader, Operand};
-
-fn main() {
-    let bin = vec![
-        // Magic number.           Version number: 1.0.
-        0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
-        // Generator number: 0.    Bound: 0.
-        0x00, 0x00, 0x00, 0x00,    0x00, 0x00, 0x00, 0x00,
-        // Reserved word: 0.
-        0x00, 0x00, 0x00, 0x00,
-        // OpMemoryModel.          Logical.
-        0x0e, 0x00, 0x03, 0x00,    0x00, 0x00, 0x00, 0x00,
-        // GLSL450.
-        0x01, 0x00, 0x00, 0x00];
-    let mut loader = Loader::new();  // You can use your own consumer here.
-    {
-        let p = Parser::new(&bin, &mut loader);
-        p.parse().unwrap();
-    }
-    let module = loader.module();
-
-    assert_eq!((1, 1), module.header.unwrap().version());
-    let m = module.memory_model.as_ref().unwrap();
-    assert_eq!(Operand::AddressingModel(AddressingModel::Logical),
-               m.operands[0]);
-    assert_eq!(Operand::MemoryModel(MemoryModel::GLSL450),
-               m.operands[1]);
 }
 ```
 
