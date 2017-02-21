@@ -412,7 +412,7 @@ impl Builder {
         id
     }
 
-    /// Appends an OpCapability instruction to either the current basic block
+    /// Appends an OpVariable instruction to either the current basic block
     /// or the module if no basic block is under construction.
     pub fn variable(&mut self,
                     result_type: spirv::Word,
@@ -461,7 +461,6 @@ include!("build_norm_insts.rs");
 
 #[cfg(test)]
 mod tests {
-    use binary;
     use mr;
     use spirv;
 
@@ -745,6 +744,98 @@ mod tests {
                     OpBranch %7\n\
                     %7 = OpLabel\n\
                     OpReturnValue %3\n\
+                    OpFunctionEnd");
+    }
+
+    #[test]
+    fn test_build_variables() {
+        let mut b = Builder::new();
+
+        let void = b.type_void();
+        assert_eq!(1, void);
+        let float = b.type_float(32);
+        assert_eq!(2, float);
+        let ifp = b.type_pointer(None, spirv::StorageClass::Input, float);
+        assert_eq!(3, ifp);
+        let ffp = b.type_pointer(None, spirv::StorageClass::Function, float);
+        assert_eq!(4, ffp);
+        let voidfvoid = b.type_function(void, vec![void]);
+        assert_eq!(5, voidfvoid);
+
+        // Global variable
+        let v1 = b.variable(ifp, None, spirv::StorageClass::Input, None);
+        assert_eq!(6, v1);
+
+        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).unwrap();
+        assert_eq!(7, f);
+        let bb = b.begin_basic_block(None).unwrap();
+        assert_eq!(8, bb);
+        // Local variable
+        let v2 = b.variable(ffp, None, spirv::StorageClass::Function, None);
+        assert_eq!(9, v2);
+        assert!(b.ret().is_ok());
+        assert!(b.end_function().is_ok());
+
+        // Global variable again
+        let v3 = b.variable(ifp, None, spirv::StorageClass::Input, None);
+        assert_eq!(10, v3);
+
+        assert_eq!(b.module().disassemble(),
+                   "; SPIR-V\n; Version: 1.1\n; Generator: Unknown\n; Bound: 11\n\
+                    %1 = OpTypeVoid\n\
+                    %2 = OpTypeFloat 32\n\
+                    %3 = OpTypePointer Input %2\n\
+                    %4 = OpTypePointer Function %2\n\
+                    %5 = OpTypeFunction %1 %1\n\
+                    %6 = OpVariable  %3  Input\n\
+                    %10 = OpVariable  %3  Input\n\
+                    %7 = OpFunction  %1  None %5\n\
+                    %8 = OpLabel\n\
+                    %9 = OpVariable  %4  Function\n\
+                    OpReturn\n\
+                    OpFunctionEnd");
+    }
+
+    #[test]
+    fn test_build_undefs() {
+        let mut b = Builder::new();
+
+        let void = b.type_void();
+        assert_eq!(1, void);
+        let float = b.type_float(32);
+        assert_eq!(2, float);
+        let voidfvoid = b.type_function(void, vec![void]);
+        assert_eq!(3, voidfvoid);
+
+        // Global undef
+        let v1 = b.undef(float, None);
+        assert_eq!(4, v1);
+
+        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).unwrap();
+        assert_eq!(5, f);
+        let bb = b.begin_basic_block(None).unwrap();
+        assert_eq!(6, bb);
+        // Local undef
+        let v2 = b.undef(float, None);
+        assert_eq!(7, v2);
+        assert!(b.ret().is_ok());
+        assert!(b.end_function().is_ok());
+
+        // Global undef again
+        let v3 = b.undef(float, None);
+        assert_eq!(8, v3);
+
+        assert_eq!(b.module().disassemble(),
+                   "; SPIR-V\n; Version: 1.1\n; Generator: Unknown\n; Bound: 9\n\
+                    %1 = OpTypeVoid\n\
+                    %2 = OpTypeFloat 32\n\
+                    %3 = OpTypeFunction %1 %1\n\
+                    %4 = OpUndef  %2 \n\
+                    %8 = OpUndef  %2 \n\
+                    %5 = OpFunction  %1  None %3\n\
+                    %6 = OpLabel\n\
+                    %7 = OpUndef  %2 \n\
+                    OpReturn\n\
                     OpFunctionEnd");
     }
 }
