@@ -19,7 +19,7 @@ appveyor = { repository = "antiagainst/rspirv" }
 
 [dependencies]
 num = "0.1"
-clippy = { version = "*", optional = true }
+clippy = { version = "0.0", optional = true }
 
 
 [dependencies.spirv_headers]
