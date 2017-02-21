@@ -2279,7 +2279,7 @@
       "operands" : [
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
-        { "kind" : "PairIdRefIdRef", "quantifier" : "*", "name" : "'Variable, Parent, ...'" }
+        { "kind" : "PairIdRefIdRef", "quantifier" : "*", "name" : "ValueLabelPairs" }
       ]
     },
     {

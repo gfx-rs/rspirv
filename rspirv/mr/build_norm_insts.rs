@@ -2396,7 +2396,7 @@ impl Builder {
     }
 
     /// Appends an OpPhi instruction to the current basic block.
-    pub fn phi(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, variable_parent_: Vec<(spirv::Word, spirv::Word)>) -> BuildResult<spirv::Word> {
+    pub fn phi(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, value_label_pairs: Vec<(spirv::Word, spirv::Word)>) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
@@ -2405,7 +2405,7 @@ impl Builder {
             None => self.id(),
         };
         let mut inst = mr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(id), vec![]);
-        for v in variable_parent_ {
+        for v in value_label_pairs {
             inst.operands.push(mr::Operand::IdRef(v.0));
             inst.operands.push(mr::Operand::IdRef(v.1));
         };
