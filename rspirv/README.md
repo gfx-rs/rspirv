@@ -27,7 +27,7 @@ First add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-rspirv = "0.3"
+rspirv = "0.4"
 ```
 
 Then add to your crate root:
@@ -47,9 +47,9 @@ Please see the [documentation][doc-rspirv] and project's
 [crate-rspirv]: https://crates.io/crates/rspirv
 [doc-rspirv]: https://docs.rs/rspirv
 [project-readme]: https://github.com/google/rspirv/blob/master/README.md
-[doc-grammar]: https://docs.rs/rspirv/0.3/rspirv/grammar/index.html
-[doc-mr]: https://docs.rs/rspirv/0.3/rspirv/mr/index.html
-[doc-builder]: https://docs.rs/rspirv/0.3/rspirv/mr/struct.Builder.html
-[doc-binary]: https://docs.rs/rspirv/0.3/rspirv/binary/index.html
-[doc-parser]: https://docs.rs/rspirv/0.3/rspirv/binary/struct.Parser.html
-[doc-consumer]: https://docs.rs/rspirv/0.3/rspirv/binary/trait.Consumer.html
+[doc-grammar]: https://docs.rs/rspirv/*/rspirv/grammar/index.html
+[doc-mr]: https://docs.rs/rspirv/*/rspirv/mr/index.html
+[doc-builder]: https://docs.rs/rspirv/*/rspirv/mr/struct.Builder.html
+[doc-binary]: https://docs.rs/rspirv/*/rspirv/binary/index.html
+[doc-parser]: https://docs.rs/rspirv/*/rspirv/binary/struct.Parser.html
+[doc-consumer]: https://docs.rs/rspirv/*/rspirv/binary/trait.Consumer.html
