@@ -107,13 +107,6 @@ impl Builder {
         id
     }
 
-    /// Appends an OpTypeOpaque instruction and returns the result id.
-    pub fn type_opaque(&mut self, type_name: String) -> spirv::Word {
-        let id = self.id();
-        self.module.types_global_values.push(mr::Instruction::new(spirv::Op::TypeOpaque, None, Some(id), vec![mr::Operand::LiteralString(type_name)]));
-        id
-    }
-
     /// Appends an OpTypeFunction instruction and returns the result id.
     pub fn type_function(&mut self, return_type: spirv::Word, parameter_types: Vec<spirv::Word>) -> spirv::Word {
         let id = self.id();

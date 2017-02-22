@@ -244,7 +244,7 @@ mod tests {
         b.extension("awesome-extension");
         b.ext_inst_import("GLSL.std.450");
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
-        b.source(spirv::SourceLanguage::GLSL, 450, None, None);
+        b.source::<String>(spirv::SourceLanguage::GLSL, 450, None, None);
 
         let void = b.type_void();
         let float32 = b.type_float(32);
@@ -263,7 +263,7 @@ mod tests {
 
         b.entry_point(spirv::ExecutionModel::Fragment, f, "main", vec![]);
         b.execution_mode(f, spirv::ExecutionMode::OriginUpperLeft, vec![]);
-        b.name(f, "main".to_string());
+        b.name(f, "main");
         b.decorate(var, spirv::Decoration::RelaxedPrecision, vec![]);
 
         assert_eq!(b.module().disassemble(),

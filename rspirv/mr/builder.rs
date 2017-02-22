@@ -363,6 +363,17 @@ impl Builder {
         id
     }
 
+    /// Appends an OpTypeOpaque instruction and returns the result id.
+    pub fn type_opaque<T: Into<String>>(&mut self, type_name: T) -> spirv::Word {
+        let id = self.id();
+        self.module
+            .types_global_values
+            .push(mr::Instruction::new(spirv::Op::TypeOpaque,
+                                       None,
+                                       Some(id),
+                                       vec![mr::Operand::LiteralString(type_name.into())]));
+        id
+    }
 
     /// Appends an OpConstant instruction with the given 32-bit float `value`.
     /// or the module if no basic block is under construction.

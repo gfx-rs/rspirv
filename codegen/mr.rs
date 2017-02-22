@@ -104,7 +104,11 @@ fn get_init_list(params: &[structs::Operand]) -> Vec<String> {
             } else {
                 let name = get_param_name(param);
                 let kind = get_mr_operand_kind(&param.kind);
-                Some(format!("mr::Operand::{}({})", kind, name))
+                Some(if kind == "LiteralString" {
+                    format!("mr::Operand::LiteralString({}.into())", name)
+                } else {
+                    format!("mr::Operand::{}({})", kind, name)
+                })
             }
         } else {
             None
@@ -124,11 +128,16 @@ fn get_push_extras(params: &[structs::Operand],
             let kind = get_mr_operand_kind(&param.kind);
             Some(format!(
                     "{s:8}if let Some(v) = {name} {{\n\
-                     {s:12}{container}.push(mr::Operand::{kind}(v));\n\
+                     {s:12}{container}.push(mr::Operand::{kind}(v{into}));\n\
                      {s:8}}}",
                     s = "",
                     kind = kind,
                     name = name,
+                    into = if kind == "LiteralString" {
+                        ".into()"
+                    } else {
+                        ""
+                    },
                     container = container))
         } else {
             // TODO: Ouch! Bad smell. This has special case treatment yet
@@ -195,7 +204,7 @@ fn get_enum_underlying_type(kind: &str) -> String {
     } else if kind == "LiteralContextDependentNumber" {
         panic!("this kind is not expected to be handled here")
     } else if kind == "LiteralString" {
-        "String".to_string()
+        "T".to_string()
     } else if kind == "PairLiteralIntegerIdRef" {
         "(u32, spirv::Word)".to_string()
     } else if kind == "PairIdRefLiteralInteger" {
@@ -312,7 +321,7 @@ pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> String {
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
         inst.class == "Type" && inst.opname != "OpTypeForwardPointer" &&
-            inst.opname != "OpTypePointer"
+            inst.opname != "OpTypePointer" && inst.opname != "OpTypeOpaque"
     }).map(|inst| {
         // Parameter list for this build method.
         let param_list = get_param_list(&inst.operands, false, kinds).join(", ");
@@ -473,7 +482,7 @@ pub fn gen_mr_builder_debug(grammar: &structs::Grammar) -> String {
         let params = get_param_list(&inst.operands, false, kinds).join(", ");
         let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
-                 {s:4}pub fn {name}(&mut self{x}{params}) {{\n\
+                 {s:4}pub fn {name}<T: Into<String>>(&mut self{x}{params}) {{\n\
                  {s:8}let {m}inst = mr::Instruction::new(\
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                  {extras}{y}\
