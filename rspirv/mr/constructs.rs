@@ -264,7 +264,7 @@ impl Instruction {
 // Sadly cannot use impl<T: Into<String>> here.
 impl<'a> convert::From<&'a str> for Operand {
     fn from(val: &'a str) -> Self {
-        Operand::LiteralString(val.to_string())
+        Operand::LiteralString(val.to_owned())
     }
 }
 

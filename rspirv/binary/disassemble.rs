@@ -241,8 +241,8 @@ mod tests {
         let mut b = mr::Builder::new();
 
         b.capability(spirv::Capability::Shader);
-        b.extension("awesome-extension".to_string());
-        b.ext_inst_import("GLSL.std.450".to_string());
+        b.extension("awesome-extension");
+        b.ext_inst_import("GLSL.std.450");
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         b.source(spirv::SourceLanguage::GLSL, 450, None, None);
 
@@ -261,10 +261,7 @@ mod tests {
         b.ret().unwrap();
         b.end_function().unwrap();
 
-        b.entry_point(spirv::ExecutionModel::Fragment,
-                      f,
-                      "main".to_string(),
-                      vec![]);
+        b.entry_point(spirv::ExecutionModel::Fragment, f, "main", vec![]);
         b.execution_mode(f, spirv::ExecutionMode::OriginUpperLeft, vec![]);
         b.name(f, "main".to_string());
         b.decorate(var, spirv::Decoration::RelaxedPrecision, vec![]);

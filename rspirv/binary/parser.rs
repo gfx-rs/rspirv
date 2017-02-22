@@ -715,7 +715,7 @@ mod tests {
         assert_eq!(vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
                         mr::Operand::LiteralInt32(450),
                         mr::Operand::IdRef(6),
-                        mr::Operand::LiteralString("wow".to_string())],
+                        mr::Operand::from("wow")],
                    inst.operands);
     }
 

@@ -231,21 +231,21 @@ impl Builder {
     }
 
     /// Appends an OpExtension instruction.
-    pub fn extension(&mut self, extension: String) {
+    pub fn extension<T: Into<String>>(&mut self, extension: T) {
         let inst = mr::Instruction::new(spirv::Op::Extension,
                                         None,
                                         None,
-                                        vec![mr::Operand::LiteralString(extension)]);
+                                        vec![mr::Operand::LiteralString(extension.into())]);
         self.module.extensions.push(inst);
     }
 
     /// Appends an OpExtInstImport instruction and returns the result id.
-    pub fn ext_inst_import(&mut self, extended_inst_set: String) -> spirv::Word {
+    pub fn ext_inst_import<T: Into<String>>(&mut self, extended_inst_set: T) -> spirv::Word {
         let id = self.id();
         let inst = mr::Instruction::new(spirv::Op::ExtInstImport,
                                         None,
                                         Some(id),
-                                        vec![mr::Operand::LiteralString(extended_inst_set)]);
+                                        vec![mr::Operand::LiteralString(extended_inst_set.into())]);
         self.module.ext_inst_imports.push(inst);
         id
     }
@@ -263,14 +263,14 @@ impl Builder {
     }
 
     /// Appends an OpEntryPoint instruction.
-    pub fn entry_point(&mut self,
-                       execution_model: spirv::ExecutionModel,
-                       entry_point: spirv::Word,
-                       name: String,
-                       interface: Vec<spirv::Word>) {
+    pub fn entry_point<T: Into<String>>(&mut self,
+                                        execution_model: spirv::ExecutionModel,
+                                        entry_point: spirv::Word,
+                                        name: T,
+                                        interface: Vec<spirv::Word>) {
         let mut operands = vec![mr::Operand::ExecutionModel(execution_model),
                                 mr::Operand::IdRef(entry_point),
-                                mr::Operand::LiteralString(name)];
+                                mr::Operand::LiteralString(name.into())];
         for v in interface {
             operands.push(mr::Operand::IdRef(v));
         }
@@ -311,12 +311,12 @@ impl Builder {
         id
     }
 
-    pub fn string(&mut self, s: String) -> spirv::Word {
+    pub fn string<T: Into<String>>(&mut self, s: T) -> spirv::Word {
         let id = self.id();
         self.module.debugs.push(mr::Instruction::new(spirv::Op::String,
                                                      None,
                                                      Some(id),
-                                                     vec![mr::Operand::LiteralString(s)]));
+                                                     vec![mr::Operand::LiteralString(s.into())]));
         id
     }
 
