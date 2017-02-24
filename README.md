@@ -59,12 +59,14 @@ Status
 I plan to implement serveral functionalities:
 
 - [x] SPIR-V [memory representation][doc-mr] (MR)
-- [x] SPIR-V module builder
+- [x] SPIR-V module [builder][doc-builder]
 - [ ] SPIR-V module assemebler
 - [x] SPIR-V binary module [parser][doc-parser]
 - [x] SPIR-V binary module disassemebler
 - [ ] HLSL/GLSL to SPIR-V frontend (maybe)
 - [ ] SPIR-V MR to LLVM IR transformation (maybe)
+
+The MR doesn't handle `OpLine` and `OpNoLine` well right now.
 
 The SPIR-V binary module parser is almost feature complete; the only feature
 (that I am aware of) missing is 64-bit selectors in `OpSwitch`.
