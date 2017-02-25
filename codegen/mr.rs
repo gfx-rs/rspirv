@@ -240,7 +240,7 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
 
         let kind_enum = format!(
             "/// Memory representation of a SPIR-V operand.\n\
-             #[derive(Debug, PartialEq)]\n\
+             #[derive(Debug, PartialEq, From)]\n\
              pub enum Operand {{\n\
              {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\
              }}\n\n",
@@ -249,22 +249,6 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
              num_kinds = num_kinds.join("\n"),
              str_kinds = str_kinds.join("\n"));
         ret.push_str(&kind_enum);
-    }
-
-    { // Impl std::convert::From for mr::Operand
-        let cases: Vec<String> = kinds.iter().filter(|element| {
-            !(element.starts_with("Id") ||
-              element.ends_with("String") ||
-              element.ends_with("Integer") ||
-              element.ends_with("Number"))
-        }).map(|element| {
-            format!("impl convert::From<spirv::{kind}> for Operand {{\n\
-                     {s:4}fn from(val: spirv::{kind}) -> Self {{\n\
-                     {s:8}Operand::{kind}(val)\n\
-                     {s:4}}}\n\
-                     }}\n\n", s = "", kind = element)
-        }).collect();
-        ret.push_str(&cases.join(""));
     }
 
     { // impl fmt::Display for mr::Operand.

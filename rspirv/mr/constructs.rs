@@ -268,39 +268,10 @@ impl<'a> convert::From<&'a str> for Operand {
     }
 }
 
-impl convert::From<String> for Operand {
-    fn from(val: String) -> Self {
-        Operand::LiteralString(val)
-    }
-}
-
 impl convert::From<u32> for Operand {
+    /// Converts the given `u32` `val` into an `Operand::LiteralInt32`.
     fn from(val: u32) -> Self {
         Operand::LiteralInt32(val)
-    }
-}
-
-impl convert::From<u64> for Operand {
-    fn from(val: u64) -> Self {
-        Operand::LiteralInt64(val)
-    }
-}
-
-impl convert::From<f32> for Operand {
-    fn from(val: f32) -> Self {
-        Operand::LiteralFloat32(val)
-    }
-}
-
-impl convert::From<f64> for Operand {
-    fn from(val: f64) -> Self {
-        Operand::LiteralFloat64(val)
-    }
-}
-
-impl convert::From<spirv::Op> for Operand {
-    fn from(val: spirv::Op) -> Self {
-        Operand::LiteralSpecConstantOpInteger(val)
     }
 }
 
