@@ -20,10 +20,24 @@
 //!
 //! * The whole SPIR-V [grammar](grammar/index.html) (instruction layouts
 //!   and their operands)
-//! * A [memory representation](mr/index.html) of SPIR-V modules and its
+//! * A [data representation](mr/index.html) of SPIR-V modules and its
 //!   loader and builder
+//! * A [structured representation](sr/index.html) of SPIR-V modules
+//!   (under developing)
 //! * SPIR-V [binary](binary/index.html) module decoding and parsing
 //!   functionalities
+//!
+//! The data representation (DR) focuses on presenting the data within a
+//! SPIR-V module; it uses plain vectors to hold data of SPIR-V instructions,
+//! following the instructions' layouts defined in the grammar. DR has little
+//! structure; only bare structures need for representing modules, functions,
+//! and basic blocks are adopted.
+//!
+//! The structured representation (SR) focuses on presenting the structure
+//! within a SPIR-V module; it tries to links as much information as possible.
+//! Types, values, instructions, decorations and so on have their dedicated
+//! structs. The purpose of SR is to facilitate SPIR-V analysis and
+//! transformations.
 //!
 //! # Examples
 //!
@@ -86,11 +100,14 @@
 #[cfg(test)]
 #[macro_use]
 extern crate assert_matches;
+#[macro_use]
+extern crate derive_more;
 extern crate num;
 extern crate spirv_headers as spirv;
 
 pub mod binary;
 pub mod grammar;
 pub mod mr;
+pub mod sr;
 
 mod utils;

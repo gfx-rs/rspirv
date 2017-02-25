@@ -67,3 +67,31 @@ pub fn get_mr_operand_kind(kind: &str) -> &str {
         kind
     }
 }
+
+/// Returns the underlying type used in operand kind enums for the operand
+/// kind `kind` in the grammar.
+pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> String {
+    if kind.starts_with("Id") {
+        "spirv::Word".to_string()
+    } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
+        "u32".to_string()
+    } else if kind == "LiteralSpecConstantOpInteger" {
+        "spirv::Op".to_string()
+    } else if kind == "LiteralContextDependentNumber" {
+        panic!("this kind is not expected to be handled here")
+    } else if kind == "LiteralString" {
+        if generic_string {
+            "T"
+        } else {
+            "String"
+        }.to_string()
+    } else if kind == "PairLiteralIntegerIdRef" {
+        "(u32, spirv::Word)".to_string()
+    } else if kind == "PairIdRefLiteralInteger" {
+        "(spirv::Word, u32)".to_string()
+    } else if kind == "PairIdRefIdRef" {
+        "(spirv::Word, spirv::Word)".to_string()
+    } else {
+        format!("spirv::{}", kind)
+    }
+}

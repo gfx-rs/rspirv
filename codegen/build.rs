@@ -21,6 +21,7 @@ extern crate serde_json;
 mod binary;
 mod header;
 mod mr;
+mod sr;
 mod structs;
 mod table;
 mod utils;
@@ -158,6 +159,15 @@ fn main() {
         path.pop();
         path.push("disas_operand.rs");
         let c = binary::gen_disas_bit_enum_operands(&grammar.operand_kinds);
+        write!(c, path);
+    }
+
+    {
+        path.pop();
+        path.pop();
+        path.push("sr");
+        path.push("decoration.rs");
+        let c = sr::gen_sr_decoration(&grammar);
         write!(c, path);
     }
 

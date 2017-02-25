@@ -78,6 +78,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "derive_more"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "quote 0.3.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.11.6 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "dtoa"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -240,6 +249,7 @@ version = "0.4.0"
 dependencies = [
  "assert_matches 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clippy 0.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
+ "derive_more 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.1.36 (registry+https://github.com/rust-lang/crates.io-index)",
  "spirv_headers 1.1.5",
 ]
@@ -439,6 +449,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum clap 2.20.5 (registry+https://github.com/rust-lang/crates.io-index)" = "7db281b0520e97fbd15cd615dcd8f8bcad0c26f5f7d5effe705f090f39e9a758"
 "checksum clippy 0.0.114 (registry+https://github.com/rust-lang/crates.io-index)" = "808f9027f62dda9f764f26542a10465a6db221a5bd57981a63a2f84a6518b098"
 "checksum clippy_lints 0.0.114 (registry+https://github.com/rust-lang/crates.io-index)" = "e5d58f7fdb30f25e6c4dac79d0156bec6fb69834ba270dc2dc2e12754cebef75"
+"checksum derive_more 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7ebc69c47e13d94d81a9c0229d6eba1f06ae9bcc6be779bd2743a5df9237a62d"
 "checksum dtoa 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "80c8b71fd71146990a9742fc06dcbbde19161a267e0ad4e572c35162f4578c90"
 "checksum itoa 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "eb2f404fbc66fd9aac13e998248505e7ecb2ad8e44ab6388684c5fb11c6c251c"
 "checksum kernel32-sys 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"

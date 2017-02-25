@@ -56,7 +56,7 @@ fn get_param_list(params: &[structs::Operand],
                   -> Vec<String> {
     let mut list: Vec<String> = params.iter().filter_map(|param| {
         let name = get_param_name(param);
-        let kind = get_enum_underlying_type(&param.kind);
+        let kind = get_enum_underlying_type(&param.kind, true);
         if param.kind == "IdResult" {
             if keep_result_id {
                 Some("result_id: Option<spirv::Word>".to_string())
@@ -190,30 +190,6 @@ fn get_push_extras(params: &[structs::Operand],
         }
     }
     list
-}
-
-/// Returns the underlying type used in operand kind enums for the operand
-/// kind `kind` in the grammar.
-fn get_enum_underlying_type(kind: &str) -> String {
-    if kind.starts_with("Id") {
-        "spirv::Word".to_string()
-    } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
-        "u32".to_string()
-    } else if kind == "LiteralSpecConstantOpInteger" {
-        "spirv::Op".to_string()
-    } else if kind == "LiteralContextDependentNumber" {
-        panic!("this kind is not expected to be handled here")
-    } else if kind == "LiteralString" {
-        "T".to_string()
-    } else if kind == "PairLiteralIntegerIdRef" {
-        "(u32, spirv::Word)".to_string()
-    } else if kind == "PairIdRefLiteralInteger" {
-        "(spirv::Word, u32)".to_string()
-    } else if kind == "PairIdRefIdRef" {
-        "(spirv::Word, spirv::Word)".to_string()
-    } else {
-        format!("spirv::{}", kind)
-    }
 }
 
 /// Returns the generated mr::Operand and its fmt::Display implementation by
