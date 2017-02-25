@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![doc(html_root_url = "https://docs.rs/rspirv/0.3/")]
+#![doc(html_root_url = "https://docs.rs/rspirv/0.4/")]
 
 //! Library APIs for SPIR-V module processing functionalities.
 //!
