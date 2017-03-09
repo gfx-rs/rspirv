@@ -62,31 +62,31 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::ImageOperands => {
                 let val = try_decode!(self.decoder.image_operands());
                 let mut ops = vec![mr::Operand::ImageOperands(val)];
-                ops.append(&mut try!(self.parse_image_operands_arguments(val)));
+                ops.append(&mut self.parse_image_operands_arguments(val)?);
                 ops
             }
             GOpKind::LoopControl => {
                 let val = try_decode!(self.decoder.loop_control());
                 let mut ops = vec![mr::Operand::LoopControl(val)];
-                ops.append(&mut try!(self.parse_loop_control_arguments(val)));
+                ops.append(&mut self.parse_loop_control_arguments(val)?);
                 ops
             }
             GOpKind::MemoryAccess => {
                 let val = try_decode!(self.decoder.memory_access());
                 let mut ops = vec![mr::Operand::MemoryAccess(val)];
-                ops.append(&mut try!(self.parse_memory_access_arguments(val)));
+                ops.append(&mut self.parse_memory_access_arguments(val)?);
                 ops
             }
             GOpKind::ExecutionMode => {
                 let val = try_decode!(self.decoder.execution_mode());
                 let mut ops = vec![mr::Operand::ExecutionMode(val)];
-                ops.append(&mut try!(self.parse_execution_mode_arguments(val)));
+                ops.append(&mut self.parse_execution_mode_arguments(val)?);
                 ops
             }
             GOpKind::Decoration => {
                 let val = try_decode!(self.decoder.decoration());
                 let mut ops = vec![mr::Operand::Decoration(val)];
-                ops.append(&mut try!(self.parse_decoration_arguments(val)));
+                ops.append(&mut self.parse_decoration_arguments(val)?);
                 ops
             }
             GOpKind::IdResultType => panic!(),  // not handled here

@@ -268,7 +268,7 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
                 "{s:12}GOpKind::{kind} => {{\n\
                  {s:16}let val = try_decode!(self.decoder.{decode}());\n\
                  {s:16}let mut ops = vec![mr::Operand::{kind}(val)];\n\
-                 {s:16}ops.append(&mut try!(self.parse_{k}_arguments(val)));\n\
+                 {s:16}ops.append(&mut self.parse_{k}_arguments(val)?);\n\
                  {s:16}ops\n\
                  {s:12}}}",
                 s = "",

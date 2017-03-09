@@ -234,7 +234,7 @@ impl binary::Consumer for Loader {
 /// ```
 pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
-    try!(binary::parse_bytes(binary, &mut loader));
+    binary::parse_bytes(binary, &mut loader)?;
     Ok(loader.module())
 }
 
@@ -271,6 +271,6 @@ pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<mr::Module> {
 /// ```
 pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
-    try!(binary::parse_words(binary, &mut loader));
+    binary::parse_words(binary, &mut loader)?;
     Ok(loader.module())
 }

@@ -271,7 +271,7 @@ impl<'c, 'd> Parser<'c, 'd> {
             Action::Stop => return Err(State::ConsumerStopRequested),
             Action::Error(err) => return Err(State::ConsumerError(err)),
         }
-        let header = try!(self.parse_header());
+        let header = self.parse_header()?;
         match self.consumer.consume_header(header) {
             Action::Continue => (),
             Action::Stop => return Err(State::ConsumerStopRequested),
@@ -422,12 +422,12 @@ impl<'c, 'd> Parser<'c, 'd> {
                                 grammar.opcode == spirv::Op::SpecConstant);
                         let id = rtype.expect("internal error: \
                             should already decoded result type id before context dependent number");
-                        coperands.push(try!(self.parse_literal(id)))
+                        coperands.push(self.parse_literal(id)?)
                     }
                     GOpKind::LiteralSpecConstantOpInteger => {
-                        coperands.append(&mut try!(self.parse_spec_constant_op()))
+                        coperands.append(&mut self.parse_spec_constant_op()?)
                     }
-                    _ => coperands.append(&mut try!(self.parse_operand(loperand.kind))),
+                    _ => coperands.append(&mut self.parse_operand(loperand.kind)?),
                 }
                 match loperand.quantifier {
                     GOpCount::One | GOpCount::ZeroOrOne => loperand_index += 1,

@@ -125,7 +125,7 @@ impl<'a> Decoder<'a> {
     pub fn words(&mut self, n: usize) -> Result<Vec<spirv::Word>> {
         let mut words = Vec::new();
         for _ in 0..n {
-            words.push(try!(self.word()));
+            words.push(self.word()?);
         }
         Ok(words)
     }
@@ -178,7 +178,7 @@ impl<'a> Decoder<'a> {
         let start_offset = self.offset;
         let mut bytes = vec![];
         loop {
-            let word = try!(self.word());
+            let word = self.word()?;
             bytes.append(&mut u32_to_bytes(word));
             if bytes.last() == Some(&0) {
                 break;
@@ -200,23 +200,23 @@ impl<'a> Decoder<'a> {
     /// Decodes and returns the next two SPIR-V words as a 64-bit
     /// literal integer.
     pub fn int64(&mut self) -> Result<u64> {
-        let low = try!(self.word());
-        let high = try!(self.word());
+        let low = self.word()?;
+        let high = self.word()?;
         Ok(((high as u64) << 32) | (low as u64))
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
     /// literal floating point number.
     pub fn float32(&mut self) -> Result<f32> {
-        let val = try!(self.word());
+        let val = self.word()?;
         Ok(unsafe { mem::transmute::<u32, f32>(val) })
     }
 
     /// Decodes and returns the next two SPIR-V words as a 64-bit
     /// literal floating point number.
     pub fn float64(&mut self) -> Result<f64> {
-        let low = try!(self.word());
-        let high = try!(self.word());
+        let low = self.word()?;
+        let high = self.word()?;
         let val = ((high as u64) << 32) | (low as u64);
         Ok(unsafe { mem::transmute::<u64, f64>(val) })
     }
