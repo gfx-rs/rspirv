@@ -60,7 +60,7 @@ I plan to implement serveral functionalities:
 
 - [x] SPIR-V [memory representation][doc-mr] (MR)
 - [x] SPIR-V module [builder][doc-builder]
-- [ ] SPIR-V module assemebler
+- [ ] SPIR-V module assembler
 - [x] SPIR-V binary module [parser][doc-parser]
 - [x] SPIR-V binary module disassemebler
 - [ ] HLSL/GLSL to SPIR-V frontend (maybe)
