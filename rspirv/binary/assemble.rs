@@ -121,6 +121,9 @@ impl Assemble for mr::Function {
         if let Some(ref d) = self.def {
             code.append(&mut d.assemble());
         }
+        for param in &self.parameters {
+            code.append(&mut param.assemble());
+        }
         for bb in &self.basic_blocks {
             code.append(&mut bb.assemble());
         }
@@ -229,7 +232,7 @@ mod tests {
     }
 
     #[test]
-    fn test_assemble_function() {
+    fn test_assemble_function_void() {
         let mut b = mr::Builder::new();
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         let void = b.type_void();
@@ -239,7 +242,7 @@ mod tests {
         b.ret().unwrap();
         b.end_function().unwrap();
 
-        assert_eq!(vec![0x07230203,
+        assert_eq!(vec![spirv::MAGIC_NUMBER,
                         (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
                         0xffffffff,
                         5,
@@ -261,6 +264,77 @@ mod tests {
                         wc_op(2, spirv::Op::Label),
                         4,
                         wc_op(1, spirv::Op::Return),
+                        wc_op(1, spirv::Op::FunctionEnd)],
+                   b.module().assemble());
+    }
+
+    #[test]
+    fn test_assemble_function_parameters() {
+        let mut b = mr::Builder::new();
+        b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+        let float = b.type_float(32);
+        let ptr = b.type_pointer(None, spirv::StorageClass::Function, float);
+        let fff = b.type_function(float, vec![float, float]);
+        b.begin_function(float, None, spirv::FUNCTION_CONTROL_CONST, fff).unwrap();
+        let param1 = b.function_parameter(ptr).unwrap();
+        let param2 = b.function_parameter(ptr).unwrap();
+        b.begin_basic_block(None).unwrap();
+        let v1 = b.load(float, None, param1, None, vec![]).unwrap();
+        let v2 = b.load(float, None, param2, None, vec![]).unwrap();
+        let v = b.fadd(float, None, v1, v2).unwrap();
+        b.ret_value(v).unwrap();
+        b.end_function().unwrap();
+
+        assert_eq!(vec![// Header
+                        spirv::MAGIC_NUMBER,
+                        (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
+                        0xffffffff,
+                        11, // bound
+                        0,
+                        // Instructions
+                        wc_op(3, spirv::Op::MemoryModel),
+                        spirv::AddressingModel::Logical as u32,
+                        spirv::MemoryModel::Simple as u32,
+                        wc_op(3, spirv::Op::TypeFloat),
+                        1, // result id
+                        32, // bitwidth
+                        wc_op(4, spirv::Op::TypePointer),
+                        2, // result id
+                        spirv::StorageClass::Function as u32,
+                        1, // float result id
+                        wc_op(5, spirv::Op::TypeFunction),
+                        3, // result id
+                        1, // result type
+                        1, // parameter type
+                        1, // parameter type
+                        wc_op(5, spirv::Op::Function),
+                        1, // result type id
+                        4, // result id
+                        spirv::FUNCTION_CONTROL_CONST.bits(),
+                        3, // function type id
+                        wc_op(3, spirv::Op::FunctionParameter),
+                        2, // result type id
+                        5, // result id
+                        wc_op(3, spirv::Op::FunctionParameter),
+                        2, // result type id
+                        6, // result id
+                        wc_op(2, spirv::Op::Label),
+                        7, // result id
+                        wc_op(4, spirv::Op::Load),
+                        1, // result type id
+                        8, // result id
+                        5, // parameter id
+                        wc_op(4, spirv::Op::Load),
+                        1, // result type id
+                        9, // result id
+                        6, // parameter id
+                        wc_op(5, spirv::Op::FAdd),
+                        1, // result type id
+                        10, // result id
+                        8, // operand
+                        9, // operand
+                        wc_op(2, spirv::Op::ReturnValue),
+                        10,
                         wc_op(1, spirv::Op::FunctionEnd)],
                    b.module().assemble());
     }
