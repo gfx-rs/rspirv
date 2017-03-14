@@ -269,7 +269,7 @@ mod tests {
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
                     ; Version: 1.1\n\
-                    ; Generator: Unknown\n\
+                    ; Generator: rspirv\n\
                     ; Bound: 8\n\
                     OpCapability Shader\n\
                     OpExtension \"awesome-extension\"\n\

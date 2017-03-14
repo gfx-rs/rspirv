@@ -121,7 +121,7 @@ fn main() {
     assert_eq!(module.disassemble(),
                "; SPIR-V\n\
                 ; Version: 1.1\n\
-                ; Generator: Unknown\n\
+                ; Generator: rspirv\n\
                 ; Bound: 5\n\
                 OpMemoryModel Logical GLSL450\n\
                 %1 = OpTypeVoid\n\

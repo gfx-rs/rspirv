@@ -244,7 +244,7 @@ mod tests {
 
         assert_eq!(vec![spirv::MAGIC_NUMBER,
                         (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
-                        0xffffffff,
+                        0x000f0000,
                         5,
                         0,
                         wc_op(3, spirv::Op::MemoryModel),
@@ -288,7 +288,7 @@ mod tests {
         assert_eq!(vec![// Header
                         spirv::MAGIC_NUMBER,
                         (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
-                        0xffffffff,
+                        0x000f0000,
                         11, // bound
                         0,
                         // Instructions

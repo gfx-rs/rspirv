@@ -187,7 +187,7 @@ impl ModuleHeader {
         ModuleHeader {
             magic_number: spirv::MAGIC_NUMBER,
             version: (spirv::MAJOR_VERSION << 16) | (spirv::MAJOR_VERSION << 8),
-            generator: 0xffffffff, // We don't have a generator number yet
+            generator: 0x000f0000, // TODO: lower 16-bit: tool version number
             bound: bound,
             reserved_word: 0,
         }
@@ -217,6 +217,8 @@ impl ModuleHeader {
             11 => "Intel",
             12 => "Imagination",
             13 => "Shaderc",
+            14 => "spiregg",
+            15 => "rspirv",
             _ => "Unknown",
         };
         (tool, version)
