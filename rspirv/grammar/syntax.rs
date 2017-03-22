@@ -138,3 +138,19 @@ impl GlslStd450InstructionTable {
 }
 
 include!("glsl_std_450.rs");
+
+/// The table for all `OpenCLstd100` extended instructions.
+///
+/// This table is staic data stored in the library.
+pub struct OpenCLStd100InstructionTable;
+
+impl OpenCLStd100InstructionTable {
+    /// Looks up the given `opcode` in the instruction table and returns
+    /// a reference to the instruction grammar entry if found.
+    pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
+        OPENCL_STD_100_INSTRUCTION_TABLE.iter()
+                                        .find(|inst| inst.opcode == opcode)
+    }
+}
+
+include!("opencl_std_100.rs");

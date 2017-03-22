@@ -74,7 +74,7 @@ pub struct Grammar {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct GlslGrammar {
+pub struct ExtInstSetGrammar {
     pub copyright: Vec<String>,
     pub version: u32,
     pub revision: u32,

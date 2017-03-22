@@ -185,7 +185,7 @@ fn main() {
         contents.clear();
         file.read_to_string(&mut contents).unwrap();
     }
-    let grammar: structs::GlslGrammar = serde_json::from_str(&contents).unwrap();
+    let grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
 
     {
         // Path to the generated GLSLstd450 extended instruction set header.
@@ -196,6 +196,33 @@ fn main() {
         path.push("grammar");
         path.push("glsl_std_450.rs");
         let c = table::gen_glsl_std_450_inst_table(&grammar);
+        write!(c, path);
+    }
+
+    // For OpenCL extended instruction set.
+    path.pop();
+    path.pop();
+    path.pop();
+    path.push("codegen");
+    path.push("external");
+    path.push("extinst.opencl.std.100.grammar.json");
+
+    {
+        let filename = path.to_str().unwrap();
+        let mut file = fs::File::open(filename).unwrap();
+        contents.clear();
+        file.read_to_string(&mut contents).unwrap();
+    }
+    let grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
+
+    {
+        path.pop();
+        path.pop();
+        path.pop();
+        path.push("rspirv");
+        path.push("grammar");
+        path.push("opencl_std_100.rs");
+        let c = table::gen_opencl_std_100_inst_table(&grammar);
         write!(c, path);
     }
 }

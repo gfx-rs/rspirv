@@ -289,4 +289,78 @@ mod tests {
                     OpReturn\n\
                     OpFunctionEnd");
     }
+
+    #[test]
+    fn test_disassemble_ext_inst_glsl() {
+        let mut b = mr::Builder::new();
+
+        b.capability(spirv::Capability::Shader);
+        let glsl = b.ext_inst_import("GLSL.std.450");
+        b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+
+        let void = b.type_void();
+        let float32 = b.type_float(32);
+        let voidfvoid = b.type_function(void, vec![void]);
+
+        assert!(b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).is_ok());
+        b.begin_basic_block(None).unwrap();
+        let var = b.variable(float32, None, spirv::StorageClass::Function, None);
+        assert!(b.ext_inst(float32, None, glsl, 6, vec![var]).is_ok());
+        b.ret().unwrap();
+        b.end_function().unwrap();
+
+        assert_eq!(b.module().disassemble(),
+                   "; SPIR-V\n\
+                    ; Version: 1.1\n\
+                    ; Generator: rspirv\n\
+                    ; Bound: 9\n\
+                    OpCapability Shader\n\
+                    %1 = OpExtInstImport \"GLSL.std.450\"\n\
+                    OpMemoryModel Logical Simple\n\
+                    %2 = OpTypeVoid\n\
+                    %3 = OpTypeFloat 32\n\
+                    %4 = OpTypeFunction %2 %2\n\
+                    %5 = OpFunction  %2  None %4\n\
+                    %6 = OpLabel\n\
+                    %7 = OpVariable  %3  Function\n\
+                    %8 = OpExtInst  %3  %1 FSign %7\n\
+                    OpReturn\n\
+                    OpFunctionEnd");
+    }
+
+    #[test]
+    fn test_disassemble_ext_inst_opencl() {
+        let mut b = mr::Builder::new();
+
+        let opencl = b.ext_inst_import("OpenCL.std");
+        b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::OpenCL);
+
+        let void = b.type_void();
+        let float32 = b.type_float(32);
+        let voidfvoid = b.type_function(void, vec![void]);
+
+        assert!(b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).is_ok());
+        b.begin_basic_block(None).unwrap();
+        let var = b.variable(float32, None, spirv::StorageClass::Function, None);
+        assert!(b.ext_inst(float32, None, opencl, 15, vec![var]).is_ok());
+        b.ret().unwrap();
+        b.end_function().unwrap();
+
+        assert_eq!(b.module().disassemble(),
+                   "; SPIR-V\n\
+                    ; Version: 1.1\n\
+                    ; Generator: rspirv\n\
+                    ; Bound: 9\n\
+                    %1 = OpExtInstImport \"OpenCL.std\"\n\
+                    OpMemoryModel Logical OpenCL\n\
+                    %2 = OpTypeVoid\n\
+                    %3 = OpTypeFloat 32\n\
+                    %4 = OpTypeFunction %2 %2\n\
+                    %5 = OpFunction  %2  None %4\n\
+                    %6 = OpLabel\n\
+                    %7 = OpVariable  %3  Function\n\
+                    %8 = OpExtInst  %3  %1 cosh %7\n\
+                    OpReturn\n\
+                    OpFunctionEnd");
+    }
 }

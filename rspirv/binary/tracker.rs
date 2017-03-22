@@ -19,6 +19,7 @@ use spirv;
 use std::collections;
 
 use grammar::GlslStd450InstructionTable as GGlInstTable;
+use grammar::OpenCLStd100InstructionTable as GClInstTable;
 
 type GExtInstRef = &'static grammar::ExtendedInstruction<'static>;
 
@@ -82,6 +83,7 @@ impl TypeTracker {
 
 enum ExtInstSet {
     GlslStd450,
+    OpenCLStd100,
 }
 
 /// Struct for tracking extended instruction sets.
@@ -110,6 +112,9 @@ impl ExtInstSetTracker {
             if s == "GLSL.std.450" {
                 self.sets
                     .insert(inst.result_id.unwrap(), ExtInstSet::GlslStd450);
+            } else if s == "OpenCL.std" {
+                self.sets
+                    .insert(inst.result_id.unwrap(), ExtInstSet::OpenCLStd100);
             }
         }
     }
@@ -128,6 +133,7 @@ impl ExtInstSetTracker {
         if let Some(ext_inst_set) = self.sets.get(&set) {
             match *ext_inst_set {
                 ExtInstSet::GlslStd450 => GGlInstTable::lookup_opcode(opcode),
+                ExtInstSet::OpenCLStd100 => GClInstTable::lookup_opcode(opcode),
             }
         } else {
             None
