@@ -43,12 +43,12 @@ macro_rules! write {
 
 fn main() {
     // Path to the SPIR-V core grammar file.
-    let mut path = path::PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-    path.push("external");
-    path.push("spirv.core.grammar.json");
+    let env_var = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let codegen_src_dir = path::Path::new(&env_var);
 
     let mut contents = String::new();
     {
+        let path = codegen_src_dir.join("external/spirv.core.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         file.read_to_string(&mut contents).unwrap();
@@ -57,129 +57,97 @@ fn main() {
 
     {
         // Path to the generated SPIR-V header file.
-        path.pop();
-        path.pop();
-        path.pop();
-        path.push("spirv");
-        path.push("spirv.rs");
+        let path = codegen_src_dir.join("../spirv/spirv.rs");
         let c = header::gen_spirv_header(&grammar);
         write!(c, path);
     }
 
     {
         // Path to the generated instruction table.
-        path.pop();
-        path.pop();
-        path.push("rspirv");
-        path.push("grammar");
-        path.push("table.rs");
+        let path = codegen_src_dir.join("../rspirv/grammar/table.rs");
         let c = table::gen_grammar_inst_table_operand_kinds(&grammar);
         write!(c, path);
     }
 
     {
         // Path to the generated operands kind in memory representation.
-        path.pop();
-        path.pop();
-        path.push("mr");
-        path.push("operand.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/operand.rs");
         let c = mr::gen_mr_operand_kinds(&grammar.operand_kinds);
         write!(c, path);
     }
 
     {
         // Path to the generated builder for memory representation.
-        path.pop();
-        path.push("build_type.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build_type.rs");
         let c = mr::gen_mr_builder_types(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
-        path.pop();
-        path.push("build_terminator.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build_terminator.rs");
         let c = mr::gen_mr_builder_terminator(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
-        path.pop();
-        path.push("build_annotation.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build_annotation.rs");
         let c = mr::gen_mr_builder_annotation(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
-        path.pop();
-        path.push("build_constant.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build_constant.rs");
         let c = mr::gen_mr_builder_constants(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
-        path.pop();
-        path.push("build_debug.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build_debug.rs");
         let c = mr::gen_mr_builder_debug(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for memory representation.
-        path.pop();
-        path.push("build_norm_insts.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build_norm_insts.rs");
         let c = mr::gen_mr_builder_normal_insts(&grammar);
         write!(c, path);
     }
 
     {
         // Path to the generated decoding errors.
-        path.pop();
-        path.pop();
-        path.push("binary");
-        path.push("error.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/error.rs");
         let c = binary::gen_operand_decode_errors(&grammar.operand_kinds);
         write!(c, path);
     }
 
     {
         // Path to the generated operand decoding methods.
-        path.pop();
-        path.push("decode_operand.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/decode_operand.rs");
         let c = binary::gen_operand_decode_methods(&grammar.operand_kinds);
         write!(c, path);
     }
     {
         // Path to the generated operand parsing methods.
-        path.pop();
-        path.push("parse_operand.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/parse_operand.rs");
         let c = binary::gen_operand_parse_methods(&grammar.operand_kinds);
         write!(c, path);
     }
     {
         // Path to the generated operand parsing methods.
-        path.pop();
-        path.push("disas_operand.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/disas_operand.rs");
         let c = binary::gen_disas_bit_enum_operands(&grammar.operand_kinds);
         write!(c, path);
     }
 
     {
-        path.pop();
-        path.pop();
-        path.push("sr");
-        path.push("decoration.rs");
+        let path = codegen_src_dir.join("../rspirv/sr/decoration.rs");
         let c = sr::gen_sr_decoration(&grammar);
         write!(c, path);
     }
 
     // For GLSLstd450 extended instruction set.
-    path.pop();
-    path.pop();
-    path.pop();
-    path.push("codegen");
-    path.push("external");
-    path.push("extinst.glsl.std.450.grammar.json");
-
     {
+        let path = codegen_src_dir.join("external/extinst.glsl.std.450.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         contents.clear();
@@ -189,25 +157,14 @@ fn main() {
 
     {
         // Path to the generated GLSLstd450 extended instruction set header.
-        path.pop();
-        path.pop();
-        path.pop();
-        path.push("rspirv");
-        path.push("grammar");
-        path.push("glsl_std_450.rs");
+        let path = codegen_src_dir.join("../rspirv/grammar/glsl_std_450.rs");
         let c = table::gen_glsl_std_450_inst_table(&grammar);
         write!(c, path);
     }
 
     // For OpenCL extended instruction set.
-    path.pop();
-    path.pop();
-    path.pop();
-    path.push("codegen");
-    path.push("external");
-    path.push("extinst.opencl.std.100.grammar.json");
-
     {
+        let path = codegen_src_dir.join("external/extinst.opencl.std.100.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         contents.clear();
@@ -216,12 +173,7 @@ fn main() {
     let grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
 
     {
-        path.pop();
-        path.pop();
-        path.pop();
-        path.push("rspirv");
-        path.push("grammar");
-        path.push("opencl_std_100.rs");
+        let path = codegen_src_dir.join("../rspirv/grammar/opencl_std_100.rs");
         let c = table::gen_opencl_std_100_inst_table(&grammar);
         write!(c, path);
     }
