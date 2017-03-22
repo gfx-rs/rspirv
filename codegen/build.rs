@@ -26,7 +26,7 @@ mod structs;
 mod table;
 mod utils;
 
-use std::{env, fs, path};
+use std::{env, fs, path, process};
 use std::io::{Read, Write};
 use utils::write_copyright_autogen_comment;
 
@@ -41,14 +41,32 @@ macro_rules! write {
     }
 }
 
+fn git_clone(project: &str, url: &str, dir: &path::PathBuf) {
+    if !dir.as_path().exists() {
+        let status = process::Command::new("git")
+            .args(&["clone", url, dir.to_str().unwrap()])
+            .status()
+            .expect("failed to execute git clone");
+        if !status.success() {
+            panic!("failed to clone {}", project)
+        }
+    }
+}
+
 fn main() {
     // Path to the SPIR-V core grammar file.
     let env_var = env::var("CARGO_MANIFEST_DIR").unwrap();
     let codegen_src_dir = path::Path::new(&env_var);
 
+    {
+        let path = codegen_src_dir.join("external/SPIRV-Headers");
+		git_clone("SPIRV-Headers", "https://github.com/KhronosGroup/SPIRV-Headers", &path);
+    }
+
     let mut contents = String::new();
     {
-        let path = codegen_src_dir.join("external/spirv.core.grammar.json");
+        let path = codegen_src_dir.join(
+            "external/spirv.core.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         file.read_to_string(&mut contents).unwrap();
@@ -147,7 +165,8 @@ fn main() {
 
     // For GLSLstd450 extended instruction set.
     {
-        let path = codegen_src_dir.join("external/extinst.glsl.std.450.grammar.json");
+        let path = codegen_src_dir.join(
+            "external/SPIRV-Headers/include/spirv/1.1/extinst.glsl.std.450.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         contents.clear();
@@ -164,7 +183,8 @@ fn main() {
 
     // For OpenCL extended instruction set.
     {
-        let path = codegen_src_dir.join("external/extinst.opencl.std.100.grammar.json");
+        let path = codegen_src_dir.join(
+            "external/SPIRV-Headers/include/spirv/1.1/extinst.opencl.std.100.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         contents.clear();
