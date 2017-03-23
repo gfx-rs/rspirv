@@ -46,13 +46,17 @@ macro_rules! write {
 macro_rules! fmt_write {
     ($content: expr, $path: expr) => {
         write!($content, $path);
-        let status = process::Command::new("rustfmt")
+        match process::Command::new("rustfmt")
             .arg($path.as_os_str())
-            .status()
-            .expect("failed to execute rustfmt");
-        if !status.success() {
-            panic!("failed to rustfmt {}", $path.to_str().unwrap())
-        }
+            .status() {
+                Ok(status) => if !status.success() {
+                    println!("cargo:warning=failed to rustfmt {}", $path.to_str().unwrap());
+                },
+                Err(_) => {
+                    println!("cargo:warning=failed to execute rustfmt");
+                }
+            }
+
     }
 }
 
