@@ -17,9 +17,8 @@
 // DO NOT MODIFY!
 
 use spirv;
-
-/// SPIR-V decorations.
-#[derive(Debug, Eq, PartialEq, From)]
+# [ doc = r" SPIR-V decorations." ]
+# [ derive ( Debug , Eq , PartialEq , From ) ]
 pub enum Decoration {
     RelaxedPrecision,
     SpecId(u32),
@@ -64,5 +63,5 @@ pub enum Decoration {
     NoContraction,
     InputAttachmentIndex(u32),
     Alignment(u32),
-    MaxByteOffset(u32)
+    MaxByteOffset(u32),
 }

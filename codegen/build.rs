@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[macro_use]
+extern crate quote;
 extern crate regex;
 extern crate serde;
 #[macro_use]
@@ -41,6 +43,19 @@ macro_rules! write {
     }
 }
 
+macro_rules! fmt_write {
+    ($content: expr, $path: expr) => {
+        write!($content, $path);
+        let status = process::Command::new("rustfmt")
+            .arg($path.as_os_str())
+            .status()
+            .expect("failed to execute rustfmt");
+        if !status.success() {
+            panic!("failed to rustfmt {}", $path.to_str().unwrap())
+        }
+    }
+}
+
 fn git_clone(project: &str, url: &str, dir: &path::PathBuf) {
     if !dir.as_path().exists() {
         let status = process::Command::new("git")
@@ -60,13 +75,14 @@ fn main() {
 
     {
         let path = codegen_src_dir.join("external/SPIRV-Headers");
-		git_clone("SPIRV-Headers", "https://github.com/KhronosGroup/SPIRV-Headers", &path);
+        git_clone("SPIRV-Headers",
+                  "https://github.com/KhronosGroup/SPIRV-Headers",
+                  &path);
     }
 
     let mut contents = String::new();
     {
-        let path = codegen_src_dir.join(
-            "external/spirv.core.grammar.json");
+        let path = codegen_src_dir.join("external/spirv.core.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         file.read_to_string(&mut contents).unwrap();
@@ -160,7 +176,7 @@ fn main() {
     {
         let path = codegen_src_dir.join("../rspirv/sr/decoration.rs");
         let c = sr::gen_sr_decoration(&grammar);
-        write!(c, path);
+        fmt_write!(c, path);
     }
 
     // For GLSLstd450 extended instruction set.

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use quote;
 use structs;
 use utils::*;
 
@@ -19,18 +20,31 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
     // The decoration operand kind
     let decoration = grammar.operand_kinds.iter().find(|k| k.kind == "Decoration").unwrap();
     // Go and compose all its enumerants
-    let elements: Vec<String> = decoration.enumerants.iter().map(|element| {
-        // Parameters for this enumerant
-        let mut params: String = element.parameters.iter().map(|p| {
-            get_enum_underlying_type(&p.kind, false)
-        }).collect::<Vec<_>>().join(", ");
-        if !params.is_empty() {
-            params = format!("({})", params);
+    let enumerants: Vec<_> = decoration.enumerants
+        .iter()
+        .map(|enumerant| {
+            // Parameters for this enumerant
+            let types: Vec<_> = enumerant.parameters
+                .iter()
+                .map(|p| quote::Ident::from(get_enum_underlying_type(&p.kind, false)))
+                .collect();
+            let params = if types.is_empty() {
+                quote!{}
+            } else {
+                quote! { (#( #types ),*) }
+            };
+            let symbol = quote::Ident::from(enumerant.symbol.as_str());
+            quote! { #symbol #params }
+        })
+        .collect();
+    let tokens = quote! {
+        use spirv;
+
+        /// SPIR-V decorations.
+        #[derive(Debug, Eq, PartialEq, From)]
+        pub enum Decoration {
+            #( #enumerants ),*
         }
-        format!("    {}{}", element.symbol, params)
-    }).collect();
-    format!("use spirv;\n\n\
-             /// SPIR-V decorations.\n\
-             #[derive(Debug, Eq, PartialEq, From)]\n\
-             pub enum Decoration {{\n{}\n}}\n", elements.join(",\n"))
+    };
+    tokens.to_string()
 }
