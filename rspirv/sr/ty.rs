@@ -185,4 +185,142 @@ impl Type {
     pub fn named_barrier() -> Type {
         Type { ty: Ty::NamedBarrier }
     }
+    pub fn is_void_type(&self) -> bool {
+        match self.ty {
+            Ty::Void => true,
+            _ => false,
+        }
+    }
+    pub fn is_bool_type(&self) -> bool {
+        match self.ty {
+            Ty::Bool => true,
+            _ => false,
+        }
+    }
+    pub fn is_int_type(&self) -> bool {
+        match self.ty {
+            Ty::Int { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_float_type(&self) -> bool {
+        match self.ty {
+            Ty::Float { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_vector_type(&self) -> bool {
+        match self.ty {
+            Ty::Vector { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_matrix_type(&self) -> bool {
+        match self.ty {
+            Ty::Matrix { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_image_type(&self) -> bool {
+        match self.ty {
+            Ty::Image { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_sampler_type(&self) -> bool {
+        match self.ty {
+            Ty::Sampler => true,
+            _ => false,
+        }
+    }
+    pub fn is_sampled_image_type(&self) -> bool {
+        match self.ty {
+            Ty::SampledImage { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_array_type(&self) -> bool {
+        match self.ty {
+            Ty::Array { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_runtime_array_type(&self) -> bool {
+        match self.ty {
+            Ty::RuntimeArray { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_structure_type(&self) -> bool {
+        match self.ty {
+            Ty::Struct { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_opaque_type(&self) -> bool {
+        match self.ty {
+            Ty::Opaque { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_pointer_type(&self) -> bool {
+        match self.ty {
+            Ty::Pointer { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_function_type(&self) -> bool {
+        match self.ty {
+            Ty::Function { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_event_type(&self) -> bool {
+        match self.ty {
+            Ty::Event => true,
+            _ => false,
+        }
+    }
+    pub fn is_device_event_type(&self) -> bool {
+        match self.ty {
+            Ty::DeviceEvent => true,
+            _ => false,
+        }
+    }
+    pub fn is_reserve_id_type(&self) -> bool {
+        match self.ty {
+            Ty::ReserveId => true,
+            _ => false,
+        }
+    }
+    pub fn is_queue_type(&self) -> bool {
+        match self.ty {
+            Ty::Queue => true,
+            _ => false,
+        }
+    }
+    pub fn is_pipe_type(&self) -> bool {
+        match self.ty {
+            Ty::Pipe { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_forward_pointer_type(&self) -> bool {
+        match self.ty {
+            Ty::ForwardPointer { .. } => true,
+            _ => false,
+        }
+    }
+    pub fn is_pipe_storage_type(&self) -> bool {
+        match self.ty {
+            Ty::PipeStorage => true,
+            _ => false,
+        }
+    }
+    pub fn is_named_barrier_type(&self) -> bool {
+        match self.ty {
+            Ty::NamedBarrier => true,
+            _ => false,
+        }
+    }
 }

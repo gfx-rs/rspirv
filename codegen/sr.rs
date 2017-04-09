@@ -63,6 +63,14 @@ pub fn get_operand_type_ident(grammar: &structs::Operand) -> quote::Tokens {
     }
 }
 
+fn get_type_fn_name(name: &str) -> String {
+    if name == "Struct" {
+        "structure".to_string()
+    } else {
+        snake_casify(name)
+    }
+}
+
 pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
     // Collect all types and their parameters in the following format:
     //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
@@ -99,13 +107,9 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
             quote! { #symbol #param_list }
         })
         .collect();
-    let impls: Vec<_> = cases.iter()
+    let constructors: Vec<_> = cases.iter()
         .map(|&(symbol, ref params)| {
-            let func_name = quote::Ident::from(if symbol == "Struct" {
-                                                   "structure".to_string()
-                                               } else {
-                                                   snake_casify(symbol)
-                                               });
+            let func_name = quote::Ident::from(get_type_fn_name(symbol));
             let symbol = quote::Ident::from(symbol);
             let param_list: Vec<_> = params.iter()
                 .map(|&(ref name, ref ty)| {
@@ -130,6 +134,26 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
             }
         })
         .collect();
+    let checks: Vec<_> = cases.iter()
+        .map(|&(symbol, ref params)| {
+            let func_name = quote::Ident::from(format!("is_{}_type", get_type_fn_name(symbol)));
+            let symbol = quote::Ident::from(symbol);
+            // If the type requires parameters, attach `{ .. }` to the match arm.
+            let params = if params.is_empty() {
+                quote!{}
+            } else {
+                quote! { {..} }
+            };
+            quote! {
+                pub fn #func_name(&self) -> bool {
+                    match self.ty {
+                        Ty::#symbol #params => true,
+                        _ => false
+                    }
+                }
+            }
+        })
+        .collect();
     let tokens = quote! {
         #[derive(Debug, Eq, PartialEq)]
         enum Ty {
@@ -137,7 +161,8 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
         }
 
         impl Type {
-            #( #impls )*
+            #( #constructors )*
+            #( #checks )*
         }
     };
     tokens.to_string()
