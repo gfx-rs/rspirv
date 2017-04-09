@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-/// Memory representation of a SPIR-V operand.
+/// Data representation of a SPIR-V operand.
 #[derive(Debug, PartialEq, From)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),

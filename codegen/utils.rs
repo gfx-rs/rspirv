@@ -57,7 +57,7 @@ pub fn snake_casify(symbol: &str) -> String {
     re.replace_all(symbol, "$l-$u").replace("-", "_").to_lowercase()
 }
 
-/// Returns the corresponding operand kind in memory representation for the
+/// Returns the corresponding operand kind in data representation for the
 /// given operand `kind` in the grammar.
 pub fn get_mr_operand_kind(kind: &str) -> &str {
     if kind == "LiteralInteger" {

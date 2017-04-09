@@ -20,7 +20,7 @@ use grammar;
 use binary::{ParseAction, ParseResult};
 use std::{error, fmt};
 
-/// Memory representation loading errors.
+/// Data representation loading errors.
 #[derive(Debug)]
 pub enum Error {
     NestedFunction,
@@ -78,7 +78,7 @@ impl fmt::Display for Error {
     }
 }
 
-/// The memory representation loader.
+/// The data representation loader.
 ///
 /// Constructs a [`Module`](struct.Module.html) from the module header and
 /// instructions.

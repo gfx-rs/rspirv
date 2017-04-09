@@ -108,44 +108,44 @@ fn main() {
     }
 
     {
-        // Path to the generated operands kind in memory representation.
+        // Path to the generated operands kind in data representation.
         let path = codegen_src_dir.join("../rspirv/mr/operand.rs");
         let c = mr::gen_mr_operand_kinds(&grammar.operand_kinds);
         write!(c, path);
     }
 
     {
-        // Path to the generated builder for memory representation.
+        // Path to the generated builder for data representation.
         let path = codegen_src_dir.join("../rspirv/mr/build_type.rs");
         let c = mr::gen_mr_builder_types(&grammar);
         write!(c, path);
     }
     {
-        // Path to the generated builder for memory representation.
+        // Path to the generated builder for data representation.
         let path = codegen_src_dir.join("../rspirv/mr/build_terminator.rs");
         let c = mr::gen_mr_builder_terminator(&grammar);
         write!(c, path);
     }
     {
-        // Path to the generated builder for memory representation.
+        // Path to the generated builder for data representation.
         let path = codegen_src_dir.join("../rspirv/mr/build_annotation.rs");
         let c = mr::gen_mr_builder_annotation(&grammar);
         write!(c, path);
     }
     {
-        // Path to the generated builder for memory representation.
+        // Path to the generated builder for data representation.
         let path = codegen_src_dir.join("../rspirv/mr/build_constant.rs");
         let c = mr::gen_mr_builder_constants(&grammar);
         write!(c, path);
     }
     {
-        // Path to the generated builder for memory representation.
+        // Path to the generated builder for data representation.
         let path = codegen_src_dir.join("../rspirv/mr/build_debug.rs");
         let c = mr::gen_mr_builder_debug(&grammar);
         write!(c, path);
     }
     {
-        // Path to the generated builder for memory representation.
+        // Path to the generated builder for data representation.
         let path = codegen_src_dir.join("../rspirv/mr/build_norm_insts.rs");
         let c = mr::gen_mr_builder_normal_insts(&grammar);
         write!(c, path);

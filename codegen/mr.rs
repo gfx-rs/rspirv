@@ -196,7 +196,7 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
               *element == "IdResultType")
         }).collect();
 
-    { // Enum for all operand kinds in memory representation.
+    { // Enum for all operand kinds in data representation.
         let id_kinds: Vec<String> = kinds.iter().filter(|element| {
             element.starts_with("Id")
         }).map(|element| {
@@ -224,7 +224,7 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
         }).collect();
 
         let kind_enum = format!(
-            "/// Memory representation of a SPIR-V operand.\n\
+            "/// Data representation of a SPIR-V operand.\n\
              #[derive(Debug, PartialEq, From)]\n\
              pub enum Operand {{\n\
              {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\

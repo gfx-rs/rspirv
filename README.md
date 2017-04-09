@@ -10,7 +10,7 @@ It aims to provide:
 * APIs for processing SPIR-V modules
 * Command line tools building on top of the APIs for common processing tasks
 
-rspirv defines a common SPIR-V [memory representation][doc-mr] (MR) as the
+rspirv defines a common SPIR-V [data representation][doc-mr] (MR) as the
 medium for various purposes. rspirv also provides a [builder][doc-builder] to
 build the MR iteractively and a [parser][doc-parser] to parse a given SPIR-V
 binary module into its MR.
@@ -45,7 +45,7 @@ In total rspirv APIs contains:
 * The [SPIR-V header][doc-headers] (all SPIR-V structs, enums, and constants)
 * The whole [SPIR-V grammar][doc-grammar] (instruction layouts and their
   operands)
-* A [memory representation][doc-mr] of SPIR-V modules and its loader and builder
+* A [data representation][doc-mr] of SPIR-V modules and its loader and builder
 * SPIR-V [binary][doc-binary] module decoding and parsing functionalities
 
 The Khronos SPIR-V [JSON grammar][json-grammar] is leveraged to generate parts
@@ -58,7 +58,7 @@ Status
 
 I plan to implement serveral functionalities:
 
-- [x] SPIR-V [memory representation][doc-mr] (MR)
+- [x] SPIR-V [data representation][doc-mr] (MR)
 - [x] SPIR-V module [builder][doc-builder]
 - [ ] SPIR-V module assembler
 - [x] SPIR-V binary module [parser][doc-parser]

@@ -18,7 +18,7 @@ use spirv;
 use spirv::Word;
 use std::{convert, fmt, iter};
 
-/// Memory representation of a SPIR-V module.
+/// Data representation of a SPIR-V module.
 ///
 /// Most of the fields are just vectors of `Instruction`s, but some fields
 /// store values decomposed from `Instruction`s for better investigation.
@@ -58,7 +58,7 @@ pub struct Module {
     pub functions: Vec<Function>,
 }
 
-/// Memory representation of a SPIR-V module header.
+/// Data representation of a SPIR-V module header.
 #[derive(Debug, PartialEq)]
 pub struct ModuleHeader {
     pub magic_number: Word,
@@ -68,7 +68,7 @@ pub struct ModuleHeader {
     pub reserved_word: Word,
 }
 
-/// Memory representation of a SPIR-V function.
+/// Data representation of a SPIR-V function.
 #[derive(Debug, Default)]
 pub struct Function {
     /// First (defining) instruction in this function.
@@ -81,7 +81,7 @@ pub struct Function {
     pub basic_blocks: Vec<BasicBlock>,
 }
 
-/// Memory representation of a SPIR-V basic block.
+/// Data representation of a SPIR-V basic block.
 #[derive(Debug, Default)]
 pub struct BasicBlock {
     /// The label starting this basic block.
@@ -90,7 +90,7 @@ pub struct BasicBlock {
     pub instructions: Vec<Instruction>,
 }
 
-/// Memory representation of a SPIR-V instruction.
+/// Data representation of a SPIR-V instruction.
 #[derive(Debug)]
 pub struct Instruction {
     /// The class (grammar specification) of this instruction.

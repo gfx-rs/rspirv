@@ -22,7 +22,7 @@ use super::Error;
 
 type BuildResult<T> = result::Result<T, Error>;
 
-/// The memory representation builder.
+/// The data representation builder.
 ///
 /// Constructs a [`Module`](struct.Module.html) by aggregating results from
 /// method calls for various instructions.
