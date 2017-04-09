@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! **S**tructured **r**epresentation of various SPIR-V language constructs.
+use spirv;
 
-pub use self::decoration::Decoration;
-pub use self::types::Type;
+pub struct Type {
+    ty: Ty
+}
 
-mod decoration;
-mod types;
+include!("ty.rs");

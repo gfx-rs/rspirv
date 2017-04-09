@@ -53,7 +53,9 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
 }
 
 pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
-    let types: Vec<_> = grammar.instructions
+    // Collect all types and their parameters in the following format:
+    //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
+    let cases: Vec<_> = grammar.instructions
         .iter()
         .filter(|k| k.class == "Type")
         .map(|kind| {
@@ -63,24 +65,68 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
                 .map(|op| {
                          let name = quote::Ident::from(get_param_name(op));
                          let ty = quote::Ident::from(get_enum_underlying_type(&op.kind, false));
+                         (name, ty)
+                     })
+                .collect();
+            let symbol = &kind.opname[6..];
+            (symbol, operands)
+        })
+        .collect();
+    let types: Vec<_> = cases.iter()
+        .map(|&(symbol, ref params)| {
+            let symbol = quote::Ident::from(symbol);
+            let param_list: Vec<_> = params.iter()
+                .map(|&(ref name, ref ty)| {
                          quote! { #name : #ty }
                      })
                 .collect();
-            let operands = if operands.is_empty() {
+            let param_list = if param_list.is_empty() {
                 quote!{}
             } else {
-                quote! { {#( #operands ),*} }
+                quote! { { #( #param_list ),* } }
             };
-            let symbol = quote::Ident::from(&kind.opname[6..]);
-            quote! { #symbol #operands }
+            quote! { #symbol #param_list }
+        })
+        .collect();
+    let impls: Vec<_> = cases.iter()
+        .map(|&(symbol, ref params)| {
+            let func_name = quote::Ident::from(if symbol == "Struct" {
+                                                   "structure".to_string()
+                                               } else {
+                                                   snake_casify(symbol)
+                                               });
+            let symbol = quote::Ident::from(symbol);
+            let param_list: Vec<_> = params.iter()
+                .map(|&(ref name, ref ty)| {
+                         quote! { #name : #ty }
+                     })
+                .collect();
+            let param_list = quote! { (#( #param_list ),*) };
+            let init_list: Vec<_> = params.iter()
+                .map(|&(ref name, _)| {
+                         quote! { #name : #name }
+                     })
+                .collect();
+            let init_list = if init_list.is_empty() {
+                quote!{}
+            } else {
+                quote! { {#( #init_list ),*} }
+            };
+            quote! {
+                pub fn #func_name #param_list -> Type {
+                    Type { ty: Ty::#symbol #init_list }
+                }
+            }
         })
         .collect();
     let tokens = quote! {
-        use spirv;
-
         #[derive(Debug, Eq, PartialEq, From)]
-        pub enum Ty {
+        enum Ty {
             #( #types ),*
+        }
+
+        impl Type {
+            #( #impls )*
         }
     };
     tokens.to_string()
