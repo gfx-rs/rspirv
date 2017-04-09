@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-# [ derive ( Debug , Eq , PartialEq , From ) ]
+# [ derive ( Debug , Eq , PartialEq ) ]
 enum Ty {
     Void,
     Bool,
@@ -38,7 +38,7 @@ enum Ty {
         ms: u32,
         sampled: u32,
         image_format: spirv::ImageFormat,
-        access_qualifier: spirv::AccessQualifier,
+        access_qualifier: Option<spirv::AccessQualifier>,
     },
     Sampler,
     SampledImage { image_type: spirv::Word },
@@ -47,7 +47,7 @@ enum Ty {
         length: spirv::Word,
     },
     RuntimeArray { element_type: spirv::Word },
-    Struct { field_types: spirv::Word },
+    Struct { field_types: Vec<spirv::Word> },
     Opaque { type_name: String },
     Pointer {
         storage_class: spirv::StorageClass,
@@ -55,7 +55,7 @@ enum Ty {
     },
     Function {
         return_type: spirv::Word,
-        parameter_types: spirv::Word,
+        parameter_types: Vec<spirv::Word>,
     },
     Event,
     DeviceEvent,
@@ -107,7 +107,7 @@ impl Type {
                  ms: u32,
                  sampled: u32,
                  image_format: spirv::ImageFormat,
-                 access_qualifier: spirv::AccessQualifier)
+                 access_qualifier: Option<spirv::AccessQualifier>)
                  -> Type {
         Type {
             ty: Ty::Image {
@@ -139,7 +139,7 @@ impl Type {
     pub fn runtime_array(element_type: spirv::Word) -> Type {
         Type { ty: Ty::RuntimeArray { element_type: element_type } }
     }
-    pub fn structure(field_types: spirv::Word) -> Type {
+    pub fn structure(field_types: Vec<spirv::Word>) -> Type {
         Type { ty: Ty::Struct { field_types: field_types } }
     }
     pub fn opaque(type_name: String) -> Type {
@@ -153,7 +153,7 @@ impl Type {
             },
         }
     }
-    pub fn function(return_type: spirv::Word, parameter_types: spirv::Word) -> Type {
+    pub fn function(return_type: spirv::Word, parameter_types: Vec<spirv::Word>) -> Type {
         Type {
             ty: Ty::Function {
                 return_type: return_type,

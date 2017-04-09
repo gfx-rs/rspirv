@@ -52,6 +52,17 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
     tokens.to_string()
 }
 
+pub fn get_operand_type_ident(grammar: &structs::Operand) -> quote::Tokens {
+    let ty = quote::Ident::from(get_enum_underlying_type(&grammar.kind, false));
+    if grammar.quantifier.is_empty() {
+        quote! { #ty }
+    } else if grammar.quantifier == "?" {
+        quote! { Option<#ty> }
+    } else {
+        quote! { Vec<#ty> }
+    }
+}
+
 pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
     // Collect all types and their parameters in the following format:
     //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
@@ -64,7 +75,7 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
                 .skip(1)
                 .map(|op| {
                          let name = quote::Ident::from(get_param_name(op));
-                         let ty = quote::Ident::from(get_enum_underlying_type(&op.kind, false));
+                         let ty = get_operand_type_ident(op);
                          (name, ty)
                      })
                 .collect();
@@ -120,7 +131,7 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
         })
         .collect();
     let tokens = quote! {
-        #[derive(Debug, Eq, PartialEq, From)]
+        #[derive(Debug, Eq, PartialEq)]
         enum Ty {
             #( #types ),*
         }
