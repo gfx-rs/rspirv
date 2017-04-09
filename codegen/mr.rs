@@ -14,7 +14,6 @@
 
 use structs;
 
-use regex::Regex;
 use utils::*;
 
 /// Returns true if the given operand kind can potentially have additional
@@ -33,20 +32,6 @@ pub fn operand_has_additional_params(operand: &structs::Operand,
          .find(|kind| kind.kind == operand.kind)
          .map_or(false, |kind| has_additional_params(kind))
 
-}
-
-/// Returns a suitable name for the given parameter.
-fn get_param_name(param: &structs::Operand) -> String {
-    if param.name.len() == 0 {
-        if param.kind == "IdResultType" {
-            "result_type".to_string()
-        } else {
-            snake_casify(&param.kind)
-        }
-    } else {
-        let re = Regex::new(r"\W").unwrap();
-        snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""))
-    }
 }
 
 /// Returns the parameter list excluding result id.

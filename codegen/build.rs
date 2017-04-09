@@ -182,6 +182,11 @@ fn main() {
         let c = sr::gen_sr_decoration(&grammar);
         fmt_write!(c, path);
     }
+    {
+        let path = codegen_src_dir.join("../rspirv/sr/ty.rs");
+        let c = sr::gen_sr_type(&grammar);
+        fmt_write!(c, path);
+    }
 
     // For GLSLstd450 extended instruction set.
     {

@@ -18,7 +18,10 @@ use utils::*;
 
 pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
     // The decoration operand kind
-    let decoration = grammar.operand_kinds.iter().find(|k| k.kind == "Decoration").unwrap();
+    let decoration = grammar.operand_kinds
+        .iter()
+        .find(|k| k.kind == "Decoration")
+        .unwrap();
     // Go and compose all its enumerants
     let enumerants: Vec<_> = decoration.enumerants
         .iter()
@@ -44,6 +47,40 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
         #[derive(Debug, Eq, PartialEq, From)]
         pub enum Decoration {
             #( #enumerants ),*
+        }
+    };
+    tokens.to_string()
+}
+
+pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
+    let types: Vec<_> = grammar.instructions
+        .iter()
+        .filter(|k| k.class == "Type")
+        .map(|kind| {
+            let operands: Vec<_> = kind.operands
+                .iter()
+                .skip(1)
+                .map(|op| {
+                         let name = quote::Ident::from(get_param_name(op));
+                         let ty = quote::Ident::from(get_enum_underlying_type(&op.kind, false));
+                         quote! { #name : #ty }
+                     })
+                .collect();
+            let operands = if operands.is_empty() {
+                quote!{}
+            } else {
+                quote! { {#( #operands ),*} }
+            };
+            let symbol = quote::Ident::from(&kind.opname[6..]);
+            quote! { #symbol #operands }
+        })
+        .collect();
+    let tokens = quote! {
+        use spirv;
+
+        #[derive(Debug, Eq, PartialEq, From)]
+        pub enum Ty {
+            #( #types ),*
         }
     };
     tokens.to_string()

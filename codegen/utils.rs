@@ -14,6 +14,8 @@
 
 extern crate regex;
 
+use structs;
+
 use std::fs;
 use std::io::Write;
 
@@ -80,11 +82,7 @@ pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> String {
     } else if kind == "LiteralContextDependentNumber" {
         panic!("this kind is not expected to be handled here")
     } else if kind == "LiteralString" {
-        if generic_string {
-            "T"
-        } else {
-            "String"
-        }.to_string()
+        if generic_string { "T" } else { "String" }.to_string()
     } else if kind == "PairLiteralIntegerIdRef" {
         "(u32, spirv::Word)".to_string()
     } else if kind == "PairIdRefLiteralInteger" {
@@ -93,5 +91,19 @@ pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> String {
         "(spirv::Word, spirv::Word)".to_string()
     } else {
         format!("spirv::{}", kind)
+    }
+}
+
+/// Returns a suitable name for the given parameter.
+pub fn get_param_name(param: &structs::Operand) -> String {
+    if param.name.len() == 0 {
+        if param.kind == "IdResultType" {
+            "result_type".to_string()
+        } else {
+            snake_casify(&param.kind)
+        }
+    } else {
+        let re = regex::Regex::new(r"\W").unwrap();
+        snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""))
     }
 }
