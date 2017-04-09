@@ -10,6 +10,7 @@ modules:
 * The whole [SPIR-V grammar][doc-grammar] (instruction layouts and their
   operands)
 * A [data representation][doc-mr] of SPIR-V modules and its loader and builder
+* A structured representation of SPIR-V modules (under developing)
 * SPIR-V [binary][doc-binary] module decoding and parsing functionalities
 
 This crate defines a common SPIR-V [data representation][doc-mr] (MR) as the
@@ -19,6 +20,10 @@ binary module into its MR.
 The [parser][doc-parser] handles decoding and parsing of SPIR-V binary modules
 according to the [grammar][doc-grammar], the parsed instructions are sent to
 the [consumer][doc-consumer].
+
+The data representation, as the name shows, focuses on presenting the data
+within a SPIR-V module; a higher level structured representation is currently
+under developing.
 
 Usage
 -----

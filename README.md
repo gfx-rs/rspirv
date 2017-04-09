@@ -13,7 +13,8 @@ It aims to provide:
 rspirv defines a common SPIR-V [data representation][doc-mr] (MR) as the
 medium for various purposes. rspirv also provides a [builder][doc-builder] to
 build the MR iteractively and a [parser][doc-parser] to parse a given SPIR-V
-binary module into its MR.
+binary module into its MR. A higher level structured representation is currently
+under developing.
 
 [SPIR-V][spirv] is a common intermediate language for representing graphics
 shaders and compute kernels for multiple Khronos APIs, such as [Vulkan][vulkan],
