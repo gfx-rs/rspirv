@@ -68,10 +68,16 @@ enum Ty {
 }
 impl Type {
     pub fn void() -> Type {
-        Type { ty: Ty::Void }
+        Type {
+            ty: Ty::Void,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn bool() -> Type {
-        Type { ty: Ty::Bool }
+        Type {
+            ty: Ty::Bool,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn int(width: u32, signedness: u32) -> Type {
         Type {
@@ -79,10 +85,14 @@ impl Type {
                 width: width,
                 signedness: signedness,
             },
+            decorations: BTreeSet::new(),
         }
     }
     pub fn float(width: u32) -> Type {
-        Type { ty: Ty::Float { width: width } }
+        Type {
+            ty: Ty::Float { width: width },
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn vector(component_type: spirv::Word, component_count: u32) -> Type {
         Type {
@@ -90,6 +100,7 @@ impl Type {
                 component_type: component_type,
                 component_count: component_count,
             },
+            decorations: BTreeSet::new(),
         }
     }
     pub fn matrix(column_type: spirv::Word, column_count: u32) -> Type {
@@ -98,6 +109,7 @@ impl Type {
                 column_type: column_type,
                 column_count: column_count,
             },
+            decorations: BTreeSet::new(),
         }
     }
     pub fn image(sampled_type: spirv::Word,
@@ -120,13 +132,20 @@ impl Type {
                 image_format: image_format,
                 access_qualifier: access_qualifier,
             },
+            decorations: BTreeSet::new(),
         }
     }
     pub fn sampler() -> Type {
-        Type { ty: Ty::Sampler }
+        Type {
+            ty: Ty::Sampler,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn sampled_image(image_type: spirv::Word) -> Type {
-        Type { ty: Ty::SampledImage { image_type: image_type } }
+        Type {
+            ty: Ty::SampledImage { image_type: image_type },
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn array(element_type: spirv::Word, length: spirv::Word) -> Type {
         Type {
@@ -134,16 +153,26 @@ impl Type {
                 element_type: element_type,
                 length: length,
             },
+            decorations: BTreeSet::new(),
         }
     }
     pub fn runtime_array(element_type: spirv::Word) -> Type {
-        Type { ty: Ty::RuntimeArray { element_type: element_type } }
+        Type {
+            ty: Ty::RuntimeArray { element_type: element_type },
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn structure(field_types: Vec<spirv::Word>) -> Type {
-        Type { ty: Ty::Struct { field_types: field_types } }
+        Type {
+            ty: Ty::Struct { field_types: field_types },
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn opaque(type_name: String) -> Type {
-        Type { ty: Ty::Opaque { type_name: type_name } }
+        Type {
+            ty: Ty::Opaque { type_name: type_name },
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn pointer(storage_class: spirv::StorageClass, pointee_type: spirv::Word) -> Type {
         Type {
@@ -151,6 +180,7 @@ impl Type {
                 storage_class: storage_class,
                 pointee_type: pointee_type,
             },
+            decorations: BTreeSet::new(),
         }
     }
     pub fn function(return_type: spirv::Word, parameter_types: Vec<spirv::Word>) -> Type {
@@ -159,31 +189,56 @@ impl Type {
                 return_type: return_type,
                 parameter_types: parameter_types,
             },
+            decorations: BTreeSet::new(),
         }
     }
     pub fn event() -> Type {
-        Type { ty: Ty::Event }
+        Type {
+            ty: Ty::Event,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn device_event() -> Type {
-        Type { ty: Ty::DeviceEvent }
+        Type {
+            ty: Ty::DeviceEvent,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn reserve_id() -> Type {
-        Type { ty: Ty::ReserveId }
+        Type {
+            ty: Ty::ReserveId,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn queue() -> Type {
-        Type { ty: Ty::Queue }
+        Type {
+            ty: Ty::Queue,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn pipe(qualifier: spirv::AccessQualifier) -> Type {
-        Type { ty: Ty::Pipe { qualifier: qualifier } }
+        Type {
+            ty: Ty::Pipe { qualifier: qualifier },
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn forward_pointer(storage_class: spirv::StorageClass) -> Type {
-        Type { ty: Ty::ForwardPointer { storage_class: storage_class } }
+        Type {
+            ty: Ty::ForwardPointer { storage_class: storage_class },
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn pipe_storage() -> Type {
-        Type { ty: Ty::PipeStorage }
+        Type {
+            ty: Ty::PipeStorage,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn named_barrier() -> Type {
-        Type { ty: Ty::NamedBarrier }
+        Type {
+            ty: Ty::NamedBarrier,
+            decorations: BTreeSet::new(),
+        }
     }
     pub fn is_void_type(&self) -> bool {
         match self.ty {

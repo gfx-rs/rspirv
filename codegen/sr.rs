@@ -44,7 +44,7 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
         use spirv;
 
         /// SPIR-V decorations.
-        #[derive(Debug, Eq, PartialEq, From)]
+        #[derive(Debug, Eq, PartialEq, PartialOrd, Ord, From)]
         pub enum Decoration {
             #( #enumerants ),*
         }
@@ -129,7 +129,7 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
             };
             quote! {
                 pub fn #func_name #param_list -> Type {
-                    Type { ty: Ty::#symbol #init_list }
+                    Type { ty: Ty::#symbol #init_list, decorations: BTreeSet::new() }
                 }
             }
         })

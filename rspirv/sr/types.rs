@@ -14,10 +14,15 @@
 
 use spirv;
 
+use super::Decoration;
+use std::collections::BTreeSet;
+
 /// SPIR-V types.
 #[derive(Debug, Eq, PartialEq)]
 pub struct Type {
     ty: Ty,
+    /// Sets of decorations. Each element is a pair of an optional member index and the decoration.
+    decorations: BTreeSet<(Option<u32>, Decoration)>,
 }
 
 include!("ty.rs");
