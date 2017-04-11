@@ -17,7 +17,7 @@ use structs;
 use utils::*;
 
 static VAULE_ENUM_ATTRIBUTE: &'static str = "\
-#[repr(u32)]\n#[derive(Clone, Copy, Debug, PartialEq, Eq, FromPrimitive)]";
+#[repr(u32)]\n#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive)]";
 
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
