@@ -17,10 +17,28 @@ use spirv;
 /// SPIR-V types.
 #[derive(Debug, Eq, PartialEq)]
 pub struct Type {
-    ty: Ty
+    ty: Ty,
 }
 
 include!("ty.rs");
+
+impl Type {
+    pub fn is_numerical_type(&self) -> bool {
+        self.is_int_type() || self.is_float_type()
+    }
+
+    pub fn is_scalar_type(&self) -> bool {
+        self.is_bool_type() || self.is_numerical_type()
+    }
+
+    pub fn is_aggregate_type(&self) -> bool {
+        self.is_structure_type() || self.is_array_type() || self.is_runtime_array_type()
+    }
+
+    pub fn is_composite_type(&self) -> bool {
+        self.is_aggregate_type() || self.is_vector_type() || self.is_matrix_type()
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -80,5 +98,73 @@ mod tests {
         assert!(!t.is_forward_pointer_type());
         assert!(!t.is_pipe_storage_type());
         assert!(!t.is_named_barrier_type());
+    }
+
+    #[test]
+    fn test_is_numerical_type() {
+        let t = Type::void();
+        assert!(!t.is_numerical_type());
+        let t = Type::int(32, 1);
+        assert!(t.is_numerical_type());
+        let t = Type::float(64);
+        assert!(t.is_numerical_type());
+        let t = Type::bool();
+        assert!(!t.is_numerical_type());
+    }
+
+    #[test]
+    fn test_is_scalar_type() {
+        let t = Type::void();
+        assert!(!t.is_scalar_type());
+        let t = Type::int(32, 1);
+        assert!(t.is_scalar_type());
+        let t = Type::float(64);
+        assert!(t.is_scalar_type());
+        let t = Type::bool();
+        assert!(t.is_scalar_type());
+    }
+
+    #[test]
+    fn test_is_aggregate_type() {
+        let t = Type::void();
+        assert!(!t.is_aggregate_type());
+        let t = Type::int(32, 1);
+        assert!(!t.is_aggregate_type());
+        let t = Type::float(64);
+        assert!(!t.is_aggregate_type());
+        let t = Type::bool();
+        assert!(!t.is_aggregate_type());
+        let t = Type::structure(vec![1, 2, 3]);
+        assert!(t.is_aggregate_type());
+        let t = Type::array(1, 32);
+        assert!(t.is_aggregate_type());
+        let t = Type::runtime_array(1);
+        assert!(t.is_aggregate_type());
+        let t = Type::vector(1, 4);
+        assert!(!t.is_aggregate_type());
+        let t = Type::matrix(1, 4);
+        assert!(!t.is_aggregate_type());
+    }
+
+    #[test]
+    fn test_is_composite_type() {
+        let t = Type::void();
+        assert!(!t.is_composite_type());
+        let t = Type::int(32, 1);
+        assert!(!t.is_composite_type());
+        let t = Type::float(64);
+        assert!(!t.is_composite_type());
+        let t = Type::bool();
+        assert!(!t.is_composite_type());
+        let t = Type::structure(vec![1, 2, 3]);
+        assert!(t.is_composite_type());
+        let t = Type::array(1, 32);
+        assert!(t.is_composite_type());
+        let t = Type::runtime_array(1);
+        assert!(t.is_composite_type());
+        let t = Type::vector(1, 4);
+        assert!(t.is_composite_type());
+        let t = Type::matrix(1, 4);
+        assert!(t.is_composite_type());
     }
 }
