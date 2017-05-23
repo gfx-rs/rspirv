@@ -14,6 +14,6 @@ keywords = ["spirv", "definition", "struct", "enum"]
 path = "lib.rs"
 
 [dependencies]
-bitflags = "0.7"
+bitflags = "0.8"
 num = "0.1"
 num-derive = "0.1"

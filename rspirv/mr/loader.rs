@@ -115,15 +115,6 @@ macro_rules! if_ret_err {
     });
 }
 
-/// Converts possible error from the given `$result` to a ParseAction::Error
-/// and returns it.
-macro_rules! try_call {
-    ($result: expr) => (match $result {
-        Ok(_) => (),
-        Err(err) => return ParseAction::Error(Box::new(err))
-    })
-}
-
 impl binary::Consumer for Loader {
     fn initialize(&mut self) -> ParseAction {
         ParseAction::Continue
