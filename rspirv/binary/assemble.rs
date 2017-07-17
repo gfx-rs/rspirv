@@ -21,6 +21,7 @@ pub trait Assemble {
     /// Assembles the current object and returns the binary code.
     fn assemble(&self) -> Vec<u32>;
     fn assemble_bytes(&self) -> Vec<u8> {
+        use std::mem;
         b.module()
             .assemble()
             .iter()
