@@ -22,8 +22,7 @@ pub trait Assemble {
     fn assemble(&self) -> Vec<u32>;
     fn assemble_bytes(&self) -> Vec<u8> {
         use std::mem;
-        b.module()
-            .assemble()
+        self.assemble()
             .iter()
             .flat_map(|val| {
                 (0..mem::size_of::<u32>()).map(move |i| ((val >> (8 * i)) & 0xff) as u8)
