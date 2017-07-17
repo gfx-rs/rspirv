@@ -20,6 +20,15 @@ use utils::num::{bytes_to_u32_le, f32_to_u32};
 pub trait Assemble {
     /// Assembles the current object and returns the binary code.
     fn assemble(&self) -> Vec<u32>;
+    fn assemble_bytes(&self) -> Vec<u8> {
+        b.module()
+            .assemble()
+            .iter()
+            .flat_map(|val| {
+                (0..mem::size_of::<u32>()).map(move |i| ((val >> (8 * i)) & 0xff) as u8)
+            })
+            .collect()
+    }
 }
 
 impl Assemble for mr::ModuleHeader {
