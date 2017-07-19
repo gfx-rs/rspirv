@@ -212,7 +212,7 @@ impl Builder {
         Ok(id)
     }
 
-    fn end_basic_block(&mut self, inst: mr::Instruction) -> BuildResult<()> {
+    pub fn end_basic_block(&mut self, inst: mr::Instruction) -> BuildResult<()> {
         if self.basic_block.is_none() {
             return Err(Error::MismatchedTerminator);
         }
