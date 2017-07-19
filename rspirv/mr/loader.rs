@@ -144,8 +144,14 @@ impl binary::Consumer for Loader {
                 self.module.debugs.push(inst)
             }
             opcode if grammar::reflect::is_annotation(opcode) => self.module.annotations.push(inst),
-            opcode if grammar::reflect::is_type(opcode) || grammar::reflect::is_constant(opcode) ||
-                      grammar::reflect::is_variable(opcode) => {
+            opcode if grammar::reflect::is_type(opcode) ||
+                      grammar::reflect::is_constant(opcode) => {
+                self.module.types_global_values.push(inst)
+            }
+            spirv::Op::Variable if self.function.is_none() => {
+                self.module.types_global_values.push(inst)
+            }
+            spirv::Op::Undef if self.function.is_none() => {
                 self.module.types_global_values.push(inst)
             }
             spirv::Op::Function => {
@@ -264,4 +270,80 @@ pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<mr::Module> {
     let mut loader = Loader::new();
     binary::parse_words(binary, &mut loader)?;
     Ok(loader.module())
+}
+
+#[cfg(test)]
+mod tests {
+    use mr;
+    use spirv;
+
+    #[test]
+    fn test_load_variable() {
+        let mut b = mr::Builder::new();
+
+        let void = b.type_void();
+        let float = b.type_float(32);
+        let voidfvoid = b.type_function(void, vec![void]);
+
+        // Global variable
+        let global = b.variable(float, None, spirv::StorageClass::Input, None);
+
+        b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).unwrap();
+        b.begin_basic_block(None).unwrap();
+        // Local variable
+        let local = b.variable(float, None, spirv::StorageClass::Function, None);
+        b.ret().unwrap();
+        b.end_function().unwrap();
+
+        let m = b.module();
+
+        assert_eq!(m.types_global_values.len(), 4);
+        let inst = &m.types_global_values[3];
+        assert_eq!(inst.class.opcode, spirv::Op::Variable);
+        assert_eq!(inst.result_id.unwrap(), global);
+
+        assert_eq!(m.functions.len(), 1);
+        let f = &m.functions[0];
+        assert_eq!(f.basic_blocks.len(), 1);
+        let bb = &f.basic_blocks[0];
+        assert!(bb.instructions.len() > 1);
+        let inst = &bb.instructions[0];
+        assert_eq!(inst.class.opcode, spirv::Op::Variable);
+        assert_eq!(inst.result_id.unwrap(), local);
+    }
+
+    #[test]
+    fn test_load_undef() {
+        let mut b = mr::Builder::new();
+
+        let void = b.type_void();
+        let float = b.type_float(32);
+        let voidfvoid = b.type_function(void, vec![void]);
+
+        // Global variable
+        let global = b.undef(float, None);
+
+        b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).unwrap();
+        b.begin_basic_block(None).unwrap();
+        // Local variable
+        let local = b.undef(float, None);
+        b.ret().unwrap();
+        b.end_function().unwrap();
+
+        let m = b.module();
+
+        assert_eq!(m.types_global_values.len(), 4);
+        let inst = &m.types_global_values[3];
+        assert_eq!(inst.class.opcode, spirv::Op::Undef);
+        assert_eq!(inst.result_id.unwrap(), global);
+
+        assert_eq!(m.functions.len(), 1);
+        let f = &m.functions[0];
+        assert_eq!(f.basic_blocks.len(), 1);
+        let bb = &f.basic_blocks[0];
+        assert!(bb.instructions.len() > 1);
+        let inst = &bb.instructions[0];
+        assert_eq!(inst.class.opcode, spirv::Op::Undef);
+        assert_eq!(inst.result_id.unwrap(), local);
+    }
 }
