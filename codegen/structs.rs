@@ -92,10 +92,10 @@ pub struct EnumValue {
 }
 
 /// Deserializes a field that can either be a number or a string into a EnumValue.
-fn num_or_str<D: de::Deserializer>(d: D) -> result::Result<EnumValue, D::Error> {
+fn num_or_str<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<EnumValue, D::Error> {
     struct NumOrStr;
 
-    impl de::Visitor for NumOrStr {
+    impl<'de> de::Visitor<'de> for NumOrStr {
         type Value = EnumValue;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
@@ -117,5 +117,5 @@ fn num_or_str<D: de::Deserializer>(d: D) -> result::Result<EnumValue, D::Error> 
         }
     }
 
-    d.deserialize(NumOrStr)
+    d.deserialize_any(NumOrStr)
 }
