@@ -74,7 +74,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///     let mut b = rspirv::mr::Builder::new();
 ///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
 ///     let void = b.type_void();
-///     let voidf = b.type_function(void, vec![void]);
+///     let voidf = b.type_function(void, &vec![void]);
 ///     b.begin_function(void,
 ///                      None,
 ///                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
@@ -267,12 +267,12 @@ impl Builder {
                                         execution_model: spirv::ExecutionModel,
                                         entry_point: spirv::Word,
                                         name: T,
-                                        interface: Vec<spirv::Word>) {
+                                        interface: &[spirv::Word]) {
         let mut operands = vec![mr::Operand::ExecutionModel(execution_model),
                                 mr::Operand::IdRef(entry_point),
                                 mr::Operand::LiteralString(name.into())];
         for v in interface {
-            operands.push(mr::Operand::IdRef(v));
+            operands.push(mr::Operand::IdRef(*v));
         }
 
         let inst = mr::Instruction::new(spirv::Op::EntryPoint, None, None, operands);
@@ -283,11 +283,11 @@ impl Builder {
     pub fn execution_mode(&mut self,
                           entry_point: spirv::Word,
                           execution_mode: spirv::ExecutionMode,
-                          params: Vec<u32>) {
+                          params: &[u32]) {
         let mut operands = vec![mr::Operand::IdRef(entry_point),
                                 mr::Operand::ExecutionMode(execution_mode)];
         for v in params {
-            operands.push(mr::Operand::LiteralInt32(v));
+            operands.push(mr::Operand::LiteralInt32(*v));
         }
 
         let inst = mr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);
@@ -514,7 +514,7 @@ mod tests {
     #[test]
     fn test_decoration_no_additional_params() {
         let mut b = Builder::new();
-        b.member_decorate(1, 0, spirv::Decoration::RelaxedPrecision, vec![]);
+        b.member_decorate(1, 0, spirv::Decoration::RelaxedPrecision, &vec![]);
         let m = b.module();
         assert!(has_only_one_global_inst(&m));
         let inst = m.annotations.last().unwrap();
@@ -531,7 +531,7 @@ mod tests {
         let mut b = Builder::new();
         b.decorate(1,
                    spirv::Decoration::LinkageAttributes,
-                   vec![mr::Operand::from("name"), mr::Operand::from(spirv::LinkageType::Export)]);
+                   &vec![mr::Operand::from("name"), mr::Operand::from(spirv::LinkageType::Export)]);
         let m = b.module();
         assert!(has_only_one_global_inst(&m));
         let inst = m.annotations.last().unwrap();
@@ -706,7 +706,7 @@ mod tests {
 
         let float = b.type_float(32);
         assert_eq!(1, float);
-        let f32ff32 = b.type_function(float, vec![float]);
+        let f32ff32 = b.type_function(float, &vec![float]);
         assert_eq!(2, f32ff32);
         let c0 = b.constant_f32(float, 0.0f32);
         assert_eq!(3, c0);
@@ -730,7 +730,7 @@ mod tests {
         let phi = b.phi(float,
                         None,
                         // From above, from this, from below
-                        vec![(c0, epid), (fr_add, pbid), (c0, target2)])
+                        &vec![(c0, epid), (fr_add, pbid), (c0, target2)])
                    .unwrap();
         assert_eq!(9, phi);
         let res_add = b.fadd(float, Some(fr_add), c0, c0).unwrap();
@@ -770,7 +770,7 @@ mod tests {
         assert_eq!(3, ifp);
         let ffp = b.type_pointer(None, spirv::StorageClass::Function, float);
         assert_eq!(4, ffp);
-        let voidfvoid = b.type_function(void, vec![void]);
+        let voidfvoid = b.type_function(void, &vec![void]);
         assert_eq!(5, voidfvoid);
 
         // Global variable
@@ -815,7 +815,7 @@ mod tests {
         assert_eq!(1, void);
         let float = b.type_float(32);
         assert_eq!(2, float);
-        let voidfvoid = b.type_function(void, vec![void]);
+        let voidfvoid = b.type_function(void, &vec![void]);
         assert_eq!(3, voidfvoid);
 
         // Global undef

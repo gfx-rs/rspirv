@@ -17,7 +17,7 @@
 // DO NOT MODIFY!
 
 /// Data representation of a SPIR-V operand.
-#[derive(Debug, PartialEq, From)]
+#[derive(Clone, Debug, PartialEq, From)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
     FPFastMathMode(spirv::FPFastMathMode),

@@ -18,30 +18,30 @@
 
 impl Builder {
     /// Appends an OpDecorate instruction.
-    pub fn decorate(&mut self, target: spirv::Word, decoration: spirv::Decoration, mut additional_params: Vec<mr::Operand>) {
+    pub fn decorate(&mut self, target: spirv::Word, decoration: spirv::Decoration, additional_params: &[mr::Operand]) {
         let mut inst = mr::Instruction::new(spirv::Op::Decorate, None, None, vec![mr::Operand::IdRef(target), mr::Operand::Decoration(decoration)]);
-        inst.operands.append(&mut additional_params);
+        inst.operands.extend_from_slice(additional_params);
         self.module.annotations.push(inst);
     }
 
     /// Appends an OpMemberDecorate instruction.
-    pub fn member_decorate(&mut self, structure_type: spirv::Word, member: u32, decoration: spirv::Decoration, mut additional_params: Vec<mr::Operand>) {
+    pub fn member_decorate(&mut self, structure_type: spirv::Word, member: u32, decoration: spirv::Decoration, additional_params: &[mr::Operand]) {
         let mut inst = mr::Instruction::new(spirv::Op::MemberDecorate, None, None, vec![mr::Operand::IdRef(structure_type), mr::Operand::LiteralInt32(member), mr::Operand::Decoration(decoration)]);
-        inst.operands.append(&mut additional_params);
+        inst.operands.extend_from_slice(additional_params);
         self.module.annotations.push(inst);
     }
 
     /// Appends an OpGroupDecorate instruction.
-    pub fn group_decorate(&mut self, decoration_group: spirv::Word, targets: Vec<spirv::Word>) {
+    pub fn group_decorate(&mut self, decoration_group: spirv::Word, targets: &[spirv::Word]) {
         let mut inst = mr::Instruction::new(spirv::Op::GroupDecorate, None, None, vec![mr::Operand::IdRef(decoration_group)]);
         for v in targets {
-            inst.operands.push(mr::Operand::IdRef(v))
+            inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.module.annotations.push(inst);
     }
 
     /// Appends an OpGroupMemberDecorate instruction.
-    pub fn group_member_decorate(&mut self, decoration_group: spirv::Word, targets: Vec<(spirv::Word, u32)>) {
+    pub fn group_member_decorate(&mut self, decoration_group: spirv::Word, targets: &[(spirv::Word, u32)]) {
         let mut inst = mr::Instruction::new(spirv::Op::GroupMemberDecorate, None, None, vec![mr::Operand::IdRef(decoration_group)]);
         for v in targets {
             inst.operands.push(mr::Operand::IdRef(v.0));

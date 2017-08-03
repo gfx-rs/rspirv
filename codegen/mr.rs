@@ -54,14 +54,14 @@ fn get_param_list(params: &[structs::Operand],
             } else if param.quantifier == "?" {
                 format!("{}: Option<{}>", name, kind)
             } else {
-                format!("{}: Vec<{}>", name, kind)
+                format!("{}: &[{}]", name, kind)
             })
         }
     }).collect();
     // The last operand may require additional parameters.
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
-            list.push("mut additional_params: Vec<mr::Operand>".to_string());
+            list.push("additional_params: &[mr::Operand]".to_string());
         }
     }
     list
@@ -158,7 +158,7 @@ fn get_push_extras(params: &[structs::Operand],
                 let kind = get_mr_operand_kind(&param.kind);
                 Some(format!(
                         "{s:8}for v in {name} {{\n\
-                         {s:12}{container}.push(mr::Operand::{kind}(v))\n\
+                         {s:12}{container}.push(mr::Operand::{kind}(*v))\n\
                          {s:8}}}",
                         s = "",
                         kind = kind,
@@ -170,7 +170,7 @@ fn get_push_extras(params: &[structs::Operand],
     // The last operand may require additional parameters.
     if let Some(o) =  params.last() {
         if operand_has_additional_params(o, kinds) {
-            list.push(format!("{s:8}{container}.append(&mut additional_params)",
+            list.push(format!("{s:8}{container}.extend_from_slice(additional_params)",
                               s = "", container = container));
         }
     }
@@ -225,7 +225,7 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
 
         let kind_enum = format!(
             "/// Data representation of a SPIR-V operand.\n\
-             #[derive(Debug, PartialEq, From)]\n\
+             #[derive(Clone, Debug, PartialEq, From)]\n\
              pub enum Operand {{\n\
              {enum_kinds}\n{id_kinds}\n{num_kinds}\n{str_kinds}\n\
              }}\n\n",
