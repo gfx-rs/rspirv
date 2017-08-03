@@ -77,7 +77,7 @@ pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar)
             }).collect();
         let kind_enum = format!(
             "/// All operand kinds in the SPIR-V grammar.\n\
-             #[derive(Clone, Copy, Debug, PartialEq, Eq)]\n\
+             #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]\n\
              pub enum OperandKind {{\n{}\n}}\n\n",
             elements.join("\n"));
         ret.push_str(&kind_enum);

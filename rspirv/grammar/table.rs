@@ -17,7 +17,7 @@
 // DO NOT MODIFY!
 
 /// All operand kinds in the SPIR-V grammar.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum OperandKind {
     ImageOperands,
     FPFastMathMode,

@@ -15,7 +15,7 @@
 use spirv;
 
 /// Grammar for a SPIR-V instruction.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct Instruction<'a> {
     /// Opname.
     pub opname: &'a str,
@@ -42,7 +42,7 @@ pub struct ExtendedInstruction<'a> {
 }
 
 /// Grammar for a SPIR-V logical operand.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Hash)]
 pub struct LogicalOperand {
     /// The kind of this logical operand.
     pub kind: OperandKind,
@@ -51,7 +51,7 @@ pub struct LogicalOperand {
 }
 
 /// The repeat specification for a SPIR-V logical operand.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum OperandQuantifier {
     /// This operand appears exactly one time.
     One,
