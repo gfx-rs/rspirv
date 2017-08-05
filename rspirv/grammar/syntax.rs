@@ -103,9 +103,9 @@ macro_rules! ext_inst {
 /// The table for all SPIR-V core instructions.
 ///
 /// This table is staic data stored in the library.
-pub struct InstructionTable;
+pub struct CoreInstructionTable;
 
-impl InstructionTable {
+impl CoreInstructionTable {
     /// Looks up the given `opcode` in the instruction table and returns
     /// a reference to the instruction grammar entry if found.
     pub fn lookup_opcode(opcode: u16) -> Option<&'static Instruction<'static>> {

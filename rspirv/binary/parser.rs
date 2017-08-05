@@ -21,7 +21,7 @@ use super::decoder;
 use super::error::Error as DecodeError;
 use super::tracker::{Type, TypeTracker};
 
-use grammar::InstructionTable as GInstTable;
+use grammar::CoreInstructionTable as GInstTable;
 use grammar::OperandKind as GOpKind;
 use grammar::OperandQuantifier as GOpCount;
 

@@ -255,7 +255,7 @@ impl Instruction {
                operands: Vec<Operand>)
                -> Instruction {
         Instruction {
-            class: grammar::InstructionTable::get(opcode),
+            class: grammar::CoreInstructionTable::get(opcode),
             result_type: result_type,
             result_id: result_id,
             operands: operands,

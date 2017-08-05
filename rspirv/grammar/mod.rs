@@ -19,10 +19,11 @@
 //!
 //! It also provides many reflect functions.
 
-pub use self::syntax::ExtendedInstruction; 
-pub use self::syntax::{GlslStd450InstructionTable, OpenCLStd100InstructionTable};
-pub use self::syntax::{Instruction, InstructionTable};
-pub use self::syntax::{OperandKind, OperandQuantifier};
+pub use self::syntax::{Instruction, ExtendedInstruction};
+pub use self::syntax::CoreInstructionTable;
+pub use self::syntax::GlslStd450InstructionTable;
+pub use self::syntax::OpenCLStd100InstructionTable;
+pub use self::syntax::{LogicalOperand, OperandKind, OperandQuantifier};
 
 pub mod reflect;
 mod syntax;
