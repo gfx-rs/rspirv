@@ -14,18 +14,29 @@
 
 use spirv;
 
-use super::Decoration;
 use std::collections::BTreeSet;
 
-/// SPIR-V types.
-#[derive(Debug, Eq, PartialEq)]
+use super::Decoration;
+
+/// The class to represent a SPIR-V type.
+///
+/// Derived types hold `TypeToken`s of their base types instead of direct
+/// references or `Rc` references, because of the difficulty or impossibility
+/// of labelling explicit lifetimes or back references.
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Type {
-    ty: Ty,
+    pub(in sr) ty: TypeEnum,
     /// Sets of decorations. Each element is a pair of an optional member index and the decoration.
-    decorations: BTreeSet<(Option<u32>, Decoration)>,
+    pub(in sr) decorations: BTreeSet<(Option<u32>, Decoration)>,
 }
 
-include!("ty.rs");
+/// A token for representing a given type.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct TypeToken {
+    index: u32
+}
+
+include!("type_enum_check.rs");
 
 impl Type {
     pub fn is_numerical_type(&self) -> bool {
@@ -42,6 +53,12 @@ impl Type {
 
     pub fn is_composite_type(&self) -> bool {
         self.is_aggregate_type() || self.is_vector_type() || self.is_matrix_type()
+    }
+}
+
+impl TypeToken {
+    pub(in sr) fn new(index: u32) -> TypeToken {
+        TypeToken { index: index }
     }
 }
 

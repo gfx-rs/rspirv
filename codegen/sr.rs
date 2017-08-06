@@ -44,7 +44,7 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
         use spirv;
 
         /// SPIR-V decorations.
-        #[derive(Debug, Eq, PartialEq, PartialOrd, Ord, From)]
+        #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord, From)]
         pub enum Decoration {
             #( #enumerants ),*
         }
@@ -53,7 +53,12 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
 }
 
 pub fn get_operand_type_ident(grammar: &structs::Operand) -> quote::Tokens {
-    let ty = quote::Ident::from(get_enum_underlying_type(&grammar.kind, false));
+    let ty = if grammar.kind == "IdRef" {
+        "TypeToken".to_string()
+    } else {
+        get_enum_underlying_type(&grammar.kind, false)
+    };
+    let ty = quote::Ident::from(ty);
     if grammar.quantifier.is_empty() {
         quote! { #ty }
     } else if grammar.quantifier == "?" {
@@ -71,7 +76,7 @@ fn get_type_fn_name(name: &str) -> String {
     }
 }
 
-pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
+pub fn gen_sr_type_check(grammar: &structs::Grammar) -> String {
     // Collect all types and their parameters in the following format:
     //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
     let cases: Vec<_> = grammar.instructions
@@ -107,33 +112,6 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
             quote! { #symbol #param_list }
         })
         .collect();
-    let constructors: Vec<_> = cases.iter()
-        .map(|&(symbol, ref params)| {
-            let func_name = quote::Ident::from(get_type_fn_name(symbol));
-            let symbol = quote::Ident::from(symbol);
-            let param_list: Vec<_> = params.iter()
-                .map(|&(ref name, ref ty)| {
-                         quote! { #name : #ty }
-                     })
-                .collect();
-            let param_list = quote! { (#( #param_list ),*) };
-            let init_list: Vec<_> = params.iter()
-                .map(|&(ref name, _)| {
-                         quote! { #name : #name }
-                     })
-                .collect();
-            let init_list = if init_list.is_empty() {
-                quote!{}
-            } else {
-                quote! { {#( #init_list ),*} }
-            };
-            quote! {
-                pub fn #func_name #param_list -> Type {
-                    Type { ty: Ty::#symbol #init_list, decorations: BTreeSet::new() }
-                }
-            }
-        })
-        .collect();
     let checks: Vec<_> = cases.iter()
         .map(|&(symbol, ref params)| {
             let func_name = quote::Ident::from(format!("is_{}_type", get_type_fn_name(symbol)));
@@ -147,7 +125,7 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
             quote! {
                 pub fn #func_name(&self) -> bool {
                     match self.ty {
-                        Ty::#symbol #params => true,
+                        TypeEnum::#symbol #params => true,
                         _ => false
                     }
                 }
@@ -155,14 +133,70 @@ pub fn gen_sr_type(grammar: &structs::Grammar) -> String {
         })
         .collect();
     let tokens = quote! {
-        #[derive(Debug, Eq, PartialEq)]
-        enum Ty {
+        #[derive(Clone, Debug, PartialEq, Eq)]
+        pub (in sr) enum TypeEnum {
             #( #types ),*
         }
 
         impl Type {
-            #( #constructors )*
             #( #checks )*
+        }
+    };
+    tokens.to_string()
+}
+
+pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
+    // Collect all types and their parameters in the following format:
+    //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
+    let cases: Vec<_> = grammar.instructions
+        .iter()
+        .filter(|k| k.class == "Type")
+        .map(|kind| {
+            let operands: Vec<_> = kind.operands
+                .iter()
+                .skip(1)
+                .map(|op| {
+                         let name = quote::Ident::from(get_param_name(op));
+                         let ty = get_operand_type_ident(op);
+                         (name, ty)
+                     })
+                .collect();
+            let symbol = &kind.opname[6..];
+            (symbol, operands)
+        })
+        .collect();
+    let constructors: Vec<_> = cases.iter()
+        .map(|&(symbol, ref params)| {
+            let func_name = quote::Ident::from(format!("type_{}", get_type_fn_name(symbol)));
+            let symbol = quote::Ident::from(symbol);
+            let param_list: Vec<_> = params.iter()
+                .map(|&(ref name, ref ty)| {
+                         quote! { #name : #ty }
+                     })
+                .collect();
+            let param_list = quote! { (&mut self, #( #param_list ),*) };
+            let init_list: Vec<_> = params.iter()
+                .map(|&(ref name, _)| {
+                         quote! { #name : #name }
+                     })
+                .collect();
+            let init_list = if init_list.is_empty() {
+                quote!{}
+            } else {
+                quote! { {#( #init_list ),*} }
+            };
+            quote! {
+                pub fn #func_name #param_list -> TypeToken {
+                    self.types.push(
+                        Type { ty: TypeEnum::#symbol #init_list, decorations: BTreeSet::new() });
+                    return TypeToken::new(self.types.len() as u32);
+                }
+            }
+        })
+        .collect();
+    let tokens = quote! {
+        impl Context {
+            #( #constructors )*
         }
     };
     tokens.to_string()

@@ -17,8 +17,8 @@
 // DO NOT MODIFY!
 
 use spirv;
-# [ doc = r" SPIR-V decorations." ]
-# [ derive ( Debug , Eq , PartialEq , PartialOrd , Ord , From ) ]
+#[doc = r" SPIR-V decorations."]
+#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord, From)]
 pub enum Decoration {
     RelaxedPrecision,
     SpecId(u32),

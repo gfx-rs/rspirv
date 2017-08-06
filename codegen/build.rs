@@ -183,8 +183,13 @@ fn main() {
         fmt_write!(c, path);
     }
     {
-        let path = codegen_src_dir.join("../rspirv/sr/ty.rs");
-        let c = sr::gen_sr_type(&grammar);
+        let path = codegen_src_dir.join("../rspirv/sr/type_enum_check.rs");
+        let c = sr::gen_sr_type_check(&grammar);
+        fmt_write!(c, path);
+    }
+    {
+        let path = codegen_src_dir.join("../rspirv/sr/type_creation.rs");
+        let c = sr::gen_sr_type_creation(&grammar);
         fmt_write!(c, path);
     }
 

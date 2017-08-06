@@ -14,8 +14,10 @@
 
 //! **S**tructured **r**epresentation of various SPIR-V language constructs.
 
+pub use self::context::Context;
 pub use self::decoration::Decoration;
-pub use self::types::Type;
+pub use self::types::{Type, TypeToken};
 
+mod context;
 mod decoration;
 mod types;
