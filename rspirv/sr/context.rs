@@ -54,3 +54,88 @@ impl Context {
 }
 
 include!("type_creation.rs");
+
+#[cfg(test)]
+mod tests {
+    use sr::{Context, TypeToken};
+
+    #[test]
+    fn test_get_type() {
+        let mut c = Context::new();
+        let i32t = c.type_int(32, 1);
+        let t = c.get_type(i32t);
+        assert!(t.is_int_type());
+    }
+
+    #[test]
+    fn test_void_uniqueness() {
+        let mut c = Context::new();
+        let t1 = c.type_void();
+        let t2 = c.type_void();
+        assert_eq!(t1, t2);
+        let t3 = c.type_int(32, 1);
+        assert!(t1 != t3);
+    }
+
+    #[test]
+    fn test_int_uniqueness() {
+        let mut c = Context::new();
+        let t1 = c.type_int(32, 1);
+        let t2 = c.type_int(32, 1);
+        assert_eq!(t1, t2);
+        let t3 = c.type_int(32, 0);
+        assert!(t1 != t3);
+    }
+
+    #[test]
+    fn test_float_uniqueness() {
+        let mut c = Context::new();
+        let t1 = c.type_float(64);
+        let t2 = c.type_float(64);
+        assert_eq!(t1, t2);
+        let t3 = c.type_float(32);
+        assert!(t1 != t3);
+    }
+
+    #[test]
+    fn test_vector_uniqueness() {
+        let mut c = Context::new();
+        let token = TypeToken::new(0);
+        let t1 = c.type_vector(token, 4);
+        let t2 = c.type_vector(token, 4);
+        assert_eq!(t1, t2);
+        let t3 = c.type_vector(token, 3);
+        assert!(t1 != t3);
+        let token = TypeToken::new(1);
+        let t4 = c.type_vector(token, 3);
+        assert!(t3 != t4);
+        assert!(t2 != t3);
+    }
+
+    #[test]
+    fn test_matrix_uniqueness() {
+        let mut c = Context::new();
+        let token = TypeToken::new(0);
+        let t1 = c.type_matrix(token, 4);
+        let t2 = c.type_matrix(token, 4);
+        assert_eq!(t1, t2);
+        let t3 = c.type_matrix(token, 3);
+        assert!(t1 != t3);
+        let token = TypeToken::new(1);
+        let t4 = c.type_matrix(token, 3);
+        assert!(t3 != t4);
+        assert!(t2 != t3);
+    }
+
+    #[test]
+    fn test_struct_non_uniqueness() {
+        let mut c = Context::new();
+        let token = TypeToken::new(0);
+        let t1 = c.type_struct(&vec![token]);
+        let t2 = c.type_struct(&vec![token]);
+        assert!(t1 != t2);
+        let t3 = c.type_struct(&vec![token, token]);
+        assert!(t1 != t3);
+        assert!(t2 != t3);
+    }
+}
