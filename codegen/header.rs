@@ -41,12 +41,12 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
         if &symbol == "not_na_n" {
             symbol = "not_nan".to_string()
         }
-        format!("        const {}_{} = {},",
+        format!("        const {}_{} = {};",
                 snake_casify(&grammar.kind).to_uppercase(),
                 symbol.to_uppercase(),
                 enumerant.value.string)
     }).collect();
-    format!("bitflags!{{\n    {doc}\n    pub flags {kind} : u32 \
+    format!("bitflags!{{\n    {doc}\n    pub struct {kind} : u32 \
              {{\n{enumerants}\n    }}\n}}\n",
             doc = format!("/// SPIR-V operand kind: {}",
                           get_spec_link(&grammar.kind)),

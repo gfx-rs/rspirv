@@ -24,95 +24,95 @@ pub const REVISION: u32 = 5;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
-    pub flags ImageOperands : u32 {
-        const IMAGE_OPERANDS_NONE = 0x0000,
-        const IMAGE_OPERANDS_BIAS = 0x0001,
-        const IMAGE_OPERANDS_LOD = 0x0002,
-        const IMAGE_OPERANDS_GRAD = 0x0004,
-        const IMAGE_OPERANDS_CONST_OFFSET = 0x0008,
-        const IMAGE_OPERANDS_OFFSET = 0x0010,
-        const IMAGE_OPERANDS_CONST_OFFSETS = 0x0020,
-        const IMAGE_OPERANDS_SAMPLE = 0x0040,
-        const IMAGE_OPERANDS_MIN_LOD = 0x0080,
+    pub struct ImageOperands : u32 {
+        const IMAGE_OPERANDS_NONE = 0x0000;
+        const IMAGE_OPERANDS_BIAS = 0x0001;
+        const IMAGE_OPERANDS_LOD = 0x0002;
+        const IMAGE_OPERANDS_GRAD = 0x0004;
+        const IMAGE_OPERANDS_CONST_OFFSET = 0x0008;
+        const IMAGE_OPERANDS_OFFSET = 0x0010;
+        const IMAGE_OPERANDS_CONST_OFFSETS = 0x0020;
+        const IMAGE_OPERANDS_SAMPLE = 0x0040;
+        const IMAGE_OPERANDS_MIN_LOD = 0x0080;
     }
 }
 
 bitflags!{
     /// SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)
-    pub flags FPFastMathMode : u32 {
-        const FPFAST_MATH_MODE_NONE = 0x0000,
-        const FPFAST_MATH_MODE_NOT_NAN = 0x0001,
-        const FPFAST_MATH_MODE_NOT_INF = 0x0002,
-        const FPFAST_MATH_MODE_NSZ = 0x0004,
-        const FPFAST_MATH_MODE_ALLOW_RECIP = 0x0008,
-        const FPFAST_MATH_MODE_FAST = 0x0010,
+    pub struct FPFastMathMode : u32 {
+        const FPFAST_MATH_MODE_NONE = 0x0000;
+        const FPFAST_MATH_MODE_NOT_NAN = 0x0001;
+        const FPFAST_MATH_MODE_NOT_INF = 0x0002;
+        const FPFAST_MATH_MODE_NSZ = 0x0004;
+        const FPFAST_MATH_MODE_ALLOW_RECIP = 0x0008;
+        const FPFAST_MATH_MODE_FAST = 0x0010;
     }
 }
 
 bitflags!{
     /// SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_selection_control_a_selection_control)
-    pub flags SelectionControl : u32 {
-        const SELECTION_CONTROL_NONE = 0x0000,
-        const SELECTION_CONTROL_FLATTEN = 0x0001,
-        const SELECTION_CONTROL_DONT_FLATTEN = 0x0002,
+    pub struct SelectionControl : u32 {
+        const SELECTION_CONTROL_NONE = 0x0000;
+        const SELECTION_CONTROL_FLATTEN = 0x0001;
+        const SELECTION_CONTROL_DONT_FLATTEN = 0x0002;
     }
 }
 
 bitflags!{
     /// SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_loop_control_a_loop_control)
-    pub flags LoopControl : u32 {
-        const LOOP_CONTROL_NONE = 0x0000,
-        const LOOP_CONTROL_UNROLL = 0x0001,
-        const LOOP_CONTROL_DONT_UNROLL = 0x0002,
-        const LOOP_CONTROL_DEPENDENCY_INFINITE = 0x0004,
-        const LOOP_CONTROL_DEPENDENCY_LENGTH = 0x0008,
+    pub struct LoopControl : u32 {
+        const LOOP_CONTROL_NONE = 0x0000;
+        const LOOP_CONTROL_UNROLL = 0x0001;
+        const LOOP_CONTROL_DONT_UNROLL = 0x0002;
+        const LOOP_CONTROL_DEPENDENCY_INFINITE = 0x0004;
+        const LOOP_CONTROL_DEPENDENCY_LENGTH = 0x0008;
     }
 }
 
 bitflags!{
     /// SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_function_control_a_function_control)
-    pub flags FunctionControl : u32 {
-        const FUNCTION_CONTROL_NONE = 0x0000,
-        const FUNCTION_CONTROL_INLINE = 0x0001,
-        const FUNCTION_CONTROL_DONT_INLINE = 0x0002,
-        const FUNCTION_CONTROL_PURE = 0x0004,
-        const FUNCTION_CONTROL_CONST = 0x0008,
+    pub struct FunctionControl : u32 {
+        const FUNCTION_CONTROL_NONE = 0x0000;
+        const FUNCTION_CONTROL_INLINE = 0x0001;
+        const FUNCTION_CONTROL_DONT_INLINE = 0x0002;
+        const FUNCTION_CONTROL_PURE = 0x0004;
+        const FUNCTION_CONTROL_CONST = 0x0008;
     }
 }
 
 bitflags!{
     /// SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)
-    pub flags MemorySemantics : u32 {
-        const MEMORY_SEMANTICS_RELAXED = 0x0000,
-        const MEMORY_SEMANTICS_NONE = 0x0000,
-        const MEMORY_SEMANTICS_ACQUIRE = 0x0002,
-        const MEMORY_SEMANTICS_RELEASE = 0x0004,
-        const MEMORY_SEMANTICS_ACQUIRE_RELEASE = 0x0008,
-        const MEMORY_SEMANTICS_SEQUENTIALLY_CONSISTENT = 0x0010,
-        const MEMORY_SEMANTICS_UNIFORM_MEMORY = 0x0040,
-        const MEMORY_SEMANTICS_SUBGROUP_MEMORY = 0x0080,
-        const MEMORY_SEMANTICS_WORKGROUP_MEMORY = 0x0100,
-        const MEMORY_SEMANTICS_CROSS_WORKGROUP_MEMORY = 0x0200,
-        const MEMORY_SEMANTICS_ATOMIC_COUNTER_MEMORY = 0x0400,
-        const MEMORY_SEMANTICS_IMAGE_MEMORY = 0x0800,
+    pub struct MemorySemantics : u32 {
+        const MEMORY_SEMANTICS_RELAXED = 0x0000;
+        const MEMORY_SEMANTICS_NONE = 0x0000;
+        const MEMORY_SEMANTICS_ACQUIRE = 0x0002;
+        const MEMORY_SEMANTICS_RELEASE = 0x0004;
+        const MEMORY_SEMANTICS_ACQUIRE_RELEASE = 0x0008;
+        const MEMORY_SEMANTICS_SEQUENTIALLY_CONSISTENT = 0x0010;
+        const MEMORY_SEMANTICS_UNIFORM_MEMORY = 0x0040;
+        const MEMORY_SEMANTICS_SUBGROUP_MEMORY = 0x0080;
+        const MEMORY_SEMANTICS_WORKGROUP_MEMORY = 0x0100;
+        const MEMORY_SEMANTICS_CROSS_WORKGROUP_MEMORY = 0x0200;
+        const MEMORY_SEMANTICS_ATOMIC_COUNTER_MEMORY = 0x0400;
+        const MEMORY_SEMANTICS_IMAGE_MEMORY = 0x0800;
     }
 }
 
 bitflags!{
     /// SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_memory_access_a_memory_access)
-    pub flags MemoryAccess : u32 {
-        const MEMORY_ACCESS_NONE = 0x0000,
-        const MEMORY_ACCESS_VOLATILE = 0x0001,
-        const MEMORY_ACCESS_ALIGNED = 0x0002,
-        const MEMORY_ACCESS_NONTEMPORAL = 0x0004,
+    pub struct MemoryAccess : u32 {
+        const MEMORY_ACCESS_NONE = 0x0000;
+        const MEMORY_ACCESS_VOLATILE = 0x0001;
+        const MEMORY_ACCESS_ALIGNED = 0x0002;
+        const MEMORY_ACCESS_NONTEMPORAL = 0x0004;
     }
 }
 
 bitflags!{
     /// SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)
-    pub flags KernelProfilingInfo : u32 {
-        const KERNEL_PROFILING_INFO_NONE = 0x0000,
-        const KERNEL_PROFILING_INFO_CMD_EXEC_TIME = 0x0001,
+    pub struct KernelProfilingInfo : u32 {
+        const KERNEL_PROFILING_INFO_NONE = 0x0000;
+        const KERNEL_PROFILING_INFO_CMD_EXEC_TIME = 0x0001;
     }
 }
 
