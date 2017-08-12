@@ -16,7 +16,8 @@ use spirv;
 
 use std::collections::BTreeSet;
 
-use sr::types::{Type, TypeEnum, TypeToken};
+use super::{Type, TypeToken, ConstantToken};
+use sr::types::TypeEnum;
 
 /// The context class for SPIR-V structured representation.
 ///
@@ -35,6 +36,20 @@ pub struct Context {
 impl Context {
     pub fn new() -> Context {
         Context { types: vec![] }
+    }
+
+    pub fn type_struct(&mut self, field_types: &[TypeToken]) -> TypeToken {
+        self.types.push(Type {
+            ty: TypeEnum::Struct { field_types: field_types.to_owned() },
+            decorations: BTreeSet::new(),
+        });
+        TypeToken::new(self.types.len() - 1)
+    }
+
+    /// Returns the reference to the real type represented by the given token.
+    pub fn get_type(&self, token: TypeToken) -> &Type {
+        // Note: we assume the vector doesn't shrink so we always have a valid index.
+        &self.types[token.get()]
     }
 }
 

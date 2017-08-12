@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! **S**tructured **r**epresentation of various SPIR-V language constructs.
+/// A token for representing a SPIR-V constant.
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub struct ConstantToken {
+    index: usize,
+}
 
-pub use self::constants::ConstantToken;
-pub use self::context::Context;
-pub use self::decoration::Decoration;
-pub use self::types::{Type, TypeToken};
-
-mod constants;
-mod context;
-mod decoration;
-mod types;
+impl ConstantToken {
+    pub(in sr) fn new(index: usize) -> ConstantToken {
+        ConstantToken { index: index }
+    }
+}

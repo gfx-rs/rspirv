@@ -44,7 +44,7 @@ pub(in sr) enum TypeEnum {
     SampledImage { image_type: TypeToken },
     Array {
         element_type: TypeToken,
-        length: TypeToken,
+        length: ConstantToken,
     },
     RuntimeArray { element_type: TypeToken },
     Struct { field_types: Vec<TypeToken> },

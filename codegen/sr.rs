@@ -54,7 +54,11 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
 
 pub fn get_operand_type_ident(grammar: &structs::Operand) -> quote::Tokens {
     let ty = if grammar.kind == "IdRef" {
-        "TypeToken".to_string()
+        if grammar.name == "'Length'" {
+            "ConstantToken".to_string()
+        } else {
+            "TypeToken".to_string()
+        }
     } else {
         get_enum_underlying_type(&grammar.kind, false)
     };
@@ -151,6 +155,7 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
     let cases: Vec<_> = grammar.instructions
         .iter()
         .filter(|k| k.class == "Type")
+        .filter(|k| k.opname != "OpTypeStruct")
         .map(|kind| {
             let operands: Vec<_> = kind.operands
                 .iter()
@@ -187,9 +192,13 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
             };
             quote! {
                 pub fn #func_name #param_list -> TypeToken {
-                    self.types.push(
-                        Type { ty: TypeEnum::#symbol #init_list, decorations: BTreeSet::new() });
-                    return TypeToken::new(self.types.len() as u32);
+                    let t = Type { ty: TypeEnum::#symbol #init_list, decorations: BTreeSet::new() };
+                    if let Some(index) = self.types.iter().position(|x| *x == t) {
+                        TypeToken::new(index)
+                    } else {
+                        self.types.push(t);
+                        TypeToken::new(self.types.len() - 1)
+                    }
                 }
             }
         })
