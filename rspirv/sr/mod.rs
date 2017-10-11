@@ -14,7 +14,7 @@
 
 //! **S**tructured **r**epresentation of various SPIR-V language constructs.
 
-pub use self::constants::ConstantToken;
+pub use self::constants::{Constant, ConstantToken};
 pub use self::context::Context;
 pub use self::decoration::Decoration;
 pub use self::types::{Type, TypeToken};
