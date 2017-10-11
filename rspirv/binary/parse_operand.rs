@@ -176,6 +176,7 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::InputAttachmentIndex => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::Decoration::Alignment => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::Decoration::MaxByteOffset => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::SecondaryViewportRelativeNV => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             _ => vec![]
         })
     }

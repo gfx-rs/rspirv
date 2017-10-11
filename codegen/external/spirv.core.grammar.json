@@ -27,7 +27,7 @@
   "magic_number" : "0x07230203",
   "major_version" : 1,
   "minor_version" : 1,
-  "revision" : 5,
+  "revision" : 6,
   "instructions" : [
     {
       "opname" : "OpNop",
@@ -4763,6 +4763,29 @@
           "parameters" : [
             { "kind" : "LiteralInteger", "name" : "'Max Byte Offset'" }
           ]
+        },
+        {
+          "enumerant" : "OverrideCoverageNV",
+          "value" : 5248,
+          "capabilities" : [ "SampleMaskOverrideCoverageNV" ]
+        },
+        {
+          "enumerant" : "PassthroughNV",
+          "value" : 5250,
+          "capabilities" : [ "GeometryShaderPassthroughNV" ]
+        },
+        {
+          "enumerant" : "ViewportRelativeNV",
+          "value" : 5252,
+          "capabilities" : [ "ShaderViewportMaskNV" ]
+        },
+        {
+          "enumerant" : "SecondaryViewportRelativeNV",
+          "value" : 5256,
+          "capabilities" : [ "ShaderStereoViewNV" ],
+          "parameters" : [
+            { "kind" : "LiteralInteger", "name" : "'Offset'" }
+          ]
         }
       ]
     },
@@ -5008,6 +5031,41 @@
           "enumerant" : "DrawIndex",
           "value" : 4426,
           "capabilities" : [ "DrawParameters" ]
+        },
+        {
+          "enumerant" : "DeviceIndex",
+          "value" : 4438,
+          "capabilities" : [ "DeviceGroup" ]
+        },
+        {
+          "enumerant" : "ViewIndex",
+          "value" : 4440,
+          "capabilities" : [ "MultiView" ]
+        },
+        {
+          "enumerant" : "ViewportMaskNV",
+          "value" : 5253,
+          "capabilities" : [ "ShaderViewportMaskNV" ]
+        },
+        {
+          "enumerant" : "SecondaryPositionNV",
+          "value" : 5257,
+          "capabilities" : [ "ShaderStereoViewNV" ]
+        },
+        {
+          "enumerant" : "SecondaryViewportMaskNV",
+          "value" : 5258,
+          "capabilities" : [ "ShaderStereoViewNV" ]
+        },
+        {
+          "enumerant" : "PositionPerViewNV",
+          "value" : 5261,
+          "capabilities" : [ "PerViewAttributesNV" ]
+        },
+        {
+          "enumerant" : "ViewportMaskPerViewNV",
+          "value" : 5262,
+          "capabilities" : [ "PerViewAttributesNV" ]
         }
       ]
     },
@@ -5381,6 +5439,73 @@
           "enumerant" : "SubgroupVoteKHR",
           "value" : 4431,
           "extensions" : [ "SPV_KHR_subgroup_vote" ]
+        },
+        {
+          "enumerant" : "StorageUniformBufferBlock16",
+          "value" : 4433,
+          "extensions" : [ "SPV_KHR_16bit_storage" ]
+        },
+        {
+          "enumerant" : "StorageUniform16",
+          "value" : 4434,
+          "extensions" : [ "SPV_KHR_16bit_storage" ]
+        },
+        {
+          "enumerant" : "StoragePushConstant16",
+          "value" : 4435,
+          "extensions" : [ "SPV_KHR_16bit_storage" ]
+        },
+        {
+          "enumerant" : "StorageInputOutput16",
+          "value" : 4436,
+          "extensions" : [ "SPV_KHR_16bit_storage" ]
+        },
+        {
+          "enumerant" : "DeviceGroup",
+          "value" : 4437,
+          "extensions" : [ "SPV_KHR_device_group" ]
+        },
+        {
+          "enumerant" : "MultiView",
+          "value" : 4439,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_KHR_multiview" ]
+        },
+        {
+          "enumerant" : "SampleMaskOverrideCoverageNV",
+          "value" : 5249,
+          "capabilities" : [ "SampleRateShading" ],
+          "extensions" : [ "SPV_NV_sample_mask_override_coverage" ]
+        },
+        {
+          "enumerant" : "GeometryShaderPassthroughNV",
+          "value" : 5251,
+          "capabilities" : [ "Geometry" ],
+          "extensions" : [ "SPV_NV_geometry_shader_passthrough" ]
+        },
+        {
+          "enumerant" : "ShaderViewportIndexLayerNV",
+          "value" : 5254,
+          "capabilities" : [ "MultiViewport" ],
+          "extensions" : [ "SPV_NV_viewport_array2" ]
+        },
+        {
+          "enumerant" : "ShaderViewportMaskNV",
+          "value" : 5255,
+          "capabilities" : [ "ShaderViewportIndexLayerNV" ],
+          "extensions" : [ "SPV_NV_viewport_array2" ]
+        },
+        {
+          "enumerant" : "ShaderStereoViewNV",
+          "value" : 5259,
+          "capabilities" : [ "ShaderViewportMaskNV" ],
+          "extensions" : [ "SPV_NV_stereo_view_rendering" ]
+        },
+        {
+          "enumerant" : "PerViewAttributesNV",
+          "value" : 5260,
+          "capabilities" : [ "MultiView" ],
+          "extensions" : [ "SPV_NVX_multiview_per_view_attributes" ]
         }
       ]
     },

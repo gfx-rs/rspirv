@@ -20,7 +20,7 @@ pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
 pub const MINOR_VERSION: u32 = 1;
-pub const REVISION: u32 = 5;
+pub const REVISION: u32 = 6;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
@@ -433,6 +433,10 @@ pub enum Decoration {
     InputAttachmentIndex = 43,
     Alignment = 44,
     MaxByteOffset = 45,
+    OverrideCoverageNV = 5248,
+    PassthroughNV = 5250,
+    ViewportRelativeNV = 5252,
+    SecondaryViewportRelativeNV = 5256,
 }
 
 /// SPIR-V operand kind: [BuiltIn](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_built_in_a_built_in)
@@ -488,6 +492,13 @@ pub enum BuiltIn {
     BaseVertex = 4424,
     BaseInstance = 4425,
     DrawIndex = 4426,
+    DeviceIndex = 4438,
+    ViewIndex = 4440,
+    ViewportMaskNV = 5253,
+    SecondaryPositionNV = 5257,
+    SecondaryViewportMaskNV = 5258,
+    PositionPerViewNV = 5261,
+    ViewportMaskPerViewNV = 5262,
 }
 
 /// SPIR-V operand kind: [Scope](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_scope_a_scope)
@@ -585,6 +596,18 @@ pub enum Capability {
     SubgroupBallotKHR = 4423,
     DrawParameters = 4427,
     SubgroupVoteKHR = 4431,
+    StorageUniformBufferBlock16 = 4433,
+    StorageUniform16 = 4434,
+    StoragePushConstant16 = 4435,
+    StorageInputOutput16 = 4436,
+    DeviceGroup = 4437,
+    MultiView = 4439,
+    SampleMaskOverrideCoverageNV = 5249,
+    GeometryShaderPassthroughNV = 5251,
+    ShaderViewportIndexLayerNV = 5254,
+    ShaderViewportMaskNV = 5255,
+    ShaderStereoViewNV = 5259,
+    PerViewAttributesNV = 5260,
 }
 
 /// SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_instructions_a_instructions) opcodes
