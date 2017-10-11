@@ -14,7 +14,7 @@ name = "rspirv-dis"
 path = "main.rs"
 
 [dependencies]
-clap = "2.20"
+clap = "2.26"
 
 [dependencies.rspirv]
 path="../rspirv"
