@@ -19,6 +19,12 @@ use utils::*;
 static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 #[repr(u32)]\n#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]";
 
+static GLSL_STD_450_SPEC_LINK: &'static str = "\
+https://www.khronos.org/registry/spir-v/specs/1.0/GLSL.std.450.html";
+
+static OPENCL_STD_SPEC_LINK: &'static str = "\
+https://www.khronos.org/registry/spir-v/specs/1.2/OpenCL.ExtendedInstructionSet.100.html";
+
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
@@ -120,6 +126,48 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> String {
                                {attribute}\n\
                                pub enum Op {{\n{opcodes}\n}}\n",
                               link = get_spec_link("instructions"),
+                              attribute = VAULE_ENUM_ATTRIBUTE,
+                              opcodes = opcodes.join("\n")));
+    }
+
+    ret
+}
+
+/// Returns the GLSL.std.450 extended instruction opcodes.
+pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> String {
+    let mut ret = String::new();
+
+    { // Opcodes.
+        // Get the instruction table.
+        let opcodes: Vec<String> = grammar.instructions.iter().map(|inst| {
+            // Omit the "Op" prefix.
+            format!("    {} = {},", inst.opname, inst.opcode)
+        }).collect();
+        ret.push_str(&format!("/// [GLSL.std.450]({link}) extended instruction opcode\n\
+                               {attribute}\n\
+                               pub enum GLOp {{\n{opcodes}\n}}\n",
+                              link = GLSL_STD_450_SPEC_LINK,
+                              attribute = VAULE_ENUM_ATTRIBUTE,
+                              opcodes = opcodes.join("\n")));
+    }
+
+    ret
+}
+
+/// Returns the OpenCL.std extended instruction opcodes.
+pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> String {
+    let mut ret = String::new();
+
+    { // Opcodes.
+        // Get the instruction table.
+        let opcodes: Vec<String> = grammar.instructions.iter().map(|inst| {
+            // Omit the "Op" prefix.
+            format!("    {} = {},", inst.opname, inst.opcode)
+        }).collect();
+        ret.push_str(&format!("/// [OpenCL.std]({link}) extended instruction opcode\n\
+                               {attribute}\n\
+                               pub enum CLOp {{\n{opcodes}\n}}\n",
+                              link = OPENCL_STD_SPEC_LINK,
                               attribute = VAULE_ENUM_ATTRIBUTE,
                               opcodes = opcodes.join("\n")));
     }

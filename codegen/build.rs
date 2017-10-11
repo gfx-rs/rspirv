@@ -85,6 +85,7 @@ fn main() {
     }
 
     let mut contents = String::new();
+
     {
         let path = codegen_src_dir.join("external/spirv.core.grammar.json");
         let filename = path.to_str().unwrap();
@@ -93,11 +94,37 @@ fn main() {
     }
     let grammar: structs::Grammar = serde_json::from_str(&contents).unwrap();
 
+    // For GLSLstd450 extended instruction set.
+    {
+        let path = codegen_src_dir.join(
+            "external/SPIRV-Headers/include/spirv/1.1/extinst.glsl.std.450.grammar.json");
+        let filename = path.to_str().unwrap();
+        let mut file = fs::File::open(filename).unwrap();
+        contents.clear();
+        file.read_to_string(&mut contents).unwrap();
+    }
+    let gl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
+
+    // For OpenCL extended instruction set.
+    {
+        let path = codegen_src_dir.join(
+            "external/SPIRV-Headers/include/spirv/1.1/extinst.opencl.std.100.grammar.json");
+        let filename = path.to_str().unwrap();
+        let mut file = fs::File::open(filename).unwrap();
+        contents.clear();
+        file.read_to_string(&mut contents).unwrap();
+    }
+    let cl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
+
     {
         // Path to the generated SPIR-V header file.
         let path = codegen_src_dir.join("../spirv/spirv.rs");
-        let c = header::gen_spirv_header(&grammar);
-        write!(c, path);
+        let core = header::gen_spirv_header(&grammar);
+        let gl = header::gen_glsl_std_450_opcodes(&gl_grammar);
+        let cl = header::gen_opencl_std_opcodes(&cl_grammar);
+
+        write!(core + "\n" + &gl + "\n" + &cl, path);
+
     }
 
     {
@@ -193,38 +220,17 @@ fn main() {
         fmt_write!(c, path);
     }
 
-    // For GLSLstd450 extended instruction set.
-    {
-        let path = codegen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/1.1/extinst.glsl.std.450.grammar.json");
-        let filename = path.to_str().unwrap();
-        let mut file = fs::File::open(filename).unwrap();
-        contents.clear();
-        file.read_to_string(&mut contents).unwrap();
-    }
-    let grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
-
     {
         // Path to the generated GLSLstd450 extended instruction set header.
         let path = codegen_src_dir.join("../rspirv/grammar/glsl_std_450.rs");
-        let c = table::gen_glsl_std_450_inst_table(&grammar);
+        let c = table::gen_glsl_std_450_inst_table(&gl_grammar);
         write!(c, path);
     }
 
-    // For OpenCL extended instruction set.
-    {
-        let path = codegen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/1.1/extinst.opencl.std.100.grammar.json");
-        let filename = path.to_str().unwrap();
-        let mut file = fs::File::open(filename).unwrap();
-        contents.clear();
-        file.read_to_string(&mut contents).unwrap();
-    }
-    let grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
 
     {
         let path = codegen_src_dir.join("../rspirv/grammar/opencl_std_100.rs");
-        let c = table::gen_opencl_std_100_inst_table(&grammar);
+        let c = table::gen_opencl_std_100_inst_table(&cl_grammar);
         write!(c, path);
     }
 }
