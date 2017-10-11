@@ -33,7 +33,7 @@ code that happens to be owned by Google.
 Documentation
 -------------
 
-The current implementation supports SPIR-V 1.1 (Revision 5).
+The current implementation supports SPIR-V 1.1 (Revision 6).
 
 Multiple crates are published from this project:
 
