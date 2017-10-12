@@ -212,12 +212,12 @@ mod tests {
 
     #[test]
     fn test_disassemble_operand_function_control() {
-        let o = mr::Operand::FunctionControl(spirv::FUNCTION_CONTROL_NONE);
+        let o = mr::Operand::FunctionControl(spirv::FunctionControl::NONE);
         assert_eq!("None", o.disassemble());
-        let o = mr::Operand::FunctionControl(spirv::FUNCTION_CONTROL_INLINE);
+        let o = mr::Operand::FunctionControl(spirv::FunctionControl::INLINE);
         assert_eq!("Inline", o.disassemble());
-        let o = mr::Operand::FunctionControl(spirv::FUNCTION_CONTROL_INLINE |
-                                             spirv::FUNCTION_CONTROL_PURE);
+        let o = mr::Operand::FunctionControl(spirv::FunctionControl::INLINE |
+                                             spirv::FunctionControl::PURE);
         assert_eq!("Inline|Pure", o.disassemble());
         let o = mr::Operand::FunctionControl(spirv::FunctionControl::all());
         assert_eq!("Inline|DontInline|Pure|Const", o.disassemble());
@@ -225,14 +225,14 @@ mod tests {
 
     #[test]
     fn test_disassemble_operand_memory_semantics() {
-        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_NONE);
+        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::NONE);
         assert_eq!("None", o.disassemble());
-        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_RELAXED);
+        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::RELAXED);
         assert_eq!("None", o.disassemble());
-        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_RELEASE);
+        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE);
         assert_eq!("Release", o.disassemble());
-        let o = mr::Operand::MemorySemantics(spirv::MEMORY_SEMANTICS_RELEASE |
-                                             spirv::MEMORY_SEMANTICS_WORKGROUP_MEMORY);
+        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE |
+                                             spirv::MemorySemantics::WORKGROUP_MEMORY);
         assert_eq!("Release|WorkgroupMemory", o.disassemble());
     }
 
@@ -252,8 +252,8 @@ mod tests {
 
         let f = b.begin_function(void,
                                  None,
-                                 (spirv::FUNCTION_CONTROL_DONT_INLINE |
-                                  spirv::FUNCTION_CONTROL_CONST),
+                                 (spirv::FunctionControl::DONT_INLINE |
+                                  spirv::FunctionControl::CONST),
                                  voidfvoid)
                  .unwrap();
         b.begin_basic_block(None).unwrap();
@@ -302,7 +302,7 @@ mod tests {
         let float32 = b.type_float(32);
         let voidfvoid = b.type_function(void, vec![void]);
 
-        assert!(b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).is_ok());
+        assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
         b.begin_basic_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         assert!(b.ext_inst(float32, None, glsl, 6, vec![var]).is_ok());
@@ -339,7 +339,7 @@ mod tests {
         let float32 = b.type_float(32);
         let voidfvoid = b.type_function(void, vec![void]);
 
-        assert!(b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).is_ok());
+        assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
         b.begin_basic_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         assert!(b.ext_inst(float32, None, opencl, 15, vec![var]).is_ok());

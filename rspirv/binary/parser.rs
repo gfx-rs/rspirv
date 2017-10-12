@@ -1077,7 +1077,7 @@ mod tests {
         assert_eq!(None, inst.result_id);
         assert_eq!(vec![mr::Operand::IdRef(1),
                         mr::Operand::IdRef(2),
-                        mr::Operand::MemoryAccess(spirv::MEMORY_ACCESS_VOLATILE)],
+                        mr::Operand::MemoryAccess(spirv::MemoryAccess::VOLATILE)],
                    inst.operands);
     }
     #[test]

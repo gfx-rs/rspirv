@@ -303,11 +303,11 @@ mod tests {
 
     #[test]
     fn test_convert_from_bit_enums() {
-        assert_eq!(mr::Operand::LoopControl(spirv::LOOP_CONTROL_DONT_UNROLL |
-                                            spirv::LOOP_CONTROL_UNROLL),
-                   mr::Operand::from(spirv::LOOP_CONTROL_DONT_UNROLL | spirv::LOOP_CONTROL_UNROLL));
-        assert_eq!(mr::Operand::MemoryAccess(spirv::MEMORY_ACCESS_NONE),
-                   mr::Operand::from(spirv::MEMORY_ACCESS_NONE));
+        assert_eq!(mr::Operand::LoopControl(spirv::LoopControl::DONT_UNROLL |
+                                            spirv::LoopControl::UNROLL),
+                   mr::Operand::from(spirv::LoopControl::DONT_UNROLL | spirv::LoopControl::UNROLL));
+        assert_eq!(mr::Operand::MemoryAccess(spirv::MemoryAccess::NONE),
+                   mr::Operand::from(spirv::MemoryAccess::NONE));
     }
 
     #[test]

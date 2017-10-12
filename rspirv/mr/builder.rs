@@ -77,8 +77,8 @@ type BuildResult<T> = result::Result<T, Error>;
 ///     let voidf = b.type_function(void, vec![void]);
 ///     b.begin_function(void,
 ///                      None,
-///                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
-///                       spirv::FUNCTION_CONTROL_CONST),
+///                      (spirv::FunctionControl::DONT_INLINE |
+///                       spirv::FunctionControl::CONST),
 ///                      voidf)
 ///      .unwrap();
 ///     b.begin_basic_block(None).unwrap();
@@ -798,8 +798,7 @@ mod tests {
         let c0 = b.constant_f32(float, 0.0f32);
         assert_eq!(3, c0);
 
-        let fid = b.begin_function(float, None, spirv::FUNCTION_CONTROL_NONE, f32ff32)
-            .unwrap();
+        let fid = b.begin_function(float, None, spirv::FunctionControl::NONE, f32ff32).unwrap();
         assert_eq!(4, fid);
 
         let epid = b.begin_basic_block(None).unwrap(); // Entry block id
@@ -868,8 +867,7 @@ mod tests {
         let v1 = b.variable(ifp, None, spirv::StorageClass::Input, None);
         assert_eq!(6, v1);
 
-        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid)
-            .unwrap();
+        let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
         assert_eq!(7, f);
         let bb = b.begin_basic_block(None).unwrap();
         assert_eq!(8, bb);
@@ -916,8 +914,7 @@ mod tests {
         let v1 = b.undef(float, None);
         assert_eq!(4, v1);
 
-        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid)
-            .unwrap();
+        let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
         assert_eq!(5, f);
         let bb = b.begin_basic_block(None).unwrap();
         assert_eq!(6, bb);

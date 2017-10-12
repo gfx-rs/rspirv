@@ -75,9 +75,9 @@ The SPIR-V binary module parser is almost feature complete; the only feature
 Usage
 -----
 
-This project uses custom derive, which became available in the stable channel
-since [1.15][rust-1.15]. So to compile with a compiler from the stable channel,
-please make sure that the version is >= 1.15.
+This project uses associated constants, which became available in the stable channel
+since [1.20][rust-1.20]. So to compile with a compiler from the stable channel,
+please make sure that the version is >= 1.20.
 
 Examples
 --------
@@ -99,8 +99,8 @@ fn main() {
     let voidf = b.type_function(void, vec![void]);
     b.begin_function(void,
                      None,
-                     (spirv::FUNCTION_CONTROL_DONT_INLINE |
-                      spirv::FUNCTION_CONTROL_CONST),
+                     (spirv::FunctionControl::DONT_INLINE |
+                      spirv::FunctionControl::CONST),
                      voidf)
      .unwrap();
     b.begin_basic_block(None).unwrap();
@@ -165,4 +165,4 @@ This project is initialized and mainly developed by Lei Zhang
 [doc-parser]: https://docs.rs/rspirv/*/rspirv/binary/struct.Parser.html
 [doc-grammar]: https://docs.rs/rspirv/*/rspirv/grammar/index.html
 [doc-binary]: https://docs.rs/rspirv/*/rspirv/binary/index.html
-[rust-1.15]: https://blog.rust-lang.org/2017/02/02/Rust-1.15.html
+[rust-1.20]: https://blog.rust-lang.org/2017/08/31/Rust-1.20.html

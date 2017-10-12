@@ -59,8 +59,8 @@
 //!     let voidf = b.type_function(void, vec![void]);
 //!     b.begin_function(void,
 //!                      None,
-//!                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
-//!                       spirv::FUNCTION_CONTROL_CONST),
+//!                      (spirv::FunctionControl::DONT_INLINE |
+//!                       spirv::FunctionControl::CONST),
 //!                      voidf)
 //!      .unwrap();
 //!     b.begin_basic_block(None).unwrap();
