@@ -32,7 +32,7 @@ First add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-rspirv = "0.4"
+rspirv = "0.5"
 ```
 
 Then add to your crate root:
