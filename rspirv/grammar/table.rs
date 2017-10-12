@@ -370,6 +370,8 @@ static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[
     inst!(NamedBarrierInitialize, [NamedBarrier], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
     inst!(MemoryNamedBarrier, [NamedBarrier], [(IdRef, One), (IdScope, One), (IdMemorySemantics, One)]),
     inst!(ModuleProcessed, [], [(LiteralString, One)]),
+    inst!(ExecutionModeId, [], [(IdRef, One), (ExecutionMode, One)]),
+    inst!(DecorateId, [], [(IdRef, One), (Decoration, One)]),
     inst!(SubgroupBallotKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
     inst!(SubgroupFirstInvocationKHR, [SubgroupBallotKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),
     inst!(SubgroupAllKHR, [SubgroupVoteKHR], [(IdResultType, One), (IdResult, One), (IdRef, One)]),

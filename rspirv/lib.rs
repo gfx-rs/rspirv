@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![doc(html_root_url = "https://docs.rs/rspirv/0.4/")]
+#![doc(html_root_url = "https://docs.rs/rspirv/0.5/")]
 
 //! Library APIs for SPIR-V module processing functionalities.
 //!
@@ -81,7 +81,7 @@
 //!     // Disassembling
 //!     assert_eq!(module.disassemble(),
 //!                "; SPIR-V\n\
-//!                 ; Version: 1.1\n\
+//!                 ; Version: 1.2\n\
 //!                 ; Generator: rspirv\n\
 //!                 ; Bound: 5\n\
 //!                 OpMemoryModel Logical GLSL450\n\

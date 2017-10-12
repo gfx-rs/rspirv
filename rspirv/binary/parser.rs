@@ -226,7 +226,7 @@ pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut Consumer) -> Resul
 ///     }
 ///     let module = loader.module();
 ///
-///     assert_eq!((1, 1), module.header.unwrap().version());
+///     assert_eq!((1, 2), module.header.unwrap().version());
 ///     let m = module.memory_model.as_ref().unwrap();
 ///     assert_eq!(Operand::AddressingModel(AddressingModel::Logical),
 ///                m.operands[0]);

@@ -268,7 +268,7 @@ mod tests {
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
-                    ; Version: 1.1\n\
+                    ; Version: 1.2\n\
                     ; Generator: rspirv\n\
                     ; Bound: 8\n\
                     OpCapability Shader\n\
@@ -311,7 +311,7 @@ mod tests {
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
-                    ; Version: 1.1\n\
+                    ; Version: 1.2\n\
                     ; Generator: rspirv\n\
                     ; Bound: 9\n\
                     OpCapability Shader\n\
@@ -348,7 +348,7 @@ mod tests {
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
-                    ; Version: 1.1\n\
+                    ; Version: 1.2\n\
                     ; Generator: rspirv\n\
                     ; Bound: 9\n\
                     %1 = OpExtInstImport \"OpenCL.std\"\n\

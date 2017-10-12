@@ -26,8 +26,8 @@
   ],
   "magic_number" : "0x07230203",
   "major_version" : 1,
-  "minor_version" : 1,
-  "revision" : 8,
+  "minor_version" : 2,
+  "revision" : 2,
   "instructions" : [
     {
       "opname" : "OpNop",
@@ -3183,6 +3183,24 @@
       ]
     },
     {
+      "class": "ModeSetting",
+      "opname" : "OpExecutionModeId",
+      "opcode" : 331,
+      "operands" : [
+        { "kind" : "IdRef",           "name" : "'Entry Point'" },
+        { "kind" : "ExecutionMode",   "name" : "'Mode'" }
+      ]
+    },
+    {
+      "class": "Annotation",
+      "opname" : "OpDecorateId",
+      "opcode" : 332,
+      "operands" : [
+        { "kind" : "IdRef",      "name" : "'Target'" },
+        { "kind" : "Decoration" }
+      ]
+    },
+    {
       "opname" : "OpSubgroupBallotKHR",
       "opcode" : 4421,
       "operands" : [
@@ -3952,6 +3970,31 @@
           "capabilities" : [ "SubgroupDispatch" ],
           "parameters" : [
             { "kind" : "LiteralInteger", "name" : "'Subgroups Per Workgroup'" }
+          ]
+        },
+        {
+          "enumerant" : "SubgroupsPerWorkgroupId",
+          "value" : 37,
+          "capabilities" : [ "SubgroupDispatch" ],
+          "parameters" : [
+            { "kind" : "IdRef", "name" : "'Subgroups Per Workgroup'" }
+          ]
+        },
+        {
+          "enumerant" : "LocalSizeId",
+          "value" : 38,
+          "parameters" : [
+            { "kind" : "IdRef", "name" : "'x size'" },
+            { "kind" : "IdRef", "name" : "'y size'" },
+            { "kind" : "IdRef", "name" : "'z size'" }
+          ]
+        },
+        {
+          "enumerant" : "LocalSizeHintId",
+          "value" : 39,
+          "capabilities" : [ "Kernel" ],
+          "parameters" : [
+            { "kind" : "IdRef", "name" : "'Local Size Hint'" }
           ]
         },
         {
@@ -4938,6 +4981,22 @@
           "capabilities" : [ "Addresses" ],
           "parameters" : [
             { "kind" : "LiteralInteger", "name" : "'Max Byte Offset'" }
+          ]
+        },
+        {
+          "enumerant" : "AlignmentId",
+          "value" : 46,
+          "capabilities" : [ "Kernel" ],
+          "parameters" : [
+            { "kind" : "IdRef", "name" : "'Alignment'" }
+          ]
+        },
+        {
+          "enumerant" : "MaxByteOffsetId",
+          "value" : 47,
+          "capabilities" : [ "Addresses" ],
+          "parameters" : [
+            { "kind" : "IdRef", "name" : "'Max Byte Offset'" }
           ]
         },
         {

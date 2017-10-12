@@ -64,6 +64,8 @@ pub enum Decoration {
     InputAttachmentIndex(u32),
     Alignment(u32),
     MaxByteOffset(u32),
+    AlignmentId(spirv::Word),
+    MaxByteOffsetId(spirv::Word),
     ExplicitInterpAMD,
     OverrideCoverageNV,
     PassthroughNV,

@@ -49,4 +49,11 @@ impl Builder {
         };
         self.module.annotations.push(inst);
     }
+
+    /// Appends an OpDecorateId instruction.
+    pub fn decorate_id<T: AsRef<[mr::Operand]>>(&mut self, target: spirv::Word, decoration: spirv::Decoration, additional_params: T) {
+        let mut inst = mr::Instruction::new(spirv::Op::DecorateId, None, None, vec![mr::Operand::IdRef(target), mr::Operand::Decoration(decoration)]);
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        self.module.annotations.push(inst);
+    }
 }

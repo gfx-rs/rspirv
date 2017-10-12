@@ -150,6 +150,9 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::ExecutionMode::VecTypeHint => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::ExecutionMode::SubgroupSize => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::ExecutionMode::SubgroupsPerWorkgroup => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::ExecutionMode::SubgroupsPerWorkgroupId => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
+            spirv::ExecutionMode::LocalSizeId => vec![mr::Operand::IdRef(try_decode!(self.decoder.id())), mr::Operand::IdRef(try_decode!(self.decoder.id())), mr::Operand::IdRef(try_decode!(self.decoder.id()))],
+            spirv::ExecutionMode::LocalSizeHintId => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
             _ => vec![]
         })
     }
@@ -176,6 +179,8 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::InputAttachmentIndex => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::Decoration::Alignment => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             spirv::Decoration::MaxByteOffset => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::AlignmentId => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
+            spirv::Decoration::MaxByteOffsetId => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
             spirv::Decoration::SecondaryViewportRelativeNV => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
             _ => vec![]
         })

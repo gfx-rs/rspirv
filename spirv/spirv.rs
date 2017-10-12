@@ -19,8 +19,8 @@
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
-pub const MINOR_VERSION: u32 = 1;
-pub const REVISION: u32 = 8;
+pub const MINOR_VERSION: u32 = 2;
+pub const REVISION: u32 = 2;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
@@ -198,6 +198,9 @@ pub enum ExecutionMode {
     Finalizer = 34,
     SubgroupSize = 35,
     SubgroupsPerWorkgroup = 36,
+    SubgroupsPerWorkgroupId = 37,
+    LocalSizeId = 38,
+    LocalSizeHintId = 39,
     PostDepthCoverage = 4446,
     StencilRefReplacingEXT = 5027,
 }
@@ -437,6 +440,8 @@ pub enum Decoration {
     InputAttachmentIndex = 43,
     Alignment = 44,
     MaxByteOffset = 45,
+    AlignmentId = 46,
+    MaxByteOffsetId = 47,
     ExplicitInterpAMD = 4999,
     OverrideCoverageNV = 5248,
     PassthroughNV = 5250,
@@ -945,6 +950,8 @@ pub enum Op {
     NamedBarrierInitialize = 328,
     MemoryNamedBarrier = 329,
     ModuleProcessed = 330,
+    ExecutionModeId = 331,
+    DecorateId = 332,
     SubgroupBallotKHR = 4421,
     SubgroupFirstInvocationKHR = 4422,
     SubgroupAllKHR = 4428,
