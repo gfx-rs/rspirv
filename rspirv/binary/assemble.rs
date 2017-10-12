@@ -169,16 +169,16 @@ mod tests {
 
     #[test]
     fn test_assemble_operand_bitmask() {
-        let v = spirv::FUNCTION_CONTROL_DONT_INLINE;
+        let v = spirv::FunctionControl::DONT_INLINE;
         assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
-        let v = spirv::FUNCTION_CONTROL_PURE;
+        let v = spirv::FunctionControl::PURE;
         assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
-        let v = spirv::FUNCTION_CONTROL_CONST;
+        let v = spirv::FunctionControl::CONST;
         assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
-        let v = spirv::FUNCTION_CONTROL_DONT_INLINE | spirv::FUNCTION_CONTROL_CONST;
+        let v = spirv::FunctionControl::DONT_INLINE | spirv::FunctionControl::CONST;
         assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
-        let v = spirv::FUNCTION_CONTROL_DONT_INLINE | spirv::FUNCTION_CONTROL_PURE |
-                spirv::FUNCTION_CONTROL_CONST;
+        let v = spirv::FunctionControl::DONT_INLINE | spirv::FunctionControl::PURE |
+                spirv::FunctionControl::CONST;
         assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
     }
 
@@ -237,7 +237,7 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         let void = b.type_void();
         let voidfvoid = b.type_function(void, &vec![void]);
-        b.begin_function(void, None, spirv::FUNCTION_CONTROL_CONST, voidfvoid).unwrap();
+        b.begin_function(void, None, spirv::FunctionControl::CONST, voidfvoid).unwrap();
         b.begin_basic_block(None).unwrap();
         b.ret().unwrap();
         b.end_function().unwrap();
@@ -259,7 +259,7 @@ mod tests {
                         wc_op(5, spirv::Op::Function),
                         1,
                         3,
-                        spirv::FUNCTION_CONTROL_CONST.bits(),
+                        spirv::FunctionControl::CONST.bits(),
                         2,
                         wc_op(2, spirv::Op::Label),
                         4,
@@ -275,7 +275,7 @@ mod tests {
         let float = b.type_float(32);
         let ptr = b.type_pointer(None, spirv::StorageClass::Function, float);
         let fff = b.type_function(float, &vec![float, float]);
-        b.begin_function(float, None, spirv::FUNCTION_CONTROL_CONST, fff).unwrap();
+        b.begin_function(float, None, spirv::FunctionControl::CONST, fff).unwrap();
         let param1 = b.function_parameter(ptr).unwrap();
         let param2 = b.function_parameter(ptr).unwrap();
         b.begin_basic_block(None).unwrap();
@@ -310,7 +310,7 @@ mod tests {
                         wc_op(5, spirv::Op::Function),
                         1, // result type id
                         4, // result id
-                        spirv::FUNCTION_CONTROL_CONST.bits(),
+                        spirv::FunctionControl::CONST.bits(),
                         3, // function type id
                         wc_op(3, spirv::Op::FunctionParameter),
                         2, // result type id
