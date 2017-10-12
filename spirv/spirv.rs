@@ -20,7 +20,7 @@ pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
 pub const MINOR_VERSION: u32 = 1;
-pub const REVISION: u32 = 6;
+pub const REVISION: u32 = 7;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
@@ -125,6 +125,7 @@ pub enum SourceLanguage {
     GLSL = 2,
     OpenCL_C = 3,
     OpenCL_CPP = 4,
+    HLSL = 5,
 }
 
 /// SPIR-V operand kind: [ExecutionModel](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_execution_model_a_execution_model)
@@ -197,6 +198,7 @@ pub enum ExecutionMode {
     Finalizer = 34,
     SubgroupSize = 35,
     SubgroupsPerWorkgroup = 36,
+    PostDepthCoverage = 4446,
 }
 
 /// SPIR-V operand kind: [StorageClass](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_storage_class_a_storage_class)
@@ -215,6 +217,7 @@ pub enum StorageClass {
     PushConstant = 9,
     AtomicCounter = 10,
     Image = 11,
+    StorageBuffer = 12,
 }
 
 /// SPIR-V operand kind: [Dim](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_dim_a_dim)
@@ -433,6 +436,7 @@ pub enum Decoration {
     InputAttachmentIndex = 43,
     Alignment = 44,
     MaxByteOffset = 45,
+    ExplicitInterpAMD = 4999,
     OverrideCoverageNV = 5248,
     PassthroughNV = 5250,
     ViewportRelativeNV = 5252,
@@ -494,6 +498,13 @@ pub enum BuiltIn {
     DrawIndex = 4426,
     DeviceIndex = 4438,
     ViewIndex = 4440,
+    BaryCoordNoPerspAMD = 4992,
+    BaryCoordNoPerspCentroidAMD = 4993,
+    BaryCoordNoPerspSampleAMD = 4994,
+    BaryCoordSmoothAMD = 4995,
+    BaryCoordSmoothCentroidAMD = 4996,
+    BaryCoordSmoothSampleAMD = 4997,
+    BaryCoordPullModelAMD = 4998,
     ViewportMaskNV = 5253,
     SecondaryPositionNV = 5257,
     SecondaryViewportMaskNV = 5258,
@@ -596,12 +607,17 @@ pub enum Capability {
     SubgroupBallotKHR = 4423,
     DrawParameters = 4427,
     SubgroupVoteKHR = 4431,
-    StorageUniformBufferBlock16 = 4433,
-    StorageUniform16 = 4434,
+    StorageBuffer16BitAccess = 4433,
+    UniformAndStorageBuffer16BitAccess = 4434,
     StoragePushConstant16 = 4435,
     StorageInputOutput16 = 4436,
     DeviceGroup = 4437,
     MultiView = 4439,
+    VariablePointersStorageBuffer = 4441,
+    VariablePointers = 4442,
+    AtomicStorageOps = 4445,
+    SampleMaskPostDepthCoverage = 4447,
+    ImageGatherBiasLodAMD = 5009,
     SampleMaskOverrideCoverageNV = 5249,
     GeometryShaderPassthroughNV = 5251,
     ShaderViewportIndexLayerNV = 5254,
@@ -610,6 +626,12 @@ pub enum Capability {
     PerViewAttributesNV = 5260,
 }
 
+#[allow(non_upper_case_globals)]
+impl Capability {
+    pub const StorageUniformBufferBlock16: Capability = Capability::StorageBuffer16BitAccess;
+    pub const StorageUniform16: Capability = Capability::UniformAndStorageBuffer16BitAccess;
+    pub const ShaderViewportIndexLayerEXT: Capability = Capability::ShaderViewportIndexLayerNV;
+}
 /// SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_instructions_a_instructions) opcodes
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
@@ -924,6 +946,14 @@ pub enum Op {
     SubgroupAnyKHR = 4429,
     SubgroupAllEqualKHR = 4430,
     SubgroupReadInvocationKHR = 4432,
+    GroupIAddNonUniformAMD = 5000,
+    GroupFAddNonUniformAMD = 5001,
+    GroupFMinNonUniformAMD = 5002,
+    GroupUMinNonUniformAMD = 5003,
+    GroupSMinNonUniformAMD = 5004,
+    GroupFMaxNonUniformAMD = 5005,
+    GroupUMaxNonUniformAMD = 5006,
+    GroupSMaxNonUniformAMD = 5007,
 }
 
 /// [GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/1.0/GLSL.std.450.html) extended instruction opcode

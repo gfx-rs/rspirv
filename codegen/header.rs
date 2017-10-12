@@ -61,21 +61,44 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
 }
 
 fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> String {
-    let elements: Vec<String> = grammar.enumerants.iter().map(|enumerant| {
-        // Special case for Dim. Its enumerants can start with a digit.
-        // So prefix with the kind name here.
-        if grammar.kind == "Dim" {
-            format!("    Dim{} = {},", enumerant.symbol, enumerant.value.number)
+    use std::collections::BTreeMap;
+
+    // We can have more than one enumerants mapping to the same discriminator.
+    // Use associated constants for these aliases.
+    let mut seen_discriminator = BTreeMap::new();
+    let mut enumerants = vec![];
+    let mut aliases = vec![];
+    for e in &grammar.enumerants {
+        if seen_discriminator.contains_key(&e.value.number) {
+            aliases.push(format!("    pub const {}: {} = {}::{};",
+                                 e.symbol, grammar.kind, grammar.kind,
+                                 seen_discriminator.get(&e.value.number).unwrap()));
         } else {
-            format!("    {} = {},", enumerant.symbol, enumerant.value.number)
+            seen_discriminator.insert(e.value.number, &e.symbol);
+            enumerants.push(
+                if grammar.kind == "Dim" {
+                    // Special case for Dim. Its enumerants can start with a digit.
+                    // So prefix with the kind name here.
+                    format!("    Dim{} = {},", e.symbol, e.value.number)
+                } else {
+                    format!("    {} = {},", e.symbol, e.value.number)
+                });
         }
-    }).collect();
-    format!("{doc}\n{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n",
+    }
+
+    let mut associated_consts = String::new();
+    if !aliases.is_empty() {
+        associated_consts = format!("\n#[allow(non_upper_case_globals)]\nimpl {} {{\n{}\n}}",
+                                    grammar.kind, aliases.join("\n"));
+    }
+
+    format!("{doc}\n{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n{aliases}",
             doc = format!("/// SPIR-V operand kind: {}",
                           get_spec_link(&grammar.kind)),
             attribute = VAULE_ENUM_ATTRIBUTE,
             kind = grammar.kind,
-            enumerants = elements.join("\n"))
+            aliases = associated_consts,
+            enumerants = enumerants.join("\n"))
 }
 
 /// Returns the code defining the enum for an operand kind by parsing

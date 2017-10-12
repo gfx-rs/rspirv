@@ -64,6 +64,7 @@ pub enum Decoration {
     InputAttachmentIndex(u32),
     Alignment(u32),
     MaxByteOffset(u32),
+    ExplicitInterpAMD,
     OverrideCoverageNV,
     PassthroughNV,
     ViewportRelativeNV,

@@ -3399,4 +3399,116 @@ impl Builder {
         self.basic_block.as_mut().unwrap().instructions.push(inst);
         Ok(id)
     }
+
+    /// Appends an OpGroupIAddNonUniformAMD instruction to the current basic block.
+    pub fn group_iadd_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupIAddNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpGroupFAddNonUniformAMD instruction to the current basic block.
+    pub fn group_fadd_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupFAddNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpGroupFMinNonUniformAMD instruction to the current basic block.
+    pub fn group_fmin_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupFMinNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpGroupUMinNonUniformAMD instruction to the current basic block.
+    pub fn group_umin_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupUMinNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpGroupSMinNonUniformAMD instruction to the current basic block.
+    pub fn group_smin_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupSMinNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpGroupFMaxNonUniformAMD instruction to the current basic block.
+    pub fn group_fmax_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupFMaxNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpGroupUMaxNonUniformAMD instruction to the current basic block.
+    pub fn group_umax_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupUMaxNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpGroupSMaxNonUniformAMD instruction to the current basic block.
+    pub fn group_smax_non_uniform_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, x: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupSMaxNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
 }
