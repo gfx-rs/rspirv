@@ -30,7 +30,7 @@ extern crate spirv_headers;
 Examples
 --------
 
-Please see the [documentation][doc-headers] and project'sx
+Please see the [documentation][doc-headers] and project's
 [README][project-readme] for examples.
 
 [img-crate-headers]: https://img.shields.io/crates/v/spirv_headers.svg

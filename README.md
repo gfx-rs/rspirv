@@ -12,7 +12,7 @@ It aims to provide:
 
 rspirv defines a common SPIR-V [data representation][doc-mr] (MR) as the
 medium for various purposes. rspirv also provides a [builder][doc-builder] to
-build the MR iteractively and a [parser][doc-parser] to parse a given SPIR-V
+build the MR interactively and a [parser][doc-parser] to parse a given SPIR-V
 binary module into its MR. A higher level structured representation is currently
 under developing.
 
@@ -57,13 +57,13 @@ Please see the links to docs.rs for detailed documentation.
 Status
 ------
 
-I plan to implement serveral functionalities:
+I plan to implement several functionalities:
 
 - [x] SPIR-V [data representation][doc-mr] (MR)
 - [x] SPIR-V module [builder][doc-builder]
 - [ ] SPIR-V module assembler
 - [x] SPIR-V binary module [parser][doc-parser]
-- [x] SPIR-V binary module disassemebler
+- [x] SPIR-V binary module disassembler
 - [ ] HLSL/GLSL to SPIR-V frontend (maybe)
 - [ ] SPIR-V MR to LLVM IR transformation (maybe)
 
