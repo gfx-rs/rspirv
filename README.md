@@ -33,7 +33,7 @@ code that happens to be owned by Google.
 Documentation
 -------------
 
-The current implementation supports SPIR-V 1.1 (Revision 6).
+The current implementation supports SPIR-V 1.2 (Revision 2).
 
 Multiple crates are published from this project:
 
@@ -121,7 +121,7 @@ fn main() {
     // Disassembling
     assert_eq!(module.disassemble(),
                "; SPIR-V\n\
-                ; Version: 1.1\n\
+                ; Version: 1.2\n\
                 ; Generator: rspirv\n\
                 ; Bound: 5\n\
                 OpMemoryModel Logical GLSL450\n\

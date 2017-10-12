@@ -36,7 +36,7 @@ fn get_spec_link(kind: &str) -> String {
     format!("[{text}]({link})",
             text = kind,
             link = format!("https://www.khronos.org/registry/spir-v/\
-                            specs/1.1/SPIRV.html#_a_id_{}_a_{}",
+                            specs/1.2/SPIRV.html#_a_id_{}_a_{}",
                            symbol, symbol))
 }
 
