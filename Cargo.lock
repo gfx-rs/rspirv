@@ -1,6 +1,6 @@
 [root]
 name = "spirv_headers"
-version = "1.1.6"
+version = "1.1.7"
 dependencies = [
  "bitflags 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -329,7 +329,7 @@ dependencies = [
  "clippy 0.0.165 (registry+https://github.com/rust-lang/crates.io-index)",
  "derive_more 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)",
- "spirv_headers 1.1.6",
+ "spirv_headers 1.1.7",
 ]
 
 [[package]]
