@@ -74,7 +74,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///     let mut b = rspirv::mr::Builder::new();
 ///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
 ///     let void = b.type_void();
-///     let voidf = b.type_function(void, &vec![void]);
+///     let voidf = b.type_function(void, vec![void]);
 ///     b.begin_function(void,
 ///                      None,
 ///                      (spirv::FUNCTION_CONTROL_DONT_INLINE |
@@ -137,12 +137,13 @@ impl Builder {
     /// If `function_id` is `Some(val)`, then `val` will be used as the result
     /// id of the function under construction; otherwise, an unused result id
     /// will be automatically assigned.
-    pub fn begin_function(&mut self,
-                          return_type: spirv::Word,
-                          function_id: Option<spirv::Word>,
-                          control: spirv::FunctionControl,
-                          function_type: spirv::Word)
-                          -> BuildResult<spirv::Word> {
+    pub fn begin_function(
+        &mut self,
+        return_type: spirv::Word,
+        function_id: Option<spirv::Word>,
+        control: spirv::FunctionControl,
+        function_type: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
         if self.function.is_some() {
             return Err(Error::NestedFunction);
         }
@@ -153,11 +154,15 @@ impl Builder {
         };
 
         let mut f = mr::Function::new();
-        f.def = Some(mr::Instruction::new(spirv::Op::Function,
-                                          Some(return_type),
-                                          Some(id),
-                                          vec![mr::Operand::FunctionControl(control),
-                                               mr::Operand::IdRef(function_type)]));
+        f.def = Some(mr::Instruction::new(
+            spirv::Op::Function,
+            Some(return_type),
+            Some(id),
+            vec![
+                mr::Operand::FunctionControl(control),
+                mr::Operand::IdRef(function_type),
+            ],
+        ));
         self.function = Some(f);
         Ok(id)
     }
@@ -169,7 +174,12 @@ impl Builder {
         }
 
         let mut f = self.function.take().unwrap();
-        f.end = Some(mr::Instruction::new(spirv::Op::FunctionEnd, None, None, vec![]));
+        f.end = Some(mr::Instruction::new(
+            spirv::Op::FunctionEnd,
+            None,
+            None,
+            vec![],
+        ));
         Ok(self.module.functions.push(f))
     }
 
@@ -179,10 +189,12 @@ impl Builder {
             return Err(Error::DetachedFunctionParameter);
         }
         let id = self.id();
-        let inst = mr::Instruction::new(spirv::Op::FunctionParameter,
-                                        Some(result_type),
-                                        Some(id),
-                                        vec![]);
+        let inst = mr::Instruction::new(
+            spirv::Op::FunctionParameter,
+            Some(result_type),
+            Some(id),
+            vec![],
+        );
         self.function.as_mut().unwrap().parameters.push(inst);
         Ok(id)
     }
@@ -206,7 +218,12 @@ impl Builder {
         };
 
         let mut bb = mr::BasicBlock::new();
-        bb.label = Some(mr::Instruction::new(spirv::Op::Label, None, Some(id), vec![]));
+        bb.label = Some(mr::Instruction::new(
+            spirv::Op::Label,
+            None,
+            Some(id),
+            vec![],
+        ));
 
         self.basic_block = Some(bb);
         Ok(id)
@@ -218,60 +235,78 @@ impl Builder {
         }
 
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(self.function.as_mut().unwrap().basic_blocks.push(self.basic_block.take().unwrap()))
+        Ok(self.function.as_mut().unwrap().basic_blocks.push(
+            self.basic_block.take().unwrap(),
+        ))
     }
 
     /// Appends an OpCapability instruction.
     pub fn capability(&mut self, capability: spirv::Capability) {
-        let inst = mr::Instruction::new(spirv::Op::Capability,
-                                        None,
-                                        None,
-                                        vec![mr::Operand::Capability(capability)]);
+        let inst = mr::Instruction::new(
+            spirv::Op::Capability,
+            None,
+            None,
+            vec![mr::Operand::Capability(capability)],
+        );
         self.module.capabilities.push(inst);
     }
 
     /// Appends an OpExtension instruction.
     pub fn extension<T: Into<String>>(&mut self, extension: T) {
-        let inst = mr::Instruction::new(spirv::Op::Extension,
-                                        None,
-                                        None,
-                                        vec![mr::Operand::LiteralString(extension.into())]);
+        let inst = mr::Instruction::new(
+            spirv::Op::Extension,
+            None,
+            None,
+            vec![mr::Operand::LiteralString(extension.into())],
+        );
         self.module.extensions.push(inst);
     }
 
     /// Appends an OpExtInstImport instruction and returns the result id.
     pub fn ext_inst_import<T: Into<String>>(&mut self, extended_inst_set: T) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(spirv::Op::ExtInstImport,
-                                        None,
-                                        Some(id),
-                                        vec![mr::Operand::LiteralString(extended_inst_set.into())]);
+        let inst = mr::Instruction::new(
+            spirv::Op::ExtInstImport,
+            None,
+            Some(id),
+            vec![mr::Operand::LiteralString(extended_inst_set.into())],
+        );
         self.module.ext_inst_imports.push(inst);
         id
     }
 
     /// Appends an OpMemoryModel instruction.
-    pub fn memory_model(&mut self,
-                        addressing_model: spirv::AddressingModel,
-                        memory_model: spirv::MemoryModel) {
-        let inst = mr::Instruction::new(spirv::Op::MemoryModel,
-                                        None,
-                                        None,
-                                        vec![mr::Operand::AddressingModel(addressing_model),
-                                             mr::Operand::MemoryModel(memory_model)]);
+    pub fn memory_model(
+        &mut self,
+        addressing_model: spirv::AddressingModel,
+        memory_model: spirv::MemoryModel,
+    ) {
+        let inst = mr::Instruction::new(
+            spirv::Op::MemoryModel,
+            None,
+            None,
+            vec![
+                mr::Operand::AddressingModel(addressing_model),
+                mr::Operand::MemoryModel(memory_model),
+            ],
+        );
         self.module.memory_model = Some(inst);
     }
 
     /// Appends an OpEntryPoint instruction.
-    pub fn entry_point<T: Into<String>>(&mut self,
-                                        execution_model: spirv::ExecutionModel,
-                                        entry_point: spirv::Word,
-                                        name: T,
-                                        interface: &[spirv::Word]) {
-        let mut operands = vec![mr::Operand::ExecutionModel(execution_model),
-                                mr::Operand::IdRef(entry_point),
-                                mr::Operand::LiteralString(name.into())];
-        for v in interface {
+    pub fn entry_point<T: Into<String>, U: AsRef<[spirv::Word]>>(
+        &mut self,
+        execution_model: spirv::ExecutionModel,
+        entry_point: spirv::Word,
+        name: T,
+        interface: U,
+    ) {
+        let mut operands = vec![
+            mr::Operand::ExecutionModel(execution_model),
+            mr::Operand::IdRef(entry_point),
+            mr::Operand::LiteralString(name.into()),
+        ];
+        for v in interface.as_ref() {
             operands.push(mr::Operand::IdRef(*v));
         }
 
@@ -280,13 +315,17 @@ impl Builder {
     }
 
     /// Appends an OpExecutionMode instruction.
-    pub fn execution_mode(&mut self,
-                          entry_point: spirv::Word,
-                          execution_mode: spirv::ExecutionMode,
-                          params: &[u32]) {
-        let mut operands = vec![mr::Operand::IdRef(entry_point),
-                                mr::Operand::ExecutionMode(execution_mode)];
-        for v in params {
+    pub fn execution_mode<T: AsRef<[u32]>>(
+        &mut self,
+        entry_point: spirv::Word,
+        execution_mode: spirv::ExecutionMode,
+        params: T,
+    ) {
+        let mut operands = vec![
+            mr::Operand::IdRef(entry_point),
+            mr::Operand::ExecutionMode(execution_mode),
+        ];
+        for v in params.as_ref() {
             operands.push(mr::Operand::LiteralInt32(*v));
         }
 
@@ -305,18 +344,23 @@ impl Builder {
     /// Appends an OpDecorationGroup instruction and returns the result id.
     pub fn decoration_group(&mut self) -> spirv::Word {
         let id = self.id();
-        self.module
-            .annotations
-            .push(mr::Instruction::new(spirv::Op::DecorationGroup, None, Some(id), vec![]));
+        self.module.annotations.push(mr::Instruction::new(
+            spirv::Op::DecorationGroup,
+            None,
+            Some(id),
+            vec![],
+        ));
         id
     }
 
     pub fn string<T: Into<String>>(&mut self, s: T) -> spirv::Word {
         let id = self.id();
-        self.module.debugs.push(mr::Instruction::new(spirv::Op::String,
-                                                     None,
-                                                     Some(id),
-                                                     vec![mr::Operand::LiteralString(s.into())]));
+        self.module.debugs.push(mr::Instruction::new(
+            spirv::Op::String,
+            None,
+            Some(id),
+            vec![mr::Operand::LiteralString(s.into())],
+        ));
         id
     }
 
@@ -331,47 +375,54 @@ impl Builder {
 
 impl Builder {
     /// Appends an OpTypeForwardPointer instruction.
-    pub fn type_forward_pointer(&mut self,
-                                pointer_type: spirv::Word,
-                                storage_class: spirv::StorageClass) {
-        self.module
-            .types_global_values
-            .push(mr::Instruction::new(spirv::Op::TypeForwardPointer,
-                                       None,
-                                       None,
-                                       vec![mr::Operand::IdRef(pointer_type),
-                                            mr::Operand::StorageClass(storage_class)]));
+    pub fn type_forward_pointer(
+        &mut self,
+        pointer_type: spirv::Word,
+        storage_class: spirv::StorageClass,
+    ) {
+        self.module.types_global_values.push(mr::Instruction::new(
+            spirv::Op::TypeForwardPointer,
+            None,
+            None,
+            vec![
+                mr::Operand::IdRef(pointer_type),
+                mr::Operand::StorageClass(storage_class),
+            ],
+        ));
     }
 
     /// Appends an OpTypePointer instruction and returns the result id.
-    pub fn type_pointer(&mut self,
-                        result_id: Option<spirv::Word>,
-                        storage_class: spirv::StorageClass,
-                        pointee_type: spirv::Word)
-                        -> spirv::Word {
+    pub fn type_pointer(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        storage_class: spirv::StorageClass,
+        pointee_type: spirv::Word,
+    ) -> spirv::Word {
         let id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        self.module
-            .types_global_values
-            .push(mr::Instruction::new(spirv::Op::TypePointer,
-                                       None,
-                                       Some(id),
-                                       vec![mr::Operand::StorageClass(storage_class),
-                                            mr::Operand::IdRef(pointee_type)]));
+        self.module.types_global_values.push(mr::Instruction::new(
+            spirv::Op::TypePointer,
+            None,
+            Some(id),
+            vec![
+                mr::Operand::StorageClass(storage_class),
+                mr::Operand::IdRef(pointee_type),
+            ],
+        ));
         id
     }
 
     /// Appends an OpTypeOpaque instruction and returns the result id.
     pub fn type_opaque<T: Into<String>>(&mut self, type_name: T) -> spirv::Word {
         let id = self.id();
-        self.module
-            .types_global_values
-            .push(mr::Instruction::new(spirv::Op::TypeOpaque,
-                                       None,
-                                       Some(id),
-                                       vec![mr::Operand::LiteralString(type_name.into())]));
+        self.module.types_global_values.push(mr::Instruction::new(
+            spirv::Op::TypeOpaque,
+            None,
+            Some(id),
+            vec![mr::Operand::LiteralString(type_name.into())],
+        ));
         id
     }
 
@@ -379,10 +430,12 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(spirv::Op::Constant,
-                                        Some(result_type),
-                                        Some(id),
-                                        vec![mr::Operand::LiteralFloat32(value)]);
+        let inst = mr::Instruction::new(
+            spirv::Op::Constant,
+            Some(result_type),
+            Some(id),
+            vec![mr::Operand::LiteralFloat32(value)],
+        );
         self.module.types_global_values.push(inst);
         id
     }
@@ -391,10 +444,12 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(spirv::Op::Constant,
-                                        Some(result_type),
-                                        Some(id),
-                                        vec![mr::Operand::LiteralInt32(value)]);
+        let inst = mr::Instruction::new(
+            spirv::Op::Constant,
+            Some(result_type),
+            Some(id),
+            vec![mr::Operand::LiteralInt32(value)],
+        );
         self.module.types_global_values.push(inst);
         id
     }
@@ -403,10 +458,12 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn spec_constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(spirv::Op::SpecConstant,
-                                        Some(result_type),
-                                        Some(id),
-                                        vec![mr::Operand::LiteralFloat32(value)]);
+        let inst = mr::Instruction::new(
+            spirv::Op::SpecConstant,
+            Some(result_type),
+            Some(id),
+            vec![mr::Operand::LiteralFloat32(value)],
+        );
         self.module.types_global_values.push(inst);
         id
     }
@@ -415,22 +472,25 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn spec_constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(spirv::Op::SpecConstant,
-                                        Some(result_type),
-                                        Some(id),
-                                        vec![mr::Operand::LiteralInt32(value)]);
+        let inst = mr::Instruction::new(
+            spirv::Op::SpecConstant,
+            Some(result_type),
+            Some(id),
+            vec![mr::Operand::LiteralInt32(value)],
+        );
         self.module.types_global_values.push(inst);
         id
     }
 
     /// Appends an OpVariable instruction to either the current basic block
     /// or the module if no basic block is under construction.
-    pub fn variable(&mut self,
-                    result_type: spirv::Word,
-                    result_id: Option<spirv::Word>,
-                    storage_class: spirv::StorageClass,
-                    initializer: Option<spirv::Word>)
-                    -> spirv::Word {
+    pub fn variable(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        storage_class: spirv::StorageClass,
+        initializer: Option<spirv::Word>,
+    ) -> spirv::Word {
         let id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -450,10 +510,11 @@ impl Builder {
 
     /// Appends an OpUndef instruction to either the current basic block
     /// or the module if no basic block is under construction.
-    pub fn undef(&mut self,
-                 result_type: spirv::Word,
-                 result_id: Option<spirv::Word>)
-                 -> spirv::Word {
+    pub fn undef(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> spirv::Word {
         let id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -485,14 +546,10 @@ mod tests {
             return false;
         }
         (module.capabilities.len() + module.extensions.len() + module.ext_inst_imports.len() +
-         module.entry_points.len() + module.types_global_values.len() +
-         module.execution_modes.len() +
-         module.debugs.len() + module.annotations.len()) +
-        (if module.memory_model.is_some() {
-            1
-        } else {
-            0
-        }) == 1
+             module.entry_points.len() +
+             module.types_global_values.len() + module.execution_modes.len() +
+             module.debugs.len() + module.annotations.len()) +
+            (if module.memory_model.is_some() { 1 } else { 0 }) == 1
     }
 
     #[test]
@@ -505,16 +562,20 @@ mod tests {
         assert!(has_only_one_global_inst(&m));
         assert_eq!("MemoryModel", inst.class.opname);
         assert_eq!(2, inst.operands.len());
-        assert_eq!(mr::Operand::from(spirv::AddressingModel::Logical),
-                   inst.operands[0]);
-        assert_eq!(mr::Operand::from(spirv::MemoryModel::Simple),
-                   inst.operands[1]);
+        assert_eq!(
+            mr::Operand::from(spirv::AddressingModel::Logical),
+            inst.operands[0]
+        );
+        assert_eq!(
+            mr::Operand::from(spirv::MemoryModel::Simple),
+            inst.operands[1]
+        );
     }
 
     #[test]
     fn test_decoration_no_additional_params() {
         let mut b = Builder::new();
-        b.member_decorate(1, 0, spirv::Decoration::RelaxedPrecision, &vec![]);
+        b.member_decorate(1, 0, spirv::Decoration::RelaxedPrecision, vec![]);
         let m = b.module();
         assert!(has_only_one_global_inst(&m));
         let inst = m.annotations.last().unwrap();
@@ -522,27 +583,38 @@ mod tests {
         assert_eq!(3, inst.operands.len());
         assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
         assert_eq!(mr::Operand::from(0u32), inst.operands[1]);
-        assert_eq!(mr::Operand::from(spirv::Decoration::RelaxedPrecision),
-                   inst.operands[2]);
+        assert_eq!(
+            mr::Operand::from(spirv::Decoration::RelaxedPrecision),
+            inst.operands[2]
+        );
     }
 
     #[test]
     fn test_decoration_with_additional_params() {
         let mut b = Builder::new();
-        b.decorate(1,
-                   spirv::Decoration::LinkageAttributes,
-                   &vec![mr::Operand::from("name"), mr::Operand::from(spirv::LinkageType::Export)]);
+        b.decorate(
+            1,
+            spirv::Decoration::LinkageAttributes,
+            vec![
+                mr::Operand::from("name"),
+                mr::Operand::from(spirv::LinkageType::Export),
+            ],
+        );
         let m = b.module();
         assert!(has_only_one_global_inst(&m));
         let inst = m.annotations.last().unwrap();
         assert_eq!("Decorate", inst.class.opname);
         assert_eq!(4, inst.operands.len());
         assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
-        assert_eq!(mr::Operand::from(spirv::Decoration::LinkageAttributes),
-                   inst.operands[1]);
+        assert_eq!(
+            mr::Operand::from(spirv::Decoration::LinkageAttributes),
+            inst.operands[1]
+        );
         assert_eq!(mr::Operand::from("name"), inst.operands[2]);
-        assert_eq!(mr::Operand::from(spirv::LinkageType::Export),
-                   inst.operands[3]);
+        assert_eq!(
+            mr::Operand::from(spirv::LinkageType::Export),
+            inst.operands[3]
+        );
     }
 
     #[test]
@@ -682,22 +754,37 @@ mod tests {
         assert_eq!(spirv::Op::TypePointer, inst.class.opcode);
         assert_eq!(None, inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![mr::Operand::from(spirv::StorageClass::Input), mr::Operand::IdRef(1)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                mr::Operand::from(spirv::StorageClass::Input),
+                mr::Operand::IdRef(1),
+            ],
+            inst.operands
+        );
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::TypeForwardPointer, inst.class.opcode);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(3), mr::Operand::from(spirv::StorageClass::Output)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                mr::Operand::IdRef(3),
+                mr::Operand::from(spirv::StorageClass::Output),
+            ],
+            inst.operands
+        );
 
         let inst = &m.types_global_values[3];
         assert_eq!(spirv::Op::TypePointer, inst.class.opcode);
         assert_eq!(None, inst.result_type);
         assert_eq!(Some(3), inst.result_id);
-        assert_eq!(vec![mr::Operand::from(spirv::StorageClass::Output), mr::Operand::IdRef(1)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                mr::Operand::from(spirv::StorageClass::Output),
+                mr::Operand::IdRef(1),
+            ],
+            inst.operands
+        );
     }
 
     #[test]
@@ -706,12 +793,13 @@ mod tests {
 
         let float = b.type_float(32);
         assert_eq!(1, float);
-        let f32ff32 = b.type_function(float, &vec![float]);
+        let f32ff32 = b.type_function(float, vec![float]);
         assert_eq!(2, f32ff32);
         let c0 = b.constant_f32(float, 0.0f32);
         assert_eq!(3, c0);
 
-        let fid = b.begin_function(float, None, spirv::FUNCTION_CONTROL_NONE, f32ff32).unwrap();
+        let fid = b.begin_function(float, None, spirv::FUNCTION_CONTROL_NONE, f32ff32)
+            .unwrap();
         assert_eq!(4, fid);
 
         let epid = b.begin_basic_block(None).unwrap(); // Entry block id
@@ -727,11 +815,12 @@ mod tests {
         let fr_add = b.id();
         assert_eq!(8, fr_add);
         // OpPhi can forward reference ids for both labels and results
-        let phi = b.phi(float,
-                        None,
-                        // From above, from this, from below
-                        &vec![(c0, epid), (fr_add, pbid), (c0, target2)])
-                   .unwrap();
+        let phi = b.phi(
+            float,
+            None,
+            // From above, from this, from below
+            vec![(c0, epid), (fr_add, pbid), (c0, target2)],
+        ).unwrap();
         assert_eq!(9, phi);
         let res_add = b.fadd(float, Some(fr_add), c0, c0).unwrap();
         assert_eq!(res_add, fr_add);
@@ -745,8 +834,9 @@ mod tests {
 
         let m = b.module();
         assert_eq!(1, m.functions.len());
-        assert_eq!(m.functions.first().unwrap().disassemble(),
-                   "%4 = OpFunction  %1  None %2\n\
+        assert_eq!(
+            m.functions.first().unwrap().disassemble(),
+            "%4 = OpFunction  %1  None %2\n\
                     %5 = OpLabel\n\
                     OpBranch %6\n\
                     %6 = OpLabel\n\
@@ -755,7 +845,8 @@ mod tests {
                     OpBranch %7\n\
                     %7 = OpLabel\n\
                     OpReturnValue %3\n\
-                    OpFunctionEnd");
+                    OpFunctionEnd"
+        );
     }
 
     #[test]
@@ -770,14 +861,15 @@ mod tests {
         assert_eq!(3, ifp);
         let ffp = b.type_pointer(None, spirv::StorageClass::Function, float);
         assert_eq!(4, ffp);
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
         assert_eq!(5, voidfvoid);
 
         // Global variable
         let v1 = b.variable(ifp, None, spirv::StorageClass::Input, None);
         assert_eq!(6, v1);
 
-        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).unwrap();
+        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid)
+            .unwrap();
         assert_eq!(7, f);
         let bb = b.begin_basic_block(None).unwrap();
         assert_eq!(8, bb);
@@ -791,8 +883,9 @@ mod tests {
         let v3 = b.variable(ifp, None, spirv::StorageClass::Input, None);
         assert_eq!(10, v3);
 
-        assert_eq!(b.module().disassemble(),
-                   "; SPIR-V\n; Version: 1.1\n; Generator: rspirv\n; Bound: 11\n\
+        assert_eq!(
+            b.module().disassemble(),
+            "; SPIR-V\n; Version: 1.1\n; Generator: rspirv\n; Bound: 11\n\
                     %1 = OpTypeVoid\n\
                     %2 = OpTypeFloat 32\n\
                     %3 = OpTypePointer Input %2\n\
@@ -804,7 +897,8 @@ mod tests {
                     %8 = OpLabel\n\
                     %9 = OpVariable  %4  Function\n\
                     OpReturn\n\
-                    OpFunctionEnd");
+                    OpFunctionEnd"
+        );
     }
 
     #[test]
@@ -815,14 +909,15 @@ mod tests {
         assert_eq!(1, void);
         let float = b.type_float(32);
         assert_eq!(2, float);
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
         assert_eq!(3, voidfvoid);
 
         // Global undef
         let v1 = b.undef(float, None);
         assert_eq!(4, v1);
 
-        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).unwrap();
+        let f = b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid)
+            .unwrap();
         assert_eq!(5, f);
         let bb = b.begin_basic_block(None).unwrap();
         assert_eq!(6, bb);
@@ -836,8 +931,9 @@ mod tests {
         let v3 = b.undef(float, None);
         assert_eq!(8, v3);
 
-        assert_eq!(b.module().disassemble(),
-                   "; SPIR-V\n; Version: 1.1\n; Generator: rspirv\n; Bound: 9\n\
+        assert_eq!(
+            b.module().disassemble(),
+            "; SPIR-V\n; Version: 1.1\n; Generator: rspirv\n; Bound: 9\n\
                     %1 = OpTypeVoid\n\
                     %2 = OpTypeFloat 32\n\
                     %3 = OpTypeFunction %1 %1\n\
@@ -847,6 +943,7 @@ mod tests {
                     %6 = OpLabel\n\
                     %7 = OpUndef  %2 \n\
                     OpReturn\n\
-                    OpFunctionEnd");
+                    OpFunctionEnd"
+        );
     }
 }

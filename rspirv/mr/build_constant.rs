@@ -34,10 +34,10 @@ impl Builder {
     }
 
     /// Appends an OpConstantComposite instruction.
-    pub fn constant_composite(&mut self, result_type: spirv::Word, constituents: &[spirv::Word]) -> spirv::Word {
+    pub fn constant_composite<T: AsRef<[spirv::Word]>>(&mut self, result_type: spirv::Word, constituents: T) -> spirv::Word {
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::ConstantComposite, Some(result_type), Some(id), vec![]);
-        for v in constituents {
+        for v in constituents.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.module.types_global_values.push(inst);
@@ -77,10 +77,10 @@ impl Builder {
     }
 
     /// Appends an OpSpecConstantComposite instruction.
-    pub fn spec_constant_composite(&mut self, result_type: spirv::Word, constituents: &[spirv::Word]) -> spirv::Word {
+    pub fn spec_constant_composite<T: AsRef<[spirv::Word]>>(&mut self, result_type: spirv::Word, constituents: T) -> spirv::Word {
         let id = self.id();
         let mut inst = mr::Instruction::new(spirv::Op::SpecConstantComposite, Some(result_type), Some(id), vec![]);
-        for v in constituents {
+        for v in constituents.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.module.types_global_values.push(inst);

@@ -248,7 +248,7 @@ mod tests {
 
         let void = b.type_void();
         let float32 = b.type_float(32);
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b.begin_function(void,
                                  None,
@@ -261,10 +261,10 @@ mod tests {
         b.ret().unwrap();
         b.end_function().unwrap();
 
-        b.entry_point(spirv::ExecutionModel::Fragment, f, "main", &vec![]);
-        b.execution_mode(f, spirv::ExecutionMode::OriginUpperLeft, &vec![]);
+        b.entry_point(spirv::ExecutionModel::Fragment, f, "main", vec![]);
+        b.execution_mode(f, spirv::ExecutionMode::OriginUpperLeft, vec![]);
         b.name(f, "main");
-        b.decorate(var, spirv::Decoration::RelaxedPrecision, &vec![]);
+        b.decorate(var, spirv::Decoration::RelaxedPrecision, vec![]);
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
@@ -300,12 +300,12 @@ mod tests {
 
         let void = b.type_void();
         let float32 = b.type_float(32);
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).is_ok());
         b.begin_basic_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
-        assert!(b.ext_inst(float32, None, glsl, 6, &vec![var]).is_ok());
+        assert!(b.ext_inst(float32, None, glsl, 6, vec![var]).is_ok());
         b.ret().unwrap();
         b.end_function().unwrap();
 
@@ -337,12 +337,12 @@ mod tests {
 
         let void = b.type_void();
         let float32 = b.type_float(32);
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b.begin_function(void, None, spirv::FUNCTION_CONTROL_NONE, voidfvoid).is_ok());
         b.begin_basic_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
-        assert!(b.ext_inst(float32, None, opencl, 15, &vec![var]).is_ok());
+        assert!(b.ext_inst(float32, None, opencl, 15, vec![var]).is_ok());
         b.ret().unwrap();
         b.end_function().unwrap();
 

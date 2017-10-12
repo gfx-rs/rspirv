@@ -236,7 +236,7 @@ mod tests {
         let mut b = mr::Builder::new();
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         let void = b.type_void();
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
         b.begin_function(void, None, spirv::FUNCTION_CONTROL_CONST, voidfvoid).unwrap();
         b.begin_basic_block(None).unwrap();
         b.ret().unwrap();
@@ -274,13 +274,13 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         let float = b.type_float(32);
         let ptr = b.type_pointer(None, spirv::StorageClass::Function, float);
-        let fff = b.type_function(float, &vec![float, float]);
+        let fff = b.type_function(float, vec![float, float]);
         b.begin_function(float, None, spirv::FUNCTION_CONTROL_CONST, fff).unwrap();
         let param1 = b.function_parameter(ptr).unwrap();
         let param2 = b.function_parameter(ptr).unwrap();
         b.begin_basic_block(None).unwrap();
-        let v1 = b.load(float, None, param1, None, &vec![]).unwrap();
-        let v2 = b.load(float, None, param2, None, &vec![]).unwrap();
+        let v1 = b.load(float, None, param1, None, vec![]).unwrap();
+        let v2 = b.load(float, None, param2, None, vec![]).unwrap();
         let v = b.fadd(float, None, v1, v2).unwrap();
         b.ret_value(v).unwrap();
         b.end_function().unwrap();

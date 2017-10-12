@@ -24,18 +24,18 @@ impl Builder {
     }
 
     /// Appends an OpBranchConditional instruction and ends the current basic block.
-    pub fn branch_conditional(&mut self, condition: spirv::Word, true_label: spirv::Word, false_label: spirv::Word, branch_weights: &[u32]) -> BuildResult<()> {
+    pub fn branch_conditional<T: AsRef<[u32]>>(&mut self, condition: spirv::Word, true_label: spirv::Word, false_label: spirv::Word, branch_weights: T) -> BuildResult<()> {
         let mut inst = mr::Instruction::new(spirv::Op::BranchConditional, None, None, vec![mr::Operand::IdRef(condition), mr::Operand::IdRef(true_label), mr::Operand::IdRef(false_label)]);
-        for v in branch_weights {
+        for v in branch_weights.as_ref() {
             inst.operands.push(mr::Operand::LiteralInt32(*v))
         };
         self.end_basic_block(inst)
     }
 
     /// Appends an OpSwitch instruction and ends the current basic block.
-    pub fn switch(&mut self, selector: spirv::Word, default: spirv::Word, target: &[(u32, spirv::Word)]) -> BuildResult<()> {
+    pub fn switch<T: AsRef<[(u32, spirv::Word)]>>(&mut self, selector: spirv::Word, default: spirv::Word, target: T) -> BuildResult<()> {
         let mut inst = mr::Instruction::new(spirv::Op::Switch, None, None, vec![mr::Operand::IdRef(selector), mr::Operand::IdRef(default)]);
-        for v in target {
+        for v in target.as_ref() {
             inst.operands.push(mr::Operand::LiteralInt32(v.0));
             inst.operands.push(mr::Operand::IdRef(v.1));
         };

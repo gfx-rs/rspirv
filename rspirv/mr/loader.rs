@@ -283,7 +283,7 @@ mod tests {
 
         let void = b.type_void();
         let float = b.type_float(32);
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
 
         // Global variable
         let global = b.variable(float, None, spirv::StorageClass::Input, None);
@@ -318,7 +318,7 @@ mod tests {
 
         let void = b.type_void();
         let float = b.type_float(32);
-        let voidfvoid = b.type_function(void, &vec![void]);
+        let voidfvoid = b.type_function(void, vec![void]);
 
         // Global variable
         let global = b.undef(float, None);
