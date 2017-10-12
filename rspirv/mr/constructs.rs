@@ -186,7 +186,7 @@ impl ModuleHeader {
     pub fn new(bound: Word) -> ModuleHeader {
         ModuleHeader {
             magic_number: spirv::MAGIC_NUMBER,
-            version: (spirv::MAJOR_VERSION << 16) | (spirv::MAJOR_VERSION << 8),
+            version: (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
             generator: 0x000f0000, // TODO: lower 16-bit: tool version number
             bound: bound,
             reserved_word: 0,
