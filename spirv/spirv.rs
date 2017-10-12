@@ -19,8 +19,8 @@
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
-pub const MINOR_VERSION: u32 = 0;
-pub const REVISION: u32 = 12;
+pub const MINOR_VERSION: u32 = 1;
+pub const REVISION: u32 = 8;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
@@ -64,6 +64,8 @@ bitflags!{
         const NONE = 0x0000;
         const UNROLL = 0x0001;
         const DONT_UNROLL = 0x0002;
+        const DEPENDENCY_INFINITE = 0x0004;
+        const DEPENDENCY_LENGTH = 0x0008;
     }
 }
 
@@ -192,6 +194,10 @@ pub enum ExecutionMode {
     OutputTriangleStrip = 29,
     VecTypeHint = 30,
     ContractionOff = 31,
+    Initializer = 33,
+    Finalizer = 34,
+    SubgroupSize = 35,
+    SubgroupsPerWorkgroup = 36,
     PostDepthCoverage = 4446,
     StencilRefReplacingEXT = 5027,
 }
@@ -430,6 +436,7 @@ pub enum Decoration {
     NoContraction = 42,
     InputAttachmentIndex = 43,
     Alignment = 44,
+    MaxByteOffset = 45,
     ExplicitInterpAMD = 4999,
     OverrideCoverageNV = 5248,
     PassthroughNV = 5250,
@@ -596,6 +603,9 @@ pub enum Capability {
     StorageImageReadWithoutFormat = 55,
     StorageImageWriteWithoutFormat = 56,
     MultiViewport = 57,
+    SubgroupDispatch = 58,
+    NamedBarrier = 59,
+    PipeStorage = 60,
     SubgroupBallotKHR = 4423,
     DrawParameters = 4427,
     SubgroupVoteKHR = 4431,
@@ -925,6 +935,16 @@ pub enum Op {
     AtomicFlagTestAndSet = 318,
     AtomicFlagClear = 319,
     ImageSparseRead = 320,
+    SizeOf = 321,
+    TypePipeStorage = 322,
+    ConstantPipeStorage = 323,
+    CreatePipeFromPipeStorage = 324,
+    GetKernelLocalSizeForSubgroupCount = 325,
+    GetKernelMaxNumSubgroups = 326,
+    TypeNamedBarrier = 327,
+    NamedBarrierInitialize = 328,
+    MemoryNamedBarrier = 329,
+    ModuleProcessed = 330,
     SubgroupBallotKHR = 4421,
     SubgroupFirstInvocationKHR = 4422,
     SubgroupAllKHR = 4428,
