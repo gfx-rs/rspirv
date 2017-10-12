@@ -191,7 +191,6 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
             // be decoded.
 
             let lo_kind = snake_casify(kind);
-            let up_kind = lo_kind.to_uppercase();
 
             // Compose bit-set-clear check for each bit requiring
             // associated parameters.
@@ -203,12 +202,12 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
                             decode = get_decode_method(element))
                 }).collect();
                 format!(
-                    "{s:8}if {arg}.contains(spirv::{k}_{bit}) {{\n\
+                    "{s:8}if {arg}.contains(spirv::{kind}::{bit}) {{\n\
                          {s:12}params.append(&mut vec![{params}]);\n\
                      {s:8}}}",
                     s = "",
                     arg = lo_kind,
-                    k = up_kind,
+                    kind = kind,
                     bit = snake_casify(&symbol).to_uppercase(),
                     params = params.join(", "))
             }).collect();
@@ -358,12 +357,11 @@ pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> Strin
             if enumerant.value.string == "0x0000" {
                 None
             } else {
-                let kind_name = snake_casify(&kind.kind).to_uppercase();
                 let mut symbol = snake_casify(&enumerant.symbol).to_uppercase();
                 if &symbol == "NOT_NA_N" {
                     symbol = "NOT_NAN".to_string()
                 }
-                Some((format!("{}_{}", kind_name, symbol), &enumerant.symbol))
+                Some((format!("{}::{}", kind.kind, symbol), &enumerant.symbol))
             }
         }).map(|(check, show)| {
             format!("        if self.contains(spirv::{}) {{ bits.push(\"{}\") }}", check, show)

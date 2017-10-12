@@ -98,28 +98,28 @@ impl<'c, 'd> Parser<'c, 'd> {
 
     fn parse_image_operands_arguments(&mut self, image_operands: spirv::ImageOperands) -> Result<Vec<mr::Operand>> {
         let mut params = vec![];
-        if image_operands.contains(spirv::IMAGE_OPERANDS_BIAS) {
+        if image_operands.contains(spirv::ImageOperands::BIAS) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
-        if image_operands.contains(spirv::IMAGE_OPERANDS_LOD) {
+        if image_operands.contains(spirv::ImageOperands::LOD) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
-        if image_operands.contains(spirv::IMAGE_OPERANDS_GRAD) {
+        if image_operands.contains(spirv::ImageOperands::GRAD) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id())), mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
-        if image_operands.contains(spirv::IMAGE_OPERANDS_CONST_OFFSET) {
+        if image_operands.contains(spirv::ImageOperands::CONST_OFFSET) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
-        if image_operands.contains(spirv::IMAGE_OPERANDS_OFFSET) {
+        if image_operands.contains(spirv::ImageOperands::OFFSET) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
-        if image_operands.contains(spirv::IMAGE_OPERANDS_CONST_OFFSETS) {
+        if image_operands.contains(spirv::ImageOperands::CONST_OFFSETS) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
-        if image_operands.contains(spirv::IMAGE_OPERANDS_SAMPLE) {
+        if image_operands.contains(spirv::ImageOperands::SAMPLE) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
-        if image_operands.contains(spirv::IMAGE_OPERANDS_MIN_LOD) {
+        if image_operands.contains(spirv::ImageOperands::MIN_LOD) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
         Ok(params)
@@ -127,7 +127,7 @@ impl<'c, 'd> Parser<'c, 'd> {
 
     fn parse_loop_control_arguments(&mut self, loop_control: spirv::LoopControl) -> Result<Vec<mr::Operand>> {
         let mut params = vec![];
-        if loop_control.contains(spirv::LOOP_CONTROL_DEPENDENCY_LENGTH) {
+        if loop_control.contains(spirv::LoopControl::DEPENDENCY_LENGTH) {
             params.append(&mut vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))]);
         }
         Ok(params)
@@ -135,7 +135,7 @@ impl<'c, 'd> Parser<'c, 'd> {
 
     fn parse_memory_access_arguments(&mut self, memory_access: spirv::MemoryAccess) -> Result<Vec<mr::Operand>> {
         let mut params = vec![];
-        if memory_access.contains(spirv::MEMORY_ACCESS_ALIGNED) {
+        if memory_access.contains(spirv::MemoryAccess::ALIGNED) {
             params.append(&mut vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))]);
         }
         Ok(params)

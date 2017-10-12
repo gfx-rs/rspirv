@@ -47,8 +47,7 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
         if &symbol == "not_na_n" {
             symbol = "not_nan".to_string()
         }
-        format!("        const {}_{} = {};",
-                snake_casify(&grammar.kind).to_uppercase(),
+        format!("        const {} = {};",
                 symbol.to_uppercase(),
                 enumerant.value.string)
     }).collect();
