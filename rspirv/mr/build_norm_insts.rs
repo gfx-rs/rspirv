@@ -3511,4 +3511,32 @@ impl Builder {
         self.basic_block.as_mut().unwrap().instructions.push(inst);
         Ok(id)
     }
+
+    /// Appends an OpFragmentMaskFetchAMD instruction to the current basic block.
+    pub fn fragment_mask_fetch_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, image: spirv::Word, coordinate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::FragmentMaskFetchAMD, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
+
+    /// Appends an OpFragmentFetchAMD instruction to the current basic block.
+    pub fn fragment_fetch_amd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, image: spirv::Word, coordinate: spirv::Word, fragment_index: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::FragmentFetchAMD, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(fragment_index)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(id)
+    }
 }

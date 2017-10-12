@@ -20,7 +20,7 @@ pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
 pub const MINOR_VERSION: u32 = 1;
-pub const REVISION: u32 = 7;
+pub const REVISION: u32 = 8;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_image_operands_a_image_operands)
@@ -199,6 +199,7 @@ pub enum ExecutionMode {
     SubgroupSize = 35,
     SubgroupsPerWorkgroup = 36,
     PostDepthCoverage = 4446,
+    StencilRefReplacingEXT = 5027,
 }
 
 /// SPIR-V operand kind: [StorageClass](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_storage_class_a_storage_class)
@@ -505,6 +506,7 @@ pub enum BuiltIn {
     BaryCoordSmoothCentroidAMD = 4996,
     BaryCoordSmoothSampleAMD = 4997,
     BaryCoordPullModelAMD = 4998,
+    FragStencilRefEXT = 5014,
     ViewportMaskNV = 5253,
     SecondaryPositionNV = 5257,
     SecondaryViewportMaskNV = 5258,
@@ -618,9 +620,12 @@ pub enum Capability {
     AtomicStorageOps = 4445,
     SampleMaskPostDepthCoverage = 4447,
     ImageGatherBiasLodAMD = 5009,
+    FragmentMaskAMD = 5010,
+    StencilExportEXT = 5013,
+    ImageReadWriteLodAMD = 5015,
     SampleMaskOverrideCoverageNV = 5249,
     GeometryShaderPassthroughNV = 5251,
-    ShaderViewportIndexLayerNV = 5254,
+    ShaderViewportIndexLayerEXT = 5254,
     ShaderViewportMaskNV = 5255,
     ShaderStereoViewNV = 5259,
     PerViewAttributesNV = 5260,
@@ -630,7 +635,7 @@ pub enum Capability {
 impl Capability {
     pub const StorageUniformBufferBlock16: Capability = Capability::StorageBuffer16BitAccess;
     pub const StorageUniform16: Capability = Capability::UniformAndStorageBuffer16BitAccess;
-    pub const ShaderViewportIndexLayerEXT: Capability = Capability::ShaderViewportIndexLayerNV;
+    pub const ShaderViewportIndexLayerNV: Capability = Capability::ShaderViewportIndexLayerEXT;
 }
 /// SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/1.1/SPIRV.html#_a_id_instructions_a_instructions) opcodes
 #[repr(u32)]
@@ -954,6 +959,8 @@ pub enum Op {
     GroupFMaxNonUniformAMD = 5005,
     GroupUMaxNonUniformAMD = 5006,
     GroupSMaxNonUniformAMD = 5007,
+    FragmentMaskFetchAMD = 5011,
+    FragmentFetchAMD = 5012,
 }
 
 /// [GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/1.0/GLSL.std.450.html) extended instruction opcode

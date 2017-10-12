@@ -384,4 +384,6 @@ static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[
     inst!(GroupFMaxNonUniformAMD, [Groups], [(IdResultType, One), (IdResult, One), (IdScope, One), (GroupOperation, One), (IdRef, One)]),
     inst!(GroupUMaxNonUniformAMD, [Groups], [(IdResultType, One), (IdResult, One), (IdScope, One), (GroupOperation, One), (IdRef, One)]),
     inst!(GroupSMaxNonUniformAMD, [Groups], [(IdResultType, One), (IdResult, One), (IdScope, One), (GroupOperation, One), (IdRef, One)]),
+    inst!(FragmentMaskFetchAMD, [FragmentMaskAMD], [(IdResultType, One), (IdResult, One), (IdRef, One), (IdRef, One)]),
+    inst!(FragmentFetchAMD, [FragmentMaskAMD], [(IdResultType, One), (IdResult, One), (IdRef, One), (IdRef, One), (IdRef, One)]),
 ];
