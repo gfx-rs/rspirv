@@ -15,6 +15,9 @@ install:
   - set PATH=%PATH%;%USERPROFILE%\.cargo\bin
   - rustc -vV && cargo -vV
 
+before_build:
+  - git submodule update --init
+
 build_script:
   - cd codegen
   - cargo build --verbose

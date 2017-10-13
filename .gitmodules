@@ -1,0 +1,3 @@
+[submodule "codegen/external/SPIRV-Headers"]
+	path = codegen/external/SPIRV-Headers
+	url = https://github.com/KhronosGroup/SPIRV-Headers.git
