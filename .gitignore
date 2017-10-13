@@ -3,4 +3,3 @@ target
 *.pyc
 *.bk
 .DS_Store
-codegen/external/SPIRV-Headers

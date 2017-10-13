@@ -60,28 +60,13 @@ macro_rules! fmt_write {
     }
 }
 
-fn git_clone(project: &str, url: &str, dir: &path::PathBuf) {
-    if !dir.as_path().exists() {
-        let status = process::Command::new("git")
-            .args(&["clone", url, dir.to_str().unwrap()])
-            .status()
-            .expect("failed to execute git clone");
-        if !status.success() {
-            panic!("failed to clone {}", project)
-        }
-    }
-}
-
 fn main() {
     // Path to the SPIR-V core grammar file.
     let env_var = env::var("CARGO_MANIFEST_DIR").unwrap();
     let codegen_src_dir = path::Path::new(&env_var);
 
-    {
-        let path = codegen_src_dir.join("external/SPIRV-Headers");
-        git_clone("SPIRV-Headers",
-                  "https://github.com/KhronosGroup/SPIRV-Headers",
-                  &path);
+    if !codegen_src_dir.join("external/SPIRV-Headers").exists() {
+        panic!("SPIRV-Headers missing - please checkout using git submodule");
     }
 
     let mut contents = String::new();
