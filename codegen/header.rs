@@ -20,10 +20,10 @@ static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 #[repr(u32)]\n#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]";
 
 static GLSL_STD_450_SPEC_LINK: &'static str = "\
-https://www.khronos.org/registry/spir-v/specs/1.0/GLSL.std.450.html";
+https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html";
 
 static OPENCL_STD_SPEC_LINK: &'static str = "\
-https://www.khronos.org/registry/spir-v/specs/1.2/OpenCL.ExtendedInstructionSet.100.html";
+https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html";
 
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
@@ -36,7 +36,7 @@ fn get_spec_link(kind: &str) -> String {
     format!("[{text}]({link})",
             text = kind,
             link = format!("https://www.khronos.org/registry/spir-v/\
-                            specs/1.2/SPIRV.html#_a_id_{}_a_{}",
+                            specs/unified1/SPIRV.html#_a_id_{}_a_{}",
                            symbol, symbol))
 }
 

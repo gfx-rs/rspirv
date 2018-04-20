@@ -33,7 +33,7 @@ code that happens to be owned by Google.
 Documentation
 -------------
 
-The current implementation supports SPIR-V 1.2 (Revision 2).
+The current implementation supports SPIR-V 1.3 (Revision 1).
 
 Multiple crates are published from this project:
 
@@ -94,6 +94,7 @@ use rspirv::binary::Disassemble;
 fn main() {
     // Building
     let mut b = rspirv::mr::Builder::new();
+    b.set_version(1, 0);
     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::GLSL450);
     let void = b.type_void();
     let voidf = b.type_function(void, vec![void]);
@@ -121,7 +122,7 @@ fn main() {
     // Disassembling
     assert_eq!(module.disassemble(),
                "; SPIR-V\n\
-                ; Version: 1.2\n\
+                ; Version: 1.0\n\
                 ; Generator: rspirv\n\
                 ; Bound: 5\n\
                 OpMemoryModel Logical GLSL450\n\

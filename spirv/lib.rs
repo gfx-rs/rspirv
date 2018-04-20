@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![doc(html_root_url = "https://docs.rs/spirv_headers/1.2/")]
+#![doc(html_root_url = "https://docs.rs/spirv_headers/1.3/")]
 
 //! The SPIR-V header.
 //!

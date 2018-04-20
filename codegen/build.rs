@@ -82,7 +82,7 @@ fn main() {
     // For GLSLstd450 extended instruction set.
     {
         let path = codegen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/1.2/extinst.glsl.std.450.grammar.json");
+            "external/SPIRV-Headers/include/spirv/unified1/extinst.glsl.std.450.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         contents.clear();
@@ -93,7 +93,7 @@ fn main() {
     // For OpenCL extended instruction set.
     {
         let path = codegen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/1.2/extinst.opencl.std.100.grammar.json");
+            "external/SPIRV-Headers/include/spirv/unified1/extinst.opencl.std.100.grammar.json");
         let filename = path.to_str().unwrap();
         let mut file = fs::File::open(filename).unwrap();
         contents.clear();
