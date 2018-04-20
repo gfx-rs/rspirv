@@ -182,6 +182,8 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::AlignmentId => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
             spirv::Decoration::MaxByteOffsetId => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
             spirv::Decoration::SecondaryViewportRelativeNV => vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))],
+            spirv::Decoration::HlslCounterBufferGOOGLE => vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))],
+            spirv::Decoration::HlslSemanticGOOGLE => vec![mr::Operand::LiteralString(try_decode!(self.decoder.string()))],
             _ => vec![]
         })
     }

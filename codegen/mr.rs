@@ -349,15 +349,15 @@ pub fn gen_mr_builder_normal_insts(grammar: &structs::Grammar) -> String {
                      {s:8}if self.basic_block.is_none() {{\n\
                      {s:12}return Err(Error::DetachedInstruction);\n\
                      {s:8}}}\n\
-                     {s:8}let id = match result_id {{\n\
+                     {s:8}let _id = match result_id {{\n\
                      {s:12}Some(v) => v,\n\
                      {s:12}None => self.id(),\n\
                      {s:8}}};\n\
                      {s:8}let {m}inst = mr::Instruction::new(\
-                         spirv::Op::{opcode}, Some(result_type), Some(id), vec![{init}]);\n\
+                         spirv::Op::{opcode}, Some(result_type), Some(_id), vec![{init}]);\n\
                      {extras}{y}\
                      {s:8}self.basic_block.as_mut().unwrap().instructions.push(inst);\n\
-                     {s:8}Ok(id)\n\
+                     {s:8}Ok(_id)\n\
                      {s:4}}}",
                     s = "",
                     name = get_function_name(&inst.opname),

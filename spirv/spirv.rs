@@ -19,8 +19,8 @@
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u32 = 1;
-pub const MINOR_VERSION: u32 = 2;
-pub const REVISION: u32 = 2;
+pub const MINOR_VERSION: u32 = 3;
+pub const REVISION: u32 = 1;
 
 bitflags!{
     /// SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/1.2/SPIRV.html#_a_id_image_operands_a_image_operands)
@@ -447,6 +447,9 @@ pub enum Decoration {
     PassthroughNV = 5250,
     ViewportRelativeNV = 5252,
     SecondaryViewportRelativeNV = 5256,
+    NonUniformEXT = 5300,
+    HlslCounterBufferGOOGLE = 5634,
+    HlslSemanticGOOGLE = 5635,
 }
 
 /// SPIR-V operand kind: [BuiltIn](https://www.khronos.org/registry/spir-v/specs/1.2/SPIRV.html#_a_id_built_in_a_built_in)
@@ -494,11 +497,11 @@ pub enum BuiltIn {
     SubgroupLocalInvocationId = 41,
     VertexIndex = 42,
     InstanceIndex = 43,
-    SubgroupEqMaskKHR = 4416,
-    SubgroupGeMaskKHR = 4417,
-    SubgroupGtMaskKHR = 4418,
-    SubgroupLeMaskKHR = 4419,
-    SubgroupLtMaskKHR = 4420,
+    SubgroupEqMask = 4416,
+    SubgroupGeMask = 4417,
+    SubgroupGtMask = 4418,
+    SubgroupLeMask = 4419,
+    SubgroupLtMask = 4420,
     BaseVertex = 4424,
     BaseInstance = 4425,
     DrawIndex = 4426,
@@ -517,8 +520,17 @@ pub enum BuiltIn {
     SecondaryViewportMaskNV = 5258,
     PositionPerViewNV = 5261,
     ViewportMaskPerViewNV = 5262,
+    FullyCoveredEXT = 5264,
 }
 
+#[allow(non_upper_case_globals)]
+impl BuiltIn {
+    pub const SubgroupEqMaskKHR: BuiltIn = BuiltIn::SubgroupEqMask;
+    pub const SubgroupGeMaskKHR: BuiltIn = BuiltIn::SubgroupGeMask;
+    pub const SubgroupGtMaskKHR: BuiltIn = BuiltIn::SubgroupGtMask;
+    pub const SubgroupLeMaskKHR: BuiltIn = BuiltIn::SubgroupLeMask;
+    pub const SubgroupLtMaskKHR: BuiltIn = BuiltIn::SubgroupLtMask;
+}
 /// SPIR-V operand kind: [Scope](https://www.khronos.org/registry/spir-v/specs/1.2/SPIRV.html#_a_id_scope_a_scope)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
@@ -537,6 +549,10 @@ pub enum GroupOperation {
     Reduce = 0,
     InclusiveScan = 1,
     ExclusiveScan = 2,
+    ClusteredReduce = 3,
+    PartitionedReduceNV = 6,
+    PartitionedInclusiveScanNV = 7,
+    PartitionedExclusiveScanNV = 8,
 }
 
 /// SPIR-V operand kind: [KernelEnqueueFlags](https://www.khronos.org/registry/spir-v/specs/1.2/SPIRV.html#_a_id_kernel_enqueue_flags_a_kernel_enqueue_flags)
@@ -611,6 +627,14 @@ pub enum Capability {
     SubgroupDispatch = 58,
     NamedBarrier = 59,
     PipeStorage = 60,
+    GroupNonUniform = 61,
+    GroupNonUniformVote = 62,
+    GroupNonUniformArithmetic = 63,
+    GroupNonUniformBallot = 64,
+    GroupNonUniformShuffle = 65,
+    GroupNonUniformShuffleRelative = 66,
+    GroupNonUniformClustered = 67,
+    GroupNonUniformQuad = 68,
     SubgroupBallotKHR = 4423,
     DrawParameters = 4427,
     SubgroupVoteKHR = 4431,
@@ -624,6 +648,7 @@ pub enum Capability {
     VariablePointers = 4442,
     AtomicStorageOps = 4445,
     SampleMaskPostDepthCoverage = 4447,
+    Float16ImageAMD = 5008,
     ImageGatherBiasLodAMD = 5009,
     FragmentMaskAMD = 5010,
     StencilExportEXT = 5013,
@@ -634,6 +659,23 @@ pub enum Capability {
     ShaderViewportMaskNV = 5255,
     ShaderStereoViewNV = 5259,
     PerViewAttributesNV = 5260,
+    FragmentFullyCoveredEXT = 5265,
+    ShaderNonUniformEXT = 5301,
+    RuntimeDescriptorArrayEXT = 5302,
+    InputAttachmentArrayDynamicIndexingEXT = 5303,
+    UniformTexelBufferArrayDynamicIndexingEXT = 5304,
+    StorageTexelBufferArrayDynamicIndexingEXT = 5305,
+    UniformBufferArrayNonUniformIndexingEXT = 5306,
+    SampledImageArrayNonUniformIndexingEXT = 5307,
+    StorageBufferArrayNonUniformIndexingEXT = 5308,
+    StorageImageArrayNonUniformIndexingEXT = 5309,
+    InputAttachmentArrayNonUniformIndexingEXT = 5310,
+    UniformTexelBufferArrayNonUniformIndexingEXT = 5311,
+    StorageTexelBufferArrayNonUniformIndexingEXT = 5312,
+    SubgroupShuffleINTEL = 5568,
+    SubgroupBufferBlockIOINTEL = 5569,
+    SubgroupImageBlockIOINTEL = 5570,
+    GroupNonUniformPartitionedNV = 5297,
 }
 
 #[allow(non_upper_case_globals)]
@@ -952,6 +994,40 @@ pub enum Op {
     ModuleProcessed = 330,
     ExecutionModeId = 331,
     DecorateId = 332,
+    GroupNonUniformElect = 333,
+    GroupNonUniformAll = 334,
+    GroupNonUniformAny = 335,
+    GroupNonUniformAllEqual = 336,
+    GroupNonUniformBroadcast = 337,
+    GroupNonUniformBroadcastFirst = 338,
+    GroupNonUniformBallot = 339,
+    GroupNonUniformInverseBallot = 340,
+    GroupNonUniformBallotBitExtract = 341,
+    GroupNonUniformBallotBitCount = 342,
+    GroupNonUniformBallotFindLSB = 343,
+    GroupNonUniformBallotFindMSB = 344,
+    GroupNonUniformShuffle = 345,
+    GroupNonUniformShuffleXor = 346,
+    GroupNonUniformShuffleUp = 347,
+    GroupNonUniformShuffleDown = 348,
+    GroupNonUniformIAdd = 349,
+    GroupNonUniformFAdd = 350,
+    GroupNonUniformIMul = 351,
+    GroupNonUniformFMul = 352,
+    GroupNonUniformSMin = 353,
+    GroupNonUniformUMin = 354,
+    GroupNonUniformFMin = 355,
+    GroupNonUniformSMax = 356,
+    GroupNonUniformUMax = 357,
+    GroupNonUniformFMax = 358,
+    GroupNonUniformBitwiseAnd = 359,
+    GroupNonUniformBitwiseOr = 360,
+    GroupNonUniformBitwiseXor = 361,
+    GroupNonUniformLogicalAnd = 362,
+    GroupNonUniformLogicalOr = 363,
+    GroupNonUniformLogicalXor = 364,
+    GroupNonUniformQuadBroadcast = 365,
+    GroupNonUniformQuadSwap = 366,
     SubgroupBallotKHR = 4421,
     SubgroupFirstInvocationKHR = 4422,
     SubgroupAllKHR = 4428,
@@ -968,6 +1044,17 @@ pub enum Op {
     GroupSMaxNonUniformAMD = 5007,
     FragmentMaskFetchAMD = 5011,
     FragmentFetchAMD = 5012,
+    SubgroupShuffleINTEL = 5571,
+    SubgroupShuffleDownINTEL = 5572,
+    SubgroupShuffleUpINTEL = 5573,
+    SubgroupShuffleXorINTEL = 5574,
+    SubgroupBlockReadINTEL = 5575,
+    SubgroupBlockWriteINTEL = 5576,
+    SubgroupImageBlockReadINTEL = 5577,
+    SubgroupImageBlockWriteINTEL = 5578,
+    DecorateStringGOOGLE = 5632,
+    MemberDecorateStringGOOGLE = 5633,
+    GroupNonUniformPartitionNV = 5296,
 }
 
 /// [GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/1.0/GLSL.std.450.html) extended instruction opcode

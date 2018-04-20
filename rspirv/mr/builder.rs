@@ -87,7 +87,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///
 ///     assert_eq!(b.module().disassemble(),
 ///                "; SPIR-V\n\
-///                 ; Version: 1.2\n\
+///                 ; Version: 1.3\n\
 ///                 ; Generator: rspirv\n\
 ///                 ; Bound: 5\n\
 ///                 OpMemoryModel Logical Simple\n\
@@ -883,7 +883,7 @@ mod tests {
 
         assert_eq!(
             b.module().disassemble(),
-            "; SPIR-V\n; Version: 1.2\n; Generator: rspirv\n; Bound: 11\n\
+            "; SPIR-V\n; Version: 1.3\n; Generator: rspirv\n; Bound: 11\n\
                     %1 = OpTypeVoid\n\
                     %2 = OpTypeFloat 32\n\
                     %3 = OpTypePointer Input %2\n\
@@ -930,7 +930,7 @@ mod tests {
 
         assert_eq!(
             b.module().disassemble(),
-            "; SPIR-V\n; Version: 1.2\n; Generator: rspirv\n; Bound: 9\n\
+            "; SPIR-V\n; Version: 1.3\n; Generator: rspirv\n; Bound: 9\n\
                     %1 = OpTypeVoid\n\
                     %2 = OpTypeFloat 32\n\
                     %3 = OpTypeFunction %1 %1\n\

@@ -71,4 +71,7 @@ pub enum Decoration {
     PassthroughNV,
     ViewportRelativeNV,
     SecondaryViewportRelativeNV(u32),
+    NonUniformEXT,
+    HlslCounterBufferGOOGLE(spirv::Word),
+    HlslSemanticGOOGLE(String),
 }

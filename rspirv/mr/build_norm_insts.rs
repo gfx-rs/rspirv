@@ -31,16 +31,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ExtInst, Some(result_type), Some(id), vec![mr::Operand::IdRef(set), mr::Operand::LiteralExtInstInteger(instruction)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ExtInst, Some(result_type), Some(_id), vec![mr::Operand::IdRef(set), mr::Operand::LiteralExtInstInteger(instruction)]);
         for v in operands.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFunctionCall instruction to the current basic block.
@@ -48,16 +48,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::FunctionCall, Some(result_type), Some(id), vec![mr::Operand::IdRef(function)]);
+        let mut inst = mr::Instruction::new(spirv::Op::FunctionCall, Some(result_type), Some(_id), vec![mr::Operand::IdRef(function)]);
         for v in arguments.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageTexelPointer instruction to the current basic block.
@@ -65,13 +65,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageTexelPointer, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(sample)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageTexelPointer, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(sample)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLoad instruction to the current basic block.
@@ -79,17 +79,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::Load, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer)]);
+        let mut inst = mr::Instruction::new(spirv::Op::Load, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer)]);
         if let Some(v) = memory_access {
             inst.operands.push(mr::Operand::MemoryAccess(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpStore instruction to the current basic block.
@@ -136,16 +136,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::AccessChain, Some(result_type), Some(id), vec![mr::Operand::IdRef(base)]);
+        let mut inst = mr::Instruction::new(spirv::Op::AccessChain, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base)]);
         for v in indexes.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpInBoundsAccessChain instruction to the current basic block.
@@ -153,16 +153,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::InBoundsAccessChain, Some(result_type), Some(id), vec![mr::Operand::IdRef(base)]);
+        let mut inst = mr::Instruction::new(spirv::Op::InBoundsAccessChain, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base)]);
         for v in indexes.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpPtrAccessChain instruction to the current basic block.
@@ -170,16 +170,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::PtrAccessChain, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(element)]);
+        let mut inst = mr::Instruction::new(spirv::Op::PtrAccessChain, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(element)]);
         for v in indexes.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpArrayLength instruction to the current basic block.
@@ -187,13 +187,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ArrayLength, Some(result_type), Some(id), vec![mr::Operand::IdRef(structure), mr::Operand::LiteralInt32(array_member)]);
+        let inst = mr::Instruction::new(spirv::Op::ArrayLength, Some(result_type), Some(_id), vec![mr::Operand::IdRef(structure), mr::Operand::LiteralInt32(array_member)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGenericPtrMemSemantics instruction to the current basic block.
@@ -201,13 +201,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GenericPtrMemSemantics, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer)]);
+        let inst = mr::Instruction::new(spirv::Op::GenericPtrMemSemantics, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpInBoundsPtrAccessChain instruction to the current basic block.
@@ -215,16 +215,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::InBoundsPtrAccessChain, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(element)]);
+        let mut inst = mr::Instruction::new(spirv::Op::InBoundsPtrAccessChain, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(element)]);
         for v in indexes.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpVectorExtractDynamic instruction to the current basic block.
@@ -232,13 +232,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::VectorExtractDynamic, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(index)]);
+        let inst = mr::Instruction::new(spirv::Op::VectorExtractDynamic, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(index)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpVectorInsertDynamic instruction to the current basic block.
@@ -246,13 +246,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::VectorInsertDynamic, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(component), mr::Operand::IdRef(index)]);
+        let inst = mr::Instruction::new(spirv::Op::VectorInsertDynamic, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(component), mr::Operand::IdRef(index)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpVectorShuffle instruction to the current basic block.
@@ -260,16 +260,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::VectorShuffle, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector_1), mr::Operand::IdRef(vector_2)]);
+        let mut inst = mr::Instruction::new(spirv::Op::VectorShuffle, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector_1), mr::Operand::IdRef(vector_2)]);
         for v in components.as_ref() {
             inst.operands.push(mr::Operand::LiteralInt32(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpCompositeConstruct instruction to the current basic block.
@@ -277,16 +277,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::CompositeConstruct, Some(result_type), Some(id), vec![]);
+        let mut inst = mr::Instruction::new(spirv::Op::CompositeConstruct, Some(result_type), Some(_id), vec![]);
         for v in constituents.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpCompositeExtract instruction to the current basic block.
@@ -294,16 +294,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::CompositeExtract, Some(result_type), Some(id), vec![mr::Operand::IdRef(composite)]);
+        let mut inst = mr::Instruction::new(spirv::Op::CompositeExtract, Some(result_type), Some(_id), vec![mr::Operand::IdRef(composite)]);
         for v in indexes.as_ref() {
             inst.operands.push(mr::Operand::LiteralInt32(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpCompositeInsert instruction to the current basic block.
@@ -311,16 +311,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::CompositeInsert, Some(result_type), Some(id), vec![mr::Operand::IdRef(object), mr::Operand::IdRef(composite)]);
+        let mut inst = mr::Instruction::new(spirv::Op::CompositeInsert, Some(result_type), Some(_id), vec![mr::Operand::IdRef(object), mr::Operand::IdRef(composite)]);
         for v in indexes.as_ref() {
             inst.operands.push(mr::Operand::LiteralInt32(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpCopyObject instruction to the current basic block.
@@ -328,13 +328,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::CopyObject, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand)]);
+        let inst = mr::Instruction::new(spirv::Op::CopyObject, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpTranspose instruction to the current basic block.
@@ -342,13 +342,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Transpose, Some(result_type), Some(id), vec![mr::Operand::IdRef(matrix)]);
+        let inst = mr::Instruction::new(spirv::Op::Transpose, Some(result_type), Some(_id), vec![mr::Operand::IdRef(matrix)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSampledImage instruction to the current basic block.
@@ -356,13 +356,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SampledImage, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(sampler)]);
+        let inst = mr::Instruction::new(spirv::Op::SampledImage, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(sampler)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleImplicitLod instruction to the current basic block.
@@ -370,17 +370,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleExplicitLod instruction to the current basic block.
@@ -388,14 +388,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleDrefImplicitLod instruction to the current basic block.
@@ -403,17 +403,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleDrefImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleDrefExplicitLod instruction to the current basic block.
@@ -421,14 +421,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleDrefExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleDrefExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleProjImplicitLod instruction to the current basic block.
@@ -436,17 +436,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleProjExplicitLod instruction to the current basic block.
@@ -454,14 +454,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleProjDrefImplicitLod instruction to the current basic block.
@@ -469,17 +469,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjDrefImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSampleProjDrefExplicitLod instruction to the current basic block.
@@ -487,14 +487,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjDrefExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSampleProjDrefExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageFetch instruction to the current basic block.
@@ -502,17 +502,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageFetch, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageFetch, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageGather instruction to the current basic block.
@@ -520,17 +520,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(component)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageGather, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(component)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageDrefGather instruction to the current basic block.
@@ -538,17 +538,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageDrefGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageDrefGather, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageRead instruction to the current basic block.
@@ -556,17 +556,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageRead, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageRead, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageWrite instruction to the current basic block.
@@ -587,13 +587,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Image, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image)]);
+        let inst = mr::Instruction::new(spirv::Op::Image, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageQueryFormat instruction to the current basic block.
@@ -601,13 +601,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageQueryFormat, Some(result_type), Some(id), vec![mr::Operand::IdRef(image)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageQueryFormat, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageQueryOrder instruction to the current basic block.
@@ -615,13 +615,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageQueryOrder, Some(result_type), Some(id), vec![mr::Operand::IdRef(image)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageQueryOrder, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageQuerySizeLod instruction to the current basic block.
@@ -629,13 +629,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageQuerySizeLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(level_of_detail)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageQuerySizeLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(level_of_detail)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageQuerySize instruction to the current basic block.
@@ -643,13 +643,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageQuerySize, Some(result_type), Some(id), vec![mr::Operand::IdRef(image)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageQuerySize, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageQueryLod instruction to the current basic block.
@@ -657,13 +657,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageQueryLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageQueryLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageQueryLevels instruction to the current basic block.
@@ -671,13 +671,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageQueryLevels, Some(result_type), Some(id), vec![mr::Operand::IdRef(image)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageQueryLevels, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageQuerySamples instruction to the current basic block.
@@ -685,13 +685,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageQuerySamples, Some(result_type), Some(id), vec![mr::Operand::IdRef(image)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageQuerySamples, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpConvertFToU instruction to the current basic block.
@@ -699,13 +699,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ConvertFToU, Some(result_type), Some(id), vec![mr::Operand::IdRef(float_value)]);
+        let inst = mr::Instruction::new(spirv::Op::ConvertFToU, Some(result_type), Some(_id), vec![mr::Operand::IdRef(float_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpConvertFToS instruction to the current basic block.
@@ -713,13 +713,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ConvertFToS, Some(result_type), Some(id), vec![mr::Operand::IdRef(float_value)]);
+        let inst = mr::Instruction::new(spirv::Op::ConvertFToS, Some(result_type), Some(_id), vec![mr::Operand::IdRef(float_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpConvertSToF instruction to the current basic block.
@@ -727,13 +727,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ConvertSToF, Some(result_type), Some(id), vec![mr::Operand::IdRef(signed_value)]);
+        let inst = mr::Instruction::new(spirv::Op::ConvertSToF, Some(result_type), Some(_id), vec![mr::Operand::IdRef(signed_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpConvertUToF instruction to the current basic block.
@@ -741,13 +741,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ConvertUToF, Some(result_type), Some(id), vec![mr::Operand::IdRef(unsigned_value)]);
+        let inst = mr::Instruction::new(spirv::Op::ConvertUToF, Some(result_type), Some(_id), vec![mr::Operand::IdRef(unsigned_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpUConvert instruction to the current basic block.
@@ -755,13 +755,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::UConvert, Some(result_type), Some(id), vec![mr::Operand::IdRef(unsigned_value)]);
+        let inst = mr::Instruction::new(spirv::Op::UConvert, Some(result_type), Some(_id), vec![mr::Operand::IdRef(unsigned_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSConvert instruction to the current basic block.
@@ -769,13 +769,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SConvert, Some(result_type), Some(id), vec![mr::Operand::IdRef(signed_value)]);
+        let inst = mr::Instruction::new(spirv::Op::SConvert, Some(result_type), Some(_id), vec![mr::Operand::IdRef(signed_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFConvert instruction to the current basic block.
@@ -783,13 +783,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FConvert, Some(result_type), Some(id), vec![mr::Operand::IdRef(float_value)]);
+        let inst = mr::Instruction::new(spirv::Op::FConvert, Some(result_type), Some(_id), vec![mr::Operand::IdRef(float_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpQuantizeToF16 instruction to the current basic block.
@@ -797,13 +797,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::QuantizeToF16, Some(result_type), Some(id), vec![mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::QuantizeToF16, Some(result_type), Some(_id), vec![mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpConvertPtrToU instruction to the current basic block.
@@ -811,13 +811,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ConvertPtrToU, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer)]);
+        let inst = mr::Instruction::new(spirv::Op::ConvertPtrToU, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSatConvertSToU instruction to the current basic block.
@@ -825,13 +825,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SatConvertSToU, Some(result_type), Some(id), vec![mr::Operand::IdRef(signed_value)]);
+        let inst = mr::Instruction::new(spirv::Op::SatConvertSToU, Some(result_type), Some(_id), vec![mr::Operand::IdRef(signed_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSatConvertUToS instruction to the current basic block.
@@ -839,13 +839,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SatConvertUToS, Some(result_type), Some(id), vec![mr::Operand::IdRef(unsigned_value)]);
+        let inst = mr::Instruction::new(spirv::Op::SatConvertUToS, Some(result_type), Some(_id), vec![mr::Operand::IdRef(unsigned_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpConvertUToPtr instruction to the current basic block.
@@ -853,13 +853,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ConvertUToPtr, Some(result_type), Some(id), vec![mr::Operand::IdRef(integer_value)]);
+        let inst = mr::Instruction::new(spirv::Op::ConvertUToPtr, Some(result_type), Some(_id), vec![mr::Operand::IdRef(integer_value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpPtrCastToGeneric instruction to the current basic block.
@@ -867,13 +867,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::PtrCastToGeneric, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer)]);
+        let inst = mr::Instruction::new(spirv::Op::PtrCastToGeneric, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGenericCastToPtr instruction to the current basic block.
@@ -881,13 +881,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GenericCastToPtr, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer)]);
+        let inst = mr::Instruction::new(spirv::Op::GenericCastToPtr, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGenericCastToPtrExplicit instruction to the current basic block.
@@ -895,13 +895,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GenericCastToPtrExplicit, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::StorageClass(storage)]);
+        let inst = mr::Instruction::new(spirv::Op::GenericCastToPtrExplicit, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::StorageClass(storage)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitcast instruction to the current basic block.
@@ -909,13 +909,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Bitcast, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand)]);
+        let inst = mr::Instruction::new(spirv::Op::Bitcast, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSNegate instruction to the current basic block.
@@ -923,13 +923,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SNegate, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand)]);
+        let inst = mr::Instruction::new(spirv::Op::SNegate, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFNegate instruction to the current basic block.
@@ -937,13 +937,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FNegate, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand)]);
+        let inst = mr::Instruction::new(spirv::Op::FNegate, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIAdd instruction to the current basic block.
@@ -951,13 +951,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IAdd, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::IAdd, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFAdd instruction to the current basic block.
@@ -965,13 +965,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FAdd, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FAdd, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpISub instruction to the current basic block.
@@ -979,13 +979,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ISub, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::ISub, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFSub instruction to the current basic block.
@@ -993,13 +993,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FSub, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FSub, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIMul instruction to the current basic block.
@@ -1007,13 +1007,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IMul, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::IMul, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFMul instruction to the current basic block.
@@ -1021,13 +1021,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FMul, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FMul, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpUDiv instruction to the current basic block.
@@ -1035,13 +1035,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::UDiv, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::UDiv, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSDiv instruction to the current basic block.
@@ -1049,13 +1049,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SDiv, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SDiv, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFDiv instruction to the current basic block.
@@ -1063,13 +1063,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FDiv, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FDiv, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpUMod instruction to the current basic block.
@@ -1077,13 +1077,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::UMod, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::UMod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSRem instruction to the current basic block.
@@ -1091,13 +1091,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SRem, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SRem, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSMod instruction to the current basic block.
@@ -1105,13 +1105,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SMod, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SMod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFRem instruction to the current basic block.
@@ -1119,13 +1119,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FRem, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FRem, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFMod instruction to the current basic block.
@@ -1133,13 +1133,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FMod, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FMod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpVectorTimesScalar instruction to the current basic block.
@@ -1147,13 +1147,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::VectorTimesScalar, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(scalar)]);
+        let inst = mr::Instruction::new(spirv::Op::VectorTimesScalar, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(scalar)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpMatrixTimesScalar instruction to the current basic block.
@@ -1161,13 +1161,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::MatrixTimesScalar, Some(result_type), Some(id), vec![mr::Operand::IdRef(matrix), mr::Operand::IdRef(scalar)]);
+        let inst = mr::Instruction::new(spirv::Op::MatrixTimesScalar, Some(result_type), Some(_id), vec![mr::Operand::IdRef(matrix), mr::Operand::IdRef(scalar)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpVectorTimesMatrix instruction to the current basic block.
@@ -1175,13 +1175,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::VectorTimesMatrix, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(matrix)]);
+        let inst = mr::Instruction::new(spirv::Op::VectorTimesMatrix, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector), mr::Operand::IdRef(matrix)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpMatrixTimesVector instruction to the current basic block.
@@ -1189,13 +1189,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::MatrixTimesVector, Some(result_type), Some(id), vec![mr::Operand::IdRef(matrix), mr::Operand::IdRef(vector)]);
+        let inst = mr::Instruction::new(spirv::Op::MatrixTimesVector, Some(result_type), Some(_id), vec![mr::Operand::IdRef(matrix), mr::Operand::IdRef(vector)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpMatrixTimesMatrix instruction to the current basic block.
@@ -1203,13 +1203,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::MatrixTimesMatrix, Some(result_type), Some(id), vec![mr::Operand::IdRef(left_matrix), mr::Operand::IdRef(right_matrix)]);
+        let inst = mr::Instruction::new(spirv::Op::MatrixTimesMatrix, Some(result_type), Some(_id), vec![mr::Operand::IdRef(left_matrix), mr::Operand::IdRef(right_matrix)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpOuterProduct instruction to the current basic block.
@@ -1217,13 +1217,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::OuterProduct, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector_1), mr::Operand::IdRef(vector_2)]);
+        let inst = mr::Instruction::new(spirv::Op::OuterProduct, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector_1), mr::Operand::IdRef(vector_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpDot instruction to the current basic block.
@@ -1231,13 +1231,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Dot, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector_1), mr::Operand::IdRef(vector_2)]);
+        let inst = mr::Instruction::new(spirv::Op::Dot, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector_1), mr::Operand::IdRef(vector_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIAddCarry instruction to the current basic block.
@@ -1245,13 +1245,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IAddCarry, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::IAddCarry, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpISubBorrow instruction to the current basic block.
@@ -1259,13 +1259,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ISubBorrow, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::ISubBorrow, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpUMulExtended instruction to the current basic block.
@@ -1273,13 +1273,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::UMulExtended, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::UMulExtended, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSMulExtended instruction to the current basic block.
@@ -1287,13 +1287,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SMulExtended, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SMulExtended, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAny instruction to the current basic block.
@@ -1301,13 +1301,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Any, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector)]);
+        let inst = mr::Instruction::new(spirv::Op::Any, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAll instruction to the current basic block.
@@ -1315,13 +1315,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::All, Some(result_type), Some(id), vec![mr::Operand::IdRef(vector)]);
+        let inst = mr::Instruction::new(spirv::Op::All, Some(result_type), Some(_id), vec![mr::Operand::IdRef(vector)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIsNan instruction to the current basic block.
@@ -1329,13 +1329,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IsNan, Some(result_type), Some(id), vec![mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::IsNan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIsInf instruction to the current basic block.
@@ -1343,13 +1343,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IsInf, Some(result_type), Some(id), vec![mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::IsInf, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIsFinite instruction to the current basic block.
@@ -1357,13 +1357,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IsFinite, Some(result_type), Some(id), vec![mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::IsFinite, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIsNormal instruction to the current basic block.
@@ -1371,13 +1371,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IsNormal, Some(result_type), Some(id), vec![mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::IsNormal, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSignBitSet instruction to the current basic block.
@@ -1385,13 +1385,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SignBitSet, Some(result_type), Some(id), vec![mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::SignBitSet, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLessOrGreater instruction to the current basic block.
@@ -1399,13 +1399,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::LessOrGreater, Some(result_type), Some(id), vec![mr::Operand::IdRef(x), mr::Operand::IdRef(y)]);
+        let inst = mr::Instruction::new(spirv::Op::LessOrGreater, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x), mr::Operand::IdRef(y)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpOrdered instruction to the current basic block.
@@ -1413,13 +1413,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Ordered, Some(result_type), Some(id), vec![mr::Operand::IdRef(x), mr::Operand::IdRef(y)]);
+        let inst = mr::Instruction::new(spirv::Op::Ordered, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x), mr::Operand::IdRef(y)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpUnordered instruction to the current basic block.
@@ -1427,13 +1427,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Unordered, Some(result_type), Some(id), vec![mr::Operand::IdRef(x), mr::Operand::IdRef(y)]);
+        let inst = mr::Instruction::new(spirv::Op::Unordered, Some(result_type), Some(_id), vec![mr::Operand::IdRef(x), mr::Operand::IdRef(y)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLogicalEqual instruction to the current basic block.
@@ -1441,13 +1441,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::LogicalEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::LogicalEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLogicalNotEqual instruction to the current basic block.
@@ -1455,13 +1455,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::LogicalNotEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::LogicalNotEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLogicalOr instruction to the current basic block.
@@ -1469,13 +1469,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::LogicalOr, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::LogicalOr, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLogicalAnd instruction to the current basic block.
@@ -1483,13 +1483,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::LogicalAnd, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::LogicalAnd, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLogicalNot instruction to the current basic block.
@@ -1497,13 +1497,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::LogicalNot, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand)]);
+        let inst = mr::Instruction::new(spirv::Op::LogicalNot, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSelect instruction to the current basic block.
@@ -1511,13 +1511,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Select, Some(result_type), Some(id), vec![mr::Operand::IdRef(condition), mr::Operand::IdRef(object_1), mr::Operand::IdRef(object_2)]);
+        let inst = mr::Instruction::new(spirv::Op::Select, Some(result_type), Some(_id), vec![mr::Operand::IdRef(condition), mr::Operand::IdRef(object_1), mr::Operand::IdRef(object_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIEqual instruction to the current basic block.
@@ -1525,13 +1525,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::IEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpINotEqual instruction to the current basic block.
@@ -1539,13 +1539,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::INotEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::INotEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpUGreaterThan instruction to the current basic block.
@@ -1553,13 +1553,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::UGreaterThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::UGreaterThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSGreaterThan instruction to the current basic block.
@@ -1567,13 +1567,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SGreaterThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SGreaterThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpUGreaterThanEqual instruction to the current basic block.
@@ -1581,13 +1581,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::UGreaterThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::UGreaterThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSGreaterThanEqual instruction to the current basic block.
@@ -1595,13 +1595,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SGreaterThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SGreaterThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpULessThan instruction to the current basic block.
@@ -1609,13 +1609,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ULessThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::ULessThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSLessThan instruction to the current basic block.
@@ -1623,13 +1623,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SLessThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SLessThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpULessThanEqual instruction to the current basic block.
@@ -1637,13 +1637,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ULessThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::ULessThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSLessThanEqual instruction to the current basic block.
@@ -1651,13 +1651,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SLessThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::SLessThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFOrdEqual instruction to the current basic block.
@@ -1665,13 +1665,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FOrdEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FOrdEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFUnordEqual instruction to the current basic block.
@@ -1679,13 +1679,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FUnordEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FUnordEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFOrdNotEqual instruction to the current basic block.
@@ -1693,13 +1693,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FOrdNotEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FOrdNotEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFUnordNotEqual instruction to the current basic block.
@@ -1707,13 +1707,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FUnordNotEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FUnordNotEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFOrdLessThan instruction to the current basic block.
@@ -1721,13 +1721,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FOrdLessThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FOrdLessThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFUnordLessThan instruction to the current basic block.
@@ -1735,13 +1735,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FUnordLessThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FUnordLessThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFOrdGreaterThan instruction to the current basic block.
@@ -1749,13 +1749,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FOrdGreaterThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FOrdGreaterThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFUnordGreaterThan instruction to the current basic block.
@@ -1763,13 +1763,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FUnordGreaterThan, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FUnordGreaterThan, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFOrdLessThanEqual instruction to the current basic block.
@@ -1777,13 +1777,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FOrdLessThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FOrdLessThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFUnordLessThanEqual instruction to the current basic block.
@@ -1791,13 +1791,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FUnordLessThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FUnordLessThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFOrdGreaterThanEqual instruction to the current basic block.
@@ -1805,13 +1805,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FOrdGreaterThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FOrdGreaterThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFUnordGreaterThanEqual instruction to the current basic block.
@@ -1819,13 +1819,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FUnordGreaterThanEqual, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::FUnordGreaterThanEqual, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpShiftRightLogical instruction to the current basic block.
@@ -1833,13 +1833,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ShiftRightLogical, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(shift)]);
+        let inst = mr::Instruction::new(spirv::Op::ShiftRightLogical, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(shift)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpShiftRightArithmetic instruction to the current basic block.
@@ -1847,13 +1847,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ShiftRightArithmetic, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(shift)]);
+        let inst = mr::Instruction::new(spirv::Op::ShiftRightArithmetic, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(shift)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpShiftLeftLogical instruction to the current basic block.
@@ -1861,13 +1861,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ShiftLeftLogical, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(shift)]);
+        let inst = mr::Instruction::new(spirv::Op::ShiftLeftLogical, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(shift)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitwiseOr instruction to the current basic block.
@@ -1875,13 +1875,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitwiseOr, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::BitwiseOr, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitwiseXor instruction to the current basic block.
@@ -1889,13 +1889,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitwiseXor, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::BitwiseXor, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitwiseAnd instruction to the current basic block.
@@ -1903,13 +1903,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitwiseAnd, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
+        let inst = mr::Instruction::new(spirv::Op::BitwiseAnd, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand_1), mr::Operand::IdRef(operand_2)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpNot instruction to the current basic block.
@@ -1917,13 +1917,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Not, Some(result_type), Some(id), vec![mr::Operand::IdRef(operand)]);
+        let inst = mr::Instruction::new(spirv::Op::Not, Some(result_type), Some(_id), vec![mr::Operand::IdRef(operand)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitFieldInsert instruction to the current basic block.
@@ -1931,13 +1931,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitFieldInsert, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(insert), mr::Operand::IdRef(offset), mr::Operand::IdRef(count)]);
+        let inst = mr::Instruction::new(spirv::Op::BitFieldInsert, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(insert), mr::Operand::IdRef(offset), mr::Operand::IdRef(count)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitFieldSExtract instruction to the current basic block.
@@ -1945,13 +1945,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitFieldSExtract, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(offset), mr::Operand::IdRef(count)]);
+        let inst = mr::Instruction::new(spirv::Op::BitFieldSExtract, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(offset), mr::Operand::IdRef(count)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitFieldUExtract instruction to the current basic block.
@@ -1959,13 +1959,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitFieldUExtract, Some(result_type), Some(id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(offset), mr::Operand::IdRef(count)]);
+        let inst = mr::Instruction::new(spirv::Op::BitFieldUExtract, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base), mr::Operand::IdRef(offset), mr::Operand::IdRef(count)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitReverse instruction to the current basic block.
@@ -1973,13 +1973,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitReverse, Some(result_type), Some(id), vec![mr::Operand::IdRef(base)]);
+        let inst = mr::Instruction::new(spirv::Op::BitReverse, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBitCount instruction to the current basic block.
@@ -1987,13 +1987,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BitCount, Some(result_type), Some(id), vec![mr::Operand::IdRef(base)]);
+        let inst = mr::Instruction::new(spirv::Op::BitCount, Some(result_type), Some(_id), vec![mr::Operand::IdRef(base)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpDPdx instruction to the current basic block.
@@ -2001,13 +2001,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::DPdx, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::DPdx, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpDPdy instruction to the current basic block.
@@ -2015,13 +2015,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::DPdy, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::DPdy, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFwidth instruction to the current basic block.
@@ -2029,13 +2029,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Fwidth, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::Fwidth, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpDPdxFine instruction to the current basic block.
@@ -2043,13 +2043,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::DPdxFine, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::DPdxFine, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpDPdyFine instruction to the current basic block.
@@ -2057,13 +2057,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::DPdyFine, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::DPdyFine, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFwidthFine instruction to the current basic block.
@@ -2071,13 +2071,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FwidthFine, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::FwidthFine, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpDPdxCoarse instruction to the current basic block.
@@ -2085,13 +2085,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::DPdxCoarse, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::DPdxCoarse, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpDPdyCoarse instruction to the current basic block.
@@ -2099,13 +2099,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::DPdyCoarse, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::DPdyCoarse, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFwidthCoarse instruction to the current basic block.
@@ -2113,13 +2113,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FwidthCoarse, Some(result_type), Some(id), vec![mr::Operand::IdRef(p)]);
+        let inst = mr::Instruction::new(spirv::Op::FwidthCoarse, Some(result_type), Some(_id), vec![mr::Operand::IdRef(p)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpEmitVertex instruction to the current basic block.
@@ -2181,13 +2181,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicLoad, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicLoad, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicStore instruction to the current basic block.
@@ -2204,13 +2204,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicExchange, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicExchange, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicCompareExchange instruction to the current basic block.
@@ -2218,13 +2218,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicCompareExchange, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(equal), mr::Operand::IdMemorySemantics(unequal), mr::Operand::IdRef(value), mr::Operand::IdRef(comparator)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicCompareExchange, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(equal), mr::Operand::IdMemorySemantics(unequal), mr::Operand::IdRef(value), mr::Operand::IdRef(comparator)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicCompareExchangeWeak instruction to the current basic block.
@@ -2232,13 +2232,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicCompareExchangeWeak, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(equal), mr::Operand::IdMemorySemantics(unequal), mr::Operand::IdRef(value), mr::Operand::IdRef(comparator)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicCompareExchangeWeak, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(equal), mr::Operand::IdMemorySemantics(unequal), mr::Operand::IdRef(value), mr::Operand::IdRef(comparator)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicIIncrement instruction to the current basic block.
@@ -2246,13 +2246,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicIIncrement, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicIIncrement, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicIDecrement instruction to the current basic block.
@@ -2260,13 +2260,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicIDecrement, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicIDecrement, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicIAdd instruction to the current basic block.
@@ -2274,13 +2274,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicIAdd, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicIAdd, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicISub instruction to the current basic block.
@@ -2288,13 +2288,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicISub, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicISub, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicSMin instruction to the current basic block.
@@ -2302,13 +2302,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicSMin, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicSMin, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicUMin instruction to the current basic block.
@@ -2316,13 +2316,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicUMin, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicUMin, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicSMax instruction to the current basic block.
@@ -2330,13 +2330,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicSMax, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicSMax, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicUMax instruction to the current basic block.
@@ -2344,13 +2344,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicUMax, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicUMax, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicAnd instruction to the current basic block.
@@ -2358,13 +2358,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicAnd, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicAnd, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicOr instruction to the current basic block.
@@ -2372,13 +2372,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicOr, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicOr, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicXor instruction to the current basic block.
@@ -2386,13 +2386,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicXor, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicXor, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics), mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpPhi instruction to the current basic block.
@@ -2400,17 +2400,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(id), vec![]);
+        let mut inst = mr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(_id), vec![]);
         for v in value_label_pairs.as_ref() {
             inst.operands.push(mr::Operand::IdRef(v.0));
             inst.operands.push(mr::Operand::IdRef(v.1));
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpLoopMerge instruction to the current basic block.
@@ -2455,13 +2455,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupAsyncCopy, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(destination), mr::Operand::IdRef(source), mr::Operand::IdRef(num_elements), mr::Operand::IdRef(stride), mr::Operand::IdRef(event)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupAsyncCopy, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(destination), mr::Operand::IdRef(source), mr::Operand::IdRef(num_elements), mr::Operand::IdRef(stride), mr::Operand::IdRef(event)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupWaitEvents instruction to the current basic block.
@@ -2478,13 +2478,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupAll, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(predicate)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupAll, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(predicate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupAny instruction to the current basic block.
@@ -2492,13 +2492,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupAny, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(predicate)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupAny, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(predicate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupBroadcast instruction to the current basic block.
@@ -2506,13 +2506,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupBroadcast, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(local_id)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupBroadcast, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(local_id)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupIAdd instruction to the current basic block.
@@ -2520,13 +2520,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupIAdd, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupIAdd, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupFAdd instruction to the current basic block.
@@ -2534,13 +2534,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupFAdd, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupFAdd, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupFMin instruction to the current basic block.
@@ -2548,13 +2548,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupFMin, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupFMin, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupUMin instruction to the current basic block.
@@ -2562,13 +2562,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupUMin, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupUMin, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupSMin instruction to the current basic block.
@@ -2576,13 +2576,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupSMin, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupSMin, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupFMax instruction to the current basic block.
@@ -2590,13 +2590,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupFMax, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupFMax, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupUMax instruction to the current basic block.
@@ -2604,13 +2604,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupUMax, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupUMax, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupSMax instruction to the current basic block.
@@ -2618,13 +2618,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupSMax, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupSMax, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpReadPipe instruction to the current basic block.
@@ -2632,13 +2632,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ReadPipe, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::ReadPipe, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpWritePipe instruction to the current basic block.
@@ -2646,13 +2646,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::WritePipe, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::WritePipe, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpReservedReadPipe instruction to the current basic block.
@@ -2660,13 +2660,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ReservedReadPipe, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(reserve_id), mr::Operand::IdRef(index), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::ReservedReadPipe, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(reserve_id), mr::Operand::IdRef(index), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpReservedWritePipe instruction to the current basic block.
@@ -2674,13 +2674,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ReservedWritePipe, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(reserve_id), mr::Operand::IdRef(index), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::ReservedWritePipe, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(reserve_id), mr::Operand::IdRef(index), mr::Operand::IdRef(pointer), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpReserveReadPipePackets instruction to the current basic block.
@@ -2688,13 +2688,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ReserveReadPipePackets, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::ReserveReadPipePackets, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpReserveWritePipePackets instruction to the current basic block.
@@ -2702,13 +2702,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ReserveWritePipePackets, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::ReserveWritePipePackets, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpCommitReadPipe instruction to the current basic block.
@@ -2734,13 +2734,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IsValidReserveId, Some(result_type), Some(id), vec![mr::Operand::IdRef(reserve_id)]);
+        let inst = mr::Instruction::new(spirv::Op::IsValidReserveId, Some(result_type), Some(_id), vec![mr::Operand::IdRef(reserve_id)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetNumPipePackets instruction to the current basic block.
@@ -2748,13 +2748,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetNumPipePackets, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::GetNumPipePackets, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetMaxPipePackets instruction to the current basic block.
@@ -2762,13 +2762,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetMaxPipePackets, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::GetMaxPipePackets, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupReserveReadPipePackets instruction to the current basic block.
@@ -2776,13 +2776,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupReserveReadPipePackets, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupReserveReadPipePackets, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupReserveWritePipePackets instruction to the current basic block.
@@ -2790,13 +2790,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupReserveWritePipePackets, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupReserveWritePipePackets, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(pipe), mr::Operand::IdRef(num_packets), mr::Operand::IdRef(packet_size), mr::Operand::IdRef(packet_alignment)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupCommitReadPipe instruction to the current basic block.
@@ -2822,13 +2822,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::EnqueueMarker, Some(result_type), Some(id), vec![mr::Operand::IdRef(queue), mr::Operand::IdRef(num_events), mr::Operand::IdRef(wait_events), mr::Operand::IdRef(ret_event)]);
+        let inst = mr::Instruction::new(spirv::Op::EnqueueMarker, Some(result_type), Some(_id), vec![mr::Operand::IdRef(queue), mr::Operand::IdRef(num_events), mr::Operand::IdRef(wait_events), mr::Operand::IdRef(ret_event)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpEnqueueKernel instruction to the current basic block.
@@ -2836,16 +2836,16 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::EnqueueKernel, Some(result_type), Some(id), vec![mr::Operand::IdRef(queue), mr::Operand::IdRef(flags), mr::Operand::IdRef(nd_range), mr::Operand::IdRef(num_events), mr::Operand::IdRef(wait_events), mr::Operand::IdRef(ret_event), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
+        let mut inst = mr::Instruction::new(spirv::Op::EnqueueKernel, Some(result_type), Some(_id), vec![mr::Operand::IdRef(queue), mr::Operand::IdRef(flags), mr::Operand::IdRef(nd_range), mr::Operand::IdRef(num_events), mr::Operand::IdRef(wait_events), mr::Operand::IdRef(ret_event), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
         for v in local_size.as_ref() {
             inst.operands.push(mr::Operand::IdRef(*v))
         };
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetKernelNDrangeSubGroupCount instruction to the current basic block.
@@ -2853,13 +2853,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetKernelNDrangeSubGroupCount, Some(result_type), Some(id), vec![mr::Operand::IdRef(nd_range), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
+        let inst = mr::Instruction::new(spirv::Op::GetKernelNDrangeSubGroupCount, Some(result_type), Some(_id), vec![mr::Operand::IdRef(nd_range), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetKernelNDrangeMaxSubGroupSize instruction to the current basic block.
@@ -2867,13 +2867,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetKernelNDrangeMaxSubGroupSize, Some(result_type), Some(id), vec![mr::Operand::IdRef(nd_range), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
+        let inst = mr::Instruction::new(spirv::Op::GetKernelNDrangeMaxSubGroupSize, Some(result_type), Some(_id), vec![mr::Operand::IdRef(nd_range), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetKernelWorkGroupSize instruction to the current basic block.
@@ -2881,13 +2881,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetKernelWorkGroupSize, Some(result_type), Some(id), vec![mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
+        let inst = mr::Instruction::new(spirv::Op::GetKernelWorkGroupSize, Some(result_type), Some(_id), vec![mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetKernelPreferredWorkGroupSizeMultiple instruction to the current basic block.
@@ -2895,13 +2895,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetKernelPreferredWorkGroupSizeMultiple, Some(result_type), Some(id), vec![mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
+        let inst = mr::Instruction::new(spirv::Op::GetKernelPreferredWorkGroupSizeMultiple, Some(result_type), Some(_id), vec![mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpRetainEvent instruction to the current basic block.
@@ -2927,13 +2927,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::CreateUserEvent, Some(result_type), Some(id), vec![]);
+        let inst = mr::Instruction::new(spirv::Op::CreateUserEvent, Some(result_type), Some(_id), vec![]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpIsValidEvent instruction to the current basic block.
@@ -2941,13 +2941,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::IsValidEvent, Some(result_type), Some(id), vec![mr::Operand::IdRef(event)]);
+        let inst = mr::Instruction::new(spirv::Op::IsValidEvent, Some(result_type), Some(_id), vec![mr::Operand::IdRef(event)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSetUserEventStatus instruction to the current basic block.
@@ -2973,13 +2973,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetDefaultQueue, Some(result_type), Some(id), vec![]);
+        let inst = mr::Instruction::new(spirv::Op::GetDefaultQueue, Some(result_type), Some(_id), vec![]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpBuildNDRange instruction to the current basic block.
@@ -2987,13 +2987,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::BuildNDRange, Some(result_type), Some(id), vec![mr::Operand::IdRef(global_work_size), mr::Operand::IdRef(local_work_size), mr::Operand::IdRef(global_work_offset)]);
+        let inst = mr::Instruction::new(spirv::Op::BuildNDRange, Some(result_type), Some(_id), vec![mr::Operand::IdRef(global_work_size), mr::Operand::IdRef(local_work_size), mr::Operand::IdRef(global_work_offset)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleImplicitLod instruction to the current basic block.
@@ -3001,17 +3001,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleExplicitLod instruction to the current basic block.
@@ -3019,14 +3019,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleDrefImplicitLod instruction to the current basic block.
@@ -3034,17 +3034,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleDrefImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleDrefExplicitLod instruction to the current basic block.
@@ -3052,14 +3052,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleDrefExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleDrefExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleProjImplicitLod instruction to the current basic block.
@@ -3067,17 +3067,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleProjExplicitLod instruction to the current basic block.
@@ -3085,14 +3085,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleProjDrefImplicitLod instruction to the current basic block.
@@ -3100,17 +3100,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjDrefImplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjDrefImplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseSampleProjDrefExplicitLod instruction to the current basic block.
@@ -3118,14 +3118,14 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjDrefExplicitLod, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseSampleProjDrefExplicitLod, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref), mr::Operand::ImageOperands(image_operands)]);
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseFetch instruction to the current basic block.
@@ -3133,17 +3133,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseFetch, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseFetch, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseGather instruction to the current basic block.
@@ -3151,17 +3151,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(component)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseGather, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(component)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseDrefGather instruction to the current basic block.
@@ -3169,17 +3169,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseDrefGather, Some(result_type), Some(id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseDrefGather, Some(result_type), Some(_id), vec![mr::Operand::IdRef(sampled_image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(dref)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpImageSparseTexelsResident instruction to the current basic block.
@@ -3187,13 +3187,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::ImageSparseTexelsResident, Some(result_type), Some(id), vec![mr::Operand::IdRef(resident_code)]);
+        let inst = mr::Instruction::new(spirv::Op::ImageSparseTexelsResident, Some(result_type), Some(_id), vec![mr::Operand::IdRef(resident_code)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicFlagTestAndSet instruction to the current basic block.
@@ -3201,13 +3201,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::AtomicFlagTestAndSet, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
+        let inst = mr::Instruction::new(spirv::Op::AtomicFlagTestAndSet, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer), mr::Operand::IdScope(scope), mr::Operand::IdMemorySemantics(semantics)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpAtomicFlagClear instruction to the current basic block.
@@ -3224,17 +3224,17 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseRead, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
+        let mut inst = mr::Instruction::new(spirv::Op::ImageSparseRead, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
         if let Some(v) = image_operands {
             inst.operands.push(mr::Operand::ImageOperands(v));
         };
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSizeOf instruction to the current basic block.
@@ -3242,13 +3242,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SizeOf, Some(result_type), Some(id), vec![mr::Operand::IdRef(pointer)]);
+        let inst = mr::Instruction::new(spirv::Op::SizeOf, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pointer)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpCreatePipeFromPipeStorage instruction to the current basic block.
@@ -3256,13 +3256,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::CreatePipeFromPipeStorage, Some(result_type), Some(id), vec![mr::Operand::IdRef(pipe_storage)]);
+        let inst = mr::Instruction::new(spirv::Op::CreatePipeFromPipeStorage, Some(result_type), Some(_id), vec![mr::Operand::IdRef(pipe_storage)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetKernelLocalSizeForSubgroupCount instruction to the current basic block.
@@ -3270,13 +3270,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetKernelLocalSizeForSubgroupCount, Some(result_type), Some(id), vec![mr::Operand::IdRef(subgroup_count), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
+        let inst = mr::Instruction::new(spirv::Op::GetKernelLocalSizeForSubgroupCount, Some(result_type), Some(_id), vec![mr::Operand::IdRef(subgroup_count), mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGetKernelMaxNumSubgroups instruction to the current basic block.
@@ -3284,13 +3284,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GetKernelMaxNumSubgroups, Some(result_type), Some(id), vec![mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
+        let inst = mr::Instruction::new(spirv::Op::GetKernelMaxNumSubgroups, Some(result_type), Some(_id), vec![mr::Operand::IdRef(invoke), mr::Operand::IdRef(param), mr::Operand::IdRef(param_size), mr::Operand::IdRef(param_align)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpNamedBarrierInitialize instruction to the current basic block.
@@ -3298,13 +3298,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::NamedBarrierInitialize, Some(result_type), Some(id), vec![mr::Operand::IdRef(subgroup_count)]);
+        let inst = mr::Instruction::new(spirv::Op::NamedBarrierInitialize, Some(result_type), Some(_id), vec![mr::Operand::IdRef(subgroup_count)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpMemoryNamedBarrier instruction to the current basic block.
@@ -3316,18 +3316,542 @@ impl Builder {
         Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
     }
 
+    /// Appends an OpGroupNonUniformElect instruction to the current basic block.
+    pub fn group_non_uniform_elect(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformElect, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformAll instruction to the current basic block.
+    pub fn group_non_uniform_all(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, predicate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformAll, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(predicate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformAny instruction to the current basic block.
+    pub fn group_non_uniform_any(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, predicate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformAny, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(predicate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformAllEqual instruction to the current basic block.
+    pub fn group_non_uniform_all_equal(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformAllEqual, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBroadcast instruction to the current basic block.
+    pub fn group_non_uniform_broadcast(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, id: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformBroadcast, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(id)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBroadcastFirst instruction to the current basic block.
+    pub fn group_non_uniform_broadcast_first(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformBroadcastFirst, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBallot instruction to the current basic block.
+    pub fn group_non_uniform_ballot(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, predicate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformBallot, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(predicate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformInverseBallot instruction to the current basic block.
+    pub fn group_non_uniform_inverse_ballot(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformInverseBallot, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBallotBitExtract instruction to the current basic block.
+    pub fn group_non_uniform_ballot_bit_extract(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, index: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformBallotBitExtract, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(index)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBallotBitCount instruction to the current basic block.
+    pub fn group_non_uniform_ballot_bit_count(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformBallotBitCount, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBallotFindLSB instruction to the current basic block.
+    pub fn group_non_uniform_ballot_find_lsb(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformBallotFindLSB, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBallotFindMSB instruction to the current basic block.
+    pub fn group_non_uniform_ballot_find_msb(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformBallotFindMSB, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformShuffle instruction to the current basic block.
+    pub fn group_non_uniform_shuffle(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, id: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformShuffle, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(id)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformShuffleXor instruction to the current basic block.
+    pub fn group_non_uniform_shuffle_xor(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, mask: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformShuffleXor, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(mask)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformShuffleUp instruction to the current basic block.
+    pub fn group_non_uniform_shuffle_up(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, delta: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformShuffleUp, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(delta)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformShuffleDown instruction to the current basic block.
+    pub fn group_non_uniform_shuffle_down(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, delta: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformShuffleDown, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(delta)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformIAdd instruction to the current basic block.
+    pub fn group_non_uniform_iadd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformIAdd, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformFAdd instruction to the current basic block.
+    pub fn group_non_uniform_fadd(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformFAdd, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformIMul instruction to the current basic block.
+    pub fn group_non_uniform_imul(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformIMul, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformFMul instruction to the current basic block.
+    pub fn group_non_uniform_fmul(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformFMul, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformSMin instruction to the current basic block.
+    pub fn group_non_uniform_smin(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformSMin, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformUMin instruction to the current basic block.
+    pub fn group_non_uniform_umin(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformUMin, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformFMin instruction to the current basic block.
+    pub fn group_non_uniform_fmin(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformFMin, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformSMax instruction to the current basic block.
+    pub fn group_non_uniform_smax(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformSMax, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformUMax instruction to the current basic block.
+    pub fn group_non_uniform_umax(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformUMax, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformFMax instruction to the current basic block.
+    pub fn group_non_uniform_fmax(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformFMax, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBitwiseAnd instruction to the current basic block.
+    pub fn group_non_uniform_bitwise_and(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformBitwiseAnd, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBitwiseOr instruction to the current basic block.
+    pub fn group_non_uniform_bitwise_or(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformBitwiseOr, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformBitwiseXor instruction to the current basic block.
+    pub fn group_non_uniform_bitwise_xor(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformBitwiseXor, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformLogicalAnd instruction to the current basic block.
+    pub fn group_non_uniform_logical_and(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformLogicalAnd, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformLogicalOr instruction to the current basic block.
+    pub fn group_non_uniform_logical_or(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformLogicalOr, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformLogicalXor instruction to the current basic block.
+    pub fn group_non_uniform_logical_xor(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, operation: spirv::GroupOperation, value: spirv::Word, cluster_size: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut inst = mr::Instruction::new(spirv::Op::GroupNonUniformLogicalXor, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(value)]);
+        if let Some(v) = cluster_size {
+            inst.operands.push(mr::Operand::IdRef(v));
+        };
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformQuadBroadcast instruction to the current basic block.
+    pub fn group_non_uniform_quad_broadcast(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, index: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformQuadBroadcast, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(index)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpGroupNonUniformQuadSwap instruction to the current basic block.
+    pub fn group_non_uniform_quad_swap(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, execution: spirv::Word, value: spirv::Word, direction: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformQuadSwap, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::IdRef(value), mr::Operand::IdRef(direction)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
     /// Appends an OpSubgroupBallotKHR instruction to the current basic block.
     pub fn subgroup_ballot_khr(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, predicate: spirv::Word) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SubgroupBallotKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(predicate)]);
+        let inst = mr::Instruction::new(spirv::Op::SubgroupBallotKHR, Some(result_type), Some(_id), vec![mr::Operand::IdRef(predicate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSubgroupFirstInvocationKHR instruction to the current basic block.
@@ -3335,13 +3859,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SubgroupFirstInvocationKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(value)]);
+        let inst = mr::Instruction::new(spirv::Op::SubgroupFirstInvocationKHR, Some(result_type), Some(_id), vec![mr::Operand::IdRef(value)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSubgroupAllKHR instruction to the current basic block.
@@ -3349,13 +3873,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SubgroupAllKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(predicate)]);
+        let inst = mr::Instruction::new(spirv::Op::SubgroupAllKHR, Some(result_type), Some(_id), vec![mr::Operand::IdRef(predicate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSubgroupAnyKHR instruction to the current basic block.
@@ -3363,13 +3887,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SubgroupAnyKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(predicate)]);
+        let inst = mr::Instruction::new(spirv::Op::SubgroupAnyKHR, Some(result_type), Some(_id), vec![mr::Operand::IdRef(predicate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSubgroupAllEqualKHR instruction to the current basic block.
@@ -3377,13 +3901,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SubgroupAllEqualKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(predicate)]);
+        let inst = mr::Instruction::new(spirv::Op::SubgroupAllEqualKHR, Some(result_type), Some(_id), vec![mr::Operand::IdRef(predicate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpSubgroupReadInvocationKHR instruction to the current basic block.
@@ -3391,13 +3915,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::SubgroupReadInvocationKHR, Some(result_type), Some(id), vec![mr::Operand::IdRef(value), mr::Operand::IdRef(index)]);
+        let inst = mr::Instruction::new(spirv::Op::SubgroupReadInvocationKHR, Some(result_type), Some(_id), vec![mr::Operand::IdRef(value), mr::Operand::IdRef(index)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupIAddNonUniformAMD instruction to the current basic block.
@@ -3405,13 +3929,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupIAddNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupIAddNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupFAddNonUniformAMD instruction to the current basic block.
@@ -3419,13 +3943,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupFAddNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupFAddNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupFMinNonUniformAMD instruction to the current basic block.
@@ -3433,13 +3957,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupFMinNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupFMinNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupUMinNonUniformAMD instruction to the current basic block.
@@ -3447,13 +3971,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupUMinNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupUMinNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupSMinNonUniformAMD instruction to the current basic block.
@@ -3461,13 +3985,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupSMinNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupSMinNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupFMaxNonUniformAMD instruction to the current basic block.
@@ -3475,13 +3999,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupFMaxNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupFMaxNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupUMaxNonUniformAMD instruction to the current basic block.
@@ -3489,13 +4013,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupUMaxNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupUMaxNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpGroupSMaxNonUniformAMD instruction to the current basic block.
@@ -3503,13 +4027,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::GroupSMaxNonUniformAMD, Some(result_type), Some(id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
+        let inst = mr::Instruction::new(spirv::Op::GroupSMaxNonUniformAMD, Some(result_type), Some(_id), vec![mr::Operand::IdScope(execution), mr::Operand::GroupOperation(operation), mr::Operand::IdRef(x)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFragmentMaskFetchAMD instruction to the current basic block.
@@ -3517,13 +4041,13 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FragmentMaskFetchAMD, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
+        let inst = mr::Instruction::new(spirv::Op::FragmentMaskFetchAMD, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
     }
 
     /// Appends an OpFragmentFetchAMD instruction to the current basic block.
@@ -3531,12 +4055,148 @@ impl Builder {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let id = match result_id {
+        let _id = match result_id {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::FragmentFetchAMD, Some(result_type), Some(id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(fragment_index)]);
+        let inst = mr::Instruction::new(spirv::Op::FragmentFetchAMD, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(fragment_index)]);
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(id)
+        Ok(_id)
+    }
+
+    /// Appends an OpSubgroupShuffleINTEL instruction to the current basic block.
+    pub fn subgroup_shuffle_intel(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, data: spirv::Word, invocation_id: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::SubgroupShuffleINTEL, Some(result_type), Some(_id), vec![mr::Operand::IdRef(data), mr::Operand::IdRef(invocation_id)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpSubgroupShuffleDownINTEL instruction to the current basic block.
+    pub fn subgroup_shuffle_down_intel(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, current: spirv::Word, next: spirv::Word, delta: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::SubgroupShuffleDownINTEL, Some(result_type), Some(_id), vec![mr::Operand::IdRef(current), mr::Operand::IdRef(next), mr::Operand::IdRef(delta)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpSubgroupShuffleUpINTEL instruction to the current basic block.
+    pub fn subgroup_shuffle_up_intel(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, previous: spirv::Word, current: spirv::Word, delta: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::SubgroupShuffleUpINTEL, Some(result_type), Some(_id), vec![mr::Operand::IdRef(previous), mr::Operand::IdRef(current), mr::Operand::IdRef(delta)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpSubgroupShuffleXorINTEL instruction to the current basic block.
+    pub fn subgroup_shuffle_xor_intel(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, data: spirv::Word, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::SubgroupShuffleXorINTEL, Some(result_type), Some(_id), vec![mr::Operand::IdRef(data), mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpSubgroupBlockReadINTEL instruction to the current basic block.
+    pub fn subgroup_block_read_intel(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, ptr: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::SubgroupBlockReadINTEL, Some(result_type), Some(_id), vec![mr::Operand::IdRef(ptr)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpSubgroupBlockWriteINTEL instruction to the current basic block.
+    pub fn subgroup_block_write_intel(&mut self, ptr: spirv::Word, data: spirv::Word) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let inst = mr::Instruction::new(spirv::Op::SubgroupBlockWriteINTEL, None, None, vec![mr::Operand::IdRef(ptr), mr::Operand::IdRef(data)]);
+        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+    }
+
+    /// Appends an OpSubgroupImageBlockReadINTEL instruction to the current basic block.
+    pub fn subgroup_image_block_read_intel(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, image: spirv::Word, coordinate: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::SubgroupImageBlockReadINTEL, Some(result_type), Some(_id), vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+
+    /// Appends an OpSubgroupImageBlockWriteINTEL instruction to the current basic block.
+    pub fn subgroup_image_block_write_intel(&mut self, image: spirv::Word, coordinate: spirv::Word, data: spirv::Word) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let inst = mr::Instruction::new(spirv::Op::SubgroupImageBlockWriteINTEL, None, None, vec![mr::Operand::IdRef(image), mr::Operand::IdRef(coordinate), mr::Operand::IdRef(data)]);
+        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+    }
+
+    /// Appends an OpDecorateStringGOOGLE instruction to the current basic block.
+    pub fn decorate_string_google<T: AsRef<[mr::Operand]>>(&mut self, target: spirv::Word, decoration: spirv::Decoration, additional_params: T) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let mut inst = mr::Instruction::new(spirv::Op::DecorateStringGOOGLE, None, None, vec![mr::Operand::IdRef(target), mr::Operand::Decoration(decoration)]);
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+    }
+
+    /// Appends an OpMemberDecorateStringGOOGLE instruction to the current basic block.
+    pub fn member_decorate_string_google<T: AsRef<[mr::Operand]>>(&mut self, struct_type: spirv::Word, member: u32, decoration: spirv::Decoration, additional_params: T) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let mut inst = mr::Instruction::new(spirv::Op::MemberDecorateStringGOOGLE, None, None, vec![mr::Operand::IdRef(struct_type), mr::Operand::LiteralInt32(member), mr::Operand::Decoration(decoration)]);
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+    }
+
+    /// Appends an OpGroupNonUniformPartitionNV instruction to the current basic block.
+    pub fn group_non_uniform_partition_nv(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, value: spirv::Word) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let inst = mr::Instruction::new(spirv::Op::GroupNonUniformPartitionNV, Some(result_type), Some(_id), vec![mr::Operand::IdRef(value)]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
     }
 }
