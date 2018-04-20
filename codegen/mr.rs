@@ -245,10 +245,19 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
                                "LiteralFloat32", "LiteralFloat64"]);
         let cases: Vec<String> =
             kinds.iter().map(|element| {
-                format!("{s:12}Operand::{kind}(ref v) => \
-                         write!(f, \"{{:?}}\", v),",
-                        s = "",
-                        kind = element)
+                if element == &"Dim" {
+                    // Skip the "Dim" prefix, which is only used in the API to
+                    // avoid having an enumerant name starting with a number
+                    format!("{s:12}Operand::{kind}(ref v) => \
+                             write!(f, \"{{}}\", &format!(\"{{:?}}\", v)[3..]),",
+                            s = "",
+                            kind = element)
+                } else {
+                    format!("{s:12}Operand::{kind}(ref v) => \
+                             write!(f, \"{{:?}}\", v),",
+                            s = "",
+                            kind = element)
+                }
             }).collect();
         let impl_code = format!(
             "impl fmt::Display for Operand {{\n\
