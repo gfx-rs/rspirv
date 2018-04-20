@@ -20,8 +20,13 @@
 pub(in sr) enum TypeEnum {
     Void,
     Bool,
-    Int { width: u32, signedness: u32 },
-    Float { width: u32 },
+    Int {
+        width: u32,
+        signedness: u32,
+    },
+    Float {
+        width: u32,
+    },
     Vector {
         component_type: TypeToken,
         component_count: u32,
@@ -41,14 +46,22 @@ pub(in sr) enum TypeEnum {
         access_qualifier: Option<spirv::AccessQualifier>,
     },
     Sampler,
-    SampledImage { image_type: TypeToken },
+    SampledImage {
+        image_type: TypeToken,
+    },
     Array {
         element_type: TypeToken,
         length: ConstantToken,
     },
-    RuntimeArray { element_type: TypeToken },
-    Struct { field_types: Vec<TypeToken> },
-    Opaque { type_name: String },
+    RuntimeArray {
+        element_type: TypeToken,
+    },
+    Struct {
+        field_types: Vec<TypeToken>,
+    },
+    Opaque {
+        type_name: String,
+    },
     Pointer {
         storage_class: spirv::StorageClass,
         pointee_type: TypeToken,
@@ -61,8 +74,12 @@ pub(in sr) enum TypeEnum {
     DeviceEvent,
     ReserveId,
     Queue,
-    Pipe { qualifier: spirv::AccessQualifier },
-    ForwardPointer { storage_class: spirv::StorageClass },
+    Pipe {
+        qualifier: spirv::AccessQualifier,
+    },
+    ForwardPointer {
+        storage_class: spirv::StorageClass,
+    },
     PipeStorage,
     NamedBarrier,
 }

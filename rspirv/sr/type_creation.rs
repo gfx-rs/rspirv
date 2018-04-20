@@ -143,7 +143,9 @@ impl Context {
     }
     pub fn type_sampled_image(&mut self, image_type: TypeToken) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::SampledImage { image_type: image_type },
+            ty: TypeEnum::SampledImage {
+                image_type: image_type,
+            },
             decorations: BTreeSet::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -170,7 +172,9 @@ impl Context {
     }
     pub fn type_runtime_array(&mut self, element_type: TypeToken) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::RuntimeArray { element_type: element_type },
+            ty: TypeEnum::RuntimeArray {
+                element_type: element_type,
+            },
             decorations: BTreeSet::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -182,7 +186,9 @@ impl Context {
     }
     pub fn type_opaque(&mut self, type_name: String) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::Opaque { type_name: type_name },
+            ty: TypeEnum::Opaque {
+                type_name: type_name,
+            },
             decorations: BTreeSet::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -280,7 +286,9 @@ impl Context {
     }
     pub fn type_pipe(&mut self, qualifier: spirv::AccessQualifier) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::Pipe { qualifier: qualifier },
+            ty: TypeEnum::Pipe {
+                qualifier: qualifier,
+            },
             decorations: BTreeSet::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -292,7 +300,9 @@ impl Context {
     }
     pub fn type_forward_pointer(&mut self, storage_class: spirv::StorageClass) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::ForwardPointer { storage_class: storage_class },
+            ty: TypeEnum::ForwardPointer {
+                storage_class: storage_class,
+            },
             decorations: BTreeSet::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {

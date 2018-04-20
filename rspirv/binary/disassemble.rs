@@ -252,8 +252,8 @@ mod tests {
 
         let f = b.begin_function(void,
                                  None,
-                                 (spirv::FunctionControl::DONT_INLINE |
-                                  spirv::FunctionControl::CONST),
+                                 spirv::FunctionControl::DONT_INLINE |
+                                 spirv::FunctionControl::CONST,
                                  voidfvoid)
                  .unwrap();
         b.begin_basic_block(None).unwrap();
