@@ -193,6 +193,11 @@ impl ModuleHeader {
         }
     }
 
+    /// Sets the SPIR-V version to the given major.minor version.
+    pub fn set_version(&mut self, major: u8, minor: u8) {
+        self.version = ((major as u32) << 16) | ((minor as u32) << 8);
+    }
+
     /// Returns the major and minor version numbers as a tuple.
     pub fn version(&self) -> (u8, u8) {
         (((self.version & 0xff0000) >> 16) as u8, ((self.version & 0xff00) >> 8) as u8)

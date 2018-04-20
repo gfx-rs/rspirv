@@ -72,6 +72,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///
 /// fn main() {
 ///     let mut b = rspirv::mr::Builder::new();
+///     b.set_version(1, 0);
 ///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
 ///     let void = b.type_void();
 ///     let voidf = b.type_function(void, vec![void]);
@@ -87,7 +88,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///
 ///     assert_eq!(b.module().disassemble(),
 ///                "; SPIR-V\n\
-///                 ; Version: 1.3\n\
+///                 ; Version: 1.0\n\
 ///                 ; Generator: rspirv\n\
 ///                 ; Bound: 5\n\
 ///                 OpMemoryModel Logical Simple\n\
@@ -105,6 +106,7 @@ pub struct Builder {
     next_id: u32,
     function: Option<mr::Function>,
     basic_block: Option<mr::BasicBlock>,
+    version: Option<(u8, u8)>,
 }
 
 impl Builder {
@@ -115,13 +117,28 @@ impl Builder {
             next_id: 1,
             function: None,
             basic_block: None,
+            version: None,
         }
+    }
+
+    /// Sets the SPIR-V version to the given major.minor version.
+    ///
+    /// If this method is not called, the generated SPIR-V will be set as the newest version
+    /// supported.
+    pub fn set_version(&mut self, major: u8, minor: u8) {
+        self.version = Some((major, minor));
     }
 
     /// Returns the `Module` under construction.
     pub fn module(self) -> mr::Module {
         let mut module = self.module;
-        module.header = Some(mr::ModuleHeader::new(self.next_id));
+
+        let mut header = mr::ModuleHeader::new(self.next_id);
+        if let Some((major, minor)) = self.version {
+            header.set_version(major, minor);
+        }
+        module.header = Some(header);
+
         module
     }
 
@@ -550,6 +567,16 @@ mod tests {
              module.types_global_values.len() + module.execution_modes.len() +
              module.debugs.len() + module.annotations.len()) +
             (if module.memory_model.is_some() { 1 } else { 0 }) == 1
+    }
+
+    #[test]
+    fn test_spirv_version() {
+        let mut b = Builder::new();
+        b.set_version(1, 2);
+        let m = b.module();
+        let header = &m.header;
+        assert!(header.is_some());
+        assert_eq!((1, 2), header.as_ref().unwrap().version());
     }
 
     #[test]
