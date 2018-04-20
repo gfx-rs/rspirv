@@ -78,7 +78,7 @@ impl fmt::Display for Operand {
             Operand::MemoryModel(ref v) => write!(f, "{:?}", v),
             Operand::ExecutionMode(ref v) => write!(f, "{:?}", v),
             Operand::StorageClass(ref v) => write!(f, "{:?}", v),
-            Operand::Dim(ref v) => write!(f, "{:?}", v),
+            Operand::Dim(ref v) => write!(f, "{}", &format!("{:?}", v)[3..]),
             Operand::SamplerAddressingMode(ref v) => write!(f, "{:?}", v),
             Operand::SamplerFilterMode(ref v) => write!(f, "{:?}", v),
             Operand::ImageFormat(ref v) => write!(f, "{:?}", v),
