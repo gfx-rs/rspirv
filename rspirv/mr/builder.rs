@@ -34,7 +34,7 @@ type BuildResult<T> = result::Result<T, Error>;
 /// If a SPIR-V instruction generates a result id and the result id can be
 /// forward referenced, the build method will take an optional `result_id`
 /// parameter. Filling it with `Some(val)` will instruct the builder to use
-/// the given `val` as the result id. For other cases, an unsed result id
+/// the given `val` as the result id. For other cases, an unused result id
 /// will be automatically assigned from the builder.
 ///
 /// So for instructions forward referencing an id, to avoid id collision,
