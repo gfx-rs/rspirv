@@ -224,7 +224,7 @@ impl binary::Consumer for Loader {
 ///
 /// assert_eq!(dis,
 ///            "; SPIR-V\n\
-///             ; Version: 1.3\n\
+///             ; Version: 1.0\n\
 ///             ; Generator: rspirv\n\
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
@@ -261,7 +261,7 @@ pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<mr::Module> {
 ///
 /// assert_eq!(dis,
 ///            "; SPIR-V\n\
-///             ; Version: 1.3\n\
+///             ; Version: 1.0\n\
 ///             ; Generator: rspirv\n\
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");

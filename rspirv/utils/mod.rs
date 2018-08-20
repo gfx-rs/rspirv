@@ -16,3 +16,4 @@
 //! * handling numbers.
 
 pub mod num;
+pub mod version;

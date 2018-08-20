@@ -16,6 +16,7 @@ use grammar;
 use spirv;
 
 use spirv::Word;
+use utils::version;
 use std::{convert, fmt, iter};
 
 /// Data representation of a SPIR-V module.
@@ -200,7 +201,7 @@ impl ModuleHeader {
 
     /// Returns the major and minor version numbers as a tuple.
     pub fn version(&self) -> (u8, u8) {
-        (((self.version & 0xff0000) >> 16) as u8, ((self.version & 0xff00) >> 8) as u8)
+        version::create_version_from_word(self.version)
     }
 
     /// Returns the generator's name and version as a tuple.
