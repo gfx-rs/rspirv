@@ -25,6 +25,8 @@ use grammar::CoreInstructionTable as GInstTable;
 use grammar::OperandKind as GOpKind;
 use grammar::OperandQuantifier as GOpCount;
 
+use utils::version;
+
 type GInstRef = &'static grammar::Instruction<'static>;
 
 const WORD_NUM_BYTES: usize = 4;
@@ -226,7 +228,7 @@ pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut Consumer) -> Resul
 ///     }
 ///     let module = loader.module();
 ///
-///     assert_eq!((1, 3), module.header.unwrap().version());
+///     assert_eq!((1, 0), module.header.unwrap().version());
 ///     let m = module.memory_model.as_ref().unwrap();
 ///     assert_eq!(Operand::AddressingModel(AddressingModel::Logical),
 ///                m.operands[0]);
@@ -315,7 +317,12 @@ impl<'c, 'd> Parser<'c, 'd> {
                         return Err(State::HeaderIncorrect);
                     }
                 }
-                Ok(mr::ModuleHeader::new(words[3]))
+                
+                let mut header = mr::ModuleHeader::new(words[3]);
+                let (major, minor) = version::create_version_from_word(words[1]);
+                header.set_version(major, minor);
+
+                Ok(header)
             }
             Err(err) => Err(State::HeaderIncomplete(err)),
         }
@@ -598,7 +605,9 @@ mod tests {
             let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
-        assert_eq!(Some(mr::ModuleHeader::new(0)), c.header);
+        let mut header = mr::ModuleHeader::new(0);
+        header.set_version(1, 0);
+        assert_eq!(Some(header), c.header);
     }
 
     #[test]
