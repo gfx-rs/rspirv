@@ -56,4 +56,18 @@ impl Builder {
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.module.annotations.push(inst);
     }
+
+    /// Appends an OpDecorateStringGOOGLE instruction.
+    pub fn decorate_string_google<T: AsRef<[mr::Operand]>>(&mut self, target: spirv::Word, decoration: spirv::Decoration, additional_params: T) {
+        let mut inst = mr::Instruction::new(spirv::Op::DecorateStringGOOGLE, None, None, vec![mr::Operand::IdRef(target), mr::Operand::Decoration(decoration)]);
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        self.module.annotations.push(inst);
+    }
+
+    /// Appends an OpMemberDecorateStringGOOGLE instruction.
+    pub fn member_decorate_string_google<T: AsRef<[mr::Operand]>>(&mut self, struct_type: spirv::Word, member: u32, decoration: spirv::Decoration, additional_params: T) {
+        let mut inst = mr::Instruction::new(spirv::Op::MemberDecorateStringGOOGLE, None, None, vec![mr::Operand::IdRef(struct_type), mr::Operand::LiteralInt32(member), mr::Operand::Decoration(decoration)]);
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        self.module.annotations.push(inst);
+    }
 }

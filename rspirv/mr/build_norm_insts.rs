@@ -4166,26 +4166,6 @@ impl Builder {
         Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
     }
 
-    /// Appends an OpDecorateStringGOOGLE instruction to the current basic block.
-    pub fn decorate_string_google<T: AsRef<[mr::Operand]>>(&mut self, target: spirv::Word, decoration: spirv::Decoration, additional_params: T) -> BuildResult<()> {
-        if self.basic_block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
-        let mut inst = mr::Instruction::new(spirv::Op::DecorateStringGOOGLE, None, None, vec![mr::Operand::IdRef(target), mr::Operand::Decoration(decoration)]);
-        inst.operands.extend_from_slice(additional_params.as_ref());
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
-    }
-
-    /// Appends an OpMemberDecorateStringGOOGLE instruction to the current basic block.
-    pub fn member_decorate_string_google<T: AsRef<[mr::Operand]>>(&mut self, struct_type: spirv::Word, member: u32, decoration: spirv::Decoration, additional_params: T) -> BuildResult<()> {
-        if self.basic_block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
-        let mut inst = mr::Instruction::new(spirv::Op::MemberDecorateStringGOOGLE, None, None, vec![mr::Operand::IdRef(struct_type), mr::Operand::LiteralInt32(member), mr::Operand::Decoration(decoration)]);
-        inst.operands.extend_from_slice(additional_params.as_ref());
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
-    }
-
     /// Appends an OpGroupNonUniformPartitionNV instruction to the current basic block.
     pub fn group_non_uniform_partition_nv(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, value: spirv::Word) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
