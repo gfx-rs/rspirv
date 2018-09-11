@@ -111,7 +111,6 @@ pub fn is_variable(opcode: spirv::Op) -> bool {
 /// Returns true if the given opcode is for a terminator instruction.
 pub fn is_terminator(opcode: spirv::Op) -> bool {
     match opcode {
-        spirv::Op::Phi |
         spirv::Op::Branch |
         spirv::Op::BranchConditional |
         spirv::Op::Switch |
