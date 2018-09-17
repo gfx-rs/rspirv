@@ -28,6 +28,10 @@ impl Disassemble for spirv::ImageOperands {
         if self.contains(spirv::ImageOperands::CONST_OFFSETS) { bits.push("ConstOffsets") }
         if self.contains(spirv::ImageOperands::SAMPLE) { bits.push("Sample") }
         if self.contains(spirv::ImageOperands::MIN_LOD) { bits.push("MinLod") }
+        if self.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE_KHR) { bits.push("MakeTexelAvailableKHR") }
+        if self.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE_KHR) { bits.push("MakeTexelVisibleKHR") }
+        if self.contains(spirv::ImageOperands::NON_PRIVATE_TEXEL_KHR) { bits.push("NonPrivateTexelKHR") }
+        if self.contains(spirv::ImageOperands::VOLATILE_TEXEL_KHR) { bits.push("VolatileTexelKHR") }
         bits.join("|")
     }
 }
@@ -93,6 +97,9 @@ impl Disassemble for spirv::MemorySemantics {
         if self.contains(spirv::MemorySemantics::CROSS_WORKGROUP_MEMORY) { bits.push("CrossWorkgroupMemory") }
         if self.contains(spirv::MemorySemantics::ATOMIC_COUNTER_MEMORY) { bits.push("AtomicCounterMemory") }
         if self.contains(spirv::MemorySemantics::IMAGE_MEMORY) { bits.push("ImageMemory") }
+        if self.contains(spirv::MemorySemantics::OUTPUT_MEMORY_KHR) { bits.push("OutputMemoryKHR") }
+        if self.contains(spirv::MemorySemantics::MAKE_AVAILABLE_KHR) { bits.push("MakeAvailableKHR") }
+        if self.contains(spirv::MemorySemantics::MAKE_VISIBLE_KHR) { bits.push("MakeVisibleKHR") }
         bits.join("|")
     }
 }
@@ -104,6 +111,9 @@ impl Disassemble for spirv::MemoryAccess {
         if self.contains(spirv::MemoryAccess::VOLATILE) { bits.push("Volatile") }
         if self.contains(spirv::MemoryAccess::ALIGNED) { bits.push("Aligned") }
         if self.contains(spirv::MemoryAccess::NONTEMPORAL) { bits.push("Nontemporal") }
+        if self.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE_KHR) { bits.push("MakePointerAvailableKHR") }
+        if self.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE_KHR) { bits.push("MakePointerVisibleKHR") }
+        if self.contains(spirv::MemoryAccess::NON_PRIVATE_POINTER_KHR) { bits.push("NonPrivatePointerKHR") }
         bits.join("|")
     }
 }

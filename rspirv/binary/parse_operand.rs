@@ -122,6 +122,12 @@ impl<'c, 'd> Parser<'c, 'd> {
         if image_operands.contains(spirv::ImageOperands::MIN_LOD) {
             params.append(&mut vec![mr::Operand::IdRef(try_decode!(self.decoder.id()))]);
         }
+        if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE_KHR) {
+            params.append(&mut vec![mr::Operand::IdScope(try_decode!(self.decoder.id()))]);
+        }
+        if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE_KHR) {
+            params.append(&mut vec![mr::Operand::IdScope(try_decode!(self.decoder.id()))]);
+        }
         Ok(params)
     }
 
@@ -137,6 +143,12 @@ impl<'c, 'd> Parser<'c, 'd> {
         let mut params = vec![];
         if memory_access.contains(spirv::MemoryAccess::ALIGNED) {
             params.append(&mut vec![mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))]);
+        }
+        if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE_KHR) {
+            params.append(&mut vec![mr::Operand::IdScope(try_decode!(self.decoder.id()))]);
+        }
+        if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE_KHR) {
+            params.append(&mut vec![mr::Operand::IdScope(try_decode!(self.decoder.id()))]);
         }
         Ok(params)
     }

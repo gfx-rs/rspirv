@@ -34,6 +34,10 @@ bitflags!{
         const CONST_OFFSETS = 0x0020;
         const SAMPLE = 0x0040;
         const MIN_LOD = 0x0080;
+        const MAKE_TEXEL_AVAILABLE_KHR = 0x0100;
+        const MAKE_TEXEL_VISIBLE_KHR = 0x0200;
+        const NON_PRIVATE_TEXEL_KHR = 0x0400;
+        const VOLATILE_TEXEL_KHR = 0x0800;
     }
 }
 
@@ -95,6 +99,9 @@ bitflags!{
         const CROSS_WORKGROUP_MEMORY = 0x0200;
         const ATOMIC_COUNTER_MEMORY = 0x0400;
         const IMAGE_MEMORY = 0x0800;
+        const OUTPUT_MEMORY_KHR = 0x1000;
+        const MAKE_AVAILABLE_KHR = 0x2000;
+        const MAKE_VISIBLE_KHR = 0x4000;
     }
 }
 
@@ -105,6 +112,9 @@ bitflags!{
         const VOLATILE = 0x0001;
         const ALIGNED = 0x0002;
         const NONTEMPORAL = 0x0004;
+        const MAKE_POINTER_AVAILABLE_KHR = 0x0008;
+        const MAKE_POINTER_VISIBLE_KHR = 0x0010;
+        const NON_PRIVATE_POINTER_KHR = 0x0020;
     }
 }
 
@@ -157,6 +167,7 @@ pub enum MemoryModel {
     Simple = 0,
     GLSL450 = 1,
     OpenCL = 2,
+    VulkanKHR = 3,
 }
 
 /// SPIR-V operand kind: [ExecutionMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_mode_a_execution_mode)
@@ -540,6 +551,7 @@ pub enum Scope {
     Workgroup = 2,
     Subgroup = 3,
     Invocation = 4,
+    QueueFamilyKHR = 5,
 }
 
 /// SPIR-V operand kind: [GroupOperation](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_group_operation_a_group_operation)
@@ -679,6 +691,8 @@ pub enum Capability {
     SubgroupBufferBlockIOINTEL = 5569,
     SubgroupImageBlockIOINTEL = 5570,
     GroupNonUniformPartitionedNV = 5297,
+    VulkanMemoryModelKHR = 5345,
+    VulkanMemoryModelDeviceScopeKHR = 5346,
 }
 
 #[allow(non_upper_case_globals)]
