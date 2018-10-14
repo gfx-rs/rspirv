@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use regex;
 use structs;
 use utils::*;
 
@@ -19,7 +20,7 @@ use proc_macro2::{Ident, Span, TokenStream};
 
 /// Returns the corresponding Rust type used in structured representation
 /// for the given operand kind in the SPIR-V JSON grammar.
-pub fn get_operand_kind_sr_type_tokens(kind: &str) -> TokenStream {
+pub fn get_operand_type_sr_tokens(kind: &str) -> TokenStream {
     if kind.starts_with("Id") {
         quote! { spirv::Word }
     } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
@@ -42,6 +43,25 @@ pub fn get_operand_kind_sr_type_tokens(kind: &str) -> TokenStream {
     }
 }
 
+/// Returns the corresponding Rust name used in structured representation
+/// for the given operand kind in the SPIR-V JSON grammar.
+pub fn get_operand_name_sr_tokens(param: &structs::Operand) -> TokenStream {
+    if param.name.is_empty() {
+        if param.kind == "IdResultType" {
+            quote! { result_type }
+        } else {
+            let name = snake_casify(&param.kind);
+            let token = Ident::new(&name, Span::call_site());
+            quote! { #token }
+        }
+    } else {
+        let re = regex::Regex::new(r"\W").unwrap();
+        let name = snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""));
+        let token = Ident::new(&name, Span::call_site());
+        quote! { #token }
+    }
+}
+
 pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
     // The decoration operand kind
     let decoration = grammar
@@ -58,7 +78,7 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
             let types: Vec<_> = enumerant
                 .parameters
                 .iter()
-                .map(|p| get_operand_kind_sr_type_tokens(&p.kind))
+                .map(|p| get_operand_type_sr_tokens(&p.kind))
                 .collect();
             let params = if types.is_empty() {
                 quote!{}
@@ -89,7 +109,7 @@ pub fn get_operand_type_ident(grammar: &structs::Operand) -> TokenStream {
             quote! { TypeToken }
         }
     } else {
-        get_operand_kind_sr_type_tokens(&grammar.kind)
+        get_operand_type_sr_tokens(&grammar.kind)
     };
     if grammar.quantifier.is_empty() {
         quote! { #ty }
@@ -253,4 +273,53 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
         }
     };
     tokens.to_string()
+}
+
+pub fn gen_sr_instruction(grammar: &structs::Grammar) -> String {
+    // Compose the token stream for all instructions
+    let insts: Vec<_> = grammar
+        .instructions
+        .iter() // Loop over all instructions
+        .filter(|i| i.class != "Type") // Skip types
+        .filter(|i| i.class != "Constant") // Skip constants
+        .map(|inst| {
+            // Get the token for its enumerant
+            let name = Ident::new(&inst.opname[2..], Span::call_site());
+
+            // Compose the token stream for all parameters
+            let params: Vec<_> = inst.operands
+                .iter() // Loop over all parameters
+                .filter_map(|operand| {
+                    if operand.kind.starts_with("IdResult") {
+                        None
+                    } else {
+                        let field_name = get_operand_name_sr_tokens(operand);
+                        let field_type = get_operand_type_sr_tokens(&operand.kind);
+                        if operand.quantifier == "" {
+                            Some(quote! { #field_name : #field_type })
+                        } else if operand.quantifier == "?" {
+                            Some(quote! { #field_name : Option<#field_type> })
+                        } else {
+                            Some(quote! { #field_name : Vec<#field_type> })
+                        }
+                    }
+                }).collect();
+            let params = if params.is_empty() {
+                quote!{}
+            } else {
+                // Create a list parameter tokens separated by comma
+                quote! { {#( #params ),*} }
+            };
+
+            // Get token stream for this enumerant
+            quote! { #name #params }
+        }).collect();
+
+    // Wrap it up with enum definition boilerplate
+    let insts = quote! {
+        enum Instruction {
+            #( #insts ),*
+        }
+    };
+    insts.to_string()
 }

@@ -205,6 +205,11 @@ fn main() {
         let c = sr::gen_sr_type_creation(&grammar);
         fmt_write!(c, path);
     }
+    {
+        let path = codegen_src_dir.join("../rspirv/sr/instruction.rs");
+        let c = sr::gen_sr_instruction(&grammar);
+        fmt_write!(c, path);
+    }
 
     {
         // Path to the generated GLSLstd450 extended instruction set header.
