@@ -12,31 +12,60 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use quote;
 use structs;
 use utils::*;
 
+use proc_macro2::{Ident, Span, TokenStream};
+
+/// Returns the corresponding Rust type used in structured representation
+/// for the given operand kind in the SPIR-V JSON grammar.
+pub fn get_operand_kind_sr_type_tokens(kind: &str) -> TokenStream {
+    if kind.starts_with("Id") {
+        quote! { spirv::Word }
+    } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
+        quote! { u32 }
+    } else if kind == "LiteralSpecConstantOpInteger" {
+        quote! { spirv::Op }
+    } else if kind == "LiteralContextDependentNumber" {
+        panic!("this kind is not expected to be handled here")
+    } else if kind == "LiteralString" {
+        quote! { String }
+    } else if kind == "PairLiteralIntegerIdRef" {
+        quote! { (u32, spirv::Word) }
+    } else if kind == "PairIdRefLiteralInteger" {
+        quote! { (spirv::Word, u32) }
+    } else if kind == "PairIdRefIdRef" {
+        quote! { (spirv::Word, spirv::Word) }
+    } else {
+        let kind = Ident::new(kind, Span::call_site());
+        quote! { spirv::#kind }
+    }
+}
+
 pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
     // The decoration operand kind
-    let decoration = grammar.operand_kinds
+    let decoration = grammar
+        .operand_kinds
         .iter()
         .find(|k| k.kind == "Decoration")
         .unwrap();
     // Go and compose all its enumerants
-    let enumerants: Vec<_> = decoration.enumerants
+    let enumerants: Vec<_> = decoration
+        .enumerants
         .iter()
         .map(|enumerant| {
             // Parameters for this enumerant
-            let types: Vec<_> = enumerant.parameters
+            let types: Vec<_> = enumerant
+                .parameters
                 .iter()
-                .map(|p| quote::Ident::from(get_enum_underlying_type(&p.kind, false)))
+                .map(|p| get_operand_kind_sr_type_tokens(&p.kind))
                 .collect();
             let params = if types.is_empty() {
                 quote!{}
             } else {
                 quote! { (#( #types ),*) }
             };
-            let symbol = quote::Ident::from(enumerant.symbol.as_str());
+            let symbol = Ident::new(enumerant.symbol.as_str(), Span::call_site());
             quote! { #symbol #params }
         })
         .collect();
@@ -52,17 +81,16 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
     tokens.to_string()
 }
 
-pub fn get_operand_type_ident(grammar: &structs::Operand) -> quote::Tokens {
+pub fn get_operand_type_ident(grammar: &structs::Operand) -> TokenStream {
     let ty = if grammar.kind == "IdRef" {
         if grammar.name == "'Length'" {
-            "ConstantToken".to_string()
+            quote! { ConstantToken }
         } else {
-            "TypeToken".to_string()
+            quote! { TypeToken }
         }
     } else {
-        get_enum_underlying_type(&grammar.kind, false)
+        get_operand_kind_sr_type_tokens(&grammar.kind)
     };
-    let ty = quote::Ident::from(ty);
     if grammar.quantifier.is_empty() {
         quote! { #ty }
     } else if grammar.quantifier == "?" {
@@ -83,30 +111,34 @@ fn get_type_fn_name(name: &str) -> String {
 pub fn gen_sr_type_check(grammar: &structs::Grammar) -> String {
     // Collect all types and their parameters in the following format:
     //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
-    let cases: Vec<_> = grammar.instructions
+    let cases: Vec<_> = grammar
+        .instructions
         .iter()
         .filter(|k| k.class == "Type")
         .map(|kind| {
-            let operands: Vec<_> = kind.operands
+            let operands: Vec<_> = kind
+                .operands
                 .iter()
                 .skip(1)
                 .map(|op| {
-                         let name = quote::Ident::from(get_param_name(op));
-                         let ty = get_operand_type_ident(op);
-                         (name, ty)
-                     })
+                    let name = Ident::new(&get_param_name(op), Span::call_site());
+                    let ty = get_operand_type_ident(op);
+                    (name, ty)
+                })
                 .collect();
             let symbol = &kind.opname[6..];
             (symbol, operands)
         })
         .collect();
-    let types: Vec<_> = cases.iter()
+    let types: Vec<_> = cases
+        .iter()
         .map(|&(symbol, ref params)| {
-            let symbol = quote::Ident::from(symbol);
-            let param_list: Vec<_> = params.iter()
+            let symbol = Ident::new(symbol, Span::call_site());
+            let param_list: Vec<_> = params
+                .iter()
                 .map(|&(ref name, ref ty)| {
-                         quote! { #name : #ty }
-                     })
+                    quote! { #name : #ty }
+                })
                 .collect();
             let param_list = if param_list.is_empty() {
                 quote!{}
@@ -116,10 +148,14 @@ pub fn gen_sr_type_check(grammar: &structs::Grammar) -> String {
             quote! { #symbol #param_list }
         })
         .collect();
-    let checks: Vec<_> = cases.iter()
+    let checks: Vec<_> = cases
+        .iter()
         .map(|&(symbol, ref params)| {
-            let func_name = quote::Ident::from(format!("is_{}_type", get_type_fn_name(symbol)));
-            let symbol = quote::Ident::from(symbol);
+            let func_name = Ident::new(
+                &format!("is_{}_type", get_type_fn_name(symbol)),
+                Span::call_site(),
+            );
+            let symbol = Ident::new(symbol, Span::call_site());
             // If the type requires parameters, attach `{ .. }` to the match arm.
             let params = if params.is_empty() {
                 quote!{}
@@ -152,38 +188,46 @@ pub fn gen_sr_type_check(grammar: &structs::Grammar) -> String {
 pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
     // Collect all types and their parameters in the following format:
     //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
-    let cases: Vec<_> = grammar.instructions
+    let cases: Vec<_> = grammar
+        .instructions
         .iter()
         .filter(|k| k.class == "Type")
         .filter(|k| k.opname != "OpTypeStruct")
         .map(|kind| {
-            let operands: Vec<_> = kind.operands
+            let operands: Vec<_> = kind
+                .operands
                 .iter()
                 .skip(1)
                 .map(|op| {
-                         let name = quote::Ident::from(get_param_name(op));
-                         let ty = get_operand_type_ident(op);
-                         (name, ty)
-                     })
+                    let name = Ident::new(&get_param_name(op), Span::call_site());
+                    let ty = get_operand_type_ident(op);
+                    (name, ty)
+                })
                 .collect();
             let symbol = &kind.opname[6..];
             (symbol, operands)
         })
         .collect();
-    let constructors: Vec<_> = cases.iter()
+    let constructors: Vec<_> = cases
+        .iter()
         .map(|&(symbol, ref params)| {
-            let func_name = quote::Ident::from(format!("type_{}", get_type_fn_name(symbol)));
-            let symbol = quote::Ident::from(symbol);
-            let param_list: Vec<_> = params.iter()
+            let func_name = Ident::new(
+                &format!("type_{}", get_type_fn_name(symbol)),
+                Span::call_site(),
+            );
+            let symbol = Ident::new(symbol, Span::call_site());
+            let param_list: Vec<_> = params
+                .iter()
                 .map(|&(ref name, ref ty)| {
-                         quote! { #name : #ty }
-                     })
+                    quote! { #name : #ty }
+                })
                 .collect();
             let param_list = quote! { (&mut self, #( #param_list ),*) };
-            let init_list: Vec<_> = params.iter()
+            let init_list: Vec<_> = params
+                .iter()
                 .map(|&(ref name, _)| {
-                         quote! { #name : #name }
-                     })
+                    quote! { #name : #name }
+                })
                 .collect();
             let init_list = if init_list.is_empty() {
                 quote!{}
