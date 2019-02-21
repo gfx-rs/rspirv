@@ -135,6 +135,49 @@ fn main() {
 }
 ```
 
+Directory Organization
+----------------------
+
+There are multiple crates inside this repo:
+
+- `codegen/`: Crate to generate various Rust code snippets used in the modules
+  in `spirv/` and `rspirv/`, from SPIR-V's JSON grammar. If you are not
+  modifying `spirv/` or `rspirv/`, you don't need to care about this directory.
+- `spirv/`: The `spirv_headers` crate.
+- `rspirv/`: The core `rspirv` crate.
+- `dis/`: A binary SPIR-V disassembler based on the `rspirv` crate.
+
+Build
+-----
+
+```sh
+git clone https://github.com/google/rspirv.git /path/to/rspirv
+```
+
+If you just want to compile and use the `spirv_headers` crate:
+
+```sh
+cd /path/to/rspirv/spirv
+cargo build
+```
+
+If you just want to compile and use the `rspirv` crate:
+
+```sh
+cd /path/to/rspirv/rspirv
+cargo build
+```
+
+If you want to refresh the `spirv_headers` or `rspirv` crate with new code
+snippets generated from SPIR-V's JSON grammar,
+
+```sh
+cd /path/to/rspirv/codegen
+# Clone the SPIRV-Headers repo
+git submodule update --init
+cargo build
+```
+
 Contributions
 -------------
 
