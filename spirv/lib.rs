@@ -27,6 +27,7 @@
 #[macro_use]
 extern crate bitflags;
 extern crate num;
+extern crate num_traits;
 #[macro_use]
 extern crate num_derive;
 
