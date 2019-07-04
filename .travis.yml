@@ -4,6 +4,7 @@ sudo: false
 os:
   - linux
   - osx
+  - windows
 rust:
   - stable
   - nightly
@@ -12,8 +13,8 @@ matrix:
   fast_finish: true
 
 branches:
-  only:
-    - master
+  except:
+    - staging.tmp
 
 before_script:
   - git submodule update --init
