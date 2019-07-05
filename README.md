@@ -1,8 +1,8 @@
 rspirv
 ======
 
-[![Build Status](https://travis-ci.org/google/rspirv.svg?branch=master)](https://travis-ci.org/google/rspirv)
-[![Build status](https://ci.appveyor.com/api/projects/status/qc9p4bjrbw4osyho/branch/master?svg=true)](https://ci.appveyor.com/project/antiagainst/rspirv/branch/master)
+[![Build Status](https://travis-ci.org/gfx-rs/rspirv.svg?branch=master)](https://travis-ci.org/gfx-rs/rspirv)
+[![Gitter Room](https://badges.gitter.im/gfx-rs/low-level.svg)](https://gitter.im/gfx-rs/low-level)
 
 **R**u**s**t implementation of S**PIR**-**V** module processing functionalities.
 It aims to provide:
@@ -186,8 +186,8 @@ This project is licensed under the [Apache 2](LICENSE) license. Please see
 
 ### Authors
 
-This project is initialized and mainly developed by Lei Zhang
-([@antiagainst][me]).
+This project is initialized Lei Zhang ([@antiagainst][me]) and currently
+developed by the gfx-rs [Translators][github-translators] team.
 
 [img-crate-rspirv]: https://img.shields.io/crates/v/rspirv.svg
 [img-doc-rspirv]: https://docs.rs/rspirv/badge.svg
@@ -202,6 +202,7 @@ This project is initialized and mainly developed by Lei Zhang
 [opengl]: https://www.opengl.org/
 [opencl]: https://www.khronos.org/opencl/
 [me]: https://github.com/antiagainst
+[github-translators]: https://github.com/orgs/gfx-rs/teams/translators
 [json-grammar]: https://github.com/KhronosGroup/SPIRV-Headers/tree/master/include/spirv
 [spirv-tools]: https://github.com/KhronosGroup/SPIRV-Tools
 [doc-mr]: https://docs.rs/rspirv/*/rspirv/mr/index.html
