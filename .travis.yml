@@ -1,16 +1,17 @@
 language: rust
 
 sudo: false
-os:
-  - linux
-  - osx
-  - windows
-rust:
-  - stable
-  - nightly
-
 matrix:
   fast_finish: true
+  include:
+    - os: linux
+      rust: stable
+    - os: linux
+      rust: nightly
+    - os: osx
+      rust: stable
+    - os: windows
+      rust: stable
 
 branches:
   except:
@@ -20,19 +21,5 @@ before_script:
   - git submodule update --init
 
 script:
-  - cd codegen/
-  - cargo build --verbose
-  - cd ../spirv/
-  - cargo build --verbose
-  - cd ../rspirv/
-  - cargo build --verbose
+  - cargo check --verbose
   - cargo test --verbose
-  - cd ../dis/
-  - cargo build
-
-notifications:
-  email:
-    recipients:
-      - antiagainst@gmail.com
-    on_success: change
-    on_failure: always
