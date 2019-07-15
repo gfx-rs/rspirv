@@ -154,6 +154,16 @@ pub enum Action {
     Error(Box<error::Error>),
 }
 
+impl Action {
+    fn consume(self) -> Result<()> {
+        match self {
+            Action::Continue => Ok(()),
+            Action::Stop => Err(State::ConsumerStopRequested),
+            Action::Error(err) => Err(State::ConsumerError(err)),
+        }
+    }
+}
+
 /// The binary consumer trait.
 ///
 /// The parser will call `initialize` before parsing the SPIR-V binary and
@@ -259,7 +269,7 @@ macro_rules! try_decode {
 impl<'c, 'd> Parser<'c, 'd> {
     /// Creates a new parser to parse the given `binary` and send the module
     /// header and instructions to the given `consumer`.
-    pub fn new(binary: &'d [u8], consumer: &'c mut Consumer) -> Parser<'c, 'd> {
+    pub fn new(binary: &'d [u8], consumer: &'c mut Consumer) -> Self {
         Parser {
             decoder: decoder::Decoder::new(binary),
             consumer: consumer,
@@ -270,39 +280,22 @@ impl<'c, 'd> Parser<'c, 'd> {
 
     /// Does the parsing.
     pub fn parse(mut self) -> Result<()> {
-        match self.consumer.initialize() {
-            Action::Continue => (),
-            Action::Stop => return Err(State::ConsumerStopRequested),
-            Action::Error(err) => return Err(State::ConsumerError(err)),
-        }
+        self.consumer.initialize().consume()?;
         let header = self.parse_header()?;
-        match self.consumer.consume_header(header) {
-            Action::Continue => (),
-            Action::Stop => return Err(State::ConsumerStopRequested),
-            Action::Error(err) => return Err(State::ConsumerError(err)),
-        }
+        self.consumer.consume_header(header).consume()?;
 
         loop {
             let result = self.parse_inst();
             match result {
                 Ok(inst) => {
                     self.type_tracker.track(&inst);
-                    match self.consumer.consume_instruction(inst) {
-                        Action::Continue => (),
-                        Action::Stop => return Err(State::ConsumerStopRequested),
-                        Action::Error(err) => return Err(State::ConsumerError(err)),
-                    }
+                    self.consumer.consume_instruction(inst).consume()?;
                 }
                 Err(State::Complete) => break,
                 Err(error) => return Err(error),
             };
         }
-        match self.consumer.finalize() {
-            Action::Continue => (),
-            Action::Stop => return Err(State::ConsumerStopRequested),
-            Action::Error(err) => return Err(State::ConsumerError(err)),
-        }
-        Ok(())
+        self.consumer.finalize().consume()
     }
 
     fn split_into_word_count_and_opcode(word: spirv::Word) -> (u16, u16) {
@@ -467,8 +460,7 @@ mod tests {
     use std::{error, fmt};
     use super::{Action, Consumer, parse_words, Parser, State, WORD_NUM_BYTES};
 
-    use utils::num::f32_to_bytes;
-    use utils::num::f64_to_bytes;
+    use utils::num::{f32_to_bytes, f64_to_bytes};
 
     // TODO: It's unfortunate that we have these numbers directly coded here
     // and repeat them in the following tests. Should have a better way.
