@@ -17,9 +17,11 @@ use grammar;
 use spirv;
 
 use std::{error, fmt, result, slice};
-use super::decoder;
-use super::error::Error as DecodeError;
-use super::tracker::{Type, TypeTracker};
+use super::{
+    decoder,
+    DecodeError,
+    tracker::{Type, TypeTracker},
+};
 
 use grammar::CoreInstructionTable as GInstTable;
 use grammar::OperandKind as GOpKind;
@@ -454,14 +456,14 @@ impl<'c, 'd> Parser<'c, 'd> {
     }
 }
 
-include!("parse_operand.rs");
+include!("autogen_parse_operand.rs");
 
 #[cfg(test)]
 mod tests {
     use mr;
     use spirv;
 
-    use binary::error::Error;
+    use binary::DecodeError;
     use std::{error, fmt};
     use super::{Action, Consumer, parse_words, Parser, State, WORD_NUM_BYTES};
 
@@ -567,7 +569,7 @@ mod tests {
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
-                        Err(State::HeaderIncomplete(Error::StreamExpected(0))));
+                        Err(State::HeaderIncomplete(DecodeError::StreamExpected(0))));
     }
 
     #[test]
@@ -576,7 +578,7 @@ mod tests {
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
-                        Err(State::HeaderIncomplete(Error::StreamExpected(4))));
+                        Err(State::HeaderIncomplete(DecodeError::StreamExpected(4))));
     }
 
     #[test]
@@ -664,7 +666,7 @@ mod tests {
         // The missing operand to the OpMemoryModel instruction starts at
         // byte offset (20 + 4 + 4 + 4).
         assert_matches!(p.parse(),
-                        Err(State::OperandError(Error::StreamExpected(32))));
+                        Err(State::OperandError(DecodeError::StreamExpected(32))));
     }
 
     #[test]
@@ -699,7 +701,7 @@ mod tests {
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
         assert_matches!(p.parse(),
-                        Err(State::OperandError(Error::StreamExpected(32))));
+                        Err(State::OperandError(DecodeError::StreamExpected(32))));
     }
 
     #[test]
@@ -1045,7 +1047,7 @@ mod tests {
         assert_matches!(p.parse(),
                         // The header has 5 words, the above instruction has 5 words,
                         // so in total 40 bytes.
-                        Err(State::OperandError(Error::LimitReached(40))));
+                        Err(State::OperandError(DecodeError::LimitReached(40))));
     }
 
     #[test]
@@ -1125,7 +1127,7 @@ mod tests {
         assert_matches!(p.parse(),
                         // The header has 5 words, the above instruction has 4 words,
                         // so in total 36 bytes.
-                        Err(State::OperandError(Error::LimitReached(36))));
+                        Err(State::OperandError(DecodeError::LimitReached(36))));
     }
     #[test]
     fn test_parsing_bitmasks_requiring_params_img_operands_param_order() {

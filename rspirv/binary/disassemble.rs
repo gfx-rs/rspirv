@@ -35,7 +35,7 @@ impl Disassemble for mr::ModuleHeader {
     }
 }
 
-include!("disas_operand.rs");
+include!("autogen_disas_operand.rs");
 
 impl Disassemble for mr::Operand {
     fn disassemble(&self) -> String {

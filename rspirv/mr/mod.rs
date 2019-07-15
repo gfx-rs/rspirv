@@ -34,11 +34,11 @@
 //! [builder](struct.Builder.html) for building a SPIR-V data representation
 //! interactively.
 
-pub use self::builder::Builder;
+pub use self::build::Builder;
 pub use self::constructs::{BasicBlock, Function, Instruction};
 pub use self::constructs::{Module, ModuleHeader, Operand};
 pub use self::loader::{Error, load_bytes, load_words, Loader};
 
-mod builder;
+mod build;
 mod constructs;
 mod loader;

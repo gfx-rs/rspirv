@@ -124,7 +124,7 @@ impl CoreInstructionTable {
     }
 }
 
-include!("table.rs");
+include!("autogen_table.rs");
 
 /// The table for all `GLSLstd450` extended instructions.
 ///
@@ -150,7 +150,7 @@ impl GlslStd450InstructionTable {
     }
 }
 
-include!("glsl_std_450.rs");
+include!("autogen_glsl_std_450.rs");
 
 /// The table for all `OpenCLstd100` extended instructions.
 ///
@@ -176,4 +176,4 @@ impl OpenCLStd100InstructionTable {
     }
 }
 
-include!("opencl_std_100.rs");
+include!("autogen_opencl_std_100.rs");
