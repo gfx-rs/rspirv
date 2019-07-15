@@ -51,7 +51,7 @@ Please see the [documentation][doc-rspirv] and project's
 [img-doc-rspirv]: https://docs.rs/rspirv/badge.svg
 [crate-rspirv]: https://crates.io/crates/rspirv
 [doc-rspirv]: https://docs.rs/rspirv
-[project-readme]: https://github.com/google/rspirv/blob/master/README.md
+[project-readme]: https://github.com/gfx-rs/rspirv/blob/master/README.md
 [doc-grammar]: https://docs.rs/rspirv/*/rspirv/grammar/index.html
 [doc-mr]: https://docs.rs/rspirv/*/rspirv/mr/index.html
 [doc-builder]: https://docs.rs/rspirv/*/rspirv/mr/struct.Builder.html
