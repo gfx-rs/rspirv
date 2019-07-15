@@ -17,7 +17,7 @@ use spirv;
 
 use spirv::Word;
 use utils::version;
-use std::{convert, fmt, iter};
+use std::{convert, fmt};
 
 /// Data representation of a SPIR-V module.
 ///
@@ -104,40 +104,11 @@ pub struct Instruction {
     pub operands: Vec<Operand>,
 }
 
-/// Instruction iterator.
-pub struct InstIter<'i> {
-    instructions: Vec<&'i Instruction>,
-    index: usize,
-}
-
-impl<'i> InstIter<'i> {
-    pub fn new(insts: Vec<&'i Instruction>) -> InstIter<'i> {
-        InstIter {
-            instructions: insts,
-            index: 0,
-        }
-    }
-}
-
-impl<'i> iter::Iterator for InstIter<'i> {
-    type Item = &'i Instruction;
-
-    fn next(&mut self) -> Option<&'i Instruction> {
-        if self.index < self.instructions.len() {
-            let inst = self.instructions[self.index];
-            self.index += 1;
-            Some(inst)
-        } else {
-            None
-        }
-    }
-}
-
 include!("operand.rs");
 
 impl Module {
     /// Creates a new empty `Module` instance.
-    pub fn new() -> Module {
+    pub fn new() -> Self {
         Module {
             header: None,
             capabilities: vec![],
@@ -157,28 +128,17 @@ impl Module {
     ///
     /// This method internally creates a vector of references to all global
     /// instructions, therefore it has some overheads.
-    pub fn global_inst_iter(&self) -> InstIter {
-        let mut insts = vec![];
-        let mut i: Vec<&Instruction> = self.capabilities.iter().collect();
-        insts.append(&mut i);
-        let mut i: Vec<&Instruction> = self.extensions.iter().collect();
-        insts.append(&mut i);
-        let mut i: Vec<&Instruction> = self.ext_inst_imports.iter().collect();
-        insts.append(&mut i);
-        if let Some(ref i) = self.memory_model {
-            insts.push(i);
-        }
-        let mut i: Vec<&Instruction> = self.entry_points.iter().collect();
-        insts.append(&mut i);
-        let mut i: Vec<&Instruction> = self.execution_modes.iter().collect();
-        insts.append(&mut i);
-        let mut i: Vec<&Instruction> = self.debugs.iter().collect();
-        insts.append(&mut i);
-        let mut i: Vec<&Instruction> = self.annotations.iter().collect();
-        insts.append(&mut i);
-        let mut i: Vec<&Instruction> = self.types_global_values.iter().collect();
-        insts.append(&mut i);
-        InstIter::new(insts)
+    pub fn global_inst_iter<'a>(&'a self) -> impl Iterator<Item = &'a Instruction> {
+        self.capabilities
+            .iter()
+            .chain(&self.extensions)
+            .chain(&self.ext_inst_imports)
+            .chain(&self.memory_model)
+            .chain(&self.entry_points)
+            .chain(&self.execution_modes)
+            .chain(&self.debugs)
+            .chain(&self.annotations)
+            .chain(&self.types_global_values)
     }
 }
 
@@ -233,7 +193,7 @@ impl ModuleHeader {
 
 impl Function {
     /// Creates a new empty `Function` instance.
-    pub fn new() -> Function {
+    pub fn new() -> Self {
         Function {
             def: None,
             end: None,
@@ -245,7 +205,7 @@ impl Function {
 
 impl BasicBlock {
     /// Creates a new empty `BasicBlock` instance.
-    pub fn new() -> BasicBlock {
+    pub fn new() -> Self {
         BasicBlock {
             label: None,
             instructions: vec![],
@@ -259,7 +219,7 @@ impl Instruction {
                result_type: Option<Word>,
                result_id: Option<Word>,
                operands: Vec<Operand>)
-               -> Instruction {
+               -> Self {
         Instruction {
             class: grammar::CoreInstructionTable::get(opcode),
             result_type: result_type,
