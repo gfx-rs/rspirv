@@ -36,7 +36,7 @@ pub struct TypeToken {
     index: usize
 }
 
-include!("type_enum_check.rs");
+include!("autogen_type_enum_check.rs");
 
 impl Type {
     pub fn is_numerical_type(&self) -> bool {

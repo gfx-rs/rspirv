@@ -15,7 +15,7 @@
 use spirv;
 
 use std::{mem, result};
-use super::error::Error;
+use super::DecodeError as Error;
 
 use utils::num::u32_to_bytes;
 
@@ -47,10 +47,10 @@ const WORD_NUM_BYTES: usize = 4;
 ///
 /// For its methods, there can be the following errors:
 ///
-/// * `Error::LimitReached(offset)` if the most recent limit has reached.
-/// * `Error::StreamExpected(offset)` if more bytes are needed to decode
+/// * `DecodeError::LimitReached(offset)` if the most recent limit has reached.
+/// * `DecodeError::StreamExpected(offset)` if more bytes are needed to decode
 ///    the next word.
-/// * `Error::<spirv-enum>Unknown(offset, value)` if failed to decode the
+/// * `DecodeError::<spirv-enum>Unknown(offset, value)` if failed to decode the
 ///    next word as the given `<spirv-enum>`.
 ///
 /// All errors contain the byte offset of the word failed decoding.
@@ -228,14 +228,14 @@ impl<'a> Decoder<'a> {
     }
 }
 
-include!("decode_operand.rs");
+include!("autogen_decode_operand.rs");
 
 #[cfg(test)]
 mod tests {
     use spirv;
 
     use super::Decoder;
-    use binary::error::Error;
+    use binary::DecodeError as Error;
 
     use utils::num::f32_to_bytes;
     use utils::num::f64_to_bytes;

@@ -16,10 +16,10 @@
 
 pub use self::constants::{Constant, ConstantToken};
 pub use self::context::Context;
-pub use self::decoration::Decoration;
+pub use self::autogen_decoration::Decoration;
 pub use self::types::{Type, TypeToken};
 
 mod constants;
 mod context;
-mod decoration;
+mod autogen_decoration;
 mod types;

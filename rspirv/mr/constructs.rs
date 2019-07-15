@@ -104,7 +104,7 @@ pub struct Instruction {
     pub operands: Vec<Operand>,
 }
 
-include!("operand.rs");
+include!("autogen_operand.rs");
 
 impl Module {
     /// Creates a new empty `Module` instance.

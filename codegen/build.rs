@@ -104,7 +104,7 @@ fn main() {
 
     {
         // Path to the generated SPIR-V header file.
-        let path = codegen_src_dir.join("../spirv/spirv.rs");
+        let path = codegen_src_dir.join("../spirv/autogen_spirv.rs");
         let core = header::gen_spirv_header(&grammar);
         let gl = header::gen_glsl_std_450_opcodes(&gl_grammar);
         let cl = header::gen_opencl_std_opcodes(&cl_grammar);
@@ -115,113 +115,110 @@ fn main() {
 
     {
         // Path to the generated instruction table.
-        let path = codegen_src_dir.join("../rspirv/grammar/table.rs");
+        let path = codegen_src_dir.join("../rspirv/grammar/autogen_table.rs");
         let c = table::gen_grammar_inst_table_operand_kinds(&grammar);
+        write!(c, path);
+    }
+    {
+        // Path to the generated GLSLstd450 extended instruction set header.
+        let path = codegen_src_dir.join("../rspirv/grammar/autogen_glsl_std_450.rs");
+        let c = table::gen_glsl_std_450_inst_table(&gl_grammar);
+        write!(c, path);
+    }
+    {
+        let path = codegen_src_dir.join("../rspirv/grammar/autogen_opencl_std_100.rs");
+        let c = table::gen_opencl_std_100_inst_table(&cl_grammar);
         write!(c, path);
     }
 
     {
         // Path to the generated operands kind in data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/operand.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/autogen_operand.rs");
         let c = mr::gen_mr_operand_kinds(&grammar.operand_kinds);
         write!(c, path);
     }
 
     {
         // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build_type.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_type.rs");
         let c = mr::gen_mr_builder_types(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build_terminator.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_terminator.rs");
         let c = mr::gen_mr_builder_terminator(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build_annotation.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_annotation.rs");
         let c = mr::gen_mr_builder_annotation(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build_constant.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_constant.rs");
         let c = mr::gen_mr_builder_constants(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build_debug.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_debug.rs");
         let c = mr::gen_mr_builder_debug(&grammar);
         write!(c, path);
     }
     {
         // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build_norm_insts.rs");
+        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_norm_insts.rs");
         let c = mr::gen_mr_builder_normal_insts(&grammar);
         write!(c, path);
     }
 
     {
         // Path to the generated decoding errors.
-        let path = codegen_src_dir.join("../rspirv/binary/error.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/autogen_error.rs");
         let c = binary::gen_operand_decode_errors(&grammar.operand_kinds);
         write!(c, path);
     }
 
     {
         // Path to the generated operand decoding methods.
-        let path = codegen_src_dir.join("../rspirv/binary/decode_operand.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/autogen_decode_operand.rs");
         let c = binary::gen_operand_decode_methods(&grammar.operand_kinds);
         write!(c, path);
     }
     {
         // Path to the generated operand parsing methods.
-        let path = codegen_src_dir.join("../rspirv/binary/parse_operand.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/autogen_parse_operand.rs");
         let c = binary::gen_operand_parse_methods(&grammar.operand_kinds);
         write!(c, path);
     }
     {
         // Path to the generated operand parsing methods.
-        let path = codegen_src_dir.join("../rspirv/binary/disas_operand.rs");
+        let path = codegen_src_dir.join("../rspirv/binary/autogen_disas_operand.rs");
         let c = binary::gen_disas_bit_enum_operands(&grammar.operand_kinds);
         write!(c, path);
     }
 
     {
-        let path = codegen_src_dir.join("../rspirv/sr/decoration.rs");
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_decoration.rs");
         let c = sr::gen_sr_decoration(&grammar);
         fmt_write!(c, path);
     }
     {
-        let path = codegen_src_dir.join("../rspirv/sr/type_enum_check.rs");
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_enum_check.rs");
         let c = sr::gen_sr_type_check(&grammar);
         fmt_write!(c, path);
     }
     {
-        let path = codegen_src_dir.join("../rspirv/sr/type_creation.rs");
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_creation.rs");
         let c = sr::gen_sr_type_creation(&grammar);
         fmt_write!(c, path);
     }
     {
-        let path = codegen_src_dir.join("../rspirv/sr/instruction.rs");
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction.rs");
         let c = sr::gen_sr_instruction(&grammar);
         fmt_write!(c, path);
-    }
-
-    {
-        // Path to the generated GLSLstd450 extended instruction set header.
-        let path = codegen_src_dir.join("../rspirv/grammar/glsl_std_450.rs");
-        let c = table::gen_glsl_std_450_inst_table(&gl_grammar);
-        write!(c, path);
-    }
-
-
-    {
-        let path = codegen_src_dir.join("../rspirv/grammar/opencl_std_100.rs");
-        let c = table::gen_opencl_std_100_inst_table(&cl_grammar);
-        write!(c, path);
     }
 }

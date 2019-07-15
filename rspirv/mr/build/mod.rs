@@ -351,11 +351,11 @@ impl Builder {
     }
 }
 
-include!("build_type.rs");
-include!("build_constant.rs");
-include!("build_annotation.rs");
-include!("build_terminator.rs");
-include!("build_debug.rs");
+include!("autogen_type.rs");
+include!("autogen_constant.rs");
+include!("autogen_annotation.rs");
+include!("autogen_terminator.rs");
+include!("autogen_debug.rs");
 
 impl Builder {
     /// Appends an OpDecorationGroup instruction and returns the result id.
@@ -546,7 +546,7 @@ impl Builder {
     }
 }
 
-include!("build_norm_insts.rs");
+include!("autogen_norm_insts.rs");
 
 #[cfg(test)]
 mod tests {

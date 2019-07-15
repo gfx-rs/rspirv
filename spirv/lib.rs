@@ -31,4 +31,4 @@ extern crate num_traits;
 #[macro_use]
 extern crate num_derive;
 
-include!("spirv.rs");
+include!("autogen_spirv.rs");
