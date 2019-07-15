@@ -14,11 +14,9 @@
 
 use spirv;
 
-use std::collections::BTreeSet;
-
 use super::{Type, TypeToken, Constant, ConstantToken};
 use sr::constants::ConstantEnum;
-use sr::types::TypeEnum;
+use sr::types::{StructMember, TypeEnum};
 
 /// The context class for SPIR-V structured representation.
 ///
@@ -36,7 +34,7 @@ pub struct Context {
 }
 
 impl Context {
-    pub fn new() -> Context {
+    pub fn new() -> Self {
         Context {
             types: vec![],
             constants: vec![],
@@ -49,8 +47,14 @@ include!("autogen_type_creation.rs");
 impl Context {
     pub fn type_struct<T: AsRef<[TypeToken]>>(&mut self, field_types: T) -> TypeToken {
         self.types.push(Type {
-            ty: TypeEnum::Struct { field_types: field_types.as_ref().to_vec() },
-            decorations: BTreeSet::new(),
+            ty: TypeEnum::Struct {
+                field_types: field_types
+                    .as_ref()
+                    .iter()
+                    .map(|ft| StructMember::new(*ft))
+                    .collect(),
+            },
+            decorations: Vec::new(),
         });
         TypeToken::new(self.types.len() - 1)
     }

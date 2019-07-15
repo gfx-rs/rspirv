@@ -20,7 +20,7 @@ impl Context {
     pub fn type_void(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Void,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -32,7 +32,7 @@ impl Context {
     pub fn type_bool(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Bool,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -47,7 +47,7 @@ impl Context {
                 width: width,
                 signedness: signedness,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -59,7 +59,7 @@ impl Context {
     pub fn type_float(&mut self, width: u32) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Float { width: width },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -74,7 +74,7 @@ impl Context {
                 component_type: component_type,
                 component_count: component_count,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -89,7 +89,7 @@ impl Context {
                 column_type: column_type,
                 column_count: column_count,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -120,7 +120,7 @@ impl Context {
                 image_format: image_format,
                 access_qualifier: access_qualifier,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -132,7 +132,7 @@ impl Context {
     pub fn type_sampler(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Sampler,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -146,7 +146,7 @@ impl Context {
             ty: TypeEnum::SampledImage {
                 image_type: image_type,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -161,7 +161,7 @@ impl Context {
                 element_type: element_type,
                 length: length,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -175,7 +175,7 @@ impl Context {
             ty: TypeEnum::RuntimeArray {
                 element_type: element_type,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -189,7 +189,7 @@ impl Context {
             ty: TypeEnum::Opaque {
                 type_name: type_name,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -208,7 +208,7 @@ impl Context {
                 storage_class: storage_class,
                 pointee_type: pointee_type,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -227,7 +227,7 @@ impl Context {
                 return_type: return_type,
                 parameter_types: parameter_types,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -239,7 +239,7 @@ impl Context {
     pub fn type_event(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Event,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -251,7 +251,7 @@ impl Context {
     pub fn type_device_event(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::DeviceEvent,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -263,7 +263,7 @@ impl Context {
     pub fn type_reserve_id(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::ReserveId,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -275,7 +275,7 @@ impl Context {
     pub fn type_queue(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Queue,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -289,7 +289,7 @@ impl Context {
             ty: TypeEnum::Pipe {
                 qualifier: qualifier,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -303,7 +303,7 @@ impl Context {
             ty: TypeEnum::ForwardPointer {
                 storage_class: storage_class,
             },
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -315,7 +315,7 @@ impl Context {
     pub fn type_pipe_storage(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::PipeStorage,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
@@ -327,7 +327,7 @@ impl Context {
     pub fn type_named_barrier(&mut self) -> TypeToken {
         let t = Type {
             ty: TypeEnum::NamedBarrier,
-            decorations: BTreeSet::new(),
+            decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
             TypeToken::new(index)
