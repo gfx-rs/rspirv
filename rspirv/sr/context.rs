@@ -14,7 +14,7 @@
 
 use crate::spirv;
 
-use super::{Type, TypeToken, Constant, ConstantToken};
+use super::{Type, TypeToken, Constant, ConstantToken, Instruction, InstructionToken};
 use crate::sr::constants::ConstantEnum;
 use crate::sr::types::{StructMember, TypeEnum};
 
@@ -31,6 +31,7 @@ pub struct Context {
     /// All type objects.
     types: Vec<Type>,
     constants: Vec<Constant>,
+    instructions: Vec<Instruction>,
 }
 
 impl Context {
@@ -38,6 +39,7 @@ impl Context {
         Context {
             types: vec![],
             constants: vec![],
+            instructions: vec![],
         }
     }
 }
@@ -63,6 +65,10 @@ impl Context {
     pub fn get_type(&self, token: TypeToken) -> &Type {
         // Note: we assume the vector doesn't shrink so we always have a valid index.
         &self.types[token.get()]
+    }
+
+    pub fn get_instruction(&self, token: InstructionToken) -> &Instruction {
+        &self.instructions[token.get()]
     }
 }
 

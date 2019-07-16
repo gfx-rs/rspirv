@@ -280,45 +280,75 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
 }
 
 pub fn gen_sr_instruction(grammar: &structs::Grammar) -> String {
+    let mut structs = Vec::new();
+    let mut terminators = Vec::new();
+    let mut instructions = Vec::new();
+
     // Compose the token stream for all instructions
-    let insts: Vec<_> = grammar
+    for inst in grammar
         .instructions
         .iter() // Loop over all instructions
         .filter(|i| i.class != "Type") // Skip types
         .filter(|i| i.class != "Constant") // Skip constants
-        .map(|inst| {
-            // Get the token for its enumerant
-            let name = Ident::new(&inst.opname[2..], Span::call_site());
+    {
+        // Get the token for its enumerant
+        let name = Ident::new(&inst.opname[2..], Span::call_site());
 
-            // Compose the token stream for all parameters
-            let params: Vec<_> = inst.operands
-                .iter() // Loop over all parameters
-                .filter_map(|operand| {
-                    if operand.kind.starts_with("IdResult") {
-                        None
-                    } else {
-                        let field_name = get_operand_name_sr_tokens(operand);
-                        let field_type = get_operand_type_sr_tokens(&operand.kind);
-                        let quantified = get_quantified_type_tokens(field_type, &operand.quantifier);
-                        Some(quote! { #field_name : #quantified })
+        // Compose the token stream for all parameters
+        let params: Vec<_> = inst.operands
+            .iter() // Loop over all parameters
+            .filter_map(|operand| {
+                if operand.kind.starts_with("IdResult") {
+                    None
+                } else {
+                    let field_name = get_operand_name_sr_tokens(operand);
+                    let field_type = get_operand_type_sr_tokens(&operand.kind);
+                    let quantified = get_quantified_type_tokens(field_type, &operand.quantifier);
+                    Some(quote! { #field_name : #quantified })
+                }
+            }).collect();
+
+        match inst.class.as_str() {
+            "ModeSetting" |
+            "ExtensionDecl" |
+            "FunctionStruct" => {
+                // Create a standalone struct
+                structs.push(quote! {
+                    #[derive(Clone, Debug, Eq, PartialEq)]
+                    pub struct #name {
+                        #( #params ),*
                     }
-                }).collect();
-            let params = if params.is_empty() {
-                quote!{}
-            } else {
-                // Create a list parameter tokens separated by comma
-                quote! { {#( #params ),*} }
-            };
-
-            // Get token stream for this enumerant
-            quote! { #name #params }
-        }).collect();
+                })
+            }
+            "Terminator" => {
+                terminators.push(quote! {
+                    #name {#( #params ),*}
+                });
+            }
+            _ => {
+                let params = if params.is_empty() {
+                    quote!{}
+                } else {
+                    quote! { {#( #params ),*} }
+                };
+                instructions.push(quote! { #name #params });
+            }
+        }
+    }
 
     // Wrap it up with enum definition boilerplate
-    let insts = quote! {
-        enum Instruction {
-            #( #insts ),*
+    let all = quote! {
+        #( #structs )*
+
+        #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum Terminator {
+            #( #terminators ),*
+        }
+
+        #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum Instruction {
+            #( #instructions ),*
         }
     };
-    insts.to_string()
+    all.to_string()
 }

@@ -14,12 +14,16 @@
 
 //! **S**tructured **r**epresentation of various SPIR-V language constructs.
 
+pub use self::autogen_decoration::Decoration;
 pub use self::constants::{Constant, ConstantToken};
 pub use self::context::Context;
-pub use self::autogen_decoration::Decoration;
+pub use self::instructions::{Instruction, InstructionToken};
+pub use self::items::Module;
 pub use self::types::{Type, TypeToken};
 
+mod autogen_decoration;
 mod constants;
 mod context;
-mod autogen_decoration;
+mod instructions;
+mod items;
 mod types;

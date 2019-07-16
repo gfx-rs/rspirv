@@ -208,6 +208,7 @@ fn main() {
         fmt_write!(c, path);
     }
     {
+        //TODO: move items into a separate source
         let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction.rs");
         let c = sr::gen_sr_instruction(&grammar);
         fmt_write!(c, path);
