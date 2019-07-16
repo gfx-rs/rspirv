@@ -196,8 +196,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
             // associated parameters.
             let cases: Vec<String> = pairs.into_iter().map(|(symbol, params)| {
                 let params: Vec<String> = params.iter().map(|element| {
-                    format!("mr::Operand::{kind}(\
-                             try_decode!(self.decoder.{decode}()))",
+                    format!("mr::Operand::{kind}(self.decoder.{decode}()?)",
                             kind = get_mr_operand_kind(element),
                             decode = get_decode_method(element))
                 }).collect();
@@ -225,8 +224,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
         } else {  // ValueEnum
             let cases: Vec<String> = pairs.into_iter().map(|(symbol, params)| {
                 let params: Vec<String> = params.iter().map(|element| {
-                    format!("mr::Operand::{kind}(\
-                             try_decode!(self.decoder.{decode}()))",
+                    format!("mr::Operand::{kind}(self.decoder.{decode}()?)",
                             kind = get_mr_operand_kind(element),
                             decode = get_decode_method(element))
                 }).collect();
@@ -265,7 +263,7 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
         further_parse_kinds.iter().map(|kind| {
             format!(
                 "{s:12}GOpKind::{kind} => {{\n\
-                 {s:16}let val = try_decode!(self.decoder.{decode}());\n\
+                 {s:16}let val = self.decoder.{decode}()?;\n\
                  {s:16}let mut ops = vec![mr::Operand::{kind}(val)];\n\
                  {s:16}ops.append(&mut self.parse_{k}_arguments(val)?);\n\
                  {s:16}ops\n\
@@ -287,8 +285,8 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
     let pair_cases: Vec<String> = pair_kinds.iter().map(|&(k0, k1)| {
         format!("{s:12}GOpKind::{kind} => {{\n\
                  {s:16}vec![\
-                 mr::Operand::{k0}(try_decode!(self.decoder.{m0}())), \
-                 mr::Operand::{k1}(try_decode!(self.decoder.{m1}()))\
+                 mr::Operand::{k0}(self.decoder.{m0}()?), \
+                 mr::Operand::{k1}(self.decoder.{m1}()?)\
                  ]\n{s:12}}}",
                 s = "",
                 kind = format!("Pair{}{}", k0, k1),
@@ -314,7 +312,7 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> String 
     }).map(|kind| {
         format!(
             "{s:12}GOpKind::{gkind} => vec![mr::Operand::{mkind}\
-             (try_decode!(self.decoder.{decode}()))],",
+             (self.decoder.{decode}()?)],",
              s = "",
              gkind = kind,
              mkind = get_mr_operand_kind(kind),
