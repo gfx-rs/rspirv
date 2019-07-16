@@ -67,6 +67,12 @@ pub enum State {
     SpecConstantOpIntegerIncorrect(usize, usize),
 }
 
+impl From<DecodeError> for State {
+    fn from(err: DecodeError) -> Self {
+        State::OperandError(err)
+    }
+}
+
 impl error::Error for State {
     fn description(&self) -> &str {
         match *self {
@@ -258,14 +264,6 @@ pub struct Parser<'c, 'd> {
     inst_index: usize,
 }
 
-/// Tries to decode `$e` and returns the error if errored out.
-macro_rules! try_decode {
-    ($e: expr) => (match $e {
-        Ok(val) => val,
-        Err(err) => return Err(State::OperandError(err))
-    });
-}
-
 impl<'c, 'd> Parser<'c, 'd> {
     /// Creates a new parser to parse the given `binary` and send the module
     /// header and instructions to the given `consumer`.
@@ -356,8 +354,8 @@ impl<'c, 'd> Parser<'c, 'd> {
                 match t {
                     Type::Integer(size, _) => {
                         match size {
-                            32 => Ok(mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))),
-                            64 => Ok(mr::Operand::LiteralInt64(try_decode!(self.decoder.int64()))),
+                            32 => Ok(mr::Operand::LiteralInt32(self.decoder.int32()?)),
+                            64 => Ok(mr::Operand::LiteralInt64(self.decoder.int64()?)),
                             _ => {
                                 Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
                             }
@@ -366,10 +364,10 @@ impl<'c, 'd> Parser<'c, 'd> {
                     Type::Float(size) => {
                         match size {
                             32 => {
-                                Ok(mr::Operand::LiteralFloat32(try_decode!(self.decoder.float32())))
+                                Ok(mr::Operand::LiteralFloat32(self.decoder.float32()?))
                             }
                             64 => {
-                                Ok(mr::Operand::LiteralFloat64(try_decode!(self.decoder.float64())))
+                                Ok(mr::Operand::LiteralFloat64(self.decoder.float64()?))
                             }
                             _ => {
                                 Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
@@ -380,21 +378,21 @@ impl<'c, 'd> Parser<'c, 'd> {
             }
             // Treat as a normal SPIR-V word if we don't know the type.
             // TODO: find a better way to handle this.
-            None => Ok(mr::Operand::LiteralInt32(try_decode!(self.decoder.int32()))),
+            None => Ok(mr::Operand::LiteralInt32(self.decoder.int32()?)),
         }
     }
 
     fn parse_spec_constant_op(&mut self) -> Result<Vec<mr::Operand>> {
         let mut operands = vec![];
 
-        let number = try_decode!(self.decoder.int32());
+        let number = self.decoder.int32()?;
         if let Some(g) = GInstTable::lookup_opcode(number as u16) {
             // TODO: check whether this opcode is allowed here.
             operands.push(mr::Operand::LiteralSpecConstantOpInteger(g.opcode));
             // We need id parameters to this SpecConstantOp.
             for operand in g.operands {
                 if operand.kind == GOpKind::IdRef {
-                    operands.push(mr::Operand::IdRef(try_decode!(self.decoder.id())))
+                    operands.push(mr::Operand::IdRef(self.decoder.id()?))
                 }
             }
             Ok(operands)
@@ -414,8 +412,8 @@ impl<'c, 'd> Parser<'c, 'd> {
             let has_more_coperands = !self.decoder.limit_reached();
             if has_more_coperands {
                 match loperand.kind {
-                    GOpKind::IdResultType => rtype = Some(try_decode!(self.decoder.id())),
-                    GOpKind::IdResult => rid = Some(try_decode!(self.decoder.id())),
+                    GOpKind::IdResultType => rtype = Some(self.decoder.id()?),
+                    GOpKind::IdResult => rid = Some(self.decoder.id()?),
                     GOpKind::LiteralContextDependentNumber => {
                         // Only constant defining instructions use this kind.
                         // If it is not true, that means the grammar is wrong
