@@ -8,7 +8,7 @@ publish = false
 
 description = "Code generation module for rspirv"
 documentation = "https://docs.rs/rspirv"
-repository = "https://github.com/google/rspirv"
+repository = "https://github.com/gfx-rs/rspirv"
 readme = "README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "grammar", "codegen"]

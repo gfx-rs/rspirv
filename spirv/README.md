@@ -37,5 +37,5 @@ Please see the [documentation][doc-headers] and project's
 [img-doc-headers]: https://docs.rs/spirv_headers/badge.svg
 [crate-headers]: https://crates.io/crates/spirv_headers
 [doc-headers]: https://docs.rs/spirv_headers
-[project-readme]: https://github.com/google/rspirv/blob/master/README.md
+[project-readme]: https://github.com/gfx-rs/rspirv/blob/master/README.md
 [rust-1.20]: https://blog.rust-lang.org/2017/08/31/Rust-1.20.html

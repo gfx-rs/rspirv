@@ -5,7 +5,7 @@ authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
 description = "Rust definition of SPIR-V structs and enums"
 documentation = "https://docs.rs/spirv_headers"
-repository = "https://github.com/google/rspirv"
+repository = "https://github.com/gfx-rs/rspirv"
 readme = "README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "definition", "struct", "enum"]

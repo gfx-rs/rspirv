@@ -25,11 +25,6 @@ SPIR-V binary parser, assembler, disassembler, optimizer, and validator. rspirv
 is not a Rust language binding for that project; it is a complete rewrite using
 Rust.
 
-### Disclaimer
-
-This is not an official Google product (experimental or otherwise), it is just
-code that happens to be owned by Google.
-
 Documentation
 -------------
 
@@ -151,7 +146,7 @@ Build
 -----
 
 ```sh
-git clone https://github.com/google/rspirv.git /path/to/rspirv
+git clone https://github.com/gfx-rs/rspirv.git /path/to/rspirv
 ```
 
 If you just want to compile and use the `spirv_headers` crate:

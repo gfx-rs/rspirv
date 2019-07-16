@@ -5,7 +5,7 @@ authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
 description = "Rust library APIs for SPIR-V module manipulation"
 documentation = "https://docs.rs/rspirv"
-repository = "https://github.com/google/rspirv"
+repository = "https://github.com/gfx-rs/rspirv"
 readme = "README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "vulkan", "opengl", "opencl"]
@@ -14,8 +14,7 @@ keywords = ["spirv", "vulkan", "opengl", "opencl"]
 path = "lib.rs"
 
 [badges]
-travis-ci = { repository = "google/rspirv" }
-appveyor = { repository = "antiagainst/rspirv" }
+travis-ci = { repository = "gfx-rs/rspirv" }
 
 [dependencies]
 num = "0.2"

@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 
 description = "SPIR-V module disassembler"
-repository = "https://github.com/google/rspirv"
+repository = "https://github.com/gfx-rs/rspirv"
 readme = "../README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "diassembler", "decoder"]
