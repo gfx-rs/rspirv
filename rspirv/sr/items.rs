@@ -1,57 +1,104 @@
 use crate::{
-	mr::ModuleHeader,
-	spirv,
-	sr::TypeToken,
+    mr,
+    spirv,
 };
-use super::instructions as inst;
+use super::{
+    context::{Context, Token},
+    instructions::{Terminator},
+    structs,
+    types::Type,
+    LiftError,
+};
 
-pub struct EntryPoint {
-	pub execution_model: spirv::ExecutionModel,
-    pub entry_point: FunctionToken,
-    pub name: String,
-    //pub interface: Vec<spirv::Word>,
+
+#[derive(Debug)]
+pub struct Variable {
+    //TODO
 }
 
+#[derive(Debug)]
 pub struct BasicBlock {
-	//line: Line,
-	terminator: inst::Terminator,
+    //line: Line,
+    terminator: Terminator,
 }
 
+#[derive(Debug)]
 pub struct Function {
-	pub control: spirv::FunctionControl,
-	/// Function result type.
-    pub result: TypeToken,
+    pub entry_point: Option<(structs::EntryPoint, structs::ExecutionMode)>,
+    pub control: spirv::FunctionControl,
+    /// Function result type.
+    pub result: Token<Type>,
     /// Function parameters.
-    pub parameters: Vec<TypeToken>,
+    pub parameters: Vec<Token<Type>>,
     /// Basic blocks in this function.
     pub basic_blocks: Vec<BasicBlock>,
 }
 
-pub struct FunctionToken {
-	index: usize,
-}
-
 pub struct Module {
     /// The module header.
-    pub header: Option<ModuleHeader>,
+    pub header: mr::ModuleHeader,
     /// All OpCapability instructions.
-    pub capabilities: Vec<inst::Capability>,
+    pub capabilities: Vec<structs::Capability>,
     /// All OpExtension instructions.
-    pub extensions: Vec<inst::Extension>,
+    //pub extensions: Vec<structs::Extension>,
     /// All OpExtInstImport instructions.
-    pub ext_inst_imports: Vec<inst::ExtInstImport>,
+    //pub ext_inst_imports: Vec<structs::ExtInstImport>,
     /// The OpMemoryModel instruction.
-    ///
-    /// Although it is required by the specification to appear exactly once
-    /// per module, we keep it optional here to allow flexibility.
-    pub memory_model: Option<inst::MemoryModel>,
-    /// All entry point declarations, using OpEntryPoint.
-    pub entry_points: Vec<inst::EntryPoint>,
-    /// All execution mode declarations, using OpExecutionMode.
-    pub execution_modes: Vec<inst::ExecutionMode>,
+    pub memory_model: structs::MemoryModel,
 
     // some missing here...
 
     /// All functions.
     pub functions: Vec<Function>,
+}
+
+#[derive(Clone, Debug)]
+pub enum ConvertionError {
+    MissingHeader,
+    MissingFunction,
+    Lift(LiftError),
+}
+
+impl From<LiftError> for ConvertionError {
+    fn from(error: LiftError) -> Self {
+        ConvertionError::Lift(error)
+    }
+}
+
+impl Module {
+    pub fn from_data(module: &mr::Module) -> Result<Self, ConvertionError> {
+        let mut context = Context::new();
+        let mut functions = Vec::new();
+
+        for fun in module.functions.iter() {
+            let def = match fun.def {
+                Some(ref instruction) => context.lift_function(instruction)?,
+                None => return Err(ConvertionError::MissingFunction),
+            };
+            let fty = context.lift_type_function(&def.function_type)?;
+            functions.push(Function {
+                entry_point: None,
+                control: def.function_control,
+                result: def.function_type,
+                parameters: Vec::new(),
+                basic_blocks: Vec::new(),
+            });
+        }
+
+        Ok(Module {
+            header: match module.header {
+                Some(ref header) => header.clone(),
+                None => return Err(ConvertionError::MissingHeader),
+            },
+            capabilities: module.capabilities
+                .iter()
+                .map(|cap| context.lift_capability(cap))
+                .collect::<Result<_, LiftError>>()?,
+            memory_model: match module.memory_model {
+                Some(ref mm) => context.lift_memory_model(mm)?,
+                None => return Err(ConvertionError::MissingHeader),
+            },
+            functions,
+        })
+    }
 }

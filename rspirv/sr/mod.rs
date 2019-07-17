@@ -15,15 +15,36 @@
 //! **S**tructured **r**epresentation of various SPIR-V language constructs.
 
 pub use self::autogen_decoration::Decoration;
-pub use self::constants::{Constant, ConstantToken};
-pub use self::context::Context;
-pub use self::instructions::{Instruction, InstructionToken};
-pub use self::items::Module;
-pub use self::types::{Type, TypeToken};
+pub use self::constants::{Constant};
+pub use self::context::{Context, Token};
+pub use self::instructions::{Instruction, Terminator};
+pub use self::items::{Function, Variable, Module};
 
 mod autogen_decoration;
 mod constants;
 mod context;
 mod instructions;
 mod items;
-mod types;
+pub mod structs;
+pub mod types;
+
+
+#[derive(Clone, Debug)]
+pub enum OperandError {
+    Wrong,
+    Missing,
+    Incomplete,
+}
+
+#[derive(Clone, Debug)]
+pub enum LiftError {
+    Class,
+    OpCode,
+    Operand(OperandError),
+}
+
+impl From<OperandError> for LiftError {
+    fn from(error: OperandError) -> Self {
+        LiftError::Operand(error)
+    }
+}

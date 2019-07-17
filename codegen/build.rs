@@ -197,18 +197,36 @@ fn main() {
         let c = sr::gen_sr_decoration(&grammar);
         fmt_write!(c, path);
     }
+
+    let (type_enums, type_structs, type_lifts) = sr::gen_sr_types_checks_and_lifts(&grammar);
+    {
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_lift.rs");
+        fmt_write!(type_lifts, path);
+    }
+    {
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_structs.rs");
+        fmt_write!(type_structs, path);
+    }
     {
         let path = codegen_src_dir.join("../rspirv/sr/autogen_type_enum_check.rs");
-        let c = sr::gen_sr_type_check(&grammar);
-        fmt_write!(c, path);
+        fmt_write!(type_enums, path);
     }
     {
         let path = codegen_src_dir.join("../rspirv/sr/autogen_type_creation.rs");
         let c = sr::gen_sr_type_creation(&grammar);
         fmt_write!(c, path);
     }
+
+    let (inst_structs, inst_lifts) = sr::gen_sr_structs_and_lifts(&grammar);
     {
-        //TODO: move items into a separate source
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction_lift.rs");
+        fmt_write!(inst_lifts, path);
+    }
+    {
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction_struct.rs");
+        fmt_write!(inst_structs, path);
+    }
+    {
         let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction.rs");
         let c = sr::gen_sr_instruction(&grammar);
         fmt_write!(c, path);

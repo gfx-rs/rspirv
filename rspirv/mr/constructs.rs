@@ -62,7 +62,7 @@ pub struct Module {
 }
 
 /// Data representation of a SPIR-V module header.
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ModuleHeader {
     pub magic_number: Word,
     pub version: Word,

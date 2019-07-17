@@ -17,7 +17,17 @@
 // DO NOT MODIFY!
 
 #[derive(Clone, Debug, PartialEq, Eq)]
+<<<<<<< HEAD
 pub(in crate::sr) enum TypeEnum {
+=======
+pub struct Function {
+    pub(in sr) decorations: Vec<super::Decoration>,
+    return_type: Token<super::types::Type>,
+    parameter_types: Vec<Token<super::types::Type>>,
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(in sr) enum TypeEnum {
+>>>>>>> Separate type structs
     Void,
     Bool,
     Int {
@@ -28,15 +38,15 @@ pub(in crate::sr) enum TypeEnum {
         width: u32,
     },
     Vector {
-        component_type: TypeToken,
+        component_type: Token<super::types::Type>,
         component_count: u32,
     },
     Matrix {
-        column_type: TypeToken,
+        column_type: Token<super::types::Type>,
         column_count: u32,
     },
     Image {
-        sampled_type: TypeToken,
+        sampled_type: Token<super::types::Type>,
         dim: spirv::Dim,
         depth: u32,
         arrayed: u32,
@@ -47,14 +57,14 @@ pub(in crate::sr) enum TypeEnum {
     },
     Sampler,
     SampledImage {
-        image_type: TypeToken,
+        image_type: Token<super::types::Type>,
     },
     Array {
-        element_type: TypeToken,
-        length: ConstantToken,
+        element_type: Token<super::types::Type>,
+        length: Token<super::Constant>,
     },
     RuntimeArray {
-        element_type: TypeToken,
+        element_type: Token<super::types::Type>,
     },
     Struct {
         field_types: Vec<StructMember>,
@@ -64,11 +74,7 @@ pub(in crate::sr) enum TypeEnum {
     },
     Pointer {
         storage_class: spirv::StorageClass,
-        pointee_type: TypeToken,
-    },
-    Function {
-        return_type: TypeToken,
-        parameter_types: Vec<TypeToken>,
+        pointee_type: Token<super::types::Type>,
     },
     Event,
     DeviceEvent,
@@ -165,12 +171,6 @@ impl Type {
     pub fn is_pointer_type(&self) -> bool {
         match self.ty {
             TypeEnum::Pointer { .. } => true,
-            _ => false,
-        }
-    }
-    pub fn is_function_type(&self) -> bool {
-        match self.ty {
-            TypeEnum::Function { .. } => true,
             _ => false,
         }
     }

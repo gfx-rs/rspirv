@@ -17,90 +17,62 @@
 // DO NOT MODIFY!
 
 impl Context {
-    pub fn type_void(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_void(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Void,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_bool(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_bool(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Bool,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_int(&mut self, width: u32, signedness: u32) -> TypeToken {
-        let t = Type {
+    pub fn type_int(&mut self, width: u32, signedness: u32) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Int {
                 width: width,
                 signedness: signedness,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_float(&mut self, width: u32) -> TypeToken {
-        let t = Type {
+    pub fn type_float(&mut self, width: u32) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Float { width: width },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_vector(&mut self, component_type: TypeToken, component_count: u32) -> TypeToken {
-        let t = Type {
+    pub fn type_vector(
+        &mut self,
+        component_type: Token<super::types::Type>,
+        component_count: u32,
+    ) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Vector {
                 component_type: component_type,
                 component_count: component_count,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_matrix(&mut self, column_type: TypeToken, column_count: u32) -> TypeToken {
-        let t = Type {
+    pub fn type_matrix(
+        &mut self,
+        column_type: Token<super::types::Type>,
+        column_count: u32,
+    ) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Matrix {
                 column_type: column_type,
                 column_count: column_count,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
     pub fn type_image(
         &mut self,
-        sampled_type: TypeToken,
+        sampled_type: Token<super::types::Type>,
         dim: spirv::Dim,
         depth: u32,
         arrayed: u32,
@@ -108,8 +80,8 @@ impl Context {
         sampled: u32,
         image_format: spirv::ImageFormat,
         access_qualifier: Option<spirv::AccessQualifier>,
-    ) -> TypeToken {
-        let t = Type {
+    ) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Image {
                 sampled_type: sampled_type,
                 dim: dim,
@@ -121,219 +93,114 @@ impl Context {
                 access_qualifier: access_qualifier,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_sampler(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_sampler(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Sampler,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_sampled_image(&mut self, image_type: TypeToken) -> TypeToken {
-        let t = Type {
+    pub fn type_sampled_image(&mut self, image_type: Token<super::types::Type>) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::SampledImage {
                 image_type: image_type,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_array(&mut self, element_type: TypeToken, length: ConstantToken) -> TypeToken {
-        let t = Type {
+    pub fn type_array(
+        &mut self,
+        element_type: Token<super::types::Type>,
+        length: Token<super::Constant>,
+    ) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Array {
                 element_type: element_type,
                 length: length,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_runtime_array(&mut self, element_type: TypeToken) -> TypeToken {
-        let t = Type {
+    pub fn type_runtime_array(&mut self, element_type: Token<super::types::Type>) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::RuntimeArray {
                 element_type: element_type,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_opaque(&mut self, type_name: String) -> TypeToken {
-        let t = Type {
+    pub fn type_opaque(&mut self, type_name: String) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Opaque {
                 type_name: type_name,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
     pub fn type_pointer(
         &mut self,
         storage_class: spirv::StorageClass,
-        pointee_type: TypeToken,
-    ) -> TypeToken {
-        let t = Type {
+        pointee_type: Token<super::types::Type>,
+    ) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Pointer {
                 storage_class: storage_class,
                 pointee_type: pointee_type,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_function(
-        &mut self,
-        return_type: TypeToken,
-        parameter_types: Vec<TypeToken>,
-    ) -> TypeToken {
-        let t = Type {
-            ty: TypeEnum::Function {
-                return_type: return_type,
-                parameter_types: parameter_types,
-            },
-            decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
-    }
-    pub fn type_event(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_event(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Event,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_device_event(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_device_event(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::DeviceEvent,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_reserve_id(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_reserve_id(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::ReserveId,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_queue(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_queue(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Queue,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_pipe(&mut self, qualifier: spirv::AccessQualifier) -> TypeToken {
-        let t = Type {
+    pub fn type_pipe(&mut self, qualifier: spirv::AccessQualifier) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::Pipe {
                 qualifier: qualifier,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_forward_pointer(&mut self, storage_class: spirv::StorageClass) -> TypeToken {
-        let t = Type {
+    pub fn type_forward_pointer(&mut self, storage_class: spirv::StorageClass) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::ForwardPointer {
                 storage_class: storage_class,
             },
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_pipe_storage(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_pipe_storage(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::PipeStorage,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
-    pub fn type_named_barrier(&mut self) -> TypeToken {
-        let t = Type {
+    pub fn type_named_barrier(&mut self) -> Token<Type> {
+        self.types.fetch_or_append(Type {
             ty: TypeEnum::NamedBarrier,
             decorations: Vec::new(),
-        };
-        if let Some(index) = self.types.iter().position(|x| *x == t) {
-            TypeToken::new(index)
-        } else {
-            self.types.push(t);
-            TypeToken::new(self.types.len() - 1)
-        }
+        })
     }
 }
