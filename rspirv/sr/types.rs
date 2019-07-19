@@ -14,8 +14,6 @@
 
 use spirv;
 
-use std::collections::BTreeSet;
-
 use super::{ConstantToken, Decoration};
 
 /// The class to represent a SPIR-V type.
@@ -26,14 +24,29 @@ use super::{ConstantToken, Decoration};
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Type {
     pub(in sr) ty: TypeEnum,
-    /// Sets of decorations. Each element is a pair of an optional member index and the decoration.
-    pub(in sr) decorations: BTreeSet<(Option<u32>, Decoration)>,
+    /// Sets of decorations.
+    pub(in sr) decorations: Vec<Decoration>,
 }
 
 /// A token for representing a SPIR-V type.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct TypeToken {
-    index: usize
+    index: usize,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(in sr) struct StructMember {
+    pub(in sr) token: TypeToken,
+    pub(in sr) decorations: Vec<Decoration>,
+}
+
+impl StructMember {
+    pub(in sr) fn new(token: TypeToken) -> Self {
+        StructMember {
+            token,
+            decorations: Vec::new(),
+        }
+    }
 }
 
 include!("autogen_type_enum_check.rs");
@@ -57,7 +70,7 @@ impl Type {
 }
 
 impl TypeToken {
-    pub(in sr) fn new(index: usize) -> TypeToken {
+    pub(in sr) fn new(index: usize) -> Self {
         TypeToken { index: index }
     }
 

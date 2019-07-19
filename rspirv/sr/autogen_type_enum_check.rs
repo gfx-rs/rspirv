@@ -57,7 +57,7 @@ pub(in sr) enum TypeEnum {
         element_type: TypeToken,
     },
     Struct {
-        field_types: Vec<TypeToken>,
+        field_types: Vec<StructMember>,
     },
     Opaque {
         type_name: String,

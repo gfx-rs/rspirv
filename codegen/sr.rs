@@ -157,7 +157,12 @@ pub fn gen_sr_type_check(grammar: &structs::Grammar) -> String {
             let param_list: Vec<_> = params
                 .iter()
                 .map(|&(ref name, ref ty)| {
-                    quote! { #name : #ty }
+                    // structures support per-member decorations
+                    if symbol == "Struct" {
+                        quote! { #name : Vec<StructMember> }
+                    } else {
+                        quote! { #name : #ty }
+                    }
                 })
                 .collect();
             let param_list = if param_list.is_empty() {
@@ -256,7 +261,7 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
             };
             quote! {
                 pub fn #func_name #param_list -> TypeToken {
-                    let t = Type { ty: TypeEnum::#symbol #init_list, decorations: BTreeSet::new() };
+                    let t = Type { ty: TypeEnum::#symbol #init_list, decorations: Vec::new() };
                     if let Some(index) = self.types.iter().position(|x| *x == t) {
                         TypeToken::new(index)
                     } else {
