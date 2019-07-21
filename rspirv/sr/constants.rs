@@ -14,7 +14,7 @@
 
 use crate::spirv;
 
-use crate::sr::TypeToken;
+use super::{Token, Type};
 
 /// The class to represent a SPIR-V constant.
 #[derive(Clone, Debug, PartialEq)]
@@ -28,21 +28,15 @@ pub(in crate::sr) enum ConstantEnum {
     I32(i32),
     U32(u32),
     F32(f32),
-    Composite(Vec<ConstantToken>),
-    Null(TypeToken),
+    Composite(Vec<Token<Constant>>),
+    Null(Token<Type>),
     Sampler(spirv::SamplerAddressingMode, u32, spirv::SamplerFilterMode),
     SpecBool(bool),
     SpecI32(i32),
     SpecU32(u32),
     SpecF32(f32),
-    SpecComposite(Vec<ConstantToken>),
-    SpecOp(spirv::Op, Vec<ConstantToken>),
-}
-
-/// A token for representing a SPIR-V constant.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct ConstantToken {
-    index: usize,
+    SpecComposite(Vec<Token<Constant>>),
+    SpecOp(spirv::Op, Vec<Token<Constant>>),
 }
 
 impl Constant {
@@ -117,15 +111,5 @@ impl Constant {
             ConstantEnum::SpecOp { .. } => true,
             _ => false,
         }
-    }
-}
-
-impl ConstantToken {
-    pub(in crate::sr) fn new(index: usize) -> ConstantToken {
-        ConstantToken { index: index }
-    }
-
-    pub(in crate::sr) fn get(&self) -> usize {
-        self.index
     }
 }
