@@ -12,11 +12,101 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::spirv;
+use std::{
+    collections::HashMap,
+    hash::BuildHasherDefault,
+    marker::PhantomData,
+};
 
-use super::{Type, TypeToken, Constant, ConstantToken};
-use crate::sr::constants::ConstantEnum;
-use crate::sr::types::{StructMember, TypeEnum};
+use fxhash::FxHasher;
+
+use crate::{
+    spirv,
+    sr::constants::{Constant, ConstantEnum},
+    sr::types::{StructMember, TypeEnum, Type},
+};
+
+type FastHashMap<K, V> = HashMap<K, V, BuildHasherDefault<FxHasher>>;
+/// An index corresponding to `Id` in SPIR-V.
+type Index = u32;
+
+/// A strongly typed reference to a SPIR-V element.
+#[derive(Debug)]
+pub struct Token<T> {
+    index: Index,
+    marker: PhantomData<T>,
+}
+
+impl<T> Clone for Token<T> {
+    fn clone(&self) -> Self {
+        Token {
+            index: self.index,
+            marker: self.marker,
+        }
+    }
+}
+impl<T> Copy for Token<T> {}
+impl<T> PartialEq for Token<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.index == other.index
+    }
+}
+impl<T> Eq for Token<T> {}
+
+impl<T> Token<T> {
+    pub(in crate::sr) fn new(index: Index) -> Self {
+        Token {
+            index,
+            marker: PhantomData,
+        }
+    }
+}
+
+/// A structure holding some kind of SPIR-V entity (e.g., type, constant,
+/// instruction, etc.) that can be referenced.
+#[derive(Debug)]
+pub struct Storage<T> {
+    map: FastHashMap<Index, T>,
+    next_id: Index,
+}
+
+impl<T> Storage<T> {
+    fn new() -> Self {
+        Storage {
+            map: FastHashMap::default(),
+            next_id: 0,
+        }
+    }
+
+    /// Associate a value with a given index, returning a typed token.
+    ///
+    /// This is useful when processing a module in the data representation,
+    /// where the indices are known.
+    pub fn assign(&mut self, index: Index, value: T) -> Token<T> {
+        self.next_id = self.next_id.max(index + 1);
+        let old = self.map.insert(index, value);
+        assert!(old.is_none());
+        Token::new(index)
+    }
+
+    /// Add a new value to the storage, returning a typed token.
+    pub fn append(&mut self, value: T) -> Token<T> {
+        self.assign(self.next_id, value)
+    }
+
+    /// Add a value with a check for uniqueness: returns a token pointing to
+    /// an existing element if its value matches the given one, or adds a new
+    /// element otherwise.
+    pub fn fetch_or_append(&mut self, value: T) -> Token<T> where T: PartialEq {
+        if let Some((&index, _)) = self.map.iter().find(|(_, v)| v == &&value) {
+            Token::new(index)
+        } else {
+            self.append(value)
+        }
+    }
+}
+
+
 
 /// The context class for SPIR-V structured representation.
 ///
@@ -29,15 +119,15 @@ use crate::sr::types::{StructMember, TypeEnum};
 #[derive(Debug)]
 pub struct Context {
     /// All type objects.
-    types: Vec<Type>,
-    constants: Vec<Constant>,
+    types: Storage<Type>,
+    constants: Storage<Constant>,
 }
 
 impl Context {
     pub fn new() -> Self {
         Context {
-            types: vec![],
-            constants: vec![],
+            types: Storage::new(),
+            constants: Storage::new(),
         }
     }
 }
@@ -45,8 +135,8 @@ impl Context {
 include!("autogen_type_creation.rs");
 
 impl Context {
-    pub fn type_struct<T: AsRef<[TypeToken]>>(&mut self, field_types: T) -> TypeToken {
-        self.types.push(Type {
+    pub fn type_struct<T: AsRef<[Token<Type>]>>(&mut self, field_types: T) -> Token<Type> {
+        self.types.append(Type {
             ty: TypeEnum::Struct {
                 field_types: field_types
                     .as_ref()
@@ -55,57 +145,45 @@ impl Context {
                     .collect(),
             },
             decorations: Vec::new(),
-        });
-        TypeToken::new(self.types.len() - 1)
+        })
     }
 
     /// Returns the reference to the real type represented by the given token.
-    pub fn get_type(&self, token: TypeToken) -> &Type {
+    pub fn get_type(&self, token: Token<Type>) -> &Type {
         // Note: we assume the vector doesn't shrink so we always have a valid index.
-        &self.types[token.get()]
-    }
-}
-
-macro_rules! fetch_or_append {
-    ($container: expr, $val: expr) => {
-        if let Some(index) = $container.iter().position(|x| *x == $val) {
-            ConstantToken::new(index)
-        } else {
-            $container.push($val);
-            ConstantToken::new($container.len() - 1)
-        }
+        &self.types.map[&token.index]
     }
 }
 
 impl Context {
-    pub fn constant_bool(&mut self, val: bool) -> ConstantToken {
+    pub fn constant_bool(&mut self, val: bool) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Bool(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn constant_i32(&mut self, val: i32) -> ConstantToken {
+    pub fn constant_i32(&mut self, val: i32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::I32(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn constant_u32(&mut self, val: u32) -> ConstantToken {
+    pub fn constant_u32(&mut self, val: u32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::U32(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn constant_f32(&mut self, val: f32) -> ConstantToken {
+    pub fn constant_f32(&mut self, val: f32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::F32(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn constant_composite<T: AsRef<[ConstantToken]>>(&mut self, val: T) -> ConstantToken {
+    pub fn constant_composite<T: AsRef<[Token<Constant>]>>(&mut self, val: T) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Composite(val.as_ref().to_vec()) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn constant_null(&mut self, val: TypeToken) -> ConstantToken {
+    pub fn constant_null(&mut self, val: Token<Type>) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Null(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
     pub fn constant_sampler(
@@ -113,56 +191,56 @@ impl Context {
         addressing_mode: spirv::SamplerAddressingMode,
         param: u32,
         filter_mode: spirv::SamplerFilterMode,
-    ) -> ConstantToken {
+    ) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Sampler(addressing_mode, param, filter_mode) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn spec_constant_bool(&mut self, val: bool) -> ConstantToken {
+    pub fn spec_constant_bool(&mut self, val: bool) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecBool(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn spec_constant_i32(&mut self, val: i32) -> ConstantToken {
+    pub fn spec_constant_i32(&mut self, val: i32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecI32(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn spec_constant_u32(&mut self, val: u32) -> ConstantToken {
+    pub fn spec_constant_u32(&mut self, val: u32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecU32(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn spec_constant_f32(&mut self, val: f32) -> ConstantToken {
+    pub fn spec_constant_f32(&mut self, val: f32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecF32(val) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn spec_constant_composite<T: AsRef<[ConstantToken]>>(&mut self, val: T) -> ConstantToken {
+    pub fn spec_constant_composite<T: AsRef<[Token<Constant>]>>(&mut self, val: T) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecComposite(val.as_ref().to_vec()) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
-    pub fn spec_constant_op<T: AsRef<[ConstantToken]>>(
+    pub fn spec_constant_op<T: AsRef<[Token<Constant>]>>(
         &mut self,
         op: spirv::Op,
         operands: T,
-    ) -> ConstantToken {
+    ) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecOp(op, operands.as_ref().to_vec()) };
-        fetch_or_append!(self.constants, v)
+        self.constants.fetch_or_append(v)
     }
 
     /// Returns the reference to the real constant represented by the given token.
-    pub fn get_constant(&self, token: ConstantToken) -> &Constant {
+    pub fn get_constant(&self, token: Token<Constant>) -> &Constant {
         // Note: we assume the vector doesn't shrink so we always have a valid index.
-        &self.constants[token.get()]
+        &self.constants.map[&token.index]
     }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::spirv;
-    use crate::sr::{Context, TypeToken};
+    use crate::sr::{Context, Token};
 
     #[test]
     fn test_get_type() {
@@ -205,13 +283,13 @@ mod tests {
     #[test]
     fn test_vector_type_uniqueness() {
         let mut c = Context::new();
-        let token = TypeToken::new(0);
+        let token = Token::new(0);
         let t1 = c.type_vector(token, 4);
         let t2 = c.type_vector(token, 4);
         assert_eq!(t1, t2);
         let t3 = c.type_vector(token, 3);
         assert!(t1 != t3);
-        let token = TypeToken::new(1);
+        let token = Token::new(1);
         let t4 = c.type_vector(token, 3);
         assert!(t3 != t4);
         assert!(t2 != t3);
@@ -220,13 +298,13 @@ mod tests {
     #[test]
     fn test_matrix_type_uniqueness() {
         let mut c = Context::new();
-        let token = TypeToken::new(0);
+        let token = Token::new(0);
         let t1 = c.type_matrix(token, 4);
         let t2 = c.type_matrix(token, 4);
         assert_eq!(t1, t2);
         let t3 = c.type_matrix(token, 3);
         assert!(t1 != t3);
-        let token = TypeToken::new(1);
+        let token = Token::new(1);
         let t4 = c.type_matrix(token, 3);
         assert!(t3 != t4);
         assert!(t2 != t3);
@@ -235,7 +313,7 @@ mod tests {
     #[test]
     fn test_struct_type_non_uniqueness() {
         let mut c = Context::new();
-        let token = TypeToken::new(0);
+        let token = Token::new(0);
         let t1 = c.type_struct(&vec![token]);
         let t2 = c.type_struct(&vec![token]);
         assert!(t1 != t2);

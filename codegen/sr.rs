@@ -108,9 +108,9 @@ pub fn get_quantified_type_tokens(ty: TokenStream, quantifier: &str) -> TokenStr
 pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
     let ty = if operand.kind == "IdRef" {
         if operand.name == "'Length'" {
-            quote! { ConstantToken }
+            quote! { Token<Constant> }
         } else {
-            quote! { TypeToken }
+            quote! { Token<Type> }
         }
     } else {
         get_operand_type_sr_tokens(&operand.kind)
@@ -259,14 +259,11 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
                 quote! { {#( #init_list ),*} }
             };
             quote! {
-                pub fn #func_name #param_list -> TypeToken {
-                    let t = Type { ty: TypeEnum::#symbol #init_list, decorations: Vec::new() };
-                    if let Some(index) = self.types.iter().position(|x| *x == t) {
-                        TypeToken::new(index)
-                    } else {
-                        self.types.push(t);
-                        TypeToken::new(self.types.len() - 1)
-                    }
+                pub fn #func_name #param_list -> Token<Type> {
+                    self.types.fetch_or_append(Type {
+                        ty: TypeEnum::#symbol #init_list,
+                        decorations: Vec::new(),
+                    })
                 }
             }
         })

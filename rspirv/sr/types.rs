@@ -14,7 +14,7 @@
 
 use crate::spirv;
 
-use super::{ConstantToken, Decoration};
+use super::{Constant, Decoration, Token};
 
 /// The class to represent a SPIR-V type.
 ///
@@ -28,20 +28,14 @@ pub struct Type {
     pub(in crate::sr) decorations: Vec<Decoration>,
 }
 
-/// A token for representing a SPIR-V type.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct TypeToken {
-    index: usize,
-}
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(in crate::sr) struct StructMember {
-    pub(in crate::sr) token: TypeToken,
+    pub(in crate::sr) token: Token<Type>,
     pub(in crate::sr) decorations: Vec<Decoration>,
 }
 
 impl StructMember {
-    pub(in crate::sr) fn new(token: TypeToken) -> Self {
+    pub(in crate::sr) fn new(token: Token<Type>) -> Self {
         StructMember {
             token,
             decorations: Vec::new(),
@@ -69,19 +63,9 @@ impl Type {
     }
 }
 
-impl TypeToken {
-    pub(in crate::sr) fn new(index: usize) -> Self {
-        TypeToken { index: index }
-    }
-
-    pub(in crate::sr) fn get(&self) -> usize {
-        self.index
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::sr::{Context, ConstantToken};
+    use crate::sr::{Context, Token};
 
     #[test]
     fn test_void_type_is_only_void_type() {
@@ -221,7 +205,7 @@ mod tests {
             let t = c.get_type(structt);
             assert!(t.is_aggregate_type());
         }
-        let arrt = c.type_array(i32t, ConstantToken::new(16));
+        let arrt = c.type_array(i32t, Token::new(16));
         {
             let t = c.get_type(arrt);
             assert!(t.is_aggregate_type());
@@ -271,7 +255,7 @@ mod tests {
             let t = c.get_type(structt);
             assert!(t.is_composite_type());
         }
-        let arrt = c.type_array(i32t, ConstantToken::new(16));
+        let arrt = c.type_array(i32t, Token::new(16));
         {
             let t = c.get_type(arrt);
             assert!(t.is_composite_type());
