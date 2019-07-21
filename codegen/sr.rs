@@ -21,25 +21,19 @@ use proc_macro2::{Ident, Span, TokenStream};
 /// Returns the corresponding Rust type used in structured representation
 /// for the given operand kind in the SPIR-V JSON grammar.
 pub fn get_operand_type_sr_tokens(kind: &str) -> TokenStream {
-    if kind.starts_with("Id") {
-        quote! { spirv::Word }
-    } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
-        quote! { u32 }
-    } else if kind == "LiteralSpecConstantOpInteger" {
-        quote! { spirv::Op }
-    } else if kind == "LiteralContextDependentNumber" {
-        panic!("this kind is not expected to be handled here")
-    } else if kind == "LiteralString" {
-        quote! { String }
-    } else if kind == "PairLiteralIntegerIdRef" {
-        quote! { (u32, spirv::Word) }
-    } else if kind == "PairIdRefLiteralInteger" {
-        quote! { (spirv::Word, u32) }
-    } else if kind == "PairIdRefIdRef" {
-        quote! { (spirv::Word, spirv::Word) }
-    } else {
-        let kind = Ident::new(kind, Span::call_site());
-        quote! { spirv::#kind }
+    match kind {
+        "IdMemorySemantics" | "IdScope" | "IdRef" | "IdResult" => quote! { spirv::Word },
+        "LiteralInteger" | "LiteralExtInstInteger" => quote! { u32 },
+        "LiteralSpecConstantOpInteger" => quote! { spirv::Op },
+        "LiteralContextDependentNumber" => panic!("this kind is not expected to be handled here"),
+        "LiteralString" => quote! { String },
+        "PairLiteralIntegerIdRef" => quote! { (u32, spirv::Word) },
+        "PairIdRefLiteralInteger" => quote! { (spirv::Word, u32) },
+        "PairIdRefIdRef" => quote! { (spirv::Word, spirv::Word) },
+        _ => {
+            let kind = Ident::new(kind, Span::call_site());
+            quote! { spirv::#kind }
+        }
     }
 }
 
@@ -101,23 +95,27 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
     tokens.to_string()
 }
 
-pub fn get_operand_type_ident(grammar: &structs::Operand) -> TokenStream {
-    let ty = if grammar.kind == "IdRef" {
-        if grammar.name == "'Length'" {
+pub fn get_quantified_type_tokens(ty: TokenStream, quantifier: &str) -> TokenStream {
+    match quantifier {
+        "" => quote! { #ty },
+        "?" => quote! { Option<#ty> },
+        "*" => quote! { Vec<#ty> },
+        other => panic!("wrong quantifier: {}", other),
+    }
+}
+
+pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
+    let ty = if operand.kind == "IdRef" {
+        if operand.name == "'Length'" {
             quote! { ConstantToken }
         } else {
             quote! { TypeToken }
         }
     } else {
-        get_operand_type_sr_tokens(&grammar.kind)
+        get_operand_type_sr_tokens(&operand.kind)
     };
-    if grammar.quantifier.is_empty() {
-        quote! { #ty }
-    } else if grammar.quantifier == "?" {
-        quote! { Option<#ty> }
-    } else {
-        quote! { Vec<#ty> }
-    }
+
+    get_quantified_type_tokens(ty, &operand.quantifier)
 }
 
 fn get_type_fn_name(name: &str) -> String {
@@ -300,13 +298,8 @@ pub fn gen_sr_instruction(grammar: &structs::Grammar) -> String {
                     } else {
                         let field_name = get_operand_name_sr_tokens(operand);
                         let field_type = get_operand_type_sr_tokens(&operand.kind);
-                        if operand.quantifier == "" {
-                            Some(quote! { #field_name : #field_type })
-                        } else if operand.quantifier == "?" {
-                            Some(quote! { #field_name : Option<#field_type> })
-                        } else {
-                            Some(quote! { #field_name : Vec<#field_type> })
-                        }
+                        let quantified = get_quantified_type_tokens(field_type, &operand.quantifier);
+                        Some(quote! { #field_name : #quantified })
                     }
                 }).collect();
             let params = if params.is_empty() {
