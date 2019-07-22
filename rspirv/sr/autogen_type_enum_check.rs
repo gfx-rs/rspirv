@@ -17,7 +17,7 @@
 // DO NOT MODIFY!
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub(in sr) enum TypeEnum {
+pub(in crate::sr) enum TypeEnum {
     Void,
     Bool,
     Int {

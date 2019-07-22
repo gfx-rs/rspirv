@@ -19,6 +19,8 @@ use crate::spirv::Word;
 use crate::utils::version;
 use std::{convert, fmt};
 
+use derive_more::From;
+
 /// Data representation of a SPIR-V module.
 ///
 /// Most of the fields are just vectors of `Instruction`s, but some fields

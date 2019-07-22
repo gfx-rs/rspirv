@@ -310,7 +310,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                         return Err(State::HeaderIncorrect);
                     }
                 }
-                
+
                 let mut header = mr::ModuleHeader::new(words[3]);
                 let (major, minor) = version::create_version_from_word(words[1]);
                 header.set_version(major, minor);
@@ -451,6 +451,8 @@ include!("autogen_parse_operand.rs");
 
 #[cfg(test)]
 mod tests {
+    use assert_matches::assert_matches;
+
     use crate::mr;
     use crate::spirv;
 
