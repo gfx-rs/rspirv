@@ -24,11 +24,7 @@
 #![allow(non_camel_case_types)]
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
-#[macro_use]
-extern crate bitflags;
-extern crate num;
-extern crate num_traits;
-#[macro_use]
-extern crate num_derive;
+use bitflags::bitflags;
+use num_derive::FromPrimitive;
 
 include!("autogen_spirv.rs");
