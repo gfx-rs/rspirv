@@ -2,6 +2,7 @@
 name = "rspirv-codegen"
 version = "0.1.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
+edition = "2018"
 
 build = "build.rs"
 publish = false

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use mr;
-use grammar;
-use spirv;
+use crate::mr;
+use crate::grammar;
+use crate::spirv;
 
 use std::collections;
 
-use grammar::GlslStd450InstructionTable as GGlInstTable;
-use grammar::OpenCLStd100InstructionTable as GClInstTable;
+use crate::grammar::GlslStd450InstructionTable as GGlInstTable;
+use crate::grammar::OpenCLStd100InstructionTable as GClInstTable;
 
 type GExtInstRef = &'static grammar::ExtendedInstruction<'static>;
 

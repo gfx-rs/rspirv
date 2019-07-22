@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use regex;
-use structs;
-use utils::*;
+use crate::structs;
+use crate::utils::*;
 
 use proc_macro2::{Ident, Span, TokenStream};
+use quote::quote;
 
 /// Returns the corresponding Rust type used in structured representation
 /// for the given operand kind in the SPIR-V JSON grammar.
@@ -84,6 +84,7 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
         })
         .collect();
     let tokens = quote! {
+        use derive_more::From;
         use spirv;
 
         /// SPIR-V decorations.
@@ -197,7 +198,7 @@ pub fn gen_sr_type_check(grammar: &structs::Grammar) -> String {
         .collect();
     let tokens = quote! {
         #[derive(Clone, Debug, PartialEq, Eq)]
-        pub (in sr) enum TypeEnum {
+        pub (in crate::sr) enum TypeEnum {
             #( #types ),*
         }
 

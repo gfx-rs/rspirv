@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use mr;
-use grammar;
-use spirv;
+use crate::mr;
+use crate::grammar;
+use crate::spirv;
 
 use std::{error, fmt, result, slice};
 use super::{
@@ -23,11 +23,11 @@ use super::{
     tracker::{Type, TypeTracker},
 };
 
-use grammar::CoreInstructionTable as GInstTable;
-use grammar::OperandKind as GOpKind;
-use grammar::OperandQuantifier as GOpCount;
+use crate::grammar::CoreInstructionTable as GInstTable;
+use crate::grammar::OperandKind as GOpKind;
+use crate::grammar::OperandQuantifier as GOpCount;
 
-use utils::version;
+use crate::utils::version;
 
 type GInstRef = &'static grammar::Instruction<'static>;
 
@@ -44,7 +44,7 @@ pub enum State {
     /// Consumer requested to stop parse
     ConsumerStopRequested,
     /// Consumer errored out with the given error
-    ConsumerError(Box<error::Error>),
+    ConsumerError(Box<dyn error::Error>),
     /// Incomplete module header
     HeaderIncomplete(DecodeError),
     /// Incorrect module header
@@ -157,7 +157,7 @@ pub enum Action {
     /// Normally stop the parsing
     Stop,
     /// Error out with the given error
-    Error(Box<error::Error>),
+    Error(Box<dyn error::Error>),
 }
 
 impl Action {
@@ -195,13 +195,13 @@ pub trait Consumer {
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse_bytes<T: AsRef<[u8]>>(binary: T, consumer: &mut Consumer) -> Result<()> {
+pub fn parse_bytes<T: AsRef<[u8]>>(binary: T, consumer: &mut dyn Consumer) -> Result<()> {
     Parser::new(binary.as_ref(), consumer).parse()
 }
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut Consumer) -> Result<()> {
+pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut dyn Consumer) -> Result<()> {
     let len = binary.as_ref().len() * 4;
     let buf = unsafe { slice::from_raw_parts(binary.as_ref().as_ptr() as *const u8, len) };
     Parser::new(buf, consumer).parse()
@@ -256,7 +256,7 @@ pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut Consumer) -> Resul
 /// ```
 pub struct Parser<'c, 'd> {
     decoder: decoder::Decoder<'d>,
-    consumer: &'c mut Consumer,
+    consumer: &'c mut dyn Consumer,
     type_tracker: TypeTracker,
     /// The index of the current instructions
     ///
@@ -267,7 +267,7 @@ pub struct Parser<'c, 'd> {
 impl<'c, 'd> Parser<'c, 'd> {
     /// Creates a new parser to parse the given `binary` and send the module
     /// header and instructions to the given `consumer`.
-    pub fn new(binary: &'d [u8], consumer: &'c mut Consumer) -> Self {
+    pub fn new(binary: &'d [u8], consumer: &'c mut dyn Consumer) -> Self {
         Parser {
             decoder: decoder::Decoder::new(binary),
             consumer: consumer,
@@ -451,14 +451,14 @@ include!("autogen_parse_operand.rs");
 
 #[cfg(test)]
 mod tests {
-    use mr;
-    use spirv;
+    use crate::mr;
+    use crate::spirv;
 
-    use binary::DecodeError;
+    use crate::binary::DecodeError;
     use std::{error, fmt};
     use super::{Action, Consumer, parse_words, Parser, State, WORD_NUM_BYTES};
 
-    use utils::num::{f32_to_bytes, f64_to_bytes};
+    use crate::utils::num::{f32_to_bytes, f64_to_bytes};
 
     // TODO: It's unfortunate that we have these numbers directly coded here
     // and repeat them in the following tests. Should have a better way.

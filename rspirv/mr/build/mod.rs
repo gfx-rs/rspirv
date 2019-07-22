@@ -14,8 +14,8 @@
 
 #![cfg_attr(feature = "clippy", allow(too_many_arguments))]
 
-use mr;
-use spirv;
+use crate::mr;
+use crate::spirv;
 
 use std::result;
 use super::Error;
@@ -550,13 +550,13 @@ include!("autogen_norm_insts.rs");
 
 #[cfg(test)]
 mod tests {
-    use mr;
-    use spirv;
+    use crate::mr;
+    use crate::spirv;
 
     use std::f32;
     use super::Builder;
 
-    use binary::Disassemble;
+    use crate::binary::Disassemble;
 
     fn has_only_one_global_inst(module: &mr::Module) -> bool {
         if !module.functions.is_empty() {

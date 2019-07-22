@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use spirv;
+use crate::spirv;
 
 use super::{ConstantToken, Decoration};
 
@@ -23,9 +23,9 @@ use super::{ConstantToken, Decoration};
 /// of labelling explicit lifetimes or back references.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Type {
-    pub(in sr) ty: TypeEnum,
+    pub(in crate::sr) ty: TypeEnum,
     /// Sets of decorations.
-    pub(in sr) decorations: Vec<Decoration>,
+    pub(in crate::sr) decorations: Vec<Decoration>,
 }
 
 /// A token for representing a SPIR-V type.
@@ -35,13 +35,13 @@ pub struct TypeToken {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub(in sr) struct StructMember {
-    pub(in sr) token: TypeToken,
-    pub(in sr) decorations: Vec<Decoration>,
+pub(in crate::sr) struct StructMember {
+    pub(in crate::sr) token: TypeToken,
+    pub(in crate::sr) decorations: Vec<Decoration>,
 }
 
 impl StructMember {
-    pub(in sr) fn new(token: TypeToken) -> Self {
+    pub(in crate::sr) fn new(token: TypeToken) -> Self {
         StructMember {
             token,
             decorations: Vec::new(),
@@ -70,18 +70,18 @@ impl Type {
 }
 
 impl TypeToken {
-    pub(in sr) fn new(index: usize) -> Self {
+    pub(in crate::sr) fn new(index: usize) -> Self {
         TypeToken { index: index }
     }
 
-    pub(in sr) fn get(&self) -> usize {
+    pub(in crate::sr) fn get(&self) -> usize {
         self.index
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use sr::{Context, ConstantToken};
+    use crate::sr::{Context, ConstantToken};
 
     #[test]
     fn test_void_type_is_only_void_type() {

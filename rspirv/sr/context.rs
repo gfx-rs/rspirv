@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use spirv;
+use crate::spirv;
 
 use super::{Type, TypeToken, Constant, ConstantToken};
-use sr::constants::ConstantEnum;
-use sr::types::{StructMember, TypeEnum};
+use crate::sr::constants::ConstantEnum;
+use crate::sr::types::{StructMember, TypeEnum};
 
 /// The context class for SPIR-V structured representation.
 ///
@@ -161,8 +161,8 @@ impl Context {
 
 #[cfg(test)]
 mod tests {
-    use spirv;
-    use sr::{Context, TypeToken};
+    use crate::spirv;
+    use crate::sr::{Context, TypeToken};
 
     #[test]
     fn test_get_type() {

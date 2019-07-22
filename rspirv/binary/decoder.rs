@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use spirv;
+use crate::spirv;
 
 use std::{mem, result};
 use super::DecodeError as Error;
 
-use utils::num::u32_to_bytes;
+use crate::utils::num::u32_to_bytes;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -232,13 +232,13 @@ include!("autogen_decode_operand.rs");
 
 #[cfg(test)]
 mod tests {
-    use spirv;
+    use crate::spirv;
 
     use super::Decoder;
-    use binary::DecodeError as Error;
+    use crate::binary::DecodeError as Error;
 
-    use utils::num::f32_to_bytes;
-    use utils::num::f64_to_bytes;
+    use crate::utils::num::f32_to_bytes;
+    use crate::utils::num::f64_to_bytes;
 
     #[test]
     fn test_decoding_word_from_one_bytes() {

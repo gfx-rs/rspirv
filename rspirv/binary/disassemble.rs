@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use mr;
-use spirv;
+use crate::mr;
+use crate::spirv;
 
 use super::tracker;
 
@@ -205,10 +205,10 @@ fn disas_ext_inst(inst: &mr::Instruction,
 
 #[cfg(test)]
 mod tests {
-    use mr;
-    use spirv;
+    use crate::mr;
+    use crate::spirv;
 
-    use binary::Disassemble;
+    use crate::binary::Disassemble;
 
     #[test]
     fn test_disassemble_operand_function_control() {
