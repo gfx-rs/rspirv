@@ -67,45 +67,75 @@ impl<T> Token<T> {
 #[derive(Debug)]
 pub struct Storage<T> {
     map: FastHashMap<Index, T>,
-    next_id: Index,
 }
 
 impl<T> Storage<T> {
     fn new() -> Self {
         Storage {
             map: FastHashMap::default(),
-            next_id: 0,
         }
     }
 
-    /// Associate a value with a given index, returning a typed token.
+    /// Associates the given `value` to the given `index` inside this storage
+    /// and returns a token for representing this `value`.
     ///
     /// This is useful when processing a module in the data representation,
     /// where the indices are known.
     pub fn assign(&mut self, index: Index, value: T) -> Token<T> {
-        self.next_id = self.next_id.max(index + 1);
         let old = self.map.insert(index, value);
         assert!(old.is_none());
         Token::new(index)
     }
 
-    /// Add a new value to the storage, returning a typed token.
-    pub fn append(&mut self, value: T) -> Token<T> {
-        self.assign(self.next_id, value)
-    }
-
-    /// Add a value with a check for uniqueness: returns a token pointing to
+    /// Adds a value with a check for uniqueness: returns a token pointing to
     /// an existing element if its value matches the given one, or adds a new
     /// element otherwise.
-    pub fn fetch_or_append(&mut self, value: T) -> Token<T> where T: PartialEq {
+    fn fetch_or_append(
+        &mut self, max_index: &mut Index, value: T,
+    ) -> Token<T> where T: PartialEq {
         if let Some((&index, _)) = self.map.iter().find(|(_, v)| v == &&value) {
             Token::new(index)
         } else {
-            self.append(value)
+            *max_index += 1;
+            self.assign(*max_index, value)
         }
+    }
+
+    fn max_index(&self) -> Index {
+        self.map.keys().cloned().max().unwrap_or(0)
     }
 }
 
+/// The context accumulated from loading a SPIR-V moduke from the data
+/// representation.
+#[derive(Debug)]
+pub struct LoadContext {
+    /// All type objects.
+    types: Storage<Type>,
+    constants: Storage<Constant>,
+}
+
+impl LoadContext {
+    pub fn new() -> Self {
+        LoadContext {
+            types: Storage::new(),
+            constants: Storage::new(),
+        }
+    }
+
+    /// Transforms into a context that can be manipulated by adding or removing
+    /// elements.
+    pub fn finish(self) -> Context {
+        let max_index = self.types
+            .max_index()
+            .max(self.constants.max_index());
+        Context {
+            max_index,
+            types: self.types,
+            constants: self.constants,
+        }
+    }
+}
 
 
 /// The context class for SPIR-V structured representation.
@@ -118,6 +148,8 @@ impl<T> Storage<T> {
 /// of objects inside the context. The context serves as the memory arena.
 #[derive(Debug)]
 pub struct Context {
+    /// The maximum unique index of an element, used for adding new elements by the code.
+    max_index: Index,
     /// All type objects.
     types: Storage<Type>,
     constants: Storage<Constant>,
@@ -125,10 +157,7 @@ pub struct Context {
 
 impl Context {
     pub fn new() -> Self {
-        Context {
-            types: Storage::new(),
-            constants: Storage::new(),
-        }
+        LoadContext::new().finish()
     }
 }
 
@@ -136,7 +165,8 @@ include!("autogen_type_creation.rs");
 
 impl Context {
     pub fn type_struct<T: AsRef<[Token<Type>]>>(&mut self, field_types: T) -> Token<Type> {
-        self.types.append(Type {
+        self.max_index += 1;
+        self.types.assign(self.max_index, Type {
             ty: TypeEnum::Struct {
                 field_types: field_types
                     .as_ref()
@@ -158,32 +188,32 @@ impl Context {
 impl Context {
     pub fn constant_bool(&mut self, val: bool) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Bool(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn constant_i32(&mut self, val: i32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::I32(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn constant_u32(&mut self, val: u32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::U32(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn constant_f32(&mut self, val: f32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::F32(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn constant_composite<T: AsRef<[Token<Constant>]>>(&mut self, val: T) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Composite(val.as_ref().to_vec()) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn constant_null(&mut self, val: Token<Type>) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Null(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn constant_sampler(
@@ -193,32 +223,32 @@ impl Context {
         filter_mode: spirv::SamplerFilterMode,
     ) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::Sampler(addressing_mode, param, filter_mode) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn spec_constant_bool(&mut self, val: bool) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecBool(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn spec_constant_i32(&mut self, val: i32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecI32(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn spec_constant_u32(&mut self, val: u32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecU32(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn spec_constant_f32(&mut self, val: f32) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecF32(val) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn spec_constant_composite<T: AsRef<[Token<Constant>]>>(&mut self, val: T) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecComposite(val.as_ref().to_vec()) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     pub fn spec_constant_op<T: AsRef<[Token<Constant>]>>(
@@ -227,7 +257,7 @@ impl Context {
         operands: T,
     ) -> Token<Constant> {
         let v = Constant { c: ConstantEnum::SpecOp(op, operands.as_ref().to_vec()) };
-        self.constants.fetch_or_append(v)
+        self.constants.fetch_or_append(&mut self.max_index, v)
     }
 
     /// Returns the reference to the real constant represented by the given token.

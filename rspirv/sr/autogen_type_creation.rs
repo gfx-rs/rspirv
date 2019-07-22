@@ -18,53 +18,71 @@
 
 impl Context {
     pub fn type_void(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Void,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Void,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_bool(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Bool,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Bool,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_int(&mut self, width: u32, signedness: u32) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Int {
-                width: width,
-                signedness: signedness,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Int {
+                    width: width,
+                    signedness: signedness,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_float(&mut self, width: u32) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Float { width: width },
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Float { width: width },
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_vector(
         &mut self,
         component_type: Token<Type>,
         component_count: u32,
     ) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Vector {
-                component_type: component_type,
-                component_count: component_count,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Vector {
+                    component_type: component_type,
+                    component_count: component_count,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_matrix(&mut self, column_type: Token<Type>, column_count: u32) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Matrix {
-                column_type: column_type,
-                column_count: column_count,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Matrix {
+                    column_type: column_type,
+                    column_count: column_count,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_image(
         &mut self,
@@ -77,139 +95,187 @@ impl Context {
         image_format: spirv::ImageFormat,
         access_qualifier: Option<spirv::AccessQualifier>,
     ) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Image {
-                sampled_type: sampled_type,
-                dim: dim,
-                depth: depth,
-                arrayed: arrayed,
-                ms: ms,
-                sampled: sampled,
-                image_format: image_format,
-                access_qualifier: access_qualifier,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Image {
+                    sampled_type: sampled_type,
+                    dim: dim,
+                    depth: depth,
+                    arrayed: arrayed,
+                    ms: ms,
+                    sampled: sampled,
+                    image_format: image_format,
+                    access_qualifier: access_qualifier,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_sampler(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Sampler,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Sampler,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_sampled_image(&mut self, image_type: Token<Type>) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::SampledImage {
-                image_type: image_type,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::SampledImage {
+                    image_type: image_type,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_array(
         &mut self,
         element_type: Token<Type>,
         length: Token<Constant>,
     ) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Array {
-                element_type: element_type,
-                length: length,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Array {
+                    element_type: element_type,
+                    length: length,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_runtime_array(&mut self, element_type: Token<Type>) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::RuntimeArray {
-                element_type: element_type,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::RuntimeArray {
+                    element_type: element_type,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_opaque(&mut self, type_name: String) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Opaque {
-                type_name: type_name,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Opaque {
+                    type_name: type_name,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_pointer(
         &mut self,
         storage_class: spirv::StorageClass,
         pointee_type: Token<Type>,
     ) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Pointer {
-                storage_class: storage_class,
-                pointee_type: pointee_type,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Pointer {
+                    storage_class: storage_class,
+                    pointee_type: pointee_type,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_function(
         &mut self,
         return_type: Token<Type>,
         parameter_types: Vec<Token<Type>>,
     ) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Function {
-                return_type: return_type,
-                parameter_types: parameter_types,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Function {
+                    return_type: return_type,
+                    parameter_types: parameter_types,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_event(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Event,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Event,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_device_event(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::DeviceEvent,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::DeviceEvent,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_reserve_id(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::ReserveId,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::ReserveId,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_queue(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Queue,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Queue,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_pipe(&mut self, qualifier: spirv::AccessQualifier) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Pipe {
-                qualifier: qualifier,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::Pipe {
+                    qualifier: qualifier,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_forward_pointer(&mut self, storage_class: spirv::StorageClass) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::ForwardPointer {
-                storage_class: storage_class,
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::ForwardPointer {
+                    storage_class: storage_class,
+                },
+                decorations: Vec::new(),
             },
-            decorations: Vec::new(),
-        })
+        )
     }
     pub fn type_pipe_storage(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::PipeStorage,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::PipeStorage,
+                decorations: Vec::new(),
+            },
+        )
     }
     pub fn type_named_barrier(&mut self) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::NamedBarrier,
-            decorations: Vec::new(),
-        })
+        self.types.fetch_or_append(
+            &mut self.max_index,
+            Type {
+                ty: TypeEnum::NamedBarrier,
+                decorations: Vec::new(),
+            },
+        )
     }
 }

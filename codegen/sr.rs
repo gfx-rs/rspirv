@@ -260,7 +260,7 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
             };
             quote! {
                 pub fn #func_name #param_list -> Token<Type> {
-                    self.types.fetch_or_append(Type {
+                    self.types.fetch_or_append(&mut self.max_index, Type {
                         ty: TypeEnum::#symbol #init_list,
                         decorations: Vec::new(),
                     })
