@@ -13,8 +13,7 @@
 // limitations under the License.
 
 use crate::mr;
-
-use crate::utils::num::{bytes_to_u32_le, f32_to_u32};
+use std::convert::TryInto;
 
 /// Trait for assembling functionalities.
 pub trait Assemble {
@@ -29,12 +28,13 @@ impl Assemble for mr::ModuleHeader {
 }
 
 fn assemble_str(s: &str) -> Vec<u32> {
-    let bytes = s.as_bytes();
-    let len = (bytes.len() + 3) >> 2;
-    let mut words: Vec<u32> = (0..len).map(|i| bytes_to_u32_le(&bytes[(i << 2)..])).collect();
-    if bytes.len() % 4 == 0 {
-        words.push(0)
-    }
+    let chunks = s.as_bytes().chunks_exact(4);
+    let remainder = chunks.remainder();
+    let mut last = [0; 4];
+    last[..remainder.len()].copy_from_slice(remainder);
+    let mut words = Vec::with_capacity(chunks.len() + 1);
+    words.extend(chunks.map(|chunk| u32::from_le_bytes(chunk.try_into().unwrap())));
+    words.push(u32::from_le_bytes(last));
     words
 }
 
@@ -77,7 +77,7 @@ impl Assemble for mr::Operand {
             mr::Operand::LiteralInt32(v) |
             mr::Operand::LiteralExtInstInteger(v) => vec![v],
             mr::Operand::LiteralInt64(_) => unimplemented!(),
-            mr::Operand::LiteralFloat32(v) => vec![f32_to_u32(v)],
+            mr::Operand::LiteralFloat32(v) => vec![v.to_bits()],
             mr::Operand::LiteralFloat64(_) => unimplemented!(),
             mr::Operand::LiteralSpecConstantOpInteger(v) => vec![v as u32],
             mr::Operand::LiteralString(ref v) => assemble_str(v),
@@ -156,14 +156,14 @@ mod tests {
     use crate::spirv;
 
     use crate::binary::Assemble;
-    use super::{assemble_str, bytes_to_u32_le};
+    use super::assemble_str;
 
     #[test]
     fn test_assemble_str() {
         assert_eq!(vec![0u32], assemble_str(""));
-        assert_eq!(vec![bytes_to_u32_le(b"h\0\0\0")], assemble_str("h"));
-        assert_eq!(vec![bytes_to_u32_le(b"hell"), 0u32], assemble_str("hell"));
-        assert_eq!(vec![bytes_to_u32_le(b"hell"), bytes_to_u32_le(b"o\0\0\0")],
+        assert_eq!(vec![u32::from_le_bytes(*b"h\0\0\0")], assemble_str("h"));
+        assert_eq!(vec![u32::from_le_bytes(*b"hell"), 0u32], assemble_str("hell"));
+        assert_eq!(vec![u32::from_le_bytes(*b"hell"), u32::from_le_bytes(*b"o\0\0\0")],
                    assemble_str("hello"));
     }
 

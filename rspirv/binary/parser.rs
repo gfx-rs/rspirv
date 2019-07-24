@@ -460,8 +460,6 @@ mod tests {
     use std::{error, fmt};
     use super::{Action, Consumer, parse_words, Parser, State, WORD_NUM_BYTES};
 
-    use crate::utils::num::{f32_to_bytes, f64_to_bytes};
-
     // TODO: It's unfortunate that we have these numbers directly coded here
     // and repeat them in the following tests. Should have a better way.
     #[cfg_attr(rustfmt, rustfmt_skip)]
@@ -965,7 +963,7 @@ mod tests {
         v.append(&mut vec![0x2b, 0x00, 0x04, 0x00]); // OpConstant
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
         v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
-        v.append(&mut f32_to_bytes(42.42));
+        v.append(&mut vec![0x14, 0xAE, 0x29, 0x42]); // 42.42
         let mut c = RetainingConsumer::new();
         {
             let p = Parser::new(&v, &mut c);
@@ -989,7 +987,7 @@ mod tests {
         v.append(&mut vec![0x2b, 0x00, 0x05, 0x00]); // OpConstant
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result type: 1
         v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // result id: 2
-        v.append(&mut f64_to_bytes(-12.34));
+        v.append(&mut vec![0xAE, 0x47, 0xE1, 0x7A, 0x14, 0xAE, 0x28, 0xC0]); // -12.34
         let mut c = RetainingConsumer::new();
         {
             let p = Parser::new(&v, &mut c);

@@ -14,10 +14,8 @@
 
 use crate::spirv;
 
-use std::{mem, result};
+use std::result;
 use super::DecodeError as Error;
-
-use crate::utils::num::u32_to_bytes;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -179,7 +177,7 @@ impl<'a> Decoder<'a> {
         let mut bytes = vec![];
         loop {
             let word = self.word()?;
-            bytes.append(&mut u32_to_bytes(word));
+            bytes.extend(&word.to_le_bytes());
             if bytes.last() == Some(&0) {
                 break;
             }
@@ -209,7 +207,7 @@ impl<'a> Decoder<'a> {
     /// literal floating point number.
     pub fn float32(&mut self) -> Result<f32> {
         let val = self.word()?;
-        Ok(unsafe { mem::transmute::<u32, f32>(val) })
+        Ok(f32::from_bits(val))
     }
 
     /// Decodes and returns the next two SPIR-V words as a 64-bit
@@ -218,7 +216,7 @@ impl<'a> Decoder<'a> {
         let low = self.word()?;
         let high = self.word()?;
         let val = ((high as u64) << 32) | (low as u64);
-        Ok(unsafe { mem::transmute::<u64, f64>(val) })
+        Ok(f64::from_bits(val))
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
@@ -236,9 +234,6 @@ mod tests {
 
     use super::Decoder;
     use crate::binary::DecodeError as Error;
-
-    use crate::utils::num::f32_to_bytes;
-    use crate::utils::num::f64_to_bytes;
 
     #[test]
     fn test_decoding_word_from_one_bytes() {
@@ -414,33 +409,29 @@ mod tests {
 
     #[test]
     fn test_decode_int64() {
-        let b = vec![0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef];
+        let b = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef];
         let mut d = Decoder::new(&b);
         assert_eq!(Ok(0xefcdab9078563412), d.int64());
-
-        let b = f32_to_bytes(-12.34);
-        let mut d = Decoder::new(&b);
-        assert_eq!(Ok(-12.34), d.float32());
     }
 
     #[test]
     fn test_decode_float32() {
-        let b = f32_to_bytes(42.42);
+        let b = [0x14, 0xAE, 0x29, 0x42];
         let mut d = Decoder::new(&b);
         assert_eq!(Ok(42.42), d.float32());
 
-        let b = f32_to_bytes(-12.34);
+        let b = [0xA4, 0x70, 0x45, 0xC1];
         let mut d = Decoder::new(&b);
         assert_eq!(Ok(-12.34), d.float32());
     }
 
     #[test]
     fn test_decode_float64() {
-        let b = f64_to_bytes(42.42);
+        let b = [0xF6, 0x28, 0x5C, 0x8F, 0xC2, 0x35, 0x45, 0x40];
         let mut d = Decoder::new(&b);
         assert_eq!(Ok(42.42), d.float64());
 
-        let b = f64_to_bytes(-12.34);
+        let b = [0xAE, 0x47, 0xE1, 0x7A, 0x14, 0xAE, 0x28, 0xC0];
         let mut d = Decoder::new(&b);
         assert_eq!(Ok(-12.34), d.float64());
     }
