@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use binary;
-use mr;
-use spirv;
-use grammar;
+use crate::binary;
+use crate::mr;
+use crate::spirv;
+use crate::grammar;
 
-use binary::{ParseAction, ParseResult};
+use crate::binary::{ParseAction, ParseResult};
 use std::{error, fmt};
 
 /// Data representation loading errors.
@@ -274,8 +274,8 @@ pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<mr::Module> {
 
 #[cfg(test)]
 mod tests {
-    use mr;
-    use spirv;
+    use crate::mr;
+    use crate::spirv;
 
     #[test]
     fn test_load_variable() {

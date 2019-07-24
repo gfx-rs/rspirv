@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use spirv;
+use crate::spirv;
 
-use sr::TypeToken;
+use crate::sr::TypeToken;
 
 /// The class to represent a SPIR-V constant.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Constant {
-    pub(in sr) c: ConstantEnum,
+    pub(in crate::sr) c: ConstantEnum,
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub(in sr) enum ConstantEnum {
+pub(in crate::sr) enum ConstantEnum {
     Bool(bool),
     I32(i32),
     U32(u32),
@@ -121,11 +121,11 @@ impl Constant {
 }
 
 impl ConstantToken {
-    pub(in sr) fn new(index: usize) -> ConstantToken {
+    pub(in crate::sr) fn new(index: usize) -> ConstantToken {
         ConstantToken { index: index }
     }
 
-    pub(in sr) fn get(&self) -> usize {
+    pub(in crate::sr) fn get(&self) -> usize {
         self.index
     }
 }

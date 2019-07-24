@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use spirv;
+use crate::spirv;
 
 /// Grammar for a SPIR-V instruction.
 #[derive(Debug, PartialEq, Eq, Hash)]

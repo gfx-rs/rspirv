@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use structs;
-
-use utils::*;
+use crate::structs;
+use crate::utils::*;
 
 /// Returns true if the given operand kind can potentially have additional
 /// parameters.

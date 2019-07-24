@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use grammar;
-use spirv;
+use crate::grammar;
+use crate::spirv;
 
-use spirv::Word;
-use utils::version;
+use crate::spirv::Word;
+use crate::utils::version;
 use std::{convert, fmt};
+
+use derive_more::From;
 
 /// Data representation of a SPIR-V module.
 ///
@@ -245,8 +247,8 @@ impl convert::From<u32> for Operand {
 
 #[cfg(test)]
 mod tests {
-    use mr;
-    use spirv;
+    use crate::mr;
+    use crate::spirv;
 
     #[test]
     fn test_convert_from_string() {

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use mr;
+use crate::mr;
 
-use utils::num::{bytes_to_u32_le, f32_to_u32};
+use crate::utils::num::{bytes_to_u32_le, f32_to_u32};
 
 /// Trait for assembling functionalities.
 pub trait Assemble {
@@ -152,10 +152,10 @@ impl Assemble for mr::Module {
 
 #[cfg(test)]
 mod tests {
-    use mr;
-    use spirv;
+    use crate::mr;
+    use crate::spirv;
 
-    use binary::Assemble;
+    use crate::binary::Assemble;
     use super::{assemble_str, bytes_to_u32_le};
 
     #[test]

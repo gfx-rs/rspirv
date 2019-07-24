@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-extern crate clap;
-extern crate rspirv;
-
 use std::fs;
 use std::io::Read;
 

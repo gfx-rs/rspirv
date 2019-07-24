@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use structs;
-
-use utils::*;
+use crate::structs;
+use crate::utils::*;
 
 fn convert_quantifier(quantifier: &str) -> &str {
     if quantifier == "" {

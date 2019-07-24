@@ -15,6 +15,7 @@
 /// Rust structs for deserializing the SPIR-V JSON grammar.
 
 use serde::de;
+use serde_derive::*;
 use std::{fmt, result, str};
 
 #[derive(Debug, Deserialize)]

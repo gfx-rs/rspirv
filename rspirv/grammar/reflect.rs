@@ -14,7 +14,7 @@
 
 //! Reflect functions for SPIR-V instructions.
 
-use spirv;
+use crate::spirv;
 
 /// Returns true if the given opcode is for a location debug instruction.
 pub fn is_location_debug(opcode: spirv::Op) -> bool {

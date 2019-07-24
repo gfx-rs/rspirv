@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use structs;
-
-use utils::*;
+use crate::structs;
+use crate::utils::*;
 
 static VAULE_ENUM_ATTRIBUTE: &'static str = "\
 #[repr(u32)]\n#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]";
