@@ -21,8 +21,8 @@ use std::{error, fmt};
 #[doc = "Decoder Error"]
 #[derive(Debug, PartialEq)]
 pub enum Error {
-    StreamExpected(usize),
-    LimitReached(usize),
+    StreamExpected,
+    LimitReached,
     ImageOperandsUnknown(usize, spirv::Word),
     FPFastMathModeUnknown(usize, spirv::Word),
     SelectionControlUnknown(usize, spirv::Word),

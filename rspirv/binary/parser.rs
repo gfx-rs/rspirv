@@ -39,18 +39,10 @@ const WORD_NUM_BYTES: usize = 4;
 /// offset (starting from 0) and instruction number (starting from 1).
 #[derive(Debug)]
 pub enum State {
-    /// Parsing completed
-    Complete,
-    /// Consumer requested to stop parse
-    ConsumerStopRequested,
-    /// Consumer errored out with the given error
-    ConsumerError(Box<dyn error::Error>),
     /// Incomplete module header
     HeaderIncomplete(DecodeError),
     /// Incorrect module header
     HeaderIncorrect,
-    /// Unsupported endianness
-    EndiannessUnsupported,
     /// Zero instruction word count at (byte offset, inst number)
     WordCountZero(usize, usize),
     /// Unknown opcode at (byte offset, inst number, opcode)
@@ -149,62 +141,62 @@ pub type Result<T> = result::Result<T, State>;
 
 const HEADER_NUM_WORDS: usize = 5;
 
-/// Orders consumer sent to the parser after each consuming call.
-#[derive(Debug)]
-pub enum Action {
-    /// Continue the parsing
-    Continue,
-    /// Normally stop the parsing
-    Stop,
-    /// Error out with the given error
-    Error(Box<dyn error::Error>),
+pub fn parse_bytes<T: IntoIterator<Item=u8>>(bytes: T) -> Result<(mr::ModuleHeader, Instructions<impl Iterator<Item=Result<spirv::Word>>>)> {
+    let words = byte_to_word(bytes.into_iter())?;
+    Ok(parse_header(words.by_ref().cloned().take(HEADER_NUM_WORDS - 1).collect()), Instructions::new(words))
 }
 
-impl Action {
-    fn consume(self) -> Result<()> {
-        match self {
-            Action::Continue => Ok(()),
-            Action::Stop => Err(State::ConsumerStopRequested),
-            Action::Error(err) => Err(State::ConsumerError(err)),
-        }
+pub fn parse_words<T: IntoIterator<Item=spirv::Word>>(mut words: T) -> Result<(mr::ModuleHeader, Instructions<impl Iterator<Item=Result<spirv::Word>>>)> {
+    if words.next() != spirv::MAGIC_NUMBER {
+        return Err(State::HeaderIncorrect);
+    }
+    Ok(parse_header(words.by_ref().cloned().take(HEADER_NUM_WORDS - 1).collect()), Instructions::new(words))
+}
+
+fn byte_to_word<T: Iterator<Item=u8>>(mut bytes: T) -> Result<impl Iterator<Item=Result<spirv::Word>>> {
+    let magic = u32::from_le_bytes([
+        bytes.next().ok_or(State::HeaderIncomplete(DecodeError::StreamExpected))?,
+        bytes.next().ok_or(State::HeaderIncomplete(DecodeError::StreamExpected))?,
+        bytes.next().ok_or(State::HeaderIncomplete(DecodeError::StreamExpected))?,
+        bytes.next().ok_or(State::HeaderIncomplete(DecodeError::StreamExpected))?,
+    ]);
+    if magic == spirv::MAGIC_NUMBER {
+        Ok(WordsLE(bytes))
+    } else if magic == spirv::MAGIC_NUMBER.swap_bytes() {
+        Ok(WordsBE { bytes })
+    } else {
+        Err(State::HeaderIncorrect)
     }
 }
 
-/// The binary consumer trait.
-///
-/// The parser will call `initialize` before parsing the SPIR-V binary and
-/// `finalize` after successfully parsing the whle binary.
-///
-/// After successfully parsing the module header, `consume_header` will be
-/// called. After successfully parsing an instruction, `consume_instruction`
-/// will be called.
-///
-/// The consumer can use [`Action`](enum.ParseAction.html) to control the
-/// parsing process.
-pub trait Consumer {
-    /// Intialize the consumer.
-    fn initialize(&mut self) -> Action;
-    /// Finalize the consumer.
-    fn finalize(&mut self) -> Action;
+fn parse_header(words: &[spirv::Word]) -> Result<mr::ModuleHeader> {
+    if words.len() == HEADER_NUM_WORDS - 1 {
+        let mut header = mr::ModuleHeader::new(words[3]);
+        let (major, minor) = version::create_version_from_word(words[1]);
+        header.set_version(major, minor);
 
-    /// Consume the module header.
-    fn consume_header(&mut self, module: dr::ModuleHeader) -> Action;
-    /// Consume the given instruction.
-    fn consume_instruction(&mut self, inst: dr::Instruction) -> Action;
+        Ok(header)
+    } else {
+        Err(State::HeaderIncomplete(DecodeError::StreamExpected))
+    }
 }
 
-/// Parses the given `binary` and consumes the module using the given
-/// `consumer`.
-pub fn parse_bytes<T: AsRef<[u8]>>(binary: T, consumer: &mut dyn Consumer) -> Result<()> {
-    Parser::new(binary.as_ref(), consumer).parse()
+struct WordsBE<I: Iterator<Item=u8>> {
+    bytes: I
 }
 
-/// Parses the given `binary` and consumes the module using the given
-/// `consumer`.
-pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut dyn Consumer) -> Result<()> {
-    let len = binary.as_ref().len() * 4;
-    let buf = unsafe { slice::from_raw_parts(binary.as_ref().as_ptr() as *const u8, len) };
-    Parser::new(buf, consumer).parse()
+impl<I> Iterator for WordsBE<I> {
+    type Item = Result<spirv::Word>;
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+        u32::from_be_bytes([
+            self.bytes.next()?,
+            self.bytes.next().unwrap_or_else(|| return Some(State::HeaderIncomplete(DecodeError::StreamExpected))),
+            self.bytes.next().unwrap_or_else(|| return Some(State::HeaderIncomplete(DecodeError::StreamExpected))),
+            self.bytes.next().unwrap_or_else(|| return Some(State::HeaderIncomplete(DecodeError::StreamExpected))),
+        ]);
+    }
 }
 
 /// The SPIR-V binary parser.
@@ -254,96 +246,54 @@ pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut dyn Consumer) -> R
 ///                m.operands[1]);
 /// }
 /// ```
-pub struct Parser<'c, 'd> {
-    decoder: decoder::Decoder<'d>,
-    consumer: &'c mut dyn Consumer,
+pub struct Instructions<T>
+    where T: Iterator<Item=Result<spirv::Word>> {
+    words: T,
     type_tracker: TypeTracker,
     /// The index of the current instructions
     ///
     /// Starting from 1, 0 means invalid
     inst_index: usize,
+    offset: usize,
 }
 
-impl<'c, 'd> Parser<'c, 'd> {
+impl<T> Iterator for Instructions<T> {
+    type Item = Result<mr::Instruction>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.offset += 1;
+        self.parse_inst()
+    }
+}
+
+impl<T> Instructions<T> {
     /// Creates a new parser to parse the given `binary` and send the module
     /// header and instructions to the given `consumer`.
-    pub fn new(binary: &'d [u8], consumer: &'c mut dyn Consumer) -> Self {
-        Parser {
-            decoder: decoder::Decoder::new(binary),
-            consumer,
+    fn new(words: T) -> (Self, mr::ModuleHeader) {
+        Instructions {
+            words,
             type_tracker: TypeTracker::new(),
             inst_index: 0,
+            offset: 0,
         }
-    }
-
-    /// Does the parsing.
-    pub fn parse(mut self) -> Result<()> {
-        self.consumer.initialize().consume()?;
-        let header = self.parse_header()?;
-        self.consumer.consume_header(header).consume()?;
-
-        loop {
-            let result = self.parse_inst();
-            match result {
-                Ok(inst) => {
-                    self.type_tracker.track(&inst);
-                    self.consumer.consume_instruction(inst).consume()?;
-                }
-                Err(State::Complete) => break,
-                Err(error) => return Err(error),
-            };
-        }
-        self.consumer.finalize().consume()
     }
 
     fn split_into_word_count_and_opcode(word: spirv::Word) -> (u16, u16) {
         ((word >> 16) as u16, (word & 0xffff) as u16)
     }
 
-    fn parse_header(&mut self) -> Result<dr::ModuleHeader> {
-        match self.decoder.words(HEADER_NUM_WORDS) {
-            Ok(words) => {
-                if words[0] != spirv::MAGIC_NUMBER {
-                    if words[0] == spirv::MAGIC_NUMBER.swap_bytes() {
-                        return Err(State::EndiannessUnsupported);
-                    } else {
-                        return Err(State::HeaderIncorrect);
-                    }
-                }
+    
 
-                let mut header = dr::ModuleHeader::new(words[3]);
-                let (major, minor) = version::create_version_from_word(words[1]);
-                header.set_version(major, minor);
-
-                Ok(header)
-            }
-            Err(err) => Err(State::HeaderIncomplete(err)),
-        }
-    }
-
-    fn parse_inst(&mut self) -> Result<dr::Instruction> {
+    fn parse_inst(&mut self) -> Option<Result<mr::Instruction>> {
         self.inst_index += 1;
-        if let Ok(word) = self.decoder.word() {
-            let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
-            if wc == 0 {
-                return Err(State::WordCountZero(self.decoder.offset() - WORD_NUM_BYTES,
-                                                self.inst_index));
-            }
-            if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
-                self.decoder.set_limit((wc - 1) as usize);
-                let result = self.parse_operands(grammar);
-                if !self.decoder.limit_reached() {
-                    return Err(State::OperandExceeded(self.decoder.offset(), self.inst_index));
-                }
-                self.decoder.clear_limit();
-                result
-            } else {
-                Err(State::OpcodeUnknown(self.decoder.offset() - WORD_NUM_BYTES,
-                                         self.inst_index,
-                                         opcode))
-            }
+        let word = self.words.next()?;
+        let (wc, opcode) = Instructions::split_into_word_count_and_opcode(word);
+        if wc == 0 {
+            return Err(State::WordCountZero(self.offset, self.inst_index));
+        } else if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
+            self.parse_operands(grammar, wc)
         } else {
-            Err(State::Complete)
+            Err(State::OpcodeUnknown(self.offset, self.inst_index, opcode))
         }
     }
 
@@ -357,7 +307,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                             32 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
                             64 => Ok(dr::Operand::LiteralInt64(self.decoder.int64()?)),
                             _ => {
-                                Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
+                                Err(State::TypeUnsupported(self.offset, self.inst_index))
                             }
                         }
                     }
@@ -370,7 +320,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                                 Ok(dr::Operand::LiteralFloat64(self.decoder.float64()?))
                             }
                             _ => {
-                                Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
+                                Err(State::TypeUnsupported(self.offset, self.inst_index))
                             }
                         }
                     }
@@ -392,7 +342,7 @@ impl<'c, 'd> Parser<'c, 'd> {
             // We need id parameters to this SpecConstantOp.
             for operand in g.operands {
                 if operand.kind == GOpKind::IdRef {
-                    operands.push(dr::Operand::IdRef(self.decoder.id()?))
+                    operands.push(dr::Operand::IdRef(self.id()?))
                 }
             }
             Ok(operands)
@@ -409,8 +359,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         let mut loperand_index: usize = 0; // logical operand index
         while loperand_index < grammar.operands.len() {
             let loperand = &grammar.operands[loperand_index];
-            let has_more_coperands = !self.decoder.limit_reached();
-            if has_more_coperands {
+            if coperands.len() < num_operands {
                 match loperand.kind {
                     GOpKind::IdResultType => rtype = Some(self.decoder.id()?),
                     GOpKind::IdResult => rid = Some(self.decoder.id()?),
@@ -437,13 +386,75 @@ impl<'c, 'd> Parser<'c, 'd> {
                 // We still have logical operands to match but no no more words.
                 match loperand.quantifier {
                     GOpCount::One => {
-                        return Err(State::OperandExpected(self.decoder.offset(), self.inst_index))
+                        return Err(State::OperandExpected(self.offset, self.inst_index))
                     }
                     GOpCount::ZeroOrOne | GOpCount::ZeroOrMore => break,
                 }
             }
         }
         Ok(dr::Instruction::new(grammar.opcode, rtype, rid, coperands))
+    }
+
+    /// Decodes and returns the next SPIR-V word as an id.
+    pub fn id(&mut self) -> Result<spirv::Word> {
+        self.word()
+    }
+
+    /// Decodes and returns a literal string.
+    ///
+    /// This method will consume as many words as necessary until finding a
+    /// null character (`\0`), or reaching the limit or end of the stream
+    /// and erroring out.
+    pub fn string(&mut self) -> Result<String> {
+        let mut bytes = vec![];
+        loop {
+            let word = self.word()?;
+            bytes.extend(&word.to_le_bytes());
+            if bytes.last() == Some(&0) {
+                break;
+            }
+        }
+        while !bytes.is_empty() && bytes.last() == Some(&0) {
+            bytes.pop();
+        }
+        String::from_utf8(bytes)
+            .map_err(|e| Error::DecodeStringFailed(format!("{}", e)))
+    }
+
+    /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// literal integer.
+    pub fn int32(&mut self) -> Result<u32> {
+        self.word()
+    }
+
+    /// Decodes and returns the next two SPIR-V words as a 64-bit
+    /// literal integer.
+    pub fn int64(&mut self) -> Result<u64> {
+        let low = self.word()?;
+        let high = self.word()?;
+        Ok(((high as u64) << 32) | (low as u64))
+    }
+
+    /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// literal floating point number.
+    pub fn float32(&mut self) -> Result<f32> {
+        let val = self.word()?;
+        Ok(f32::from_bits(val))
+    }
+
+    /// Decodes and returns the next two SPIR-V words as a 64-bit
+    /// literal floating point number.
+    pub fn float64(&mut self) -> Result<f64> {
+        let low = self.word()?;
+        let high = self.word()?;
+        let val = ((high as u64) << 32) | (low as u64);
+        Ok(f64::from_bits(val))
+    }
+
+    /// Decodes and returns the next SPIR-V word as a 32-bit
+    /// extended-instruction-set number.
+    pub fn ext_inst_integer(&mut self) -> Result<u32> {
+        self.word()
     }
 }
 
