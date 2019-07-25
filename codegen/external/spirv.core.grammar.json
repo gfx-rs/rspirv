@@ -2312,7 +2312,7 @@
       ]
     },
     {
-      "class": "Terminator",
+      "class": "Branch",
       "opname" : "OpBranch",
       "opcode" : 249,
       "operands" : [
@@ -2320,7 +2320,7 @@
       ]
     },
     {
-      "class": "Terminator",
+      "class": "Branch",
       "opname" : "OpBranchConditional",
       "opcode" : 250,
       "operands" : [
@@ -2331,7 +2331,7 @@
       ]
     },
     {
-      "class": "Terminator",
+      "class": "Branch",
       "opname" : "OpSwitch",
       "opcode" : 251,
       "operands" : [
@@ -2347,12 +2347,12 @@
       "capabilities" : [ "Shader" ]
     },
     {
-      "class": "Terminator",
+      "class": "Branch",
       "opname" : "OpReturn",
       "opcode" : 253
     },
     {
-      "class": "Terminator",
+      "class": "Branch",
       "opname" : "OpReturnValue",
       "opcode" : 254,
       "operands" : [

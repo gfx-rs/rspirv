@@ -17,7 +17,7 @@
 // DO NOT MODIFY!
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Terminator {
+pub enum Branch {
     Branch {
         target_label: Token<super::types::Type>,
     },
@@ -30,13 +30,17 @@ pub enum Terminator {
     Switch {
         selector: Token<super::types::Type>,
         default: Token<super::types::Type>,
-        target: Vec<(u32, spirv::Word)>,
+        target: Vec<(u32, Token<super::structs::Label>)>,
     },
-    Kill,
     Return,
     ReturnValue {
         value: Token<super::types::Type>,
     },
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Terminator {
+    Branch(Branch),
+    Kill,
     Unreachable,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]

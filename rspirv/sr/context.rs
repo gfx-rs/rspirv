@@ -24,7 +24,7 @@ use spirv;
 use super::{
     types::{self, Type, TypeEnum},
     constants::{Constant, ConstantEnum},
-    instructions::{Instruction, Terminator},
+    instructions::{Branch, Instruction, Terminator},
     items::{Function, Variable},
     structs,
     LiftError, OperandError,
@@ -121,6 +121,7 @@ pub struct Context {
     functions: Storage<Function>,
     instructions: Storage<Instruction>,
     variables: Storage<Variable>,
+    pub(in crate::sr) labels: Storage<structs::Label>,
 }
 
 impl Context {
@@ -131,6 +132,7 @@ impl Context {
             functions: Storage::new(),
             instructions: Storage::new(),
             variables: Storage::new(),
+            labels: Storage::new(),
         }
     }
 

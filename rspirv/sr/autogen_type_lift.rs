@@ -29,16 +29,16 @@ impl Context {
             decorations: Vec::new(),
             return_type: (match operands.next() {
                 Some(&mr::Operand::IdRef(ref value)) => Some(Token::new(*value)),
-                Some(_) => Err(OperandError::Wrong)?,
                 None => None,
+                Some(_) => Err(OperandError::Wrong)?,
             })
             .ok_or(OperandError::Missing)?,
             parameter_types: {
                 let mut vec = Vec::new();
                 while let Some(value) = match operands.next() {
                     Some(&mr::Operand::IdRef(ref value)) => Some(Token::new(*value)),
-                    Some(_) => Err(OperandError::Wrong)?,
                     None => None,
+                    Some(_) => Err(OperandError::Wrong)?,
                 } {
                     vec.push(value);
                 }

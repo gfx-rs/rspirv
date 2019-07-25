@@ -18,7 +18,7 @@ pub struct Variable {
 
 #[derive(Debug)]
 pub struct BasicBlock {
-    label: structs::Label,
+    label: Token<structs::Label>,
     //line: Line,
     terminator: Terminator,
 }
@@ -89,12 +89,13 @@ impl Module {
 
             let mut basic_blocks = Vec::with_capacity(fun.basic_blocks.len());
             for block in fun.basic_blocks.iter() {
+                let label = context.lift_label(
+                    block.label
+                        .as_ref()
+                        .ok_or(ConvertionError::MissingLabel)?,
+                )?;
                 basic_blocks.push(BasicBlock {
-                    label: context.lift_label(
-                        block.label
-                            .as_ref()
-                            .ok_or(ConvertionError::MissingLabel)?,
-                    )?,
+                    label: context.labels.append(label),
                     terminator: context.lift_terminator(
                         block.instructions
                             .last()

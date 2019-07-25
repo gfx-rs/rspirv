@@ -95,17 +95,15 @@ pub fn get_quantified_type_tokens(ty: TokenStream, quantifier: &str) -> TokenStr
 }
 
 pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
-    let ty = if operand.kind == "IdRef" {
-        match operand.name.trim_matches('\'') {
-            "Length" => quote! { Token<super::Constant> },
-            "Entry Point" => quote! { Token<super::Function> },
-            "Interface" => quote! { Token<super::Variable> },
-            "Function Type" => quote! { Token<super::types::Function> },
-            "Field Types" => quote! { super::types::StructMember },
-            _ => quote! { Token<super::types::Type> },
-        }
-    } else {
-        get_operand_type_sr_tokens(&operand.kind)
+    let ty = match (operand.kind.as_str(), operand.name.trim_matches('\'')) {
+        ("IdRef", "Length") => quote! { Token<super::Constant> },
+        ("IdRef", "Entry Point") => quote! { Token<super::Function> },
+        ("IdRef", "Interface") => quote! { Token<super::Variable> },
+        ("IdRef", "Function Type") => quote! { Token<super::types::Function> },
+        ("IdRef", "Field Types") => quote! { super::types::StructMember },
+        ("IdRef", _) => quote! { Token<super::types::Type> },
+        ("PairLiteralIntegerIdRef", "Target") => quote! { (u32, Token<super::structs::Label>) },
+        _ => get_operand_type_sr_tokens(&operand.kind),
     };
 
     get_quantified_type_tokens(ty, &operand.quantifier)
@@ -309,13 +307,30 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
 }
 
 fn lift_operand_simple(iter: &Ident, operand: &structs::Operand) -> TokenStream {
-    let kind_ident = Ident::new(&operand.kind, Span::call_site());
     match operand.kind.as_str() {
-        "PairLiteralIntegerIdRef" |
-        "PairIdRefLiteralInteger" |
+        "PairLiteralIntegerIdRef" => quote! {
+            match (#iter.next(), #iter.next()) {
+                (Some(&mr::Operand::LiteralInt32(value)), Some(&mr::Operand::IdRef(id))) => Some((value, Token::new(id))),
+                (None, None) => None,
+                _ => Err(OperandError::Wrong)?,
+            }
+        },
+        "PairIdRefLiteralInteger" => quote! {
+            match (#iter.next(), #iter.next()) {
+                (Some(&mr::Operand::IdRef(id)), Some(&mr::Operand::LiteralInt32(value))) => Some((Token::new(id), value)),
+                (None, None) => None,
+                _ => Err(OperandError::Wrong)?,
+            }
+        },
         "PairIdRefIdRef" => quote! {
+            match (#iter.next(), #iter.next()) {
+                (Some(&mr::Operand::IdRef(id1)), Some(&mr::Operand::IdRef(id2))) => Some((Token::new(id1), Token::new(id2))),
+                (None, None) => None,
+                _ => Err(OperandError::Wrong)?,
+            }
         },
         _ => {
+            let kind_ident = Ident::new(get_mr_operand_kind(&operand.kind), Span::call_site());
             let value = match operand.name.trim_matches('\'') {
                 // structures support per-member decorations
                 "Field Types" => quote! { super::types::StructMember::new(value.clone()) },
@@ -325,8 +340,8 @@ fn lift_operand_simple(iter: &Ident, operand: &structs::Operand) -> TokenStream 
             quote! {
                 match #iter.next() {
                     Some(&mr::Operand::#kind_ident(ref value)) => Some(#value),
-                    Some(_) => Err(OperandError::Wrong)?,
                     None => None,
+                    Some(_) => Err(OperandError::Wrong)?,
                 }
             }
         }
@@ -356,8 +371,12 @@ fn lift_operand_complex(iter: &Ident, operand: &structs::Operand) -> TokenStream
 pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, String) {
     let mut structs = Vec::new();
     let mut lifts = Vec::new();
+    let mut branches = Vec::new();
+    let mut branch_lifts = Vec::new();
     let mut terminators = Vec::new();
     let mut instructions = Vec::new();
+
+    let ident_operands = Ident::new("operands", Span::call_site());
 
     for inst in grammar.instructions.iter() {
         match inst.class.as_str() {
@@ -366,7 +385,7 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
         };
 
         let name = Ident::new(&inst.opname[2..], Span::call_site());
-        let ident_operands = Ident::new("operands", Span::call_site());
+        let opcode = inst.opcode;
 
         let mut enum_declarations = Vec::new();
         let mut struct_declarations = Vec::new();
@@ -400,12 +419,6 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
             "ModeSetting" |
             "ExtensionDecl" |
             "FunctionStruct" => {
-                // Get the token for its enumerant
-                let opcode = inst.opcode;
-                let method_name = Ident::new(
-                    &format!("lift_{}", snake_casify(&inst.opname[2..])),
-                    Span::call_site(),
-                );
                 let oper_iter = if definitions.is_empty() {
                     quote! {}
                 } else {
@@ -413,7 +426,11 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
                         let mut #ident_operands = raw.operands.iter()
                     }
                 };
-
+                // Get the token for its enumerant
+                let method_name = Ident::new(
+                    &format!("lift_{}", snake_casify(&inst.opname[2..])),
+                    Span::call_site(),
+                );
                 structs.push(quote! {
                     #[derive(Clone, Debug, Eq, PartialEq)]
                     pub struct #name {
@@ -434,6 +451,16 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
                     }
                 });
             }
+            "Branch" => {
+                branches.push(quote! {
+                    #name #enum_declarations
+                });
+                branch_lifts.push(quote! {
+                    #opcode => Branch::#name {
+                        #( #definitions )*
+                    },
+                });
+            }
             "Terminator" => {
                 terminators.push(quote! {
                     #name #enum_declarations
@@ -450,7 +477,13 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
     // Wrap it up with enum definition boilerplate
     let enums = quote! {
         #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum Branch {
+            #( #branches ),*
+        }
+
+        #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Terminator {
+            Branch(Branch),
             #( #terminators ),*
         }
 
@@ -462,6 +495,16 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
     let structs = quote!( #( #structs )* );
     let lifts = quote! {
         impl Context {
+            pub fn lift_branch(
+                &mut self, raw: &mr::Instruction
+            ) -> Result<Branch, LiftError> {
+                let mut #ident_operands = raw.operands.iter();
+                Ok(match raw.class.opcode as u32 {
+                    #( #branch_lifts )*
+                    _ => return Err(LiftError::OpCode),
+                })
+            }
+
             pub fn lift_terminator(
                 &mut self, _raw: &mr::Instruction
             ) -> Result<Terminator, LiftError> {
