@@ -250,7 +250,7 @@ pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
             let init_list: Vec<_> = params
                 .iter()
                 .map(|&(ref name, _)| {
-                    quote! { #name : #name }
+                    quote! { #name }
                 })
                 .collect();
             let init_list = if init_list.is_empty() {

@@ -43,10 +43,7 @@ impl Context {
     }
     pub fn type_int(&mut self, width: u32, signedness: u32) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::Int {
-                width: width,
-                signedness: signedness,
-            },
+            ty: TypeEnum::Int { width, signedness },
             decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -58,7 +55,7 @@ impl Context {
     }
     pub fn type_float(&mut self, width: u32) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::Float { width: width },
+            ty: TypeEnum::Float { width },
             decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -71,8 +68,8 @@ impl Context {
     pub fn type_vector(&mut self, component_type: TypeToken, component_count: u32) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Vector {
-                component_type: component_type,
-                component_count: component_count,
+                component_type,
+                component_count,
             },
             decorations: Vec::new(),
         };
@@ -86,8 +83,8 @@ impl Context {
     pub fn type_matrix(&mut self, column_type: TypeToken, column_count: u32) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Matrix {
-                column_type: column_type,
-                column_count: column_count,
+                column_type,
+                column_count,
             },
             decorations: Vec::new(),
         };
@@ -111,14 +108,14 @@ impl Context {
     ) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Image {
-                sampled_type: sampled_type,
-                dim: dim,
-                depth: depth,
-                arrayed: arrayed,
-                ms: ms,
-                sampled: sampled,
-                image_format: image_format,
-                access_qualifier: access_qualifier,
+                sampled_type,
+                dim,
+                depth,
+                arrayed,
+                ms,
+                sampled,
+                image_format,
+                access_qualifier,
             },
             decorations: Vec::new(),
         };
@@ -143,9 +140,7 @@ impl Context {
     }
     pub fn type_sampled_image(&mut self, image_type: TypeToken) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::SampledImage {
-                image_type: image_type,
-            },
+            ty: TypeEnum::SampledImage { image_type },
             decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -158,8 +153,8 @@ impl Context {
     pub fn type_array(&mut self, element_type: TypeToken, length: ConstantToken) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Array {
-                element_type: element_type,
-                length: length,
+                element_type,
+                length,
             },
             decorations: Vec::new(),
         };
@@ -172,9 +167,7 @@ impl Context {
     }
     pub fn type_runtime_array(&mut self, element_type: TypeToken) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::RuntimeArray {
-                element_type: element_type,
-            },
+            ty: TypeEnum::RuntimeArray { element_type },
             decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -186,9 +179,7 @@ impl Context {
     }
     pub fn type_opaque(&mut self, type_name: String) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::Opaque {
-                type_name: type_name,
-            },
+            ty: TypeEnum::Opaque { type_name },
             decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -205,8 +196,8 @@ impl Context {
     ) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Pointer {
-                storage_class: storage_class,
-                pointee_type: pointee_type,
+                storage_class,
+                pointee_type,
             },
             decorations: Vec::new(),
         };
@@ -224,8 +215,8 @@ impl Context {
     ) -> TypeToken {
         let t = Type {
             ty: TypeEnum::Function {
-                return_type: return_type,
-                parameter_types: parameter_types,
+                return_type,
+                parameter_types,
             },
             decorations: Vec::new(),
         };
@@ -286,9 +277,7 @@ impl Context {
     }
     pub fn type_pipe(&mut self, qualifier: spirv::AccessQualifier) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::Pipe {
-                qualifier: qualifier,
-            },
+            ty: TypeEnum::Pipe { qualifier },
             decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
@@ -300,9 +289,7 @@ impl Context {
     }
     pub fn type_forward_pointer(&mut self, storage_class: spirv::StorageClass) -> TypeToken {
         let t = Type {
-            ty: TypeEnum::ForwardPointer {
-                storage_class: storage_class,
-            },
+            ty: TypeEnum::ForwardPointer { storage_class },
             decorations: Vec::new(),
         };
         if let Some(index) = self.types.iter().position(|x| *x == t) {
