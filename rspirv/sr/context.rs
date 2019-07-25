@@ -16,18 +16,24 @@ use std::{
     collections::HashMap,
     hash::BuildHasherDefault,
     marker::PhantomData,
+    ops,
 };
 
 use fxhash::FxHasher;
+use spirv;
 
 use crate::{
-    spirv,
     sr::constants::{Constant, ConstantEnum},
     sr::types::{StructMember, TypeEnum, Type},
 };
 
 type FastHashMap<K, V> = HashMap<K, V, BuildHasherDefault<FxHasher>>;
-/// An index corresponding to `Id` in SPIR-V.
+/// An unique index in the storage array that a token points to.
+///
+/// This type is independent of `spirv::Word`. `spirv::Word` is used in data
+// representation. It holds a SPIR-V and refers to that instruction. In
+// structured representation, we use Token to refer to an SPIR-V instruction.
+// Index is an implementation detail to Token.
 type Index = u32;
 
 /// A strongly typed reference to a SPIR-V element.
@@ -54,7 +60,13 @@ impl<T> PartialEq for Token<T> {
 impl<T> Eq for Token<T> {}
 
 impl<T> Token<T> {
-    pub(in crate::sr) fn new(index: Index) -> Self {
+    #[cfg(test)]
+    pub const DUMMY: Self = Token {
+        index: !0,
+        marker: PhantomData,
+    };
+
+    fn new(index: Index) -> Self {
         Token {
             index,
             marker: PhantomData,
@@ -66,46 +78,58 @@ impl<T> Token<T> {
 /// instruction, etc.) that can be referenced.
 #[derive(Debug)]
 pub struct Storage<T> {
-    map: FastHashMap<Index, T>,
-    next_id: Index,
+    /// Values of this storage.
+    data: Vec<T>,
+    /// Reverse lookup table that associates SPIR-V <id> with interal indices
+    /// in the main `data` table.
+    lookup: FastHashMap<spirv::Word, Index>,
 }
 
 impl<T> Storage<T> {
     fn new() -> Self {
         Storage {
-            map: FastHashMap::default(),
-            next_id: 0,
+            data: Vec::new(),
+            lookup: FastHashMap::default(),
         }
     }
 
-    /// Associate a value with a given index, returning a typed token.
-    ///
-    /// This is useful when processing a module in the data representation,
-    /// where the indices are known.
-    pub fn assign(&mut self, index: Index, value: T) -> Token<T> {
-        self.next_id = self.next_id.max(index + 1);
-        let old = self.map.insert(index, value);
-        assert!(old.is_none());
+    /// Associates the given value to the given SPIR-V <id> inside this storage
+    /// and returns a token for representing this value.
+    pub fn assign(&mut self, raw_index: spirv::Word, value: T) -> Token<T> {
+        let index = self.data.len() as Index;
+        self.data.push(value);
+        let old = self.lookup.insert(raw_index, index);
+        assert_eq!(None, old);
         Token::new(index)
     }
 
-    /// Add a new value to the storage, returning a typed token.
+    /// Adds a new value to the storage, returning a typed token.
+    ///
+    /// The value is not linked to any SPIR-V module.
     pub fn append(&mut self, value: T) -> Token<T> {
-        self.assign(self.next_id, value)
+        let index = self.data.len() as Index;
+        self.data.push(value);
+        Token::new(index)
     }
 
-    /// Add a value with a check for uniqueness: returns a token pointing to
+    /// Adds a value with a check for uniqueness: returns a token pointing to
     /// an existing element if its value matches the given one, or adds a new
     /// element otherwise.
     pub fn fetch_or_append(&mut self, value: T) -> Token<T> where T: PartialEq {
-        if let Some((&index, _)) = self.map.iter().find(|(_, v)| v == &&value) {
-            Token::new(index)
+        if let Some(index) = self.data.iter().position(|d| d == &value) {
+            Token::new(index as Index)
         } else {
             self.append(value)
         }
     }
 }
 
+impl<T> ops::Index<Token<T>> for Storage<T> {
+    type Output = T;
+    fn index(&self, token: Token<T>) -> &T {
+        &self.data[token.index as usize]
+    }
+}
 
 
 /// The context class for SPIR-V structured representation.
@@ -119,8 +143,8 @@ impl<T> Storage<T> {
 #[derive(Debug)]
 pub struct Context {
     /// All type objects.
-    types: Storage<Type>,
-    constants: Storage<Constant>,
+    pub types: Storage<Type>,
+    pub constants: Storage<Constant>,
 }
 
 impl Context {
@@ -146,12 +170,6 @@ impl Context {
             },
             decorations: Vec::new(),
         })
-    }
-
-    /// Returns the reference to the real type represented by the given token.
-    pub fn get_type(&self, token: Token<Type>) -> &Type {
-        // Note: we assume the vector doesn't shrink so we always have a valid index.
-        &self.types.map[&token.index]
     }
 }
 
@@ -229,12 +247,6 @@ impl Context {
         let v = Constant { c: ConstantEnum::SpecOp(op, operands.as_ref().to_vec()) };
         self.constants.fetch_or_append(v)
     }
-
-    /// Returns the reference to the real constant represented by the given token.
-    pub fn get_constant(&self, token: Token<Constant>) -> &Constant {
-        // Note: we assume the vector doesn't shrink so we always have a valid index.
-        &self.constants.map[&token.index]
-    }
 }
 
 #[cfg(test)]
@@ -246,7 +258,7 @@ mod tests {
     fn test_get_type() {
         let mut c = Context::new();
         let i32t = c.type_int(32, 1);
-        let t = c.get_type(i32t);
+        let t = &c.types[i32t];
         assert!(t.is_int_type());
     }
 
@@ -326,7 +338,7 @@ mod tests {
     fn test_get_constant() {
         let mut c = Context::new();
         let i32c = c.constant_i32(5);
-        let v = c.get_constant(i32c);
+        let v = &c.constants[i32c];
         assert!(v.is_i32_constant());
     }
 
