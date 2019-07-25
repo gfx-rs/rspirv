@@ -194,8 +194,7 @@ impl Context {
     ) -> Result<structs::FunctionParameter, LiftError> {
         if raw.class.opcode as u32 != 55u32 {
             return Err(LiftError::OpCode);
-        }
-        let mut operands = raw.operands.iter();
+        };
         Ok(structs::FunctionParameter {})
     }
 }
@@ -206,8 +205,7 @@ impl Context {
     ) -> Result<structs::FunctionEnd, LiftError> {
         if raw.class.opcode as u32 != 56u32 {
             return Err(LiftError::OpCode);
-        }
-        let mut operands = raw.operands.iter();
+        };
         Ok(structs::FunctionEnd {})
     }
 }
@@ -215,8 +213,7 @@ impl Context {
     pub fn lift_label(&mut self, raw: &mr::Instruction) -> Result<structs::Label, LiftError> {
         if raw.class.opcode as u32 != 248u32 {
             return Err(LiftError::OpCode);
-        }
-        let mut operands = raw.operands.iter();
+        };
         Ok(structs::Label {})
     }
 }

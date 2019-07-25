@@ -17,17 +17,7 @@
 // DO NOT MODIFY!
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-<<<<<<< HEAD
 pub(in crate::sr) enum TypeEnum {
-=======
-pub struct Function {
-    pub(in sr) decorations: Vec<super::Decoration>,
-    return_type: Token<super::types::Type>,
-    parameter_types: Vec<Token<super::types::Type>>,
-}
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub(in sr) enum TypeEnum {
->>>>>>> Separate type structs
     Void,
     Bool,
     Int {
@@ -67,7 +57,7 @@ pub(in sr) enum TypeEnum {
         element_type: Token<super::types::Type>,
     },
     Struct {
-        field_types: Vec<StructMember>,
+        field_types: Vec<super::types::StructMember>,
     },
     Opaque {
         type_name: String,

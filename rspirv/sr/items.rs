@@ -56,6 +56,7 @@ pub struct Module {
 pub enum ConvertionError {
     MissingHeader,
     MissingFunction,
+    MissingFunctionType,
     Lift(LiftError),
 }
 
@@ -75,12 +76,18 @@ impl Module {
                 Some(ref instruction) => context.lift_function(instruction)?,
                 None => return Err(ConvertionError::MissingFunction),
             };
-            let fty = context.lift_type_function(&def.function_type)?;
+            let fty = match module.types_global_values
+                .iter()
+                .find(|inst| inst.result_id == Some(def.function_type.id_ref()))
+            {
+                Some(inst) => context.lift_type_function(inst)?,
+                None => return Err(ConvertionError::MissingFunctionType),
+            };
             functions.push(Function {
                 entry_point: None,
                 control: def.function_control,
-                result: def.function_type,
-                parameters: Vec::new(),
+                result: fty.return_type,
+                parameters: fty.parameter_types,
                 basic_blocks: Vec::new(),
             });
         }

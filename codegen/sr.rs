@@ -101,6 +101,7 @@ pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
             "Entry Point" => quote! { Token<super::Function> },
             "Interface" => quote! { Token<super::Variable> },
             "Function Type" => quote! { Token<super::types::Function> },
+            "Field Types" => quote! { super::types::StructMember },
             _ => quote! { Token<super::types::Type> },
         }
     } else {
@@ -124,6 +125,7 @@ const STANDALONE_TYPES: &[&str] = &[
 
 pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, String, String) {
     let mut structs = Vec::new();
+    let mut lifts = Vec::new();
     let mut variants = Vec::new();
     let mut checks = Vec::new();
 
@@ -134,19 +136,22 @@ pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, Str
         let symbol = &inst.opname[6..];
         let is_empty = inst.operands.len() <= 1;
         let symbol_ident = Ident::new(symbol, Span::call_site());
+        let opcode = inst.opcode;
+        let ident_operands = Ident::new("operands", Span::call_site());
 
-        let mut declarations = Vec::new();
+        let mut variant_declarations = Vec::new();
+        let mut struct_declarations = Vec::new();
         let mut definitions = Vec::new();
 
         for op in inst.operands[1 ..].iter() {
-            let name = Ident::new(&get_param_name(op), Span::call_site());
-            let ty = get_operand_type_ident(op);
-
             let field_name = get_operand_name_sr_tokens(op);
             let field_type = get_operand_type_ident(op);
             let constructor = lift_operand_complex(&ident_operands, op);
 
-            declarations.push(quote! {
+            variant_declarations.push(quote! {
+                #field_name: #field_type,
+            });
+            struct_declarations.push(quote! {
                 pub #field_name: #field_type,
             });
             definitions.push(quote! {
@@ -158,14 +163,21 @@ pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, Str
             structs.push(quote! {
                 #[derive(Clone, Debug, PartialEq, Eq)]
                 pub struct #symbol_ident {
-                    pub(in sr) decorations: Vec<super::Decoration>,
-                    #( #param_list ),*
+                    pub decorations: Vec<super::Decoration>,
+                    #( #struct_declarations )*
                 }
             });
             let method_name = Ident::new(
                 &format!("lift_type_{}", snake_casify(symbol)),
                 Span::call_site(),
             );
+            let oper_iter = if definitions.is_empty() {
+                quote! {}
+            } else {
+                quote! {
+                    let mut #ident_operands = raw.operands.iter()
+                }
+            };
             lifts.push(quote! {
                 impl Context {
                     pub fn #method_name(
@@ -174,8 +186,9 @@ pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, Str
                         if raw.class.opcode as u32 != #opcode {
                             return Err(LiftError::OpCode)
                         }
-                        let mut #ident_operands = raw.operands.iter();
+                        #oper_iter;
                         Ok(types::#symbol_ident {
+                            decorations: Vec::new(), //TODO
                             #( #definitions )*
                         })
                     }
@@ -185,7 +198,7 @@ pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, Str
             let variant_params = if is_empty {
                 quote!{}
             } else {
-                quote! { { #( #param_list ),* } }
+                quote! { { #( #variant_declarations )* } }
             };
             variants.push(quote! {
                 #symbol_ident #variant_params
@@ -302,10 +315,9 @@ fn lift_operand_simple(iter: &Ident, operand: &structs::Operand) -> TokenStream 
         },
         _ => {
             let value = match operand.name.trim_matches('\'') {
-                "Length" |
-                "Entry Point" |
-                "Interface" |
-                "Function Type" => quote! { Token::new(*value) },
+                // structures support per-member decorations
+                "Field Types" => quote! { super::types::StructMember::new(value.clone()) },
+                _ if &operand.kind == "IdRef" => quote! { Token::new(*value) },
                 _ => quote! { value.clone() },
             };
             quote! {
@@ -376,6 +388,13 @@ pub fn gen_sr_structs_and_lifts(grammar: &structs::Grammar) -> (String, String) 
             &format!("lift_{}", snake_casify(&inst.opname[2..])),
             Span::call_site(),
         );
+        let oper_iter = if definitions.is_empty() {
+            quote! {}
+        } else {
+            quote! {
+                let mut #ident_operands = raw.operands.iter()
+            }
+        };
 
         structs.push(quote! {
             #[derive(Clone, Debug, Eq, PartialEq)]
@@ -391,7 +410,7 @@ pub fn gen_sr_structs_and_lifts(grammar: &structs::Grammar) -> (String, String) 
                     if raw.class.opcode as u32 != #opcode {
                         return Err(LiftError::OpCode)
                     }
-                    let mut #ident_operands = raw.operands.iter();
+                    #oper_iter;
                     Ok(structs::#struct_name {
                         #( #definitions )*
                     })

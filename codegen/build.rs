@@ -204,7 +204,7 @@ fn main() {
         fmt_write!(type_lifts, path);
     }
     {
-        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_structs.rs");
+        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_struct.rs");
         fmt_write!(type_structs, path);
     }
     {

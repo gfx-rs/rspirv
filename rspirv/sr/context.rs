@@ -22,7 +22,7 @@ use fxhash::FxHasher;
 use spirv;
 
 use super::{
-    types::{Type, StructMember, TypeEnum},
+    types::{self, Type, TypeEnum},
     constants::{Constant, ConstantEnum},
     instructions::Instruction,
     items::{Function, Variable},
@@ -70,6 +70,10 @@ impl<T> Token<T> {
             index,
             marker: PhantomData,
         }
+    }
+
+    pub(in crate::sr) fn id_ref(&self) -> spirv::Word {
+        self.index
     }
 }
 
@@ -156,16 +160,17 @@ impl Context {
 }
 
 include!("autogen_type_creation.rs");
+include!("autogen_type_lift.rs");
 include!("autogen_instruction_lift.rs");
 
 impl Context {
     pub fn type_struct<T: AsRef<[Token<Type>]>>(&mut self, field_types: T) -> Token<Type> {
         self.types.append(Type {
-            ty: TypeEnum::Struct {
+            ty: types::TypeEnum::Struct {
                 field_types: field_types
                     .as_ref()
                     .iter()
-                    .map(|ft| StructMember::new(*ft))
+                    .map(|ft| types::StructMember::new(*ft))
                     .collect(),
             },
             decorations: Vec::new(),

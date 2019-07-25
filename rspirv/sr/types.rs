@@ -43,6 +43,7 @@ impl StructMember {
     }
 }
 
+include!("autogen_type_struct.rs");
 include!("autogen_type_enum_check.rs");
 
 impl Type {
@@ -86,7 +87,6 @@ mod tests {
         assert!(!t.is_structure_type());
         assert!(!t.is_opaque_type());
         assert!(!t.is_pointer_type());
-        assert!(!t.is_function_type());
         assert!(!t.is_event_type());
         assert!(!t.is_device_event_type());
         assert!(!t.is_reserve_id_type());
@@ -116,7 +116,6 @@ mod tests {
         assert!(!t.is_structure_type());
         assert!(!t.is_opaque_type());
         assert!(!t.is_pointer_type());
-        assert!(!t.is_function_type());
         assert!(!t.is_event_type());
         assert!(!t.is_device_event_type());
         assert!(!t.is_reserve_id_type());
