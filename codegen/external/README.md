@@ -6,3 +6,6 @@ repository, with some modifications to spirv.core.grammar.json. So there is
 a copy of it in this directory.
 
 [spirv-headers]: https://github.com/KhronosGroup/SPIRV-Headers
+
+Modifications are:
+  - "class" field
