@@ -18,6 +18,7 @@ pub struct Variable {
 
 #[derive(Debug)]
 pub struct BasicBlock {
+    label: structs::Label,
     //line: Line,
     terminator: Terminator,
 }
@@ -57,6 +58,7 @@ pub enum ConvertionError {
     MissingHeader,
     MissingFunction,
     MissingFunctionType,
+    MissingLabel,
     MissingTerminator,
     Lift(LiftError),
 }
@@ -73,25 +75,31 @@ impl Module {
         let mut functions = Vec::new();
 
         for fun in module.functions.iter() {
-            let def = match fun.def {
-                Some(ref instruction) => context.lift_function(instruction)?,
-                None => return Err(ConvertionError::MissingFunction),
-            };
-            let fty = match module.types_global_values
-                .iter()
-                .find(|inst| inst.result_id == Some(def.function_type.id_ref()))
-            {
-                Some(inst) => context.lift_type_function(inst)?,
-                None => return Err(ConvertionError::MissingFunctionType),
-            };
+            let def = context.lift_function(
+                fun.def
+                    .as_ref()
+                    .ok_or(ConvertionError::MissingFunction)?
+            )?;
+            let fty = context.lift_type_function(
+                module.types_global_values
+                    .iter()
+                    .find(|inst| inst.result_id == Some(def.function_type.id_ref()))
+                    .ok_or(ConvertionError::MissingFunctionType)?
+            )?;
 
             let mut basic_blocks = Vec::with_capacity(fun.basic_blocks.len());
             for block in fun.basic_blocks.iter() {
                 basic_blocks.push(BasicBlock {
-                    terminator: match block.instructions.last() {
-                        Some(inst) => context.lift_terminator(inst)?,
-                        None => return Err(ConvertionError::MissingTerminator),
-                    },
+                    label: context.lift_label(
+                        block.label
+                            .as_ref()
+                            .ok_or(ConvertionError::MissingLabel)?,
+                    )?,
+                    terminator: context.lift_terminator(
+                        block.instructions
+                            .last()
+                            .ok_or(ConvertionError::MissingTerminator)?
+                    )?,
                 });
             }
 
