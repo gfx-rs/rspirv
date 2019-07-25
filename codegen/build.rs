@@ -198,7 +198,7 @@ fn main() {
         fmt_write!(c, path);
     }
 
-    let (type_enums, type_structs, type_lifts) = sr::gen_sr_types_checks_and_lifts(&grammar);
+    let (type_enums, type_structs, type_lifts) = sr::gen_sr_types(&grammar);
     {
         let path = codegen_src_dir.join("../rspirv/sr/autogen_type_lift.rs");
         fmt_write!(type_lifts, path);
@@ -217,7 +217,7 @@ fn main() {
         fmt_write!(c, path);
     }
 
-    let (inst_structs, inst_lifts) = sr::gen_sr_structs_and_lifts(&grammar);
+    let (inst_enums, inst_structs, inst_lifts) = sr::gen_sr_instructions(&grammar);
     {
         let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction_lift.rs");
         fmt_write!(inst_lifts, path);
@@ -228,7 +228,6 @@ fn main() {
     }
     {
         let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction.rs");
-        let c = sr::gen_sr_instruction(&grammar);
-        fmt_write!(c, path);
+        fmt_write!(inst_enums, path);
     }
 }

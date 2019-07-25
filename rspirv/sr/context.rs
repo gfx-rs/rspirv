@@ -24,7 +24,7 @@ use spirv;
 use super::{
     types::{self, Type, TypeEnum},
     constants::{Constant, ConstantEnum},
-    instructions::Instruction,
+    instructions::{Instruction, Terminator},
     items::{Function, Variable},
     structs,
     LiftError, OperandError,

@@ -57,6 +57,7 @@ pub enum ConvertionError {
     MissingHeader,
     MissingFunction,
     MissingFunctionType,
+    MissingTerminator,
     Lift(LiftError),
 }
 
@@ -83,12 +84,23 @@ impl Module {
                 Some(inst) => context.lift_type_function(inst)?,
                 None => return Err(ConvertionError::MissingFunctionType),
             };
+
+            let mut basic_blocks = Vec::with_capacity(fun.basic_blocks.len());
+            for block in fun.basic_blocks.iter() {
+                basic_blocks.push(BasicBlock {
+                    terminator: match block.instructions.last() {
+                        Some(inst) => context.lift_terminator(inst)?,
+                        None => return Err(ConvertionError::MissingTerminator),
+                    },
+                });
+            }
+
             functions.push(Function {
                 entry_point: None,
                 control: def.function_control,
                 result: fty.return_type,
                 parameters: fty.parameter_types,
-                basic_blocks: Vec::new(),
+                basic_blocks,
             });
         }
 

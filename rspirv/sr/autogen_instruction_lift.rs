@@ -17,6 +17,9 @@
 // DO NOT MODIFY!
 
 impl Context {
+    pub fn lift_terminator(&mut self, _raw: &mr::Instruction) -> Result<Terminator, LiftError> {
+        Ok(Terminator::Unreachable)
+    }
     pub fn lift_extension(
         &mut self,
         raw: &mr::Instruction,
@@ -34,8 +37,6 @@ impl Context {
             .ok_or(OperandError::Missing)?,
         })
     }
-}
-impl Context {
     pub fn lift_ext_inst_import(
         &mut self,
         raw: &mr::Instruction,
@@ -53,8 +54,6 @@ impl Context {
             .ok_or(OperandError::Missing)?,
         })
     }
-}
-impl Context {
     pub fn lift_memory_model(
         &mut self,
         raw: &mr::Instruction,
@@ -78,8 +77,6 @@ impl Context {
             .ok_or(OperandError::Missing)?,
         })
     }
-}
-impl Context {
     pub fn lift_entry_point(
         &mut self,
         raw: &mr::Instruction,
@@ -120,8 +117,6 @@ impl Context {
             },
         })
     }
-}
-impl Context {
     pub fn lift_execution_mode(
         &mut self,
         raw: &mr::Instruction,
@@ -145,8 +140,6 @@ impl Context {
             .ok_or(OperandError::Missing)?,
         })
     }
-}
-impl Context {
     pub fn lift_capability(
         &mut self,
         raw: &mr::Instruction,
@@ -164,8 +157,6 @@ impl Context {
             .ok_or(OperandError::Missing)?,
         })
     }
-}
-impl Context {
     pub fn lift_function(&mut self, raw: &mr::Instruction) -> Result<structs::Function, LiftError> {
         if raw.class.opcode as u32 != 54u32 {
             return Err(LiftError::OpCode);
@@ -186,8 +177,6 @@ impl Context {
             .ok_or(OperandError::Missing)?,
         })
     }
-}
-impl Context {
     pub fn lift_function_parameter(
         &mut self,
         raw: &mr::Instruction,
@@ -197,8 +186,6 @@ impl Context {
         };
         Ok(structs::FunctionParameter {})
     }
-}
-impl Context {
     pub fn lift_function_end(
         &mut self,
         raw: &mr::Instruction,
@@ -208,16 +195,12 @@ impl Context {
         };
         Ok(structs::FunctionEnd {})
     }
-}
-impl Context {
     pub fn lift_label(&mut self, raw: &mr::Instruction) -> Result<structs::Label, LiftError> {
         if raw.class.opcode as u32 != 248u32 {
             return Err(LiftError::OpCode);
         };
         Ok(structs::Label {})
     }
-}
-impl Context {
     pub fn lift_execution_mode_id(
         &mut self,
         raw: &mr::Instruction,

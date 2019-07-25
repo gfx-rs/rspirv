@@ -123,7 +123,7 @@ const STANDALONE_TYPES: &[&str] = &[
     "Function",
 ];
 
-pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, String, String) {
+pub fn gen_sr_types(grammar: &structs::Grammar) -> (String, String, String) {
     let mut structs = Vec::new();
     let mut lifts = Vec::new();
     let mut variants = Vec::new();
@@ -149,7 +149,7 @@ pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, Str
             let constructor = lift_operand_complex(&ident_operands, op);
 
             variant_declarations.push(quote! {
-                #field_name: #field_type,
+                #field_name: #field_type
             });
             struct_declarations.push(quote! {
                 pub #field_name: #field_type,
@@ -179,26 +179,24 @@ pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, Str
                 }
             };
             lifts.push(quote! {
-                impl Context {
-                    pub fn #method_name(
-                        &mut self, raw: &mr::Instruction
-                    ) -> Result<types::#symbol_ident, LiftError> {
-                        if raw.class.opcode as u32 != #opcode {
-                            return Err(LiftError::OpCode)
-                        }
-                        #oper_iter;
-                        Ok(types::#symbol_ident {
-                            decorations: Vec::new(), //TODO
-                            #( #definitions )*
-                        })
+                pub fn #method_name(
+                    &mut self, raw: &mr::Instruction
+                ) -> Result<types::#symbol_ident, LiftError> {
+                    if raw.class.opcode as u32 != #opcode {
+                        return Err(LiftError::OpCode)
                     }
+                    #oper_iter;
+                    Ok(types::#symbol_ident {
+                        decorations: Vec::new(), //TODO
+                        #( #definitions )*
+                    })
                 }
             });
         } else {
             let variant_params = if is_empty {
                 quote!{}
             } else {
-                quote! { { #( #variant_declarations )* } }
+                quote! { { #( #variant_declarations ),* } }
             };
             variants.push(quote! {
                 #symbol_ident #variant_params
@@ -235,7 +233,11 @@ pub fn gen_sr_types_checks_and_lifts(grammar: &structs::Grammar) -> (String, Str
         }
     };
     let structs = quote!( #( #structs )* );
-    let lifts = quote!( #( #lifts )* );
+    let lifts = quote! {
+        impl Context {
+            #( #lifts )*
+        }
+    };
     (enums.to_string(), structs.to_string(), lifts.to_string())
 }
 
@@ -351,20 +353,23 @@ fn lift_operand_complex(iter: &Ident, operand: &structs::Operand) -> TokenStream
     }
 }
 
-pub fn gen_sr_structs_and_lifts(grammar: &structs::Grammar) -> (String, String) {
+pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, String) {
     let mut structs = Vec::new();
     let mut lifts = Vec::new();
+    let mut terminators = Vec::new();
+    let mut instructions = Vec::new();
+
     for inst in grammar.instructions.iter() {
         match inst.class.as_str() {
-            "ModeSetting" |
-            "ExtensionDecl" |
-            "FunctionStruct" => (),
-            _ => continue,
-        }
-        // Get the token for its enumerant
-        let struct_name = Ident::new(&inst.opname[2..], Span::call_site());
+            "Type" | "Constant" => continue, // already done
+            _ => ()
+        };
+
+        let name = Ident::new(&inst.opname[2..], Span::call_site());
         let ident_operands = Ident::new("operands", Span::call_site());
-        let mut declarations = Vec::new();
+
+        let mut enum_declarations = Vec::new();
+        let mut struct_declarations = Vec::new();
         let mut definitions = Vec::new();
 
         for operand in inst.operands.iter() {
@@ -375,107 +380,75 @@ pub fn gen_sr_structs_and_lifts(grammar: &structs::Grammar) -> (String, String) 
             let field_type = get_operand_type_ident(operand);
             let constructor = lift_operand_complex(&ident_operands, operand);
 
-            declarations.push(quote! {
+            enum_declarations.push(quote! {
+                #field_name: #field_type
+            });
+            struct_declarations.push(quote! {
                 pub #field_name: #field_type,
             });
             definitions.push(quote! {
                 #field_name : #constructor,
             });
         }
-        
-        let opcode = inst.opcode;
-        let method_name = Ident::new(
-            &format!("lift_{}", snake_casify(&inst.opname[2..])),
-            Span::call_site(),
-        );
-        let oper_iter = if definitions.is_empty() {
-            quote! {}
+        let enum_declarations = if enum_declarations.is_empty() {
+            quote!{}
         } else {
-            quote! {
-                let mut #ident_operands = raw.operands.iter()
-            }
+            quote! { {#( #enum_declarations ),*} }
         };
 
-        structs.push(quote! {
-            #[derive(Clone, Debug, Eq, PartialEq)]
-            pub struct #struct_name {
-                #( #declarations )*
-            }
-        });
-        lifts.push(quote! {
-            impl Context {
-                pub fn #method_name(
-                    &mut self, raw: &mr::Instruction
-                ) -> Result<structs::#struct_name, LiftError> {
-                    if raw.class.opcode as u32 != #opcode {
-                        return Err(LiftError::OpCode)
-                    }
-                    #oper_iter;
-                    Ok(structs::#struct_name {
-                        #( #definitions )*
-                    })
-                }
-            }
-        });
-    };
-
-    let structs = quote!( #( #structs )* );
-    let lifts = quote!( #( #lifts )* );
-    (structs.to_string(), lifts.to_string())
-}
-
-pub fn gen_sr_instruction(grammar: &structs::Grammar) -> String {
-    let mut terminators = Vec::new();
-    let mut instructions = Vec::new();
-
-    // Compose the token stream for all instructions
-    for inst in grammar
-        .instructions
-        .iter() // Loop over all instructions
-        .filter(|i| match i.class.as_str() {
-            "Type" | "Constant" => false, // already done
+        match inst.class.as_str() {
             "ModeSetting" |
             "ExtensionDecl" |
-            "FunctionStruct" => false, // already done in `gen_sr_structs_and_lifts`
-            _ => true,
-        })
-    {
-        // Get the token for its enumerant
-        let name = Ident::new(&inst.opname[2..], Span::call_site());
-
-        // Compose the token stream for all parameters
-        let params: Vec<_> = inst.operands
-            .iter() // Loop over all parameters
-            .filter_map(|operand| {
-                if operand.kind.starts_with("IdResult") {
-                    None
+            "FunctionStruct" => {
+                // Get the token for its enumerant
+                let opcode = inst.opcode;
+                let method_name = Ident::new(
+                    &format!("lift_{}", snake_casify(&inst.opname[2..])),
+                    Span::call_site(),
+                );
+                let oper_iter = if definitions.is_empty() {
+                    quote! {}
                 } else {
-                    let field_name = get_operand_name_sr_tokens(operand);
-                    let field_type = get_operand_type_sr_tokens(&operand.kind);
-                    let quantified = get_quantified_type_tokens(field_type, &operand.quantifier);
-                    Some(quote! { #field_name : #quantified })
-                }
-            }).collect();
+                    quote! {
+                        let mut #ident_operands = raw.operands.iter()
+                    }
+                };
 
-        match inst.class.as_str() {
+                structs.push(quote! {
+                    #[derive(Clone, Debug, Eq, PartialEq)]
+                    pub struct #name {
+                        #( #struct_declarations )*
+                    }
+                });
+                lifts.push(quote! {
+                    pub fn #method_name(
+                        &mut self, raw: &mr::Instruction
+                    ) -> Result<structs::#name, LiftError> {
+                        if raw.class.opcode as u32 != #opcode {
+                            return Err(LiftError::OpCode)
+                        }
+                        #oper_iter;
+                        Ok(structs::#name {
+                            #( #definitions )*
+                        })
+                    }
+                });
+            }
             "Terminator" => {
                 terminators.push(quote! {
-                    #name {#( #params ),*}
+                    #name #enum_declarations
                 });
             }
             _ => {
-                let params = if params.is_empty() {
-                    quote!{}
-                } else {
-                    quote! { {#( #params ),*} }
-                };
-                instructions.push(quote! { #name #params });
+                instructions.push(quote! {
+                    #name #enum_declarations
+                });
             }
         }
-    }
+    };
 
     // Wrap it up with enum definition boilerplate
-    let all = quote! {
+    let enums = quote! {
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Terminator {
             #( #terminators ),*
@@ -486,5 +459,17 @@ pub fn gen_sr_instruction(grammar: &structs::Grammar) -> String {
             #( #instructions ),*
         }
     };
-    all.to_string()
+    let structs = quote!( #( #structs )* );
+    let lifts = quote! {
+        impl Context {
+            pub fn lift_terminator(
+                &mut self, _raw: &mr::Instruction
+            ) -> Result<Terminator, LiftError> {
+                Ok(Terminator::Unreachable)
+            }
+
+            #( #lifts )*
+        }
+    };
+    (enums.to_string(), structs.to_string(), lifts.to_string())
 }
