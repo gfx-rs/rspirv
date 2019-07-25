@@ -137,6 +137,21 @@ pub enum SourceLanguage {
     OpenCL_CPP = 4,
     HLSL = 5,
 }
+#[allow(non_upper_case_globals)]
+impl SourceLanguage {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | SourceLanguage::Unknown
+            | SourceLanguage::ESSL
+            | SourceLanguage::GLSL
+            | SourceLanguage::OpenCL_C
+            | SourceLanguage::OpenCL_CPP
+            | SourceLanguage::HLSL
+                => &[],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [ExecutionModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_model_a_execution_model)
 #[repr(u32)]
@@ -150,6 +165,25 @@ pub enum ExecutionModel {
     GLCompute = 5,
     Kernel = 6,
 }
+#[allow(non_upper_case_globals)]
+impl ExecutionModel {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | ExecutionModel::Geometry
+                => &[Capability::Geometry,], 
+            | ExecutionModel::Kernel
+                => &[Capability::Kernel,], 
+            | ExecutionModel::Vertex
+            | ExecutionModel::Fragment
+            | ExecutionModel::GLCompute
+                => &[Capability::Shader,], 
+            | ExecutionModel::TessellationControl
+            | ExecutionModel::TessellationEvaluation
+                => &[Capability::Tessellation,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [AddressingModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_addressing_model_a_addressing_model)
 #[repr(u32)]
@@ -158,6 +192,19 @@ pub enum AddressingModel {
     Logical = 0,
     Physical32 = 1,
     Physical64 = 2,
+}
+#[allow(non_upper_case_globals)]
+impl AddressingModel {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | AddressingModel::Logical
+                => &[], 
+            | AddressingModel::Physical32
+            | AddressingModel::Physical64
+                => &[Capability::Addresses,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [MemoryModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_model_a_memory_model)
@@ -168,6 +215,21 @@ pub enum MemoryModel {
     GLSL450 = 1,
     OpenCL = 2,
     VulkanKHR = 3,
+}
+#[allow(non_upper_case_globals)]
+impl MemoryModel {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | MemoryModel::OpenCL
+                => &[Capability::Kernel,], 
+            | MemoryModel::Simple
+            | MemoryModel::GLSL450
+                => &[Capability::Shader,], 
+            | MemoryModel::VulkanKHR
+                => &[Capability::VulkanMemoryModelKHR,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [ExecutionMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_mode_a_execution_mode)
@@ -215,6 +277,64 @@ pub enum ExecutionMode {
     PostDepthCoverage = 4446,
     StencilRefReplacingEXT = 5027,
 }
+#[allow(non_upper_case_globals)]
+impl ExecutionMode {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | ExecutionMode::LocalSize
+            | ExecutionMode::LocalSizeId
+                => &[], 
+            | ExecutionMode::Invocations
+            | ExecutionMode::InputPoints
+            | ExecutionMode::InputLines
+            | ExecutionMode::InputLinesAdjacency
+            | ExecutionMode::InputTrianglesAdjacency
+            | ExecutionMode::OutputPoints
+            | ExecutionMode::OutputLineStrip
+            | ExecutionMode::OutputTriangleStrip
+                => &[Capability::Geometry,], 
+            | ExecutionMode::Triangles
+            | ExecutionMode::OutputVertices
+                => &[Capability::Geometry,Capability::Tessellation,], 
+            | ExecutionMode::LocalSizeHint
+            | ExecutionMode::VecTypeHint
+            | ExecutionMode::ContractionOff
+            | ExecutionMode::Initializer
+            | ExecutionMode::Finalizer
+            | ExecutionMode::LocalSizeHintId
+                => &[Capability::Kernel,], 
+            | ExecutionMode::PostDepthCoverage
+                => &[Capability::SampleMaskPostDepthCoverage,], 
+            | ExecutionMode::PixelCenterInteger
+            | ExecutionMode::OriginUpperLeft
+            | ExecutionMode::OriginLowerLeft
+            | ExecutionMode::EarlyFragmentTests
+            | ExecutionMode::DepthReplacing
+            | ExecutionMode::DepthGreater
+            | ExecutionMode::DepthLess
+            | ExecutionMode::DepthUnchanged
+                => &[Capability::Shader,], 
+            | ExecutionMode::StencilRefReplacingEXT
+                => &[Capability::StencilExportEXT,], 
+            | ExecutionMode::SubgroupSize
+            | ExecutionMode::SubgroupsPerWorkgroup
+            | ExecutionMode::SubgroupsPerWorkgroupId
+                => &[Capability::SubgroupDispatch,], 
+            | ExecutionMode::SpacingEqual
+            | ExecutionMode::SpacingFractionalEven
+            | ExecutionMode::SpacingFractionalOdd
+            | ExecutionMode::VertexOrderCw
+            | ExecutionMode::VertexOrderCcw
+            | ExecutionMode::PointMode
+            | ExecutionMode::Quads
+            | ExecutionMode::Isolines
+                => &[Capability::Tessellation,], 
+            | ExecutionMode::Xfb
+                => &[Capability::TransformFeedback,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [StorageClass](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_storage_class_a_storage_class)
 #[repr(u32)]
@@ -234,6 +354,31 @@ pub enum StorageClass {
     Image = 11,
     StorageBuffer = 12,
 }
+#[allow(non_upper_case_globals)]
+impl StorageClass {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | StorageClass::UniformConstant
+            | StorageClass::Input
+            | StorageClass::Workgroup
+            | StorageClass::CrossWorkgroup
+            | StorageClass::Function
+            | StorageClass::Image
+                => &[], 
+            | StorageClass::AtomicCounter
+                => &[Capability::AtomicStorage,], 
+            | StorageClass::Generic
+                => &[Capability::GenericPointer,], 
+            | StorageClass::Uniform
+            | StorageClass::Output
+            | StorageClass::Private
+            | StorageClass::PushConstant
+            | StorageClass::StorageBuffer
+                => &[Capability::Shader,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [Dim](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_dim_a_dim)
 #[repr(u32)]
@@ -247,6 +392,28 @@ pub enum Dim {
     DimBuffer = 5,
     DimSubpassData = 6,
 }
+#[allow(non_upper_case_globals)]
+impl Dim {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | Dim::Dim3D
+                => &[], 
+            | Dim::DimSubpassData
+                => &[Capability::InputAttachment,], 
+            | Dim::Dim1D
+                => &[Capability::Sampled1D,Capability::Image1D,], 
+            | Dim::DimBuffer
+                => &[Capability::SampledBuffer,Capability::ImageBuffer,], 
+            | Dim::DimRect
+                => &[Capability::SampledRect,Capability::ImageRect,], 
+            | Dim::DimCube
+                => &[Capability::Shader,Capability::ImageCubeArray,], 
+            | Dim::Dim2D
+                => &[Capability::Shader,Capability::Kernel,Capability::ImageMSArray,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [SamplerAddressingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_addressing_mode_a_sampler_addressing_mode)
 #[repr(u32)]
@@ -258,6 +425,20 @@ pub enum SamplerAddressingMode {
     Repeat = 3,
     RepeatMirrored = 4,
 }
+#[allow(non_upper_case_globals)]
+impl SamplerAddressingMode {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | SamplerAddressingMode::None
+            | SamplerAddressingMode::ClampToEdge
+            | SamplerAddressingMode::Clamp
+            | SamplerAddressingMode::Repeat
+            | SamplerAddressingMode::RepeatMirrored
+                => &[Capability::Kernel,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [SamplerFilterMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_filter_mode_a_sampler_filter_mode)
 #[repr(u32)]
@@ -265,6 +446,17 @@ pub enum SamplerAddressingMode {
 pub enum SamplerFilterMode {
     Nearest = 0,
     Linear = 1,
+}
+#[allow(non_upper_case_globals)]
+impl SamplerFilterMode {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | SamplerFilterMode::Nearest
+            | SamplerFilterMode::Linear
+                => &[Capability::Kernel,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [ImageFormat](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_format_a_image_format)
@@ -312,6 +504,57 @@ pub enum ImageFormat {
     R16ui = 38,
     R8ui = 39,
 }
+#[allow(non_upper_case_globals)]
+impl ImageFormat {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | ImageFormat::Unknown
+                => &[], 
+            | ImageFormat::Rgba32f
+            | ImageFormat::Rgba16f
+            | ImageFormat::R32f
+            | ImageFormat::Rgba8
+            | ImageFormat::Rgba8Snorm
+            | ImageFormat::Rgba32i
+            | ImageFormat::Rgba16i
+            | ImageFormat::Rgba8i
+            | ImageFormat::R32i
+            | ImageFormat::Rgba32ui
+            | ImageFormat::Rgba16ui
+            | ImageFormat::Rgba8ui
+            | ImageFormat::R32ui
+                => &[Capability::Shader,], 
+            | ImageFormat::Rg32f
+            | ImageFormat::Rg16f
+            | ImageFormat::R11fG11fB10f
+            | ImageFormat::R16f
+            | ImageFormat::Rgba16
+            | ImageFormat::Rgb10A2
+            | ImageFormat::Rg16
+            | ImageFormat::Rg8
+            | ImageFormat::R16
+            | ImageFormat::R8
+            | ImageFormat::Rgba16Snorm
+            | ImageFormat::Rg16Snorm
+            | ImageFormat::Rg8Snorm
+            | ImageFormat::R16Snorm
+            | ImageFormat::R8Snorm
+            | ImageFormat::Rg32i
+            | ImageFormat::Rg16i
+            | ImageFormat::Rg8i
+            | ImageFormat::R16i
+            | ImageFormat::R8i
+            | ImageFormat::Rgb10a2ui
+            | ImageFormat::Rg32ui
+            | ImageFormat::Rg16ui
+            | ImageFormat::Rg8ui
+            | ImageFormat::R16ui
+            | ImageFormat::R8ui
+                => &[Capability::StorageImageExtendedFormats,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [ImageChannelOrder](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_order_a_image_channel_order)
 #[repr(u32)]
@@ -338,6 +581,35 @@ pub enum ImageChannelOrder {
     sBGRA = 18,
     ABGR = 19,
 }
+#[allow(non_upper_case_globals)]
+impl ImageChannelOrder {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | ImageChannelOrder::R
+            | ImageChannelOrder::A
+            | ImageChannelOrder::RG
+            | ImageChannelOrder::RA
+            | ImageChannelOrder::RGB
+            | ImageChannelOrder::RGBA
+            | ImageChannelOrder::BGRA
+            | ImageChannelOrder::ARGB
+            | ImageChannelOrder::Intensity
+            | ImageChannelOrder::Luminance
+            | ImageChannelOrder::Rx
+            | ImageChannelOrder::RGx
+            | ImageChannelOrder::RGBx
+            | ImageChannelOrder::Depth
+            | ImageChannelOrder::DepthStencil
+            | ImageChannelOrder::sRGB
+            | ImageChannelOrder::sRGBx
+            | ImageChannelOrder::sRGBA
+            | ImageChannelOrder::sBGRA
+            | ImageChannelOrder::ABGR
+                => &[Capability::Kernel,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [ImageChannelDataType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_data_type_a_image_channel_data_type)
 #[repr(u32)]
@@ -361,6 +633,32 @@ pub enum ImageChannelDataType {
     UnormInt24 = 15,
     UnormInt101010_2 = 16,
 }
+#[allow(non_upper_case_globals)]
+impl ImageChannelDataType {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | ImageChannelDataType::SnormInt8
+            | ImageChannelDataType::SnormInt16
+            | ImageChannelDataType::UnormInt8
+            | ImageChannelDataType::UnormInt16
+            | ImageChannelDataType::UnormShort565
+            | ImageChannelDataType::UnormShort555
+            | ImageChannelDataType::UnormInt101010
+            | ImageChannelDataType::SignedInt8
+            | ImageChannelDataType::SignedInt16
+            | ImageChannelDataType::SignedInt32
+            | ImageChannelDataType::UnsignedInt8
+            | ImageChannelDataType::UnsignedInt16
+            | ImageChannelDataType::UnsignedInt32
+            | ImageChannelDataType::HalfFloat
+            | ImageChannelDataType::Float
+            | ImageChannelDataType::UnormInt24
+            | ImageChannelDataType::UnormInt101010_2
+                => &[Capability::Kernel,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [FPRoundingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_rounding_mode_a_fp_rounding_mode)
 #[repr(u32)]
@@ -371,6 +669,19 @@ pub enum FPRoundingMode {
     RTP = 2,
     RTN = 3,
 }
+#[allow(non_upper_case_globals)]
+impl FPRoundingMode {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | FPRoundingMode::RTE
+            | FPRoundingMode::RTZ
+            | FPRoundingMode::RTP
+            | FPRoundingMode::RTN
+                => &[],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [LinkageType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_linkage_type_a_linkage_type)
 #[repr(u32)]
@@ -378,6 +689,17 @@ pub enum FPRoundingMode {
 pub enum LinkageType {
     Export = 0,
     Import = 1,
+}
+#[allow(non_upper_case_globals)]
+impl LinkageType {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | LinkageType::Export
+            | LinkageType::Import
+                => &[Capability::Linkage,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [AccessQualifier](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_access_qualifier_a_access_qualifier)
@@ -387,6 +709,18 @@ pub enum AccessQualifier {
     ReadOnly = 0,
     WriteOnly = 1,
     ReadWrite = 2,
+}
+#[allow(non_upper_case_globals)]
+impl AccessQualifier {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | AccessQualifier::ReadOnly
+            | AccessQualifier::WriteOnly
+            | AccessQualifier::ReadWrite
+                => &[Capability::Kernel,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [FunctionParameterAttribute](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_parameter_attribute_a_function_parameter_attribute)
@@ -401,6 +735,23 @@ pub enum FunctionParameterAttribute {
     NoCapture = 5,
     NoWrite = 6,
     NoReadWrite = 7,
+}
+#[allow(non_upper_case_globals)]
+impl FunctionParameterAttribute {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | FunctionParameterAttribute::Zext
+            | FunctionParameterAttribute::Sext
+            | FunctionParameterAttribute::ByVal
+            | FunctionParameterAttribute::Sret
+            | FunctionParameterAttribute::NoAlias
+            | FunctionParameterAttribute::NoCapture
+            | FunctionParameterAttribute::NoWrite
+            | FunctionParameterAttribute::NoReadWrite
+                => &[Capability::Kernel,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [Decoration](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_decoration_a_decoration)
@@ -461,6 +812,85 @@ pub enum Decoration {
     NonUniformEXT = 5300,
     HlslCounterBufferGOOGLE = 5634,
     HlslSemanticGOOGLE = 5635,
+}
+#[allow(non_upper_case_globals)]
+impl Decoration {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | Decoration::BuiltIn
+            | Decoration::Restrict
+            | Decoration::Aliased
+            | Decoration::Volatile
+            | Decoration::Coherent
+            | Decoration::NonWritable
+            | Decoration::NonReadable
+            | Decoration::FPRoundingMode
+            | Decoration::ExplicitInterpAMD
+            | Decoration::HlslCounterBufferGOOGLE
+            | Decoration::HlslSemanticGOOGLE
+                => &[], 
+            | Decoration::MaxByteOffset
+            | Decoration::MaxByteOffsetId
+                => &[Capability::Addresses,], 
+            | Decoration::PassthroughNV
+                => &[Capability::GeometryShaderPassthroughNV,], 
+            | Decoration::Stream
+                => &[Capability::GeometryStreams,], 
+            | Decoration::InputAttachmentIndex
+                => &[Capability::InputAttachment,], 
+            | Decoration::CPacked
+            | Decoration::Constant
+            | Decoration::SaturatedConversion
+            | Decoration::FuncParamAttr
+            | Decoration::FPFastMathMode
+            | Decoration::Alignment
+            | Decoration::AlignmentId
+                => &[Capability::Kernel,], 
+            | Decoration::LinkageAttributes
+                => &[Capability::Linkage,], 
+            | Decoration::RowMajor
+            | Decoration::ColMajor
+            | Decoration::MatrixStride
+                => &[Capability::Matrix,], 
+            | Decoration::OverrideCoverageNV
+                => &[Capability::SampleMaskOverrideCoverageNV,], 
+            | Decoration::Sample
+                => &[Capability::SampleRateShading,], 
+            | Decoration::RelaxedPrecision
+            | Decoration::Block
+            | Decoration::BufferBlock
+            | Decoration::ArrayStride
+            | Decoration::GLSLShared
+            | Decoration::GLSLPacked
+            | Decoration::NoPerspective
+            | Decoration::Flat
+            | Decoration::Centroid
+            | Decoration::Invariant
+            | Decoration::Uniform
+            | Decoration::Location
+            | Decoration::Component
+            | Decoration::Index
+            | Decoration::Binding
+            | Decoration::DescriptorSet
+            | Decoration::Offset
+            | Decoration::NoContraction
+                => &[Capability::Shader,], 
+            | Decoration::SpecId
+                => &[Capability::Shader,Capability::Kernel,], 
+            | Decoration::NonUniformEXT
+                => &[Capability::ShaderNonUniformEXT,], 
+            | Decoration::SecondaryViewportRelativeNV
+                => &[Capability::ShaderStereoViewNV,], 
+            | Decoration::ViewportRelativeNV
+                => &[Capability::ShaderViewportMaskNV,], 
+            | Decoration::Patch
+                => &[Capability::Tessellation,], 
+            | Decoration::XfbBuffer
+            | Decoration::XfbStride
+                => &[Capability::TransformFeedback,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [BuiltIn](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_built_in_a_built_in)
@@ -533,7 +963,6 @@ pub enum BuiltIn {
     ViewportMaskPerViewNV = 5262,
     FullyCoveredEXT = 5264,
 }
-
 #[allow(non_upper_case_globals)]
 impl BuiltIn {
     pub const SubgroupEqMaskKHR: BuiltIn = BuiltIn::SubgroupEqMask;
@@ -541,7 +970,98 @@ impl BuiltIn {
     pub const SubgroupGtMaskKHR: BuiltIn = BuiltIn::SubgroupGtMask;
     pub const SubgroupLeMaskKHR: BuiltIn = BuiltIn::SubgroupLeMask;
     pub const SubgroupLtMaskKHR: BuiltIn = BuiltIn::SubgroupLtMask;
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | BuiltIn::NumWorkgroups
+            | BuiltIn::WorkgroupSize
+            | BuiltIn::WorkgroupId
+            | BuiltIn::LocalInvocationId
+            | BuiltIn::GlobalInvocationId
+            | BuiltIn::LocalInvocationIndex
+            | BuiltIn::BaryCoordNoPerspAMD
+            | BuiltIn::BaryCoordNoPerspCentroidAMD
+            | BuiltIn::BaryCoordNoPerspSampleAMD
+            | BuiltIn::BaryCoordSmoothAMD
+            | BuiltIn::BaryCoordSmoothCentroidAMD
+            | BuiltIn::BaryCoordSmoothSampleAMD
+            | BuiltIn::BaryCoordPullModelAMD
+                => &[], 
+            | BuiltIn::ClipDistance
+                => &[Capability::ClipDistance,], 
+            | BuiltIn::CullDistance
+                => &[Capability::CullDistance,], 
+            | BuiltIn::DeviceIndex
+                => &[Capability::DeviceGroup,], 
+            | BuiltIn::BaseVertex
+            | BuiltIn::BaseInstance
+            | BuiltIn::DrawIndex
+                => &[Capability::DrawParameters,], 
+            | BuiltIn::FullyCoveredEXT
+                => &[Capability::FragmentFullyCoveredEXT,], 
+            | BuiltIn::Layer
+                => &[Capability::Geometry,], 
+            | BuiltIn::PrimitiveId
+            | BuiltIn::InvocationId
+                => &[Capability::Geometry,Capability::Tessellation,], 
+            | BuiltIn::WorkDim
+            | BuiltIn::GlobalSize
+            | BuiltIn::EnqueuedWorkgroupSize
+            | BuiltIn::GlobalOffset
+            | BuiltIn::GlobalLinearId
+            | BuiltIn::SubgroupMaxSize
+            | BuiltIn::NumEnqueuedSubgroups
+                => &[Capability::Kernel,], 
+            | BuiltIn::NumSubgroups
+            | BuiltIn::SubgroupId
+                => &[Capability::Kernel,Capability::GroupNonUniform,], 
+            | BuiltIn::SubgroupSize
+            | BuiltIn::SubgroupLocalInvocationId
+                => &[Capability::Kernel,Capability::GroupNonUniform,Capability::SubgroupBallotKHR,], 
+            | BuiltIn::ViewIndex
+                => &[Capability::MultiView,], 
+            | BuiltIn::ViewportIndex
+                => &[Capability::MultiViewport,], 
+            | BuiltIn::PositionPerViewNV
+            | BuiltIn::ViewportMaskPerViewNV
+                => &[Capability::PerViewAttributesNV,], 
+            | BuiltIn::SampleId
+            | BuiltIn::SamplePosition
+                => &[Capability::SampleRateShading,], 
+            | BuiltIn::Position
+            | BuiltIn::PointSize
+            | BuiltIn::VertexId
+            | BuiltIn::InstanceId
+            | BuiltIn::FragCoord
+            | BuiltIn::PointCoord
+            | BuiltIn::FrontFacing
+            | BuiltIn::SampleMask
+            | BuiltIn::FragDepth
+            | BuiltIn::HelperInvocation
+            | BuiltIn::VertexIndex
+            | BuiltIn::InstanceIndex
+                => &[Capability::Shader,], 
+            | BuiltIn::SecondaryPositionNV
+            | BuiltIn::SecondaryViewportMaskNV
+                => &[Capability::ShaderStereoViewNV,], 
+            | BuiltIn::ViewportMaskNV
+                => &[Capability::ShaderViewportMaskNV,], 
+            | BuiltIn::FragStencilRefEXT
+                => &[Capability::StencilExportEXT,], 
+            | BuiltIn::SubgroupEqMask
+            | BuiltIn::SubgroupGeMask
+            | BuiltIn::SubgroupGtMask
+            | BuiltIn::SubgroupLeMask
+            | BuiltIn::SubgroupLtMask
+                => &[Capability::SubgroupBallotKHR,Capability::GroupNonUniformBallot,], 
+            | BuiltIn::TessLevelOuter
+            | BuiltIn::TessLevelInner
+            | BuiltIn::TessCoord
+            | BuiltIn::PatchVertices
+                => &[Capability::Tessellation,],
+        }
+    }
 }
+
 /// SPIR-V operand kind: [Scope](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_scope_a_scope)
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
@@ -552,6 +1072,22 @@ pub enum Scope {
     Subgroup = 3,
     Invocation = 4,
     QueueFamilyKHR = 5,
+}
+#[allow(non_upper_case_globals)]
+impl Scope {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | Scope::CrossDevice
+            | Scope::Device
+            | Scope::Workgroup
+            | Scope::Subgroup
+            | Scope::Invocation
+                => &[], 
+            | Scope::QueueFamilyKHR
+                => &[Capability::VulkanMemoryModelKHR,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [GroupOperation](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_group_operation_a_group_operation)
@@ -566,6 +1102,24 @@ pub enum GroupOperation {
     PartitionedInclusiveScanNV = 7,
     PartitionedExclusiveScanNV = 8,
 }
+#[allow(non_upper_case_globals)]
+impl GroupOperation {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | GroupOperation::ClusteredReduce
+                => &[Capability::GroupNonUniformClustered,], 
+            | GroupOperation::PartitionedReduceNV
+            | GroupOperation::PartitionedInclusiveScanNV
+            | GroupOperation::PartitionedExclusiveScanNV
+                => &[Capability::GroupNonUniformPartitionedNV,], 
+            | GroupOperation::Reduce
+            | GroupOperation::InclusiveScan
+            | GroupOperation::ExclusiveScan
+                => &[Capability::Kernel,Capability::GroupNonUniformArithmetic,Capability::GroupNonUniformBallot,],
+        }
+    }
+}
 
 /// SPIR-V operand kind: [KernelEnqueueFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_enqueue_flags_a_kernel_enqueue_flags)
 #[repr(u32)]
@@ -574,6 +1128,18 @@ pub enum KernelEnqueueFlags {
     NoWait = 0,
     WaitKernel = 1,
     WaitWorkGroup = 2,
+}
+#[allow(non_upper_case_globals)]
+impl KernelEnqueueFlags {
+
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | KernelEnqueueFlags::NoWait
+            | KernelEnqueueFlags::WaitKernel
+            | KernelEnqueueFlags::WaitWorkGroup
+                => &[Capability::Kernel,],
+        }
+    }
 }
 
 /// SPIR-V operand kind: [Capability](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_capability_a_capability)
@@ -694,13 +1260,160 @@ pub enum Capability {
     VulkanMemoryModelKHR = 5345,
     VulkanMemoryModelDeviceScopeKHR = 5346,
 }
-
 #[allow(non_upper_case_globals)]
 impl Capability {
     pub const StorageUniformBufferBlock16: Capability = Capability::StorageBuffer16BitAccess;
     pub const StorageUniform16: Capability = Capability::UniformAndStorageBuffer16BitAccess;
     pub const ShaderViewportIndexLayerNV: Capability = Capability::ShaderViewportIndexLayerEXT;
+    pub fn required_capabilities(&self) -> &'static [Capability] {
+        match self {
+            | Capability::Matrix
+            | Capability::Addresses
+            | Capability::Linkage
+            | Capability::Kernel
+            | Capability::Float16
+            | Capability::Float64
+            | Capability::Int64
+            | Capability::Groups
+            | Capability::Int16
+            | Capability::Int8
+            | Capability::Sampled1D
+            | Capability::SampledBuffer
+            | Capability::GroupNonUniform
+            | Capability::SubgroupBallotKHR
+            | Capability::SubgroupVoteKHR
+            | Capability::StorageBuffer16BitAccess
+            | Capability::StoragePushConstant16
+            | Capability::StorageInputOutput16
+            | Capability::DeviceGroup
+            | Capability::AtomicStorageOps
+            | Capability::SampleMaskPostDepthCoverage
+            | Capability::StorageBuffer8BitAccess
+            | Capability::StoragePushConstant8
+            | Capability::SubgroupShuffleINTEL
+            | Capability::SubgroupBufferBlockIOINTEL
+            | Capability::SubgroupImageBlockIOINTEL
+            | Capability::GroupNonUniformPartitionedNV
+            | Capability::VulkanMemoryModelKHR
+            | Capability::VulkanMemoryModelDeviceScopeKHR
+                => &[], 
+            | Capability::GenericPointer
+                => &[Capability::Addresses,], 
+            | Capability::SubgroupDispatch
+                => &[Capability::DeviceEnqueue,], 
+            | Capability::GeometryPointSize
+            | Capability::GeometryStreams
+            | Capability::MultiViewport
+            | Capability::GeometryShaderPassthroughNV
+                => &[Capability::Geometry,], 
+            | Capability::GroupNonUniformVote
+            | Capability::GroupNonUniformArithmetic
+            | Capability::GroupNonUniformBallot
+            | Capability::GroupNonUniformShuffle
+            | Capability::GroupNonUniformShuffleRelative
+            | Capability::GroupNonUniformClustered
+            | Capability::GroupNonUniformQuad
+                => &[Capability::GroupNonUniform,], 
+            | Capability::ImageReadWrite
+            | Capability::ImageMipmap
+                => &[Capability::ImageBasic,], 
+            | Capability::StorageTexelBufferArrayDynamicIndexingEXT
+                => &[Capability::ImageBuffer,], 
+            | Capability::StorageTexelBufferArrayNonUniformIndexingEXT
+                => &[Capability::ImageBuffer,Capability::ShaderNonUniformEXT,], 
+            | Capability::InputAttachmentArrayDynamicIndexingEXT
+                => &[Capability::InputAttachment,], 
+            | Capability::InputAttachmentArrayNonUniformIndexingEXT
+                => &[Capability::InputAttachment,Capability::ShaderNonUniformEXT,], 
+            | Capability::Int64Atomics
+                => &[Capability::Int64,], 
+            | Capability::Vector16
+            | Capability::Float16Buffer
+            | Capability::ImageBasic
+            | Capability::Pipes
+            | Capability::DeviceEnqueue
+            | Capability::LiteralSampler
+            | Capability::NamedBarrier
+                => &[Capability::Kernel,], 
+            | Capability::Shader
+                => &[Capability::Matrix,], 
+            | Capability::PerViewAttributesNV
+                => &[Capability::MultiView,], 
+            | Capability::ShaderViewportIndexLayerEXT
+                => &[Capability::MultiViewport,], 
+            | Capability::PipeStorage
+                => &[Capability::Pipes,], 
+            | Capability::SampleMaskOverrideCoverageNV
+                => &[Capability::SampleRateShading,], 
+            | Capability::Image1D
+                => &[Capability::Sampled1D,], 
+            | Capability::ImageBuffer
+            | Capability::UniformTexelBufferArrayDynamicIndexingEXT
+                => &[Capability::SampledBuffer,], 
+            | Capability::UniformTexelBufferArrayNonUniformIndexingEXT
+                => &[Capability::SampledBuffer,Capability::ShaderNonUniformEXT,], 
+            | Capability::ImageCubeArray
+                => &[Capability::SampledCubeArray,], 
+            | Capability::ImageRect
+                => &[Capability::SampledRect,], 
+            | Capability::Geometry
+            | Capability::Tessellation
+            | Capability::AtomicStorage
+            | Capability::ImageGatherExtended
+            | Capability::StorageImageMultisample
+            | Capability::UniformBufferArrayDynamicIndexing
+            | Capability::SampledImageArrayDynamicIndexing
+            | Capability::StorageBufferArrayDynamicIndexing
+            | Capability::StorageImageArrayDynamicIndexing
+            | Capability::ClipDistance
+            | Capability::CullDistance
+            | Capability::SampleRateShading
+            | Capability::SampledRect
+            | Capability::InputAttachment
+            | Capability::SparseResidency
+            | Capability::MinLod
+            | Capability::SampledCubeArray
+            | Capability::ImageMSArray
+            | Capability::StorageImageExtendedFormats
+            | Capability::ImageQuery
+            | Capability::DerivativeControl
+            | Capability::InterpolationFunction
+            | Capability::TransformFeedback
+            | Capability::StorageImageReadWithoutFormat
+            | Capability::StorageImageWriteWithoutFormat
+            | Capability::DrawParameters
+            | Capability::MultiView
+            | Capability::VariablePointersStorageBuffer
+            | Capability::Float16ImageAMD
+            | Capability::ImageGatherBiasLodAMD
+            | Capability::FragmentMaskAMD
+            | Capability::StencilExportEXT
+            | Capability::ImageReadWriteLodAMD
+            | Capability::FragmentFullyCoveredEXT
+            | Capability::ShaderNonUniformEXT
+            | Capability::RuntimeDescriptorArrayEXT
+                => &[Capability::Shader,], 
+            | Capability::UniformBufferArrayNonUniformIndexingEXT
+            | Capability::SampledImageArrayNonUniformIndexingEXT
+            | Capability::StorageBufferArrayNonUniformIndexingEXT
+            | Capability::StorageImageArrayNonUniformIndexingEXT
+                => &[Capability::ShaderNonUniformEXT,], 
+            | Capability::ShaderViewportMaskNV
+                => &[Capability::ShaderViewportIndexLayerNV,], 
+            | Capability::ShaderStereoViewNV
+                => &[Capability::ShaderViewportMaskNV,], 
+            | Capability::UniformAndStorageBuffer16BitAccess
+                => &[Capability::StorageBuffer16BitAccess,Capability::StorageUniformBufferBlock16,], 
+            | Capability::UniformAndStorageBuffer8BitAccess
+                => &[Capability::StorageBuffer8BitAccess,], 
+            | Capability::TessellationPointSize
+                => &[Capability::Tessellation,], 
+            | Capability::VariablePointers
+                => &[Capability::VariablePointersStorageBuffer,],
+        }
+    }
 }
+
 /// SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_instructions_a_instructions) opcodes
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
