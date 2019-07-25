@@ -109,3 +109,17 @@ impl Module {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    const DATA_VS: &[u8] = include_bytes!("../../test-data/quad.vert.spv");
+
+    #[test]
+    fn module_from_data() {
+        let mut loader = crate::mr::Loader::new();
+        crate::binary::parse_bytes(DATA_VS, &mut loader).unwrap();
+        let data_module = loader.module();
+
+        let _module = super::Module::from_data(&data_module).unwrap();
+    }
+}
