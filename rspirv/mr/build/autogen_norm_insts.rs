@@ -2395,24 +2395,6 @@ impl Builder {
         Ok(_id)
     }
 
-    /// Appends an OpPhi instruction to the current basic block.
-    pub fn phi<T: AsRef<[(spirv::Word, spirv::Word)]>>(&mut self, result_type: spirv::Word, result_id: Option<spirv::Word>, value_label_pairs: T) -> BuildResult<spirv::Word> {
-        if self.basic_block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
-        let mut inst = mr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(_id), vec![]);
-        for v in value_label_pairs.as_ref() {
-            inst.operands.push(mr::Operand::IdRef(v.0));
-            inst.operands.push(mr::Operand::IdRef(v.1));
-        };
-        self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(_id)
-    }
-
     /// Appends an OpLoopMerge instruction to the current basic block.
     pub fn loop_merge<T: AsRef<[mr::Operand]>>(&mut self, merge_block: spirv::Word, continue_target: spirv::Word, loop_control: spirv::LoopControl, additional_params: T) -> BuildResult<()> {
         if self.basic_block.is_none() {

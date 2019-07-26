@@ -63,7 +63,7 @@
 //!                       spirv::FunctionControl::CONST),
 //!                      voidf)
 //!      .unwrap();
-//!     b.begin_basic_block(None).unwrap();
+//!     b.begin_basic_block(None, Vec::new()).unwrap();
 //!     b.ret().unwrap();
 //!     b.end_function().unwrap();
 //!     let module = b.module();

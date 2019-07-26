@@ -82,7 +82,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///                       spirv::FunctionControl::CONST),
 ///                      voidf)
 ///      .unwrap();
-///     b.begin_basic_block(None).unwrap();
+///     b.begin_basic_block(None, Vec::new()).unwrap();
 ///     b.ret().unwrap();
 ///     b.end_function().unwrap();
 ///
@@ -107,6 +107,28 @@ pub struct Builder {
     function: Option<mr::Function>,
     basic_block: Option<mr::BasicBlock>,
     version: Option<(u8, u8)>,
+}
+
+#[derive(Default)]
+pub struct Phi {
+    result_type: spirv::Word,
+    result_id: Option<spirv::Word>,
+    variants: Vec<(spirv::Word, spirv::Word)>,
+}
+
+impl Phi {
+    /// Creates a new variable control flow operation.
+    pub fn new<T: AsRef<[(spirv::Word, spirv::Word)]>>(
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        variants: T,
+    ) -> Self {
+        Phi {
+            result_type,
+            result_id,
+            variants: variants.as_ref().to_vec(),
+        }
+    }
 }
 
 impl Builder {
@@ -221,7 +243,11 @@ impl Builder {
     /// If `label_id` is `Some(val)`, then `val` will be used as the result
     /// id for the `OpLabel` instruction begining this basic block; otherwise,
     /// a unused result id will be automatically assigned.
-    pub fn begin_basic_block(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+    pub fn begin_basic_block(
+        &mut self,
+        label_id: Option<spirv::Word>,
+        phis: Vec<Phi>,
+    ) -> BuildResult<spirv::Word> {
         if self.function.is_none() {
             return Err(Error::DetachedBasicBlock);
         }
@@ -241,6 +267,20 @@ impl Builder {
             Some(id),
             vec![],
         ));
+
+        for phi in phis {
+            let mut variants = Vec::with_capacity(phi.variants.len() * 2);
+            for (a, b) in phi.variants {
+                variants.push(mr::Operand::IdRef(a));
+                variants.push(mr::Operand::IdRef(b));
+            }
+            bb.phis.push(mr::Instruction::new(
+                spirv::Op::Phi,
+                Some(phi.result_type),
+                phi.result_id,
+                variants,
+            ));
+        }
 
         self.basic_block = Some(bb);
         Ok(id)
@@ -554,7 +594,7 @@ mod tests {
     use crate::spirv;
 
     use std::f32;
-    use super::Builder;
+    use super::{Builder, Phi};
 
     use crate::binary::Disassemble;
 
@@ -828,31 +868,27 @@ mod tests {
         let fid = b.begin_function(float, None, spirv::FunctionControl::NONE, f32ff32).unwrap();
         assert_eq!(4, fid);
 
-        let epid = b.begin_basic_block(None).unwrap(); // Entry block id
+        let epid = b.begin_basic_block(None, Vec::new()).unwrap(); // Entry block id
         assert_eq!(5, epid);
         let target1 = b.id();
         assert_eq!(6, target1);
         assert!(b.branch(target1).is_ok());
 
-        let pbid = b.begin_basic_block(Some(target1)).unwrap(); // Phi block id
+        // OpPhi can forward reference ids for both labels and results
+        let phi = Phi::new(float, None, vec![(c0, epid), (8, target1), (c0, 7)]);
+
+        let pbid = b.begin_basic_block(Some(target1), vec![phi]).unwrap(); // Phi block id
         assert_eq!(target1, pbid);
         let target2 = b.id();
         assert_eq!(7, target2);
         let fr_add = b.id();
         assert_eq!(8, fr_add);
-        // OpPhi can forward reference ids for both labels and results
-        let phi = b.phi(
-            float,
-            None,
-            // From above, from this, from below
-            vec![(c0, epid), (fr_add, pbid), (c0, target2)],
-        ).unwrap();
-        assert_eq!(9, phi);
+
         let res_add = b.fadd(float, Some(fr_add), c0, c0).unwrap();
         assert_eq!(res_add, fr_add);
         assert!(b.branch(target2).is_ok());
 
-        let exid = b.begin_basic_block(Some(target2)).unwrap(); // Exit block id
+        let exid = b.begin_basic_block(Some(target2), Vec::new()).unwrap(); // Exit block id
         assert_eq!(exid, target2);
         assert!(b.ret_value(c0).is_ok());
 
@@ -866,7 +902,7 @@ mod tests {
                     %5 = OpLabel\n\
                     OpBranch %6\n\
                     %6 = OpLabel\n\
-                    %9 = OpPhi  %1  %3 %5 %8 %6 %3 %7\n\
+                    OpPhi  %1  %3 %5 %8 %6 %3 %7\n\
                     %8 = OpFAdd  %1  %3 %3\n\
                     OpBranch %7\n\
                     %7 = OpLabel\n\
@@ -896,7 +932,7 @@ mod tests {
 
         let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
         assert_eq!(7, f);
-        let bb = b.begin_basic_block(None).unwrap();
+        let bb = b.begin_basic_block(None, Vec::new()).unwrap();
         assert_eq!(8, bb);
         // Local variable
         let v2 = b.variable(ffp, None, spirv::StorageClass::Function, None);
@@ -943,7 +979,7 @@ mod tests {
 
         let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
         assert_eq!(5, f);
-        let bb = b.begin_basic_block(None).unwrap();
+        let bb = b.begin_basic_block(None, Vec::new()).unwrap();
         assert_eq!(6, bb);
         // Local undef
         let v2 = b.undef(float, None);

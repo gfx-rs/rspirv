@@ -89,6 +89,8 @@ pub struct Function {
 pub struct BasicBlock {
     /// The label starting this basic block.
     pub label: Option<Instruction>,
+    /// Variable control flow control for this basic block.
+    pub phis: Vec<Instruction>,
     /// Instructions in this basic block.
     pub instructions: Vec<Instruction>,
 }
@@ -210,6 +212,7 @@ impl BasicBlock {
     pub fn new() -> Self {
         BasicBlock {
             label: None,
+            phis: vec![],
             instructions: vec![],
         }
     }
