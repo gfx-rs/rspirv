@@ -315,7 +315,7 @@ pub fn gen_mr_builder_terminator(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
-        inst.class == "Terminator"
+        inst.class == "Terminator" || inst.class == "Branch"
     }).map(|inst| {
         let (params, type_generics) = get_param_list(&inst.operands, false, kinds);
         let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
