@@ -289,7 +289,7 @@ mod tests {
         let global = b.variable(float, None, spirv::StorageClass::Input, None);
 
         b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_basic_block(None, Vec::new()).unwrap();
         // Local variable
         let local = b.variable(float, None, spirv::StorageClass::Function, None);
         b.ret().unwrap();
@@ -324,7 +324,7 @@ mod tests {
         let global = b.undef(float, None);
 
         b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_basic_block(None, Vec::new()).unwrap();
         // Local variable
         let local = b.undef(float, None);
         b.ret().unwrap();

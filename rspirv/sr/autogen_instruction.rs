@@ -155,7 +155,7 @@ pub enum Instruction {
     },
     GroupMemberDecorate {
         decoration_group: Token<super::types::Type>,
-        targets: Vec<(spirv::Word, u32)>,
+        targets: Vec<(Token<super::types::Type>, u32)>,
     },
     VectorExtractDynamic {
         vector: Token<super::types::Type>,
@@ -780,9 +780,6 @@ pub enum Instruction {
         scope: spirv::Word,
         semantics: spirv::Word,
         value: Token<super::types::Type>,
-    },
-    Phi {
-        value_label_pairs: Vec<(spirv::Word, spirv::Word)>,
     },
     LoopMerge {
         merge_block: Token<super::types::Type>,

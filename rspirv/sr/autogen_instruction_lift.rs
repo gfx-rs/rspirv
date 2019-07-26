@@ -99,8 +99,12 @@ impl Context {
             _ => return Err(LiftError::OpCode),
         })
     }
-    pub fn lift_terminator(&mut self, _raw: &mr::Instruction) -> Result<Terminator, LiftError> {
-        Ok(Terminator::Unreachable)
+    pub fn lift_terminator(&mut self, raw: &mr::Instruction) -> Result<Terminator, LiftError> {
+        Ok(match raw.class.opcode as u32 {
+            252u32 => Terminator::Kill {},
+            255u32 => Terminator::Unreachable {},
+            _ => Terminator::Branch(self.lift_branch(raw)?),
+        })
     }
     pub fn lift_extension(
         &mut self,
@@ -276,6 +280,27 @@ impl Context {
             return Err(LiftError::OpCode);
         };
         Ok(structs::FunctionEnd {})
+    }
+    pub fn lift_phi(&mut self, raw: &mr::Instruction) -> Result<structs::Phi, LiftError> {
+        if raw.class.opcode as u32 != 245u32 {
+            return Err(LiftError::OpCode);
+        }
+        let mut operands = raw.operands.iter();
+        Ok(structs::Phi {
+            value_label_pairs: {
+                let mut vec = Vec::new();
+                while let Some(value) = match (operands.next(), operands.next()) {
+                    (Some(&mr::Operand::IdRef(id1)), Some(&mr::Operand::IdRef(id2))) => {
+                        Some((Token::new(id1), Token::new(id2)))
+                    }
+                    (None, None) => None,
+                    _ => Err(OperandError::Wrong)?,
+                } {
+                    vec.push(value);
+                }
+                vec
+            },
+        })
     }
     pub fn lift_label(&mut self, raw: &mr::Instruction) -> Result<structs::Label, LiftError> {
         if raw.class.opcode as u32 != 248u32 {

@@ -88,8 +88,14 @@ impl Disassemble for mr::BasicBlock {
         let label = self.label
                         .as_ref()
                         .map_or(String::new(), |i| i.disassemble());
-        format!("{label}\n{insts}",
+        format!("{label}{space}{phis}\n{insts}",
                 label = label,
+                space = if self.phis.is_empty() {
+                    ""
+                } else {
+                    "\n"
+                },
+                phis = disas_join(&self.phis, "\n"),
                 insts = disas_join(&self.instructions, "\n"))
     }
 }
@@ -256,7 +262,7 @@ mod tests {
                                  spirv::FunctionControl::CONST,
                                  voidfvoid)
                  .unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_basic_block(None, Vec::new()).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         b.ret().unwrap();
         b.end_function().unwrap();
@@ -303,7 +309,7 @@ mod tests {
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
-        b.begin_basic_block(None).unwrap();
+        b.begin_basic_block(None, Vec::new()).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         assert!(b.ext_inst(float32, None, glsl, 6, vec![var]).is_ok());
         b.ret().unwrap();
@@ -340,7 +346,7 @@ mod tests {
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
-        b.begin_basic_block(None).unwrap();
+        b.begin_basic_block(None, Vec::new()).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         assert!(b.ext_inst(float32, None, opencl, 15, vec![var]).is_ok());
         b.ret().unwrap();

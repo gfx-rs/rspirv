@@ -103,6 +103,8 @@ pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
         ("IdRef", "Field Types") => quote! { super::types::StructMember },
         ("IdRef", _) => quote! { Token<super::types::Type> },
         ("PairLiteralIntegerIdRef", "Target") => quote! { (u32, Token<super::structs::Label>) },
+        ("PairIdRefLiteralInteger", "Targets") => quote! { (Token<super::types::Type>, u32) }, // has to be a struct
+        ("PairIdRefIdRef", "ValueLabelPairs") => quote! { (Token<super::Variable>, Token<super::structs::Label>) },
         _ => get_operand_type_sr_tokens(&operand.kind),
     };
 
@@ -374,7 +376,9 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
     let mut branches = Vec::new();
     let mut branch_lifts = Vec::new();
     let mut terminators = Vec::new();
+    let mut terminator_lifts = Vec::new();
     let mut instructions = Vec::new();
+    let mut instruction_lifts = Vec::new();
 
     let ident_operands = Ident::new("operands", Span::call_site());
 
@@ -465,10 +469,20 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
                 terminators.push(quote! {
                     #name #enum_declarations
                 });
+                terminator_lifts.push(quote! {
+                    #opcode => Terminator::#name {
+                        #( #definitions )*
+                    },
+                });
             }
             _ => {
                 instructions.push(quote! {
                     #name #enum_declarations
+                });
+                instruction_lifts.push(quote! {
+                    #opcode => Instruction::#name {
+                        #( #definitions )*
+                    },
                 });
             }
         }
@@ -506,10 +520,24 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
             }
 
             pub fn lift_terminator(
-                &mut self, _raw: &mr::Instruction
+                &mut self, raw: &mr::Instruction
             ) -> Result<Terminator, LiftError> {
-                Ok(Terminator::Unreachable)
+                Ok(match raw.class.opcode as u32 {
+                    #( #terminator_lifts )*
+                    _ => Terminator::Branch(self.lift_branch(raw)?),
+                })
             }
+
+            /*
+            pub fn lift_instruction(
+                &mut self, raw: &mr::Instruction
+            ) -> Result<Instruction, LiftError> {
+                let mut #ident_operands = raw.operands.iter();
+                Ok(match raw.class.opcode as u32 {
+                    #( #instruction_lifts )*
+                    _ => return Err(LiftError::OpCode),
+                })
+            }*/
 
             #( #lifts )*
         }

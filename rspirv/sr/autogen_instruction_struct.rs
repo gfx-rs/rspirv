@@ -55,6 +55,10 @@ pub struct FunctionParameter {}
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FunctionEnd {}
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Phi {
+    pub value_label_pairs: Vec<(Token<super::Variable>, Token<super::structs::Label>)>,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Label {}
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExecutionModeId {

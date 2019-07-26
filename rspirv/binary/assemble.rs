@@ -238,7 +238,7 @@ mod tests {
         let void = b.type_void();
         let voidfvoid = b.type_function(void, vec![void]);
         b.begin_function(void, None, spirv::FunctionControl::CONST, voidfvoid).unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_basic_block(None, Vec::new()).unwrap();
         b.ret().unwrap();
         b.end_function().unwrap();
 
@@ -278,7 +278,7 @@ mod tests {
         b.begin_function(float, None, spirv::FunctionControl::CONST, fff).unwrap();
         let param1 = b.function_parameter(ptr).unwrap();
         let param2 = b.function_parameter(ptr).unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_basic_block(None, Vec::new()).unwrap();
         let v1 = b.load(float, None, param1, None, vec![]).unwrap();
         let v2 = b.load(float, None, param2, None, vec![]).unwrap();
         let v = b.fadd(float, None, v1, v2).unwrap();
