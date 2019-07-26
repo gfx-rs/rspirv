@@ -528,7 +528,6 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
                 })
             }
 
-            /*
             pub fn lift_instruction(
                 &mut self, raw: &mr::Instruction
             ) -> Result<Instruction, LiftError> {
@@ -537,7 +536,7 @@ pub fn gen_sr_instructions(grammar: &structs::Grammar) -> (String, String, Strin
                     #( #instruction_lifts )*
                     _ => return Err(LiftError::OpCode),
                 })
-            }*/
+            }
 
             #( #lifts )*
         }
