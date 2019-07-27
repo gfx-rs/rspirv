@@ -28,15 +28,15 @@ pub(in crate::sr) enum TypeEnum {
         width: u32,
     },
     Vector {
-        component_type: TypeToken,
+        component_type: Token<Type>,
         component_count: u32,
     },
     Matrix {
-        column_type: TypeToken,
+        column_type: Token<Type>,
         column_count: u32,
     },
     Image {
-        sampled_type: TypeToken,
+        sampled_type: Token<Type>,
         dim: spirv::Dim,
         depth: u32,
         arrayed: u32,
@@ -47,14 +47,14 @@ pub(in crate::sr) enum TypeEnum {
     },
     Sampler,
     SampledImage {
-        image_type: TypeToken,
+        image_type: Token<Type>,
     },
     Array {
-        element_type: TypeToken,
-        length: ConstantToken,
+        element_type: Token<Type>,
+        length: Token<Constant>,
     },
     RuntimeArray {
-        element_type: TypeToken,
+        element_type: Token<Type>,
     },
     Struct {
         field_types: Vec<StructMember>,
@@ -64,11 +64,11 @@ pub(in crate::sr) enum TypeEnum {
     },
     Pointer {
         storage_class: spirv::StorageClass,
-        pointee_type: TypeToken,
+        pointee_type: Token<Type>,
     },
     Function {
-        return_type: TypeToken,
-        parameter_types: Vec<TypeToken>,
+        return_type: Token<Type>,
+        parameter_types: Vec<Token<Type>>,
     },
     Event,
     DeviceEvent,

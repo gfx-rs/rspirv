@@ -14,7 +14,7 @@
 
 use crate::spirv;
 
-use super::{ConstantToken, Decoration};
+use super::{Constant, Decoration, Token};
 
 /// The class to represent a SPIR-V type.
 ///
@@ -28,20 +28,14 @@ pub struct Type {
     pub(in crate::sr) decorations: Vec<Decoration>,
 }
 
-/// A token for representing a SPIR-V type.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct TypeToken {
-    index: usize,
-}
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(in crate::sr) struct StructMember {
-    pub(in crate::sr) token: TypeToken,
+    pub(in crate::sr) token: Token<Type>,
     pub(in crate::sr) decorations: Vec<Decoration>,
 }
 
 impl StructMember {
-    pub(in crate::sr) fn new(token: TypeToken) -> Self {
+    pub(in crate::sr) fn new(token: Token<Type>) -> Self {
         StructMember {
             token,
             decorations: Vec::new(),
@@ -69,25 +63,15 @@ impl Type {
     }
 }
 
-impl TypeToken {
-    pub(in crate::sr) fn new(index: usize) -> Self {
-        TypeToken { index: index }
-    }
-
-    pub(in crate::sr) fn get(&self) -> usize {
-        self.index
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::sr::{Context, ConstantToken};
+    use crate::sr::{Context, Token};
 
     #[test]
     fn test_void_type_is_only_void_type() {
         let mut c = Context::new();
         let voidt = c.type_void();
-        let t = c.get_type(voidt);
+        let t = &c.types[voidt];
         assert!(t.is_void_type());
         assert!(!t.is_bool_type());
         assert!(!t.is_int_type());
@@ -117,7 +101,7 @@ mod tests {
     fn test_int_type_is_only_int_type() {
         let mut c = Context::new();
         let u32t = c.type_int(32, 0);
-        let t = c.get_type(u32t);
+        let t = &c.types[u32t];
         assert!(!t.is_void_type());
         assert!(!t.is_bool_type());
         assert!(t.is_int_type());
@@ -148,22 +132,22 @@ mod tests {
         let mut c = Context::new();
         let voidt = c.type_void();
         {
-            let t = c.get_type(voidt);
+            let t = &c.types[voidt];
             assert!(!t.is_numerical_type());
         }
         let i32t = c.type_int(32, 1);
         {
-            let t = c.get_type(i32t);
+            let t = &c.types[i32t];
             assert!(t.is_numerical_type());
         }
         let f64t = c.type_float(64);
         {
-            let t = c.get_type(f64t);
+            let t = &c.types[f64t];
             assert!(t.is_numerical_type());
         }
         let boolt = c.type_bool();
         {
-            let t = c.get_type(boolt);
+            let t = &c.types[boolt];
             assert!(!t.is_numerical_type());
         }
     }
@@ -173,22 +157,22 @@ mod tests {
         let mut c = Context::new();
         let voidt = c.type_void();
         {
-            let t = c.get_type(voidt);
+            let t = &c.types[voidt];
             assert!(!t.is_scalar_type());
         }
         let i32t = c.type_int(32, 1);
         {
-            let t = c.get_type(i32t);
+            let t = &c.types[i32t];
             assert!(t.is_scalar_type());
         }
         let f64t = c.type_float(64);
         {
-            let t = c.get_type(f64t);
+            let t = &c.types[f64t];
             assert!(t.is_scalar_type());
         }
         let boolt = c.type_bool();
         {
-            let t = c.get_type(boolt);
+            let t = &c.types[boolt];
             assert!(t.is_scalar_type());
         }
     }
@@ -198,47 +182,47 @@ mod tests {
         let mut c = Context::new();
         let voidt = c.type_void();
         {
-            let t = c.get_type(voidt);
+            let t = &c.types[voidt];
             assert!(!t.is_aggregate_type());
         }
         let i32t = c.type_int(32, 1);
         {
-            let t = c.get_type(i32t);
+            let t = &c.types[i32t];
             assert!(!t.is_aggregate_type());
         }
         let f64t = c.type_float(64);
         {
-            let t = c.get_type(f64t);
+            let t = &c.types[f64t];
             assert!(!t.is_aggregate_type());
         }
         let boolt = c.type_bool();
         {
-            let t = c.get_type(boolt);
+            let t = &c.types[boolt];
             assert!(!t.is_aggregate_type());
         }
         let structt = c.type_struct(&vec![i32t, i32t, i32t]);
         {
-            let t = c.get_type(structt);
+            let t = &c.types[structt];
             assert!(t.is_aggregate_type());
         }
-        let arrt = c.type_array(i32t, ConstantToken::new(16));
+        let arrt = c.type_array(i32t, Token::DUMMY);
         {
-            let t = c.get_type(arrt);
+            let t = &c.types[arrt];
             assert!(t.is_aggregate_type());
         }
         let rtarrt = c.type_runtime_array(i32t);
         {
-            let t = c.get_type(rtarrt);
+            let t = &c.types[rtarrt];
             assert!(t.is_aggregate_type());
         }
         let v4i32t = c.type_vector(i32t, 4);
         {
-            let t = c.get_type(v4i32t);
+            let t = &c.types[v4i32t];
             assert!(!t.is_aggregate_type());
         }
         let matt = c.type_matrix(v4i32t, 4);
         {
-            let t = c.get_type(matt);
+            let t = &c.types[matt];
             assert!(!t.is_aggregate_type());
         }
     }
@@ -248,47 +232,47 @@ mod tests {
         let mut c = Context::new();
         let voidt = c.type_void();
         {
-            let t = c.get_type(voidt);
+            let t = &c.types[voidt];
             assert!(!t.is_composite_type());
         }
         let i32t = c.type_int(32, 1);
         {
-            let t = c.get_type(i32t);
+            let t = &c.types[i32t];
             assert!(!t.is_composite_type());
         }
         let f64t = c.type_float(64);
         {
-            let t = c.get_type(f64t);
+            let t = &c.types[f64t];
             assert!(!t.is_composite_type());
         }
         let boolt = c.type_bool();
         {
-            let t = c.get_type(boolt);
+            let t = &c.types[boolt];
             assert!(!t.is_composite_type());
         }
         let structt = c.type_struct(&vec![i32t, i32t, i32t]);
         {
-            let t = c.get_type(structt);
+            let t = &c.types[structt];
             assert!(t.is_composite_type());
         }
-        let arrt = c.type_array(i32t, ConstantToken::new(16));
+        let arrt = c.type_array(i32t, Token::DUMMY);
         {
-            let t = c.get_type(arrt);
+            let t = &c.types[arrt];
             assert!(t.is_composite_type());
         }
         let rtarrt = c.type_runtime_array(i32t);
         {
-            let t = c.get_type(rtarrt);
+            let t = &c.types[rtarrt];
             assert!(t.is_composite_type());
         }
         let v4i32t = c.type_vector(i32t, 4);
         {
-            let t = c.get_type(v4i32t);
+            let t = &c.types[v4i32t];
             assert!(t.is_composite_type());
         }
         let matt = c.type_matrix(v4i32t, 4);
         {
-            let t = c.get_type(matt);
+            let t = &c.types[matt];
             assert!(t.is_composite_type());
         }
     }
