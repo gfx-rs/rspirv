@@ -75,6 +75,7 @@ const WORD_NUM_BYTES: usize = 4;
 ///     assert_eq!(Err(DecodeError::StreamExpected(12)), d.word());
 /// }
 /// ```
+#[derive(Clone, Debug, PartialEq)]
 pub struct Decoder<'a> {
     /// Raw bytes to decode
     bytes: &'a [u8],

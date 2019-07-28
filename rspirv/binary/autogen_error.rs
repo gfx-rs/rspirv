@@ -22,7 +22,7 @@ use spirv;
 use std::{error, fmt};
 
 /// Decoder Error.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Error {
     StreamExpected(usize),
     LimitReached(usize),

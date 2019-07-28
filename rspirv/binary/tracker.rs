@@ -35,7 +35,7 @@ pub enum Type {
 ///
 /// If the type of an id cannot be resolved due to some reason, this will
 /// silently ignore that id instead of erroring out.
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct TypeTracker {
     /// Mapping from an id to its type.
     ///
@@ -81,6 +81,7 @@ impl TypeTracker {
     }
 }
 
+#[derive(Debug, Clone)]
 enum ExtInstSet {
     GlslStd450,
     OpenCLStd100,
@@ -90,6 +91,7 @@ enum ExtInstSet {
 ///
 /// If a given extended instruction set is not supported, it will just be
 /// silently ignored.
+#[derive(Debug, Clone)]
 pub struct ExtInstSetTracker {
     sets: collections::HashMap<spirv::Word, ExtInstSet>,
 }

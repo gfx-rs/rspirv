@@ -76,7 +76,7 @@ impl<T> Token<T> {
 
 /// A structure holding some kind of SPIR-V entity (e.g., type, constant,
 /// instruction, etc.) that can be referenced.
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Storage<T> {
     /// Values of this storage.
     data: Vec<T>,
@@ -140,7 +140,7 @@ impl<T> ops::Index<Token<T>> for Storage<T> {
 /// object to be created, which can then be used to access the real object
 /// using the context again. Tokens are indeed indices into the vectors
 /// of objects inside the context. The context serves as the memory arena.
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Context {
     /// All type objects.
     pub types: Storage<Type>,

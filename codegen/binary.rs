@@ -57,7 +57,7 @@ pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>)
     }).collect();
     let error_enum = format!(
         "/// Decoder Error.\n\
-         #[derive(Debug, PartialEq)]\n\
+         #[derive(Debug, PartialEq, Clone)]\n\
          pub enum Error {{\n\
          {s:4}StreamExpected(usize),\n\
          {s:4}LimitReached(usize),\n\

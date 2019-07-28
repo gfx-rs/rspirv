@@ -21,7 +21,7 @@ use crate::binary::{ParseAction, ParseResult};
 use std::{error, fmt};
 
 /// Data representation loading errors.
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Error {
     NestedFunction,
     UnclosedFunction,
@@ -85,7 +85,7 @@ impl fmt::Display for Error {
 ///
 /// It implements the [`Consumer`](../binary/trait.Consumer.html) trait and
 /// works with the [`Parser`](../binary/struct.Parser.html).
-#[derive(Default)]
+#[derive(Default, Clone, Debug, PartialEq)]
 pub struct Loader {
     module: mr::Module,
     function: Option<mr::Function>,

@@ -100,7 +100,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///                 OpFunctionEnd");
 /// }
 /// ```
-#[derive(Default)]
+#[derive(Default, Clone, PartialEq, Debug)]
 pub struct Builder {
     module: mr::Module,
     next_id: u32,
