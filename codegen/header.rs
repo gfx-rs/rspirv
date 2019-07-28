@@ -66,6 +66,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> String {
     let mut seen_discriminator = BTreeMap::new();
     let mut enumerants = vec![];
     let mut aliases = vec![];
+    let mut capability_clauses = BTreeMap::new();
     for e in &grammar.enumerants {
         if seen_discriminator.contains_key(&e.value.number) {
             aliases.push(format!("    pub const {}: {} = {}::{};",
@@ -73,30 +74,37 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> String {
                                  seen_discriminator.get(&e.value.number).unwrap()));
         } else {
             seen_discriminator.insert(e.value.number, &e.symbol);
-            enumerants.push(
-                if grammar.kind == "Dim" {
-                    // Special case for Dim. Its enumerants can start with a digit.
-                    // So prefix with the kind name here.
-                    format!("    Dim{} = {},", e.symbol, e.value.number)
-                } else {
-                    format!("    {} = {},", e.symbol, e.value.number)
-                });
+            // Special case for Dim. Its enumerants can start with a digit.
+            // So prefix with the kind name here.
+            let name = format!("{}{}", if grammar.kind == "Dim" { "Dim" } else { "" }, e.symbol);
+            enumerants.push(format!("    {} = {},", name, e.value.number));
+            capability_clauses.entry(&e.capabilities).or_insert_with(Vec::new).push(name);
         }
     }
 
-    let mut associated_consts = String::new();
-    if !aliases.is_empty() {
-        associated_consts = format!("\n#[allow(non_upper_case_globals)]\nimpl {} {{\n{}\n}}",
-                                    grammar.kind, aliases.join("\n"));
-    }
+    let associated_consts = if !aliases.is_empty() {
+        aliases.join("\n")
+    } else {
+        String::new()
+    };
 
-    format!("{doc}\n{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n{aliases}",
+
+    let required_capabilities =
+        format!("    pub fn required_capabilities(&self) -> &'static [Capability] {{\n        match self {{\n{}\n        }}\n    }}",
+            capability_clauses.into_iter().map(|(k, v)| {
+                let names: String = v.iter().map(|name| format!("            | {}::{}\n", grammar.kind, name)).collect();
+                let capabilities: String = k.iter().map(|cap| format!("Capability::{},", cap)).collect();
+                format!("{}                => &[{}], \n", names, capabilities)
+            }).collect::<String>().trim_end());
+
+    format!("{doc}\n{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n#[allow(non_upper_case_globals)]\nimpl {kind} {{\n{aliases}\n{capabilities}\n}}\n",
             doc = format!("/// SPIR-V operand kind: {}",
                           get_spec_link(&grammar.kind)),
             attribute = VAULE_ENUM_ATTRIBUTE,
             kind = grammar.kind,
             aliases = associated_consts,
-            enumerants = enumerants.join("\n"))
+            enumerants = enumerants.join("\n"),
+            capabilities = required_capabilities)
 }
 
 /// Returns the code defining the enum for an operand kind by parsing
