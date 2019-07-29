@@ -39,21 +39,9 @@ pub fn get_operand_type_sr_tokens(kind: &str) -> TokenStream {
 
 /// Returns the corresponding Rust name used in structured representation
 /// for the given operand kind in the SPIR-V JSON grammar.
-pub fn get_operand_name_sr_tokens(param: &structs::Operand) -> TokenStream {
-    if param.name.is_empty() {
-        if param.kind == "IdResultType" {
-            quote! { result_type }
-        } else {
-            let name = snake_casify(&param.kind);
-            let token = Ident::new(&name, Span::call_site());
-            quote! { #token }
-        }
-    } else {
-        let re = regex::Regex::new(r"\W").unwrap();
-        let name = snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""));
-        let token = Ident::new(&name, Span::call_site());
-        quote! { #token }
-    }
+pub fn get_operand_name_ident(param: &structs::Operand) -> Ident {
+    let name = get_param_name(param);
+    Ident::new(&name, Span::call_site())
 }
 
 pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
@@ -107,10 +95,9 @@ pub fn get_quantified_type_tokens(ty: TokenStream, quantifier: &str) -> TokenStr
 
 pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
     let ty = if operand.kind == "IdRef" {
-        if operand.name == "'Length'" {
-            quote! { Token<Constant> }
-        } else {
-            quote! { Token<Type> }
+        match operand.name.trim_matches('\'') {
+            "Length" => quote! { Token<Constant> },
+            _ => quote! { Token<Type> },
         }
     } else {
         get_operand_type_sr_tokens(&operand.kind)
@@ -294,7 +281,7 @@ pub fn gen_sr_instruction(grammar: &structs::Grammar) -> String {
                     if operand.kind.starts_with("IdResult") {
                         None
                     } else {
-                        let field_name = get_operand_name_sr_tokens(operand);
+                        let field_name = get_operand_name_ident(operand);
                         let field_type = get_operand_type_sr_tokens(&operand.kind);
                         let quantified = get_quantified_type_tokens(field_type, &operand.quantifier);
                         Some(quote! { #field_name : #quantified })
