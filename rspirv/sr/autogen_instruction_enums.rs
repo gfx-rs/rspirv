@@ -16,7 +16,13 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-enum Instruction {
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Terminator {
+    Kill {},
+    Unreachable {},
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Instruction {
     Nop,
     Undef,
     SourceContinued {
@@ -48,40 +54,11 @@ enum Instruction {
         line: u32,
         column: u32,
     },
-    Extension {
-        name: String,
-    },
-    ExtInstImport {
-        name: String,
-    },
     ExtInst {
         set: spirv::Word,
         instruction: u32,
         operands: Vec<spirv::Word>,
     },
-    MemoryModel {
-        addressing_model: spirv::AddressingModel,
-        memory_model: spirv::MemoryModel,
-    },
-    EntryPoint {
-        execution_model: spirv::ExecutionModel,
-        entry_point: spirv::Word,
-        name: String,
-        interface: Vec<spirv::Word>,
-    },
-    ExecutionMode {
-        entry_point: spirv::Word,
-        mode: spirv::ExecutionMode,
-    },
-    Capability {
-        capability: spirv::Capability,
-    },
-    Function {
-        function_control: spirv::FunctionControl,
-        function_type: spirv::Word,
-    },
-    FunctionParameter,
-    FunctionEnd,
     FunctionCall {
         function: spirv::Word,
         arguments: Vec<spirv::Word>,
@@ -794,7 +771,6 @@ enum Instruction {
         merge_block: spirv::Word,
         selection_control: spirv::SelectionControl,
     },
-    Label,
     Branch {
         target_label: spirv::Word,
     },
@@ -809,12 +785,10 @@ enum Instruction {
         default: spirv::Word,
         target: Vec<(u32, spirv::Word)>,
     },
-    Kill,
     Return,
     ReturnValue {
         value: spirv::Word,
     },
-    Unreachable,
     LifetimeStart {
         pointer: spirv::Word,
         size: u32,
@@ -1161,10 +1135,6 @@ enum Instruction {
     },
     ModuleProcessed {
         process: String,
-    },
-    ExecutionModeId {
-        entry_point: spirv::Word,
-        mode: spirv::ExecutionMode,
     },
     DecorateId {
         target: spirv::Word,

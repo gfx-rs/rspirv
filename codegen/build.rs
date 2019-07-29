@@ -184,8 +184,13 @@ fn main() {
         &codegen_src_dir.join("../rspirv/sr/autogen_type_creation.rs"),
         sr::gen_sr_type_creation(&grammar),
     );
+    let (inst_enums, inst_structs) = sr::gen_sr_instruction(&grammar);
     write_formatted(
-        &codegen_src_dir.join("../rspirv/sr/autogen_instruction.rs"),
-        sr::gen_sr_instruction(&grammar),
+        &codegen_src_dir.join("../rspirv/sr/autogen_instruction_enums.rs"),
+        inst_enums,
+    );
+    write_formatted(
+        &codegen_src_dir.join("../rspirv/sr/autogen_instruction_structs.rs"),
+        inst_structs,
     );
 }
