@@ -20,42 +20,41 @@ mod structs;
 mod table;
 mod utils;
 
-use std::{env, fs, path, process};
-use std::io::{Read, Write};
+use std::{
+    env,
+    fs,
+    io::{Read, Write},
+    path::PathBuf,
+    process,
+};
 use utils::write_copyright_autogen_comment;
 
-macro_rules! write {
-    ($content: expr, $path: expr) => {
-        {
-            let p = $path.to_str().unwrap();
-            let mut f = fs::File::create(p).expect(&format!("cannot open file: {}", p));
-            write_copyright_autogen_comment(&mut f);
-            f.write_all(&$content.into_bytes()).unwrap();
-        }
-    }
+fn write(path: &PathBuf, contents: String) {
+    let mut f = fs::File::create(path)
+        .expect(&format!("cannot open file: {:?}", path));
+    write_copyright_autogen_comment(&mut f);
+    write!(f, "{}", contents).unwrap()
 }
 
-macro_rules! fmt_write {
-    ($content: expr, $path: expr) => {
-        write!($content, $path);
-        match process::Command::new("rustfmt")
-            .arg($path.as_os_str())
-            .status() {
-                Ok(status) => if !status.success() {
-                    println!("cargo:warning=failed to rustfmt {}", $path.to_str().unwrap());
-                },
-                Err(_) => {
-                    println!("cargo:warning=failed to execute rustfmt");
-                }
+fn write_formatted(path: &PathBuf, contents: String) {
+    write(path, contents);
+    match process::Command::new("rustfmt")
+        .arg(path)
+        .status() {
+            Ok(status) if !status.success() => {
+                println!("cargo:warning=failed to rustfmt {:?}", path);
             }
-
-    }
+            Ok(_) => {}
+            Err(_) => {
+                println!("cargo:warning=failed to execute rustfmt");
+            }
+        };
 }
 
 fn main() {
     // Path to the SPIR-V core grammar file.
     let env_var = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let codegen_src_dir = path::Path::new(&env_var);
+    let codegen_src_dir = PathBuf::from(&env_var);
 
     if !codegen_src_dir.join("external/SPIRV-Headers").exists() {
         panic!("SPIRV-Headers missing - please checkout using git submodule");
@@ -65,8 +64,7 @@ fn main() {
 
     {
         let path = codegen_src_dir.join("external/spirv.core.grammar.json");
-        let filename = path.to_str().unwrap();
-        let mut file = fs::File::open(filename).unwrap();
+        let mut file = fs::File::open(path).unwrap();
         file.read_to_string(&mut contents).unwrap();
     }
     let grammar: structs::Grammar = serde_json::from_str(&contents).unwrap();
@@ -75,8 +73,7 @@ fn main() {
     {
         let path = codegen_src_dir.join(
             "external/SPIRV-Headers/include/spirv/unified1/extinst.glsl.std.450.grammar.json");
-        let filename = path.to_str().unwrap();
-        let mut file = fs::File::open(filename).unwrap();
+        let mut file = fs::File::open(path).unwrap();
         contents.clear();
         file.read_to_string(&mut contents).unwrap();
     }
@@ -86,130 +83,109 @@ fn main() {
     {
         let path = codegen_src_dir.join(
             "external/SPIRV-Headers/include/spirv/unified1/extinst.opencl.std.100.grammar.json");
-        let filename = path.to_str().unwrap();
-        let mut file = fs::File::open(filename).unwrap();
+        let mut file = fs::File::open(path).unwrap();
         contents.clear();
         file.read_to_string(&mut contents).unwrap();
     }
     let cl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
 
-    {
-        // Path to the generated SPIR-V header file.
-        let path = codegen_src_dir.join("../spirv/autogen_spirv.rs");
-        let core = header::gen_spirv_header(&grammar);
-        let gl = header::gen_glsl_std_450_opcodes(&gl_grammar);
-        let cl = header::gen_opencl_std_opcodes(&cl_grammar);
+    // Path to the generated SPIR-V header file.
+    write(
+        &codegen_src_dir.join("../spirv/autogen_spirv.rs"),
+        {
+            let core = header::gen_spirv_header(&grammar);
+            let gl = header::gen_glsl_std_450_opcodes(&gl_grammar);
+            let cl = header::gen_opencl_std_opcodes(&cl_grammar);
+            format!("{}\n{}\n{}", core, gl, cl)
+        }
+    );
 
-        write!(core + "\n" + &gl + "\n" + &cl, path);
+    // Path to the generated instruction table.
+    write(
+        &codegen_src_dir.join("../rspirv/grammar/autogen_table.rs"),
+        table::gen_grammar_inst_table_operand_kinds(&grammar),
+    );
+    // Path to the generated GLSLstd450 extended instruction set header.
+    write(
+        &codegen_src_dir.join("../rspirv/grammar/autogen_glsl_std_450.rs"),
+        table::gen_glsl_std_450_inst_table(&gl_grammar),
+    );
+    write(
+        &codegen_src_dir.join("../rspirv/grammar/autogen_opencl_std_100.rs"),
+        table::gen_opencl_std_100_inst_table(&cl_grammar),
+    );
 
-    }
+    // Path to the generated operands kind in data representation.
+    write(
+        &codegen_src_dir.join("../rspirv/mr/autogen_operand.rs"),
+        mr::gen_mr_operand_kinds(&grammar.operand_kinds),
+    );
+    // Path to the generated builder for data representation.
+    write(
+        &codegen_src_dir.join("../rspirv/mr/build/autogen_type.rs"),
+        mr::gen_mr_builder_types(&grammar),
+    );
+    // Path to the generated builder for data representation.
+    write(
+        &codegen_src_dir.join("../rspirv/mr/build/autogen_terminator.rs"),
+        mr::gen_mr_builder_terminator(&grammar),
+    );
+    // Path to the generated builder for data representation.
+    write(
+        &codegen_src_dir.join("../rspirv/mr/build/autogen_annotation.rs"),
+        mr::gen_mr_builder_annotation(&grammar),
+    );
+    // Path to the generated builder for data representation.
+    write(
+        &codegen_src_dir.join("../rspirv/mr/build/autogen_constant.rs"),
+        mr::gen_mr_builder_constants(&grammar),
+    );
+    // Path to the generated builder for data representation.
+    write(
+        &codegen_src_dir.join("../rspirv/mr/build/autogen_debug.rs"),
+        mr::gen_mr_builder_debug(&grammar),
+    );
+    // Path to the generated builder for data representation.
+    write(
+        &codegen_src_dir.join("../rspirv/mr/build/autogen_norm_insts.rs"),
+        mr::gen_mr_builder_normal_insts(&grammar),
+    );
 
-    {
-        // Path to the generated instruction table.
-        let path = codegen_src_dir.join("../rspirv/grammar/autogen_table.rs");
-        let c = table::gen_grammar_inst_table_operand_kinds(&grammar);
-        write!(c, path);
-    }
-    {
-        // Path to the generated GLSLstd450 extended instruction set header.
-        let path = codegen_src_dir.join("../rspirv/grammar/autogen_glsl_std_450.rs");
-        let c = table::gen_glsl_std_450_inst_table(&gl_grammar);
-        write!(c, path);
-    }
-    {
-        let path = codegen_src_dir.join("../rspirv/grammar/autogen_opencl_std_100.rs");
-        let c = table::gen_opencl_std_100_inst_table(&cl_grammar);
-        write!(c, path);
-    }
+    // Path to the generated decoding errors.
+    write(
+        &codegen_src_dir.join("../rspirv/binary/autogen_error.rs"),
+        binary::gen_operand_decode_errors(&grammar.operand_kinds),
+    );
+    // Path to the generated operand decoding methods.
+    write(
+        &codegen_src_dir.join("../rspirv/binary/autogen_decode_operand.rs"),
+        binary::gen_operand_decode_methods(&grammar.operand_kinds),
+    );
+    // Path to the generated operand parsing methods.
+    write(
+        &codegen_src_dir.join("../rspirv/binary/autogen_parse_operand.rs"),
+        binary::gen_operand_parse_methods(&grammar.operand_kinds),
+    );
+    // Path to the generated operand parsing methods.
+    write(
+        &codegen_src_dir.join("../rspirv/binary/autogen_disas_operand.rs"),
+        binary::gen_disas_bit_enum_operands(&grammar.operand_kinds),
+    );
 
-    {
-        // Path to the generated operands kind in data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/autogen_operand.rs");
-        let c = mr::gen_mr_operand_kinds(&grammar.operand_kinds);
-        write!(c, path);
-    }
-
-    {
-        // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_type.rs");
-        let c = mr::gen_mr_builder_types(&grammar);
-        write!(c, path);
-    }
-    {
-        // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_terminator.rs");
-        let c = mr::gen_mr_builder_terminator(&grammar);
-        write!(c, path);
-    }
-    {
-        // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_annotation.rs");
-        let c = mr::gen_mr_builder_annotation(&grammar);
-        write!(c, path);
-    }
-    {
-        // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_constant.rs");
-        let c = mr::gen_mr_builder_constants(&grammar);
-        write!(c, path);
-    }
-    {
-        // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_debug.rs");
-        let c = mr::gen_mr_builder_debug(&grammar);
-        write!(c, path);
-    }
-    {
-        // Path to the generated builder for data representation.
-        let path = codegen_src_dir.join("../rspirv/mr/build/autogen_norm_insts.rs");
-        let c = mr::gen_mr_builder_normal_insts(&grammar);
-        write!(c, path);
-    }
-
-    {
-        // Path to the generated decoding errors.
-        let path = codegen_src_dir.join("../rspirv/binary/autogen_error.rs");
-        let c = binary::gen_operand_decode_errors(&grammar.operand_kinds);
-        write!(c, path);
-    }
-
-    {
-        // Path to the generated operand decoding methods.
-        let path = codegen_src_dir.join("../rspirv/binary/autogen_decode_operand.rs");
-        let c = binary::gen_operand_decode_methods(&grammar.operand_kinds);
-        write!(c, path);
-    }
-    {
-        // Path to the generated operand parsing methods.
-        let path = codegen_src_dir.join("../rspirv/binary/autogen_parse_operand.rs");
-        let c = binary::gen_operand_parse_methods(&grammar.operand_kinds);
-        write!(c, path);
-    }
-    {
-        // Path to the generated operand parsing methods.
-        let path = codegen_src_dir.join("../rspirv/binary/autogen_disas_operand.rs");
-        let c = binary::gen_disas_bit_enum_operands(&grammar.operand_kinds);
-        write!(c, path);
-    }
-
-    {
-        let path = codegen_src_dir.join("../rspirv/sr/autogen_decoration.rs");
-        let c = sr::gen_sr_decoration(&grammar);
-        fmt_write!(c, path);
-    }
-    {
-        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_enum_check.rs");
-        let c = sr::gen_sr_type_check(&grammar);
-        fmt_write!(c, path);
-    }
-    {
-        let path = codegen_src_dir.join("../rspirv/sr/autogen_type_creation.rs");
-        let c = sr::gen_sr_type_creation(&grammar);
-        fmt_write!(c, path);
-    }
-    {
-        let path = codegen_src_dir.join("../rspirv/sr/autogen_instruction.rs");
-        let c = sr::gen_sr_instruction(&grammar);
-        fmt_write!(c, path);
-    }
+    write_formatted(
+        &codegen_src_dir.join("../rspirv/sr/autogen_decoration.rs"),
+        sr::gen_sr_decoration(&grammar),
+    );
+    write_formatted(
+        &codegen_src_dir.join("../rspirv/sr/autogen_type_enum_check.rs"),
+        sr::gen_sr_type_check(&grammar),
+    );
+    write_formatted(
+        &codegen_src_dir.join("../rspirv/sr/autogen_type_creation.rs"),
+        sr::gen_sr_type_creation(&grammar),
+    );
+    write_formatted(
+        &codegen_src_dir.join("../rspirv/sr/autogen_instruction.rs"),
+        sr::gen_sr_instruction(&grammar),
+    );
 }
