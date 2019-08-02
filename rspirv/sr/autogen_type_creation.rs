@@ -181,9 +181,16 @@ impl Context {
             decorations: Vec::new(),
         })
     }
-    pub fn type_forward_pointer(&mut self, storage_class: spirv::StorageClass) -> Token<Type> {
+    pub fn type_forward_pointer(
+        &mut self,
+        pointer_type: Token<Type>,
+        storage_class: spirv::StorageClass,
+    ) -> Token<Type> {
         self.types.fetch_or_append(Type {
-            ty: TypeEnum::ForwardPointer { storage_class },
+            ty: TypeEnum::ForwardPointer {
+                pointer_type,
+                storage_class,
+            },
             decorations: Vec::new(),
         })
     }

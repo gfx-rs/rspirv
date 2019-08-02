@@ -78,6 +78,7 @@ pub(in crate::sr) enum TypeEnum {
         qualifier: spirv::AccessQualifier,
     },
     ForwardPointer {
+        pointer_type: Token<Type>,
         storage_class: spirv::StorageClass,
     },
     PipeStorage,

@@ -48,7 +48,7 @@ pub struct Capability {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Function {
     function_control: spirv::FunctionControl,
-    function_type: spirv::Word,
+    function_type: Token<Type>,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FunctionParameter {}

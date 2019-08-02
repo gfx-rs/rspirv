@@ -18,52 +18,49 @@ use crate::utils::*;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
-/// Returns the corresponding Rust type used in structured representation
-/// for the given operand kind in the SPIR-V JSON grammar.
-pub fn get_operand_type_sr_tokens(kind: &str) -> TokenStream {
-    match kind {
-        "IdMemorySemantics" | "IdScope" | "IdRef" | "IdResult" => quote! { spirv::Word },
-        "LiteralInteger" | "LiteralExtInstInteger" => quote! { u32 },
-        "LiteralSpecConstantOpInteger" => quote! { spirv::Op },
-        "LiteralContextDependentNumber" => panic!("this kind is not expected to be handled here"),
-        "LiteralString" => quote! { String },
-        "PairLiteralIntegerIdRef" => quote! { (u32, spirv::Word) },
-        "PairIdRefLiteralInteger" => quote! { (spirv::Word, u32) },
-        "PairIdRefIdRef" => quote! { (spirv::Word, spirv::Word) },
-        _ => {
-            let kind = Ident::new(kind, Span::call_site());
-            quote! { spirv::#kind }
+struct OperandTokens {
+    /// Rust name used in structured representation
+    name: Ident,
+    /// Rust type used in structured representation.
+    quantified_type: TokenStream,
+}
+
+impl OperandTokens {
+    fn new(operand: &structs::Operand) -> Self {
+        let name = get_param_name(operand);
+
+        let ty = match operand.kind.as_str() {
+            "IdRef" => match operand.name.trim_matches('\'') {
+                "Length" => quote! { Token<Constant> },
+                "Field Types" => quote! { StructMember },
+                "Parameter Types" => quote! { Token<Type> },
+                name if name.ends_with(" Type") => quote! { Token<Type> },
+                _ => quote! { spirv::Word },
+            },
+            "IdMemorySemantics" | "IdScope" | "IdResult" => quote! { spirv::Word },
+            "LiteralInteger" | "LiteralExtInstInteger" => quote! { u32 },
+            "LiteralSpecConstantOpInteger" => quote! { spirv::Op },
+            "LiteralContextDependentNumber" => panic!("this kind is not expected to be handled here"),
+            "LiteralString" => quote! { String },
+            "PairLiteralIntegerIdRef" => quote! { (u32, spirv::Word) },
+            "PairIdRefLiteralInteger" => quote! { (spirv::Word, u32) },
+            "PairIdRefIdRef" => quote! { (spirv::Word, spirv::Word) },
+            kind => {
+                let kind = Ident::new(kind, Span::call_site());
+                quote! { spirv::#kind }
+            }
+        };
+
+        OperandTokens {
+            name: Ident::new(&name, Span::call_site()),
+            quantified_type: match operand.quantifier.as_str() {
+                "" => ty,
+                "?" => quote! { Option<#ty> },
+                "*" => quote! { Vec<#ty> },
+                other => panic!("wrong quantifier: {}", other),
+            },
         }
     }
-}
-
-/// Returns the corresponding Rust name used in structured representation
-/// for the given operand kind in the SPIR-V JSON grammar.
-pub fn get_operand_name_ident(param: &structs::Operand) -> Ident {
-    let name = get_param_name(param);
-    Ident::new(&name, Span::call_site())
-}
-
-pub fn get_quantified_type_tokens(ty: TokenStream, quantifier: &str) -> TokenStream {
-    match quantifier {
-        "" => quote! { #ty },
-        "?" => quote! { Option<#ty> },
-        "*" => quote! { Vec<#ty> },
-        other => panic!("wrong quantifier: {}", other),
-    }
-}
-
-pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
-    let ty = if operand.kind == "IdRef" {
-        match operand.name.trim_matches('\'') {
-            "Length" => quote! { Token<Constant> },
-            _ => quote! { Token<Type> },
-        }
-    } else {
-        get_operand_type_sr_tokens(&operand.kind)
-    };
-
-    get_quantified_type_tokens(ty, &operand.quantifier)
 }
 
 fn get_type_fn_name(name: &str) -> String {
@@ -95,7 +92,7 @@ pub fn gen_sr_code_from_operand_kind_grammar(
             let types: Vec<_> = enumerant
                 .parameters
                 .iter()
-                .map(|p| get_operand_type_sr_tokens(&p.kind))
+                .map(|p| OperandTokens::new(p).quantified_type)
                 .collect();
             let params = if types.is_empty() {
                 quote!{}
@@ -139,6 +136,9 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut type_checks = Vec::new();
     let mut type_constructors = Vec::new();
 
+    let mut field_names = Vec::new();
+    let mut field_types = Vec::new();
+
     // Compose the token stream for all instructions
     for inst in grammar_instructions
         .iter() // Loop over all instructions
@@ -147,69 +147,49 @@ pub fn gen_sr_code_from_instruction_grammar(
         // Get the token for its enumerant
         let name = Ident::new(&inst.opname[2..], Span::call_site());
 
+        // Re-use the allocation between iterations of the loop
+        field_names.clear();
+        field_types.clear();
+
         // Compose the token stream for all parameters
-        let params: Vec<_> = inst.operands
-            .iter() // Loop over all parameters
-            .filter_map(|operand| {
-                if operand.kind.starts_with("IdResult") {
-                    None
-                } else {
-                    let field_name = get_operand_name_ident(operand);
-                    let field_type = get_operand_type_sr_tokens(&operand.kind);
-                    let quantified = get_quantified_type_tokens(field_type, &operand.quantifier);
-                    Some(quote! { #field_name : #quantified })
-                }
-            }).collect();
-        let type_operands = inst.operands
-            .iter()
-            .skip(1)
-            .map(|op| {
-                let name = Ident::new(&get_param_name(op), Span::call_site());
-                let ty = get_operand_type_ident(op);
-                (name, ty)
-            });
+        for operand in inst.operands.iter() {
+            if operand.kind.starts_with("IdResult") {
+                continue
+            }
+            let tokens = OperandTokens::new(operand);
+            field_names.push(tokens.name);
+            field_types.push(tokens.quantified_type);
+        }
+        let field_names = field_names.as_slice();
+        let field_types = field_types.as_slice();
 
         match inst.class.as_str() {
             "Type" => {
                 let type_name = &inst.opname[6..];
-                let func_name = Ident::new(
-                    &format!("type_{}", get_type_fn_name(type_name)),
-                    Span::call_site(),
-                );
                 let symbol = Ident::new(type_name, Span::call_site());
 
-                let param_list: Vec<_> = type_operands
-                    .clone()
-                    .map(|(ref name, ref ty)| {
-                        // structures support per-member decorations
-                        if symbol == "Struct" {
-                            quote! { #name : Vec<StructMember> }
-                        } else {
-                            quote! { #name : #ty }
-                        }
-                    })
-                    .collect();
-                let param_list = param_list.as_slice();
-                type_variants.push(if param_list.is_empty() {
+                type_variants.push(if field_names.is_empty() {
                     quote!{ #symbol }
                 } else {
-                    quote! { #symbol { #( #param_list ),* } }
+                    quote! { #symbol {
+                        #( #field_names: #field_types ),*
+                    }}
                 });
 
                 let generate_type_check = true;
                 if generate_type_check {
-                    let func_name = Ident::new(
+                    let func_name_ident = Ident::new(
                         &format!("is_{}_type", get_type_fn_name(type_name)),
                         Span::call_site(),
                     );
                     // If the type requires parameters, attach `{ .. }` to the match arm.
-                    let check_params = if param_list.is_empty() {
+                    let check_params = if field_names.is_empty() {
                         quote!{}
                     } else {
                         quote! { {..} }
                     };
                     type_checks.push(quote! {
-                        pub fn #func_name(&self) -> bool {
+                        pub fn #func_name_ident(&self) -> bool {
                             match self.ty {
                                 TypeEnum::#symbol #check_params => true,
                                 _ => false
@@ -219,18 +199,19 @@ pub fn gen_sr_code_from_instruction_grammar(
                 }
 
                 if inst.opname != "OpTypeStruct" {
-                    let init_list: Vec<_> = type_operands
-                        .map(|(ref name, _)| {
-                            quote! { #name }
-                        })
-                        .collect();
-                    let init_list = if init_list.is_empty() {
+                    let func_name_ident = Ident::new(
+                        &format!("type_{}", get_type_fn_name(type_name)),
+                        Span::call_site(),
+                    );
+                    let init_list = if field_names.is_empty() {
                         quote!{}
                     } else {
-                        quote! { {#( #init_list ),*} }
+                        quote! { {#( #field_names ),*} }
                     };
                     type_constructors.push(quote! {
-                        pub fn #func_name(&mut self, #( #param_list ),*) -> Token<Type> {
+                        pub fn #func_name_ident(
+                            &mut self, #( #field_names: #field_types ),*
+                        ) -> Token<Type> {
                             self.types.fetch_or_append(Type {
                                 ty: TypeEnum::#symbol #init_list,
                                 decorations: Vec::new(),
@@ -246,20 +227,22 @@ pub fn gen_sr_code_from_instruction_grammar(
                 inst_structs.push(quote! {
                     #[derive(Clone, Debug, Eq, PartialEq)]
                     pub struct #name {
-                        #( #params ),*
+                        #( #field_names: #field_types ),*
                     }
                 })
             }
             "Terminator" => {
                 terminators.push(quote! {
-                    #name {#( #params ),*}
+                    #name {#( #field_names: #field_types ),*}
                 });
             }
             _ => {
-                inst_variants.push(if params.is_empty() {
+                inst_variants.push(if field_names.is_empty() {
                     quote!{ #name }
                 } else {
-                    quote! { #name {#( #params ),*} }
+                    quote! { #name {
+                        #( #field_names: #field_types ),*
+                    }}
                 });
             }
         }

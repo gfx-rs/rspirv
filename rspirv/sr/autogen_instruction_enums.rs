@@ -122,7 +122,7 @@ pub enum Instruction {
         decoration: spirv::Decoration,
     },
     MemberDecorate {
-        structure_type: spirv::Word,
+        structure_type: Token<Type>,
         member: u32,
         decoration: spirv::Decoration,
     },
@@ -1423,7 +1423,7 @@ pub enum Instruction {
         decoration: spirv::Decoration,
     },
     MemberDecorateStringGOOGLE {
-        struct_type: spirv::Word,
+        struct_type: Token<Type>,
         member: u32,
         decoration: spirv::Decoration,
     },
