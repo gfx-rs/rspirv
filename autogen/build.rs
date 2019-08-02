@@ -172,25 +172,26 @@ fn main() {
         binary::gen_disas_bit_enum_operands(&grammar.operand_kinds),
     );
 
+    let operands = sr::gen_sr_code_from_operand_kind_grammar(&grammar.operand_kinds);
     write_formatted(
         &autogen_src_dir.join("../rspirv/sr/autogen_decoration.rs"),
-        sr::gen_sr_decoration(&grammar),
+        operands.decoration,
     );
+    let instructions = sr::gen_sr_code_from_instruction_grammar(&grammar.instructions);
     write_formatted(
         &autogen_src_dir.join("../rspirv/sr/autogen_type_enum_check.rs"),
-        sr::gen_sr_type_check(&grammar),
+        instructions.type_enums,
     );
     write_formatted(
         &autogen_src_dir.join("../rspirv/sr/autogen_type_creation.rs"),
-        sr::gen_sr_type_creation(&grammar),
+        instructions.type_creation,
     );
-    let (inst_enums, inst_structs) = sr::gen_sr_instruction(&grammar);
     write_formatted(
         &autogen_src_dir.join("../rspirv/sr/autogen_instruction_enums.rs"),
-        inst_enums,
+        instructions.instruction_enums,
     );
     write_formatted(
         &autogen_src_dir.join("../rspirv/sr/autogen_instruction_structs.rs"),
-        inst_structs,
+        instructions.instruction_structs,
     );
 }
