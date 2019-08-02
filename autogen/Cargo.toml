@@ -1,13 +1,16 @@
 [package]
-name = "rspirv-codegen"
+name = "rspirv-autogen"
 version = "0.1.0"
-authors = ["Lei Zhang <antiagainst@gmail.com>"]
+authors = [
+	"gfx-rs developers",
+	"Lei Zhang <antiagainst@gmail.com>",
+]
 edition = "2018"
 
 build = "build.rs"
 publish = false
 
-description = "Code generation module for rspirv"
+description = "Automatic code generation module for rspirv"
 documentation = "https://docs.rs/rspirv"
 repository = "https://github.com/gfx-rs/rspirv"
 readme = "README.md"

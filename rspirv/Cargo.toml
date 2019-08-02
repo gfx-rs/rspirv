@@ -27,8 +27,5 @@ num = "0.2"
 version = "1.3"
 path = "../spirv"
 
-[build-dependencies]
-rspirv-codegen = { path = "../codegen", version = "0.1" }
-
 [dev-dependencies]
 assert_matches = "1.1"
