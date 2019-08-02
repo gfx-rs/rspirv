@@ -1,4 +1,4 @@
-codegen of the rspirv project
+Automatic code generation of the rspirv project
 =============================
 
 This directory contains the code to generate various Rust code snippets

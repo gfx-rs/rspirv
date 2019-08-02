@@ -45,7 +45,7 @@ In total rspirv APIs contains:
 * SPIR-V [binary][doc-binary] module decoding and parsing functionalities
 
 The Khronos SPIR-V [JSON grammar][json-grammar] is leveraged to generate parts
-of the source code using Cargo [build scripts](codegen).
+of the source code using Cargo [build scripts](autogen).
 
 Please see the links to docs.rs for detailed documentation.
 
@@ -135,7 +135,7 @@ Directory Organization
 
 There are multiple crates inside this repo:
 
-- `codegen/`: Crate to generate various Rust code snippets used in the modules
+- `autogen/`: Crate to generate various Rust code snippets used in the modules
   in `spirv/` and `rspirv/`, from SPIR-V's JSON grammar. If you are not
   modifying `spirv/` or `rspirv/`, you don't need to care about this directory.
 - `spirv/`: The `spirv_headers` crate.
@@ -167,7 +167,7 @@ If you want to refresh the `spirv_headers` or `rspirv` crate with new code
 snippets generated from SPIR-V's JSON grammar,
 
 ```sh
-cd /path/to/rspirv/codegen
+cd /path/to/rspirv/autogen
 # Clone the SPIRV-Headers repo
 git submodule update --init
 cargo build
