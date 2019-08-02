@@ -44,10 +44,45 @@ pub fn get_operand_name_ident(param: &structs::Operand) -> Ident {
     Ident::new(&name, Span::call_site())
 }
 
-pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
+pub fn get_quantified_type_tokens(ty: TokenStream, quantifier: &str) -> TokenStream {
+    match quantifier {
+        "" => quote! { #ty },
+        "?" => quote! { Option<#ty> },
+        "*" => quote! { Vec<#ty> },
+        other => panic!("wrong quantifier: {}", other),
+    }
+}
+
+pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
+    let ty = if operand.kind == "IdRef" {
+        match operand.name.trim_matches('\'') {
+            "Length" => quote! { Token<Constant> },
+            _ => quote! { Token<Type> },
+        }
+    } else {
+        get_operand_type_sr_tokens(&operand.kind)
+    };
+
+    get_quantified_type_tokens(ty, &operand.quantifier)
+}
+
+fn get_type_fn_name(name: &str) -> String {
+    if name == "Struct" {
+        "structure".to_string()
+    } else {
+        snake_casify(name)
+    }
+}
+
+pub struct CodeGeneratedFromOperandKindGrammar {
+    pub decoration: String,
+}
+
+pub fn gen_sr_code_from_operand_kind_grammar(
+    grammar_operand_kinds: &[structs::OperandKind],
+) -> CodeGeneratedFromOperandKindGrammar {
     // The decoration operand kind
-    let decoration = grammar
-        .operand_kinds
+    let decoration = grammar_operand_kinds
         .iter()
         .find(|k| k.kind == "Decoration")
         .unwrap();
@@ -81,199 +116,32 @@ pub fn gen_sr_decoration(grammar: &structs::Grammar) -> String {
             #( #enumerants ),*
         }
     };
-    tokens.to_string()
-}
 
-pub fn get_quantified_type_tokens(ty: TokenStream, quantifier: &str) -> TokenStream {
-    match quantifier {
-        "" => quote! { #ty },
-        "?" => quote! { Option<#ty> },
-        "*" => quote! { Vec<#ty> },
-        other => panic!("wrong quantifier: {}", other),
+    CodeGeneratedFromOperandKindGrammar {
+        decoration: tokens.to_string(),
     }
 }
 
-pub fn get_operand_type_ident(operand: &structs::Operand) -> TokenStream {
-    let ty = if operand.kind == "IdRef" {
-        match operand.name.trim_matches('\'') {
-            "Length" => quote! { Token<Constant> },
-            _ => quote! { Token<Type> },
-        }
-    } else {
-        get_operand_type_sr_tokens(&operand.kind)
-    };
-
-    get_quantified_type_tokens(ty, &operand.quantifier)
+pub struct CodeGeneratedFromInstructionGrammar {
+    pub type_enums: String,
+    pub type_creation: String,
+    pub instruction_structs: String,
+    pub instruction_enums: String,
 }
 
-fn get_type_fn_name(name: &str) -> String {
-    if name == "Struct" {
-        "structure".to_string()
-    } else {
-        snake_casify(name)
-    }
-}
-
-pub fn gen_sr_type_check(grammar: &structs::Grammar) -> String {
-    // Collect all types and their parameters in the following format:
-    //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
-    let cases: Vec<_> = grammar
-        .instructions
-        .iter()
-        .filter(|k| k.class == "Type")
-        .map(|kind| {
-            let operands: Vec<_> = kind
-                .operands
-                .iter()
-                .skip(1)
-                .map(|op| {
-                    let name = Ident::new(&get_param_name(op), Span::call_site());
-                    let ty = get_operand_type_ident(op);
-                    (name, ty)
-                })
-                .collect();
-            let symbol = &kind.opname[6..];
-            (symbol, operands)
-        })
-        .collect();
-    let types: Vec<_> = cases
-        .iter()
-        .map(|&(symbol, ref params)| {
-            let symbol = Ident::new(symbol, Span::call_site());
-            let param_list: Vec<_> = params
-                .iter()
-                .map(|&(ref name, ref ty)| {
-                    // structures support per-member decorations
-                    if symbol == "Struct" {
-                        quote! { #name : Vec<StructMember> }
-                    } else {
-                        quote! { #name : #ty }
-                    }
-                })
-                .collect();
-            let param_list = if param_list.is_empty() {
-                quote!{}
-            } else {
-                quote! { { #( #param_list ),* } }
-            };
-            quote! { #symbol #param_list }
-        })
-        .collect();
-    let checks: Vec<_> = cases
-        .iter()
-        .map(|&(symbol, ref params)| {
-            let func_name = Ident::new(
-                &format!("is_{}_type", get_type_fn_name(symbol)),
-                Span::call_site(),
-            );
-            let symbol = Ident::new(symbol, Span::call_site());
-            // If the type requires parameters, attach `{ .. }` to the match arm.
-            let params = if params.is_empty() {
-                quote!{}
-            } else {
-                quote! { {..} }
-            };
-            quote! {
-                pub fn #func_name(&self) -> bool {
-                    match self.ty {
-                        TypeEnum::#symbol #params => true,
-                        _ => false
-                    }
-                }
-            }
-        })
-        .collect();
-    let tokens = quote! {
-        #[derive(Clone, Debug, PartialEq, Eq)]
-        pub (in crate::sr) enum TypeEnum {
-            #( #types ),*
-        }
-
-        impl Type {
-            #( #checks )*
-        }
-    };
-    tokens.to_string()
-}
-
-pub fn gen_sr_type_creation(grammar: &structs::Grammar) -> String {
-    // Collect all types and their parameters in the following format:
-    //   (type-name: &str, Vec<(param-name: quote::Ident, param-type: quote::Ident)>)
-    let cases: Vec<_> = grammar
-        .instructions
-        .iter()
-        .filter(|k| k.class == "Type")
-        .filter(|k| k.opname != "OpTypeStruct")
-        .map(|kind| {
-            let operands: Vec<_> = kind
-                .operands
-                .iter()
-                .skip(1)
-                .map(|op| {
-                    let name = Ident::new(&get_param_name(op), Span::call_site());
-                    let ty = get_operand_type_ident(op);
-                    (name, ty)
-                })
-                .collect();
-            let symbol = &kind.opname[6..];
-            (symbol, operands)
-        })
-        .collect();
-    let constructors: Vec<_> = cases
-        .iter()
-        .map(|&(symbol, ref params)| {
-            let func_name = Ident::new(
-                &format!("type_{}", get_type_fn_name(symbol)),
-                Span::call_site(),
-            );
-            let symbol = Ident::new(symbol, Span::call_site());
-            let param_list: Vec<_> = params
-                .iter()
-                .map(|&(ref name, ref ty)| {
-                    quote! { #name : #ty }
-                })
-                .collect();
-            let param_list = quote! { (&mut self, #( #param_list ),*) };
-            let init_list: Vec<_> = params
-                .iter()
-                .map(|&(ref name, _)| {
-                    quote! { #name }
-                })
-                .collect();
-            let init_list = if init_list.is_empty() {
-                quote!{}
-            } else {
-                quote! { {#( #init_list ),*} }
-            };
-            quote! {
-                pub fn #func_name #param_list -> Token<Type> {
-                    self.types.fetch_or_append(Type {
-                        ty: TypeEnum::#symbol #init_list,
-                        decorations: Vec::new(),
-                    })
-                }
-            }
-        })
-        .collect();
-    let tokens = quote! {
-        impl Context {
-            #( #constructors )*
-        }
-    };
-    tokens.to_string()
-}
-
-/// Generates instruction enums and standalone structs.
-pub fn gen_sr_instruction(grammar: &structs::Grammar) -> (String, String) {
-    let mut structs = Vec::new();
+pub fn gen_sr_code_from_instruction_grammar(
+    grammar_instructions: &[structs::Instruction],
+) -> CodeGeneratedFromInstructionGrammar {
+    let mut inst_structs = Vec::new();
+    let mut inst_variants = Vec::new();
     let mut terminators = Vec::new();
-    let mut instructions = Vec::new();
+    let mut type_variants = Vec::new();
+    let mut type_checks = Vec::new();
+    let mut type_constructors = Vec::new();
 
     // Compose the token stream for all instructions
-    for inst in grammar
-        .instructions
+    for inst in grammar_instructions
         .iter() // Loop over all instructions
-        .filter(|i| i.class != "Type") // Skip types
         .filter(|i| i.class != "Constant") // Skip constants
     {
         // Get the token for its enumerant
@@ -292,13 +160,90 @@ pub fn gen_sr_instruction(grammar: &structs::Grammar) -> (String, String) {
                     Some(quote! { #field_name : #quantified })
                 }
             }).collect();
+        let type_operands = inst.operands
+            .iter()
+            .skip(1)
+            .map(|op| {
+                let name = Ident::new(&get_param_name(op), Span::call_site());
+                let ty = get_operand_type_ident(op);
+                (name, ty)
+            });
 
         match inst.class.as_str() {
+            "Type" => {
+                let type_name = &inst.opname[6..];
+                let func_name = Ident::new(
+                    &format!("type_{}", get_type_fn_name(type_name)),
+                    Span::call_site(),
+                );
+                let symbol = Ident::new(type_name, Span::call_site());
+
+                let param_list: Vec<_> = type_operands
+                    .clone()
+                    .map(|(ref name, ref ty)| {
+                        // structures support per-member decorations
+                        if symbol == "Struct" {
+                            quote! { #name : Vec<StructMember> }
+                        } else {
+                            quote! { #name : #ty }
+                        }
+                    })
+                    .collect();
+                let param_list = param_list.as_slice();
+                type_variants.push(if param_list.is_empty() {
+                    quote!{ #symbol }
+                } else {
+                    quote! { #symbol { #( #param_list ),* } }
+                });
+
+                let generate_type_check = true;
+                if generate_type_check {
+                    let func_name = Ident::new(
+                        &format!("is_{}_type", get_type_fn_name(type_name)),
+                        Span::call_site(),
+                    );
+                    // If the type requires parameters, attach `{ .. }` to the match arm.
+                    let check_params = if param_list.is_empty() {
+                        quote!{}
+                    } else {
+                        quote! { {..} }
+                    };
+                    type_checks.push(quote! {
+                        pub fn #func_name(&self) -> bool {
+                            match self.ty {
+                                TypeEnum::#symbol #check_params => true,
+                                _ => false
+                            }
+                        }
+                    });
+                }
+
+                if inst.opname != "OpTypeStruct" {
+                    let init_list: Vec<_> = type_operands
+                        .map(|(ref name, _)| {
+                            quote! { #name }
+                        })
+                        .collect();
+                    let init_list = if init_list.is_empty() {
+                        quote!{}
+                    } else {
+                        quote! { {#( #init_list ),*} }
+                    };
+                    type_constructors.push(quote! {
+                        pub fn #func_name(&mut self, #( #param_list ),*) -> Token<Type> {
+                            self.types.fetch_or_append(Type {
+                                ty: TypeEnum::#symbol #init_list,
+                                decorations: Vec::new(),
+                            })
+                        }
+                    });
+                }
+            }
             "ModeSetting" |
             "ExtensionDecl" |
             "FunctionStruct" => {
                 // Create a standalone struct
-                structs.push(quote! {
+                inst_structs.push(quote! {
                     #[derive(Clone, Debug, Eq, PartialEq)]
                     pub struct #name {
                         #( #params ),*
@@ -311,21 +256,19 @@ pub fn gen_sr_instruction(grammar: &structs::Grammar) -> (String, String) {
                 });
             }
             _ => {
-                let params = if params.is_empty() {
-                    quote!{}
+                inst_variants.push(if params.is_empty() {
+                    quote!{ #name }
                 } else {
-                    quote! { {#( #params ),*} }
-                };
-                instructions.push(quote! { #name #params });
+                    quote! { #name {#( #params ),*} }
+                });
             }
         }
     }
 
-    // Wrap it up with enum definition boilerplate
-    let structs = quote! {
-        #( #structs )*
+    let inst_structs = quote! {
+        #( #inst_structs )*
     };
-    let enums = quote! {
+    let inst_enums = quote! {
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Terminator {
             #( #terminators ),*
@@ -333,8 +276,30 @@ pub fn gen_sr_instruction(grammar: &structs::Grammar) -> (String, String) {
 
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Instruction {
-            #( #instructions ),*
+            #( #inst_variants ),*
         }
     };
-    (enums.to_string(), structs.to_string())
+    let type_enums = quote! {
+        #[derive(Clone, Debug, PartialEq, Eq)]
+        pub(in crate::sr) enum TypeEnum {
+            #( #type_variants ),*
+        }
+
+        impl Type {
+            #( #type_checks )*
+        }
+    };
+    let type_creation = quote! {
+        impl Context {
+            #( #type_constructors )*
+        }
+    };
+
+    CodeGeneratedFromInstructionGrammar {
+        type_enums: type_enums.to_string(),
+        type_creation: type_creation.to_string(),
+        instruction_structs: inst_structs.to_string(),
+        instruction_enums: inst_enums.to_string(),   
+    }
 }
+
