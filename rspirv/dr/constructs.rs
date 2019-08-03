@@ -247,48 +247,48 @@ impl convert::From<u32> for Operand {
 
 #[cfg(test)]
 mod tests {
-    use crate::mr;
+    use crate::dr;
     use crate::spirv;
 
     #[test]
     fn test_convert_from_string() {
-        assert_eq!(mr::Operand::LiteralString("wow".to_string()),
-                   mr::Operand::from("wow"));
-        assert_eq!(mr::Operand::LiteralString("wow".to_string()),
-                   mr::Operand::from("wow".to_string()));
+        assert_eq!(dr::Operand::LiteralString("wow".to_string()),
+                   dr::Operand::from("wow"));
+        assert_eq!(dr::Operand::LiteralString("wow".to_string()),
+                   dr::Operand::from("wow".to_string()));
     }
 
     #[test]
     fn test_convert_from_numbers() {
-        assert_eq!(mr::Operand::LiteralInt32(16u32), mr::Operand::from(16u32));
-        assert_eq!(mr::Operand::LiteralInt64(128934u64),
-                   mr::Operand::from(128934u64));
-        assert_eq!(mr::Operand::LiteralFloat32(3.14f32),
-                   mr::Operand::from(3.14f32));
-        assert_eq!(mr::Operand::LiteralFloat64(10.4235f64),
-                   mr::Operand::from(10.4235f64));
+        assert_eq!(dr::Operand::LiteralInt32(16u32), dr::Operand::from(16u32));
+        assert_eq!(dr::Operand::LiteralInt64(128934u64),
+                   dr::Operand::from(128934u64));
+        assert_eq!(dr::Operand::LiteralFloat32(3.14f32),
+                   dr::Operand::from(3.14f32));
+        assert_eq!(dr::Operand::LiteralFloat64(10.4235f64),
+                   dr::Operand::from(10.4235f64));
     }
 
     #[test]
     fn test_convert_from_bit_enums() {
-        assert_eq!(mr::Operand::LoopControl(spirv::LoopControl::DONT_UNROLL |
+        assert_eq!(dr::Operand::LoopControl(spirv::LoopControl::DONT_UNROLL |
                                             spirv::LoopControl::UNROLL),
-                   mr::Operand::from(spirv::LoopControl::DONT_UNROLL | spirv::LoopControl::UNROLL));
-        assert_eq!(mr::Operand::MemoryAccess(spirv::MemoryAccess::NONE),
-                   mr::Operand::from(spirv::MemoryAccess::NONE));
+                   dr::Operand::from(spirv::LoopControl::DONT_UNROLL | spirv::LoopControl::UNROLL));
+        assert_eq!(dr::Operand::MemoryAccess(spirv::MemoryAccess::NONE),
+                   dr::Operand::from(spirv::MemoryAccess::NONE));
     }
 
     #[test]
     fn test_convert_from_value_enums() {
-        assert_eq!(mr::Operand::BuiltIn(spirv::BuiltIn::Position),
-                   mr::Operand::from(spirv::BuiltIn::Position));
-        assert_eq!(mr::Operand::Capability(spirv::Capability::Pipes),
-                   mr::Operand::from(spirv::Capability::Pipes));
+        assert_eq!(dr::Operand::BuiltIn(spirv::BuiltIn::Position),
+                   dr::Operand::from(spirv::BuiltIn::Position));
+        assert_eq!(dr::Operand::Capability(spirv::Capability::Pipes),
+                   dr::Operand::from(spirv::Capability::Pipes));
     }
 
     #[test]
     fn test_convert_from_op() {
-        assert_eq!(mr::Operand::LiteralSpecConstantOpInteger(spirv::Op::IAdd),
-                   mr::Operand::from(spirv::Op::IAdd));
+        assert_eq!(dr::Operand::LiteralSpecConstantOpInteger(spirv::Op::IAdd),
+                   dr::Operand::from(spirv::Op::IAdd));
     }
 }

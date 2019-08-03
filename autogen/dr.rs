@@ -62,7 +62,7 @@ fn get_param_list(params: &[structs::Operand],
     // The last operand may require additional parameters.
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
-            type_generics = "<T: AsRef<[mr::Operand]>>".to_string();
+            type_generics = "<T: AsRef<[dr::Operand]>>".to_string();
             list.push("additional_params: T".to_string());
         }
     }
@@ -92,9 +92,9 @@ fn get_init_list(params: &[structs::Operand]) -> Vec<String> {
                 let name = get_param_name(param);
                 let kind = get_mr_operand_kind(&param.kind);
                 Some(if kind == "LiteralString" {
-                    format!("mr::Operand::LiteralString({}.into())", name)
+                    format!("dr::Operand::LiteralString({}.into())", name)
                 } else {
-                    format!("mr::Operand::{}({})", kind, name)
+                    format!("dr::Operand::{}({})", kind, name)
                 })
             }
         } else {
@@ -115,7 +115,7 @@ fn get_push_extras(params: &[structs::Operand],
             let kind = get_mr_operand_kind(&param.kind);
             Some(format!(
                     "{s:8}if let Some(v) = {name} {{\n\
-                     {s:12}{container}.push(mr::Operand::{kind}(v{into}));\n\
+                     {s:12}{container}.push(dr::Operand::{kind}(v{into}));\n\
                      {s:8}}}",
                     s = "",
                     kind = kind,
@@ -132,8 +132,8 @@ fn get_push_extras(params: &[structs::Operand],
             if param.kind == "PairLiteralIntegerIdRef" {
                 Some(format!(
                         "{s:8}for v in {name}.as_ref() {{\n\
-                         {s:12}{container}.push(mr::Operand::LiteralInt32(v.0));\n\
-                         {s:12}{container}.push(mr::Operand::IdRef(v.1));\n\
+                         {s:12}{container}.push(dr::Operand::LiteralInt32(v.0));\n\
+                         {s:12}{container}.push(dr::Operand::IdRef(v.1));\n\
                          {s:8}}}",
                         s = "",
                         name = name,
@@ -141,8 +141,8 @@ fn get_push_extras(params: &[structs::Operand],
             } else if param.kind == "PairIdRefLiteralInteger" {
                 Some(format!(
                         "{s:8}for v in {name}.as_ref() {{\n\
-                         {s:12}{container}.push(mr::Operand::IdRef(v.0));\n\
-                         {s:12}{container}.push(mr::Operand::LiteralInt32(v.1));\n\
+                         {s:12}{container}.push(dr::Operand::IdRef(v.0));\n\
+                         {s:12}{container}.push(dr::Operand::LiteralInt32(v.1));\n\
                          {s:8}}}",
                         s = "",
                         name = name,
@@ -150,8 +150,8 @@ fn get_push_extras(params: &[structs::Operand],
             } else if param.kind == "PairIdRefIdRef" {
                 Some(format!(
                         "{s:8}for v in {name}.as_ref() {{\n\
-                         {s:12}{container}.push(mr::Operand::IdRef(v.0));\n\
-                         {s:12}{container}.push(mr::Operand::IdRef(v.1));\n\
+                         {s:12}{container}.push(dr::Operand::IdRef(v.0));\n\
+                         {s:12}{container}.push(dr::Operand::IdRef(v.1));\n\
                          {s:8}}}",
                         s = "",
                         name = name,
@@ -160,7 +160,7 @@ fn get_push_extras(params: &[structs::Operand],
                 let kind = get_mr_operand_kind(&param.kind);
                 Some(format!(
                         "{s:8}for v in {name}.as_ref() {{\n\
-                         {s:12}{container}.push(mr::Operand::{kind}(*v))\n\
+                         {s:12}{container}.push(dr::Operand::{kind}(*v))\n\
                          {s:8}}}",
                         s = "",
                         kind = kind,
@@ -179,7 +179,7 @@ fn get_push_extras(params: &[structs::Operand],
     list
 }
 
-/// Returns the generated mr::Operand and its fmt::Display implementation by
+/// Returns the generated dr::Operand and its fmt::Display implementation by
 /// walking the given SPIR-V operand kinds `grammar`.
 pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
     let mut ret = String::new();
@@ -187,10 +187,10 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
     let kinds: Vec<&str> = grammar.iter().map(|element| {
             element.kind.as_str()
         }).filter(|element| {
-            // Pair kinds are not used in mr::Operand.
+            // Pair kinds are not used in dr::Operand.
             // LiteralContextDependentNumber is replaced by suitable literals.
             // LiteralInteger is replaced by LiteralInt32.
-            // IdResult and IdResultType are not stored as operands in mr.
+            // IdResult and IdResultType are not stored as operands in `dr`.
             !(element.starts_with("Pair") ||
               *element == "LiteralContextDependentNumber" ||
               *element == "LiteralInteger" ||
@@ -238,7 +238,7 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
         ret.push_str(&kind_enum);
     }
 
-    { // impl fmt::Display for mr::Operand.
+    { // impl fmt::Display for dr::Operand.
         let mut kinds = kinds;
         kinds.append(&mut vec!["LiteralInt32", "LiteralInt64",
                                "LiteralFloat32", "LiteralFloat64"]);
@@ -293,7 +293,7 @@ pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> String {
                  {s:4}pub fn {name}{generic}(&mut self{sep}{param}) -> spirv::Word {{\n\
                  {s:8}let id = self.id();\n\
                  {s:8}self.module.types_global_values.push(\
-                     mr::Instruction::new(spirv::Op::{opcode}, \
+                     dr::Instruction::new(spirv::Op::{opcode}, \
                      None, Some(id), vec![{init}]));\n\
                  {extras}{x}\
                  {s:8}id\n\
@@ -321,7 +321,7 @@ pub fn gen_mr_builder_terminator(grammar: &structs::Grammar) -> String {
         let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction and ends the current basic block.\n\
                  {s:4}pub fn {name}{generic}(&mut self{x}{params}) -> BuildResult<()> {{\n\
-                 {s:8}let {m}inst = mr::Instruction::new(\
+                 {s:8}let {m}inst = dr::Instruction::new(\
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                  {extras}{y}\
                  {s:8}self.end_basic_block(inst)\n\
@@ -361,7 +361,7 @@ pub fn gen_mr_builder_normal_insts(grammar: &structs::Grammar) -> String {
                      {s:12}Some(v) => v,\n\
                      {s:12}None => self.id(),\n\
                      {s:8}}};\n\
-                     {s:8}let {m}inst = mr::Instruction::new(\
+                     {s:8}let {m}inst = dr::Instruction::new(\
                          spirv::Op::{opcode}, Some(result_type), Some(_id), vec![{init}]);\n\
                      {extras}{y}\
                      {s:8}self.basic_block.as_mut().unwrap().instructions.push(inst);\n\
@@ -383,7 +383,7 @@ pub fn gen_mr_builder_normal_insts(grammar: &structs::Grammar) -> String {
                      {s:8}if self.basic_block.is_none() {{\n\
                      {s:12}return Err(Error::DetachedInstruction);\n\
                      {s:8}}}\n\
-                     {s:8}let {m}inst = mr::Instruction::new(\
+                     {s:8}let {m}inst = dr::Instruction::new(\
                          spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                      {extras}{y}\
                      {s:8}Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))\n\
@@ -414,7 +414,7 @@ pub fn gen_mr_builder_constants(grammar: &structs::Grammar) -> String {
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
                  {s:4}pub fn {name}{generic}(&mut self{x}{params}) -> spirv::Word {{\n\
                  {s:8}let id = self.id();\n\
-                 {s:8}let {m}inst = mr::Instruction::new(\
+                 {s:8}let {m}inst = dr::Instruction::new(\
                      spirv::Op::{opcode}, Some(result_type), Some(id), vec![{init}]);\n\
                  {extras}{y}\
                  {s:8}self.module.types_global_values.push(inst);\n\
@@ -445,7 +445,7 @@ pub fn gen_mr_builder_debug(grammar: &structs::Grammar) -> String {
         let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
                  {s:4}pub fn {name}<T: Into<String>>(&mut self{x}{params}) {{\n\
-                 {s:8}let {m}inst = mr::Instruction::new(\
+                 {s:8}let {m}inst = dr::Instruction::new(\
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                  {extras}{y}\
                  {s:8}self.module.debugs.push(inst);\n\
@@ -473,7 +473,7 @@ pub fn gen_mr_builder_annotation(grammar: &structs::Grammar) -> String {
         let extras = get_push_extras(&inst.operands, kinds, "inst.operands").join(";\n");
         format!("{s:4}/// Appends an Op{opcode} instruction.\n\
                  {s:4}pub fn {name}{generic}(&mut self{x}{params}) {{\n\
-                 {s:8}let {m}inst = mr::Instruction::new(\
+                 {s:8}let {m}inst = dr::Instruction::new(\
                      spirv::Op::{opcode}, None, None, vec![{init}]);\n\
                  {extras}{y}\
                  {s:8}self.module.annotations.push(inst);\n\

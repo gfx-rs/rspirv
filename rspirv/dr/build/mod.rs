@@ -14,7 +14,7 @@
 
 #![cfg_attr(feature = "clippy", allow(too_many_arguments))]
 
-use crate::mr;
+use crate::dr;
 use crate::spirv;
 
 use std::result;
@@ -71,7 +71,7 @@ type BuildResult<T> = result::Result<T, Error>;
 /// use rspirv::binary::Disassemble;
 ///
 /// fn main() {
-///     let mut b = rspirv::mr::Builder::new();
+///     let mut b = rspirv::dr::Builder::new();
 ///     b.set_version(1, 0);
 ///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
 ///     let void = b.type_void();
@@ -102,10 +102,10 @@ type BuildResult<T> = result::Result<T, Error>;
 /// ```
 #[derive(Default)]
 pub struct Builder {
-    module: mr::Module,
+    module: dr::Module,
     next_id: u32,
-    function: Option<mr::Function>,
-    basic_block: Option<mr::BasicBlock>,
+    function: Option<dr::Function>,
+    basic_block: Option<dr::BasicBlock>,
     version: Option<(u8, u8)>,
 }
 
@@ -113,7 +113,7 @@ impl Builder {
     /// Creates a new empty builder.
     pub fn new() -> Builder {
         Builder {
-            module: mr::Module::new(),
+            module: dr::Module::new(),
             next_id: 1,
             function: None,
             basic_block: None,
@@ -130,10 +130,10 @@ impl Builder {
     }
 
     /// Returns the `Module` under construction.
-    pub fn module(self) -> mr::Module {
+    pub fn module(self) -> dr::Module {
         let mut module = self.module;
 
-        let mut header = mr::ModuleHeader::new(self.next_id);
+        let mut header = dr::ModuleHeader::new(self.next_id);
         if let Some((major, minor)) = self.version {
             header.set_version(major, minor);
         }
@@ -170,14 +170,14 @@ impl Builder {
             None => self.id(),
         };
 
-        let mut f = mr::Function::new();
-        f.def = Some(mr::Instruction::new(
+        let mut f = dr::Function::new();
+        f.def = Some(dr::Instruction::new(
             spirv::Op::Function,
             Some(return_type),
             Some(id),
             vec![
-                mr::Operand::FunctionControl(control),
-                mr::Operand::IdRef(function_type),
+                dr::Operand::FunctionControl(control),
+                dr::Operand::IdRef(function_type),
             ],
         ));
         self.function = Some(f);
@@ -191,7 +191,7 @@ impl Builder {
         }
 
         let mut f = self.function.take().unwrap();
-        f.end = Some(mr::Instruction::new(
+        f.end = Some(dr::Instruction::new(
             spirv::Op::FunctionEnd,
             None,
             None,
@@ -206,7 +206,7 @@ impl Builder {
             return Err(Error::DetachedFunctionParameter);
         }
         let id = self.id();
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::FunctionParameter,
             Some(result_type),
             Some(id),
@@ -234,8 +234,8 @@ impl Builder {
             None => self.id(),
         };
 
-        let mut bb = mr::BasicBlock::new();
-        bb.label = Some(mr::Instruction::new(
+        let mut bb = dr::BasicBlock::new();
+        bb.label = Some(dr::Instruction::new(
             spirv::Op::Label,
             None,
             Some(id),
@@ -246,7 +246,7 @@ impl Builder {
         Ok(id)
     }
 
-    fn end_basic_block(&mut self, inst: mr::Instruction) -> BuildResult<()> {
+    fn end_basic_block(&mut self, inst: dr::Instruction) -> BuildResult<()> {
         if self.basic_block.is_none() {
             return Err(Error::MismatchedTerminator);
         }
@@ -259,22 +259,22 @@ impl Builder {
 
     /// Appends an OpCapability instruction.
     pub fn capability(&mut self, capability: spirv::Capability) {
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::Capability,
             None,
             None,
-            vec![mr::Operand::Capability(capability)],
+            vec![dr::Operand::Capability(capability)],
         );
         self.module.capabilities.push(inst);
     }
 
     /// Appends an OpExtension instruction.
     pub fn extension<T: Into<String>>(&mut self, extension: T) {
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::Extension,
             None,
             None,
-            vec![mr::Operand::LiteralString(extension.into())],
+            vec![dr::Operand::LiteralString(extension.into())],
         );
         self.module.extensions.push(inst);
     }
@@ -282,11 +282,11 @@ impl Builder {
     /// Appends an OpExtInstImport instruction and returns the result id.
     pub fn ext_inst_import<T: Into<String>>(&mut self, extended_inst_set: T) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::ExtInstImport,
             None,
             Some(id),
-            vec![mr::Operand::LiteralString(extended_inst_set.into())],
+            vec![dr::Operand::LiteralString(extended_inst_set.into())],
         );
         self.module.ext_inst_imports.push(inst);
         id
@@ -298,13 +298,13 @@ impl Builder {
         addressing_model: spirv::AddressingModel,
         memory_model: spirv::MemoryModel,
     ) {
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::MemoryModel,
             None,
             None,
             vec![
-                mr::Operand::AddressingModel(addressing_model),
-                mr::Operand::MemoryModel(memory_model),
+                dr::Operand::AddressingModel(addressing_model),
+                dr::Operand::MemoryModel(memory_model),
             ],
         );
         self.module.memory_model = Some(inst);
@@ -319,15 +319,15 @@ impl Builder {
         interface: U,
     ) {
         let mut operands = vec![
-            mr::Operand::ExecutionModel(execution_model),
-            mr::Operand::IdRef(entry_point),
-            mr::Operand::LiteralString(name.into()),
+            dr::Operand::ExecutionModel(execution_model),
+            dr::Operand::IdRef(entry_point),
+            dr::Operand::LiteralString(name.into()),
         ];
         for v in interface.as_ref() {
-            operands.push(mr::Operand::IdRef(*v));
+            operands.push(dr::Operand::IdRef(*v));
         }
 
-        let inst = mr::Instruction::new(spirv::Op::EntryPoint, None, None, operands);
+        let inst = dr::Instruction::new(spirv::Op::EntryPoint, None, None, operands);
         self.module.entry_points.push(inst);
     }
 
@@ -339,14 +339,14 @@ impl Builder {
         params: T,
     ) {
         let mut operands = vec![
-            mr::Operand::IdRef(entry_point),
-            mr::Operand::ExecutionMode(execution_mode),
+            dr::Operand::IdRef(entry_point),
+            dr::Operand::ExecutionMode(execution_mode),
         ];
         for v in params.as_ref() {
-            operands.push(mr::Operand::LiteralInt32(*v));
+            operands.push(dr::Operand::LiteralInt32(*v));
         }
 
-        let inst = mr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);
+        let inst = dr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);
         self.module.execution_modes.push(inst);
     }
 }
@@ -361,7 +361,7 @@ impl Builder {
     /// Appends an OpDecorationGroup instruction and returns the result id.
     pub fn decoration_group(&mut self) -> spirv::Word {
         let id = self.id();
-        self.module.annotations.push(mr::Instruction::new(
+        self.module.annotations.push(dr::Instruction::new(
             spirv::Op::DecorationGroup,
             None,
             Some(id),
@@ -372,11 +372,11 @@ impl Builder {
 
     pub fn string<T: Into<String>>(&mut self, s: T) -> spirv::Word {
         let id = self.id();
-        self.module.debugs.push(mr::Instruction::new(
+        self.module.debugs.push(dr::Instruction::new(
             spirv::Op::String,
             None,
             Some(id),
-            vec![mr::Operand::LiteralString(s.into())],
+            vec![dr::Operand::LiteralString(s.into())],
         ));
         id
     }
@@ -397,13 +397,13 @@ impl Builder {
         pointer_type: spirv::Word,
         storage_class: spirv::StorageClass,
     ) {
-        self.module.types_global_values.push(mr::Instruction::new(
+        self.module.types_global_values.push(dr::Instruction::new(
             spirv::Op::TypeForwardPointer,
             None,
             None,
             vec![
-                mr::Operand::IdRef(pointer_type),
-                mr::Operand::StorageClass(storage_class),
+                dr::Operand::IdRef(pointer_type),
+                dr::Operand::StorageClass(storage_class),
             ],
         ));
     }
@@ -419,13 +419,13 @@ impl Builder {
             Some(v) => v,
             None => self.id(),
         };
-        self.module.types_global_values.push(mr::Instruction::new(
+        self.module.types_global_values.push(dr::Instruction::new(
             spirv::Op::TypePointer,
             None,
             Some(id),
             vec![
-                mr::Operand::StorageClass(storage_class),
-                mr::Operand::IdRef(pointee_type),
+                dr::Operand::StorageClass(storage_class),
+                dr::Operand::IdRef(pointee_type),
             ],
         ));
         id
@@ -434,11 +434,11 @@ impl Builder {
     /// Appends an OpTypeOpaque instruction and returns the result id.
     pub fn type_opaque<T: Into<String>>(&mut self, type_name: T) -> spirv::Word {
         let id = self.id();
-        self.module.types_global_values.push(mr::Instruction::new(
+        self.module.types_global_values.push(dr::Instruction::new(
             spirv::Op::TypeOpaque,
             None,
             Some(id),
-            vec![mr::Operand::LiteralString(type_name.into())],
+            vec![dr::Operand::LiteralString(type_name.into())],
         ));
         id
     }
@@ -447,11 +447,11 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::Constant,
             Some(result_type),
             Some(id),
-            vec![mr::Operand::LiteralFloat32(value)],
+            vec![dr::Operand::LiteralFloat32(value)],
         );
         self.module.types_global_values.push(inst);
         id
@@ -461,11 +461,11 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::Constant,
             Some(result_type),
             Some(id),
-            vec![mr::Operand::LiteralInt32(value)],
+            vec![dr::Operand::LiteralInt32(value)],
         );
         self.module.types_global_values.push(inst);
         id
@@ -475,11 +475,11 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn spec_constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::SpecConstant,
             Some(result_type),
             Some(id),
-            vec![mr::Operand::LiteralFloat32(value)],
+            vec![dr::Operand::LiteralFloat32(value)],
         );
         self.module.types_global_values.push(inst);
         id
@@ -489,11 +489,11 @@ impl Builder {
     /// or the module if no basic block is under construction.
     pub fn spec_constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
-        let inst = mr::Instruction::new(
+        let inst = dr::Instruction::new(
             spirv::Op::SpecConstant,
             Some(result_type),
             Some(id),
-            vec![mr::Operand::LiteralInt32(value)],
+            vec![dr::Operand::LiteralInt32(value)],
         );
         self.module.types_global_values.push(inst);
         id
@@ -512,11 +512,11 @@ impl Builder {
             Some(v) => v,
             None => self.id(),
         };
-        let mut operands = vec![mr::Operand::StorageClass(storage_class)];
+        let mut operands = vec![dr::Operand::StorageClass(storage_class)];
         if let Some(val) = initializer {
-            operands.push(mr::Operand::IdRef(val));
+            operands.push(dr::Operand::IdRef(val));
         }
-        let inst = mr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
+        let inst = dr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
 
         match self.basic_block {
             Some(ref mut bb) => bb.instructions.push(inst),
@@ -536,7 +536,7 @@ impl Builder {
             Some(v) => v,
             None => self.id(),
         };
-        let inst = mr::Instruction::new(spirv::Op::Undef, Some(result_type), Some(id), vec![]);
+        let inst = dr::Instruction::new(spirv::Op::Undef, Some(result_type), Some(id), vec![]);
 
         match self.basic_block {
             Some(ref mut bb) => bb.instructions.push(inst),
@@ -550,7 +550,7 @@ include!("autogen_norm_insts.rs");
 
 #[cfg(test)]
 mod tests {
-    use crate::mr;
+    use crate::dr;
     use crate::spirv;
 
     use std::f32;
@@ -558,7 +558,7 @@ mod tests {
 
     use crate::binary::Disassemble;
 
-    fn has_only_one_global_inst(module: &mr::Module) -> bool {
+    fn has_only_one_global_inst(module: &dr::Module) -> bool {
         if !module.functions.is_empty() {
             return false;
         }
@@ -590,11 +590,11 @@ mod tests {
         assert_eq!("MemoryModel", inst.class.opname);
         assert_eq!(2, inst.operands.len());
         assert_eq!(
-            mr::Operand::from(spirv::AddressingModel::Logical),
+            dr::Operand::from(spirv::AddressingModel::Logical),
             inst.operands[0]
         );
         assert_eq!(
-            mr::Operand::from(spirv::MemoryModel::Simple),
+            dr::Operand::from(spirv::MemoryModel::Simple),
             inst.operands[1]
         );
     }
@@ -608,10 +608,10 @@ mod tests {
         let inst = m.annotations.last().unwrap();
         assert_eq!("MemberDecorate", inst.class.opname);
         assert_eq!(3, inst.operands.len());
-        assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
-        assert_eq!(mr::Operand::from(0u32), inst.operands[1]);
+        assert_eq!(dr::Operand::IdRef(1), inst.operands[0]);
+        assert_eq!(dr::Operand::from(0u32), inst.operands[1]);
         assert_eq!(
-            mr::Operand::from(spirv::Decoration::RelaxedPrecision),
+            dr::Operand::from(spirv::Decoration::RelaxedPrecision),
             inst.operands[2]
         );
     }
@@ -623,8 +623,8 @@ mod tests {
             1,
             spirv::Decoration::LinkageAttributes,
             vec![
-                mr::Operand::from("name"),
-                mr::Operand::from(spirv::LinkageType::Export),
+                dr::Operand::from("name"),
+                dr::Operand::from(spirv::LinkageType::Export),
             ],
         );
         let m = b.module();
@@ -632,14 +632,14 @@ mod tests {
         let inst = m.annotations.last().unwrap();
         assert_eq!("Decorate", inst.class.opname);
         assert_eq!(4, inst.operands.len());
-        assert_eq!(mr::Operand::IdRef(1), inst.operands[0]);
+        assert_eq!(dr::Operand::IdRef(1), inst.operands[0]);
         assert_eq!(
-            mr::Operand::from(spirv::Decoration::LinkageAttributes),
+            dr::Operand::from(spirv::Decoration::LinkageAttributes),
             inst.operands[1]
         );
-        assert_eq!(mr::Operand::from("name"), inst.operands[2]);
+        assert_eq!(dr::Operand::from("name"), inst.operands[2]);
         assert_eq!(
-            mr::Operand::from(spirv::LinkageType::Export),
+            dr::Operand::from(spirv::LinkageType::Export),
             inst.operands[3]
         );
     }
@@ -666,31 +666,31 @@ mod tests {
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(mr::Operand::from(3.14f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(3.14f32), inst.operands[0]);
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(3), inst.result_id);
-        assert_eq!(mr::Operand::from(2e-10_f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(2e-10_f32), inst.operands[0]);
 
         let inst = &m.types_global_values[3];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(4), inst.result_id);
-        assert_eq!(mr::Operand::from(0.0f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(0.0f32), inst.operands[0]);
 
         let inst = &m.types_global_values[4];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(5), inst.result_id);
-        assert_eq!(mr::Operand::from(f32::NEG_INFINITY), inst.operands[0]);
+        assert_eq!(dr::Operand::from(f32::NEG_INFINITY), inst.operands[0]);
 
         let inst = &m.types_global_values[5];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(6), inst.result_id);
-        assert_eq!(mr::Operand::from(-1.0e-40_f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(-1.0e-40_f32), inst.operands[0]);
 
         let inst = &m.types_global_values[6];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
@@ -698,7 +698,7 @@ mod tests {
         assert_eq!(Some(7), inst.result_id);
         // NaN != NaN
         match inst.operands[0] {
-            mr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
+            dr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
             _ => assert!(false),
         }
     }
@@ -724,25 +724,25 @@ mod tests {
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(mr::Operand::from(10.0f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(10.0f32), inst.operands[0]);
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(3), inst.result_id);
-        assert_eq!(mr::Operand::from(-0.0f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(-0.0f32), inst.operands[0]);
 
         let inst = &m.types_global_values[3];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(4), inst.result_id);
-        assert_eq!(mr::Operand::from(f32::INFINITY), inst.operands[0]);
+        assert_eq!(dr::Operand::from(f32::INFINITY), inst.operands[0]);
 
         let inst = &m.types_global_values[4];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(5), inst.result_id);
-        assert_eq!(mr::Operand::from(1.0e-40_f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(1.0e-40_f32), inst.operands[0]);
 
         let inst = &m.types_global_values[5];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
@@ -750,7 +750,7 @@ mod tests {
         assert_eq!(Some(6), inst.result_id);
         // NaN != NaN
         match inst.operands[0] {
-            mr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
+            dr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
             _ => assert!(false),
         }
     }
@@ -775,7 +775,7 @@ mod tests {
         assert_eq!(spirv::Op::TypeFloat, inst.class.opcode);
         assert_eq!(None, inst.result_type);
         assert_eq!(Some(1), inst.result_id);
-        assert_eq!(vec![mr::Operand::LiteralInt32(32)], inst.operands);
+        assert_eq!(vec![dr::Operand::LiteralInt32(32)], inst.operands);
 
         let inst = &m.types_global_values[1];
         assert_eq!(spirv::Op::TypePointer, inst.class.opcode);
@@ -783,8 +783,8 @@ mod tests {
         assert_eq!(Some(2), inst.result_id);
         assert_eq!(
             vec![
-                mr::Operand::from(spirv::StorageClass::Input),
-                mr::Operand::IdRef(1),
+                dr::Operand::from(spirv::StorageClass::Input),
+                dr::Operand::IdRef(1),
             ],
             inst.operands
         );
@@ -795,8 +795,8 @@ mod tests {
         assert_eq!(None, inst.result_id);
         assert_eq!(
             vec![
-                mr::Operand::IdRef(3),
-                mr::Operand::from(spirv::StorageClass::Output),
+                dr::Operand::IdRef(3),
+                dr::Operand::from(spirv::StorageClass::Output),
             ],
             inst.operands
         );
@@ -807,8 +807,8 @@ mod tests {
         assert_eq!(Some(3), inst.result_id);
         assert_eq!(
             vec![
-                mr::Operand::from(spirv::StorageClass::Output),
-                mr::Operand::IdRef(1),
+                dr::Operand::from(spirv::StorageClass::Output),
+                dr::Operand::IdRef(1),
             ],
             inst.operands
         );

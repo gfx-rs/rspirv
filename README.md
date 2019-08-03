@@ -10,10 +10,10 @@ It aims to provide:
 * APIs for processing SPIR-V modules
 * Command line tools building on top of the APIs for common processing tasks
 
-rspirv defines a common SPIR-V [data representation][doc-mr] (MR) as the
+rspirv defines a common SPIR-V [data representation][doc-dr] (DR) as the
 medium for various purposes. rspirv also provides a [builder][doc-builder] to
-build the MR interactively and a [parser][doc-parser] to parse a given SPIR-V
-binary module into its MR. A higher level structured representation is currently
+build the DR interactively and a [parser][doc-parser] to parse a given SPIR-V
+binary module into its DR. A higher level structured representation is currently
 under developing.
 
 [SPIR-V][spirv] is a common intermediate language for representing graphics
@@ -41,7 +41,7 @@ In total rspirv APIs contains:
 * The [SPIR-V header][doc-headers] (all SPIR-V structs, enums, and constants)
 * The whole [SPIR-V grammar][doc-grammar] (instruction layouts and their
   operands)
-* A [data representation][doc-mr] of SPIR-V modules and its loader and builder
+* A [data representation][doc-dr] of SPIR-V modules and its loader and builder
 * SPIR-V [binary][doc-binary] module decoding and parsing functionalities
 
 The Khronos SPIR-V [JSON grammar][json-grammar] is leveraged to generate parts
@@ -54,15 +54,15 @@ Status
 
 I plan to implement several functionalities:
 
-- [x] SPIR-V [data representation][doc-mr] (MR)
+- [x] SPIR-V [data representation][doc-dr] (DR)
 - [x] SPIR-V module [builder][doc-builder]
 - [ ] SPIR-V module assembler
 - [x] SPIR-V binary module [parser][doc-parser]
 - [x] SPIR-V binary module disassembler
 - [ ] HLSL/GLSL to SPIR-V frontend (maybe)
-- [ ] SPIR-V MR to LLVM IR transformation (maybe)
+- [ ] SPIR-V DR to LLVM IR transformation (maybe)
 
-The MR doesn't handle `OpLine` and `OpNoLine` well right now.
+The DR doesn't handle `OpLine` and `OpNoLine` well right now.
 
 The SPIR-V binary module parser is almost feature complete; the only feature
 (that I am aware of) missing is 64-bit selectors in `OpSwitch`.
@@ -88,7 +88,7 @@ use rspirv::binary::Disassemble;
 
 fn main() {
     // Building
-    let mut b = rspirv::mr::Builder::new();
+    let mut b = rspirv::dr::Builder::new();
     b.set_version(1, 0);
     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::GLSL450);
     let void = b.type_void();
@@ -110,7 +110,7 @@ fn main() {
     assert_eq!(spirv::MAGIC_NUMBER, code[0]);
 
     // Parsing
-    let mut loader = rspirv::mr::Loader::new();
+    let mut loader = rspirv::dr::Loader::new();
     rspirv::binary::parse_words(&code, &mut loader).unwrap();
     let module = loader.module();
 
@@ -200,8 +200,8 @@ developed by the gfx-rs [Translators][github-translators] team.
 [github-translators]: https://github.com/orgs/gfx-rs/teams/translators
 [json-grammar]: https://github.com/KhronosGroup/SPIRV-Headers/tree/master/include/spirv
 [spirv-tools]: https://github.com/KhronosGroup/SPIRV-Tools
-[doc-mr]: https://docs.rs/rspirv/*/rspirv/mr/index.html
-[doc-builder]: https://docs.rs/rspirv/*/rspirv/mr/struct.Builder.html
+[doc-dr]: https://docs.rs/rspirv/*/rspirv/dr/index.html
+[doc-builder]: https://docs.rs/rspirv/*/rspirv/dr/struct.Builder.html
 [doc-parser]: https://docs.rs/rspirv/*/rspirv/binary/struct.Parser.html
 [doc-grammar]: https://docs.rs/rspirv/*/rspirv/grammar/index.html
 [doc-binary]: https://docs.rs/rspirv/*/rspirv/binary/index.html
