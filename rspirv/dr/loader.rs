@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::binary;
-use crate::mr;
+use crate::dr;
 use crate::spirv;
 use crate::grammar;
 
@@ -87,23 +87,23 @@ impl fmt::Display for Error {
 /// works with the [`Parser`](../binary/struct.Parser.html).
 #[derive(Default)]
 pub struct Loader {
-    module: mr::Module,
-    function: Option<mr::Function>,
-    block: Option<mr::BasicBlock>,
+    module: dr::Module,
+    function: Option<dr::Function>,
+    block: Option<dr::BasicBlock>,
 }
 
 impl Loader {
     /// Creates a new empty loader.
     pub fn new() -> Loader {
         Loader {
-            module: mr::Module::new(),
+            module: dr::Module::new(),
             function: None,
             block: None,
         }
     }
 
     /// Returns the `Module` under construction.
-    pub fn module(self) -> mr::Module {
+    pub fn module(self) -> dr::Module {
         self.module
     }
 }
@@ -126,12 +126,12 @@ impl binary::Consumer for Loader {
         ParseAction::Continue
     }
 
-    fn consume_header(&mut self, header: mr::ModuleHeader) -> ParseAction {
+    fn consume_header(&mut self, header: dr::ModuleHeader) -> ParseAction {
         self.module.header = Some(header);
         ParseAction::Continue
     }
 
-    fn consume_instruction(&mut self, inst: mr::Instruction) -> ParseAction {
+    fn consume_instruction(&mut self, inst: dr::Instruction) -> ParseAction {
         let opcode = inst.class.opcode;
         match opcode {
             spirv::Op::Capability => self.module.capabilities.push(inst),
@@ -156,7 +156,7 @@ impl binary::Consumer for Loader {
             }
             spirv::Op::Function => {
                 if_ret_err!(self.function.is_some(), NestedFunction);
-                let mut f = mr::Function::new();
+                let mut f = dr::Function::new();
                 f.def = Some(inst);
                 self.function = Some(f)
             }
@@ -173,7 +173,7 @@ impl binary::Consumer for Loader {
             spirv::Op::Label => {
                 if_ret_err!(self.function.is_none(), DetachedBasicBlock);
                 if_ret_err!(self.block.is_some(), NestedBasicBlock);
-                let mut block = mr::BasicBlock::new();
+                let mut block = dr::BasicBlock::new();
                 block.label = Some(inst);
                 self.block = Some(block)
             }
@@ -217,7 +217,7 @@ impl binary::Consumer for Loader {
 ///     // GLSL450.
 ///     0x01, 0x00, 0x00, 0x00];
 ///
-/// let dis = match rspirv::mr::load_bytes(buffer) {
+/// let dis = match rspirv::dr::load_bytes(buffer) {
 ///     Ok(module) => module.disassemble(),
 ///     Err(err) => format!("{}", err),
 /// };
@@ -229,7 +229,7 @@ impl binary::Consumer for Loader {
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
-pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<mr::Module> {
+pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<dr::Module> {
     let mut loader = Loader::new();
     binary::parse_bytes(binary, &mut loader)?;
     Ok(loader.module())
@@ -254,7 +254,7 @@ pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<mr::Module> {
 ///     0x00000001,  // GLSL450
 /// ];
 ///
-/// let dis = match rspirv::mr::load_words(buffer) {
+/// let dis = match rspirv::dr::load_words(buffer) {
 ///     Ok(module) => module.disassemble(),
 ///     Err(err) => format!("{}", err),
 /// };
@@ -266,7 +266,7 @@ pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<mr::Module> {
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
-pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<mr::Module> {
+pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<dr::Module> {
     let mut loader = Loader::new();
     binary::parse_words(binary, &mut loader)?;
     Ok(loader.module())
@@ -274,12 +274,12 @@ pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<mr::Module> {
 
 #[cfg(test)]
 mod tests {
-    use crate::mr;
+    use crate::dr;
     use crate::spirv;
 
     #[test]
     fn test_load_variable() {
-        let mut b = mr::Builder::new();
+        let mut b = dr::Builder::new();
 
         let void = b.type_void();
         let float = b.type_float(32);
@@ -314,7 +314,7 @@ mod tests {
 
     #[test]
     fn test_load_undef() {
-        let mut b = mr::Builder::new();
+        let mut b = dr::Builder::new();
 
         let void = b.type_void();
         let float = b.type_float(32);

@@ -19,50 +19,50 @@
 impl Builder {
     /// Appends an OpBranch instruction and ends the current basic block.
     pub fn branch(&mut self, target_label: spirv::Word) -> BuildResult<()> {
-        let inst = mr::Instruction::new(spirv::Op::Branch, None, None, vec![mr::Operand::IdRef(target_label)]);
+        let inst = dr::Instruction::new(spirv::Op::Branch, None, None, vec![dr::Operand::IdRef(target_label)]);
         self.end_basic_block(inst)
     }
 
     /// Appends an OpBranchConditional instruction and ends the current basic block.
     pub fn branch_conditional<T: AsRef<[u32]>>(&mut self, condition: spirv::Word, true_label: spirv::Word, false_label: spirv::Word, branch_weights: T) -> BuildResult<()> {
-        let mut inst = mr::Instruction::new(spirv::Op::BranchConditional, None, None, vec![mr::Operand::IdRef(condition), mr::Operand::IdRef(true_label), mr::Operand::IdRef(false_label)]);
+        let mut inst = dr::Instruction::new(spirv::Op::BranchConditional, None, None, vec![dr::Operand::IdRef(condition), dr::Operand::IdRef(true_label), dr::Operand::IdRef(false_label)]);
         for v in branch_weights.as_ref() {
-            inst.operands.push(mr::Operand::LiteralInt32(*v))
+            inst.operands.push(dr::Operand::LiteralInt32(*v))
         };
         self.end_basic_block(inst)
     }
 
     /// Appends an OpSwitch instruction and ends the current basic block.
     pub fn switch<T: AsRef<[(u32, spirv::Word)]>>(&mut self, selector: spirv::Word, default: spirv::Word, target: T) -> BuildResult<()> {
-        let mut inst = mr::Instruction::new(spirv::Op::Switch, None, None, vec![mr::Operand::IdRef(selector), mr::Operand::IdRef(default)]);
+        let mut inst = dr::Instruction::new(spirv::Op::Switch, None, None, vec![dr::Operand::IdRef(selector), dr::Operand::IdRef(default)]);
         for v in target.as_ref() {
-            inst.operands.push(mr::Operand::LiteralInt32(v.0));
-            inst.operands.push(mr::Operand::IdRef(v.1));
+            inst.operands.push(dr::Operand::LiteralInt32(v.0));
+            inst.operands.push(dr::Operand::IdRef(v.1));
         };
         self.end_basic_block(inst)
     }
 
     /// Appends an OpKill instruction and ends the current basic block.
     pub fn kill(&mut self) -> BuildResult<()> {
-        let inst = mr::Instruction::new(spirv::Op::Kill, None, None, vec![]);
+        let inst = dr::Instruction::new(spirv::Op::Kill, None, None, vec![]);
         self.end_basic_block(inst)
     }
 
     /// Appends an OpReturn instruction and ends the current basic block.
     pub fn ret(&mut self) -> BuildResult<()> {
-        let inst = mr::Instruction::new(spirv::Op::Return, None, None, vec![]);
+        let inst = dr::Instruction::new(spirv::Op::Return, None, None, vec![]);
         self.end_basic_block(inst)
     }
 
     /// Appends an OpReturnValue instruction and ends the current basic block.
     pub fn ret_value(&mut self, value: spirv::Word) -> BuildResult<()> {
-        let inst = mr::Instruction::new(spirv::Op::ReturnValue, None, None, vec![mr::Operand::IdRef(value)]);
+        let inst = dr::Instruction::new(spirv::Op::ReturnValue, None, None, vec![dr::Operand::IdRef(value)]);
         self.end_basic_block(inst)
     }
 
     /// Appends an OpUnreachable instruction and ends the current basic block.
     pub fn unreachable(&mut self) -> BuildResult<()> {
-        let inst = mr::Instruction::new(spirv::Op::Unreachable, None, None, vec![]);
+        let inst = dr::Instruction::new(spirv::Op::Unreachable, None, None, vec![]);
         self.end_basic_block(inst)
     }
 }

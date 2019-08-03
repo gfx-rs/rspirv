@@ -1,5 +1,5 @@
 use crate::{
-    mr::ModuleHeader,
+    dr::ModuleHeader,
     sr::{op, Token},
     sr::instructions::{Instruction, Terminator},
     sr::types::{Type},

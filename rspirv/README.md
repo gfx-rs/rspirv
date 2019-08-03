@@ -9,14 +9,14 @@ modules:
 
 * The whole [SPIR-V grammar][doc-grammar] (instruction layouts and their
   operands)
-* A [data representation][doc-mr] of SPIR-V modules and its loader and builder
+* A [data representation][doc-dr] of SPIR-V modules and its loader and builder
 * A structured representation of SPIR-V modules (under developing)
 * SPIR-V [binary][doc-binary] module decoding and parsing functionalities
 
-This crate defines a common SPIR-V [data representation][doc-mr] (MR) as the
+This crate defines a common SPIR-V [data representation][doc-dr] (DR) as the
 medium for various purposes. It also provides a [builder][doc-builder] to
-build the MR interactively and a [parser][doc-parser] to parse a given SPIR-V
-binary module into its MR.
+build the DR interactively and a [parser][doc-parser] to parse a given SPIR-V
+binary module into its DR.
 The [parser][doc-parser] handles decoding and parsing of SPIR-V binary modules
 according to the [grammar][doc-grammar], the parsed instructions are sent to
 the [consumer][doc-consumer].
@@ -53,8 +53,8 @@ Please see the [documentation][doc-rspirv] and project's
 [doc-rspirv]: https://docs.rs/rspirv
 [project-readme]: https://github.com/gfx-rs/rspirv/blob/master/README.md
 [doc-grammar]: https://docs.rs/rspirv/*/rspirv/grammar/index.html
-[doc-mr]: https://docs.rs/rspirv/*/rspirv/mr/index.html
-[doc-builder]: https://docs.rs/rspirv/*/rspirv/mr/struct.Builder.html
+[doc-dr]: https://docs.rs/rspirv/*/rspirv/dr/index.html
+[doc-builder]: https://docs.rs/rspirv/*/rspirv/dr/struct.Builder.html
 [doc-binary]: https://docs.rs/rspirv/*/rspirv/binary/index.html
 [doc-parser]: https://docs.rs/rspirv/*/rspirv/binary/struct.Parser.html
 [doc-consumer]: https://docs.rs/rspirv/*/rspirv/binary/trait.Consumer.html

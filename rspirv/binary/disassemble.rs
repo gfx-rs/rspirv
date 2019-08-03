@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::mr;
+use crate::dr;
 use crate::spirv;
 
 use super::tracker;
@@ -23,7 +23,7 @@ pub trait Disassemble {
     fn disassemble(&self) -> String;
 }
 
-impl Disassemble for mr::ModuleHeader {
+impl Disassemble for dr::ModuleHeader {
     fn disassemble(&self) -> String {
         let (major, minor) = self.version();
         let (vendor, _) = self.generator();
@@ -37,20 +37,20 @@ impl Disassemble for mr::ModuleHeader {
 
 include!("autogen_disas_operand.rs");
 
-impl Disassemble for mr::Operand {
+impl Disassemble for dr::Operand {
     fn disassemble(&self) -> String {
         match *self {
-            mr::Operand::IdMemorySemantics(v) |
-            mr::Operand::IdScope(v) |
-            mr::Operand::IdRef(v) => format!("%{}", v),
-            mr::Operand::ImageOperands(v) => v.disassemble(),
-            mr::Operand::FPFastMathMode(v) => v.disassemble(),
-            mr::Operand::SelectionControl(v) => v.disassemble(),
-            mr::Operand::LoopControl(v) => v.disassemble(),
-            mr::Operand::FunctionControl(v) => v.disassemble(),
-            mr::Operand::MemorySemantics(v) => v.disassemble(),
-            mr::Operand::MemoryAccess(v) => v.disassemble(),
-            mr::Operand::KernelProfilingInfo(v) => v.disassemble(),
+            dr::Operand::IdMemorySemantics(v) |
+            dr::Operand::IdScope(v) |
+            dr::Operand::IdRef(v) => format!("%{}", v),
+            dr::Operand::ImageOperands(v) => v.disassemble(),
+            dr::Operand::FPFastMathMode(v) => v.disassemble(),
+            dr::Operand::SelectionControl(v) => v.disassemble(),
+            dr::Operand::LoopControl(v) => v.disassemble(),
+            dr::Operand::FunctionControl(v) => v.disassemble(),
+            dr::Operand::MemorySemantics(v) => v.disassemble(),
+            dr::Operand::MemoryAccess(v) => v.disassemble(),
+            dr::Operand::KernelProfilingInfo(v) => v.disassemble(),
             _ => format!("{}", self),
         }
     }
@@ -65,7 +65,7 @@ fn disas_join<T: Disassemble>(insts: &[T], delimiter: &str) -> String {
          .join(delimiter)
 }
 
-impl Disassemble for mr::Instruction {
+impl Disassemble for dr::Instruction {
     fn disassemble(&self) -> String {
         format!("{rid}{opcode}{rtype}{space}{operands}",
                 rid = self.result_id
@@ -83,7 +83,7 @@ impl Disassemble for mr::Instruction {
     }
 }
 
-impl Disassemble for mr::BasicBlock {
+impl Disassemble for dr::BasicBlock {
     fn disassemble(&self) -> String {
         let label = self.label
                         .as_ref()
@@ -94,7 +94,7 @@ impl Disassemble for mr::BasicBlock {
     }
 }
 
-impl Disassemble for mr::Function {
+impl Disassemble for dr::Function {
     /// Disassembles this module and returns the disassembly text.
     ///
     /// This method will try to link information together to be wise. E.g.,
@@ -125,7 +125,7 @@ macro_rules! push {
     });
 }
 
-impl Disassemble for mr::Module {
+impl Disassemble for dr::Module {
     fn disassemble(&self) -> String {
         let mut ext_inst_set_tracker = tracker::ExtInstSetTracker::new();
         for i in &self.ext_inst_imports {
@@ -170,13 +170,13 @@ impl Disassemble for mr::Module {
     }
 }
 
-fn disas_ext_inst(inst: &mr::Instruction,
+fn disas_ext_inst(inst: &dr::Instruction,
                   ext_inst_set_tracker: &tracker::ExtInstSetTracker)
                   -> String {
     if inst.operands.len() < 2 {
         return inst.disassemble();
     }
-    if let (&mr::Operand::IdRef(id), &mr::Operand::LiteralExtInstInteger(opcode)) =
+    if let (&dr::Operand::IdRef(id), &dr::Operand::LiteralExtInstInteger(opcode)) =
            (&inst.operands[0], &inst.operands[1]) {
         if !ext_inst_set_tracker.have(id) {
             return inst.disassemble();
@@ -205,40 +205,40 @@ fn disas_ext_inst(inst: &mr::Instruction,
 
 #[cfg(test)]
 mod tests {
-    use crate::mr;
+    use crate::dr;
     use crate::spirv;
 
     use crate::binary::Disassemble;
 
     #[test]
     fn test_disassemble_operand_function_control() {
-        let o = mr::Operand::FunctionControl(spirv::FunctionControl::NONE);
+        let o = dr::Operand::FunctionControl(spirv::FunctionControl::NONE);
         assert_eq!("None", o.disassemble());
-        let o = mr::Operand::FunctionControl(spirv::FunctionControl::INLINE);
+        let o = dr::Operand::FunctionControl(spirv::FunctionControl::INLINE);
         assert_eq!("Inline", o.disassemble());
-        let o = mr::Operand::FunctionControl(spirv::FunctionControl::INLINE |
+        let o = dr::Operand::FunctionControl(spirv::FunctionControl::INLINE |
                                              spirv::FunctionControl::PURE);
         assert_eq!("Inline|Pure", o.disassemble());
-        let o = mr::Operand::FunctionControl(spirv::FunctionControl::all());
+        let o = dr::Operand::FunctionControl(spirv::FunctionControl::all());
         assert_eq!("Inline|DontInline|Pure|Const", o.disassemble());
     }
 
     #[test]
     fn test_disassemble_operand_memory_semantics() {
-        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::NONE);
+        let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::NONE);
         assert_eq!("None", o.disassemble());
-        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::RELAXED);
+        let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::RELAXED);
         assert_eq!("None", o.disassemble());
-        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE);
+        let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE);
         assert_eq!("Release", o.disassemble());
-        let o = mr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE |
+        let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE |
                                              spirv::MemorySemantics::WORKGROUP_MEMORY);
         assert_eq!("Release|WorkgroupMemory", o.disassemble());
     }
 
     #[test]
     fn test_disassemble_module_one_inst_in_each_section() {
-        let mut b = mr::Builder::new();
+        let mut b = dr::Builder::new();
 
         b.capability(spirv::Capability::Shader);
         b.extension("awesome-extension");
@@ -292,7 +292,7 @@ mod tests {
 
     #[test]
     fn test_disassemble_ext_inst_glsl() {
-        let mut b = mr::Builder::new();
+        let mut b = dr::Builder::new();
 
         b.capability(spirv::Capability::Shader);
         let glsl = b.ext_inst_import("GLSL.std.450");
@@ -330,7 +330,7 @@ mod tests {
 
     #[test]
     fn test_disassemble_ext_inst_opencl() {
-        let mut b = mr::Builder::new();
+        let mut b = dr::Builder::new();
 
         let opencl = b.ext_inst_import("OpenCL.std");
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::OpenCL);

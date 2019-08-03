@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::mr;
+use crate::dr;
 use crate::grammar;
 use crate::spirv;
 
@@ -188,9 +188,9 @@ pub trait Consumer {
     fn finalize(&mut self) -> Action;
 
     /// Consume the module header.
-    fn consume_header(&mut self, module: mr::ModuleHeader) -> Action;
+    fn consume_header(&mut self, module: dr::ModuleHeader) -> Action;
     /// Consume the given instruction.
-    fn consume_instruction(&mut self, inst: mr::Instruction) -> Action;
+    fn consume_instruction(&mut self, inst: dr::Instruction) -> Action;
 }
 
 /// Parses the given `binary` and consumes the module using the given
@@ -225,7 +225,7 @@ pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut dyn Consumer) -> R
 ///
 /// use spirv::{AddressingModel, MemoryModel};
 /// use rspirv::binary::Parser;
-/// use rspirv::mr::{Loader, Operand};
+/// use rspirv::dr::{Loader, Operand};
 ///
 /// fn main() {
 ///     let bin = vec![
@@ -300,7 +300,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         ((word >> 16) as u16, (word & 0xffff) as u16)
     }
 
-    fn parse_header(&mut self) -> Result<mr::ModuleHeader> {
+    fn parse_header(&mut self) -> Result<dr::ModuleHeader> {
         match self.decoder.words(HEADER_NUM_WORDS) {
             Ok(words) => {
                 if words[0] != spirv::MAGIC_NUMBER {
@@ -311,7 +311,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                     }
                 }
 
-                let mut header = mr::ModuleHeader::new(words[3]);
+                let mut header = dr::ModuleHeader::new(words[3]);
                 let (major, minor) = version::create_version_from_word(words[1]);
                 header.set_version(major, minor);
 
@@ -321,7 +321,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         }
     }
 
-    fn parse_inst(&mut self) -> Result<mr::Instruction> {
+    fn parse_inst(&mut self) -> Result<dr::Instruction> {
         self.inst_index += 1;
         if let Ok(word) = self.decoder.word() {
             let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
@@ -347,15 +347,15 @@ impl<'c, 'd> Parser<'c, 'd> {
         }
     }
 
-    fn parse_literal(&mut self, type_id: spirv::Word) -> Result<mr::Operand> {
+    fn parse_literal(&mut self, type_id: spirv::Word) -> Result<dr::Operand> {
         let tracked_type = self.type_tracker.resolve(type_id);
         match tracked_type {
             Some(t) => {
                 match t {
                     Type::Integer(size, _) => {
                         match size {
-                            32 => Ok(mr::Operand::LiteralInt32(self.decoder.int32()?)),
-                            64 => Ok(mr::Operand::LiteralInt64(self.decoder.int64()?)),
+                            32 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
+                            64 => Ok(dr::Operand::LiteralInt64(self.decoder.int64()?)),
                             _ => {
                                 Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
                             }
@@ -364,10 +364,10 @@ impl<'c, 'd> Parser<'c, 'd> {
                     Type::Float(size) => {
                         match size {
                             32 => {
-                                Ok(mr::Operand::LiteralFloat32(self.decoder.float32()?))
+                                Ok(dr::Operand::LiteralFloat32(self.decoder.float32()?))
                             }
                             64 => {
-                                Ok(mr::Operand::LiteralFloat64(self.decoder.float64()?))
+                                Ok(dr::Operand::LiteralFloat64(self.decoder.float64()?))
                             }
                             _ => {
                                 Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
@@ -378,21 +378,21 @@ impl<'c, 'd> Parser<'c, 'd> {
             }
             // Treat as a normal SPIR-V word if we don't know the type.
             // TODO: find a better way to handle this.
-            None => Ok(mr::Operand::LiteralInt32(self.decoder.int32()?)),
+            None => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
         }
     }
 
-    fn parse_spec_constant_op(&mut self) -> Result<Vec<mr::Operand>> {
+    fn parse_spec_constant_op(&mut self) -> Result<Vec<dr::Operand>> {
         let mut operands = vec![];
 
         let number = self.decoder.int32()?;
         if let Some(g) = GInstTable::lookup_opcode(number as u16) {
             // TODO: check whether this opcode is allowed here.
-            operands.push(mr::Operand::LiteralSpecConstantOpInteger(g.opcode));
+            operands.push(dr::Operand::LiteralSpecConstantOpInteger(g.opcode));
             // We need id parameters to this SpecConstantOp.
             for operand in g.operands {
                 if operand.kind == GOpKind::IdRef {
-                    operands.push(mr::Operand::IdRef(self.decoder.id()?))
+                    operands.push(dr::Operand::IdRef(self.decoder.id()?))
                 }
             }
             Ok(operands)
@@ -401,7 +401,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         }
     }
 
-    fn parse_operands(&mut self, grammar: GInstRef) -> Result<mr::Instruction> {
+    fn parse_operands(&mut self, grammar: GInstRef) -> Result<dr::Instruction> {
         let mut rtype = None;
         let mut rid = None;
         let mut coperands = vec![]; // concrete operands
@@ -443,7 +443,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                 }
             }
         }
-        Ok(mr::Instruction::new(grammar.opcode, rtype, rid, coperands))
+        Ok(dr::Instruction::new(grammar.opcode, rtype, rid, coperands))
     }
 }
 
@@ -453,7 +453,7 @@ include!("autogen_parse_operand.rs");
 mod tests {
     use assert_matches::assert_matches;
 
-    use crate::mr;
+    use crate::dr;
     use crate::spirv;
 
     use crate::binary::DecodeError;
@@ -472,8 +472,8 @@ mod tests {
         0x00, 0x00, 0x00, 0x00];
 
     struct RetainingConsumer {
-        pub header: Option<mr::ModuleHeader>,
-        pub insts: Vec<mr::Instruction>,
+        pub header: Option<dr::ModuleHeader>,
+        pub insts: Vec<dr::Instruction>,
     }
     impl RetainingConsumer {
         fn new() -> RetainingConsumer {
@@ -491,11 +491,11 @@ mod tests {
             Action::Continue
         }
 
-        fn consume_header(&mut self, header: mr::ModuleHeader) -> Action {
+        fn consume_header(&mut self, header: dr::ModuleHeader) -> Action {
             self.header = Some(header);
             Action::Continue
         }
-        fn consume_instruction(&mut self, inst: mr::Instruction) -> Action {
+        fn consume_instruction(&mut self, inst: dr::Instruction) -> Action {
             self.insts.push(inst);
             Action::Continue
         }
@@ -597,7 +597,7 @@ mod tests {
             let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
             assert_matches!(p.parse(), Ok(()));
         }
-        let mut header = mr::ModuleHeader::new(0);
+        let mut header = dr::ModuleHeader::new(0);
         header.set_version(1, 0);
         assert_eq!(Some(header), c.header);
     }
@@ -617,8 +617,8 @@ mod tests {
         assert_eq!("MemoryModel", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::AddressingModel(spirv::AddressingModel::Logical),
-                        mr::Operand::MemoryModel(spirv::MemoryModel::GLSL450)],
+        assert_eq!(vec![dr::Operand::AddressingModel(spirv::AddressingModel::Logical),
+                        dr::Operand::MemoryModel(spirv::MemoryModel::GLSL450)],
                    inst.operands);
     }
 
@@ -676,9 +676,9 @@ mod tests {
         assert_eq!("Decorate", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(5),
-                        mr::Operand::Decoration(spirv::Decoration::BuiltIn),
-                        mr::Operand::BuiltIn(spirv::BuiltIn::InstanceId)],
+        assert_eq!(vec![dr::Operand::IdRef(5),
+                        dr::Operand::Decoration(spirv::Decoration::BuiltIn),
+                        dr::Operand::BuiltIn(spirv::BuiltIn::InstanceId)],
                    inst.operands);
     }
 
@@ -713,10 +713,10 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                        mr::Operand::LiteralInt32(450),
-                        mr::Operand::IdRef(6),
-                        mr::Operand::from("wow")],
+        assert_eq!(vec![dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                        dr::Operand::LiteralInt32(450),
+                        dr::Operand::IdRef(6),
+                        dr::Operand::from("wow")],
                    inst.operands);
     }
 
@@ -737,9 +737,9 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                        mr::Operand::LiteralInt32(450),
-                        mr::Operand::IdRef(6)],
+        assert_eq!(vec![dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                        dr::Operand::LiteralInt32(450),
+                        dr::Operand::IdRef(6)],
                    inst.operands);
     }
 
@@ -759,8 +759,8 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                        mr::Operand::LiteralInt32(450)],
+        assert_eq!(vec![dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                        dr::Operand::LiteralInt32(450)],
                    inst.operands);
     }
 
@@ -786,10 +786,10 @@ mod tests {
         fn finalize(&mut self) -> Action {
             Action::Continue
         }
-        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+        fn consume_header(&mut self, _: dr::ModuleHeader) -> Action {
             Action::Continue
         }
-        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+        fn consume_instruction(&mut self, _: dr::Instruction) -> Action {
             Action::Continue
         }
     }
@@ -817,10 +817,10 @@ mod tests {
         fn finalize(&mut self) -> Action {
             Action::Error(Box::new(ErrorString("fin error")))
         }
-        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+        fn consume_header(&mut self, _: dr::ModuleHeader) -> Action {
             Action::Continue
         }
-        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+        fn consume_instruction(&mut self, _: dr::Instruction) -> Action {
             Action::Continue
         }
     }
@@ -847,10 +847,10 @@ mod tests {
         fn finalize(&mut self) -> Action {
             Action::Continue
         }
-        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+        fn consume_header(&mut self, _: dr::ModuleHeader) -> Action {
             Action::Error(Box::new(ErrorString("parse header error")))
         }
-        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+        fn consume_instruction(&mut self, _: dr::Instruction) -> Action {
             Action::Continue
         }
     }
@@ -877,10 +877,10 @@ mod tests {
         fn finalize(&mut self) -> Action {
             Action::Continue
         }
-        fn consume_header(&mut self, _: mr::ModuleHeader) -> Action {
+        fn consume_header(&mut self, _: dr::ModuleHeader) -> Action {
             Action::Continue
         }
-        fn consume_instruction(&mut self, _: mr::Instruction) -> Action {
+        fn consume_instruction(&mut self, _: dr::Instruction) -> Action {
             Action::Error(Box::new(ErrorString("parse inst error")))
         }
     }
@@ -923,7 +923,7 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![mr::Operand::LiteralInt32(0x78563412)], inst.operands);
+        assert_eq!(vec![dr::Operand::LiteralInt32(0x78563412)], inst.operands);
     }
 
     #[test]
@@ -949,7 +949,7 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![mr::Operand::LiteralInt64(0xefcdab9078563412)],
+        assert_eq!(vec![dr::Operand::LiteralInt64(0xefcdab9078563412)],
                    inst.operands);
     }
 
@@ -974,7 +974,7 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![mr::Operand::LiteralFloat32(42.42)], inst.operands);
+        assert_eq!(vec![dr::Operand::LiteralFloat32(42.42)], inst.operands);
     }
 
     #[test]
@@ -998,7 +998,7 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![mr::Operand::LiteralFloat64(-12.34)], inst.operands);
+        assert_eq!(vec![dr::Operand::LiteralFloat64(-12.34)], inst.operands);
     }
 
     #[test]
@@ -1019,8 +1019,8 @@ mod tests {
         assert_eq!("SpecConstantOp", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![mr::Operand::LiteralSpecConstantOpInteger(spirv::Op::SNegate),
-                        mr::Operand::IdRef(3)],
+        assert_eq!(vec![dr::Operand::LiteralSpecConstantOpInteger(spirv::Op::SNegate),
+                        dr::Operand::IdRef(3)],
                    inst.operands);
     }
 
@@ -1056,7 +1056,7 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(1), mr::Operand::IdRef(2)],
+        assert_eq!(vec![dr::Operand::IdRef(1), dr::Operand::IdRef(2)],
                    inst.operands);
     }
     #[test]
@@ -1076,9 +1076,9 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(1),
-                        mr::Operand::IdRef(2),
-                        mr::Operand::MemoryAccess(spirv::MemoryAccess::VOLATILE)],
+        assert_eq!(vec![dr::Operand::IdRef(1),
+                        dr::Operand::IdRef(2),
+                        dr::Operand::MemoryAccess(spirv::MemoryAccess::VOLATILE)],
                    inst.operands);
     }
     #[test]
@@ -1099,10 +1099,10 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(1),
-                        mr::Operand::IdRef(2),
-                        mr::Operand::MemoryAccess(spirv::MemoryAccess::from_bits(3).unwrap()),
-                        mr::Operand::LiteralInt32(4)],
+        assert_eq!(vec![dr::Operand::IdRef(1),
+                        dr::Operand::IdRef(2),
+                        dr::Operand::MemoryAccess(spirv::MemoryAccess::from_bits(3).unwrap()),
+                        dr::Operand::LiteralInt32(4)],
                    inst.operands);
     }
     #[test]
@@ -1140,13 +1140,13 @@ mod tests {
         assert_eq!("ImageWrite", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::IdRef(1),
-                        mr::Operand::IdRef(2),
-                        mr::Operand::IdRef(3),
-                        mr::Operand::ImageOperands(spirv::ImageOperands::from_bits(5).unwrap()),
-                        mr::Operand::IdRef(0xaa),
-                        mr::Operand::IdRef(0xbb),
-                        mr::Operand::IdRef(0xcc)],
+        assert_eq!(vec![dr::Operand::IdRef(1),
+                        dr::Operand::IdRef(2),
+                        dr::Operand::IdRef(3),
+                        dr::Operand::ImageOperands(spirv::ImageOperands::from_bits(5).unwrap()),
+                        dr::Operand::IdRef(0xaa),
+                        dr::Operand::IdRef(0xbb),
+                        dr::Operand::IdRef(0xcc)],
                    inst.operands);
     }
 
@@ -1160,7 +1160,7 @@ mod tests {
         assert_eq!("Capability", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![mr::Operand::Capability(spirv::Capability::Int16)],
+        assert_eq!(vec![dr::Operand::Capability(spirv::Capability::Int16)],
                    inst.operands);
     }
 }

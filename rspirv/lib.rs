@@ -20,7 +20,7 @@
 //!
 //! * The whole SPIR-V [grammar](grammar/index.html) (instruction layouts
 //!   and their operands)
-//! * A [data representation](mr/index.html) of SPIR-V modules and its
+//! * A [data representation](dr/index.html) of SPIR-V modules and its
 //!   loader and builder
 //! * A [structured representation](sr/index.html) of SPIR-V modules
 //!   (under developing)
@@ -53,7 +53,7 @@
 //!
 //! fn main() {
 //!     // Building
-//!     let mut b = rspirv::mr::Builder::new();
+//!     let mut b = rspirv::dr::Builder::new();
 //!     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::GLSL450);
 //!     let void = b.type_void();
 //!     let voidf = b.type_function(void, vec![void]);
@@ -74,7 +74,7 @@
 //!     assert_eq!(spirv::MAGIC_NUMBER, code[0]);
 //!
 //!     // Parsing
-//!     let mut loader = rspirv::mr::Loader::new();
+//!     let mut loader = rspirv::dr::Loader::new();
 //!     rspirv::binary::parse_words(&code, &mut loader).unwrap();
 //!     let module = loader.module();
 //!
@@ -101,7 +101,7 @@ extern crate spirv_headers as spirv;
 
 pub mod binary;
 pub mod grammar;
-pub mod mr;
+pub mod dr;
 pub mod sr;
 
 mod utils;

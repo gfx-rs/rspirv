@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::mr;
+use crate::dr;
 use std::convert::TryInto;
 
 /// Trait for assembling functionalities.
@@ -21,7 +21,7 @@ pub trait Assemble {
     fn assemble(&self) -> Vec<u32>;
 }
 
-impl Assemble for mr::ModuleHeader {
+impl Assemble for dr::ModuleHeader {
     fn assemble(&self) -> Vec<u32> {
         vec![self.magic_number, self.version, self.generator, self.bound, self.reserved_word]
     }
@@ -38,54 +38,54 @@ fn assemble_str(s: &str) -> Vec<u32> {
     words
 }
 
-impl Assemble for mr::Operand {
+impl Assemble for dr::Operand {
     fn assemble(&self) -> Vec<u32> {
         match *self {
-            mr::Operand::ImageOperands(v) => vec![v.bits()],
-            mr::Operand::FPFastMathMode(v) => vec![v.bits()],
-            mr::Operand::SelectionControl(v) => vec![v.bits()],
-            mr::Operand::LoopControl(v) => vec![v.bits()],
-            mr::Operand::FunctionControl(v) => vec![v.bits()],
-            mr::Operand::MemorySemantics(v) => vec![v.bits()],
-            mr::Operand::MemoryAccess(v) => vec![v.bits()],
-            mr::Operand::KernelProfilingInfo(v) => vec![v.bits()],
-            mr::Operand::SourceLanguage(v) => vec![v as u32],
-            mr::Operand::ExecutionModel(v) => vec![v as u32],
-            mr::Operand::AddressingModel(v) => vec![v as u32],
-            mr::Operand::MemoryModel(v) => vec![v as u32],
-            mr::Operand::ExecutionMode(v) => vec![v as u32],
-            mr::Operand::StorageClass(v) => vec![v as u32],
-            mr::Operand::Dim(v) => vec![v as u32],
-            mr::Operand::SamplerAddressingMode(v) => vec![v as u32],
-            mr::Operand::SamplerFilterMode(v) => vec![v as u32],
-            mr::Operand::ImageFormat(v) => vec![v as u32],
-            mr::Operand::ImageChannelOrder(v) => vec![v as u32],
-            mr::Operand::ImageChannelDataType(v) => vec![v as u32],
-            mr::Operand::FPRoundingMode(v) => vec![v as u32],
-            mr::Operand::LinkageType(v) => vec![v as u32],
-            mr::Operand::AccessQualifier(v) => vec![v as u32],
-            mr::Operand::FunctionParameterAttribute(v) => vec![v as u32],
-            mr::Operand::Decoration(v) => vec![v as u32],
-            mr::Operand::BuiltIn(v) => vec![v as u32],
-            mr::Operand::Scope(v) => vec![v as u32],
-            mr::Operand::GroupOperation(v) => vec![v as u32],
-            mr::Operand::KernelEnqueueFlags(v) => vec![v as u32],
-            mr::Operand::Capability(v) => vec![v as u32],
-            mr::Operand::IdMemorySemantics(v) |
-            mr::Operand::IdScope(v) |
-            mr::Operand::IdRef(v) |
-            mr::Operand::LiteralInt32(v) |
-            mr::Operand::LiteralExtInstInteger(v) => vec![v],
-            mr::Operand::LiteralInt64(_) => unimplemented!(),
-            mr::Operand::LiteralFloat32(v) => vec![v.to_bits()],
-            mr::Operand::LiteralFloat64(_) => unimplemented!(),
-            mr::Operand::LiteralSpecConstantOpInteger(v) => vec![v as u32],
-            mr::Operand::LiteralString(ref v) => assemble_str(v),
+            dr::Operand::ImageOperands(v) => vec![v.bits()],
+            dr::Operand::FPFastMathMode(v) => vec![v.bits()],
+            dr::Operand::SelectionControl(v) => vec![v.bits()],
+            dr::Operand::LoopControl(v) => vec![v.bits()],
+            dr::Operand::FunctionControl(v) => vec![v.bits()],
+            dr::Operand::MemorySemantics(v) => vec![v.bits()],
+            dr::Operand::MemoryAccess(v) => vec![v.bits()],
+            dr::Operand::KernelProfilingInfo(v) => vec![v.bits()],
+            dr::Operand::SourceLanguage(v) => vec![v as u32],
+            dr::Operand::ExecutionModel(v) => vec![v as u32],
+            dr::Operand::AddressingModel(v) => vec![v as u32],
+            dr::Operand::MemoryModel(v) => vec![v as u32],
+            dr::Operand::ExecutionMode(v) => vec![v as u32],
+            dr::Operand::StorageClass(v) => vec![v as u32],
+            dr::Operand::Dim(v) => vec![v as u32],
+            dr::Operand::SamplerAddressingMode(v) => vec![v as u32],
+            dr::Operand::SamplerFilterMode(v) => vec![v as u32],
+            dr::Operand::ImageFormat(v) => vec![v as u32],
+            dr::Operand::ImageChannelOrder(v) => vec![v as u32],
+            dr::Operand::ImageChannelDataType(v) => vec![v as u32],
+            dr::Operand::FPRoundingMode(v) => vec![v as u32],
+            dr::Operand::LinkageType(v) => vec![v as u32],
+            dr::Operand::AccessQualifier(v) => vec![v as u32],
+            dr::Operand::FunctionParameterAttribute(v) => vec![v as u32],
+            dr::Operand::Decoration(v) => vec![v as u32],
+            dr::Operand::BuiltIn(v) => vec![v as u32],
+            dr::Operand::Scope(v) => vec![v as u32],
+            dr::Operand::GroupOperation(v) => vec![v as u32],
+            dr::Operand::KernelEnqueueFlags(v) => vec![v as u32],
+            dr::Operand::Capability(v) => vec![v as u32],
+            dr::Operand::IdMemorySemantics(v) |
+            dr::Operand::IdScope(v) |
+            dr::Operand::IdRef(v) |
+            dr::Operand::LiteralInt32(v) |
+            dr::Operand::LiteralExtInstInteger(v) => vec![v],
+            dr::Operand::LiteralInt64(_) => unimplemented!(),
+            dr::Operand::LiteralFloat32(v) => vec![v.to_bits()],
+            dr::Operand::LiteralFloat64(_) => unimplemented!(),
+            dr::Operand::LiteralSpecConstantOpInteger(v) => vec![v as u32],
+            dr::Operand::LiteralString(ref v) => assemble_str(v),
         }
     }
 }
 
-impl Assemble for mr::Instruction {
+impl Assemble for dr::Instruction {
     fn assemble(&self) -> Vec<u32> {
         let mut code = vec![self.class.opcode as u32];
         if let Some(r) = self.result_type {
@@ -102,7 +102,7 @@ impl Assemble for mr::Instruction {
     }
 }
 
-impl Assemble for mr::BasicBlock {
+impl Assemble for dr::BasicBlock {
     fn assemble(&self) -> Vec<u32> {
         let mut code = vec![];
         if let Some(ref l) = self.label {
@@ -115,7 +115,7 @@ impl Assemble for mr::BasicBlock {
     }
 }
 
-impl Assemble for mr::Function {
+impl Assemble for dr::Function {
     fn assemble(&self) -> Vec<u32> {
         let mut code = vec![];
         if let Some(ref d) = self.def {
@@ -134,7 +134,7 @@ impl Assemble for mr::Function {
     }
 }
 
-impl Assemble for mr::Module {
+impl Assemble for dr::Module {
     fn assemble(&self) -> Vec<u32> {
         let mut code = match self.header {
             Some(ref h) => h.assemble(),
@@ -152,7 +152,7 @@ impl Assemble for mr::Module {
 
 #[cfg(test)]
 mod tests {
-    use crate::mr;
+    use crate::dr;
     use crate::spirv;
 
     use crate::binary::Assemble;
@@ -170,26 +170,26 @@ mod tests {
     #[test]
     fn test_assemble_operand_bitmask() {
         let v = spirv::FunctionControl::DONT_INLINE;
-        assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
+        assert_eq!(vec![v.bits()], dr::Operand::FunctionControl(v).assemble());
         let v = spirv::FunctionControl::PURE;
-        assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
+        assert_eq!(vec![v.bits()], dr::Operand::FunctionControl(v).assemble());
         let v = spirv::FunctionControl::CONST;
-        assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
+        assert_eq!(vec![v.bits()], dr::Operand::FunctionControl(v).assemble());
         let v = spirv::FunctionControl::DONT_INLINE | spirv::FunctionControl::CONST;
-        assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
+        assert_eq!(vec![v.bits()], dr::Operand::FunctionControl(v).assemble());
         let v = spirv::FunctionControl::DONT_INLINE | spirv::FunctionControl::PURE |
                 spirv::FunctionControl::CONST;
-        assert_eq!(vec![v.bits()], mr::Operand::FunctionControl(v).assemble());
+        assert_eq!(vec![v.bits()], dr::Operand::FunctionControl(v).assemble());
     }
 
     #[test]
     fn test_assemble_operand_enum() {
         assert_eq!(vec![spirv::BuiltIn::Position as u32],
-                   mr::Operand::BuiltIn(spirv::BuiltIn::Position).assemble());
+                   dr::Operand::BuiltIn(spirv::BuiltIn::Position).assemble());
         assert_eq!(vec![spirv::BuiltIn::PointSize as u32],
-                   mr::Operand::BuiltIn(spirv::BuiltIn::PointSize).assemble());
+                   dr::Operand::BuiltIn(spirv::BuiltIn::PointSize).assemble());
         assert_eq!(vec![spirv::BuiltIn::InstanceId as u32],
-                   mr::Operand::BuiltIn(spirv::BuiltIn::InstanceId).assemble());
+                   dr::Operand::BuiltIn(spirv::BuiltIn::InstanceId).assemble());
     }
 
     fn wc_op(wc: u32, op: spirv::Op) -> u32 {
@@ -200,40 +200,40 @@ mod tests {
     #[test]
     fn test_assemble_inst_nop() {
         assert_eq!(vec![wc_op(1, spirv::Op::Nop)],
-                   mr::Instruction::new(spirv::Op::Nop, None, None, vec![]).assemble());
+                   dr::Instruction::new(spirv::Op::Nop, None, None, vec![]).assemble());
     }
 
     // No result type and result id
     #[test]
     fn test_assemble_inst_memory_model() {
-        let operands = vec![mr::Operand::AddressingModel(spirv::AddressingModel::Physical32),
-                            mr::Operand::MemoryModel(spirv::MemoryModel::OpenCL)];
+        let operands = vec![dr::Operand::AddressingModel(spirv::AddressingModel::Physical32),
+                            dr::Operand::MemoryModel(spirv::MemoryModel::OpenCL)];
         assert_eq!(vec![wc_op(3, spirv::Op::MemoryModel),
                         spirv::AddressingModel::Physical32 as u32,
                         spirv::MemoryModel::OpenCL as u32],
-                   mr::Instruction::new(spirv::Op::MemoryModel, None, None, operands).assemble());
+                   dr::Instruction::new(spirv::Op::MemoryModel, None, None, operands).assemble());
     }
 
     // No result type, having result id
     #[test]
     fn test_assemble_inst_type_int() {
-        let operands = vec![mr::Operand::LiteralInt32(32), mr::Operand::LiteralInt32(1)];
+        let operands = vec![dr::Operand::LiteralInt32(32), dr::Operand::LiteralInt32(1)];
         assert_eq!(vec![wc_op(4, spirv::Op::TypeInt), 42, 32, 1],
-                   mr::Instruction::new(spirv::Op::TypeInt, None, Some(42), operands).assemble());
+                   dr::Instruction::new(spirv::Op::TypeInt, None, Some(42), operands).assemble());
     }
 
     // Having result type and id
     #[test]
     fn test_assemble_inst_iadd() {
-        let operands = vec![mr::Operand::IdRef(0xef), mr::Operand::IdRef(0x78)];
+        let operands = vec![dr::Operand::IdRef(0xef), dr::Operand::IdRef(0x78)];
         assert_eq!(vec![wc_op(5, spirv::Op::IAdd), 0xab, 0xcd, 0xef, 0x78],
-                   mr::Instruction::new(spirv::Op::IAdd, Some(0xab), Some(0xcd), operands)
+                   dr::Instruction::new(spirv::Op::IAdd, Some(0xab), Some(0xcd), operands)
                        .assemble());
     }
 
     #[test]
     fn test_assemble_function_void() {
-        let mut b = mr::Builder::new();
+        let mut b = dr::Builder::new();
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         let void = b.type_void();
         let voidfvoid = b.type_function(void, vec![void]);
@@ -270,7 +270,7 @@ mod tests {
 
     #[test]
     fn test_assemble_function_parameters() {
-        let mut b = mr::Builder::new();
+        let mut b = dr::Builder::new();
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
         let float = b.type_float(32);
         let ptr = b.type_pointer(None, spirv::StorageClass::Function, float);
