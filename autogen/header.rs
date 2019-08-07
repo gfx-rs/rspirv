@@ -27,7 +27,7 @@ https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructio
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
-    let mut symbol = snake_casify(kind);
+    let mut symbol = snake_casify(kind).to_string();
     if symbol.starts_with("fp") {
         // Special case for FPFastMathMode and FPRoundingMode.
         symbol = symbol.replace("fp", "fp_");
@@ -42,7 +42,7 @@ fn get_spec_link(kind: &str) -> String {
 fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
     let elements: Vec<String> = grammar.enumerants.iter().map(|enumerant| {
         // Special treatment for "NaN"
-        let mut symbol = snake_casify(&enumerant.symbol);
+        let mut symbol = snake_casify(&enumerant.symbol).to_string();
         if &symbol == "not_na_n" {
             symbol = "not_nan".to_string()
         }

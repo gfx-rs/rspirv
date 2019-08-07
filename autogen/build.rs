@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#![recursion_limit="128"]
 
 mod binary;
 mod header;
@@ -29,15 +30,15 @@ use std::{
 };
 use utils::write_copyright_autogen_comment;
 
-fn write(path: &PathBuf, contents: String) {
+fn write<T: ToString>(path: &PathBuf, contents: T) {
     let mut f = fs::File::create(path)
         .expect(&format!("cannot open file: {:?}", path));
     write_copyright_autogen_comment(&mut f);
-    write!(f, "{}", contents).unwrap()
+    write!(f, "{}", contents.to_string()).unwrap()
 }
 
-fn write_formatted(path: &PathBuf, contents: String) {
-    write(path, contents);
+fn write_formatted<T: ToString>(path: &PathBuf, contents: T) {
+    write(path, contents.to_string());
     match process::Command::new("rustfmt")
         .arg(path)
         .status() {
@@ -116,37 +117,37 @@ fn main() {
     );
 
     // Path to the generated operands kind in data representation.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/dr/autogen_operand.rs"),
         dr::gen_mr_operand_kinds(&grammar.operand_kinds),
     );
     // Path to the generated builder for data representation.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_type.rs"),
         dr::gen_mr_builder_types(&grammar),
     );
     // Path to the generated builder for data representation.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_terminator.rs"),
         dr::gen_mr_builder_terminator(&grammar),
     );
     // Path to the generated builder for data representation.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_annotation.rs"),
         dr::gen_mr_builder_annotation(&grammar),
     );
     // Path to the generated builder for data representation.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_constant.rs"),
         dr::gen_mr_builder_constants(&grammar),
     );
     // Path to the generated builder for data representation.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_debug.rs"),
         dr::gen_mr_builder_debug(&grammar),
     );
     // Path to the generated builder for data representation.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_norm_insts.rs"),
         dr::gen_mr_builder_normal_insts(&grammar),
     );

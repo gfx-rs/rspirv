@@ -52,7 +52,7 @@ impl OperandTokens {
         };
 
         OperandTokens {
-            name: Ident::new(&name, Span::call_site()),
+            name,
             quantified_type: match operand.quantifier.as_str() {
                 "" => ty,
                 "?" => quote! { Option<#ty> },
@@ -67,7 +67,7 @@ fn get_type_fn_name(name: &str) -> String {
     if name == "Struct" {
         "structure".to_string()
     } else {
-        snake_casify(name)
+        snake_casify(name).to_string()
     }
 }
 
