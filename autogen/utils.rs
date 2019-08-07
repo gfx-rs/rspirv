@@ -41,8 +41,6 @@ static AUTOGEN_COMMENT : &'static str = "\
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!";
 
-pub static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
-
 pub fn write_copyright_autogen_comment(file: &mut fs::File) {
     file.write_all(COPYRIGHT.as_bytes()).unwrap();
     file.write_all(b"\n\n").unwrap();

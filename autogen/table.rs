@@ -15,14 +15,17 @@
 use crate::structs;
 use crate::utils::*;
 
-fn convert_quantifier(quantifier: &str) -> &str {
-    if quantifier == "" {
+use proc_macro2::{Ident, TokenStream};
+use quote::quote;
+
+fn convert_quantifier(quantifier: &str) -> Ident {
+    as_ident(if quantifier == "" {
         "One"
     } else if quantifier == "?" {
         "ZeroOrOne"
     } else {
         "ZeroOrMore"
-    }
+    })
 }
 
 /// Returns the code for the whole instruction table by walking the given
@@ -31,76 +34,68 @@ fn convert_quantifier(quantifier: &str) -> &str {
 /// `grammar` is expected to be an array of SPIR-V instructions.
 /// `name` is the name of the generated table.
 /// `is_ext` indicates whether the grammar is for an extended instruction set.
-fn gen_instruction_table(grammar: &Vec<structs::Instruction>,
-                         name: &str, is_ext: bool)
-                         -> String {
+fn gen_instruction_table(grammar: &Vec<structs::Instruction>, name: &str, is_ext: bool) -> TokenStream {
     // Vector for strings for all instructions.
-    let elements: Vec<String> = grammar.iter().map(|inst| {
+    let instructions = grammar.iter().map(|inst| {
         // Vector of strings for all operands.
-        let operands: Vec<String> = inst.operands.iter().map(|e| {
-            format!("({}, {})", e.kind, convert_quantifier(&e.quantifier))
-        }).collect();
+        let operands = inst.operands.iter().map(|e| {
+            let kind = as_ident(&e.kind);
+            let quantifier = convert_quantifier(&e.quantifier);
+            quote! { (#kind, #quantifier) }
+        });
+        let caps = inst.capabilities.iter().map(|cap| as_ident(cap));
         if is_ext {
-            format!("    ext_inst!({name}, {code}, [{caps}], [{operands}]),",
-                    // Omit the "Op" prefix.
-                    name = &inst.opname,
-                    code = inst.opcode,
-                    caps = inst.capabilities.join(", "),
-                    operands = operands.join(", "))
+            let opname = as_ident(&inst.opname);
+            let opcode = inst.opcode;
+            quote! {
+                ext_inst!(#opname, #opcode, [#(#caps),*], [#(#operands),*])
+            }
         } else {
-            format!("    inst!({opname}, [{caps}], [{operands}]),",
-                    // Omit the "Op" prefix.
-                    opname = &inst.opname[2..],
-                    caps = inst.capabilities.join(", "),
-                    operands = operands.join(", "))
+            // Omit the "Op" prefix.
+            let opname = as_ident(&inst.opname[2..]);
+            quote! {
+                inst!(#opname, [#(#caps),*], [#(#operands),*])
+            }
         }
-    }).collect();
-    format!("{skip}\nstatic {name}: \
-             &'static [{ext}Instruction<'static>] = &[\n{insts}\n];\n",
-            skip = RUSTFMT_SKIP,
-            name = name,
-            ext = if is_ext { "Extended" } else { "" },
-            insts = elements.join("\n"))
+    });
+    let name = as_ident(name);
+    let inst_type = as_ident(if is_ext { "ExtendedInstruction" } else { "Instruction" });
+    quote! {
+        static #name: &'static [#inst_type<'static>] = &[#(#instructions),*];
+    }
 }
 
 /// Returns the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
 /// by walking the given SPIR-V `grammar`.
-pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar)
-                                            -> String {
-    let mut ret = String::new();
+pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar) -> TokenStream {
 
-    { // Enum for all operand kinds.
-        let elements: Vec<String> =
-            grammar.operand_kinds.iter().map(|kind| {
-                format!("    {},", kind.kind)
-            }).collect();
-        let kind_enum = format!(
-            "/// All operand kinds in the SPIR-V grammar.\n\
-             #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]\n\
-             pub enum OperandKind {{\n{}\n}}\n\n",
-            elements.join("\n"));
-        ret.push_str(&kind_enum);
+    // Enum for all operand kinds.
+    let elements = grammar.operand_kinds.iter().map(|kind| as_ident(&kind.kind));
+
+    // Instruction table.
+    let table = gen_instruction_table(&grammar.instructions, "INSTRUCTION_TABLE", false);
+
+    quote! {
+        #[doc = "All operand kinds in the SPIR-V grammar."]
+        #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+        pub enum OperandKind {
+            #(#elements),*
+        }
+
+        #table
     }
-
-    { // Instruction table.
-        let table = gen_instruction_table(
-            &grammar.instructions, "INSTRUCTION_TABLE", false);
-        ret.push_str(&table);
-    }
-
-    ret
 }
 
 /// Writes the generated instruction table for GLSLstd450 extended instruction
 /// set from `grammar` to the file with the given `filename`.
-pub fn gen_glsl_std_450_inst_table(grammar: &structs::ExtInstSetGrammar) -> String {
+pub fn gen_glsl_std_450_inst_table(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
     gen_instruction_table(
         &grammar.instructions, "GLSL_STD_450_INSTRUCTION_TABLE", true)
 }
 
 /// Writes the generated instruction table for OpenCLstd100 extended instruction
 /// set from `grammar` to the file with the given `filename`.
-pub fn gen_opencl_std_100_inst_table(grammar: &structs::ExtInstSetGrammar) -> String {
+pub fn gen_opencl_std_100_inst_table(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
     gen_instruction_table(
         &grammar.instructions, "OPENCL_STD_100_INSTRUCTION_TABLE", true)
 }

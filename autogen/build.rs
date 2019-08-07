@@ -102,16 +102,16 @@ fn main() {
     );
 
     // Path to the generated instruction table.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_table.rs"),
         table::gen_grammar_inst_table_operand_kinds(&grammar),
     );
     // Path to the generated GLSLstd450 extended instruction set header.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_glsl_std_450.rs"),
         table::gen_glsl_std_450_inst_table(&gl_grammar),
     );
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_opencl_std_100.rs"),
         table::gen_opencl_std_100_inst_table(&cl_grammar),
     );
