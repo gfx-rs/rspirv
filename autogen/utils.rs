@@ -58,10 +58,9 @@ pub fn as_ident(ident: &str) -> Ident {
 }
 
 /// Converts the given `symbol` to use snake case style.
-pub fn snake_casify(symbol: &str) -> Ident {
+pub fn snake_casify(symbol: &str) -> String {
     let re = regex::Regex::new(r"(?P<l>[a-z])(?P<u>[A-Z])").unwrap();
-    let name = re.replace_all(symbol, "$l-$u").replace("-", "_").to_lowercase();
-    Ident::new(&name, Span::call_site())
+    re.replace_all(symbol, "$l-$u").replace("-", "_").to_lowercase()
 }
 
 /// Returns the corresponding operand kind in data representation for the
@@ -104,14 +103,15 @@ pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> TokenStream
 
 /// Returns a suitable name for the given parameter.
 pub fn get_param_name(param: &structs::Operand) -> Ident {
-    if param.name.len() == 0 {
+    let name = if param.name.len() == 0 {
         if param.kind == "IdResultType" {
-            Ident::new("result_type", Span::call_site())
+            "result_type".to_string()
         } else {
             snake_casify(&param.kind)
         }
     } else {
         let re = regex::Regex::new(r"\W").unwrap();
         snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""))
-    }
+    };
+    as_ident(&name)
 }

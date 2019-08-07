@@ -79,7 +79,7 @@ fn get_function_name(opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         quote! { ret_value }
     } else {
-        let name = snake_casify(&opname[2..]);
+        let name = as_ident(&snake_casify(&opname[2..]));
         quote! { #name }
     }
 }
@@ -281,7 +281,7 @@ pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> TokenStream {
                                      kinds,
                                      quote! { self.module.types_global_values.last_mut().expect("interal error").operands });
         let opcode = as_ident(&inst.opname[2..]);
-        let name = snake_casify(&inst.opname[2..]);
+        let name = as_ident(&snake_casify(&inst.opname[2..]));
         let comment = format!("Appends an Op{} instruction and returns the result id.", opcode);
         quote! {
             #[doc = #comment]

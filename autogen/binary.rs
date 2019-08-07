@@ -29,7 +29,7 @@ fn get_decode_method(kind: &str) -> String {
             return "int32".to_string();
         }
     }
-    snake_casify(kind).to_string()
+    snake_casify(kind)
 }
 
 /// Returns the generated operand decoding errors for binary::Decoder by
@@ -206,7 +206,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>)
                     s = "",
                     arg = lo_kind,
                     kind = kind,
-                    bit = snake_casify(&symbol).to_string().to_uppercase(),
+                    bit = snake_casify(&symbol).to_uppercase(),
                     params = params.join(", "))
             }).collect();
             format!(
@@ -354,7 +354,7 @@ pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> Strin
             if enumerant.value.string == "0x0000" {
                 None
             } else {
-                let mut symbol = snake_casify(&enumerant.symbol).to_string().to_uppercase();
+                let mut symbol = snake_casify(&enumerant.symbol).to_uppercase();
                 if &symbol == "NOT_NA_N" {
                     symbol = "NOT_NAN".to_string()
                 }

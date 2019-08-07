@@ -91,7 +91,7 @@ fn main() {
     let cl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
 
     // Path to the generated SPIR-V header file.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../spirv/autogen_spirv.rs"),
         {
             let core = header::gen_spirv_header(&grammar);

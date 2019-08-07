@@ -67,7 +67,7 @@ fn get_type_fn_name(name: &str) -> String {
     if name == "Struct" {
         "structure".to_string()
     } else {
-        snake_casify(name).to_string()
+        snake_casify(name)
     }
 }
 
