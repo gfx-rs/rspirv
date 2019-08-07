@@ -153,22 +153,22 @@ fn main() {
     );
 
     // Path to the generated decoding errors.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_error.rs"),
         binary::gen_operand_decode_errors(&grammar.operand_kinds),
     );
     // Path to the generated operand decoding methods.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_decode_operand.rs"),
         binary::gen_operand_decode_methods(&grammar.operand_kinds),
     );
     // Path to the generated operand parsing methods.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_parse_operand.rs"),
         binary::gen_operand_parse_methods(&grammar.operand_kinds),
     );
     // Path to the generated operand parsing methods.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_disas_operand.rs"),
         binary::gen_disas_bit_enum_operands(&grammar.operand_kinds),
     );

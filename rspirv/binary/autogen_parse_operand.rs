@@ -19,46 +19,85 @@
 impl<'c, 'd> Parser<'c, 'd> {
     fn parse_operand(&mut self, kind: GOpKind) -> Result<Vec<dr::Operand>> {
         Ok(match kind {
-            GOpKind::FPFastMathMode => vec![dr::Operand::FPFastMathMode(self.decoder.fpfast_math_mode()?)],
-            GOpKind::SelectionControl => vec![dr::Operand::SelectionControl(self.decoder.selection_control()?)],
-            GOpKind::FunctionControl => vec![dr::Operand::FunctionControl(self.decoder.function_control()?)],
-            GOpKind::MemorySemantics => vec![dr::Operand::MemorySemantics(self.decoder.memory_semantics()?)],
-            GOpKind::KernelProfilingInfo => vec![dr::Operand::KernelProfilingInfo(self.decoder.kernel_profiling_info()?)],
-            GOpKind::SourceLanguage => vec![dr::Operand::SourceLanguage(self.decoder.source_language()?)],
-            GOpKind::ExecutionModel => vec![dr::Operand::ExecutionModel(self.decoder.execution_model()?)],
-            GOpKind::AddressingModel => vec![dr::Operand::AddressingModel(self.decoder.addressing_model()?)],
+            GOpKind::FPFastMathMode => vec![dr::Operand::FPFastMathMode(
+                self.decoder.fpfast_math_mode()?,
+            )],
+            GOpKind::SelectionControl => vec![dr::Operand::SelectionControl(
+                self.decoder.selection_control()?,
+            )],
+            GOpKind::FunctionControl => vec![dr::Operand::FunctionControl(
+                self.decoder.function_control()?,
+            )],
+            GOpKind::MemorySemantics => vec![dr::Operand::MemorySemantics(
+                self.decoder.memory_semantics()?,
+            )],
+            GOpKind::KernelProfilingInfo => vec![dr::Operand::KernelProfilingInfo(
+                self.decoder.kernel_profiling_info()?,
+            )],
+            GOpKind::SourceLanguage => {
+                vec![dr::Operand::SourceLanguage(self.decoder.source_language()?)]
+            }
+            GOpKind::ExecutionModel => {
+                vec![dr::Operand::ExecutionModel(self.decoder.execution_model()?)]
+            }
+            GOpKind::AddressingModel => vec![dr::Operand::AddressingModel(
+                self.decoder.addressing_model()?,
+            )],
             GOpKind::MemoryModel => vec![dr::Operand::MemoryModel(self.decoder.memory_model()?)],
             GOpKind::StorageClass => vec![dr::Operand::StorageClass(self.decoder.storage_class()?)],
             GOpKind::Dim => vec![dr::Operand::Dim(self.decoder.dim()?)],
-            GOpKind::SamplerAddressingMode => vec![dr::Operand::SamplerAddressingMode(self.decoder.sampler_addressing_mode()?)],
-            GOpKind::SamplerFilterMode => vec![dr::Operand::SamplerFilterMode(self.decoder.sampler_filter_mode()?)],
+            GOpKind::SamplerAddressingMode => vec![dr::Operand::SamplerAddressingMode(
+                self.decoder.sampler_addressing_mode()?,
+            )],
+            GOpKind::SamplerFilterMode => vec![dr::Operand::SamplerFilterMode(
+                self.decoder.sampler_filter_mode()?,
+            )],
             GOpKind::ImageFormat => vec![dr::Operand::ImageFormat(self.decoder.image_format()?)],
-            GOpKind::ImageChannelOrder => vec![dr::Operand::ImageChannelOrder(self.decoder.image_channel_order()?)],
-            GOpKind::ImageChannelDataType => vec![dr::Operand::ImageChannelDataType(self.decoder.image_channel_data_type()?)],
-            GOpKind::FPRoundingMode => vec![dr::Operand::FPRoundingMode(self.decoder.fprounding_mode()?)],
+            GOpKind::ImageChannelOrder => vec![dr::Operand::ImageChannelOrder(
+                self.decoder.image_channel_order()?,
+            )],
+            GOpKind::ImageChannelDataType => vec![dr::Operand::ImageChannelDataType(
+                self.decoder.image_channel_data_type()?,
+            )],
+            GOpKind::FPRoundingMode => {
+                vec![dr::Operand::FPRoundingMode(self.decoder.fprounding_mode()?)]
+            }
             GOpKind::LinkageType => vec![dr::Operand::LinkageType(self.decoder.linkage_type()?)],
-            GOpKind::AccessQualifier => vec![dr::Operand::AccessQualifier(self.decoder.access_qualifier()?)],
-            GOpKind::FunctionParameterAttribute => vec![dr::Operand::FunctionParameterAttribute(self.decoder.function_parameter_attribute()?)],
+            GOpKind::AccessQualifier => vec![dr::Operand::AccessQualifier(
+                self.decoder.access_qualifier()?,
+            )],
+            GOpKind::FunctionParameterAttribute => vec![dr::Operand::FunctionParameterAttribute(
+                self.decoder.function_parameter_attribute()?,
+            )],
             GOpKind::BuiltIn => vec![dr::Operand::BuiltIn(self.decoder.built_in()?)],
             GOpKind::Scope => vec![dr::Operand::Scope(self.decoder.scope()?)],
-            GOpKind::GroupOperation => vec![dr::Operand::GroupOperation(self.decoder.group_operation()?)],
-            GOpKind::KernelEnqueueFlags => vec![dr::Operand::KernelEnqueueFlags(self.decoder.kernel_enqueue_flags()?)],
+            GOpKind::GroupOperation => {
+                vec![dr::Operand::GroupOperation(self.decoder.group_operation()?)]
+            }
+            GOpKind::KernelEnqueueFlags => vec![dr::Operand::KernelEnqueueFlags(
+                self.decoder.kernel_enqueue_flags()?,
+            )],
             GOpKind::Capability => vec![dr::Operand::Capability(self.decoder.capability()?)],
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
             GOpKind::LiteralInteger => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             GOpKind::LiteralString => vec![dr::Operand::LiteralString(self.decoder.string()?)],
-            GOpKind::LiteralExtInstInteger => vec![dr::Operand::LiteralExtInstInteger(self.decoder.ext_inst_integer()?)],
-            GOpKind::PairLiteralIntegerIdRef => {
-                vec![dr::Operand::LiteralInt32(self.decoder.int32()?), dr::Operand::IdRef(self.decoder.id()?)]
-            }
-            GOpKind::PairIdRefLiteralInteger => {
-                vec![dr::Operand::IdRef(self.decoder.id()?), dr::Operand::LiteralInt32(self.decoder.int32()?)]
-            }
-            GOpKind::PairIdRefIdRef => {
-                vec![dr::Operand::IdRef(self.decoder.id()?), dr::Operand::IdRef(self.decoder.id()?)]
-            }
+            GOpKind::LiteralExtInstInteger => vec![dr::Operand::LiteralExtInstInteger(
+                self.decoder.ext_inst_integer()?,
+            )],
+            GOpKind::PairLiteralIntegerIdRef => vec![
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
+            GOpKind::PairIdRefLiteralInteger => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+            ],
+            GOpKind::PairIdRefIdRef => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
             GOpKind::ImageOperands => {
                 let val = self.decoder.image_operands()?;
                 let mut ops = vec![dr::Operand::ImageOperands(val)];
@@ -89,14 +128,16 @@ impl<'c, 'd> Parser<'c, 'd> {
                 ops.append(&mut self.parse_decoration_arguments(val)?);
                 ops
             }
-            GOpKind::IdResultType => panic!(),  // not handled here
-            GOpKind::IdResult => panic!(),  // not handled here
-            GOpKind::LiteralContextDependentNumber => panic!(),  // not handled here
-            GOpKind::LiteralSpecConstantOpInteger => panic!(),  // not handled here
+            GOpKind::IdResultType => panic!(),
+            GOpKind::IdResult => panic!(),
+            GOpKind::LiteralContextDependentNumber => panic!(),
+            GOpKind::LiteralSpecConstantOpInteger => panic!(),
         })
     }
-
-    fn parse_image_operands_arguments(&mut self, image_operands: spirv::ImageOperands) -> Result<Vec<dr::Operand>> {
+    fn parse_image_operands_arguments(
+        &mut self,
+        image_operands: spirv::ImageOperands,
+    ) -> Result<Vec<dr::Operand>> {
         let mut params = vec![];
         if image_operands.contains(spirv::ImageOperands::BIAS) {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
@@ -105,7 +146,10 @@ impl<'c, 'd> Parser<'c, 'd> {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
         }
         if image_operands.contains(spirv::ImageOperands::GRAD) {
-            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?), dr::Operand::IdRef(self.decoder.id()?)]);
+            params.append(&mut vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ]);
         }
         if image_operands.contains(spirv::ImageOperands::CONST_OFFSET) {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
@@ -130,16 +174,20 @@ impl<'c, 'd> Parser<'c, 'd> {
         }
         Ok(params)
     }
-
-    fn parse_loop_control_arguments(&mut self, loop_control: spirv::LoopControl) -> Result<Vec<dr::Operand>> {
+    fn parse_loop_control_arguments(
+        &mut self,
+        loop_control: spirv::LoopControl,
+    ) -> Result<Vec<dr::Operand>> {
         let mut params = vec![];
         if loop_control.contains(spirv::LoopControl::DEPENDENCY_LENGTH) {
             params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
         }
         Ok(params)
     }
-
-    fn parse_memory_access_arguments(&mut self, memory_access: spirv::MemoryAccess) -> Result<Vec<dr::Operand>> {
+    fn parse_memory_access_arguments(
+        &mut self,
+        memory_access: spirv::MemoryAccess,
+    ) -> Result<Vec<dr::Operand>> {
         let mut params = vec![];
         if memory_access.contains(spirv::MemoryAccess::ALIGNED) {
             params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
@@ -152,51 +200,104 @@ impl<'c, 'd> Parser<'c, 'd> {
         }
         Ok(params)
     }
-
-    fn parse_execution_mode_arguments(&mut self, execution_mode: spirv::ExecutionMode) -> Result<Vec<dr::Operand>> {
+    fn parse_execution_mode_arguments(
+        &mut self,
+        execution_mode: spirv::ExecutionMode,
+    ) -> Result<Vec<dr::Operand>> {
         Ok(match execution_mode {
-            spirv::ExecutionMode::Invocations => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::ExecutionMode::LocalSize => vec![dr::Operand::LiteralInt32(self.decoder.int32()?), dr::Operand::LiteralInt32(self.decoder.int32()?), dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::ExecutionMode::LocalSizeHint => vec![dr::Operand::LiteralInt32(self.decoder.int32()?), dr::Operand::LiteralInt32(self.decoder.int32()?), dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::ExecutionMode::OutputVertices => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::ExecutionMode::VecTypeHint => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::ExecutionMode::SubgroupSize => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::ExecutionMode::SubgroupsPerWorkgroup => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::ExecutionMode::SubgroupsPerWorkgroupId => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            spirv::ExecutionMode::LocalSizeId => vec![dr::Operand::IdRef(self.decoder.id()?), dr::Operand::IdRef(self.decoder.id()?), dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::ExecutionMode::Invocations => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::LocalSize => vec![
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+            ],
+            spirv::ExecutionMode::LocalSizeHint => vec![
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+            ],
+            spirv::ExecutionMode::OutputVertices => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::VecTypeHint => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::SubgroupSize => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::SubgroupsPerWorkgroup => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::SubgroupsPerWorkgroupId => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::ExecutionMode::LocalSizeId => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
             spirv::ExecutionMode::LocalSizeHintId => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            _ => vec![]
+            _ => vec![],
         })
     }
-
-    fn parse_decoration_arguments(&mut self, decoration: spirv::Decoration) -> Result<Vec<dr::Operand>> {
+    fn parse_decoration_arguments(
+        &mut self,
+        decoration: spirv::Decoration,
+    ) -> Result<Vec<dr::Operand>> {
         Ok(match decoration {
             spirv::Decoration::SpecId => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::Decoration::ArrayStride => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::Decoration::MatrixStride => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
+            spirv::Decoration::ArrayStride => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::MatrixStride => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             spirv::Decoration::BuiltIn => vec![dr::Operand::BuiltIn(self.decoder.built_in()?)],
             spirv::Decoration::Stream => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::Location => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::Component => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::Index => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::Binding => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::Decoration::DescriptorSet => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
+            spirv::Decoration::DescriptorSet => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             spirv::Decoration::Offset => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::XfbBuffer => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::XfbStride => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::Decoration::FuncParamAttr => vec![dr::Operand::FunctionParameterAttribute(self.decoder.function_parameter_attribute()?)],
-            spirv::Decoration::FPRoundingMode => vec![dr::Operand::FPRoundingMode(self.decoder.fprounding_mode()?)],
-            spirv::Decoration::FPFastMathMode => vec![dr::Operand::FPFastMathMode(self.decoder.fpfast_math_mode()?)],
-            spirv::Decoration::LinkageAttributes => vec![dr::Operand::LiteralString(self.decoder.string()?), dr::Operand::LinkageType(self.decoder.linkage_type()?)],
-            spirv::Decoration::InputAttachmentIndex => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
+            spirv::Decoration::FuncParamAttr => vec![dr::Operand::FunctionParameterAttribute(
+                self.decoder.function_parameter_attribute()?,
+            )],
+            spirv::Decoration::FPRoundingMode => {
+                vec![dr::Operand::FPRoundingMode(self.decoder.fprounding_mode()?)]
+            }
+            spirv::Decoration::FPFastMathMode => vec![dr::Operand::FPFastMathMode(
+                self.decoder.fpfast_math_mode()?,
+            )],
+            spirv::Decoration::LinkageAttributes => vec![
+                dr::Operand::LiteralString(self.decoder.string()?),
+                dr::Operand::LinkageType(self.decoder.linkage_type()?),
+            ],
+            spirv::Decoration::InputAttachmentIndex => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             spirv::Decoration::Alignment => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::Decoration::MaxByteOffset => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
+            spirv::Decoration::MaxByteOffset => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             spirv::Decoration::AlignmentId => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::MaxByteOffsetId => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            spirv::Decoration::SecondaryViewportRelativeNV => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
-            spirv::Decoration::HlslCounterBufferGOOGLE => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            spirv::Decoration::HlslSemanticGOOGLE => vec![dr::Operand::LiteralString(self.decoder.string()?)],
-            _ => vec![]
+            spirv::Decoration::SecondaryViewportRelativeNV => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::HlslCounterBufferGOOGLE => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::Decoration::HlslSemanticGOOGLE => {
+                vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            }
+            _ => vec![],
         })
     }
 }
