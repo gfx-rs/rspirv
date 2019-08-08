@@ -16,7 +16,7 @@
 
 use serde::de;
 use serde_derive::*;
-use std::{fmt, result, str};
+use std::{convert::TryInto, fmt, result, str};
 
 #[derive(Debug, Deserialize)]
 pub struct Operand {
@@ -24,13 +24,12 @@ pub struct Operand {
     #[serde(default)]
     pub name: String,
     #[serde(default)]
-    pub quantifier: String,
+    pub quantifier: Quantifier,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Instruction {
-    #[serde(default)]
-    pub class: String,
+    pub class: Option<Class>,
     pub opname: String,
     pub opcode: u32,
     #[serde(default)]
@@ -43,8 +42,8 @@ pub struct Instruction {
 pub struct Enumerant {
     #[serde(rename = "enumerant")]
     pub symbol: String,
-    #[serde(deserialize_with = "num_or_str")]
-    pub value: EnumValue,
+    #[serde(deserialize_with = "num_or_hex")]
+    pub value: u32,
     #[serde(default)]
     pub parameters: Vec<Operand>,
     #[serde(default)]
@@ -53,7 +52,7 @@ pub struct Enumerant {
 
 #[derive(Debug, Deserialize)]
 pub struct OperandKind {
-    pub category: String,
+    pub category: Category,
     pub kind: String,
     #[serde(default)]
     pub doc: String,
@@ -66,7 +65,8 @@ pub struct OperandKind {
 #[derive(Debug, Deserialize)]
 pub struct Grammar {
     pub copyright: Vec<String>,
-    pub magic_number: String,
+    #[serde(deserialize_with = "num_or_hex")]
+    pub magic_number: u32,
     pub major_version: u8,
     pub minor_version: u8,
     pub revision: u8,
@@ -82,41 +82,65 @@ pub struct ExtInstSetGrammar {
     pub instructions: Vec<Instruction>,
 }
 
-/// The struct that represents either a number or a string.
-///
-/// It is defined as a struct instead of enum to ease usage, although
-/// essentially it is an enum.
-#[derive(Debug, Deserialize)]
-pub struct EnumValue {
-    pub number: u32,
-    pub string: String,
-}
 
-/// Deserializes a field that can either be a number or a string into a EnumValue.
-fn num_or_str<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<EnumValue, D::Error> {
+fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Error> {
     struct NumOrStr;
 
     impl<'de> de::Visitor<'de> for NumOrStr {
-        type Value = EnumValue;
+        type Value = u32;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            write!(formatter, "either a number or a string")
+            write!(formatter, "either a number or a hex string")
         }
 
-        fn visit_str<E: de::Error>(self, value: &str) -> result::Result<EnumValue, E> {
-            Ok(EnumValue {
-                number: 0,
-                string: value.to_string(),
-            })
+        fn visit_str<E: de::Error>(self, value: &str) -> result::Result<Self::Value, E> {
+            Ok(u32::from_str_radix(&value[2..], 16).unwrap())
         }
 
-        fn visit_u64<E: de::Error>(self, value: u64) -> result::Result<EnumValue, E> {
-            Ok(EnumValue {
-                number: value as u32,
-                string: String::new(),
-            })
+        fn visit_u64<E: de::Error>(self, value: u64) -> result::Result<Self::Value, E> {
+            Ok(value.try_into().unwrap())
         }
     }
 
     d.deserialize_any(NumOrStr)
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
+pub enum Quantifier {
+    #[serde(rename="")]
+    One,
+    #[serde(rename="?")]
+    ZeroOrOne,
+    #[serde(rename="*")]
+    ZeroOrMore,
+}
+
+impl Default for Quantifier {
+    fn default() -> Self {
+        Quantifier::One
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
+pub enum Class {
+    Annotation,
+    Branch,
+    Constant,
+    Debug,
+    DebugLine,
+    ExtensionDecl,
+    FunctionStruct,
+    ModeSetting,
+    Terminator,
+    Type,
+    Variable,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
+pub enum Category {
+    BitEnum,
+    Composite,
+    Id,
+    Literal,
+    ValueEnum,
 }

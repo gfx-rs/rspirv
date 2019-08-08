@@ -52,13 +52,13 @@ fn get_param_list(params: &[structs::Operand],
                 None
             }
         } else {
-            Some(if param.quantifier == "" {
-                quote! { #name: #kind }
-            } else if param.quantifier == "?" {
-                quote! { #name: Option<#kind> }
-            } else {
-                type_generics = quote! { <T: AsRef<[#kind]>> };
-                quote! { #name: T }
+            Some(match param.quantifier {
+                structs::Quantifier::One => quote! { #name: #kind },
+                structs::Quantifier::ZeroOrOne => quote! { #name: Option<#kind> },
+                structs::Quantifier::ZeroOrMore => {
+                    type_generics = quote! { <T: AsRef<[#kind]>> };
+                    quote! { #name: T }
+                },
             })
         }
     }).collect();
@@ -88,7 +88,7 @@ fn get_function_name(opname: &str) -> TokenStream {
 /// once and only once.
 fn get_init_list(params: &[structs::Operand]) -> Vec<TokenStream> {
     params.iter().filter_map(|param| {
-        if param.quantifier == "" {
+        if param.quantifier == structs::Quantifier::One  {
             if param.kind == "IdResult" || param.kind == "IdResultType" {
                 // These two operands are not stored in the operands field.
                 None
@@ -113,48 +113,50 @@ fn get_push_extras(params: &[structs::Operand],
                    -> Vec<TokenStream> {
     let mut list: Vec<_> = params.iter().filter_map(|param| {
         let name = get_param_name(param);
-        if param.quantifier == "" {
-            None
-        } else if param.quantifier == "?" {
-            let kind = get_dr_operand_kind(&param.kind);
-            Some(quote! {
-                if let Some(v) = #name {
-                    #[allow(clippy::identity_conversion)]
-                    #container.push(dr::Operand::#kind(v.into()));
-                }
-            })
-        } else {
-            // TODO: Ouch! Bad smell. This has special case treatment yet
-            // still doesn't solve 64-bit selectors in OpSwitch.
-            if param.kind == "PairLiteralIntegerIdRef" {
-                Some(quote! {
-                    for v in #name.as_ref() {
-                        #container.push(dr::Operand::LiteralInt32(v.0));
-                        #container.push(dr::Operand::IdRef(v.1));
-                    }
-                })
-            } else if param.kind == "PairIdRefLiteralInteger" {
-                Some(quote! {
-                    for v in #name.as_ref() {
-                        #container.push(dr::Operand::IdRef(v.0));
-                        #container.push(dr::Operand::LiteralInt32(v.1));
-                    }
-                })
-            } else if param.kind == "PairIdRefIdRef" {
-                Some(quote! {
-                    for v in #name.as_ref() {
-                        #container.push(dr::Operand::IdRef(v.0));
-                        #container.push(dr::Operand::IdRef(v.1));
-                    }
-                })
-            } else {
+        match param.quantifier {
+            structs::Quantifier::One => None,
+            structs::Quantifier::ZeroOrOne => {
                 let kind = get_dr_operand_kind(&param.kind);
                 Some(quote! {
-                    for v in #name.as_ref() {
-                        #container.push(dr::Operand::#kind(*v));
+                    if let Some(v) = #name {
+                        #[allow(clippy::identity_conversion)]
+                        #container.push(dr::Operand::#kind(v.into()));
                     }
                 })
-            }
+            },
+            structs::Quantifier::ZeroOrMore => {
+                // TODO: Ouch! Bad smell. This has special case treatment yet
+                // still doesn't solve 64-bit selectors in OpSwitch.
+                if param.kind == "PairLiteralIntegerIdRef" {
+                    Some(quote! {
+                        for v in #name.as_ref() {
+                            #container.push(dr::Operand::LiteralInt32(v.0));
+                            #container.push(dr::Operand::IdRef(v.1));
+                        }
+                    })
+                } else if param.kind == "PairIdRefLiteralInteger" {
+                    Some(quote! {
+                        for v in #name.as_ref() {
+                            #container.push(dr::Operand::IdRef(v.0));
+                            #container.push(dr::Operand::LiteralInt32(v.1));
+                        }
+                    })
+                } else if param.kind == "PairIdRefIdRef" {
+                    Some(quote! {
+                        for v in #name.as_ref() {
+                            #container.push(dr::Operand::IdRef(v.0));
+                            #container.push(dr::Operand::IdRef(v.1));
+                        }
+                    })
+                } else {
+                    let kind = get_dr_operand_kind(&param.kind);
+                    Some(quote! {
+                        for v in #name.as_ref() {
+                            #container.push(dr::Operand::#kind(*v));
+                        }
+                    })
+                }
+            },
         }
     }).collect();
     // The last operand may require additional parameters.
@@ -269,7 +271,7 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == "Type" && inst.opname != "OpTypeForwardPointer" &&
+        inst.class == Some(structs::Class::Type) && inst.opname != "OpTypeForwardPointer" &&
             inst.opname != "OpTypePointer" && inst.opname != "OpTypeOpaque"
     }).map(|inst| {
         // Parameter list for this build method.
@@ -307,7 +309,7 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == "Terminator" || inst.class == "Branch"
+        inst.class == Some(structs::Class::Terminator) || inst.class == Some(structs::Class::Branch)
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, false, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
@@ -339,7 +341,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
     // Generate build methods for all normal instructions (instructions must be
     // in some basic block).
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == ""
+        inst.class.is_none()
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, true, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
@@ -398,7 +400,7 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == "Constant" && inst.opname != "OpConstant" && inst.opname != "OpSpecConstant"
+        inst.class == Some(structs::Class::Constant) && inst.opname != "OpConstant" && inst.opname != "OpSpecConstant"
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, false, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
@@ -431,7 +433,7 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == "Debug" && inst.opname != "OpString"
+        inst.class == Some(structs::Class::Debug) && inst.opname != "OpString"
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, false, kinds);
         assert!(generic.is_empty());
@@ -462,7 +464,7 @@ pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == "Annotation" && inst.opname != "OpDecorationGroup"
+        inst.class == Some(structs::Class::Annotation) && inst.opname != "OpDecorationGroup"
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, false, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });

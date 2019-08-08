@@ -18,13 +18,12 @@ use crate::utils::*;
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
 
-fn convert_quantifier(quantifier: &str) -> Ident {
-    as_ident(if quantifier == "" {
-        "One"
-    } else if quantifier == "?" {
-        "ZeroOrOne"
-    } else {
-        "ZeroOrMore"
+fn convert_quantifier(quantifier: structs::Quantifier) -> Ident {
+    use structs::Quantifier::*;
+    as_ident(match quantifier {
+        One => "One",
+        ZeroOrOne => "ZeroOrOne",
+        ZeroOrMore => "ZeroOrMore",
     })
 }
 
@@ -40,7 +39,7 @@ fn gen_instruction_table(grammar: &Vec<structs::Instruction>, name: &str, is_ext
         // Vector of strings for all operands.
         let operands = inst.operands.iter().map(|e| {
             let kind = as_ident(&e.kind);
-            let quantifier = convert_quantifier(&e.quantifier);
+            let quantifier = convert_quantifier(e.quantifier);
             quote! { (#kind, #quantifier) }
         });
         let caps = inst.capabilities.iter().map(|cap| as_ident(cap));

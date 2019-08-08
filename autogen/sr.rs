@@ -53,11 +53,10 @@ impl OperandTokens {
 
         OperandTokens {
             name,
-            quantified_type: match operand.quantifier.as_str() {
-                "" => ty,
-                "?" => quote! { Option<#ty> },
-                "*" => quote! { Vec<#ty> },
-                other => panic!("wrong quantifier: {}", other),
+            quantified_type: match operand.quantifier {
+                structs::Quantifier::One => ty,
+                structs::Quantifier::ZeroOrOne => quote! { Option<#ty> },
+                structs::Quantifier::ZeroOrMore => quote! { Vec<#ty> },
             },
         }
     }
@@ -129,6 +128,8 @@ pub struct CodeGeneratedFromInstructionGrammar {
 pub fn gen_sr_code_from_instruction_grammar(
     grammar_instructions: &[structs::Instruction],
 ) -> CodeGeneratedFromInstructionGrammar {
+    use structs::Class::*;
+
     let mut inst_structs = Vec::new();
     let mut op_variants = Vec::new();
     let mut terminators = Vec::new();
@@ -142,7 +143,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     // Compose the token stream for all instructions
     for inst in grammar_instructions
         .iter() // Loop over all instructions
-        .filter(|i| i.class != "Constant") // Skip constants
+        .filter(|i| i.class != Some(structs::Class::Constant)) // Skip constants
     {
         // Get the token for its enumerant
         let name = Ident::new(&inst.opname[2..], Span::call_site());
@@ -163,8 +164,8 @@ pub fn gen_sr_code_from_instruction_grammar(
         let field_names = field_names.as_slice();
         let field_types = field_types.as_slice();
 
-        match inst.class.as_str() {
-            "Type" => {
+        match inst.class {
+            Some(structs::Class::Type) => {
                 let type_name = &inst.opname[6..];
                 let symbol = Ident::new(type_name, Span::call_site());
 
@@ -220,9 +221,9 @@ pub fn gen_sr_code_from_instruction_grammar(
                     });
                 }
             }
-            "ModeSetting" |
-            "ExtensionDecl" |
-            "FunctionStruct" => {
+            Some(ModeSetting) |
+            Some(ExtensionDecl) |
+            Some(FunctionStruct) => {
                 // Create a standalone struct
                 inst_structs.push(quote! {
                     #[derive(Clone, Debug, Eq, PartialEq)]
@@ -231,7 +232,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                     }
                 })
             }
-            "Terminator" => {
+            Some(Terminator) => {
                 terminators.push(quote! {
                     #name {#( #field_names: #field_types ),*}
                 });
