@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-/// Data representation of a SPIR-V operand.
+#[doc = "Data representation of a SPIR-V operand."]
 #[derive(Clone, Debug, PartialEq, From)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
@@ -60,7 +60,6 @@ pub enum Operand {
     LiteralSpecConstantOpInteger(spirv::Op),
     LiteralString(String),
 }
-
 impl fmt::Display for Operand {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
@@ -78,7 +77,7 @@ impl fmt::Display for Operand {
             Operand::MemoryModel(ref v) => write!(f, "{:?}", v),
             Operand::ExecutionMode(ref v) => write!(f, "{:?}", v),
             Operand::StorageClass(ref v) => write!(f, "{:?}", v),
-            Operand::Dim(ref v) => write!(f, "{}", &format!("{:?}", v)[3..]),
+            Operand::Dim(ref v) => write!(f, "{}", &format!("{:?}", v)[3 ..]),
             Operand::SamplerAddressingMode(ref v) => write!(f, "{:?}", v),
             Operand::SamplerFilterMode(ref v) => write!(f, "{:?}", v),
             Operand::ImageFormat(ref v) => write!(f, "{:?}", v),
