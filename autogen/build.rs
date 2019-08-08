@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#![recursion_limit="128"]
 
 mod binary;
 mod header;
@@ -29,14 +30,14 @@ use std::{
 };
 use utils::write_copyright_autogen_comment;
 
-fn write(path: &PathBuf, contents: String) {
+fn write<T: ToString>(path: &PathBuf, contents: T) {
     let mut f = fs::File::create(path)
         .expect(&format!("cannot open file: {:?}", path));
     write_copyright_autogen_comment(&mut f);
-    write!(f, "{}", contents).unwrap()
+    write!(f, "{}", contents.to_string()).unwrap()
 }
 
-fn write_formatted(path: &PathBuf, contents: String) {
+fn write_formatted<T: ToString>(path: &PathBuf, contents: T) {
     write(path, contents);
     match process::Command::new("rustfmt")
         .arg(path)
@@ -152,22 +153,22 @@ fn main() {
     );
 
     // Path to the generated decoding errors.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_error.rs"),
         binary::gen_operand_decode_errors(&grammar.operand_kinds),
     );
     // Path to the generated operand decoding methods.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_decode_operand.rs"),
         binary::gen_operand_decode_methods(&grammar.operand_kinds),
     );
     // Path to the generated operand parsing methods.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_parse_operand.rs"),
         binary::gen_operand_parse_methods(&grammar.operand_kinds),
     );
     // Path to the generated operand parsing methods.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_disas_operand.rs"),
         binary::gen_disas_bit_enum_operands(&grammar.operand_kinds),
     );
