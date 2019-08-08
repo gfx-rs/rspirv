@@ -52,7 +52,7 @@ impl OperandTokens {
         };
 
         OperandTokens {
-            name: Ident::new(&name, Span::call_site()),
+            name,
             quantified_type: match operand.quantifier.as_str() {
                 "" => ty,
                 "?" => quote! { Option<#ty> },

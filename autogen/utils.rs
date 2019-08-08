@@ -17,7 +17,8 @@ use crate::structs;
 use std::fs;
 use std::io::Write;
 
-use proc_macro2::{Ident, Span};
+use proc_macro2::{Ident, Span, TokenStream};
+use quote::quote;
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static COPYRIGHT : &'static str = "\
@@ -74,31 +75,32 @@ pub fn get_dr_operand_kind(kind: &str) -> Ident {
 
 /// Returns the underlying type used in operand kind enums for the operand
 /// kind `kind` in the grammar.
-pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> String {
+pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> TokenStream {
     if kind.starts_with("Id") {
-        "spirv::Word".to_string()
+        quote! { spirv::Word }
     } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
-        "u32".to_string()
+        quote! { u32 }
     } else if kind == "LiteralSpecConstantOpInteger" {
-        "spirv::Op".to_string()
+        quote! { spirv::Op }
     } else if kind == "LiteralContextDependentNumber" {
         panic!("this kind is not expected to be handled here")
     } else if kind == "LiteralString" {
-        if generic_string { "T" } else { "String" }.to_string()
+        if generic_string { quote! { T } } else { quote! { String } }
     } else if kind == "PairLiteralIntegerIdRef" {
-        "(u32, spirv::Word)".to_string()
+        quote! { (u32, spirv::Word) }
     } else if kind == "PairIdRefLiteralInteger" {
-        "(spirv::Word, u32)".to_string()
+        quote! { (spirv::Word, u32) }
     } else if kind == "PairIdRefIdRef" {
-        "(spirv::Word, spirv::Word)".to_string()
+        quote! { (spirv::Word, spirv::Word) }
     } else {
-        format!("spirv::{}", kind)
+        let kind = as_ident(kind);
+        quote! { spirv::#kind }
     }
 }
 
 /// Returns a suitable name for the given parameter.
-pub fn get_param_name(param: &structs::Operand) -> String {
-    if param.name.len() == 0 {
+pub fn get_param_name(param: &structs::Operand) -> Ident {
+    let name = if param.name.len() == 0 {
         if param.kind == "IdResultType" {
             "result_type".to_string()
         } else {
@@ -107,5 +109,6 @@ pub fn get_param_name(param: &structs::Operand) -> String {
     } else {
         let re = regex::Regex::new(r"\W").unwrap();
         snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""))
-    }
+    };
+    as_ident(&name)
 }
