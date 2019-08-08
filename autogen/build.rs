@@ -29,14 +29,14 @@ use std::{
 };
 use utils::write_copyright_autogen_comment;
 
-fn write(path: &PathBuf, contents: String) {
+fn write<T: ToString>(path: &PathBuf, contents: T) {
     let mut f = fs::File::create(path)
         .expect(&format!("cannot open file: {:?}", path));
     write_copyright_autogen_comment(&mut f);
-    write!(f, "{}", contents).unwrap()
+    write!(f, "{}", contents.to_string()).unwrap()
 }
 
-fn write_formatted(path: &PathBuf, contents: String) {
+fn write_formatted<T: ToString>(path: &PathBuf, contents: T) {
     write(path, contents);
     match process::Command::new("rustfmt")
         .arg(path)
@@ -90,7 +90,7 @@ fn main() {
     let cl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
 
     // Path to the generated SPIR-V header file.
-    write(
+    write_formatted(
         &autogen_src_dir.join("../spirv/autogen_spirv.rs"),
         {
             let core = header::gen_spirv_header(&grammar);

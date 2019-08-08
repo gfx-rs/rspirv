@@ -17,6 +17,8 @@ use crate::structs;
 use std::fs;
 use std::io::Write;
 
+use proc_macro2::{Ident, Span};
+
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static COPYRIGHT : &'static str = "\
 // Copyright 2016 Google Inc.
@@ -47,6 +49,11 @@ pub fn write_copyright_autogen_comment(file: &mut fs::File) {
     file.write_all(b"\n\n").unwrap();
     file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
     file.write_all(b"\n\n").unwrap();
+}
+
+/// Converts the given string into an `Ident`, with call-site span.
+pub fn as_ident(ident: &str) -> Ident {
+    Ident::new(ident, Span::call_site())
 }
 
 /// Converts the given `symbol` to use snake case style.
