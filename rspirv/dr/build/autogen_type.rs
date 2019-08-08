@@ -124,6 +124,7 @@ impl Builder {
             ],
         ));
         if let Some(v) = access_qualifier {
+            #[allow(clippy::identity_conversion)]
             self.module
                 .types_global_values
                 .last_mut()

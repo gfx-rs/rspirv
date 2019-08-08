@@ -61,7 +61,7 @@ fn gen_instruction_table(grammar: &Vec<structs::Instruction>, name: &str, is_ext
     let name = as_ident(name);
     let inst_type = as_ident(if is_ext { "ExtendedInstruction" } else { "Instruction" });
     quote! {
-        static #name: &'static [#inst_type<'static>] = &[#(#instructions),*];
+        static #name: &[#inst_type<'static>] = &[#(#instructions),*];
     }
 }
 

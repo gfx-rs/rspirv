@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![cfg_attr(feature = "clippy", allow(too_many_arguments))]
+#![allow(clippy::too_many_arguments)]
 
 use crate::dr;
 use crate::spirv;
@@ -197,7 +197,8 @@ impl Builder {
             None,
             vec![],
         ));
-        Ok(self.module.functions.push(f))
+        self.module.functions.push(f);
+        Ok(())
     }
 
     /// Declares a formal parameter for the current function.
@@ -252,9 +253,10 @@ impl Builder {
         }
 
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(self.function.as_mut().unwrap().basic_blocks.push(
+        self.function.as_mut().unwrap().basic_blocks.push(
             self.basic_block.take().unwrap(),
-        ))
+        );
+        Ok(())
     }
 
     /// Appends an OpCapability instruction.

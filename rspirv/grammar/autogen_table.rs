@@ -63,7 +63,7 @@ pub enum OperandKind {
     PairIdRefLiteralInteger,
     PairIdRefIdRef,
 }
-static INSTRUCTION_TABLE: &'static [Instruction<'static>] = &[
+static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(Nop, [], []),
     inst!(Undef, [], [(IdResultType, One), (IdResult, One)]),
     inst!(SourceContinued, [], [(LiteralString, One)]),

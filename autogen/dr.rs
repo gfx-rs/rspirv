@@ -119,6 +119,7 @@ fn get_push_extras(params: &[structs::Operand],
             let kind = get_dr_operand_kind(&param.kind);
             Some(quote! {
                 if let Some(v) = #name {
+                    #[allow(clippy::identity_conversion)]
                     #container.push(dr::Operand::#kind(v.into()));
                 }
             })
@@ -379,12 +380,14 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
                     #(#extras)*
-                    Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+                    self.basic_block.as_mut().unwrap().instructions.push(inst);
+                    Ok(())
                 }
             }
         }
     });
     quote! {
+        #[allow(clippy::identity_conversion, clippy::too_many_arguments)]
         impl Builder {
             #(#elements)*
         }

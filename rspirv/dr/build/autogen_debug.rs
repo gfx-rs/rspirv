@@ -47,9 +47,11 @@ impl Builder {
             ],
         );
         if let Some(v) = file {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         if let Some(v) = source {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::LiteralString(v.into()));
         }
         self.module.debugs.push(inst);

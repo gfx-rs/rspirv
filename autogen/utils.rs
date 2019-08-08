@@ -20,7 +20,7 @@ use std::io::Write;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 static COPYRIGHT : &'static str = "\
 // Copyright 2016 Google Inc.
 //
@@ -36,7 +36,7 @@ static COPYRIGHT : &'static str = "\
 // See the License for the specific language governing permissions and
 // limitations under the License.";
 
-#[cfg_attr(rustfmt, rustfmt_skip)]
+#[rustfmt::skip]
 static AUTOGEN_COMMENT : &'static str = "\
 // AUTOMATICALLY GENERATED from the SPIR-V JSON grammar:
 //   external/spirv.core.grammar.json.

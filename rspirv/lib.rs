@@ -94,9 +94,6 @@
 //! }
 //! ```
 
-#![cfg_attr(feature = "clippy", feature(plugin))]
-#![cfg_attr(feature = "clippy", plugin(clippy))]
-
 extern crate spirv_headers as spirv;
 
 pub mod binary;

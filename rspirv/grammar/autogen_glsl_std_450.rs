@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-static GLSL_STD_450_INSTRUCTION_TABLE: &'static [ExtendedInstruction<'static>] = &[
+static GLSL_STD_450_INSTRUCTION_TABLE: &[ExtendedInstruction<'static>] = &[
     ext_inst!(Round, 1u32, [], [(IdRef, One)]),
     ext_inst!(RoundEven, 2u32, [], [(IdRef, One)]),
     ext_inst!(Trunc, 3u32, [], [(IdRef, One)]),
