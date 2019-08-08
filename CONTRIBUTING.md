@@ -11,9 +11,10 @@ conventions that it would be very nice if you can consider:
   the comments. Otherwise the reviewer needs to re-read the whole pull request
   again. That delays review process.)
 * Code will be squash merged after approval to leave only one commit in the
-  history. (The interactive comment addressing procedure is not particularly
-  interesting from the project history's perspective. It obscures the Git
-  history and makes reverting a bad commit hard.)
+  history and commit messages may be edited accordingly. (The interactive
+  comment addressing procedure is not particularly interesting from the
+  project history's perspective. It obscures the Git history and makes
+  reverting a bad commit hard.)
 
 ## Pull request
 
