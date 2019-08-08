@@ -17,6 +17,8 @@ use crate::structs;
 use std::fs;
 use std::io::Write;
 
+use proc_macro2::{Ident, Span};
+
 #[cfg_attr(rustfmt, rustfmt_skip)]
 static COPYRIGHT : &'static str = "\
 // Copyright 2016 Google Inc.
@@ -40,13 +42,17 @@ static AUTOGEN_COMMENT : &'static str = "\
 // DO NOT MODIFY!";
 
 pub static RUSTFMT_SKIP: &'static str = "#[cfg_attr(rustfmt, rustfmt_skip)]";
-pub static RUSTFMT_SKIP_BANG: &'static str = "#![cfg_attr(rustfmt, rustfmt_skip)]";
 
 pub fn write_copyright_autogen_comment(file: &mut fs::File) {
     file.write_all(COPYRIGHT.as_bytes()).unwrap();
     file.write_all(b"\n\n").unwrap();
     file.write_all(AUTOGEN_COMMENT.as_bytes()).unwrap();
     file.write_all(b"\n\n").unwrap();
+}
+
+/// Converts the given string into an `Ident`, with call-site span.
+pub fn as_ident(ident: &str) -> Ident {
+    Ident::new(ident, Span::call_site())
 }
 
 /// Converts the given `symbol` to use snake case style.
@@ -57,15 +63,15 @@ pub fn snake_casify(symbol: &str) -> String {
 
 /// Returns the corresponding operand kind in data representation for the
 /// given operand `kind` in the grammar.
-pub fn get_mr_operand_kind(kind: &str) -> &str {
-    if kind == "LiteralInteger" {
+pub fn get_mr_operand_kind(kind: &str) -> Ident {
+    as_ident(if kind == "LiteralInteger" {
         "LiteralInt32"
     } else if kind == "LiteralContextDependentNumber" {
         // TODO: should use the correct type to decode
         "LiteralInt32"
     } else {
         kind
-    }
+    })
 }
 
 /// Returns the underlying type used in operand kind enums for the operand
