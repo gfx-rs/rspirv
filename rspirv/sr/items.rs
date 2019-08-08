@@ -1,7 +1,8 @@
 use crate::{
     dr::ModuleHeader,
-    sr::{op, Token},
-    sr::instructions::{Instruction, Terminator},
+    sr::Token,
+    sr::instructions,
+    sr::ops::{Op, Terminator},
     sr::types::{Type},
 };
 use spirv;
@@ -15,7 +16,7 @@ pub struct EntryPoint {
 
 pub struct BasicBlock {
    pub terminator: Terminator,
-   pub instructions: Vec<Instruction>,
+   pub ops: Vec<Op>,
 }
 
 pub struct Function {
@@ -32,20 +33,20 @@ pub struct Module {
     /// The module header.
     pub header: ModuleHeader,
     /// All OpCapability instructions.
-    pub capabilities: Vec<op::Capability>,
+    pub capabilities: Vec<instructions::Capability>,
     /// All OpExtension instructions.
-    pub extensions: Vec<op::Extension>,
+    pub extensions: Vec<instructions::Extension>,
     /// All OpExtInstImport instructions.
-    pub ext_inst_imports: Vec<op::ExtInstImport>,
+    pub ext_inst_imports: Vec<instructions::ExtInstImport>,
     /// The OpMemoryModel instruction.
     ///
     /// Although it is required by the specification to appear exactly once
     /// per module, we keep it optional here to allow flexibility.
-    pub memory_model: op::MemoryModel,
+    pub memory_model: instructions::MemoryModel,
     /// All entry point declarations, using OpEntryPoint.
-    pub entry_points: Vec<op::EntryPoint>,
+    pub entry_points: Vec<instructions::EntryPoint>,
     /// All execution mode declarations, using OpExecutionMode.
-    pub execution_modes: Vec<op::ExecutionMode>,
+    pub execution_modes: Vec<instructions::ExecutionMode>,
 
     // some missing here...
 

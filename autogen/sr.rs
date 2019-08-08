@@ -120,17 +120,17 @@ pub fn gen_sr_code_from_operand_kind_grammar(
 }
 
 pub struct CodeGeneratedFromInstructionGrammar {
-    pub type_enums: String,
-    pub type_creation: String,
-    pub instruction_structs: String,
-    pub instruction_enums: String,
+    pub types: String,
+    pub instructions: String,
+    pub ops: String,
+    pub context_logic: String,
 }
 
 pub fn gen_sr_code_from_instruction_grammar(
     grammar_instructions: &[structs::Instruction],
 ) -> CodeGeneratedFromInstructionGrammar {
     let mut inst_structs = Vec::new();
-    let mut inst_variants = Vec::new();
+    let mut op_variants = Vec::new();
     let mut terminators = Vec::new();
     let mut type_variants = Vec::new();
     let mut type_checks = Vec::new();
@@ -237,7 +237,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                 });
             }
             _ => {
-                inst_variants.push(if field_names.is_empty() {
+                op_variants.push(if field_names.is_empty() {
                     quote!{ #name }
                 } else {
                     quote! { #name {
@@ -248,21 +248,7 @@ pub fn gen_sr_code_from_instruction_grammar(
         }
     }
 
-    let inst_structs = quote! {
-        #( #inst_structs )*
-    };
-    let inst_enums = quote! {
-        #[derive(Clone, Debug, Eq, PartialEq)]
-        pub enum Terminator {
-            #( #terminators ),*
-        }
-
-        #[derive(Clone, Debug, Eq, PartialEq)]
-        pub enum Instruction {
-            #( #inst_variants ),*
-        }
-    };
-    let type_enums = quote! {
+    let types = quote! {
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub(in crate::sr) enum TypeEnum {
             #( #type_variants ),*
@@ -272,17 +258,35 @@ pub fn gen_sr_code_from_instruction_grammar(
             #( #type_checks )*
         }
     };
-    let type_creation = quote! {
+    let instructions = quote! {
+        use crate::sr::{Token, Type};
+
+        #( #inst_structs )*
+    };
+    let ops = quote! {
+        use crate::sr::{Token, Type};
+
+        #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum Terminator {
+            #( #terminators ),*
+        }
+
+        #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum Op {
+            #( #op_variants ),*
+        }
+    };
+    let context_logic = quote! {
         impl Context {
             #( #type_constructors )*
         }
     };
 
     CodeGeneratedFromInstructionGrammar {
-        type_enums: type_enums.to_string(),
-        type_creation: type_creation.to_string(),
-        instruction_structs: inst_structs.to_string(),
-        instruction_enums: inst_enums.to_string(),   
+        types: types.to_string(),
+        instructions: instructions.to_string(),
+        ops: ops.to_string(),
+        context_logic: context_logic.to_string(),
     }
 }
 

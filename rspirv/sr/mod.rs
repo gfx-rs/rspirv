@@ -15,15 +15,16 @@
 //! **S**tructured **r**epresentation of various SPIR-V language constructs.
 
 pub use self::autogen_decoration::Decoration;
+pub use self::autogen_instructions as instructions;
+pub use self::autogen_ops as ops;
 pub use self::constants::{Constant};
 pub use self::context::{Context, Token};
-pub use self::instructions::{Instruction, Terminator};
 pub use self::types::{Type};
 
 mod autogen_decoration;
+pub mod autogen_instructions;
+pub mod autogen_ops;
 mod constants;
 mod context;
-mod instructions;
 pub mod items;
-pub mod op;
 mod types;
