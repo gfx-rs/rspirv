@@ -15,8 +15,8 @@
 use crate::structs;
 use crate::utils::*;
 
-static VAULE_ENUM_ATTRIBUTE: &'static str = "\
-#[repr(u32)]\n#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]";
+use proc_macro2::TokenStream;
+use quote::quote;
 
 static GLSL_STD_450_SPEC_LINK: &'static str = "\
 https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html";
@@ -39,27 +39,39 @@ fn get_spec_link(kind: &str) -> String {
                            symbol, symbol))
 }
 
-fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> String {
-    let elements: Vec<String> = grammar.enumerants.iter().map(|enumerant| {
-        // Special treatment for "NaN"
-        let mut symbol = snake_casify(&enumerant.symbol);
-        if &symbol == "not_na_n" {
-            symbol = "not_nan".to_string()
-        }
-        format!("        const {} = {};",
-                symbol.to_uppercase(),
-                enumerant.value.string)
-    }).collect();
-    format!("bitflags!{{\n    {doc}\n    pub struct {kind} : u32 \
-             {{\n{enumerants}\n    }}\n}}\n",
-            doc = format!("/// SPIR-V operand kind: {}",
-                          get_spec_link(&grammar.kind)),
-            kind = grammar.kind,
-            enumerants = elements.join("\n"))
+fn value_enum_attribute() -> TokenStream {
+    quote! {
+        #[repr(u32)]
+        #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+    }
 }
 
-fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> String {
+fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
+    let elements = grammar.enumerants.iter().map(|enumerant| {
+        // Special treatment for "NaN"
+        let symbol = as_ident(&snake_casify(&enumerant.symbol).replace("na_n", "nan").to_uppercase());
+        // value.string is a hex string of the form 0x12345678
+        let value = u32::from_str_radix(&enumerant.value.string[2..], 16).unwrap();
+        quote! {
+            const #symbol = #value;
+        }
+    });
+    let comment = format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind));
+    let kind = as_ident(&grammar.kind);
+    quote! {
+        bitflags! {
+            #[doc = #comment]
+            pub struct #kind: u32 {
+                #(#elements)*
+            }
+        }
+    }
+}
+
+fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     use std::collections::BTreeMap;
+
+    let kind = as_ident(&grammar.kind);
 
     // We can have more than one enumerants mapping to the same discriminator.
     // Use associated constants for these aliases.
@@ -68,48 +80,63 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> String {
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
     for e in &grammar.enumerants {
-        if seen_discriminator.contains_key(&e.value.number) {
-            aliases.push(format!("    pub const {}: {} = {}::{};",
-                                 e.symbol, grammar.kind, grammar.kind,
-                                 seen_discriminator.get(&e.value.number).unwrap()));
+        if let Some(discriminator) = seen_discriminator.get(&e.value.number) {
+            let symbol = as_ident(&e.symbol);
+            aliases.push(quote! {
+                pub const #symbol: #kind = #kind::#discriminator;
+            });
         } else {
-            seen_discriminator.insert(e.value.number, &e.symbol);
             // Special case for Dim. Its enumerants can start with a digit.
             // So prefix with the kind name here.
-            let name = format!("{}{}", if grammar.kind == "Dim" { "Dim" } else { "" }, e.symbol);
-            enumerants.push(format!("    {} = {},", name, e.value.number));
+            let name = if grammar.kind == "Dim" {
+                let mut name = "Dim".to_string();
+                name.push_str(&e.symbol);
+                name
+            } else {
+                e.symbol.to_string()
+            };
+            let name = as_ident(&name);
+            let number = e.value.number;
+            seen_discriminator.insert(e.value.number, name.clone());
+            enumerants.push(quote! { #name = #number });
             capability_clauses.entry(&e.capabilities).or_insert_with(Vec::new).push(name);
         }
     }
 
-    let associated_consts = if !aliases.is_empty() {
-        aliases.join("\n")
-    } else {
-        String::new()
-    };
+    let capabilities = capability_clauses.into_iter().map(|(k, v)| {
+        let kinds = std::iter::repeat(&kind);
+        let capabilities = k.into_iter().map(|cap| as_ident(cap));
+        quote! {
+            #( #kinds::#v )|* => &[#( Capability::#capabilities ),*]
+        }
+    });
 
+    let comment = format!("/// SPIR-V operand kind: {}", get_spec_link(&grammar.kind));
+    let attribute = value_enum_attribute();
 
-    let required_capabilities =
-        format!("    pub fn required_capabilities(&self) -> &'static [Capability] {{\n        match self {{\n{}\n        }}\n    }}",
-            capability_clauses.into_iter().map(|(k, v)| {
-                let names: String = v.iter().map(|name| format!("            | {}::{}\n", grammar.kind, name)).collect();
-                let capabilities: String = k.iter().map(|cap| format!("Capability::{},", cap)).collect();
-                format!("{}                => &[{}], \n", names, capabilities)
-            }).collect::<String>().trim_end());
+    quote! {
+        #[doc = #comment]
+        #attribute
+        pub enum #kind {
+            #(#enumerants),*
+        }
 
-    format!("{doc}\n{attribute}\npub enum {kind} {{\n{enumerants}\n}}\n#[allow(non_upper_case_globals)]\nimpl {kind} {{\n{aliases}\n{capabilities}\n}}\n",
-            doc = format!("/// SPIR-V operand kind: {}",
-                          get_spec_link(&grammar.kind)),
-            attribute = VAULE_ENUM_ATTRIBUTE,
-            kind = grammar.kind,
-            aliases = associated_consts,
-            enumerants = enumerants.join("\n"),
-            capabilities = required_capabilities)
+        #[allow(non_upper_case_globals)]
+        impl #kind {
+            #(#aliases)*
+
+            pub fn required_capabilities(&self) -> &'static [Capability] {
+                match self {
+                    #(#capabilities),*
+                }
+            }
+        }
+    }
 }
 
 /// Returns the code defining the enum for an operand kind by parsing
 /// the given SPIR-V `grammar`.
-fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<String> {
+fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<TokenStream> {
     if grammar.category == "BitEnum" {
         Some(gen_bit_enum_operand_kind(grammar))
     } else if grammar.category == "ValueEnum" {
@@ -120,86 +147,82 @@ fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<String> {
 }
 
 /// Returns the generated SPIR-V header.
-pub fn gen_spirv_header(grammar: &structs::Grammar) -> String {
-    let mut ret = String::new();
+pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
+    // constants and types.
+    let magic_number = u32::from_str_radix(&grammar.magic_number[2..], 16).expect("Magic number not a u32");
+    let major_version = grammar.major_version;
+    let minor_version = grammar.minor_version;
+    let revision = grammar.revision;
 
-    { // constants and types.
-        let globals = format!("pub type Word = u32;\n\
-                               pub const MAGIC_NUMBER: u32 = {};\n\
-                               pub const MAJOR_VERSION: u32 = {};\n\
-                               pub const MINOR_VERSION: u32 = {};\n\
-                               pub const REVISION: u32 = {};\n\n",
-                              grammar.magic_number,
-                              grammar.major_version,
-                              grammar.minor_version,
-                              grammar.revision);
-        ret.push_str(&globals);
-    }
-    { // Operand kinds.
-        for kind in &grammar.operand_kinds {
-            let operand_kind = gen_operand_kind(kind);
-            if operand_kind.is_some() {
-                let kind = operand_kind.unwrap();
-                ret.push_str(&kind);
-                ret.push('\n');
-            }
+    // Operand kinds.
+    let kinds = grammar.operand_kinds.iter().filter_map(gen_operand_kind);
+
+    // Opcodes.
+    // Get the instruction table.
+    let opcodes = grammar.instructions.iter().map(|inst| {
+        // Omit the "Op" prefix.
+        let opname = as_ident(&inst.opname[2..]);
+        let opcode = inst.opcode;
+        quote! { #opname = #opcode }
+    });
+    let comment = format!("SPIR-V {} opcodes", get_spec_link("instructions"));
+    let attribute = value_enum_attribute();
+
+    quote! {
+        pub type Word = u32;
+        pub const MAGIC_NUMBER: u32 = #magic_number;
+        pub const MAJOR_VERSION: u32 = #major_version;
+        pub const MINOR_VERSION: u32 = #minor_version;
+        pub const REVISION: u32 = #revision;
+
+        #(#kinds)*
+        
+        #[doc = #comment]
+        #attribute
+        pub enum Op {
+            #(#opcodes),*
         }
     }
-    { // Opcodes.
-        // Get the instruction table.
-        let opcodes: Vec<String> = grammar.instructions.iter().map(|inst| {
-            // Omit the "Op" prefix.
-            format!("    {} = {},", &inst.opname[2..], inst.opcode)
-        }).collect();
-        ret.push_str(&format!("/// SPIR-V {link} opcodes\n\
-                               {attribute}\n\
-                               pub enum Op {{\n{opcodes}\n}}\n",
-                              link = get_spec_link("instructions"),
-                              attribute = VAULE_ENUM_ATTRIBUTE,
-                              opcodes = opcodes.join("\n")));
-    }
-
-    ret
 }
 
 /// Returns the GLSL.std.450 extended instruction opcodes.
-pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> String {
-    let mut ret = String::new();
+pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
+    // Get the instruction table.
+    let opcodes = grammar.instructions.iter().map(|inst| {
+        // Omit the "Op" prefix.
+        let opname = as_ident(&inst.opname);
+        let opcode = inst.opcode;
+        quote! { #opname = #opcode }
+    });
+    let comment = format!("[GLSL.std.450]({}) extended instruction opcode", GLSL_STD_450_SPEC_LINK);
+    let attribute = value_enum_attribute();
 
-    { // Opcodes.
-        // Get the instruction table.
-        let opcodes: Vec<String> = grammar.instructions.iter().map(|inst| {
-            // Omit the "Op" prefix.
-            format!("    {} = {},", inst.opname, inst.opcode)
-        }).collect();
-        ret.push_str(&format!("/// [GLSL.std.450]({link}) extended instruction opcode\n\
-                               {attribute}\n\
-                               pub enum GLOp {{\n{opcodes}\n}}\n",
-                              link = GLSL_STD_450_SPEC_LINK,
-                              attribute = VAULE_ENUM_ATTRIBUTE,
-                              opcodes = opcodes.join("\n")));
+    quote! {
+        #[doc = #comment]
+        #attribute
+        pub enum GLOp {
+            #(#opcodes),*
+        }
     }
-
-    ret
 }
 
 /// Returns the OpenCL.std extended instruction opcodes.
-pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> String {
-    let mut ret = String::new();
+pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
+    // Get the instruction table.
+    let opcodes = grammar.instructions.iter().map(|inst| {
+        // Omit the "Op" prefix.
+        let opname = as_ident(&inst.opname);
+        let opcode = inst.opcode;
+        quote! { #opname = #opcode }
+    });
+    let comment = format!("[OpenCL.std]({}) extended instruction opcode", OPENCL_STD_SPEC_LINK);
+    let attribute = value_enum_attribute();
 
-    { // Opcodes.
-        // Get the instruction table.
-        let opcodes: Vec<String> = grammar.instructions.iter().map(|inst| {
-            // Omit the "Op" prefix.
-            format!("    {} = {},", inst.opname, inst.opcode)
-        }).collect();
-        ret.push_str(&format!("/// [OpenCL.std]({link}) extended instruction opcode\n\
-                               {attribute}\n\
-                               pub enum CLOp {{\n{opcodes}\n}}\n",
-                              link = OPENCL_STD_SPEC_LINK,
-                              attribute = VAULE_ENUM_ATTRIBUTE,
-                              opcodes = opcodes.join("\n")));
+    quote! {
+        #[doc = #comment]
+        #attribute
+        pub enum CLOp {
+            #(#opcodes),*
+        }
     }
-
-    ret
 }
