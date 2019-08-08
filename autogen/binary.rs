@@ -115,7 +115,7 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>) -> TokenS
         let kind = as_ident(&element.kind);
         let comment = format!("Decodes and returns the next SPIR-V word as\na SPIR-V {} value.", kind);
         let function_name = as_ident(&snake_casify(&element.kind));
-        let convert = as_ident(&format!("from_{}", if element.category == "BitEnum" { "bits" } else { "u32" }));
+        let convert = as_ident(&format!("from_{}", if structs::Category::BitEnum == element.category { "bits" } else { "u32" }));
         let error_name = as_ident(&format!("{}Unknown", kind));
         quote! {
             #[doc = #comment]
@@ -171,7 +171,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>) -> Vec<(
         let lo_kind = as_ident(&snake_casify(&element.kind));
         let function_name = as_ident(&format!("parse_{}_arguments", lo_kind));
 
-        let method = if element.category == "BitEnum" {
+        let method = if element.category == structs::Category::BitEnum {
             // For each operand kind in the BitEnum category, its
             // enumerants are bit masks. If a certain bit having associated
             // parameters is set, we also need to decode the corresponding
@@ -318,11 +318,11 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
 
 pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> TokenStream {
     let elements = grammar.iter().filter(|op_kind| {
-        op_kind.category == "BitEnum"
+        op_kind.category == structs::Category::BitEnum
     }).map(|op_kind| {
         let kind = as_ident(&op_kind.kind);
         let checks = op_kind.enumerants.iter().filter_map(|enumerant| {
-            if enumerant.value.string == "0x0000" {
+            if enumerant.value == 0x0000 {
                 None
             } else {
                 let symbol = as_ident(&snake_casify(&enumerant.symbol).replace("na_n", "nan").to_uppercase());

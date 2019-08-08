@@ -50,7 +50,7 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let elements = grammar.enumerants.iter().map(|enumerant| {
         // Special treatment for "NaN"
         let symbol = as_ident(&snake_casify(&enumerant.symbol).replace("na_n", "nan").to_uppercase());
-        let value = enumerant.value.number;
+        let value = enumerant.value;
         quote! {
             const #symbol = #value;
         }
@@ -79,7 +79,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
     for e in &grammar.enumerants {
-        if let Some(discriminator) = seen_discriminator.get(&e.value.number) {
+        if let Some(discriminator) = seen_discriminator.get(&e.value) {
             let symbol = as_ident(&e.symbol);
             aliases.push(quote! {
                 pub const #symbol: #kind = #kind::#discriminator;
@@ -95,8 +95,8 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
                 e.symbol.to_string()
             };
             let name = as_ident(&name);
-            let number = e.value.number;
-            seen_discriminator.insert(e.value.number, name.clone());
+            let number = e.value;
+            seen_discriminator.insert(e.value, name.clone());
             enumerants.push(quote! { #name = #number });
             capability_clauses.entry(&e.capabilities).or_insert_with(Vec::new).push(name);
         }
@@ -136,19 +136,18 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 /// Returns the code defining the enum for an operand kind by parsing
 /// the given SPIR-V `grammar`.
 fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<TokenStream> {
-    if grammar.category == "BitEnum" {
-        Some(gen_bit_enum_operand_kind(grammar))
-    } else if grammar.category == "ValueEnum" {
-        Some(gen_value_enum_operand_kind(grammar))
-    } else {
-        None
+    use structs::Category::*;
+    match grammar.category {
+        BitEnum => Some(gen_bit_enum_operand_kind(grammar)),
+        ValueEnum => Some(gen_value_enum_operand_kind(grammar)),
+        _ => None
     }
 }
 
 /// Returns the generated SPIR-V header.
 pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     // constants and types.
-    let magic_number = u32::from_str_radix(&grammar.magic_number[2..], 16).expect("Magic number not a u32");
+    let magic_number = grammar.magic_number;
     let major_version = grammar.major_version;
     let minor_version = grammar.minor_version;
     let revision = grammar.revision;
