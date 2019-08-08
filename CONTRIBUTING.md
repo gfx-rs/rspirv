@@ -11,9 +11,9 @@ conventions that it would be very nice if you can consider:
   the comments. Otherwise the reviewer needs to re-read the whole pull request
   again. That delays review process.)
 * Code will be squash merged after approval to leave only one commit in the
-  history. (The interactive comment addressing history is not particularly
-  interesting from the history's perspective. It obscures the history and makes
-  reverting a bad commit hard.)
+  history. (The interactive comment addressing procedure is not particularly
+  interesting from the project history's perspective. It obscures the Git
+  history and makes reverting a bad commit hard.)
 
 ## Pull request
 
@@ -31,10 +31,14 @@ The above conventions make it easier to read and review a pull request.
 * Commit messages should have detailed explanation of the changes following
   the oneliner and an empty line. (So that by reading just the commit message
   we know what's changed without going to the code.)
+* The detailed explanation should break into lines properly. (So that when
+  using CLI to read the history, we won't see a very long sentence that
+  got truncated, esp. inside a terminal multiplexer where screen real estate
+  is limited.)
 
 The above conventions helps us to have a clean and healthy Git history.
 
 ## Code change
 
-* Code adding new functionalities should have tests and documentation for
-  public APIs.
+* Code adding new functionalities should have tests.
+* Code adding new functionalities should have documentation for public APIs.
