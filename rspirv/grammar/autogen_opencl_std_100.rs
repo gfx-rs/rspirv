@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-static OPENCL_STD_100_INSTRUCTION_TABLE: &'static [ExtendedInstruction<'static>] = &[
+static OPENCL_STD_100_INSTRUCTION_TABLE: &[ExtendedInstruction<'static>] = &[
     ext_inst!(acos, 0u32, [], [(IdRef, One)]),
     ext_inst!(acosh, 1u32, [], [(IdRef, One)]),
     ext_inst!(acospi, 2u32, [], [(IdRef, One)]),

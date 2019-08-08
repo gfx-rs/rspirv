@@ -18,9 +18,9 @@
 
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 119734787u32;
-pub const MAJOR_VERSION: u32 = 1u32;
-pub const MINOR_VERSION: u32 = 3u32;
-pub const REVISION: u32 = 1u32;
+pub const MAJOR_VERSION: u8 = 1u8;
+pub const MINOR_VERSION: u8 = 3u8;
+pub const REVISION: u8 = 1u8;
 bitflags! { # [ doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)" ] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)" ] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)" ] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
@@ -42,7 +42,7 @@ pub enum SourceLanguage {
 }
 #[allow(non_upper_case_globals)]
 impl SourceLanguage {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             SourceLanguage::Unknown
             | SourceLanguage::ESSL
@@ -67,7 +67,7 @@ pub enum ExecutionModel {
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionModel {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ExecutionModel::Geometry => &[Capability::Geometry],
             ExecutionModel::Kernel => &[Capability::Kernel],
@@ -90,7 +90,7 @@ pub enum AddressingModel {
 }
 #[allow(non_upper_case_globals)]
 impl AddressingModel {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             AddressingModel::Logical => &[],
             AddressingModel::Physical32 | AddressingModel::Physical64 => &[Capability::Addresses],
@@ -108,7 +108,7 @@ pub enum MemoryModel {
 }
 #[allow(non_upper_case_globals)]
 impl MemoryModel {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             MemoryModel::OpenCL => &[Capability::Kernel],
             MemoryModel::Simple | MemoryModel::GLSL450 => &[Capability::Shader],
@@ -163,7 +163,7 @@ pub enum ExecutionMode {
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionMode {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ExecutionMode::LocalSize | ExecutionMode::LocalSizeId => &[],
             ExecutionMode::Invocations
@@ -228,7 +228,7 @@ pub enum StorageClass {
 }
 #[allow(non_upper_case_globals)]
 impl StorageClass {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             StorageClass::UniformConstant
             | StorageClass::Input
@@ -260,7 +260,7 @@ pub enum Dim {
 }
 #[allow(non_upper_case_globals)]
 impl Dim {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Dim::Dim3D => &[],
             Dim::DimSubpassData => &[Capability::InputAttachment],
@@ -288,7 +288,7 @@ pub enum SamplerAddressingMode {
 }
 #[allow(non_upper_case_globals)]
 impl SamplerAddressingMode {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             SamplerAddressingMode::None
             | SamplerAddressingMode::ClampToEdge
@@ -307,7 +307,7 @@ pub enum SamplerFilterMode {
 }
 #[allow(non_upper_case_globals)]
 impl SamplerFilterMode {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             SamplerFilterMode::Nearest | SamplerFilterMode::Linear => &[Capability::Kernel],
         }
@@ -360,7 +360,7 @@ pub enum ImageFormat {
 }
 #[allow(non_upper_case_globals)]
 impl ImageFormat {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ImageFormat::Unknown => &[],
             ImageFormat::Rgba32f
@@ -432,7 +432,7 @@ pub enum ImageChannelOrder {
 }
 #[allow(non_upper_case_globals)]
 impl ImageChannelOrder {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ImageChannelOrder::R
             | ImageChannelOrder::A
@@ -481,7 +481,7 @@ pub enum ImageChannelDataType {
 }
 #[allow(non_upper_case_globals)]
 impl ImageChannelDataType {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ImageChannelDataType::SnormInt8
             | ImageChannelDataType::SnormInt16
@@ -514,7 +514,7 @@ pub enum FPRoundingMode {
 }
 #[allow(non_upper_case_globals)]
 impl FPRoundingMode {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             FPRoundingMode::RTE
             | FPRoundingMode::RTZ
@@ -532,7 +532,7 @@ pub enum LinkageType {
 }
 #[allow(non_upper_case_globals)]
 impl LinkageType {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             LinkageType::Export | LinkageType::Import => &[Capability::Linkage],
         }
@@ -548,7 +548,7 @@ pub enum AccessQualifier {
 }
 #[allow(non_upper_case_globals)]
 impl AccessQualifier {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             AccessQualifier::ReadOnly | AccessQualifier::WriteOnly | AccessQualifier::ReadWrite => {
                 &[Capability::Kernel]
@@ -571,7 +571,7 @@ pub enum FunctionParameterAttribute {
 }
 #[allow(non_upper_case_globals)]
 impl FunctionParameterAttribute {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             FunctionParameterAttribute::Zext
             | FunctionParameterAttribute::Sext
@@ -645,7 +645,7 @@ pub enum Decoration {
 }
 #[allow(non_upper_case_globals)]
 impl Decoration {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Decoration::BuiltIn
             | Decoration::Restrict
@@ -779,7 +779,7 @@ impl BuiltIn {
     pub const SubgroupGtMaskKHR: BuiltIn = BuiltIn::SubgroupGtMask;
     pub const SubgroupLeMaskKHR: BuiltIn = BuiltIn::SubgroupLeMask;
     pub const SubgroupLtMaskKHR: BuiltIn = BuiltIn::SubgroupLtMask;
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             BuiltIn::NumWorkgroups
             | BuiltIn::WorkgroupSize
@@ -871,7 +871,7 @@ pub enum Scope {
 }
 #[allow(non_upper_case_globals)]
 impl Scope {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Scope::CrossDevice
             | Scope::Device
@@ -896,7 +896,7 @@ pub enum GroupOperation {
 }
 #[allow(non_upper_case_globals)]
 impl GroupOperation {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             GroupOperation::ClusteredReduce => &[Capability::GroupNonUniformClustered],
             GroupOperation::PartitionedReduceNV
@@ -924,7 +924,7 @@ pub enum KernelEnqueueFlags {
 }
 #[allow(non_upper_case_globals)]
 impl KernelEnqueueFlags {
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             KernelEnqueueFlags::NoWait
             | KernelEnqueueFlags::WaitKernel
@@ -1055,7 +1055,7 @@ impl Capability {
     pub const StorageUniformBufferBlock16: Capability = Capability::StorageBuffer16BitAccess;
     pub const StorageUniform16: Capability = Capability::UniformAndStorageBuffer16BitAccess;
     pub const ShaderViewportIndexLayerNV: Capability = Capability::ShaderViewportIndexLayerEXT;
-    pub fn required_capabilities(&self) -> &'static [Capability] {
+    pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Capability::Matrix
             | Capability::Addresses

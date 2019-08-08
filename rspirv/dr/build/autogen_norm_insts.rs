@@ -16,6 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
+#[allow(clippy::identity_conversion, clippy::too_many_arguments)]
 impl Builder {
     #[doc = "Appends an OpNop instruction to the current basic block."]
     pub fn nop(&mut self) -> BuildResult<()> {
@@ -24,7 +25,8 @@ impl Builder {
         }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::Nop, None, None, vec![]);
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpExtInst instruction to the current basic block."]
     pub fn ext_inst<T: AsRef<[spirv::Word]>>(
@@ -140,6 +142,7 @@ impl Builder {
             vec![dr::Operand::IdRef(pointer)],
         );
         if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -165,10 +168,12 @@ impl Builder {
             vec![dr::Operand::IdRef(pointer), dr::Operand::IdRef(object)],
         );
         if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpCopyMemory instruction to the current basic block."]
     pub fn copy_memory<T: AsRef<[dr::Operand]>>(
@@ -189,10 +194,12 @@ impl Builder {
             vec![dr::Operand::IdRef(target), dr::Operand::IdRef(source)],
         );
         if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpCopyMemorySized instruction to the current basic block."]
     pub fn copy_memory_sized<T: AsRef<[dr::Operand]>>(
@@ -218,10 +225,12 @@ impl Builder {
             ],
         );
         if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpAccessChain instruction to the current basic block."]
     pub fn access_chain<T: AsRef<[spirv::Word]>>(
@@ -658,6 +667,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -726,6 +736,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -794,6 +805,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -862,6 +874,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -927,6 +940,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -963,6 +977,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -999,6 +1014,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -1030,6 +1046,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -1060,10 +1077,12 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpImage instruction to the current basic block."]
     pub fn image(
@@ -3813,7 +3832,8 @@ impl Builder {
         }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::EmitVertex, None, None, vec![]);
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpEndPrimitive instruction to the current basic block."]
     pub fn end_primitive(&mut self) -> BuildResult<()> {
@@ -3822,7 +3842,8 @@ impl Builder {
         }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::EndPrimitive, None, None, vec![]);
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpEmitStreamVertex instruction to the current basic block."]
     pub fn emit_stream_vertex(&mut self, stream: spirv::Word) -> BuildResult<()> {
@@ -3836,7 +3857,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(stream)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpEndStreamPrimitive instruction to the current basic block."]
     pub fn end_stream_primitive(&mut self, stream: spirv::Word) -> BuildResult<()> {
@@ -3850,7 +3872,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(stream)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpControlBarrier instruction to the current basic block."]
     pub fn control_barrier(
@@ -3873,7 +3896,8 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpMemoryBarrier instruction to the current basic block."]
     pub fn memory_barrier(
@@ -3894,7 +3918,8 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpAtomicLoad instruction to the current basic block."]
     pub fn atomic_load(
@@ -3949,7 +3974,8 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpAtomicExchange instruction to the current basic block."]
     pub fn atomic_exchange(
@@ -4449,7 +4475,8 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpSelectionMerge instruction to the current basic block."]
     pub fn selection_merge(
@@ -4470,7 +4497,8 @@ impl Builder {
                 dr::Operand::SelectionControl(selection_control),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpLifetimeStart instruction to the current basic block."]
     pub fn lifetime_start(&mut self, pointer: spirv::Word, size: u32) -> BuildResult<()> {
@@ -4484,7 +4512,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralInt32(size)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpLifetimeStop instruction to the current basic block."]
     pub fn lifetime_stop(&mut self, pointer: spirv::Word, size: u32) -> BuildResult<()> {
@@ -4498,7 +4527,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralInt32(size)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpGroupAsyncCopy instruction to the current basic block."]
     pub fn group_async_copy(
@@ -4557,7 +4587,8 @@ impl Builder {
                 dr::Operand::IdRef(events_list),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpGroupAll instruction to the current basic block."]
     pub fn group_all(
@@ -5108,7 +5139,8 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpCommitWritePipe instruction to the current basic block."]
     pub fn commit_write_pipe(
@@ -5133,7 +5165,8 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpIsValidReserveId instruction to the current basic block."]
     pub fn is_valid_reserve_id(
@@ -5312,7 +5345,8 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpGroupCommitWritePipe instruction to the current basic block."]
     pub fn group_commit_write_pipe(
@@ -5339,7 +5373,8 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpEnqueueMarker instruction to the current basic block."]
     pub fn enqueue_marker(
@@ -5565,7 +5600,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpReleaseEvent instruction to the current basic block."]
     pub fn release_event(&mut self, event: spirv::Word) -> BuildResult<()> {
@@ -5579,7 +5615,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpCreateUserEvent instruction to the current basic block."]
     pub fn create_user_event(
@@ -5644,7 +5681,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event), dr::Operand::IdRef(status)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpCaptureEventProfilingInfo instruction to the current basic block."]
     pub fn capture_event_profiling_info(
@@ -5667,7 +5705,8 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpGetDefaultQueue instruction to the current basic block."]
     pub fn get_default_queue(
@@ -5750,6 +5789,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -5818,6 +5858,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -5886,6 +5927,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -5954,6 +5996,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -6019,6 +6062,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -6055,6 +6099,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -6091,6 +6136,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -6172,7 +6218,8 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpImageSparseRead instruction to the current basic block."]
     pub fn image_sparse_read<T: AsRef<[dr::Operand]>>(
@@ -6199,6 +6246,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
@@ -6364,7 +6412,8 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpGroupNonUniformElect instruction to the current basic block."]
     pub fn group_non_uniform_elect(
@@ -6838,6 +6887,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -6872,6 +6922,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -6906,6 +6957,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -6940,6 +6992,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -6974,6 +7027,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7008,6 +7062,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7042,6 +7097,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7076,6 +7132,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7110,6 +7167,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7144,6 +7202,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7178,6 +7237,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7212,6 +7272,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7246,6 +7307,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7280,6 +7342,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7314,6 +7377,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -7348,6 +7412,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
+            #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -8003,7 +8068,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ptr), dr::Operand::IdRef(data)],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpSubgroupImageBlockReadINTEL instruction to the current basic block."]
     pub fn subgroup_image_block_read_intel(
@@ -8051,7 +8117,8 @@ impl Builder {
                 dr::Operand::IdRef(data),
             ],
         );
-        Ok(self.basic_block.as_mut().unwrap().instructions.push(inst))
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
     #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current basic block."]
     pub fn group_non_uniform_partition_nv(

@@ -14,6 +14,7 @@
 
 use crate::spirv;
 
+use std::convert::TryInto;
 use std::result;
 use super::DecodeError as Error;
 
@@ -88,7 +89,7 @@ impl<'a> Decoder<'a> {
     /// Creates a new `Decoder` instance.
     pub fn new(bytes: &'a [u8]) -> Decoder<'a> {
         Decoder {
-            bytes: bytes,
+            bytes,
             offset: 0,
             limit: None,
         }
@@ -113,9 +114,7 @@ impl<'a> Decoder<'a> {
             Err(Error::StreamExpected(self.offset))
         } else {
             self.offset += WORD_NUM_BYTES;
-            Ok((0..WORD_NUM_BYTES).fold(0, |word, i| {
-                (word << 8) | (self.bytes[self.offset - i - 1]) as u32
-            }))
+            Ok(spirv::Word::from_le_bytes(self.bytes[self.offset-4..self.offset].try_into().unwrap()))
         }
     }
 
@@ -198,9 +197,9 @@ impl<'a> Decoder<'a> {
     /// Decodes and returns the next two SPIR-V words as a 64-bit
     /// literal integer.
     pub fn int64(&mut self) -> Result<u64> {
-        let low = self.word()?;
-        let high = self.word()?;
-        Ok(((high as u64) << 32) | (low as u64))
+        let low = u64::from(self.word()?);
+        let high = u64::from(self.word()?);
+        Ok((high << 32) | low)
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
@@ -213,9 +212,9 @@ impl<'a> Decoder<'a> {
     /// Decodes and returns the next two SPIR-V words as a 64-bit
     /// literal floating point number.
     pub fn float64(&mut self) -> Result<f64> {
-        let low = self.word()?;
-        let high = self.word()?;
-        let val = ((high as u64) << 32) | (low as u64);
+        let low = u64::from(self.word()?);
+        let high = u64::from(self.word()?);
+        let val = (high << 32) | low;
         Ok(f64::from_bits(val))
     }
 
@@ -264,7 +263,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg_attr(rustfmt, rustfmt_skip)]
+    #[rustfmt::skip]
     fn test_decoding_words() {
         let b = vec![0x12, 0x34, 0x56, 0x78,
                      0x90, 0xab, 0xcd, 0xef,
@@ -323,7 +322,7 @@ mod tests {
     }
 
     #[test]
-    #[cfg_attr(rustfmt, rustfmt_skip)]
+    #[rustfmt::skip]
     fn test_offset() {
         let b = vec![0x12, 0x34, 0x56, 0x78,
                      0x90, 0xab, 0xcd, 0xef,

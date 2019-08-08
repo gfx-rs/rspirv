@@ -243,7 +243,7 @@ mod tests {
         b.end_function().unwrap();
 
         assert_eq!(vec![spirv::MAGIC_NUMBER,
-                        (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
+                        (u32::from(spirv::MAJOR_VERSION) << 16) | (u32::from(spirv::MINOR_VERSION) << 8),
                         0x000f0000,
                         5,
                         0,
@@ -287,7 +287,7 @@ mod tests {
 
         assert_eq!(vec![// Header
                         spirv::MAGIC_NUMBER,
-                        (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
+                        (u32::from(spirv::MAJOR_VERSION) << 16) | (u32::from(spirv::MINOR_VERSION) << 8),
                         0x000f0000,
                         11, // bound
                         0,

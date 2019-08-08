@@ -125,7 +125,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         impl #kind {
             #(#aliases)*
 
-            pub fn required_capabilities(&self) -> &'static [Capability] {
+            pub fn required_capabilities(self) -> &'static [Capability] {
                 match self {
                     #(#capabilities),*
                 }
@@ -171,9 +171,9 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     quote! {
         pub type Word = u32;
         pub const MAGIC_NUMBER: u32 = #magic_number;
-        pub const MAJOR_VERSION: u32 = #major_version;
-        pub const MINOR_VERSION: u32 = #minor_version;
-        pub const REVISION: u32 = #revision;
+        pub const MAJOR_VERSION: u8 = #major_version;
+        pub const MINOR_VERSION: u8 = #minor_version;
+        pub const REVISION: u8 = #revision;
 
         #(#kinds)*
         

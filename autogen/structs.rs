@@ -67,9 +67,9 @@ pub struct OperandKind {
 pub struct Grammar {
     pub copyright: Vec<String>,
     pub magic_number: String,
-    pub major_version: u32,
-    pub minor_version: u32,
-    pub revision: u32,
+    pub major_version: u8,
+    pub minor_version: u8,
+    pub revision: u8,
     pub instructions: Vec<Instruction>,
     pub operand_kinds: Vec<OperandKind>,
 }

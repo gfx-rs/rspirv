@@ -130,7 +130,7 @@ impl Module {
     ///
     /// This method internally creates a vector of references to all global
     /// instructions, therefore it has some overheads.
-    pub fn global_inst_iter<'a>(&'a self) -> impl Iterator<Item = &'a Instruction> {
+    pub fn global_inst_iter(&self) -> impl Iterator<Item = &Instruction> {
         self.capabilities
             .iter()
             .chain(&self.extensions)
@@ -149,16 +149,16 @@ impl ModuleHeader {
     pub fn new(bound: Word) -> ModuleHeader {
         ModuleHeader {
             magic_number: spirv::MAGIC_NUMBER,
-            version: (spirv::MAJOR_VERSION << 16) | (spirv::MINOR_VERSION << 8),
-            generator: 0x000f0000, // TODO: lower 16-bit: tool version number
-            bound: bound,
+            version: version::create_word_from_version(spirv::MAJOR_VERSION, spirv::MINOR_VERSION),
+            generator: 0x000f_0000, // TODO: lower 16-bit: tool version number
+            bound,
             reserved_word: 0,
         }
     }
 
     /// Sets the SPIR-V version to the given major.minor version.
     pub fn set_version(&mut self, major: u8, minor: u8) {
-        self.version = ((major as u32) << 16) | ((minor as u32) << 8);
+        self.version = version::create_word_from_version(major, minor);
     }
 
     /// Returns the major and minor version numbers as a tuple.
@@ -168,7 +168,7 @@ impl ModuleHeader {
 
     /// Returns the generator's name and version as a tuple.
     pub fn generator(&self) -> (&str, u16) {
-        let tool = (self.generator & 0xffff0000) >> 16;
+        let tool = (self.generator & 0xffff_0000) >> 16;
         let version = (self.generator & 0xffff) as u16;
         let tool: &str = match tool {
             0 => "The Khronos Group",
@@ -224,9 +224,9 @@ impl Instruction {
                -> Self {
         Instruction {
             class: grammar::CoreInstructionTable::get(opcode),
-            result_type: result_type,
-            result_id: result_id,
-            operands: operands,
+            result_type,
+            result_id,
+            operands,
         }
     }
 }
