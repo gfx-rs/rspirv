@@ -17,7 +17,7 @@
 // DO NOT MODIFY!
 
 pub type Word = u32;
-pub const MAGIC_NUMBER: u32 = 119734787u32;
+pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u8 = 1u8;
 pub const MINOR_VERSION: u8 = 3u8;
 pub const REVISION: u8 = 1u8;
