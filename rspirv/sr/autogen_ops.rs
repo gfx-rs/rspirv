@@ -16,13 +16,14 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
+use crate::sr::{Token, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Terminator {
     Kill {},
     Unreachable {},
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Instruction {
+pub enum Op {
     Nop,
     Undef,
     SourceContinued {

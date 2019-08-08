@@ -156,7 +156,7 @@ impl Context {
     }
 }
 
-include!("autogen_type_creation.rs");
+include!("autogen_context.rs");
 
 impl Context {
     pub fn type_struct<T: AsRef<[Token<Type>]>>(&mut self, field_types: T) -> Token<Type> {

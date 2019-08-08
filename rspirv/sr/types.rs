@@ -43,7 +43,7 @@ impl StructMember {
     }
 }
 
-include!("autogen_type_enum_check.rs");
+include!("autogen_types.rs");
 
 impl Type {
     pub fn is_numerical_type(&self) -> bool {

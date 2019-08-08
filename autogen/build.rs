@@ -180,19 +180,19 @@ fn main() {
     );
     let instructions = sr::gen_sr_code_from_instruction_grammar(&grammar.instructions);
     write_formatted(
-        &autogen_src_dir.join("../rspirv/sr/autogen_type_enum_check.rs"),
-        instructions.type_enums,
+        &autogen_src_dir.join("../rspirv/sr/autogen_types.rs"),
+        instructions.types,
     );
     write_formatted(
-        &autogen_src_dir.join("../rspirv/sr/autogen_type_creation.rs"),
-        instructions.type_creation,
+        &autogen_src_dir.join("../rspirv/sr/autogen_instructions.rs"),
+        instructions.instructions,
     );
     write_formatted(
-        &autogen_src_dir.join("../rspirv/sr/autogen_instruction_enums.rs"),
-        instructions.instruction_enums,
+        &autogen_src_dir.join("../rspirv/sr/autogen_ops.rs"),
+        instructions.ops,
     );
     write_formatted(
-        &autogen_src_dir.join("../rspirv/sr/autogen_instruction_structs.rs"),
-        instructions.instruction_structs,
+        &autogen_src_dir.join("../rspirv/sr/autogen_context.rs"),
+        instructions.context_logic,
     );
 }
