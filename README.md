@@ -141,6 +141,7 @@ There are multiple crates inside this repo:
 - `spirv/`: The `spirv_headers` crate.
 - `rspirv/`: The core `rspirv` crate.
 - `dis/`: A binary SPIR-V disassembler based on the `rspirv` crate.
+- `spirv-blobs`: SPIR-V blobs provided by the user for testing.
 
 Build
 -----
@@ -172,6 +173,14 @@ cd /path/to/rspirv/autogen
 git submodule update --init
 cargo build
 ```
+
+Test
+----
+
+Running `cargo test` would scan `spirv-blobs` folder and its subfolders
+(with symlinks followed) for any SPIR-V binary blobs. The test will try to
+load them, disassemble them, and then compose back from the internal
+representations, ensuring the smooth round-trip.
 
 Contributions
 -------------

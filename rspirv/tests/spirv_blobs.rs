@@ -43,6 +43,6 @@ fn test_external_modules() {
     let dir_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .unwrap()
-        .join("test-data");
+        .join("spirv-blobs");
     test_external_dir(dir_path);
 }
