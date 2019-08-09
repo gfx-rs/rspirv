@@ -90,7 +90,7 @@ fn get_init_list(params: &[structs::Operand]) -> Vec<String> {
                 None
             } else {
                 let name = get_param_name(param);
-                let kind = get_mr_operand_kind(&param.kind);
+                let kind = get_dr_operand_kind(&param.kind);
                 Some(if kind == "LiteralString" {
                     format!("dr::Operand::LiteralString({}.into())", name)
                 } else {
@@ -112,7 +112,7 @@ fn get_push_extras(params: &[structs::Operand],
         if param.quantifier == "" {
             None
         } else if param.quantifier == "?" {
-            let kind = get_mr_operand_kind(&param.kind);
+            let kind = get_dr_operand_kind(&param.kind);
             Some(format!(
                     "{s:8}if let Some(v) = {name} {{\n\
                      {s:12}{container}.push(dr::Operand::{kind}(v{into}));\n\
@@ -157,7 +157,7 @@ fn get_push_extras(params: &[structs::Operand],
                         name = name,
                         container = container))
             } else {
-                let kind = get_mr_operand_kind(&param.kind);
+                let kind = get_dr_operand_kind(&param.kind);
                 Some(format!(
                         "{s:8}for v in {name}.as_ref() {{\n\
                          {s:12}{container}.push(dr::Operand::{kind}(*v))\n\
@@ -181,7 +181,7 @@ fn get_push_extras(params: &[structs::Operand],
 
 /// Returns the generated dr::Operand and its fmt::Display implementation by
 /// walking the given SPIR-V operand kinds `grammar`.
-pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
+pub fn gen_dr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
     let mut ret = String::new();
 
     let kinds: Vec<&str> = grammar.iter().map(|element| {
@@ -272,7 +272,7 @@ pub fn gen_mr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> String {
 
 /// Returns the generated build methods for SPIR-V types by walking the given
 /// SPIR-V instructions `grammar`.
-pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> String {
+pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
@@ -311,7 +311,7 @@ pub fn gen_mr_builder_types(grammar: &structs::Grammar) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_terminator(grammar: &structs::Grammar) -> String {
+pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
@@ -340,7 +340,7 @@ pub fn gen_mr_builder_terminator(grammar: &structs::Grammar) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_normal_insts(grammar: &structs::Grammar) -> String {
+pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all normal instructions (instructions must be
     // in some basic block).
@@ -403,7 +403,7 @@ pub fn gen_mr_builder_normal_insts(grammar: &structs::Grammar) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_constants(grammar: &structs::Grammar) -> String {
+pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
@@ -434,7 +434,7 @@ pub fn gen_mr_builder_constants(grammar: &structs::Grammar) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_debug(grammar: &structs::Grammar) -> String {
+pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
@@ -463,7 +463,7 @@ pub fn gen_mr_builder_debug(grammar: &structs::Grammar) -> String {
     format!("impl Builder {{\n{}\n}}", elements.join("\n\n"))
 }
 
-pub fn gen_mr_builder_annotation(grammar: &structs::Grammar) -> String {
+pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> String {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
     let elements: Vec<String> = grammar.instructions.iter().filter(|inst| {
