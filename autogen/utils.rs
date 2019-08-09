@@ -63,7 +63,7 @@ pub fn snake_casify(symbol: &str) -> String {
 
 /// Returns the corresponding operand kind in data representation for the
 /// given operand `kind` in the grammar.
-pub fn get_mr_operand_kind(kind: &str) -> Ident {
+pub fn get_dr_operand_kind(kind: &str) -> Ident {
     as_ident(if kind == "LiteralInteger" {
         "LiteralInt32"
     } else if kind == "LiteralContextDependentNumber" {

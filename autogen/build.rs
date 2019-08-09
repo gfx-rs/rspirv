@@ -119,37 +119,37 @@ fn main() {
     // Path to the generated operands kind in data representation.
     write(
         &autogen_src_dir.join("../rspirv/dr/autogen_operand.rs"),
-        dr::gen_mr_operand_kinds(&grammar.operand_kinds),
+        dr::gen_dr_operand_kinds(&grammar.operand_kinds),
     );
     // Path to the generated builder for data representation.
     write(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_type.rs"),
-        dr::gen_mr_builder_types(&grammar),
+        dr::gen_dr_builder_types(&grammar),
     );
     // Path to the generated builder for data representation.
     write(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_terminator.rs"),
-        dr::gen_mr_builder_terminator(&grammar),
+        dr::gen_dr_builder_terminator(&grammar),
     );
     // Path to the generated builder for data representation.
     write(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_annotation.rs"),
-        dr::gen_mr_builder_annotation(&grammar),
+        dr::gen_dr_builder_annotation(&grammar),
     );
     // Path to the generated builder for data representation.
     write(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_constant.rs"),
-        dr::gen_mr_builder_constants(&grammar),
+        dr::gen_dr_builder_constants(&grammar),
     );
     // Path to the generated builder for data representation.
     write(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_debug.rs"),
-        dr::gen_mr_builder_debug(&grammar),
+        dr::gen_dr_builder_debug(&grammar),
     );
     // Path to the generated builder for data representation.
     write(
         &autogen_src_dir.join("../rspirv/dr/build/autogen_norm_insts.rs"),
-        dr::gen_mr_builder_normal_insts(&grammar),
+        dr::gen_dr_builder_normal_insts(&grammar),
     );
 
     // Path to the generated decoding errors.

@@ -184,7 +184,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>) -> Vec<(
             // associated parameters.
             let cases = pairs.into_iter().map(|(symbol, params)| {
                 let params = params.iter().map(|element| {
-                    let op_kind = get_mr_operand_kind(element);
+                    let op_kind = get_dr_operand_kind(element);
                     let decode = get_decode_method(element);
                     quote! { dr::Operand::#op_kind(self.decoder.#decode()?) }
                 });
@@ -205,7 +205,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>) -> Vec<(
         } else {  // ValueEnum
             let cases = pairs.into_iter().map(|(symbol, params)| {
                 let params = params.iter().map(|element| {
-                    let op_kind = get_mr_operand_kind(element);
+                    let op_kind = get_dr_operand_kind(element);
                     let decode = get_decode_method(element);
                     quote! { dr::Operand::#op_kind(self.decoder.#decode()?) }
                 });
@@ -259,8 +259,8 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
     ];
     let pair_cases = pair_kinds.iter().map(|&(k0, k1)| {
         let kind = as_ident(&format!("Pair{}{}", k0, k1));
-        let kind0 = get_mr_operand_kind(k0);
-        let kind1 = get_mr_operand_kind(k1);
+        let kind0 = get_dr_operand_kind(k0);
+        let kind1 = get_dr_operand_kind(k1);
         let method0 = get_decode_method(k0);
         let method1 = get_decode_method(k1);
         quote! {
@@ -287,7 +287,7 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
             }
     }).map(|kind| {
         let gkind = as_ident(kind);
-        let dkind = get_mr_operand_kind(kind);
+        let dkind = get_dr_operand_kind(kind);
         let decode = get_decode_method(kind);
         quote! {
             GOpKind::#gkind => vec![dr::Operand::#dkind(self.decoder.#decode()?)]
