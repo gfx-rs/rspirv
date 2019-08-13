@@ -28,3 +28,23 @@ mod constants;
 mod context;
 pub mod items;
 mod types;
+
+#[derive(Clone, Debug)]
+pub enum OperandError {
+    Wrong,
+    Missing,
+    Incomplete,
+}
+
+#[derive(Clone, Debug)]
+pub enum LiftError {
+    Class,
+    OpCode,
+    Operand(OperandError),
+}
+
+impl From<OperandError> for LiftError {
+    fn from(error: OperandError) -> Self {
+        LiftError::Operand(error)
+    }
+}

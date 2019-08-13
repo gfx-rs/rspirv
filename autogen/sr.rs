@@ -19,46 +19,140 @@ use heck::SnakeCase;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
+/// The name of a local variable in the generated code that
+/// represents an iterator over instruction operands.
+const OPERAND_ITER: &str = "operands";
+
 struct OperandTokens {
     /// Rust name used in structured representation
     name: Ident,
     /// Rust type used in structured representation.
     quantified_type: TokenStream,
+    /// Rust expression that initializes the structured representation
+    /// of an operand based on the data representation.
+    lift_expression: TokenStream,
 }
 
 impl OperandTokens {
     fn new(operand: &structs::Operand) -> Self {
         let name = get_param_name(operand);
+        let iter = Ident::new(OPERAND_ITER, Span::call_site());
 
-        let ty = match operand.kind.as_str() {
+        let (ty, lift_value) = match operand.kind.as_str() {
             "IdRef" => match operand.name.trim_matches('\'') {
-                "Length" => quote! { Token<Constant> },
-                "Field Types" => quote! { StructMember },
-                "Parameter Types" => quote! { Token<Type> },
-                name if name.ends_with(" Type") => quote! { Token<Type> },
-                _ => quote! { spirv::Word },
+                "Length" => (
+                    quote! { Token<Constant> },
+                    quote! { self.constants.lookup(*value).unwrap() },
+                ),
+                "Field Types" => (
+                    quote! { StructMember },
+                    quote! { super::types::StructMember::new(value.clone()) },
+                ),
+                "Parameter Types" => (
+                    quote! { Token<Type> },
+                    quote! { self.types.lookup(*value).unwrap() },
+                ),
+                name if name.ends_with(" Type") => (
+                    quote! { Token<Type> },
+                    quote! { self.types.lookup(*value).unwrap() },
+                ),
+                _ => (
+                    quote! { spirv::Word },
+                    quote! { *value },
+                ),
             },
-            "IdMemorySemantics" | "IdScope" | "IdResult" => quote! { spirv::Word },
-            "LiteralInteger" | "LiteralExtInstInteger" => quote! { u32 },
-            "LiteralSpecConstantOpInteger" => quote! { spirv::Op },
+            "IdMemorySemantics" | "IdScope" | "IdResult" => (
+                quote! { spirv::Word },
+                quote! { *value },
+            ),
+            "LiteralInteger" | "LiteralExtInstInteger" => (
+                quote! { u32 },
+                quote! { *value },
+            ),
+            "LiteralSpecConstantOpInteger" => (
+                quote! { spirv::Op },
+                quote! { *value },
+            ),
             "LiteralContextDependentNumber" => panic!("this kind is not expected to be handled here"),
-            "LiteralString" => quote! { String },
-            "PairLiteralIntegerIdRef" => quote! { (u32, spirv::Word) },
-            "PairIdRefLiteralInteger" => quote! { (spirv::Word, u32) },
-            "PairIdRefIdRef" => quote! { (spirv::Word, spirv::Word) },
+            "LiteralString" => (
+                quote! { String },
+                quote! { value.clone() },
+            ),
+            "PairLiteralIntegerIdRef" => (
+                quote! { (u32, spirv::Word) },
+                quote! {
+                   match (#iter.next(), #iter.next()) {
+                       (Some(&dr::Operand::LiteralInt32(value)), Some(&dr::Operand::IdRef(id))) => Some((value, Token::new(id))),
+                       (None, None) => None,
+                       _ => Err(OperandError::Wrong)?,
+                   }
+               },
+            ),
+            "PairIdRefLiteralInteger" => (
+                quote! { (spirv::Word, u32) },
+                quote! {
+                    match (#iter.next(), #iter.next()) {
+                        (Some(&dr::Operand::IdRef(id)), Some(&dr::Operand::LiteralInt32(value))) => Some((Token::new(id), value)),
+                        (None, None) => None,
+                        _ => Err(OperandError::Wrong)?,
+                    }
+                },
+            ),
+            "PairIdRefIdRef" => (
+                quote! { (spirv::Word, spirv::Word) },
+                quote! {
+                    match (#iter.next(), #iter.next()) {
+                        (Some(&dr::Operand::IdRef(id1)), Some(&dr::Operand::IdRef(id2))) => Some((Token::new(id1), Token::new(id2))),
+                        (None, None) => None,
+                        _ => Err(OperandError::Wrong)?,
+                    }
+                },
+            ),
             kind => {
                 let kind = Ident::new(kind, Span::call_site());
-                quote! { spirv::#kind }
+                (
+                    quote! { spirv::#kind },
+                    quote! { *value },
+                )
             }
+        };
+
+        let kind_ident = Ident::new(&operand.kind, Span::call_site());
+        let lift = quote! {
+            match #iter.next() {
+                Some(&dr::Operand::#kind_ident(ref value)) => Some(#lift_value),
+                Some(_) => Err(OperandError::Wrong)?,
+                None => None,
+            }
+        };
+
+        let (quantified_type, lift_expression) = match operand.quantifier.as_str() {
+            structs::Quantifier::One => (
+                ty,
+                quote! {
+                    (#lift).ok_or(OperandError::Missing)?
+                },
+            ),
+            structs::Quantifier::ZeroOrOne => (
+                quote! { Option<#ty> },
+                lift
+            ),
+            structs::Quantifier::ZeroOrMore => (
+                quote! { Vec<#ty> },
+                quote! {{
+                    let mut vec = Vec::new();
+                    while let Some(value) = #lift {
+                        vec.push(value);
+                    }
+                    vec
+                }},
+            ),
         };
 
         OperandTokens {
             name,
-            quantified_type: match operand.quantifier {
-                structs::Quantifier::One => ty,
-                structs::Quantifier::ZeroOrOne => quote! { Option<#ty> },
-                structs::Quantifier::ZeroOrMore => quote! { Vec<#ty> },
-            },
+            quantified_type,
+            lift_expression,
         }
     }
 }
@@ -137,9 +231,11 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut type_variants = Vec::new();
     let mut type_checks = Vec::new();
     let mut type_constructors = Vec::new();
+    let mut lifts = Vec::new();
 
     let mut field_names = Vec::new();
     let mut field_types = Vec::new();
+    let mut field_lifts = Vec::new();
 
     // Compose the token stream for all instructions
     for inst in grammar_instructions
@@ -147,11 +243,14 @@ pub fn gen_sr_code_from_instruction_grammar(
         .filter(|i| i.class != Some(structs::Class::Constant)) // Skip constants
     {
         // Get the token for its enumerant
-        let name = Ident::new(&inst.opname[2..], Span::call_site());
+        let inst_name = &inst.opname[2..];
+        let name_ident = Ident::new(inst_name, Span::call_site());
+        let opcode = inst.opcode;
 
         // Re-use the allocation between iterations of the loop
         field_names.clear();
         field_types.clear();
+        field_lifts.clear();
 
         // Compose the token stream for all parameters
         for operand in inst.operands.iter() {
@@ -161,9 +260,19 @@ pub fn gen_sr_code_from_instruction_grammar(
             let tokens = OperandTokens::new(operand);
             field_names.push(tokens.name);
             field_types.push(tokens.quantified_type);
+            field_lifts.push(tokens.lift_expression);
         }
         let field_names = field_names.as_slice();
         let field_types = field_types.as_slice();
+        let field_lifts = field_lifts.as_slice();
+        let iterator_init = if field_names.is_empty() {
+            quote! {}
+        } else {
+            let iter = Ident::new(OPERAND_ITER, Span::call_site());
+            quote! {
+                let mut #iter = raw.operands.iter();
+            }
+        };
 
         match inst.class {
             Some(structs::Class::Type) => {
@@ -228,21 +337,38 @@ pub fn gen_sr_code_from_instruction_grammar(
                 // Create a standalone struct
                 inst_structs.push(quote! {
                     #[derive(Clone, Debug, Eq, PartialEq)]
-                    pub struct #name {
-                        #( #field_names: #field_types ),*
+                    pub struct #name_ident {
+                        #( pub(in crate::sr) #field_names: #field_types ),*
                     }
-                })
+                });
+                let func_name = Ident::new(
+                    &format!("lift_{}", snake_casify(inst_name)),
+                    Span::call_site(),
+                );
+                lifts.push(quote! {
+                    pub fn #func_name(
+                        &mut self, raw: &dr::Instruction
+                    ) -> Result<instructions::#name_ident, LiftError> {
+                        if raw.class.opcode as u32 != #opcode {
+                            return Err(LiftError::OpCode)
+                        }
+                        #iterator_init;
+                        Ok(instructions::#name_ident {
+                            #( #field_names: #field_lifts, )*
+                        })
+                    }
+                });
             }
             Some(Terminator) => {
                 terminators.push(quote! {
-                    #name {#( #field_names: #field_types ),*}
+                    #name_ident {#( #field_names: #field_types ),*}
                 });
             }
             _ => {
                 op_variants.push(if field_names.is_empty() {
-                    quote!{ #name }
+                    quote!{ #name_ident }
                 } else {
-                    quote! { #name {
+                    quote! { #name_ident {
                         #( #field_names: #field_types ),*
                     }}
                 });
@@ -281,6 +407,8 @@ pub fn gen_sr_code_from_instruction_grammar(
     let context_logic = quote! {
         impl Context {
             #( #type_constructors )*
+            // ------------------------//
+            #( #lifts )*
         }
     };
 

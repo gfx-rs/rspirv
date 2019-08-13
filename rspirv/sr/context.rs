@@ -16,13 +16,14 @@ use std::{
     collections::HashMap,
     hash::BuildHasherDefault,
     marker::PhantomData,
-    ops,
 };
 
 use fxhash::FxHasher;
 use spirv;
 
 use crate::{
+    dr,
+    sr::{instructions, LiftError, OperandError},
     sr::constants::{Constant, ConstantEnum},
     sr::types::{StructMember, TypeEnum, Type},
 };
@@ -93,6 +94,11 @@ impl<T> Storage<T> {
         }
     }
 
+    /// Look up a value by the given SPIR-V <id>.
+    pub fn lookup(&mut self, raw_index: spirv::Word) -> Option<Token<T>> {
+        self.lookup.get(&raw_index).cloned().map(Token::new)
+    }
+
     /// Associates the given value to the given SPIR-V <id> inside this storage
     /// and returns a token for representing this value.
     pub fn assign(&mut self, raw_index: spirv::Word, value: T) -> Token<T> {
@@ -124,7 +130,7 @@ impl<T> Storage<T> {
     }
 }
 
-impl<T> ops::Index<Token<T>> for Storage<T> {
+impl<T> std::ops::Index<Token<T>> for Storage<T> {
     type Output = T;
     fn index(&self, token: Token<T>) -> &T {
         &self.data[token.index as usize]
