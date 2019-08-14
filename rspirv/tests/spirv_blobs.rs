@@ -1,9 +1,18 @@
 use rspirv::{
     binary::{Assemble as _, Disassemble as _},
     dr,
+    //sr::items,
 };
 
 use std::path::PathBuf;
+
+fn test_spv(blob: &[u8]) {
+    let module = dr::load_bytes(blob).unwrap();
+    let _disasm = module.disassemble();
+    let _assembly = module.assemble();
+    //TODO: unlock when ready
+    //let _structured = items::Module::from_data_representation(&module).unwrap();
+}
 
 fn test_external_dir(dir_path: PathBuf) {
     use std::fs;
@@ -29,9 +38,7 @@ fn test_external_dir(dir_path: PathBuf) {
                 None => continue
             }
             let spv = fs::read(path).unwrap();
-            let module = dr::load_bytes(spv).unwrap();
-            let _disasm = module.disassemble();
-            let _assembly = module.assemble();
+            test_spv(&spv);
         } else {
             test_external_dir(path);
         }

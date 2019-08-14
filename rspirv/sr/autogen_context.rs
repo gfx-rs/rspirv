@@ -457,7 +457,7 @@ impl Context {
             })
             .ok_or(OperandError::Missing)?,
             function_type: (match operands.next() {
-                Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup(*value).unwrap()),
+                Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                 Some(_) => Err(OperandError::Wrong)?,
                 None => None,
             })

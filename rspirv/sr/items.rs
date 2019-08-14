@@ -1,22 +1,26 @@
 use crate::{
-    dr::ModuleHeader,
-    sr::Token,
-    sr::instructions,
-    sr::ops::{Op, Terminator},
-    sr::types::{Type},
+    dr,
+    sr::{
+        LiftError, Token,
+        constants::Constant,
+        context::Context,
+        instructions,
+        ops::{Op, Terminator},
+        types::{Type},
+    },
 };
 use spirv;
 
 pub struct EntryPoint {
     pub execution_model: spirv::ExecutionModel,
-    pub entry_point: Token<Function>,
+    pub function: Token<Function>,
     pub name: String,
     //pub interface: Vec<spirv::Word>,
 }
 
 pub struct BasicBlock {
-   pub terminator: Terminator,
-   pub ops: Vec<Op>,
+    pub ops: Vec<Op>,
+    pub terminator: Terminator,
 }
 
 pub struct Function {
@@ -31,25 +35,109 @@ pub struct Function {
 
 pub struct Module {
     /// The module header.
-    pub header: ModuleHeader,
+    pub header: dr::ModuleHeader,
     /// All OpCapability instructions.
-    pub capabilities: Vec<instructions::Capability>,
+    pub capabilities: Vec<spirv::Capability>,
     /// All OpExtension instructions.
-    pub extensions: Vec<instructions::Extension>,
+    pub extensions: Vec<String>,
     /// All OpExtInstImport instructions.
-    pub ext_inst_imports: Vec<instructions::ExtInstImport>,
+    pub ext_inst_imports: Vec<String>,
     /// The OpMemoryModel instruction.
-    ///
-    /// Although it is required by the specification to appear exactly once
-    /// per module, we keep it optional here to allow flexibility.
     pub memory_model: instructions::MemoryModel,
-    /// All entry point declarations, using OpEntryPoint.
-    pub entry_points: Vec<instructions::EntryPoint>,
-    /// All execution mode declarations, using OpExecutionMode.
-    pub execution_modes: Vec<instructions::ExecutionMode>,
+    /// All entry point declarations.
+    pub entry_points: Vec<EntryPoint>,
 
-    // some missing here...
-
+    /// All constants.
+    pub types: Vec<Type>,
+    /// All constants.
+    pub constants: Vec<Constant>,
     /// All functions.
     pub functions: Vec<Function>,
+}
+
+/// Error that may oocur during the convesion from the data representation
+/// of a module into a structured representation.
+#[derive(Clone, Debug)]
+pub enum ConversionError {
+    MissingHeader,
+    MissingFunction,
+    MissingFunctionType,
+    MissingLabel,
+    MissingTerminator,
+    Lift(LiftError),
+}
+
+impl From<LiftError> for ConversionError {
+    fn from(error: LiftError) -> Self {
+        ConversionError::Lift(error)
+    }
+}
+
+impl Module {
+    /// Convert a module from the data representation into structured.
+    pub fn from_data_representation(module: &dr::Module) -> Result<Self, ConversionError> {
+        let mut context = Context::new();
+        let mut functions = Vec::new();
+        let entry_points = Vec::new();
+
+        for fun in module.functions.iter() {
+            let def = context.lift_function(
+                fun.def
+                    .as_ref()
+                    .ok_or(ConversionError::MissingFunction)?
+            )?;
+            let fty = context.lift_type_function(
+                module.types_global_values
+                    .iter()
+                    .find(|inst| inst.result_id == Some(def.function_type))
+                    .ok_or(ConversionError::MissingFunctionType)?
+            )?;
+
+            let mut basic_blocks = Vec::with_capacity(fun.basic_blocks.len());
+            for block in fun.basic_blocks.iter() {
+                /*let label = context.lift_label(
+                    block.label
+                        .as_ref()
+                        .ok_or(ConversionError::MissingLabel)?,
+                )?;*/
+                basic_blocks.push(BasicBlock {
+                    //label: context.labels.append(label),
+                    ops: Vec::new(),
+                    terminator: context.lift_terminator(
+                        block.instructions
+                            .last()
+                            .ok_or(ConversionError::MissingTerminator)?
+                    )?,
+                });
+            }
+
+            functions.push(Function {
+                control: def.function_control,
+                result: fty.return_type,
+                parameters: Vec::new(),
+                basic_blocks,
+            });
+        }
+
+        Ok(Module {
+            header: match module.header {
+                Some(ref header) => header.clone(),
+                None => return Err(ConversionError::MissingHeader),
+            },
+            capabilities: module.capabilities
+                .iter()
+                .map(|cap| context.lift_capability(cap).map(|cap| cap.capability))
+                .collect::<Result<_, LiftError>>()?,
+            extensions: Vec::new(),
+            ext_inst_imports: Vec::new(),
+            memory_model: match module.memory_model {
+                Some(ref mm) => context.lift_memory_model(mm)?,
+                None => return Err(ConversionError::MissingHeader),
+            },
+            entry_points,
+            types: Vec::new(),
+            constants: Vec::new(),
+            functions,
+        })
+    }
 }

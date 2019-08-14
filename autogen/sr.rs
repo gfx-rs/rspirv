@@ -53,6 +53,11 @@ impl OperandTokens {
                         quote! { Token<Type> },
                         quote! { self.types.lookup(*value).unwrap() },
                     ),
+                    // Function type is standalone, manually linked by the code.
+                    "Function Type" => (
+                        quote! { spirv::Word },
+                        quote! { *value },
+                    ),
                     name if name.ends_with(" Type") => (
                         quote! { Token<Type> },
                         quote! { self.types.lookup(*value).unwrap() },
@@ -471,8 +476,6 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
 
     let instructions = quote! {
-        use crate::sr::{Token, Type};
-
         #( #inst_structs )*
     };
 

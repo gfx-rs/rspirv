@@ -16,7 +16,6 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use crate::sr::{Token, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Extension {
     pub(in crate::sr) name: String,
@@ -49,7 +48,7 @@ pub struct Capability {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Function {
     pub(in crate::sr) function_control: spirv::FunctionControl,
-    pub(in crate::sr) function_type: Token<Type>,
+    pub(in crate::sr) function_type: spirv::Word,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FunctionParameter {}
