@@ -146,7 +146,7 @@ impl OperandTokens {
            }
         };
 
-        let (quantified_type, lift_expression) = match operand.quantifier.as_str() {
+        let (quantified_type, lift_expression) = match operand.quantifier {
             structs::Quantifier::One => (
                 ty,
                 quote! {
@@ -309,7 +309,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             }
         };
 
-        match inst.class.as_str() {
+        match inst.class {
             Some(structs::Class::Type) if STANDALONE_TYPES.contains(&type_name) => {
                 type_structs.push(quote! {
                     #[derive(Clone, Debug, Eq, PartialEq)]
@@ -318,7 +318,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                     }
                 });
                 let func_name = Ident::new(
-                    &format!("lift_type_{}", snake_casify(type_name)),
+                    &format!("lift_type_{}", type_name.to_snake_case()),
                     Span::call_site(),
                 );
                 lifts.push(quote! {
@@ -399,7 +399,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                     }
                 });
                 let func_name = Ident::new(
-                    &format!("lift_{}", snake_casify(inst_name)),
+                    &format!("lift_{}", inst_name.to_snake_case()),
                     Span::call_site(),
                 );
                 lifts.push(quote! {

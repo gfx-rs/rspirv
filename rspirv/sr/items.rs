@@ -10,6 +10,7 @@ use crate::{
     },
 };
 use spirv;
+use std::collections::HashMap;
 
 pub struct EntryPoint {
     pub execution_model: spirv::ExecutionModel,
@@ -79,6 +80,26 @@ impl Module {
         let mut context = Context::new();
         let mut functions = Vec::new();
         let entry_points = Vec::new();
+        let mut function_type_map = HashMap::new();
+
+        for inst in module.types_global_values.iter() {
+            match inst.class.opcode {
+                spirv::Op::TypeFunction => {
+                    match inst.result_id {
+                        Some(id) => {
+                            function_type_map.insert(
+                                id,
+                                context.lift_type_function(inst)?,
+                            );
+                        }
+                        None => {
+                            //warn!("{} without a result <id>", inst.opcode);
+                        }
+                    }
+                }
+                _ => {} //TODO
+            }
+        }
 
         for fun in module.functions.iter() {
             let def = context.lift_function(
@@ -86,22 +107,13 @@ impl Module {
                     .as_ref()
                     .ok_or(ConversionError::MissingFunction)?
             )?;
-            let fty = context.lift_type_function(
-                module.types_global_values
-                    .iter()
-                    .find(|inst| inst.result_id == Some(def.function_type))
-                    .ok_or(ConversionError::MissingFunctionType)?
-            )?;
+            let fty = function_type_map
+                .get(&def.function_type)
+                .ok_or(ConversionError::MissingFunctionType)?;
 
             let mut basic_blocks = Vec::with_capacity(fun.basic_blocks.len());
             for block in fun.basic_blocks.iter() {
-                /*let label = context.lift_label(
-                    block.label
-                        .as_ref()
-                        .ok_or(ConversionError::MissingLabel)?,
-                )?;*/
                 basic_blocks.push(BasicBlock {
-                    //label: context.labels.append(label),
                     ops: Vec::new(),
                     terminator: context.lift_terminator(
                         block.instructions
