@@ -46,7 +46,7 @@ impl OperandTokens {
                 ),
                 "Field Types" => (
                     quote! { StructMember },
-                    quote! { super::types::StructMember::new(value.clone()) },
+                    quote! { types::StructMember::new(value.clone()) },
                 ),
                 "Parameter Types" => (
                     quote! { Token<Type> },
@@ -220,6 +220,10 @@ pub struct CodeGeneratedFromInstructionGrammar {
     pub context_logic: String,
 }
 
+const STANDALONE_TYPES: &[&str] = &[
+    "Function",
+];
+
 pub fn gen_sr_code_from_instruction_grammar(
     grammar_instructions: &[structs::Instruction],
 ) -> CodeGeneratedFromInstructionGrammar {
@@ -228,6 +232,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut inst_structs = Vec::new();
     let mut op_variants = Vec::new();
     let mut terminators = Vec::new();
+    let mut type_structs = Vec::new();
     let mut type_variants = Vec::new();
     let mut type_checks = Vec::new();
     let mut type_constructors = Vec::new();
@@ -245,6 +250,12 @@ pub fn gen_sr_code_from_instruction_grammar(
         // Get the token for its enumerant
         let inst_name = &inst.opname[2..];
         let name_ident = Ident::new(inst_name, Span::call_site());
+        let type_name = if inst.opname.len() > 6 {
+            &inst.opname[6..]
+        } else {
+            "_"
+        };
+        let type_ident = Ident::new(type_name, Span::call_site());
         let opcode = inst.opcode;
 
         // Re-use the allocation between iterations of the loop
@@ -274,15 +285,37 @@ pub fn gen_sr_code_from_instruction_grammar(
             }
         };
 
-        match inst.class {
+        match inst.class.as_str() {
+            Some(structs::Class::Type) if STANDALONE_TYPES.contains(&type_name) => {
+                type_structs.push(quote! {
+                    #[derive(Clone, Debug, Eq, PartialEq)]
+                    pub struct #type_ident {
+                        #( pub(in crate::sr) #field_names: #field_types ),*
+                    }
+                });
+                let func_name = Ident::new(
+                    &format!("lift_type_{}", snake_casify(type_name)),
+                    Span::call_site(),
+                );
+                lifts.push(quote! {
+                    pub fn #func_name(
+                        &mut self, raw: &dr::Instruction
+                    ) -> Result<types::#type_ident, LiftError> {
+                        if raw.class.opcode as u32 != #opcode {
+                            return Err(LiftError::OpCode)
+                        }
+                        #iterator_init;
+                        Ok(types::#type_ident {
+                            #( #field_names: #field_lifts, )*
+                        })
+                    }
+                });
+            }
             Some(structs::Class::Type) => {
-                let type_name = &inst.opname[6..];
-                let symbol = Ident::new(type_name, Span::call_site());
-
                 type_variants.push(if field_names.is_empty() {
-                    quote!{ #symbol }
+                    quote!{ #type_ident }
                 } else {
-                    quote! { #symbol {
+                    quote! { #type_ident {
                         #( #field_names: #field_types ),*
                     }}
                 });
@@ -302,7 +335,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                     type_checks.push(quote! {
                         pub fn #func_name_ident(&self) -> bool {
                             match self.ty {
-                                TypeEnum::#symbol #check_params => true,
+                                TypeEnum::#type_ident #check_params => true,
                                 _ => false
                             }
                         }
@@ -324,7 +357,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                             &mut self, #( #field_names: #field_types ),*
                         ) -> Token<Type> {
                             self.types.fetch_or_append(Type {
-                                ty: TypeEnum::#symbol #init_list,
+                                ty: TypeEnum::#type_ident #init_list,
                                 decorations: Vec::new(),
                             })
                         }
@@ -377,6 +410,8 @@ pub fn gen_sr_code_from_instruction_grammar(
     }
 
     let types = quote! {
+        #( #type_structs )*
+
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub(in crate::sr) enum TypeEnum {
             #( #type_variants ),*
@@ -407,7 +442,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     let context_logic = quote! {
         impl Context {
             #( #type_constructors )*
-            // ------------------------//
+            // ------------------------ //
             #( #lifts )*
         }
     };

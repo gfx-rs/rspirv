@@ -86,7 +86,6 @@ mod tests {
         assert!(!t.is_structure_type());
         assert!(!t.is_opaque_type());
         assert!(!t.is_pointer_type());
-        assert!(!t.is_function_type());
         assert!(!t.is_event_type());
         assert!(!t.is_device_event_type());
         assert!(!t.is_reserve_id_type());
@@ -116,7 +115,6 @@ mod tests {
         assert!(!t.is_structure_type());
         assert!(!t.is_opaque_type());
         assert!(!t.is_pointer_type());
-        assert!(!t.is_function_type());
         assert!(!t.is_event_type());
         assert!(!t.is_device_event_type());
         assert!(!t.is_reserve_id_type());

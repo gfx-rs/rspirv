@@ -16,6 +16,11 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Function {
+    pub(in crate::sr) return_type: Token<Type>,
+    pub(in crate::sr) parameter_types: Vec<Token<Type>>,
+}
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(in crate::sr) enum TypeEnum {
     Void,
@@ -65,10 +70,6 @@ pub(in crate::sr) enum TypeEnum {
     Pointer {
         storage_class: spirv::StorageClass,
         pointee_type: Token<Type>,
-    },
-    Function {
-        return_type: Token<Type>,
-        parameter_types: Vec<Token<Type>>,
     },
     Event,
     DeviceEvent,
@@ -166,12 +167,6 @@ impl Type {
     pub fn is_pointer_type(&self) -> bool {
         match self.ty {
             TypeEnum::Pointer { .. } => true,
-            _ => false,
-        }
-    }
-    pub fn is_function_type(&self) -> bool {
-        match self.ty {
-            TypeEnum::Function { .. } => true,
             _ => false,
         }
     }
