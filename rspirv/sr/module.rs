@@ -18,7 +18,7 @@ use crate::{
     sr::{InstructionError, OperandError},
     sr::constants::Constant,
     sr::instructions,
-    sr::ops::{Op, Terminator},
+    sr::ops::{self, Op},
     sr::storage::*,
     sr::types::Type,
 };
@@ -33,7 +33,7 @@ pub struct EntryPoint {
 }
 
 pub struct BasicBlock {
-   pub terminator: Terminator,
+   pub terminator: ops::Terminator,
    pub ops: Vec<Op>,
 }
 

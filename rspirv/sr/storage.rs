@@ -61,7 +61,7 @@ impl<T> Token<T> {
         marker: PhantomData,
     };
 
-    fn new(index: Index) -> Self {
+    pub(in crate::sr) fn new(index: Index) -> Self {
         Token {
             index,
             marker: PhantomData,

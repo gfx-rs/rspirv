@@ -38,97 +38,122 @@ impl OperandTokens {
         let name = get_param_name(operand);
         let iter = Ident::new(OPERAND_ITER, Span::call_site());
 
-        let (ty, lift_value) = match operand.kind.as_str() {
-            "IdRef" => match operand.name.trim_matches('\'') {
-                "Length" => (
-                    quote! { Token<Constant> },
-                    quote! { self.constants.lookup(*value).unwrap() },
-                ),
-                "Field Types" => (
-                    quote! { StructMember },
-                    quote! { types::StructMember::new(value.clone()) },
-                ),
-                "Parameter Types" => (
-                    quote! { Token<Type> },
-                    quote! { self.types.lookup(*value).unwrap() },
-                ),
-                name if name.ends_with(" Type") => (
-                    quote! { Token<Type> },
-                    quote! { self.types.lookup(*value).unwrap() },
-                ),
-                _ => (
-                    //TODO: proper `Token<>`
-                    quote! { spirv::Word },
-                    quote! { *value },
-                ),
+        let (ty, lift_value, first_name, second_name) = match operand.kind.as_str() {
+            "IdRef" => {
+                let (ty, value) = match operand.name.trim_matches('\'') {
+                    "Length" => (
+                        quote! { Token<Constant> },
+                        quote! { self.constants.lookup(*value).unwrap() },
+                    ),
+                    "Field Types" => (
+                        quote! { StructMember },
+                        quote! { types::StructMember::new(value.clone()) },
+                    ),
+                    "Parameter Types" => (
+                        quote! { Token<Type> },
+                        quote! { self.types.lookup(*value).unwrap() },
+                    ),
+                    name if name.ends_with(" Type") => (
+                        quote! { Token<Type> },
+                        quote! { self.types.lookup(*value).unwrap() },
+                    ),
+                    //TODO:
+                    //"Condition" => Token<Instruction>,
+                    //"Default" => Token<BasicBlock>,
+                    //"Value" => Token<Instruction>,
+                    name if name.ends_with(" Label") => (
+                        quote! { spirv::Word },
+                        quote! { *value },
+                        //TODO:
+                        //quote! { Token<Type> },
+                        //quote! { self.types.lookup(*value).unwrap() },
+                    ),
+                    _ => (
+                    	//TODO: proper `Token<>`
+                        quote! { spirv::Word },
+                        quote! { *value },
+                    ),
+                };
+                (ty, value, operand.kind.as_str(), None)
             },
             "IdMemorySemantics" | "IdScope" | "IdResult" => (
                 //TODO: proper `Token<>`
                 quote! { spirv::Word },
                 quote! { *value },
+                operand.kind.as_str(),
+                None,
             ),
             "LiteralInteger" | "LiteralExtInstInteger" => (
                 quote! { u32 },
                 quote! { *value },
+                "LiteralInt32",
+                None
             ),
             "LiteralSpecConstantOpInteger" => (
                 quote! { spirv::Op },
                 quote! { *value },
+                operand.kind.as_str(),
+                None,
             ),
             "LiteralContextDependentNumber" => panic!("this kind is not expected to be handled here"),
             "LiteralString" => (
                 quote! { String },
                 quote! { value.clone() },
+                operand.kind.as_str(),
+                None,
             ),
             "PairLiteralIntegerIdRef" => (
-                //TODO: proper `Token<>`
-                quote! { (u32, spirv::Word) },
-                quote! {
-                   match (#iter.next(), #iter.next()) {
-                       (Some(&dr::Operand::LiteralInt32(value)), Some(&dr::Operand::IdRef(id))) => Some((value, Token::new(id))),
-                       (None, None) => None,
-                       _ => Err(OperandError::WrongType)?,
-                   }
-               },
+                //TODO: Token<BasicBlock>
+                quote! { (u32, Token<Type>) },
+                quote! { (first, Token::new(second)) },
+                "LiteralInt32",
+                Some("IdRef"),
             ),
             "PairIdRefLiteralInteger" => (
-                //TODO: proper `Token<>`
-                quote! { (spirv::Word, u32) },
-                quote! {
-                    match (#iter.next(), #iter.next()) {
-                        (Some(&dr::Operand::IdRef(id)), Some(&dr::Operand::LiteralInt32(value))) => Some((Token::new(id), value)),
-                        (None, None) => None,
-                        _ => Err(OperandError::WrongType)?,
-                    }
-                },
+                quote! { (Token<Type>, u32) },
+                quote! { (Token::new(first), second) },
+                "IdRef",
+                Some("LiteralInt32"),
             ),
             "PairIdRefIdRef" => (
                 //TODO: proper `Token<>`
                 quote! { (spirv::Word, spirv::Word) },
-                quote! {
-                    match (#iter.next(), #iter.next()) {
-                        (Some(&dr::Operand::IdRef(id1)), Some(&dr::Operand::IdRef(id2))) => Some((Token::new(id1), Token::new(id2))),
-                        (None, None) => None,
-                        _ => Err(OperandError::WrongType)?,
-                    }
-                },
+                quote! { (first, second) },
+                "IdRef",
+                Some("IdRef"),
             ),
             kind => {
                 let kind = Ident::new(kind, Span::call_site());
                 (
                     quote! { spirv::#kind },
                     quote! { *value },
+                    operand.kind.as_str(),
+                    None,
                 )
             }
         };
 
-        let kind_ident = Ident::new(&operand.kind, Span::call_site());
-        let lift = quote! {
-            match #iter.next() {
-                Some(&dr::Operand::#kind_ident(ref value)) => Some(#lift_value),
-                Some(_) => Err(OperandError::WrongType)?,
-                None => None,
+        let first_key = Ident::new(first_name, Span::call_site());
+        let lift = match second_name {
+            None => {
+                quote! {
+                    match #iter.next() {
+                        Some(&dr::Operand::#first_key(ref value)) => Some(#lift_value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    }
+                }
             }
+            Some(name) => {
+                let second_key = Ident::new(name, Span::call_site());
+                quote! {
+                    match (#iter.next(), #iter.next()) {
+                        (Some(&dr::Operand::#first_key(first)), Some(&dr::Operand::#second_key(second))) => Some(#lift_value),
+                        (None, None) => None,
+                        _ => Err(OperandError::WrongType)?,
+                    }
+                }
+           }
         };
 
         let (quantified_type, lift_expression) = match operand.quantifier {
@@ -146,8 +171,8 @@ impl OperandTokens {
                 quote! { Vec<#ty> },
                 quote! {{
                     let mut vec = Vec::new();
-                    while let Some(value) = #lift {
-                        vec.push(value);
+                    while let Some(item) = #lift {
+                        vec.push(item);
                     }
                     vec
                 }},
@@ -226,9 +251,14 @@ pub fn gen_sr_code_from_instruction_grammar(
 
     let mut inst_structs = Vec::new();
     let mut op_variants = Vec::new();
-    let mut terminators = Vec::new();
+    let mut branch_variants = Vec::new();
+    let mut branch_lifts = Vec::new();
+    let mut terminator_variants = Vec::new();
+    let mut terminator_lifts = Vec::new();
     let mut type_variants = Vec::new();
     let mut lifts = Vec::new();
+
+    let iter_ident = &Ident::new(OPERAND_ITER, Span::call_site());
 
     let mut field_names = Vec::new();
     let mut field_types = Vec::new();
@@ -271,9 +301,8 @@ pub fn gen_sr_code_from_instruction_grammar(
         let iterator_init = if field_names.is_empty() {
             quote! {}
         } else {
-            let iter = Ident::new(OPERAND_ITER, Span::call_site());
             quote! {
-                let mut #iter = raw.operands.iter();
+                let mut #iter_ident = raw.operands.iter();
             }
         };
 
@@ -322,10 +351,39 @@ pub fn gen_sr_code_from_instruction_grammar(
                     }
                 });
             }
+            Some(Branch) => {
+                if field_names.is_empty() {
+                    branch_variants.push(quote! { #name_ident });
+                    branch_lifts.push(quote! {
+                        #opcode => Ok(ops::Branch::#name_ident),
+                    });
+                } else {
+                    branch_variants.push(quote! {
+                        #name_ident {#( #field_names: #field_types ),*}
+                    });
+                    branch_lifts.push(quote! {
+                        #opcode => Ok(ops::Branch::#name_ident {
+                            #( #field_names: #field_lifts, )*
+                        }),
+                    });
+                }
+            }
             Some(Terminator) => {
-                terminators.push(quote! {
-                    #name_ident {#( #field_names: #field_types ),*}
-                });
+                if field_names.is_empty() {
+                    terminator_variants.push(quote! { #name_ident });
+                    terminator_lifts.push(quote! {
+                        #opcode => Ok(ops::Terminator::#name_ident),
+                    });
+                } else {
+                    terminator_variants.push(quote! {
+                        #name_ident {#( #field_names: #field_types ),*}
+                    });
+                    terminator_lifts.push(quote! {
+                        #opcode => Ok(ops::Terminator::#name_ident {
+                            #( #field_names: #field_lifts, )*
+                        }),
+                    });
+                }
             }
             _ => {
                 op_variants.push(if field_names.is_empty() {
@@ -345,17 +403,25 @@ pub fn gen_sr_code_from_instruction_grammar(
             #( #type_variants ),*
         }
     };
+
     let instructions = quote! {
         use crate::sr::{storage::Token, Type};
 
         #( #inst_structs )*
     };
+
     let ops = quote! {
         use crate::sr::{storage::Token, Type};
 
         #[derive(Clone, Debug, Eq, PartialEq)]
+        pub enum Branch {
+            #( #branch_variants ),*
+        }
+
+        #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Terminator {
-            #( #terminators ),*
+            Branch(Branch),
+            #( #terminator_variants ),*
         }
 
         #[derive(Clone, Debug, Eq, PartialEq)]
@@ -363,8 +429,27 @@ pub fn gen_sr_code_from_instruction_grammar(
             #( #op_variants ),*
         }
     };
+
     let module_logic = quote! {
         impl Module {
+            pub fn lift_branch(
+                &mut self, raw: &dr::Instruction
+            ) -> Result<ops::Branch, InstructionError> {
+                let mut #iter_ident = raw.operands.iter();
+                match raw.class.opcode as u32 {
+                    #( #branch_lifts )*
+                    _ => Err(InstructionError::WrongOpcode),
+                }
+            }
+            pub fn lift_terminator(
+                &mut self, raw: &dr::Instruction
+            ) -> Result<ops::Terminator, InstructionError> {
+                match raw.class.opcode as u32 {
+                    #( #terminator_lifts )*
+                    _ => self.lift_branch(raw)
+                        .map(ops::Terminator::Branch)
+                }
+            }
             //TODO: these are DR-specific and may need a new home
             #( #lifts )*
         }
