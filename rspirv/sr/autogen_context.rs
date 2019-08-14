@@ -17,6 +17,95 @@
 // DO NOT MODIFY!
 
 impl Context {
+    pub fn lift_branch(&mut self, raw: &dr::Instruction) -> Result<ops::Branch, LiftError> {
+        let mut operands = raw.operands.iter();
+        match raw.class.opcode as u32 {
+            249u32 => Ok(ops::Branch::Branch {
+                target_label: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::Wrong)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            250u32 => Ok(ops::Branch::BranchConditional {
+                condition: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::Wrong)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                true_label: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::Wrong)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                false_label: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::Wrong)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                branch_weights: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::Wrong)?,
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
+            251u32 => Ok(ops::Branch::Switch {
+                selector: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::Wrong)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                default: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::Wrong)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                target: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match (operands.next(), operands.next()) {
+                        (
+                            Some(&dr::Operand::LiteralInt32(first)),
+                            Some(&dr::Operand::IdRef(second)),
+                        ) => Some((first, Token::new(second))),
+                        (None, None) => None,
+                        _ => Err(OperandError::Wrong)?,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
+            253u32 => Ok(ops::Branch::Return),
+            254u32 => Ok(ops::Branch::ReturnValue {
+                value: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::Wrong)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            _ => Err(LiftError::OpCode),
+        }
+    }
+    pub fn lift_terminator(&mut self, raw: &dr::Instruction) -> Result<ops::Terminator, LiftError> {
+        match raw.class.opcode as u32 {
+            252u32 => Ok(ops::Terminator::Kill),
+            255u32 => Ok(ops::Terminator::Unreachable),
+            _ => self.lift_branch(raw).map(ops::Terminator::Branch),
+        }
+    }
     pub fn type_void(&mut self) -> Token<Type> {
         self.types.fetch_or_append(Type {
             ty: TypeEnum::Void,
@@ -275,12 +364,12 @@ impl Context {
             .ok_or(OperandError::Missing)?,
             interface: {
                 let mut vec = Vec::new();
-                while let Some(value) = match operands.next() {
+                while let Some(item) = match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::Wrong)?,
                     None => None,
                 } {
-                    vec.push(value);
+                    vec.push(item);
                 }
                 vec
             },
@@ -340,14 +429,14 @@ impl Context {
             .ok_or(OperandError::Missing)?,
             parameter_types: {
                 let mut vec = Vec::new();
-                while let Some(value) = match operands.next() {
+                while let Some(item) = match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => {
                         Some(self.types.lookup(*value).unwrap())
                     }
                     Some(_) => Err(OperandError::Wrong)?,
                     None => None,
                 } {
-                    vec.push(value);
+                    vec.push(item);
                 }
                 vec
             },

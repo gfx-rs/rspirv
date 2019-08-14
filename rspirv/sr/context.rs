@@ -23,7 +23,7 @@ use spirv;
 
 use crate::{
     dr,
-    sr::{instructions, LiftError, OperandError},
+    sr::{instructions, ops, LiftError, OperandError},
     sr::constants::{Constant, ConstantEnum},
     sr::types::{self, TypeEnum, Type},
 };
