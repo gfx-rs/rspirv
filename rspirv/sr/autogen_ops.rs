@@ -185,13 +185,13 @@ pub enum Op {
     ImageSampleDrefImplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
     },
     ImageSampleDrefExplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
     },
     ImageSampleProjImplicitLod {
@@ -207,13 +207,13 @@ pub enum Op {
     ImageSampleProjDrefImplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
     },
     ImageSampleProjDrefExplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
     },
     ImageFetch {
@@ -230,7 +230,7 @@ pub enum Op {
     ImageDrefGather {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
     },
     ImageRead {
@@ -1040,13 +1040,13 @@ pub enum Op {
     ImageSparseSampleDrefImplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
     },
     ImageSparseSampleDrefExplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
     },
     ImageSparseSampleProjImplicitLod {
@@ -1062,13 +1062,13 @@ pub enum Op {
     ImageSparseSampleProjDrefImplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
     },
     ImageSparseSampleProjDrefExplicitLod {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
     },
     ImageSparseFetch {
@@ -1085,7 +1085,7 @@ pub enum Op {
     ImageSparseDrefGather {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
     },
     ImageSparseTexelsResident {

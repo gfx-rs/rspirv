@@ -713,7 +713,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -732,7 +732,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
             ],
         );
         if let Some(v) = image_operands {
@@ -750,7 +750,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -769,7 +769,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
@@ -851,7 +851,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -870,7 +870,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
             ],
         );
         if let Some(v) = image_operands {
@@ -888,7 +888,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -907,7 +907,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
@@ -991,7 +991,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -1010,7 +1010,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
             ],
         );
         if let Some(v) = image_operands {
@@ -1285,7 +1285,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpConvertFToU instruction to the current basic block."]
-    pub fn convert_fto_u(
+    pub fn convert_f_to_u(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1309,7 +1309,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpConvertFToS instruction to the current basic block."]
-    pub fn convert_fto_s(
+    pub fn convert_f_to_s(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1333,7 +1333,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpConvertSToF instruction to the current basic block."]
-    pub fn convert_sto_f(
+    pub fn convert_s_to_f(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1357,7 +1357,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpConvertUToF instruction to the current basic block."]
-    pub fn convert_uto_f(
+    pub fn convert_u_to_f(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1381,7 +1381,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpUConvert instruction to the current basic block."]
-    pub fn uconvert(
+    pub fn u_convert(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1405,7 +1405,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSConvert instruction to the current basic block."]
-    pub fn sconvert(
+    pub fn s_convert(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1429,7 +1429,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFConvert instruction to the current basic block."]
-    pub fn fconvert(
+    pub fn f_convert(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1501,7 +1501,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSatConvertSToU instruction to the current basic block."]
-    pub fn sat_convert_sto_u(
+    pub fn sat_convert_s_to_u(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1525,7 +1525,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSatConvertUToS instruction to the current basic block."]
-    pub fn sat_convert_uto_s(
+    pub fn sat_convert_u_to_s(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1549,7 +1549,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpConvertUToPtr instruction to the current basic block."]
-    pub fn convert_uto_ptr(
+    pub fn convert_u_to_ptr(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1673,7 +1673,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSNegate instruction to the current basic block."]
-    pub fn snegate(
+    pub fn s_negate(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1697,7 +1697,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFNegate instruction to the current basic block."]
-    pub fn fnegate(
+    pub fn f_negate(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1721,7 +1721,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpIAdd instruction to the current basic block."]
-    pub fn iadd(
+    pub fn i_add(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1746,7 +1746,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFAdd instruction to the current basic block."]
-    pub fn fadd(
+    pub fn f_add(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1771,7 +1771,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpISub instruction to the current basic block."]
-    pub fn isub(
+    pub fn i_sub(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1796,7 +1796,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFSub instruction to the current basic block."]
-    pub fn fsub(
+    pub fn f_sub(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1821,7 +1821,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpIMul instruction to the current basic block."]
-    pub fn imul(
+    pub fn i_mul(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1846,7 +1846,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFMul instruction to the current basic block."]
-    pub fn fmul(
+    pub fn f_mul(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1871,7 +1871,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpUDiv instruction to the current basic block."]
-    pub fn udiv(
+    pub fn u_div(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1896,7 +1896,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSDiv instruction to the current basic block."]
-    pub fn sdiv(
+    pub fn s_div(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1921,7 +1921,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFDiv instruction to the current basic block."]
-    pub fn fdiv(
+    pub fn f_div(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1946,7 +1946,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpUMod instruction to the current basic block."]
-    pub fn umod(
+    pub fn u_mod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1971,7 +1971,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSRem instruction to the current basic block."]
-    pub fn srem(
+    pub fn s_rem(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1996,7 +1996,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSMod instruction to the current basic block."]
-    pub fn smod(
+    pub fn s_mod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2021,7 +2021,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFRem instruction to the current basic block."]
-    pub fn frem(
+    pub fn f_rem(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2046,7 +2046,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFMod instruction to the current basic block."]
-    pub fn fmod(
+    pub fn f_mod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2249,7 +2249,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpIAddCarry instruction to the current basic block."]
-    pub fn iadd_carry(
+    pub fn i_add_carry(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2274,7 +2274,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpISubBorrow instruction to the current basic block."]
-    pub fn isub_borrow(
+    pub fn i_sub_borrow(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2299,7 +2299,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpUMulExtended instruction to the current basic block."]
-    pub fn umul_extended(
+    pub fn u_mul_extended(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2324,7 +2324,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSMulExtended instruction to the current basic block."]
-    pub fn smul_extended(
+    pub fn s_mul_extended(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2746,7 +2746,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpIEqual instruction to the current basic block."]
-    pub fn iequal(
+    pub fn i_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2771,7 +2771,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpINotEqual instruction to the current basic block."]
-    pub fn inot_equal(
+    pub fn i_not_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2796,7 +2796,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpUGreaterThan instruction to the current basic block."]
-    pub fn ugreater_than(
+    pub fn u_greater_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2821,7 +2821,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSGreaterThan instruction to the current basic block."]
-    pub fn sgreater_than(
+    pub fn s_greater_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2846,7 +2846,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpUGreaterThanEqual instruction to the current basic block."]
-    pub fn ugreater_than_equal(
+    pub fn u_greater_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2871,7 +2871,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSGreaterThanEqual instruction to the current basic block."]
-    pub fn sgreater_than_equal(
+    pub fn s_greater_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2896,7 +2896,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpULessThan instruction to the current basic block."]
-    pub fn uless_than(
+    pub fn u_less_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2921,7 +2921,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSLessThan instruction to the current basic block."]
-    pub fn sless_than(
+    pub fn s_less_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2946,7 +2946,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpULessThanEqual instruction to the current basic block."]
-    pub fn uless_than_equal(
+    pub fn u_less_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2971,7 +2971,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpSLessThanEqual instruction to the current basic block."]
-    pub fn sless_than_equal(
+    pub fn s_less_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -2996,7 +2996,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdEqual instruction to the current basic block."]
-    pub fn ford_equal(
+    pub fn f_ord_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3021,7 +3021,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordEqual instruction to the current basic block."]
-    pub fn funord_equal(
+    pub fn f_unord_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3046,7 +3046,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdNotEqual instruction to the current basic block."]
-    pub fn ford_not_equal(
+    pub fn f_ord_not_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3071,7 +3071,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordNotEqual instruction to the current basic block."]
-    pub fn funord_not_equal(
+    pub fn f_unord_not_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3096,7 +3096,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdLessThan instruction to the current basic block."]
-    pub fn ford_less_than(
+    pub fn f_ord_less_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3121,7 +3121,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordLessThan instruction to the current basic block."]
-    pub fn funord_less_than(
+    pub fn f_unord_less_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3146,7 +3146,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdGreaterThan instruction to the current basic block."]
-    pub fn ford_greater_than(
+    pub fn f_ord_greater_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3171,7 +3171,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordGreaterThan instruction to the current basic block."]
-    pub fn funord_greater_than(
+    pub fn f_unord_greater_than(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3196,7 +3196,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdLessThanEqual instruction to the current basic block."]
-    pub fn ford_less_than_equal(
+    pub fn f_ord_less_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3221,7 +3221,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordLessThanEqual instruction to the current basic block."]
-    pub fn funord_less_than_equal(
+    pub fn f_unord_less_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3246,7 +3246,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdGreaterThanEqual instruction to the current basic block."]
-    pub fn ford_greater_than_equal(
+    pub fn f_ord_greater_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3271,7 +3271,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordGreaterThanEqual instruction to the current basic block."]
-    pub fn funord_greater_than_equal(
+    pub fn f_unord_greater_than_equal(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3502,7 +3502,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldSExtract instruction to the current basic block."]
-    pub fn bit_field_sextract(
+    pub fn bit_field_s_extract(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3532,7 +3532,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldUExtract instruction to the current basic block."]
-    pub fn bit_field_uextract(
+    pub fn bit_field_u_extract(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3610,7 +3610,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpDPdx instruction to the current basic block."]
-    pub fn dpdx(
+    pub fn d_pdx(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3634,7 +3634,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpDPdy instruction to the current basic block."]
-    pub fn dpdy(
+    pub fn d_pdy(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3682,7 +3682,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpDPdxFine instruction to the current basic block."]
-    pub fn dpdx_fine(
+    pub fn d_pdx_fine(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3706,7 +3706,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpDPdyFine instruction to the current basic block."]
-    pub fn dpdy_fine(
+    pub fn d_pdy_fine(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3754,7 +3754,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpDPdxCoarse instruction to the current basic block."]
-    pub fn dpdx_coarse(
+    pub fn d_pdx_coarse(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -3778,7 +3778,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpDPdyCoarse instruction to the current basic block."]
-    pub fn dpdy_coarse(
+    pub fn d_pdy_coarse(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4082,7 +4082,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIIncrement instruction to the current basic block."]
-    pub fn atomic_iincrement(
+    pub fn atomic_i_increment(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4112,7 +4112,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIDecrement instruction to the current basic block."]
-    pub fn atomic_idecrement(
+    pub fn atomic_i_decrement(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4142,7 +4142,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIAdd instruction to the current basic block."]
-    pub fn atomic_iadd(
+    pub fn atomic_i_add(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4174,7 +4174,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicISub instruction to the current basic block."]
-    pub fn atomic_isub(
+    pub fn atomic_i_sub(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4206,7 +4206,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicSMin instruction to the current basic block."]
-    pub fn atomic_smin(
+    pub fn atomic_s_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4238,7 +4238,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicUMin instruction to the current basic block."]
-    pub fn atomic_umin(
+    pub fn atomic_u_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4270,7 +4270,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicSMax instruction to the current basic block."]
-    pub fn atomic_smax(
+    pub fn atomic_s_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4302,7 +4302,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicUMax instruction to the current basic block."]
-    pub fn atomic_umax(
+    pub fn atomic_u_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4677,7 +4677,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupIAdd instruction to the current basic block."]
-    pub fn group_iadd(
+    pub fn group_i_add(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4707,7 +4707,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFAdd instruction to the current basic block."]
-    pub fn group_fadd(
+    pub fn group_f_add(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4737,7 +4737,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMin instruction to the current basic block."]
-    pub fn group_fmin(
+    pub fn group_f_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4767,7 +4767,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMin instruction to the current basic block."]
-    pub fn group_umin(
+    pub fn group_u_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4797,7 +4797,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMin instruction to the current basic block."]
-    pub fn group_smin(
+    pub fn group_s_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4827,7 +4827,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMax instruction to the current basic block."]
-    pub fn group_fmax(
+    pub fn group_f_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4857,7 +4857,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMax instruction to the current basic block."]
-    pub fn group_umax(
+    pub fn group_u_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -4887,7 +4887,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMax instruction to the current basic block."]
-    pub fn group_smax(
+    pub fn group_s_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -5457,7 +5457,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelNDrangeSubGroupCount instruction to the current basic block."]
-    pub fn get_kernel_ndrange_sub_group_count(
+    pub fn get_kernel_n_drange_sub_group_count(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -5491,7 +5491,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelNDrangeMaxSubGroupSize instruction to the current basic block."]
-    pub fn get_kernel_ndrange_max_sub_group_size(
+    pub fn get_kernel_n_drange_max_sub_group_size(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -5732,7 +5732,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpBuildNDRange instruction to the current basic block."]
-    pub fn build_ndrange(
+    pub fn build_nd_range(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -5835,7 +5835,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -5854,7 +5854,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
             ],
         );
         if let Some(v) = image_operands {
@@ -5872,7 +5872,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -5891,7 +5891,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
@@ -5973,7 +5973,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -5992,7 +5992,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
             ],
         );
         if let Some(v) = image_operands {
@@ -6010,7 +6010,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -6029,7 +6029,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
@@ -6113,7 +6113,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
-        dref: spirv::Word,
+        d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
@@ -6132,7 +6132,7 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_image),
                 dr::Operand::IdRef(coordinate),
-                dr::Operand::IdRef(dref),
+                dr::Operand::IdRef(d_ref),
             ],
         );
         if let Some(v) = image_operands {
@@ -6859,7 +6859,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformIAdd instruction to the current basic block."]
-    pub fn group_non_uniform_iadd(
+    pub fn group_non_uniform_i_add(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -6894,7 +6894,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFAdd instruction to the current basic block."]
-    pub fn group_non_uniform_fadd(
+    pub fn group_non_uniform_f_add(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -6929,7 +6929,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformIMul instruction to the current basic block."]
-    pub fn group_non_uniform_imul(
+    pub fn group_non_uniform_i_mul(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -6964,7 +6964,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMul instruction to the current basic block."]
-    pub fn group_non_uniform_fmul(
+    pub fn group_non_uniform_f_mul(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -6999,7 +6999,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformSMin instruction to the current basic block."]
-    pub fn group_non_uniform_smin(
+    pub fn group_non_uniform_s_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7034,7 +7034,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformUMin instruction to the current basic block."]
-    pub fn group_non_uniform_umin(
+    pub fn group_non_uniform_u_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7069,7 +7069,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMin instruction to the current basic block."]
-    pub fn group_non_uniform_fmin(
+    pub fn group_non_uniform_f_min(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7104,7 +7104,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformSMax instruction to the current basic block."]
-    pub fn group_non_uniform_smax(
+    pub fn group_non_uniform_s_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7139,7 +7139,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformUMax instruction to the current basic block."]
-    pub fn group_non_uniform_umax(
+    pub fn group_non_uniform_u_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7174,7 +7174,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMax instruction to the current basic block."]
-    pub fn group_non_uniform_fmax(
+    pub fn group_non_uniform_f_max(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7624,7 +7624,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupIAddNonUniformAMD instruction to the current basic block."]
-    pub fn group_iadd_non_uniform_amd(
+    pub fn group_i_add_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7654,7 +7654,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFAddNonUniformAMD instruction to the current basic block."]
-    pub fn group_fadd_non_uniform_amd(
+    pub fn group_f_add_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7684,7 +7684,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMinNonUniformAMD instruction to the current basic block."]
-    pub fn group_fmin_non_uniform_amd(
+    pub fn group_f_min_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7714,7 +7714,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMinNonUniformAMD instruction to the current basic block."]
-    pub fn group_umin_non_uniform_amd(
+    pub fn group_u_min_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7744,7 +7744,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMinNonUniformAMD instruction to the current basic block."]
-    pub fn group_smin_non_uniform_amd(
+    pub fn group_s_min_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7774,7 +7774,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMaxNonUniformAMD instruction to the current basic block."]
-    pub fn group_fmax_non_uniform_amd(
+    pub fn group_f_max_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7804,7 +7804,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMaxNonUniformAMD instruction to the current basic block."]
-    pub fn group_umax_non_uniform_amd(
+    pub fn group_u_max_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -7834,7 +7834,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMaxNonUniformAMD instruction to the current basic block."]
-    pub fn group_smax_non_uniform_amd(
+    pub fn group_s_max_non_uniform_amd(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,

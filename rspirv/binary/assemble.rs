@@ -281,7 +281,7 @@ mod tests {
         b.begin_basic_block(None).unwrap();
         let v1 = b.load(float, None, param1, None, vec![]).unwrap();
         let v2 = b.load(float, None, param2, None, vec![]).unwrap();
-        let v = b.fadd(float, None, v1, v2).unwrap();
+        let v = b.f_add(float, None, v1, v2).unwrap();
         b.ret_value(v).unwrap();
         b.end_function().unwrap();
 

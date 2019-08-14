@@ -30,7 +30,7 @@ impl<'a> Decoder<'a> {
         }
     }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V FPFastMathMode value."]
-    pub fn fpfast_math_mode(&mut self) -> Result<spirv::FPFastMathMode> {
+    pub fn fp_fast_math_mode(&mut self) -> Result<spirv::FPFastMathMode> {
         if let Ok(word) = self.word() {
             spirv::FPFastMathMode::from_bits(word).ok_or(Error::FPFastMathModeUnknown(
                 self.offset - WORD_NUM_BYTES,
@@ -236,7 +236,7 @@ impl<'a> Decoder<'a> {
         }
     }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V FPRoundingMode value."]
-    pub fn fprounding_mode(&mut self) -> Result<spirv::FPRoundingMode> {
+    pub fn fp_rounding_mode(&mut self) -> Result<spirv::FPRoundingMode> {
         if let Ok(word) = self.word() {
             spirv::FPRoundingMode::from_u32(word).ok_or(Error::FPRoundingModeUnknown(
                 self.offset - WORD_NUM_BYTES,

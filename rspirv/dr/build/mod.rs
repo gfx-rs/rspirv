@@ -850,7 +850,7 @@ mod tests {
             vec![(c0, epid), (fr_add, pbid), (c0, target2)],
         ).unwrap();
         assert_eq!(9, phi);
-        let res_add = b.fadd(float, Some(fr_add), c0, c0).unwrap();
+        let res_add = b.f_add(float, Some(fr_add), c0, c0).unwrap();
         assert_eq!(res_add, fr_add);
         assert!(b.branch(target2).is_ok());
 

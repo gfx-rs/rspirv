@@ -20,7 +20,7 @@ impl<'c, 'd> Parser<'c, 'd> {
     fn parse_operand(&mut self, kind: GOpKind) -> Result<Vec<dr::Operand>> {
         Ok(match kind {
             GOpKind::FPFastMathMode => vec![dr::Operand::FPFastMathMode(
-                self.decoder.fpfast_math_mode()?,
+                self.decoder.fp_fast_math_mode()?,
             )],
             GOpKind::SelectionControl => vec![dr::Operand::SelectionControl(
                 self.decoder.selection_control()?,
@@ -59,9 +59,9 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::ImageChannelDataType => vec![dr::Operand::ImageChannelDataType(
                 self.decoder.image_channel_data_type()?,
             )],
-            GOpKind::FPRoundingMode => {
-                vec![dr::Operand::FPRoundingMode(self.decoder.fprounding_mode()?)]
-            }
+            GOpKind::FPRoundingMode => vec![dr::Operand::FPRoundingMode(
+                self.decoder.fp_rounding_mode()?,
+            )],
             GOpKind::LinkageType => vec![dr::Operand::LinkageType(self.decoder.linkage_type()?)],
             GOpKind::AccessQualifier => vec![dr::Operand::AccessQualifier(
                 self.decoder.access_qualifier()?,
@@ -269,11 +269,11 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::FuncParamAttr => vec![dr::Operand::FunctionParameterAttribute(
                 self.decoder.function_parameter_attribute()?,
             )],
-            spirv::Decoration::FPRoundingMode => {
-                vec![dr::Operand::FPRoundingMode(self.decoder.fprounding_mode()?)]
-            }
+            spirv::Decoration::FPRoundingMode => vec![dr::Operand::FPRoundingMode(
+                self.decoder.fp_rounding_mode()?,
+            )],
             spirv::Decoration::FPFastMathMode => vec![dr::Operand::FPFastMathMode(
-                self.decoder.fpfast_math_mode()?,
+                self.decoder.fp_fast_math_mode()?,
             )],
             spirv::Decoration::LinkageAttributes => vec![
                 dr::Operand::LiteralString(self.decoder.string()?),

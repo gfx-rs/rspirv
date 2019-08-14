@@ -21,9 +21,9 @@ keywords = ["spirv", "grammar", "codegen"]
 path = "lib.rs"
 
 [build-dependencies]
+heck = "0.3"
 proc-macro2 = "0.4"
 quote = "0.6"
-regex = "0.2"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
