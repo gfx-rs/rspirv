@@ -25,7 +25,7 @@ use crate::{
     dr,
     sr::{instructions, InstructionError, OperandError},
     sr::constants::{Constant, ConstantEnum},
-    sr::types::{StructMember, TypeEnum, Type},
+    sr::types::{self, TypeEnum, Type},
 };
 
 type FastHashMap<K, V> = HashMap<K, V, BuildHasherDefault<FxHasher>>;
@@ -171,7 +171,7 @@ impl Context {
                 field_types: field_types
                     .as_ref()
                     .iter()
-                    .map(|ft| StructMember::new(*ft))
+                    .map(|ft| types::StructMember::new(*ft))
                     .collect(),
             },
             decorations: Vec::new(),

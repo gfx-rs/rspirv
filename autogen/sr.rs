@@ -46,7 +46,7 @@ impl OperandTokens {
                 ),
                 "Field Types" => (
                     quote! { StructMember },
-                    quote! { super::types::StructMember::new(value.clone()) },
+                    quote! { types::StructMember::new(value.clone()) },
                 ),
                 "Parameter Types" => (
                     quote! { Token<Type> },
@@ -57,11 +57,13 @@ impl OperandTokens {
                     quote! { self.types.lookup(*value).unwrap() },
                 ),
                 _ => (
+                    //TODO: proper `Token<>`
                     quote! { spirv::Word },
                     quote! { *value },
                 ),
             },
             "IdMemorySemantics" | "IdScope" | "IdResult" => (
+                //TODO: proper `Token<>`
                 quote! { spirv::Word },
                 quote! { *value },
             ),
@@ -79,6 +81,7 @@ impl OperandTokens {
                 quote! { value.clone() },
             ),
             "PairLiteralIntegerIdRef" => (
+                //TODO: proper `Token<>`
                 quote! { (u32, spirv::Word) },
                 quote! {
                    match (#iter.next(), #iter.next()) {
@@ -89,6 +92,7 @@ impl OperandTokens {
                },
             ),
             "PairIdRefLiteralInteger" => (
+                //TODO: proper `Token<>`
                 quote! { (spirv::Word, u32) },
                 quote! {
                     match (#iter.next(), #iter.next()) {
@@ -99,6 +103,7 @@ impl OperandTokens {
                 },
             ),
             "PairIdRefIdRef" => (
+                //TODO: proper `Token<>`
                 quote! { (spirv::Word, spirv::Word) },
                 quote! {
                     match (#iter.next(), #iter.next()) {
@@ -220,6 +225,14 @@ pub struct CodeGeneratedFromInstructionGrammar {
     pub context_logic: String,
 }
 
+const TYPE_PREFIX_LENGTH: usize = 6;
+/// List of type instructions (prefixed by "OpType") that
+/// are represented by individual structs as opposed to variants
+/// of a big enum.
+const STANDALONE_TYPES: &[&str] = &[
+    "Function",
+];
+
 pub fn gen_sr_code_from_instruction_grammar(
     grammar_instructions: &[structs::Instruction],
 ) -> CodeGeneratedFromInstructionGrammar {
@@ -228,6 +241,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut inst_structs = Vec::new();
     let mut op_variants = Vec::new();
     let mut terminators = Vec::new();
+    let mut type_structs = Vec::new();
     let mut type_variants = Vec::new();
     let mut type_checks = Vec::new();
     let mut type_constructors = Vec::new();
@@ -245,6 +259,12 @@ pub fn gen_sr_code_from_instruction_grammar(
         // Get the token for its enumerant
         let inst_name = &inst.opname[2..];
         let name_ident = Ident::new(inst_name, Span::call_site());
+        let type_name = if inst.opname.len() > TYPE_PREFIX_LENGTH {
+            &inst.opname[TYPE_PREFIX_LENGTH ..]
+        } else {
+            "_"
+        };
+        let type_ident = Ident::new(type_name, Span::call_site());
         let opcode = inst.opcode;
 
         // Re-use the allocation between iterations of the loop
@@ -275,14 +295,36 @@ pub fn gen_sr_code_from_instruction_grammar(
         };
 
         match inst.class {
+            Some(structs::Class::Type) if STANDALONE_TYPES.contains(&type_name) => {
+                type_structs.push(quote! {
+                    #[derive(Clone, Debug, Eq, PartialEq)]
+                    pub struct #type_ident {
+                        #( pub(in crate::sr) #field_names: #field_types ),*
+                    }
+                });
+                let func_name = Ident::new(
+                    &format!("lift_type_{}", type_name.to_snake_case()),
+                    Span::call_site(),
+                );
+                lifts.push(quote! {
+                    pub fn #func_name(
+                        &mut self, raw: &dr::Instruction
+                    ) -> Result<types::#type_ident, InstructionError> {
+                        if raw.class.opcode as u32 != #opcode {
+                            return Err(InstructionError::WrongOpcode)
+                        }
+                        #iterator_init;
+                        Ok(types::#type_ident {
+                            #( #field_names: #field_lifts, )*
+                        })
+                    }
+                });
+            }
             Some(structs::Class::Type) => {
-                let type_name = &inst.opname[6..];
-                let symbol = Ident::new(type_name, Span::call_site());
-
                 type_variants.push(if field_names.is_empty() {
-                    quote!{ #symbol }
+                    quote!{ #type_ident }
                 } else {
-                    quote! { #symbol {
+                    quote! { #type_ident {
                         #( #field_names: #field_types ),*
                     }}
                 });
@@ -302,7 +344,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                     type_checks.push(quote! {
                         pub fn #func_name_ident(&self) -> bool {
                             match self.ty {
-                                TypeEnum::#symbol #check_params => true,
+                                TypeEnum::#type_ident #check_params => true,
                                 _ => false
                             }
                         }
@@ -324,7 +366,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                             &mut self, #( #field_names: #field_types ),*
                         ) -> Token<Type> {
                             self.types.fetch_or_append(Type {
-                                ty: TypeEnum::#symbol #init_list,
+                                ty: TypeEnum::#type_ident #init_list,
                                 decorations: Vec::new(),
                             })
                         }
@@ -378,6 +420,8 @@ pub fn gen_sr_code_from_instruction_grammar(
     }
 
     let types = quote! {
+        #( #type_structs )*
+
         #[derive(Clone, Debug, PartialEq, Eq)]
         pub(in crate::sr) enum TypeEnum {
             #( #type_variants ),*

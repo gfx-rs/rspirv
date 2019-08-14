@@ -138,19 +138,6 @@ impl Context {
             decorations: Vec::new(),
         })
     }
-    pub fn type_function(
-        &mut self,
-        return_type: Token<Type>,
-        parameter_types: Vec<Token<Type>>,
-    ) -> Token<Type> {
-        self.types.fetch_or_append(Type {
-            ty: TypeEnum::Function {
-                return_type,
-                parameter_types,
-            },
-            decorations: Vec::new(),
-        })
-    }
     pub fn type_event(&mut self) -> Token<Type> {
         self.types.fetch_or_append(Type {
             ty: TypeEnum::Event,
@@ -347,6 +334,35 @@ impl Context {
                 None => None,
             })
             .ok_or(OperandError::Missing)?,
+        })
+    }
+    pub fn lift_type_function(
+        &mut self,
+        raw: &dr::Instruction,
+    ) -> Result<types::Function, InstructionError> {
+        if raw.class.opcode as u32 != 33u32 {
+            return Err(InstructionError::WrongOpcode);
+        }
+        let mut operands = raw.operands.iter();;        Ok(types::Function {
+            return_type: (match operands.next() {
+                Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup(*value).unwrap()),
+                Some(_) => Err(OperandError::WrongType)?,
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            parameter_types: {
+                let mut vec = Vec::new();
+                while let Some(value) = match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => {
+                        Some(self.types.lookup(*value).unwrap())
+                    }
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                } {
+                    vec.push(value);
+                }
+                vec
+            },
         })
     }
     #[allow(unused)]
