@@ -15,6 +15,7 @@
 use crate::structs;
 use crate::utils::*;
 
+use heck::SnakeCase;
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -79,7 +80,7 @@ fn get_function_name(opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         quote! { ret_value }
     } else {
-        let name = as_ident(&snake_casify(&opname[2..]));
+        let name = as_ident(&opname[2..].to_snake_case());
         quote! { #name }
     }
 }
@@ -284,7 +285,7 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
                                      kinds,
                                      quote! { self.module.types_global_values.last_mut().expect("interal error").operands });
         let opcode = as_ident(&inst.opname[2..]);
-        let name = as_ident(&snake_casify(&inst.opname[2..]));
+        let name = as_ident(&inst.opname[2..].to_snake_case());
         let comment = format!("Appends an Op{} instruction and returns the result id.", opcode);
         quote! {
             #[doc = #comment]

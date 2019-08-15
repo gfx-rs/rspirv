@@ -15,6 +15,7 @@
 use crate::structs;
 use crate::utils::*;
 
+use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::TokenStream;
 use quote::quote;
 
@@ -27,11 +28,7 @@ https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructio
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
-    let mut symbol = snake_casify(kind);
-    if symbol.starts_with("fp") {
-        // Special case for FPFastMathMode and FPRoundingMode.
-        symbol = symbol.replace("fp", "fp_");
-    }
+    let symbol = kind.to_snake_case();
     format!("[{text}]({link})",
             text = kind,
             link = format!("https://www.khronos.org/registry/spir-v/\
@@ -49,7 +46,7 @@ fn value_enum_attribute() -> TokenStream {
 fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let elements = grammar.enumerants.iter().map(|enumerant| {
         // Special treatment for "NaN"
-        let symbol = as_ident(&snake_casify(&enumerant.symbol).replace("na_n", "nan").to_uppercase());
+        let symbol = as_ident(&enumerant.symbol.to_shouty_snake_case().replace("NA_N", "NAN"));
         let value = enumerant.value;
         quote! {
             const #symbol = #value;

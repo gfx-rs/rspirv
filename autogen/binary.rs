@@ -15,6 +15,7 @@
 use crate::structs;
 use crate::utils::*;
 
+use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
 
@@ -32,7 +33,7 @@ fn get_decode_method(kind: &str) -> Ident {
             return as_ident("int32");
         }
     }
-    as_ident(&snake_casify(kind))
+    as_ident(&kind.to_snake_case())
 }
 
 /// Returns the generated operand decoding errors for binary::Decoder by
@@ -114,7 +115,7 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>) -> TokenS
         // otherwise, from_u32().
         let kind = as_ident(&element.kind);
         let comment = format!("Decodes and returns the next SPIR-V word as\na SPIR-V {} value.", kind);
-        let function_name = as_ident(&snake_casify(&element.kind));
+        let function_name = as_ident(&element.kind.to_snake_case());
         let convert = as_ident(&format!("from_{}", if element.category == structs::Category::BitEnum { "bits" } else { "u32" }));
         let error_name = as_ident(&format!("{}Unknown", kind));
         quote! {
@@ -168,7 +169,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>) -> Vec<(
         }
 
         let kind = as_ident(&element.kind);
-        let lo_kind = as_ident(&snake_casify(&element.kind));
+        let lo_kind = as_ident(&element.kind.to_snake_case());
         let function_name = as_ident(&format!("parse_{}_arguments", lo_kind));
 
         let method = if element.category == structs::Category::BitEnum {
@@ -188,7 +189,7 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>) -> Vec<(
                     let decode = get_decode_method(element);
                     quote! { dr::Operand::#op_kind(self.decoder.#decode()?) }
                 });
-                let bit = as_ident(&snake_casify(&symbol).to_uppercase());
+                let bit = as_ident(&symbol.to_shouty_snake_case());
                 quote! {
                     if #lo_kind.contains(spirv::#kind::#bit) {
                         params.append(&mut vec![#(#params),*]);
@@ -236,7 +237,7 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
         gen_operand_param_parse_methods(grammar).into_iter().unzip();
     let further_parse_cases =
         further_parse_kinds.iter().map(|kind| {
-            let function_name = as_ident(&format!("parse_{}_arguments", snake_casify(kind)));
+            let function_name = as_ident(&format!("parse_{}_arguments", kind.to_snake_case()));
             let decode = get_decode_method(kind);
             let kind = as_ident(kind);
             quote! {
@@ -325,7 +326,7 @@ pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> Token
             if enumerant.value == 0x0000 {
                 None
             } else {
-                let symbol = as_ident(&snake_casify(&enumerant.symbol).replace("na_n", "nan").to_uppercase());
+                let symbol = as_ident(&enumerant.symbol.to_snake_case().replace("na_n", "nan").to_uppercase());
                 Some((quote! { #kind::#symbol }, &enumerant.symbol))
             }
         }).map(|(check, show)| {

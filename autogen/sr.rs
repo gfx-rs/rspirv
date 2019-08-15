@@ -15,6 +15,7 @@
 use crate::structs;
 use crate::utils::*;
 
+use heck::SnakeCase;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
@@ -66,7 +67,7 @@ fn get_type_fn_name(name: &str) -> String {
     if name == "Struct" {
         "structure".to_string()
     } else {
-        snake_casify(name)
+        name.to_snake_case()
     }
 }
 

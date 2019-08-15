@@ -17,6 +17,7 @@ use crate::structs;
 use std::fs;
 use std::io::Write;
 
+use heck::SnakeCase;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
@@ -52,12 +53,6 @@ pub fn write_copyright_autogen_comment(file: &mut fs::File) {
 /// Converts the given string into an `Ident`, with call-site span.
 pub fn as_ident(ident: &str) -> Ident {
     Ident::new(ident, Span::call_site())
-}
-
-/// Converts the given `symbol` to use snake case style.
-pub fn snake_casify(symbol: &str) -> String {
-    let re = regex::Regex::new(r"(?P<l>[a-z])(?P<u>[A-Z])").unwrap();
-    re.replace_all(symbol, "$l-$u").replace("-", "_").to_lowercase()
 }
 
 /// Returns the corresponding operand kind in data representation for the
@@ -104,11 +99,10 @@ pub fn get_param_name(param: &structs::Operand) -> Ident {
         if param.kind == "IdResultType" {
             "result_type".to_string()
         } else {
-            snake_casify(&param.kind)
+            param.kind.to_snake_case()
         }
     } else {
-        let re = regex::Regex::new(r"\W").unwrap();
-        snake_casify(&re.replace_all(&param.name.replace(" ", "_"), ""))
+        param.name.to_snake_case()
     };
     as_ident(&name)
 }
