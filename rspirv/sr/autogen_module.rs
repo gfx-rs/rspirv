@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-impl Context {
+impl Module {
     #[allow(unused)]
     pub(in crate::sr) fn lift_extension(
         &mut self,

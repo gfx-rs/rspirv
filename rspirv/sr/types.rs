@@ -14,7 +14,7 @@
 
 use crate::spirv;
 
-use super::{Constant, Decoration, Token};
+use super::{Constant, Decoration, items::Token};
 
 #[derive(Clone, Debug)]
 pub struct StructMember {

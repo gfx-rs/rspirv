@@ -14,7 +14,7 @@
 
 use crate::spirv;
 
-use super::Token;
+use super::items::Token;
 
 /// Represents a SPIR-V constant.
 #[derive(Clone, Debug, PartialEq)]

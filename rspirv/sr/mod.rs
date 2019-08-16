@@ -18,14 +18,12 @@ pub use self::autogen_decoration::Decoration;
 pub use self::autogen_instructions as instructions;
 pub use self::autogen_ops as ops;
 pub use self::constants::{Constant};
-pub use self::context::{Context, Token};
 pub use self::types::{Type};
 
 mod autogen_decoration;
 pub mod autogen_instructions;
 pub mod autogen_ops;
 mod constants;
-mod context;
 pub mod items;
 mod types;
 

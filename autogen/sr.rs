@@ -214,7 +214,7 @@ pub struct CodeGeneratedFromInstructionGrammar {
     pub types: String,
     pub instructions: String,
     pub ops: String,
-    pub context_logic: String,
+    pub module_logic: String,
 }
 
 const TYPE_PREFIX_LENGTH: usize = 6;
@@ -286,6 +286,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                         #( #field_names: #field_types ),*
                     }}
                 });
+
             }
             Some(ModeSetting) |
             Some(ExtensionDecl) |
@@ -345,12 +346,12 @@ pub fn gen_sr_code_from_instruction_grammar(
         }
     };
     let instructions = quote! {
-        use crate::sr::{Token, Type};
+        use crate::sr::{items::Token, Type};
 
         #( #inst_structs )*
     };
     let ops = quote! {
-        use crate::sr::{Token, Type};
+        use crate::sr::{items::Token, Type};
 
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Terminator {
@@ -362,8 +363,8 @@ pub fn gen_sr_code_from_instruction_grammar(
             #( #op_variants ),*
         }
     };
-    let context_logic = quote! {
-        impl Context {
+    let module_logic = quote! {
+        impl Module {
             //TODO: these are DR-specific and may need a new home
             #( #lifts )*
         }
@@ -373,7 +374,7 @@ pub fn gen_sr_code_from_instruction_grammar(
         types: types.to_string(),
         instructions: instructions.to_string(),
         ops: ops.to_string(),
-        context_logic: context_logic.to_string(),
+        module_logic: module_logic.to_string(),
     }
 }
 
