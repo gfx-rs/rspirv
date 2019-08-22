@@ -56,20 +56,14 @@ impl SourceLanguage {
 impl num_traits::FromPrimitive for SourceLanguage {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(SourceLanguage::Unknown)
-        } else if 1u32 as i64 == n {
-            Some(SourceLanguage::ESSL)
-        } else if 2u32 as i64 == n {
-            Some(SourceLanguage::GLSL)
-        } else if 3u32 as i64 == n {
-            Some(SourceLanguage::OpenCL_C)
-        } else if 4u32 as i64 == n {
-            Some(SourceLanguage::OpenCL_CPP)
-        } else if 5u32 as i64 == n {
-            Some(SourceLanguage::HLSL)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(SourceLanguage::Unknown),
+            1u32 => Some(SourceLanguage::ESSL),
+            2u32 => Some(SourceLanguage::GLSL),
+            3u32 => Some(SourceLanguage::OpenCL_C),
+            4u32 => Some(SourceLanguage::OpenCL_CPP),
+            5u32 => Some(SourceLanguage::HLSL),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -106,22 +100,15 @@ impl ExecutionModel {
 impl num_traits::FromPrimitive for ExecutionModel {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(ExecutionModel::Vertex)
-        } else if 1u32 as i64 == n {
-            Some(ExecutionModel::TessellationControl)
-        } else if 2u32 as i64 == n {
-            Some(ExecutionModel::TessellationEvaluation)
-        } else if 3u32 as i64 == n {
-            Some(ExecutionModel::Geometry)
-        } else if 4u32 as i64 == n {
-            Some(ExecutionModel::Fragment)
-        } else if 5u32 as i64 == n {
-            Some(ExecutionModel::GLCompute)
-        } else if 6u32 as i64 == n {
-            Some(ExecutionModel::Kernel)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(ExecutionModel::Vertex),
+            1u32 => Some(ExecutionModel::TessellationControl),
+            2u32 => Some(ExecutionModel::TessellationEvaluation),
+            3u32 => Some(ExecutionModel::Geometry),
+            4u32 => Some(ExecutionModel::Fragment),
+            5u32 => Some(ExecutionModel::GLCompute),
+            6u32 => Some(ExecutionModel::Kernel),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -148,14 +135,11 @@ impl AddressingModel {
 impl num_traits::FromPrimitive for AddressingModel {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(AddressingModel::Logical)
-        } else if 1u32 as i64 == n {
-            Some(AddressingModel::Physical32)
-        } else if 2u32 as i64 == n {
-            Some(AddressingModel::Physical64)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(AddressingModel::Logical),
+            1u32 => Some(AddressingModel::Physical32),
+            2u32 => Some(AddressingModel::Physical64),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -184,16 +168,12 @@ impl MemoryModel {
 impl num_traits::FromPrimitive for MemoryModel {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(MemoryModel::Simple)
-        } else if 1u32 as i64 == n {
-            Some(MemoryModel::GLSL450)
-        } else if 2u32 as i64 == n {
-            Some(MemoryModel::OpenCL)
-        } else if 3u32 as i64 == n {
-            Some(MemoryModel::VulkanKHR)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(MemoryModel::Simple),
+            1u32 => Some(MemoryModel::GLSL450),
+            2u32 => Some(MemoryModel::OpenCL),
+            3u32 => Some(MemoryModel::VulkanKHR),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -295,88 +275,48 @@ impl ExecutionMode {
 impl num_traits::FromPrimitive for ExecutionMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(ExecutionMode::Invocations)
-        } else if 1u32 as i64 == n {
-            Some(ExecutionMode::SpacingEqual)
-        } else if 2u32 as i64 == n {
-            Some(ExecutionMode::SpacingFractionalEven)
-        } else if 3u32 as i64 == n {
-            Some(ExecutionMode::SpacingFractionalOdd)
-        } else if 4u32 as i64 == n {
-            Some(ExecutionMode::VertexOrderCw)
-        } else if 5u32 as i64 == n {
-            Some(ExecutionMode::VertexOrderCcw)
-        } else if 6u32 as i64 == n {
-            Some(ExecutionMode::PixelCenterInteger)
-        } else if 7u32 as i64 == n {
-            Some(ExecutionMode::OriginUpperLeft)
-        } else if 8u32 as i64 == n {
-            Some(ExecutionMode::OriginLowerLeft)
-        } else if 9u32 as i64 == n {
-            Some(ExecutionMode::EarlyFragmentTests)
-        } else if 10u32 as i64 == n {
-            Some(ExecutionMode::PointMode)
-        } else if 11u32 as i64 == n {
-            Some(ExecutionMode::Xfb)
-        } else if 12u32 as i64 == n {
-            Some(ExecutionMode::DepthReplacing)
-        } else if 14u32 as i64 == n {
-            Some(ExecutionMode::DepthGreater)
-        } else if 15u32 as i64 == n {
-            Some(ExecutionMode::DepthLess)
-        } else if 16u32 as i64 == n {
-            Some(ExecutionMode::DepthUnchanged)
-        } else if 17u32 as i64 == n {
-            Some(ExecutionMode::LocalSize)
-        } else if 18u32 as i64 == n {
-            Some(ExecutionMode::LocalSizeHint)
-        } else if 19u32 as i64 == n {
-            Some(ExecutionMode::InputPoints)
-        } else if 20u32 as i64 == n {
-            Some(ExecutionMode::InputLines)
-        } else if 21u32 as i64 == n {
-            Some(ExecutionMode::InputLinesAdjacency)
-        } else if 22u32 as i64 == n {
-            Some(ExecutionMode::Triangles)
-        } else if 23u32 as i64 == n {
-            Some(ExecutionMode::InputTrianglesAdjacency)
-        } else if 24u32 as i64 == n {
-            Some(ExecutionMode::Quads)
-        } else if 25u32 as i64 == n {
-            Some(ExecutionMode::Isolines)
-        } else if 26u32 as i64 == n {
-            Some(ExecutionMode::OutputVertices)
-        } else if 27u32 as i64 == n {
-            Some(ExecutionMode::OutputPoints)
-        } else if 28u32 as i64 == n {
-            Some(ExecutionMode::OutputLineStrip)
-        } else if 29u32 as i64 == n {
-            Some(ExecutionMode::OutputTriangleStrip)
-        } else if 30u32 as i64 == n {
-            Some(ExecutionMode::VecTypeHint)
-        } else if 31u32 as i64 == n {
-            Some(ExecutionMode::ContractionOff)
-        } else if 33u32 as i64 == n {
-            Some(ExecutionMode::Initializer)
-        } else if 34u32 as i64 == n {
-            Some(ExecutionMode::Finalizer)
-        } else if 35u32 as i64 == n {
-            Some(ExecutionMode::SubgroupSize)
-        } else if 36u32 as i64 == n {
-            Some(ExecutionMode::SubgroupsPerWorkgroup)
-        } else if 37u32 as i64 == n {
-            Some(ExecutionMode::SubgroupsPerWorkgroupId)
-        } else if 38u32 as i64 == n {
-            Some(ExecutionMode::LocalSizeId)
-        } else if 39u32 as i64 == n {
-            Some(ExecutionMode::LocalSizeHintId)
-        } else if 4446u32 as i64 == n {
-            Some(ExecutionMode::PostDepthCoverage)
-        } else if 5027u32 as i64 == n {
-            Some(ExecutionMode::StencilRefReplacingEXT)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(ExecutionMode::Invocations),
+            1u32 => Some(ExecutionMode::SpacingEqual),
+            2u32 => Some(ExecutionMode::SpacingFractionalEven),
+            3u32 => Some(ExecutionMode::SpacingFractionalOdd),
+            4u32 => Some(ExecutionMode::VertexOrderCw),
+            5u32 => Some(ExecutionMode::VertexOrderCcw),
+            6u32 => Some(ExecutionMode::PixelCenterInteger),
+            7u32 => Some(ExecutionMode::OriginUpperLeft),
+            8u32 => Some(ExecutionMode::OriginLowerLeft),
+            9u32 => Some(ExecutionMode::EarlyFragmentTests),
+            10u32 => Some(ExecutionMode::PointMode),
+            11u32 => Some(ExecutionMode::Xfb),
+            12u32 => Some(ExecutionMode::DepthReplacing),
+            14u32 => Some(ExecutionMode::DepthGreater),
+            15u32 => Some(ExecutionMode::DepthLess),
+            16u32 => Some(ExecutionMode::DepthUnchanged),
+            17u32 => Some(ExecutionMode::LocalSize),
+            18u32 => Some(ExecutionMode::LocalSizeHint),
+            19u32 => Some(ExecutionMode::InputPoints),
+            20u32 => Some(ExecutionMode::InputLines),
+            21u32 => Some(ExecutionMode::InputLinesAdjacency),
+            22u32 => Some(ExecutionMode::Triangles),
+            23u32 => Some(ExecutionMode::InputTrianglesAdjacency),
+            24u32 => Some(ExecutionMode::Quads),
+            25u32 => Some(ExecutionMode::Isolines),
+            26u32 => Some(ExecutionMode::OutputVertices),
+            27u32 => Some(ExecutionMode::OutputPoints),
+            28u32 => Some(ExecutionMode::OutputLineStrip),
+            29u32 => Some(ExecutionMode::OutputTriangleStrip),
+            30u32 => Some(ExecutionMode::VecTypeHint),
+            31u32 => Some(ExecutionMode::ContractionOff),
+            33u32 => Some(ExecutionMode::Initializer),
+            34u32 => Some(ExecutionMode::Finalizer),
+            35u32 => Some(ExecutionMode::SubgroupSize),
+            36u32 => Some(ExecutionMode::SubgroupsPerWorkgroup),
+            37u32 => Some(ExecutionMode::SubgroupsPerWorkgroupId),
+            38u32 => Some(ExecutionMode::LocalSizeId),
+            39u32 => Some(ExecutionMode::LocalSizeHintId),
+            4446u32 => Some(ExecutionMode::PostDepthCoverage),
+            5027u32 => Some(ExecutionMode::StencilRefReplacingEXT),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -424,34 +364,21 @@ impl StorageClass {
 impl num_traits::FromPrimitive for StorageClass {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(StorageClass::UniformConstant)
-        } else if 1u32 as i64 == n {
-            Some(StorageClass::Input)
-        } else if 2u32 as i64 == n {
-            Some(StorageClass::Uniform)
-        } else if 3u32 as i64 == n {
-            Some(StorageClass::Output)
-        } else if 4u32 as i64 == n {
-            Some(StorageClass::Workgroup)
-        } else if 5u32 as i64 == n {
-            Some(StorageClass::CrossWorkgroup)
-        } else if 6u32 as i64 == n {
-            Some(StorageClass::Private)
-        } else if 7u32 as i64 == n {
-            Some(StorageClass::Function)
-        } else if 8u32 as i64 == n {
-            Some(StorageClass::Generic)
-        } else if 9u32 as i64 == n {
-            Some(StorageClass::PushConstant)
-        } else if 10u32 as i64 == n {
-            Some(StorageClass::AtomicCounter)
-        } else if 11u32 as i64 == n {
-            Some(StorageClass::Image)
-        } else if 12u32 as i64 == n {
-            Some(StorageClass::StorageBuffer)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(StorageClass::UniformConstant),
+            1u32 => Some(StorageClass::Input),
+            2u32 => Some(StorageClass::Uniform),
+            3u32 => Some(StorageClass::Output),
+            4u32 => Some(StorageClass::Workgroup),
+            5u32 => Some(StorageClass::CrossWorkgroup),
+            6u32 => Some(StorageClass::Private),
+            7u32 => Some(StorageClass::Function),
+            8u32 => Some(StorageClass::Generic),
+            9u32 => Some(StorageClass::PushConstant),
+            10u32 => Some(StorageClass::AtomicCounter),
+            11u32 => Some(StorageClass::Image),
+            12u32 => Some(StorageClass::StorageBuffer),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -491,22 +418,15 @@ impl Dim {
 impl num_traits::FromPrimitive for Dim {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(Dim::Dim1D)
-        } else if 1u32 as i64 == n {
-            Some(Dim::Dim2D)
-        } else if 2u32 as i64 == n {
-            Some(Dim::Dim3D)
-        } else if 3u32 as i64 == n {
-            Some(Dim::DimCube)
-        } else if 4u32 as i64 == n {
-            Some(Dim::DimRect)
-        } else if 5u32 as i64 == n {
-            Some(Dim::DimBuffer)
-        } else if 6u32 as i64 == n {
-            Some(Dim::DimSubpassData)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(Dim::Dim1D),
+            1u32 => Some(Dim::Dim2D),
+            2u32 => Some(Dim::Dim3D),
+            3u32 => Some(Dim::DimCube),
+            4u32 => Some(Dim::DimRect),
+            5u32 => Some(Dim::DimBuffer),
+            6u32 => Some(Dim::DimSubpassData),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -538,18 +458,13 @@ impl SamplerAddressingMode {
 impl num_traits::FromPrimitive for SamplerAddressingMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(SamplerAddressingMode::None)
-        } else if 1u32 as i64 == n {
-            Some(SamplerAddressingMode::ClampToEdge)
-        } else if 2u32 as i64 == n {
-            Some(SamplerAddressingMode::Clamp)
-        } else if 3u32 as i64 == n {
-            Some(SamplerAddressingMode::Repeat)
-        } else if 4u32 as i64 == n {
-            Some(SamplerAddressingMode::RepeatMirrored)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(SamplerAddressingMode::None),
+            1u32 => Some(SamplerAddressingMode::ClampToEdge),
+            2u32 => Some(SamplerAddressingMode::Clamp),
+            3u32 => Some(SamplerAddressingMode::Repeat),
+            4u32 => Some(SamplerAddressingMode::RepeatMirrored),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -574,12 +489,10 @@ impl SamplerFilterMode {
 impl num_traits::FromPrimitive for SamplerFilterMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(SamplerFilterMode::Nearest)
-        } else if 1u32 as i64 == n {
-            Some(SamplerFilterMode::Linear)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(SamplerFilterMode::Nearest),
+            1u32 => Some(SamplerFilterMode::Linear),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -681,88 +594,48 @@ impl ImageFormat {
 impl num_traits::FromPrimitive for ImageFormat {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(ImageFormat::Unknown)
-        } else if 1u32 as i64 == n {
-            Some(ImageFormat::Rgba32f)
-        } else if 2u32 as i64 == n {
-            Some(ImageFormat::Rgba16f)
-        } else if 3u32 as i64 == n {
-            Some(ImageFormat::R32f)
-        } else if 4u32 as i64 == n {
-            Some(ImageFormat::Rgba8)
-        } else if 5u32 as i64 == n {
-            Some(ImageFormat::Rgba8Snorm)
-        } else if 6u32 as i64 == n {
-            Some(ImageFormat::Rg32f)
-        } else if 7u32 as i64 == n {
-            Some(ImageFormat::Rg16f)
-        } else if 8u32 as i64 == n {
-            Some(ImageFormat::R11fG11fB10f)
-        } else if 9u32 as i64 == n {
-            Some(ImageFormat::R16f)
-        } else if 10u32 as i64 == n {
-            Some(ImageFormat::Rgba16)
-        } else if 11u32 as i64 == n {
-            Some(ImageFormat::Rgb10A2)
-        } else if 12u32 as i64 == n {
-            Some(ImageFormat::Rg16)
-        } else if 13u32 as i64 == n {
-            Some(ImageFormat::Rg8)
-        } else if 14u32 as i64 == n {
-            Some(ImageFormat::R16)
-        } else if 15u32 as i64 == n {
-            Some(ImageFormat::R8)
-        } else if 16u32 as i64 == n {
-            Some(ImageFormat::Rgba16Snorm)
-        } else if 17u32 as i64 == n {
-            Some(ImageFormat::Rg16Snorm)
-        } else if 18u32 as i64 == n {
-            Some(ImageFormat::Rg8Snorm)
-        } else if 19u32 as i64 == n {
-            Some(ImageFormat::R16Snorm)
-        } else if 20u32 as i64 == n {
-            Some(ImageFormat::R8Snorm)
-        } else if 21u32 as i64 == n {
-            Some(ImageFormat::Rgba32i)
-        } else if 22u32 as i64 == n {
-            Some(ImageFormat::Rgba16i)
-        } else if 23u32 as i64 == n {
-            Some(ImageFormat::Rgba8i)
-        } else if 24u32 as i64 == n {
-            Some(ImageFormat::R32i)
-        } else if 25u32 as i64 == n {
-            Some(ImageFormat::Rg32i)
-        } else if 26u32 as i64 == n {
-            Some(ImageFormat::Rg16i)
-        } else if 27u32 as i64 == n {
-            Some(ImageFormat::Rg8i)
-        } else if 28u32 as i64 == n {
-            Some(ImageFormat::R16i)
-        } else if 29u32 as i64 == n {
-            Some(ImageFormat::R8i)
-        } else if 30u32 as i64 == n {
-            Some(ImageFormat::Rgba32ui)
-        } else if 31u32 as i64 == n {
-            Some(ImageFormat::Rgba16ui)
-        } else if 32u32 as i64 == n {
-            Some(ImageFormat::Rgba8ui)
-        } else if 33u32 as i64 == n {
-            Some(ImageFormat::R32ui)
-        } else if 34u32 as i64 == n {
-            Some(ImageFormat::Rgb10a2ui)
-        } else if 35u32 as i64 == n {
-            Some(ImageFormat::Rg32ui)
-        } else if 36u32 as i64 == n {
-            Some(ImageFormat::Rg16ui)
-        } else if 37u32 as i64 == n {
-            Some(ImageFormat::Rg8ui)
-        } else if 38u32 as i64 == n {
-            Some(ImageFormat::R16ui)
-        } else if 39u32 as i64 == n {
-            Some(ImageFormat::R8ui)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(ImageFormat::Unknown),
+            1u32 => Some(ImageFormat::Rgba32f),
+            2u32 => Some(ImageFormat::Rgba16f),
+            3u32 => Some(ImageFormat::R32f),
+            4u32 => Some(ImageFormat::Rgba8),
+            5u32 => Some(ImageFormat::Rgba8Snorm),
+            6u32 => Some(ImageFormat::Rg32f),
+            7u32 => Some(ImageFormat::Rg16f),
+            8u32 => Some(ImageFormat::R11fG11fB10f),
+            9u32 => Some(ImageFormat::R16f),
+            10u32 => Some(ImageFormat::Rgba16),
+            11u32 => Some(ImageFormat::Rgb10A2),
+            12u32 => Some(ImageFormat::Rg16),
+            13u32 => Some(ImageFormat::Rg8),
+            14u32 => Some(ImageFormat::R16),
+            15u32 => Some(ImageFormat::R8),
+            16u32 => Some(ImageFormat::Rgba16Snorm),
+            17u32 => Some(ImageFormat::Rg16Snorm),
+            18u32 => Some(ImageFormat::Rg8Snorm),
+            19u32 => Some(ImageFormat::R16Snorm),
+            20u32 => Some(ImageFormat::R8Snorm),
+            21u32 => Some(ImageFormat::Rgba32i),
+            22u32 => Some(ImageFormat::Rgba16i),
+            23u32 => Some(ImageFormat::Rgba8i),
+            24u32 => Some(ImageFormat::R32i),
+            25u32 => Some(ImageFormat::Rg32i),
+            26u32 => Some(ImageFormat::Rg16i),
+            27u32 => Some(ImageFormat::Rg8i),
+            28u32 => Some(ImageFormat::R16i),
+            29u32 => Some(ImageFormat::R8i),
+            30u32 => Some(ImageFormat::Rgba32ui),
+            31u32 => Some(ImageFormat::Rgba16ui),
+            32u32 => Some(ImageFormat::Rgba8ui),
+            33u32 => Some(ImageFormat::R32ui),
+            34u32 => Some(ImageFormat::Rgb10a2ui),
+            35u32 => Some(ImageFormat::Rg32ui),
+            36u32 => Some(ImageFormat::Rg16ui),
+            37u32 => Some(ImageFormat::Rg8ui),
+            38u32 => Some(ImageFormat::R16ui),
+            39u32 => Some(ImageFormat::R8ui),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -824,48 +697,28 @@ impl ImageChannelOrder {
 impl num_traits::FromPrimitive for ImageChannelOrder {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(ImageChannelOrder::R)
-        } else if 1u32 as i64 == n {
-            Some(ImageChannelOrder::A)
-        } else if 2u32 as i64 == n {
-            Some(ImageChannelOrder::RG)
-        } else if 3u32 as i64 == n {
-            Some(ImageChannelOrder::RA)
-        } else if 4u32 as i64 == n {
-            Some(ImageChannelOrder::RGB)
-        } else if 5u32 as i64 == n {
-            Some(ImageChannelOrder::RGBA)
-        } else if 6u32 as i64 == n {
-            Some(ImageChannelOrder::BGRA)
-        } else if 7u32 as i64 == n {
-            Some(ImageChannelOrder::ARGB)
-        } else if 8u32 as i64 == n {
-            Some(ImageChannelOrder::Intensity)
-        } else if 9u32 as i64 == n {
-            Some(ImageChannelOrder::Luminance)
-        } else if 10u32 as i64 == n {
-            Some(ImageChannelOrder::Rx)
-        } else if 11u32 as i64 == n {
-            Some(ImageChannelOrder::RGx)
-        } else if 12u32 as i64 == n {
-            Some(ImageChannelOrder::RGBx)
-        } else if 13u32 as i64 == n {
-            Some(ImageChannelOrder::Depth)
-        } else if 14u32 as i64 == n {
-            Some(ImageChannelOrder::DepthStencil)
-        } else if 15u32 as i64 == n {
-            Some(ImageChannelOrder::sRGB)
-        } else if 16u32 as i64 == n {
-            Some(ImageChannelOrder::sRGBx)
-        } else if 17u32 as i64 == n {
-            Some(ImageChannelOrder::sRGBA)
-        } else if 18u32 as i64 == n {
-            Some(ImageChannelOrder::sBGRA)
-        } else if 19u32 as i64 == n {
-            Some(ImageChannelOrder::ABGR)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(ImageChannelOrder::R),
+            1u32 => Some(ImageChannelOrder::A),
+            2u32 => Some(ImageChannelOrder::RG),
+            3u32 => Some(ImageChannelOrder::RA),
+            4u32 => Some(ImageChannelOrder::RGB),
+            5u32 => Some(ImageChannelOrder::RGBA),
+            6u32 => Some(ImageChannelOrder::BGRA),
+            7u32 => Some(ImageChannelOrder::ARGB),
+            8u32 => Some(ImageChannelOrder::Intensity),
+            9u32 => Some(ImageChannelOrder::Luminance),
+            10u32 => Some(ImageChannelOrder::Rx),
+            11u32 => Some(ImageChannelOrder::RGx),
+            12u32 => Some(ImageChannelOrder::RGBx),
+            13u32 => Some(ImageChannelOrder::Depth),
+            14u32 => Some(ImageChannelOrder::DepthStencil),
+            15u32 => Some(ImageChannelOrder::sRGB),
+            16u32 => Some(ImageChannelOrder::sRGBx),
+            17u32 => Some(ImageChannelOrder::sRGBA),
+            18u32 => Some(ImageChannelOrder::sBGRA),
+            19u32 => Some(ImageChannelOrder::ABGR),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -921,42 +774,25 @@ impl ImageChannelDataType {
 impl num_traits::FromPrimitive for ImageChannelDataType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(ImageChannelDataType::SnormInt8)
-        } else if 1u32 as i64 == n {
-            Some(ImageChannelDataType::SnormInt16)
-        } else if 2u32 as i64 == n {
-            Some(ImageChannelDataType::UnormInt8)
-        } else if 3u32 as i64 == n {
-            Some(ImageChannelDataType::UnormInt16)
-        } else if 4u32 as i64 == n {
-            Some(ImageChannelDataType::UnormShort565)
-        } else if 5u32 as i64 == n {
-            Some(ImageChannelDataType::UnormShort555)
-        } else if 6u32 as i64 == n {
-            Some(ImageChannelDataType::UnormInt101010)
-        } else if 7u32 as i64 == n {
-            Some(ImageChannelDataType::SignedInt8)
-        } else if 8u32 as i64 == n {
-            Some(ImageChannelDataType::SignedInt16)
-        } else if 9u32 as i64 == n {
-            Some(ImageChannelDataType::SignedInt32)
-        } else if 10u32 as i64 == n {
-            Some(ImageChannelDataType::UnsignedInt8)
-        } else if 11u32 as i64 == n {
-            Some(ImageChannelDataType::UnsignedInt16)
-        } else if 12u32 as i64 == n {
-            Some(ImageChannelDataType::UnsignedInt32)
-        } else if 13u32 as i64 == n {
-            Some(ImageChannelDataType::HalfFloat)
-        } else if 14u32 as i64 == n {
-            Some(ImageChannelDataType::Float)
-        } else if 15u32 as i64 == n {
-            Some(ImageChannelDataType::UnormInt24)
-        } else if 16u32 as i64 == n {
-            Some(ImageChannelDataType::UnormInt101010_2)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(ImageChannelDataType::SnormInt8),
+            1u32 => Some(ImageChannelDataType::SnormInt16),
+            2u32 => Some(ImageChannelDataType::UnormInt8),
+            3u32 => Some(ImageChannelDataType::UnormInt16),
+            4u32 => Some(ImageChannelDataType::UnormShort565),
+            5u32 => Some(ImageChannelDataType::UnormShort555),
+            6u32 => Some(ImageChannelDataType::UnormInt101010),
+            7u32 => Some(ImageChannelDataType::SignedInt8),
+            8u32 => Some(ImageChannelDataType::SignedInt16),
+            9u32 => Some(ImageChannelDataType::SignedInt32),
+            10u32 => Some(ImageChannelDataType::UnsignedInt8),
+            11u32 => Some(ImageChannelDataType::UnsignedInt16),
+            12u32 => Some(ImageChannelDataType::UnsignedInt32),
+            13u32 => Some(ImageChannelDataType::HalfFloat),
+            14u32 => Some(ImageChannelDataType::Float),
+            15u32 => Some(ImageChannelDataType::UnormInt24),
+            16u32 => Some(ImageChannelDataType::UnormInt101010_2),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -986,16 +822,12 @@ impl FPRoundingMode {
 impl num_traits::FromPrimitive for FPRoundingMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(FPRoundingMode::RTE)
-        } else if 1u32 as i64 == n {
-            Some(FPRoundingMode::RTZ)
-        } else if 2u32 as i64 == n {
-            Some(FPRoundingMode::RTP)
-        } else if 3u32 as i64 == n {
-            Some(FPRoundingMode::RTN)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(FPRoundingMode::RTE),
+            1u32 => Some(FPRoundingMode::RTZ),
+            2u32 => Some(FPRoundingMode::RTP),
+            3u32 => Some(FPRoundingMode::RTN),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1020,12 +852,10 @@ impl LinkageType {
 impl num_traits::FromPrimitive for LinkageType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(LinkageType::Export)
-        } else if 1u32 as i64 == n {
-            Some(LinkageType::Import)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(LinkageType::Export),
+            1u32 => Some(LinkageType::Import),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1053,14 +883,11 @@ impl AccessQualifier {
 impl num_traits::FromPrimitive for AccessQualifier {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(AccessQualifier::ReadOnly)
-        } else if 1u32 as i64 == n {
-            Some(AccessQualifier::WriteOnly)
-        } else if 2u32 as i64 == n {
-            Some(AccessQualifier::ReadWrite)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(AccessQualifier::ReadOnly),
+            1u32 => Some(AccessQualifier::WriteOnly),
+            2u32 => Some(AccessQualifier::ReadWrite),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1098,24 +925,16 @@ impl FunctionParameterAttribute {
 impl num_traits::FromPrimitive for FunctionParameterAttribute {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(FunctionParameterAttribute::Zext)
-        } else if 1u32 as i64 == n {
-            Some(FunctionParameterAttribute::Sext)
-        } else if 2u32 as i64 == n {
-            Some(FunctionParameterAttribute::ByVal)
-        } else if 3u32 as i64 == n {
-            Some(FunctionParameterAttribute::Sret)
-        } else if 4u32 as i64 == n {
-            Some(FunctionParameterAttribute::NoAlias)
-        } else if 5u32 as i64 == n {
-            Some(FunctionParameterAttribute::NoCapture)
-        } else if 6u32 as i64 == n {
-            Some(FunctionParameterAttribute::NoWrite)
-        } else if 7u32 as i64 == n {
-            Some(FunctionParameterAttribute::NoReadWrite)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(FunctionParameterAttribute::Zext),
+            1u32 => Some(FunctionParameterAttribute::Sext),
+            2u32 => Some(FunctionParameterAttribute::ByVal),
+            3u32 => Some(FunctionParameterAttribute::Sret),
+            4u32 => Some(FunctionParameterAttribute::NoAlias),
+            5u32 => Some(FunctionParameterAttribute::NoCapture),
+            6u32 => Some(FunctionParameterAttribute::NoWrite),
+            7u32 => Some(FunctionParameterAttribute::NoReadWrite),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1243,116 +1062,62 @@ impl Decoration {
 impl num_traits::FromPrimitive for Decoration {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(Decoration::RelaxedPrecision)
-        } else if 1u32 as i64 == n {
-            Some(Decoration::SpecId)
-        } else if 2u32 as i64 == n {
-            Some(Decoration::Block)
-        } else if 3u32 as i64 == n {
-            Some(Decoration::BufferBlock)
-        } else if 4u32 as i64 == n {
-            Some(Decoration::RowMajor)
-        } else if 5u32 as i64 == n {
-            Some(Decoration::ColMajor)
-        } else if 6u32 as i64 == n {
-            Some(Decoration::ArrayStride)
-        } else if 7u32 as i64 == n {
-            Some(Decoration::MatrixStride)
-        } else if 8u32 as i64 == n {
-            Some(Decoration::GLSLShared)
-        } else if 9u32 as i64 == n {
-            Some(Decoration::GLSLPacked)
-        } else if 10u32 as i64 == n {
-            Some(Decoration::CPacked)
-        } else if 11u32 as i64 == n {
-            Some(Decoration::BuiltIn)
-        } else if 13u32 as i64 == n {
-            Some(Decoration::NoPerspective)
-        } else if 14u32 as i64 == n {
-            Some(Decoration::Flat)
-        } else if 15u32 as i64 == n {
-            Some(Decoration::Patch)
-        } else if 16u32 as i64 == n {
-            Some(Decoration::Centroid)
-        } else if 17u32 as i64 == n {
-            Some(Decoration::Sample)
-        } else if 18u32 as i64 == n {
-            Some(Decoration::Invariant)
-        } else if 19u32 as i64 == n {
-            Some(Decoration::Restrict)
-        } else if 20u32 as i64 == n {
-            Some(Decoration::Aliased)
-        } else if 21u32 as i64 == n {
-            Some(Decoration::Volatile)
-        } else if 22u32 as i64 == n {
-            Some(Decoration::Constant)
-        } else if 23u32 as i64 == n {
-            Some(Decoration::Coherent)
-        } else if 24u32 as i64 == n {
-            Some(Decoration::NonWritable)
-        } else if 25u32 as i64 == n {
-            Some(Decoration::NonReadable)
-        } else if 26u32 as i64 == n {
-            Some(Decoration::Uniform)
-        } else if 28u32 as i64 == n {
-            Some(Decoration::SaturatedConversion)
-        } else if 29u32 as i64 == n {
-            Some(Decoration::Stream)
-        } else if 30u32 as i64 == n {
-            Some(Decoration::Location)
-        } else if 31u32 as i64 == n {
-            Some(Decoration::Component)
-        } else if 32u32 as i64 == n {
-            Some(Decoration::Index)
-        } else if 33u32 as i64 == n {
-            Some(Decoration::Binding)
-        } else if 34u32 as i64 == n {
-            Some(Decoration::DescriptorSet)
-        } else if 35u32 as i64 == n {
-            Some(Decoration::Offset)
-        } else if 36u32 as i64 == n {
-            Some(Decoration::XfbBuffer)
-        } else if 37u32 as i64 == n {
-            Some(Decoration::XfbStride)
-        } else if 38u32 as i64 == n {
-            Some(Decoration::FuncParamAttr)
-        } else if 39u32 as i64 == n {
-            Some(Decoration::FPRoundingMode)
-        } else if 40u32 as i64 == n {
-            Some(Decoration::FPFastMathMode)
-        } else if 41u32 as i64 == n {
-            Some(Decoration::LinkageAttributes)
-        } else if 42u32 as i64 == n {
-            Some(Decoration::NoContraction)
-        } else if 43u32 as i64 == n {
-            Some(Decoration::InputAttachmentIndex)
-        } else if 44u32 as i64 == n {
-            Some(Decoration::Alignment)
-        } else if 45u32 as i64 == n {
-            Some(Decoration::MaxByteOffset)
-        } else if 46u32 as i64 == n {
-            Some(Decoration::AlignmentId)
-        } else if 47u32 as i64 == n {
-            Some(Decoration::MaxByteOffsetId)
-        } else if 4999u32 as i64 == n {
-            Some(Decoration::ExplicitInterpAMD)
-        } else if 5248u32 as i64 == n {
-            Some(Decoration::OverrideCoverageNV)
-        } else if 5250u32 as i64 == n {
-            Some(Decoration::PassthroughNV)
-        } else if 5252u32 as i64 == n {
-            Some(Decoration::ViewportRelativeNV)
-        } else if 5256u32 as i64 == n {
-            Some(Decoration::SecondaryViewportRelativeNV)
-        } else if 5300u32 as i64 == n {
-            Some(Decoration::NonUniformEXT)
-        } else if 5634u32 as i64 == n {
-            Some(Decoration::HlslCounterBufferGOOGLE)
-        } else if 5635u32 as i64 == n {
-            Some(Decoration::HlslSemanticGOOGLE)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(Decoration::RelaxedPrecision),
+            1u32 => Some(Decoration::SpecId),
+            2u32 => Some(Decoration::Block),
+            3u32 => Some(Decoration::BufferBlock),
+            4u32 => Some(Decoration::RowMajor),
+            5u32 => Some(Decoration::ColMajor),
+            6u32 => Some(Decoration::ArrayStride),
+            7u32 => Some(Decoration::MatrixStride),
+            8u32 => Some(Decoration::GLSLShared),
+            9u32 => Some(Decoration::GLSLPacked),
+            10u32 => Some(Decoration::CPacked),
+            11u32 => Some(Decoration::BuiltIn),
+            13u32 => Some(Decoration::NoPerspective),
+            14u32 => Some(Decoration::Flat),
+            15u32 => Some(Decoration::Patch),
+            16u32 => Some(Decoration::Centroid),
+            17u32 => Some(Decoration::Sample),
+            18u32 => Some(Decoration::Invariant),
+            19u32 => Some(Decoration::Restrict),
+            20u32 => Some(Decoration::Aliased),
+            21u32 => Some(Decoration::Volatile),
+            22u32 => Some(Decoration::Constant),
+            23u32 => Some(Decoration::Coherent),
+            24u32 => Some(Decoration::NonWritable),
+            25u32 => Some(Decoration::NonReadable),
+            26u32 => Some(Decoration::Uniform),
+            28u32 => Some(Decoration::SaturatedConversion),
+            29u32 => Some(Decoration::Stream),
+            30u32 => Some(Decoration::Location),
+            31u32 => Some(Decoration::Component),
+            32u32 => Some(Decoration::Index),
+            33u32 => Some(Decoration::Binding),
+            34u32 => Some(Decoration::DescriptorSet),
+            35u32 => Some(Decoration::Offset),
+            36u32 => Some(Decoration::XfbBuffer),
+            37u32 => Some(Decoration::XfbStride),
+            38u32 => Some(Decoration::FuncParamAttr),
+            39u32 => Some(Decoration::FPRoundingMode),
+            40u32 => Some(Decoration::FPFastMathMode),
+            41u32 => Some(Decoration::LinkageAttributes),
+            42u32 => Some(Decoration::NoContraction),
+            43u32 => Some(Decoration::InputAttachmentIndex),
+            44u32 => Some(Decoration::Alignment),
+            45u32 => Some(Decoration::MaxByteOffset),
+            46u32 => Some(Decoration::AlignmentId),
+            47u32 => Some(Decoration::MaxByteOffsetId),
+            4999u32 => Some(Decoration::ExplicitInterpAMD),
+            5248u32 => Some(Decoration::OverrideCoverageNV),
+            5250u32 => Some(Decoration::PassthroughNV),
+            5252u32 => Some(Decoration::ViewportRelativeNV),
+            5256u32 => Some(Decoration::SecondaryViewportRelativeNV),
+            5300u32 => Some(Decoration::NonUniformEXT),
+            5634u32 => Some(Decoration::HlslCounterBufferGOOGLE),
+            5635u32 => Some(Decoration::HlslSemanticGOOGLE),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1518,138 +1283,73 @@ impl BuiltIn {
 impl num_traits::FromPrimitive for BuiltIn {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(BuiltIn::Position)
-        } else if 1u32 as i64 == n {
-            Some(BuiltIn::PointSize)
-        } else if 3u32 as i64 == n {
-            Some(BuiltIn::ClipDistance)
-        } else if 4u32 as i64 == n {
-            Some(BuiltIn::CullDistance)
-        } else if 5u32 as i64 == n {
-            Some(BuiltIn::VertexId)
-        } else if 6u32 as i64 == n {
-            Some(BuiltIn::InstanceId)
-        } else if 7u32 as i64 == n {
-            Some(BuiltIn::PrimitiveId)
-        } else if 8u32 as i64 == n {
-            Some(BuiltIn::InvocationId)
-        } else if 9u32 as i64 == n {
-            Some(BuiltIn::Layer)
-        } else if 10u32 as i64 == n {
-            Some(BuiltIn::ViewportIndex)
-        } else if 11u32 as i64 == n {
-            Some(BuiltIn::TessLevelOuter)
-        } else if 12u32 as i64 == n {
-            Some(BuiltIn::TessLevelInner)
-        } else if 13u32 as i64 == n {
-            Some(BuiltIn::TessCoord)
-        } else if 14u32 as i64 == n {
-            Some(BuiltIn::PatchVertices)
-        } else if 15u32 as i64 == n {
-            Some(BuiltIn::FragCoord)
-        } else if 16u32 as i64 == n {
-            Some(BuiltIn::PointCoord)
-        } else if 17u32 as i64 == n {
-            Some(BuiltIn::FrontFacing)
-        } else if 18u32 as i64 == n {
-            Some(BuiltIn::SampleId)
-        } else if 19u32 as i64 == n {
-            Some(BuiltIn::SamplePosition)
-        } else if 20u32 as i64 == n {
-            Some(BuiltIn::SampleMask)
-        } else if 22u32 as i64 == n {
-            Some(BuiltIn::FragDepth)
-        } else if 23u32 as i64 == n {
-            Some(BuiltIn::HelperInvocation)
-        } else if 24u32 as i64 == n {
-            Some(BuiltIn::NumWorkgroups)
-        } else if 25u32 as i64 == n {
-            Some(BuiltIn::WorkgroupSize)
-        } else if 26u32 as i64 == n {
-            Some(BuiltIn::WorkgroupId)
-        } else if 27u32 as i64 == n {
-            Some(BuiltIn::LocalInvocationId)
-        } else if 28u32 as i64 == n {
-            Some(BuiltIn::GlobalInvocationId)
-        } else if 29u32 as i64 == n {
-            Some(BuiltIn::LocalInvocationIndex)
-        } else if 30u32 as i64 == n {
-            Some(BuiltIn::WorkDim)
-        } else if 31u32 as i64 == n {
-            Some(BuiltIn::GlobalSize)
-        } else if 32u32 as i64 == n {
-            Some(BuiltIn::EnqueuedWorkgroupSize)
-        } else if 33u32 as i64 == n {
-            Some(BuiltIn::GlobalOffset)
-        } else if 34u32 as i64 == n {
-            Some(BuiltIn::GlobalLinearId)
-        } else if 36u32 as i64 == n {
-            Some(BuiltIn::SubgroupSize)
-        } else if 37u32 as i64 == n {
-            Some(BuiltIn::SubgroupMaxSize)
-        } else if 38u32 as i64 == n {
-            Some(BuiltIn::NumSubgroups)
-        } else if 39u32 as i64 == n {
-            Some(BuiltIn::NumEnqueuedSubgroups)
-        } else if 40u32 as i64 == n {
-            Some(BuiltIn::SubgroupId)
-        } else if 41u32 as i64 == n {
-            Some(BuiltIn::SubgroupLocalInvocationId)
-        } else if 42u32 as i64 == n {
-            Some(BuiltIn::VertexIndex)
-        } else if 43u32 as i64 == n {
-            Some(BuiltIn::InstanceIndex)
-        } else if 4416u32 as i64 == n {
-            Some(BuiltIn::SubgroupEqMask)
-        } else if 4417u32 as i64 == n {
-            Some(BuiltIn::SubgroupGeMask)
-        } else if 4418u32 as i64 == n {
-            Some(BuiltIn::SubgroupGtMask)
-        } else if 4419u32 as i64 == n {
-            Some(BuiltIn::SubgroupLeMask)
-        } else if 4420u32 as i64 == n {
-            Some(BuiltIn::SubgroupLtMask)
-        } else if 4424u32 as i64 == n {
-            Some(BuiltIn::BaseVertex)
-        } else if 4425u32 as i64 == n {
-            Some(BuiltIn::BaseInstance)
-        } else if 4426u32 as i64 == n {
-            Some(BuiltIn::DrawIndex)
-        } else if 4438u32 as i64 == n {
-            Some(BuiltIn::DeviceIndex)
-        } else if 4440u32 as i64 == n {
-            Some(BuiltIn::ViewIndex)
-        } else if 4992u32 as i64 == n {
-            Some(BuiltIn::BaryCoordNoPerspAMD)
-        } else if 4993u32 as i64 == n {
-            Some(BuiltIn::BaryCoordNoPerspCentroidAMD)
-        } else if 4994u32 as i64 == n {
-            Some(BuiltIn::BaryCoordNoPerspSampleAMD)
-        } else if 4995u32 as i64 == n {
-            Some(BuiltIn::BaryCoordSmoothAMD)
-        } else if 4996u32 as i64 == n {
-            Some(BuiltIn::BaryCoordSmoothCentroidAMD)
-        } else if 4997u32 as i64 == n {
-            Some(BuiltIn::BaryCoordSmoothSampleAMD)
-        } else if 4998u32 as i64 == n {
-            Some(BuiltIn::BaryCoordPullModelAMD)
-        } else if 5014u32 as i64 == n {
-            Some(BuiltIn::FragStencilRefEXT)
-        } else if 5253u32 as i64 == n {
-            Some(BuiltIn::ViewportMaskNV)
-        } else if 5257u32 as i64 == n {
-            Some(BuiltIn::SecondaryPositionNV)
-        } else if 5258u32 as i64 == n {
-            Some(BuiltIn::SecondaryViewportMaskNV)
-        } else if 5261u32 as i64 == n {
-            Some(BuiltIn::PositionPerViewNV)
-        } else if 5262u32 as i64 == n {
-            Some(BuiltIn::ViewportMaskPerViewNV)
-        } else if 5264u32 as i64 == n {
-            Some(BuiltIn::FullyCoveredEXT)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(BuiltIn::Position),
+            1u32 => Some(BuiltIn::PointSize),
+            3u32 => Some(BuiltIn::ClipDistance),
+            4u32 => Some(BuiltIn::CullDistance),
+            5u32 => Some(BuiltIn::VertexId),
+            6u32 => Some(BuiltIn::InstanceId),
+            7u32 => Some(BuiltIn::PrimitiveId),
+            8u32 => Some(BuiltIn::InvocationId),
+            9u32 => Some(BuiltIn::Layer),
+            10u32 => Some(BuiltIn::ViewportIndex),
+            11u32 => Some(BuiltIn::TessLevelOuter),
+            12u32 => Some(BuiltIn::TessLevelInner),
+            13u32 => Some(BuiltIn::TessCoord),
+            14u32 => Some(BuiltIn::PatchVertices),
+            15u32 => Some(BuiltIn::FragCoord),
+            16u32 => Some(BuiltIn::PointCoord),
+            17u32 => Some(BuiltIn::FrontFacing),
+            18u32 => Some(BuiltIn::SampleId),
+            19u32 => Some(BuiltIn::SamplePosition),
+            20u32 => Some(BuiltIn::SampleMask),
+            22u32 => Some(BuiltIn::FragDepth),
+            23u32 => Some(BuiltIn::HelperInvocation),
+            24u32 => Some(BuiltIn::NumWorkgroups),
+            25u32 => Some(BuiltIn::WorkgroupSize),
+            26u32 => Some(BuiltIn::WorkgroupId),
+            27u32 => Some(BuiltIn::LocalInvocationId),
+            28u32 => Some(BuiltIn::GlobalInvocationId),
+            29u32 => Some(BuiltIn::LocalInvocationIndex),
+            30u32 => Some(BuiltIn::WorkDim),
+            31u32 => Some(BuiltIn::GlobalSize),
+            32u32 => Some(BuiltIn::EnqueuedWorkgroupSize),
+            33u32 => Some(BuiltIn::GlobalOffset),
+            34u32 => Some(BuiltIn::GlobalLinearId),
+            36u32 => Some(BuiltIn::SubgroupSize),
+            37u32 => Some(BuiltIn::SubgroupMaxSize),
+            38u32 => Some(BuiltIn::NumSubgroups),
+            39u32 => Some(BuiltIn::NumEnqueuedSubgroups),
+            40u32 => Some(BuiltIn::SubgroupId),
+            41u32 => Some(BuiltIn::SubgroupLocalInvocationId),
+            42u32 => Some(BuiltIn::VertexIndex),
+            43u32 => Some(BuiltIn::InstanceIndex),
+            4416u32 => Some(BuiltIn::SubgroupEqMask),
+            4417u32 => Some(BuiltIn::SubgroupGeMask),
+            4418u32 => Some(BuiltIn::SubgroupGtMask),
+            4419u32 => Some(BuiltIn::SubgroupLeMask),
+            4420u32 => Some(BuiltIn::SubgroupLtMask),
+            4424u32 => Some(BuiltIn::BaseVertex),
+            4425u32 => Some(BuiltIn::BaseInstance),
+            4426u32 => Some(BuiltIn::DrawIndex),
+            4438u32 => Some(BuiltIn::DeviceIndex),
+            4440u32 => Some(BuiltIn::ViewIndex),
+            4992u32 => Some(BuiltIn::BaryCoordNoPerspAMD),
+            4993u32 => Some(BuiltIn::BaryCoordNoPerspCentroidAMD),
+            4994u32 => Some(BuiltIn::BaryCoordNoPerspSampleAMD),
+            4995u32 => Some(BuiltIn::BaryCoordSmoothAMD),
+            4996u32 => Some(BuiltIn::BaryCoordSmoothCentroidAMD),
+            4997u32 => Some(BuiltIn::BaryCoordSmoothSampleAMD),
+            4998u32 => Some(BuiltIn::BaryCoordPullModelAMD),
+            5014u32 => Some(BuiltIn::FragStencilRefEXT),
+            5253u32 => Some(BuiltIn::ViewportMaskNV),
+            5257u32 => Some(BuiltIn::SecondaryPositionNV),
+            5258u32 => Some(BuiltIn::SecondaryViewportMaskNV),
+            5261u32 => Some(BuiltIn::PositionPerViewNV),
+            5262u32 => Some(BuiltIn::ViewportMaskPerViewNV),
+            5264u32 => Some(BuiltIn::FullyCoveredEXT),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1683,20 +1383,14 @@ impl Scope {
 impl num_traits::FromPrimitive for Scope {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(Scope::CrossDevice)
-        } else if 1u32 as i64 == n {
-            Some(Scope::Device)
-        } else if 2u32 as i64 == n {
-            Some(Scope::Workgroup)
-        } else if 3u32 as i64 == n {
-            Some(Scope::Subgroup)
-        } else if 4u32 as i64 == n {
-            Some(Scope::Invocation)
-        } else if 5u32 as i64 == n {
-            Some(Scope::QueueFamilyKHR)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(Scope::CrossDevice),
+            1u32 => Some(Scope::Device),
+            2u32 => Some(Scope::Workgroup),
+            3u32 => Some(Scope::Subgroup),
+            4u32 => Some(Scope::Invocation),
+            5u32 => Some(Scope::QueueFamilyKHR),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1738,22 +1432,15 @@ impl GroupOperation {
 impl num_traits::FromPrimitive for GroupOperation {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(GroupOperation::Reduce)
-        } else if 1u32 as i64 == n {
-            Some(GroupOperation::InclusiveScan)
-        } else if 2u32 as i64 == n {
-            Some(GroupOperation::ExclusiveScan)
-        } else if 3u32 as i64 == n {
-            Some(GroupOperation::ClusteredReduce)
-        } else if 6u32 as i64 == n {
-            Some(GroupOperation::PartitionedReduceNV)
-        } else if 7u32 as i64 == n {
-            Some(GroupOperation::PartitionedInclusiveScanNV)
-        } else if 8u32 as i64 == n {
-            Some(GroupOperation::PartitionedExclusiveScanNV)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(GroupOperation::Reduce),
+            1u32 => Some(GroupOperation::InclusiveScan),
+            2u32 => Some(GroupOperation::ExclusiveScan),
+            3u32 => Some(GroupOperation::ClusteredReduce),
+            6u32 => Some(GroupOperation::PartitionedReduceNV),
+            7u32 => Some(GroupOperation::PartitionedInclusiveScanNV),
+            8u32 => Some(GroupOperation::PartitionedExclusiveScanNV),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -1781,14 +1468,11 @@ impl KernelEnqueueFlags {
 impl num_traits::FromPrimitive for KernelEnqueueFlags {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(KernelEnqueueFlags::NoWait)
-        } else if 1u32 as i64 == n {
-            Some(KernelEnqueueFlags::WaitKernel)
-        } else if 2u32 as i64 == n {
-            Some(KernelEnqueueFlags::WaitWorkGroup)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(KernelEnqueueFlags::NoWait),
+            1u32 => Some(KernelEnqueueFlags::WaitKernel),
+            2u32 => Some(KernelEnqueueFlags::WaitWorkGroup),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -2050,234 +1734,121 @@ impl Capability {
 impl num_traits::FromPrimitive for Capability {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(Capability::Matrix)
-        } else if 1u32 as i64 == n {
-            Some(Capability::Shader)
-        } else if 2u32 as i64 == n {
-            Some(Capability::Geometry)
-        } else if 3u32 as i64 == n {
-            Some(Capability::Tessellation)
-        } else if 4u32 as i64 == n {
-            Some(Capability::Addresses)
-        } else if 5u32 as i64 == n {
-            Some(Capability::Linkage)
-        } else if 6u32 as i64 == n {
-            Some(Capability::Kernel)
-        } else if 7u32 as i64 == n {
-            Some(Capability::Vector16)
-        } else if 8u32 as i64 == n {
-            Some(Capability::Float16Buffer)
-        } else if 9u32 as i64 == n {
-            Some(Capability::Float16)
-        } else if 10u32 as i64 == n {
-            Some(Capability::Float64)
-        } else if 11u32 as i64 == n {
-            Some(Capability::Int64)
-        } else if 12u32 as i64 == n {
-            Some(Capability::Int64Atomics)
-        } else if 13u32 as i64 == n {
-            Some(Capability::ImageBasic)
-        } else if 14u32 as i64 == n {
-            Some(Capability::ImageReadWrite)
-        } else if 15u32 as i64 == n {
-            Some(Capability::ImageMipmap)
-        } else if 17u32 as i64 == n {
-            Some(Capability::Pipes)
-        } else if 18u32 as i64 == n {
-            Some(Capability::Groups)
-        } else if 19u32 as i64 == n {
-            Some(Capability::DeviceEnqueue)
-        } else if 20u32 as i64 == n {
-            Some(Capability::LiteralSampler)
-        } else if 21u32 as i64 == n {
-            Some(Capability::AtomicStorage)
-        } else if 22u32 as i64 == n {
-            Some(Capability::Int16)
-        } else if 23u32 as i64 == n {
-            Some(Capability::TessellationPointSize)
-        } else if 24u32 as i64 == n {
-            Some(Capability::GeometryPointSize)
-        } else if 25u32 as i64 == n {
-            Some(Capability::ImageGatherExtended)
-        } else if 27u32 as i64 == n {
-            Some(Capability::StorageImageMultisample)
-        } else if 28u32 as i64 == n {
-            Some(Capability::UniformBufferArrayDynamicIndexing)
-        } else if 29u32 as i64 == n {
-            Some(Capability::SampledImageArrayDynamicIndexing)
-        } else if 30u32 as i64 == n {
-            Some(Capability::StorageBufferArrayDynamicIndexing)
-        } else if 31u32 as i64 == n {
-            Some(Capability::StorageImageArrayDynamicIndexing)
-        } else if 32u32 as i64 == n {
-            Some(Capability::ClipDistance)
-        } else if 33u32 as i64 == n {
-            Some(Capability::CullDistance)
-        } else if 34u32 as i64 == n {
-            Some(Capability::ImageCubeArray)
-        } else if 35u32 as i64 == n {
-            Some(Capability::SampleRateShading)
-        } else if 36u32 as i64 == n {
-            Some(Capability::ImageRect)
-        } else if 37u32 as i64 == n {
-            Some(Capability::SampledRect)
-        } else if 38u32 as i64 == n {
-            Some(Capability::GenericPointer)
-        } else if 39u32 as i64 == n {
-            Some(Capability::Int8)
-        } else if 40u32 as i64 == n {
-            Some(Capability::InputAttachment)
-        } else if 41u32 as i64 == n {
-            Some(Capability::SparseResidency)
-        } else if 42u32 as i64 == n {
-            Some(Capability::MinLod)
-        } else if 43u32 as i64 == n {
-            Some(Capability::Sampled1D)
-        } else if 44u32 as i64 == n {
-            Some(Capability::Image1D)
-        } else if 45u32 as i64 == n {
-            Some(Capability::SampledCubeArray)
-        } else if 46u32 as i64 == n {
-            Some(Capability::SampledBuffer)
-        } else if 47u32 as i64 == n {
-            Some(Capability::ImageBuffer)
-        } else if 48u32 as i64 == n {
-            Some(Capability::ImageMSArray)
-        } else if 49u32 as i64 == n {
-            Some(Capability::StorageImageExtendedFormats)
-        } else if 50u32 as i64 == n {
-            Some(Capability::ImageQuery)
-        } else if 51u32 as i64 == n {
-            Some(Capability::DerivativeControl)
-        } else if 52u32 as i64 == n {
-            Some(Capability::InterpolationFunction)
-        } else if 53u32 as i64 == n {
-            Some(Capability::TransformFeedback)
-        } else if 54u32 as i64 == n {
-            Some(Capability::GeometryStreams)
-        } else if 55u32 as i64 == n {
-            Some(Capability::StorageImageReadWithoutFormat)
-        } else if 56u32 as i64 == n {
-            Some(Capability::StorageImageWriteWithoutFormat)
-        } else if 57u32 as i64 == n {
-            Some(Capability::MultiViewport)
-        } else if 58u32 as i64 == n {
-            Some(Capability::SubgroupDispatch)
-        } else if 59u32 as i64 == n {
-            Some(Capability::NamedBarrier)
-        } else if 60u32 as i64 == n {
-            Some(Capability::PipeStorage)
-        } else if 61u32 as i64 == n {
-            Some(Capability::GroupNonUniform)
-        } else if 62u32 as i64 == n {
-            Some(Capability::GroupNonUniformVote)
-        } else if 63u32 as i64 == n {
-            Some(Capability::GroupNonUniformArithmetic)
-        } else if 64u32 as i64 == n {
-            Some(Capability::GroupNonUniformBallot)
-        } else if 65u32 as i64 == n {
-            Some(Capability::GroupNonUniformShuffle)
-        } else if 66u32 as i64 == n {
-            Some(Capability::GroupNonUniformShuffleRelative)
-        } else if 67u32 as i64 == n {
-            Some(Capability::GroupNonUniformClustered)
-        } else if 68u32 as i64 == n {
-            Some(Capability::GroupNonUniformQuad)
-        } else if 4423u32 as i64 == n {
-            Some(Capability::SubgroupBallotKHR)
-        } else if 4427u32 as i64 == n {
-            Some(Capability::DrawParameters)
-        } else if 4431u32 as i64 == n {
-            Some(Capability::SubgroupVoteKHR)
-        } else if 4433u32 as i64 == n {
-            Some(Capability::StorageBuffer16BitAccess)
-        } else if 4434u32 as i64 == n {
-            Some(Capability::UniformAndStorageBuffer16BitAccess)
-        } else if 4435u32 as i64 == n {
-            Some(Capability::StoragePushConstant16)
-        } else if 4436u32 as i64 == n {
-            Some(Capability::StorageInputOutput16)
-        } else if 4437u32 as i64 == n {
-            Some(Capability::DeviceGroup)
-        } else if 4439u32 as i64 == n {
-            Some(Capability::MultiView)
-        } else if 4441u32 as i64 == n {
-            Some(Capability::VariablePointersStorageBuffer)
-        } else if 4442u32 as i64 == n {
-            Some(Capability::VariablePointers)
-        } else if 4445u32 as i64 == n {
-            Some(Capability::AtomicStorageOps)
-        } else if 4447u32 as i64 == n {
-            Some(Capability::SampleMaskPostDepthCoverage)
-        } else if 4448u32 as i64 == n {
-            Some(Capability::StorageBuffer8BitAccess)
-        } else if 4449u32 as i64 == n {
-            Some(Capability::UniformAndStorageBuffer8BitAccess)
-        } else if 4450u32 as i64 == n {
-            Some(Capability::StoragePushConstant8)
-        } else if 5008u32 as i64 == n {
-            Some(Capability::Float16ImageAMD)
-        } else if 5009u32 as i64 == n {
-            Some(Capability::ImageGatherBiasLodAMD)
-        } else if 5010u32 as i64 == n {
-            Some(Capability::FragmentMaskAMD)
-        } else if 5013u32 as i64 == n {
-            Some(Capability::StencilExportEXT)
-        } else if 5015u32 as i64 == n {
-            Some(Capability::ImageReadWriteLodAMD)
-        } else if 5249u32 as i64 == n {
-            Some(Capability::SampleMaskOverrideCoverageNV)
-        } else if 5251u32 as i64 == n {
-            Some(Capability::GeometryShaderPassthroughNV)
-        } else if 5254u32 as i64 == n {
-            Some(Capability::ShaderViewportIndexLayerEXT)
-        } else if 5255u32 as i64 == n {
-            Some(Capability::ShaderViewportMaskNV)
-        } else if 5259u32 as i64 == n {
-            Some(Capability::ShaderStereoViewNV)
-        } else if 5260u32 as i64 == n {
-            Some(Capability::PerViewAttributesNV)
-        } else if 5265u32 as i64 == n {
-            Some(Capability::FragmentFullyCoveredEXT)
-        } else if 5301u32 as i64 == n {
-            Some(Capability::ShaderNonUniformEXT)
-        } else if 5302u32 as i64 == n {
-            Some(Capability::RuntimeDescriptorArrayEXT)
-        } else if 5303u32 as i64 == n {
-            Some(Capability::InputAttachmentArrayDynamicIndexingEXT)
-        } else if 5304u32 as i64 == n {
-            Some(Capability::UniformTexelBufferArrayDynamicIndexingEXT)
-        } else if 5305u32 as i64 == n {
-            Some(Capability::StorageTexelBufferArrayDynamicIndexingEXT)
-        } else if 5306u32 as i64 == n {
-            Some(Capability::UniformBufferArrayNonUniformIndexingEXT)
-        } else if 5307u32 as i64 == n {
-            Some(Capability::SampledImageArrayNonUniformIndexingEXT)
-        } else if 5308u32 as i64 == n {
-            Some(Capability::StorageBufferArrayNonUniformIndexingEXT)
-        } else if 5309u32 as i64 == n {
-            Some(Capability::StorageImageArrayNonUniformIndexingEXT)
-        } else if 5310u32 as i64 == n {
-            Some(Capability::InputAttachmentArrayNonUniformIndexingEXT)
-        } else if 5311u32 as i64 == n {
-            Some(Capability::UniformTexelBufferArrayNonUniformIndexingEXT)
-        } else if 5312u32 as i64 == n {
-            Some(Capability::StorageTexelBufferArrayNonUniformIndexingEXT)
-        } else if 5568u32 as i64 == n {
-            Some(Capability::SubgroupShuffleINTEL)
-        } else if 5569u32 as i64 == n {
-            Some(Capability::SubgroupBufferBlockIOINTEL)
-        } else if 5570u32 as i64 == n {
-            Some(Capability::SubgroupImageBlockIOINTEL)
-        } else if 5297u32 as i64 == n {
-            Some(Capability::GroupNonUniformPartitionedNV)
-        } else if 5345u32 as i64 == n {
-            Some(Capability::VulkanMemoryModelKHR)
-        } else if 5346u32 as i64 == n {
-            Some(Capability::VulkanMemoryModelDeviceScopeKHR)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(Capability::Matrix),
+            1u32 => Some(Capability::Shader),
+            2u32 => Some(Capability::Geometry),
+            3u32 => Some(Capability::Tessellation),
+            4u32 => Some(Capability::Addresses),
+            5u32 => Some(Capability::Linkage),
+            6u32 => Some(Capability::Kernel),
+            7u32 => Some(Capability::Vector16),
+            8u32 => Some(Capability::Float16Buffer),
+            9u32 => Some(Capability::Float16),
+            10u32 => Some(Capability::Float64),
+            11u32 => Some(Capability::Int64),
+            12u32 => Some(Capability::Int64Atomics),
+            13u32 => Some(Capability::ImageBasic),
+            14u32 => Some(Capability::ImageReadWrite),
+            15u32 => Some(Capability::ImageMipmap),
+            17u32 => Some(Capability::Pipes),
+            18u32 => Some(Capability::Groups),
+            19u32 => Some(Capability::DeviceEnqueue),
+            20u32 => Some(Capability::LiteralSampler),
+            21u32 => Some(Capability::AtomicStorage),
+            22u32 => Some(Capability::Int16),
+            23u32 => Some(Capability::TessellationPointSize),
+            24u32 => Some(Capability::GeometryPointSize),
+            25u32 => Some(Capability::ImageGatherExtended),
+            27u32 => Some(Capability::StorageImageMultisample),
+            28u32 => Some(Capability::UniformBufferArrayDynamicIndexing),
+            29u32 => Some(Capability::SampledImageArrayDynamicIndexing),
+            30u32 => Some(Capability::StorageBufferArrayDynamicIndexing),
+            31u32 => Some(Capability::StorageImageArrayDynamicIndexing),
+            32u32 => Some(Capability::ClipDistance),
+            33u32 => Some(Capability::CullDistance),
+            34u32 => Some(Capability::ImageCubeArray),
+            35u32 => Some(Capability::SampleRateShading),
+            36u32 => Some(Capability::ImageRect),
+            37u32 => Some(Capability::SampledRect),
+            38u32 => Some(Capability::GenericPointer),
+            39u32 => Some(Capability::Int8),
+            40u32 => Some(Capability::InputAttachment),
+            41u32 => Some(Capability::SparseResidency),
+            42u32 => Some(Capability::MinLod),
+            43u32 => Some(Capability::Sampled1D),
+            44u32 => Some(Capability::Image1D),
+            45u32 => Some(Capability::SampledCubeArray),
+            46u32 => Some(Capability::SampledBuffer),
+            47u32 => Some(Capability::ImageBuffer),
+            48u32 => Some(Capability::ImageMSArray),
+            49u32 => Some(Capability::StorageImageExtendedFormats),
+            50u32 => Some(Capability::ImageQuery),
+            51u32 => Some(Capability::DerivativeControl),
+            52u32 => Some(Capability::InterpolationFunction),
+            53u32 => Some(Capability::TransformFeedback),
+            54u32 => Some(Capability::GeometryStreams),
+            55u32 => Some(Capability::StorageImageReadWithoutFormat),
+            56u32 => Some(Capability::StorageImageWriteWithoutFormat),
+            57u32 => Some(Capability::MultiViewport),
+            58u32 => Some(Capability::SubgroupDispatch),
+            59u32 => Some(Capability::NamedBarrier),
+            60u32 => Some(Capability::PipeStorage),
+            61u32 => Some(Capability::GroupNonUniform),
+            62u32 => Some(Capability::GroupNonUniformVote),
+            63u32 => Some(Capability::GroupNonUniformArithmetic),
+            64u32 => Some(Capability::GroupNonUniformBallot),
+            65u32 => Some(Capability::GroupNonUniformShuffle),
+            66u32 => Some(Capability::GroupNonUniformShuffleRelative),
+            67u32 => Some(Capability::GroupNonUniformClustered),
+            68u32 => Some(Capability::GroupNonUniformQuad),
+            4423u32 => Some(Capability::SubgroupBallotKHR),
+            4427u32 => Some(Capability::DrawParameters),
+            4431u32 => Some(Capability::SubgroupVoteKHR),
+            4433u32 => Some(Capability::StorageBuffer16BitAccess),
+            4434u32 => Some(Capability::UniformAndStorageBuffer16BitAccess),
+            4435u32 => Some(Capability::StoragePushConstant16),
+            4436u32 => Some(Capability::StorageInputOutput16),
+            4437u32 => Some(Capability::DeviceGroup),
+            4439u32 => Some(Capability::MultiView),
+            4441u32 => Some(Capability::VariablePointersStorageBuffer),
+            4442u32 => Some(Capability::VariablePointers),
+            4445u32 => Some(Capability::AtomicStorageOps),
+            4447u32 => Some(Capability::SampleMaskPostDepthCoverage),
+            4448u32 => Some(Capability::StorageBuffer8BitAccess),
+            4449u32 => Some(Capability::UniformAndStorageBuffer8BitAccess),
+            4450u32 => Some(Capability::StoragePushConstant8),
+            5008u32 => Some(Capability::Float16ImageAMD),
+            5009u32 => Some(Capability::ImageGatherBiasLodAMD),
+            5010u32 => Some(Capability::FragmentMaskAMD),
+            5013u32 => Some(Capability::StencilExportEXT),
+            5015u32 => Some(Capability::ImageReadWriteLodAMD),
+            5249u32 => Some(Capability::SampleMaskOverrideCoverageNV),
+            5251u32 => Some(Capability::GeometryShaderPassthroughNV),
+            5254u32 => Some(Capability::ShaderViewportIndexLayerEXT),
+            5255u32 => Some(Capability::ShaderViewportMaskNV),
+            5259u32 => Some(Capability::ShaderStereoViewNV),
+            5260u32 => Some(Capability::PerViewAttributesNV),
+            5265u32 => Some(Capability::FragmentFullyCoveredEXT),
+            5301u32 => Some(Capability::ShaderNonUniformEXT),
+            5302u32 => Some(Capability::RuntimeDescriptorArrayEXT),
+            5303u32 => Some(Capability::InputAttachmentArrayDynamicIndexingEXT),
+            5304u32 => Some(Capability::UniformTexelBufferArrayDynamicIndexingEXT),
+            5305u32 => Some(Capability::StorageTexelBufferArrayDynamicIndexingEXT),
+            5306u32 => Some(Capability::UniformBufferArrayNonUniformIndexingEXT),
+            5307u32 => Some(Capability::SampledImageArrayNonUniformIndexingEXT),
+            5308u32 => Some(Capability::StorageBufferArrayNonUniformIndexingEXT),
+            5309u32 => Some(Capability::StorageImageArrayNonUniformIndexingEXT),
+            5310u32 => Some(Capability::InputAttachmentArrayNonUniformIndexingEXT),
+            5311u32 => Some(Capability::UniformTexelBufferArrayNonUniformIndexingEXT),
+            5312u32 => Some(Capability::StorageTexelBufferArrayNonUniformIndexingEXT),
+            5568u32 => Some(Capability::SubgroupShuffleINTEL),
+            5569u32 => Some(Capability::SubgroupBufferBlockIOINTEL),
+            5570u32 => Some(Capability::SubgroupImageBlockIOINTEL),
+            5297u32 => Some(Capability::GroupNonUniformPartitionedNV),
+            5345u32 => Some(Capability::VulkanMemoryModelKHR),
+            5346u32 => Some(Capability::VulkanMemoryModelDeviceScopeKHR),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -2659,742 +2230,375 @@ pub enum Op {
 impl num_traits::FromPrimitive for Op {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(Op::Nop)
-        } else if 1u32 as i64 == n {
-            Some(Op::Undef)
-        } else if 2u32 as i64 == n {
-            Some(Op::SourceContinued)
-        } else if 3u32 as i64 == n {
-            Some(Op::Source)
-        } else if 4u32 as i64 == n {
-            Some(Op::SourceExtension)
-        } else if 5u32 as i64 == n {
-            Some(Op::Name)
-        } else if 6u32 as i64 == n {
-            Some(Op::MemberName)
-        } else if 7u32 as i64 == n {
-            Some(Op::String)
-        } else if 8u32 as i64 == n {
-            Some(Op::Line)
-        } else if 10u32 as i64 == n {
-            Some(Op::Extension)
-        } else if 11u32 as i64 == n {
-            Some(Op::ExtInstImport)
-        } else if 12u32 as i64 == n {
-            Some(Op::ExtInst)
-        } else if 14u32 as i64 == n {
-            Some(Op::MemoryModel)
-        } else if 15u32 as i64 == n {
-            Some(Op::EntryPoint)
-        } else if 16u32 as i64 == n {
-            Some(Op::ExecutionMode)
-        } else if 17u32 as i64 == n {
-            Some(Op::Capability)
-        } else if 19u32 as i64 == n {
-            Some(Op::TypeVoid)
-        } else if 20u32 as i64 == n {
-            Some(Op::TypeBool)
-        } else if 21u32 as i64 == n {
-            Some(Op::TypeInt)
-        } else if 22u32 as i64 == n {
-            Some(Op::TypeFloat)
-        } else if 23u32 as i64 == n {
-            Some(Op::TypeVector)
-        } else if 24u32 as i64 == n {
-            Some(Op::TypeMatrix)
-        } else if 25u32 as i64 == n {
-            Some(Op::TypeImage)
-        } else if 26u32 as i64 == n {
-            Some(Op::TypeSampler)
-        } else if 27u32 as i64 == n {
-            Some(Op::TypeSampledImage)
-        } else if 28u32 as i64 == n {
-            Some(Op::TypeArray)
-        } else if 29u32 as i64 == n {
-            Some(Op::TypeRuntimeArray)
-        } else if 30u32 as i64 == n {
-            Some(Op::TypeStruct)
-        } else if 31u32 as i64 == n {
-            Some(Op::TypeOpaque)
-        } else if 32u32 as i64 == n {
-            Some(Op::TypePointer)
-        } else if 33u32 as i64 == n {
-            Some(Op::TypeFunction)
-        } else if 34u32 as i64 == n {
-            Some(Op::TypeEvent)
-        } else if 35u32 as i64 == n {
-            Some(Op::TypeDeviceEvent)
-        } else if 36u32 as i64 == n {
-            Some(Op::TypeReserveId)
-        } else if 37u32 as i64 == n {
-            Some(Op::TypeQueue)
-        } else if 38u32 as i64 == n {
-            Some(Op::TypePipe)
-        } else if 39u32 as i64 == n {
-            Some(Op::TypeForwardPointer)
-        } else if 41u32 as i64 == n {
-            Some(Op::ConstantTrue)
-        } else if 42u32 as i64 == n {
-            Some(Op::ConstantFalse)
-        } else if 43u32 as i64 == n {
-            Some(Op::Constant)
-        } else if 44u32 as i64 == n {
-            Some(Op::ConstantComposite)
-        } else if 45u32 as i64 == n {
-            Some(Op::ConstantSampler)
-        } else if 46u32 as i64 == n {
-            Some(Op::ConstantNull)
-        } else if 48u32 as i64 == n {
-            Some(Op::SpecConstantTrue)
-        } else if 49u32 as i64 == n {
-            Some(Op::SpecConstantFalse)
-        } else if 50u32 as i64 == n {
-            Some(Op::SpecConstant)
-        } else if 51u32 as i64 == n {
-            Some(Op::SpecConstantComposite)
-        } else if 52u32 as i64 == n {
-            Some(Op::SpecConstantOp)
-        } else if 54u32 as i64 == n {
-            Some(Op::Function)
-        } else if 55u32 as i64 == n {
-            Some(Op::FunctionParameter)
-        } else if 56u32 as i64 == n {
-            Some(Op::FunctionEnd)
-        } else if 57u32 as i64 == n {
-            Some(Op::FunctionCall)
-        } else if 59u32 as i64 == n {
-            Some(Op::Variable)
-        } else if 60u32 as i64 == n {
-            Some(Op::ImageTexelPointer)
-        } else if 61u32 as i64 == n {
-            Some(Op::Load)
-        } else if 62u32 as i64 == n {
-            Some(Op::Store)
-        } else if 63u32 as i64 == n {
-            Some(Op::CopyMemory)
-        } else if 64u32 as i64 == n {
-            Some(Op::CopyMemorySized)
-        } else if 65u32 as i64 == n {
-            Some(Op::AccessChain)
-        } else if 66u32 as i64 == n {
-            Some(Op::InBoundsAccessChain)
-        } else if 67u32 as i64 == n {
-            Some(Op::PtrAccessChain)
-        } else if 68u32 as i64 == n {
-            Some(Op::ArrayLength)
-        } else if 69u32 as i64 == n {
-            Some(Op::GenericPtrMemSemantics)
-        } else if 70u32 as i64 == n {
-            Some(Op::InBoundsPtrAccessChain)
-        } else if 71u32 as i64 == n {
-            Some(Op::Decorate)
-        } else if 72u32 as i64 == n {
-            Some(Op::MemberDecorate)
-        } else if 73u32 as i64 == n {
-            Some(Op::DecorationGroup)
-        } else if 74u32 as i64 == n {
-            Some(Op::GroupDecorate)
-        } else if 75u32 as i64 == n {
-            Some(Op::GroupMemberDecorate)
-        } else if 77u32 as i64 == n {
-            Some(Op::VectorExtractDynamic)
-        } else if 78u32 as i64 == n {
-            Some(Op::VectorInsertDynamic)
-        } else if 79u32 as i64 == n {
-            Some(Op::VectorShuffle)
-        } else if 80u32 as i64 == n {
-            Some(Op::CompositeConstruct)
-        } else if 81u32 as i64 == n {
-            Some(Op::CompositeExtract)
-        } else if 82u32 as i64 == n {
-            Some(Op::CompositeInsert)
-        } else if 83u32 as i64 == n {
-            Some(Op::CopyObject)
-        } else if 84u32 as i64 == n {
-            Some(Op::Transpose)
-        } else if 86u32 as i64 == n {
-            Some(Op::SampledImage)
-        } else if 87u32 as i64 == n {
-            Some(Op::ImageSampleImplicitLod)
-        } else if 88u32 as i64 == n {
-            Some(Op::ImageSampleExplicitLod)
-        } else if 89u32 as i64 == n {
-            Some(Op::ImageSampleDrefImplicitLod)
-        } else if 90u32 as i64 == n {
-            Some(Op::ImageSampleDrefExplicitLod)
-        } else if 91u32 as i64 == n {
-            Some(Op::ImageSampleProjImplicitLod)
-        } else if 92u32 as i64 == n {
-            Some(Op::ImageSampleProjExplicitLod)
-        } else if 93u32 as i64 == n {
-            Some(Op::ImageSampleProjDrefImplicitLod)
-        } else if 94u32 as i64 == n {
-            Some(Op::ImageSampleProjDrefExplicitLod)
-        } else if 95u32 as i64 == n {
-            Some(Op::ImageFetch)
-        } else if 96u32 as i64 == n {
-            Some(Op::ImageGather)
-        } else if 97u32 as i64 == n {
-            Some(Op::ImageDrefGather)
-        } else if 98u32 as i64 == n {
-            Some(Op::ImageRead)
-        } else if 99u32 as i64 == n {
-            Some(Op::ImageWrite)
-        } else if 100u32 as i64 == n {
-            Some(Op::Image)
-        } else if 101u32 as i64 == n {
-            Some(Op::ImageQueryFormat)
-        } else if 102u32 as i64 == n {
-            Some(Op::ImageQueryOrder)
-        } else if 103u32 as i64 == n {
-            Some(Op::ImageQuerySizeLod)
-        } else if 104u32 as i64 == n {
-            Some(Op::ImageQuerySize)
-        } else if 105u32 as i64 == n {
-            Some(Op::ImageQueryLod)
-        } else if 106u32 as i64 == n {
-            Some(Op::ImageQueryLevels)
-        } else if 107u32 as i64 == n {
-            Some(Op::ImageQuerySamples)
-        } else if 109u32 as i64 == n {
-            Some(Op::ConvertFToU)
-        } else if 110u32 as i64 == n {
-            Some(Op::ConvertFToS)
-        } else if 111u32 as i64 == n {
-            Some(Op::ConvertSToF)
-        } else if 112u32 as i64 == n {
-            Some(Op::ConvertUToF)
-        } else if 113u32 as i64 == n {
-            Some(Op::UConvert)
-        } else if 114u32 as i64 == n {
-            Some(Op::SConvert)
-        } else if 115u32 as i64 == n {
-            Some(Op::FConvert)
-        } else if 116u32 as i64 == n {
-            Some(Op::QuantizeToF16)
-        } else if 117u32 as i64 == n {
-            Some(Op::ConvertPtrToU)
-        } else if 118u32 as i64 == n {
-            Some(Op::SatConvertSToU)
-        } else if 119u32 as i64 == n {
-            Some(Op::SatConvertUToS)
-        } else if 120u32 as i64 == n {
-            Some(Op::ConvertUToPtr)
-        } else if 121u32 as i64 == n {
-            Some(Op::PtrCastToGeneric)
-        } else if 122u32 as i64 == n {
-            Some(Op::GenericCastToPtr)
-        } else if 123u32 as i64 == n {
-            Some(Op::GenericCastToPtrExplicit)
-        } else if 124u32 as i64 == n {
-            Some(Op::Bitcast)
-        } else if 126u32 as i64 == n {
-            Some(Op::SNegate)
-        } else if 127u32 as i64 == n {
-            Some(Op::FNegate)
-        } else if 128u32 as i64 == n {
-            Some(Op::IAdd)
-        } else if 129u32 as i64 == n {
-            Some(Op::FAdd)
-        } else if 130u32 as i64 == n {
-            Some(Op::ISub)
-        } else if 131u32 as i64 == n {
-            Some(Op::FSub)
-        } else if 132u32 as i64 == n {
-            Some(Op::IMul)
-        } else if 133u32 as i64 == n {
-            Some(Op::FMul)
-        } else if 134u32 as i64 == n {
-            Some(Op::UDiv)
-        } else if 135u32 as i64 == n {
-            Some(Op::SDiv)
-        } else if 136u32 as i64 == n {
-            Some(Op::FDiv)
-        } else if 137u32 as i64 == n {
-            Some(Op::UMod)
-        } else if 138u32 as i64 == n {
-            Some(Op::SRem)
-        } else if 139u32 as i64 == n {
-            Some(Op::SMod)
-        } else if 140u32 as i64 == n {
-            Some(Op::FRem)
-        } else if 141u32 as i64 == n {
-            Some(Op::FMod)
-        } else if 142u32 as i64 == n {
-            Some(Op::VectorTimesScalar)
-        } else if 143u32 as i64 == n {
-            Some(Op::MatrixTimesScalar)
-        } else if 144u32 as i64 == n {
-            Some(Op::VectorTimesMatrix)
-        } else if 145u32 as i64 == n {
-            Some(Op::MatrixTimesVector)
-        } else if 146u32 as i64 == n {
-            Some(Op::MatrixTimesMatrix)
-        } else if 147u32 as i64 == n {
-            Some(Op::OuterProduct)
-        } else if 148u32 as i64 == n {
-            Some(Op::Dot)
-        } else if 149u32 as i64 == n {
-            Some(Op::IAddCarry)
-        } else if 150u32 as i64 == n {
-            Some(Op::ISubBorrow)
-        } else if 151u32 as i64 == n {
-            Some(Op::UMulExtended)
-        } else if 152u32 as i64 == n {
-            Some(Op::SMulExtended)
-        } else if 154u32 as i64 == n {
-            Some(Op::Any)
-        } else if 155u32 as i64 == n {
-            Some(Op::All)
-        } else if 156u32 as i64 == n {
-            Some(Op::IsNan)
-        } else if 157u32 as i64 == n {
-            Some(Op::IsInf)
-        } else if 158u32 as i64 == n {
-            Some(Op::IsFinite)
-        } else if 159u32 as i64 == n {
-            Some(Op::IsNormal)
-        } else if 160u32 as i64 == n {
-            Some(Op::SignBitSet)
-        } else if 161u32 as i64 == n {
-            Some(Op::LessOrGreater)
-        } else if 162u32 as i64 == n {
-            Some(Op::Ordered)
-        } else if 163u32 as i64 == n {
-            Some(Op::Unordered)
-        } else if 164u32 as i64 == n {
-            Some(Op::LogicalEqual)
-        } else if 165u32 as i64 == n {
-            Some(Op::LogicalNotEqual)
-        } else if 166u32 as i64 == n {
-            Some(Op::LogicalOr)
-        } else if 167u32 as i64 == n {
-            Some(Op::LogicalAnd)
-        } else if 168u32 as i64 == n {
-            Some(Op::LogicalNot)
-        } else if 169u32 as i64 == n {
-            Some(Op::Select)
-        } else if 170u32 as i64 == n {
-            Some(Op::IEqual)
-        } else if 171u32 as i64 == n {
-            Some(Op::INotEqual)
-        } else if 172u32 as i64 == n {
-            Some(Op::UGreaterThan)
-        } else if 173u32 as i64 == n {
-            Some(Op::SGreaterThan)
-        } else if 174u32 as i64 == n {
-            Some(Op::UGreaterThanEqual)
-        } else if 175u32 as i64 == n {
-            Some(Op::SGreaterThanEqual)
-        } else if 176u32 as i64 == n {
-            Some(Op::ULessThan)
-        } else if 177u32 as i64 == n {
-            Some(Op::SLessThan)
-        } else if 178u32 as i64 == n {
-            Some(Op::ULessThanEqual)
-        } else if 179u32 as i64 == n {
-            Some(Op::SLessThanEqual)
-        } else if 180u32 as i64 == n {
-            Some(Op::FOrdEqual)
-        } else if 181u32 as i64 == n {
-            Some(Op::FUnordEqual)
-        } else if 182u32 as i64 == n {
-            Some(Op::FOrdNotEqual)
-        } else if 183u32 as i64 == n {
-            Some(Op::FUnordNotEqual)
-        } else if 184u32 as i64 == n {
-            Some(Op::FOrdLessThan)
-        } else if 185u32 as i64 == n {
-            Some(Op::FUnordLessThan)
-        } else if 186u32 as i64 == n {
-            Some(Op::FOrdGreaterThan)
-        } else if 187u32 as i64 == n {
-            Some(Op::FUnordGreaterThan)
-        } else if 188u32 as i64 == n {
-            Some(Op::FOrdLessThanEqual)
-        } else if 189u32 as i64 == n {
-            Some(Op::FUnordLessThanEqual)
-        } else if 190u32 as i64 == n {
-            Some(Op::FOrdGreaterThanEqual)
-        } else if 191u32 as i64 == n {
-            Some(Op::FUnordGreaterThanEqual)
-        } else if 194u32 as i64 == n {
-            Some(Op::ShiftRightLogical)
-        } else if 195u32 as i64 == n {
-            Some(Op::ShiftRightArithmetic)
-        } else if 196u32 as i64 == n {
-            Some(Op::ShiftLeftLogical)
-        } else if 197u32 as i64 == n {
-            Some(Op::BitwiseOr)
-        } else if 198u32 as i64 == n {
-            Some(Op::BitwiseXor)
-        } else if 199u32 as i64 == n {
-            Some(Op::BitwiseAnd)
-        } else if 200u32 as i64 == n {
-            Some(Op::Not)
-        } else if 201u32 as i64 == n {
-            Some(Op::BitFieldInsert)
-        } else if 202u32 as i64 == n {
-            Some(Op::BitFieldSExtract)
-        } else if 203u32 as i64 == n {
-            Some(Op::BitFieldUExtract)
-        } else if 204u32 as i64 == n {
-            Some(Op::BitReverse)
-        } else if 205u32 as i64 == n {
-            Some(Op::BitCount)
-        } else if 207u32 as i64 == n {
-            Some(Op::DPdx)
-        } else if 208u32 as i64 == n {
-            Some(Op::DPdy)
-        } else if 209u32 as i64 == n {
-            Some(Op::Fwidth)
-        } else if 210u32 as i64 == n {
-            Some(Op::DPdxFine)
-        } else if 211u32 as i64 == n {
-            Some(Op::DPdyFine)
-        } else if 212u32 as i64 == n {
-            Some(Op::FwidthFine)
-        } else if 213u32 as i64 == n {
-            Some(Op::DPdxCoarse)
-        } else if 214u32 as i64 == n {
-            Some(Op::DPdyCoarse)
-        } else if 215u32 as i64 == n {
-            Some(Op::FwidthCoarse)
-        } else if 218u32 as i64 == n {
-            Some(Op::EmitVertex)
-        } else if 219u32 as i64 == n {
-            Some(Op::EndPrimitive)
-        } else if 220u32 as i64 == n {
-            Some(Op::EmitStreamVertex)
-        } else if 221u32 as i64 == n {
-            Some(Op::EndStreamPrimitive)
-        } else if 224u32 as i64 == n {
-            Some(Op::ControlBarrier)
-        } else if 225u32 as i64 == n {
-            Some(Op::MemoryBarrier)
-        } else if 227u32 as i64 == n {
-            Some(Op::AtomicLoad)
-        } else if 228u32 as i64 == n {
-            Some(Op::AtomicStore)
-        } else if 229u32 as i64 == n {
-            Some(Op::AtomicExchange)
-        } else if 230u32 as i64 == n {
-            Some(Op::AtomicCompareExchange)
-        } else if 231u32 as i64 == n {
-            Some(Op::AtomicCompareExchangeWeak)
-        } else if 232u32 as i64 == n {
-            Some(Op::AtomicIIncrement)
-        } else if 233u32 as i64 == n {
-            Some(Op::AtomicIDecrement)
-        } else if 234u32 as i64 == n {
-            Some(Op::AtomicIAdd)
-        } else if 235u32 as i64 == n {
-            Some(Op::AtomicISub)
-        } else if 236u32 as i64 == n {
-            Some(Op::AtomicSMin)
-        } else if 237u32 as i64 == n {
-            Some(Op::AtomicUMin)
-        } else if 238u32 as i64 == n {
-            Some(Op::AtomicSMax)
-        } else if 239u32 as i64 == n {
-            Some(Op::AtomicUMax)
-        } else if 240u32 as i64 == n {
-            Some(Op::AtomicAnd)
-        } else if 241u32 as i64 == n {
-            Some(Op::AtomicOr)
-        } else if 242u32 as i64 == n {
-            Some(Op::AtomicXor)
-        } else if 245u32 as i64 == n {
-            Some(Op::Phi)
-        } else if 246u32 as i64 == n {
-            Some(Op::LoopMerge)
-        } else if 247u32 as i64 == n {
-            Some(Op::SelectionMerge)
-        } else if 248u32 as i64 == n {
-            Some(Op::Label)
-        } else if 249u32 as i64 == n {
-            Some(Op::Branch)
-        } else if 250u32 as i64 == n {
-            Some(Op::BranchConditional)
-        } else if 251u32 as i64 == n {
-            Some(Op::Switch)
-        } else if 252u32 as i64 == n {
-            Some(Op::Kill)
-        } else if 253u32 as i64 == n {
-            Some(Op::Return)
-        } else if 254u32 as i64 == n {
-            Some(Op::ReturnValue)
-        } else if 255u32 as i64 == n {
-            Some(Op::Unreachable)
-        } else if 256u32 as i64 == n {
-            Some(Op::LifetimeStart)
-        } else if 257u32 as i64 == n {
-            Some(Op::LifetimeStop)
-        } else if 259u32 as i64 == n {
-            Some(Op::GroupAsyncCopy)
-        } else if 260u32 as i64 == n {
-            Some(Op::GroupWaitEvents)
-        } else if 261u32 as i64 == n {
-            Some(Op::GroupAll)
-        } else if 262u32 as i64 == n {
-            Some(Op::GroupAny)
-        } else if 263u32 as i64 == n {
-            Some(Op::GroupBroadcast)
-        } else if 264u32 as i64 == n {
-            Some(Op::GroupIAdd)
-        } else if 265u32 as i64 == n {
-            Some(Op::GroupFAdd)
-        } else if 266u32 as i64 == n {
-            Some(Op::GroupFMin)
-        } else if 267u32 as i64 == n {
-            Some(Op::GroupUMin)
-        } else if 268u32 as i64 == n {
-            Some(Op::GroupSMin)
-        } else if 269u32 as i64 == n {
-            Some(Op::GroupFMax)
-        } else if 270u32 as i64 == n {
-            Some(Op::GroupUMax)
-        } else if 271u32 as i64 == n {
-            Some(Op::GroupSMax)
-        } else if 274u32 as i64 == n {
-            Some(Op::ReadPipe)
-        } else if 275u32 as i64 == n {
-            Some(Op::WritePipe)
-        } else if 276u32 as i64 == n {
-            Some(Op::ReservedReadPipe)
-        } else if 277u32 as i64 == n {
-            Some(Op::ReservedWritePipe)
-        } else if 278u32 as i64 == n {
-            Some(Op::ReserveReadPipePackets)
-        } else if 279u32 as i64 == n {
-            Some(Op::ReserveWritePipePackets)
-        } else if 280u32 as i64 == n {
-            Some(Op::CommitReadPipe)
-        } else if 281u32 as i64 == n {
-            Some(Op::CommitWritePipe)
-        } else if 282u32 as i64 == n {
-            Some(Op::IsValidReserveId)
-        } else if 283u32 as i64 == n {
-            Some(Op::GetNumPipePackets)
-        } else if 284u32 as i64 == n {
-            Some(Op::GetMaxPipePackets)
-        } else if 285u32 as i64 == n {
-            Some(Op::GroupReserveReadPipePackets)
-        } else if 286u32 as i64 == n {
-            Some(Op::GroupReserveWritePipePackets)
-        } else if 287u32 as i64 == n {
-            Some(Op::GroupCommitReadPipe)
-        } else if 288u32 as i64 == n {
-            Some(Op::GroupCommitWritePipe)
-        } else if 291u32 as i64 == n {
-            Some(Op::EnqueueMarker)
-        } else if 292u32 as i64 == n {
-            Some(Op::EnqueueKernel)
-        } else if 293u32 as i64 == n {
-            Some(Op::GetKernelNDrangeSubGroupCount)
-        } else if 294u32 as i64 == n {
-            Some(Op::GetKernelNDrangeMaxSubGroupSize)
-        } else if 295u32 as i64 == n {
-            Some(Op::GetKernelWorkGroupSize)
-        } else if 296u32 as i64 == n {
-            Some(Op::GetKernelPreferredWorkGroupSizeMultiple)
-        } else if 297u32 as i64 == n {
-            Some(Op::RetainEvent)
-        } else if 298u32 as i64 == n {
-            Some(Op::ReleaseEvent)
-        } else if 299u32 as i64 == n {
-            Some(Op::CreateUserEvent)
-        } else if 300u32 as i64 == n {
-            Some(Op::IsValidEvent)
-        } else if 301u32 as i64 == n {
-            Some(Op::SetUserEventStatus)
-        } else if 302u32 as i64 == n {
-            Some(Op::CaptureEventProfilingInfo)
-        } else if 303u32 as i64 == n {
-            Some(Op::GetDefaultQueue)
-        } else if 304u32 as i64 == n {
-            Some(Op::BuildNDRange)
-        } else if 305u32 as i64 == n {
-            Some(Op::ImageSparseSampleImplicitLod)
-        } else if 306u32 as i64 == n {
-            Some(Op::ImageSparseSampleExplicitLod)
-        } else if 307u32 as i64 == n {
-            Some(Op::ImageSparseSampleDrefImplicitLod)
-        } else if 308u32 as i64 == n {
-            Some(Op::ImageSparseSampleDrefExplicitLod)
-        } else if 309u32 as i64 == n {
-            Some(Op::ImageSparseSampleProjImplicitLod)
-        } else if 310u32 as i64 == n {
-            Some(Op::ImageSparseSampleProjExplicitLod)
-        } else if 311u32 as i64 == n {
-            Some(Op::ImageSparseSampleProjDrefImplicitLod)
-        } else if 312u32 as i64 == n {
-            Some(Op::ImageSparseSampleProjDrefExplicitLod)
-        } else if 313u32 as i64 == n {
-            Some(Op::ImageSparseFetch)
-        } else if 314u32 as i64 == n {
-            Some(Op::ImageSparseGather)
-        } else if 315u32 as i64 == n {
-            Some(Op::ImageSparseDrefGather)
-        } else if 316u32 as i64 == n {
-            Some(Op::ImageSparseTexelsResident)
-        } else if 317u32 as i64 == n {
-            Some(Op::NoLine)
-        } else if 318u32 as i64 == n {
-            Some(Op::AtomicFlagTestAndSet)
-        } else if 319u32 as i64 == n {
-            Some(Op::AtomicFlagClear)
-        } else if 320u32 as i64 == n {
-            Some(Op::ImageSparseRead)
-        } else if 321u32 as i64 == n {
-            Some(Op::SizeOf)
-        } else if 322u32 as i64 == n {
-            Some(Op::TypePipeStorage)
-        } else if 323u32 as i64 == n {
-            Some(Op::ConstantPipeStorage)
-        } else if 324u32 as i64 == n {
-            Some(Op::CreatePipeFromPipeStorage)
-        } else if 325u32 as i64 == n {
-            Some(Op::GetKernelLocalSizeForSubgroupCount)
-        } else if 326u32 as i64 == n {
-            Some(Op::GetKernelMaxNumSubgroups)
-        } else if 327u32 as i64 == n {
-            Some(Op::TypeNamedBarrier)
-        } else if 328u32 as i64 == n {
-            Some(Op::NamedBarrierInitialize)
-        } else if 329u32 as i64 == n {
-            Some(Op::MemoryNamedBarrier)
-        } else if 330u32 as i64 == n {
-            Some(Op::ModuleProcessed)
-        } else if 331u32 as i64 == n {
-            Some(Op::ExecutionModeId)
-        } else if 332u32 as i64 == n {
-            Some(Op::DecorateId)
-        } else if 333u32 as i64 == n {
-            Some(Op::GroupNonUniformElect)
-        } else if 334u32 as i64 == n {
-            Some(Op::GroupNonUniformAll)
-        } else if 335u32 as i64 == n {
-            Some(Op::GroupNonUniformAny)
-        } else if 336u32 as i64 == n {
-            Some(Op::GroupNonUniformAllEqual)
-        } else if 337u32 as i64 == n {
-            Some(Op::GroupNonUniformBroadcast)
-        } else if 338u32 as i64 == n {
-            Some(Op::GroupNonUniformBroadcastFirst)
-        } else if 339u32 as i64 == n {
-            Some(Op::GroupNonUniformBallot)
-        } else if 340u32 as i64 == n {
-            Some(Op::GroupNonUniformInverseBallot)
-        } else if 341u32 as i64 == n {
-            Some(Op::GroupNonUniformBallotBitExtract)
-        } else if 342u32 as i64 == n {
-            Some(Op::GroupNonUniformBallotBitCount)
-        } else if 343u32 as i64 == n {
-            Some(Op::GroupNonUniformBallotFindLSB)
-        } else if 344u32 as i64 == n {
-            Some(Op::GroupNonUniformBallotFindMSB)
-        } else if 345u32 as i64 == n {
-            Some(Op::GroupNonUniformShuffle)
-        } else if 346u32 as i64 == n {
-            Some(Op::GroupNonUniformShuffleXor)
-        } else if 347u32 as i64 == n {
-            Some(Op::GroupNonUniformShuffleUp)
-        } else if 348u32 as i64 == n {
-            Some(Op::GroupNonUniformShuffleDown)
-        } else if 349u32 as i64 == n {
-            Some(Op::GroupNonUniformIAdd)
-        } else if 350u32 as i64 == n {
-            Some(Op::GroupNonUniformFAdd)
-        } else if 351u32 as i64 == n {
-            Some(Op::GroupNonUniformIMul)
-        } else if 352u32 as i64 == n {
-            Some(Op::GroupNonUniformFMul)
-        } else if 353u32 as i64 == n {
-            Some(Op::GroupNonUniformSMin)
-        } else if 354u32 as i64 == n {
-            Some(Op::GroupNonUniformUMin)
-        } else if 355u32 as i64 == n {
-            Some(Op::GroupNonUniformFMin)
-        } else if 356u32 as i64 == n {
-            Some(Op::GroupNonUniformSMax)
-        } else if 357u32 as i64 == n {
-            Some(Op::GroupNonUniformUMax)
-        } else if 358u32 as i64 == n {
-            Some(Op::GroupNonUniformFMax)
-        } else if 359u32 as i64 == n {
-            Some(Op::GroupNonUniformBitwiseAnd)
-        } else if 360u32 as i64 == n {
-            Some(Op::GroupNonUniformBitwiseOr)
-        } else if 361u32 as i64 == n {
-            Some(Op::GroupNonUniformBitwiseXor)
-        } else if 362u32 as i64 == n {
-            Some(Op::GroupNonUniformLogicalAnd)
-        } else if 363u32 as i64 == n {
-            Some(Op::GroupNonUniformLogicalOr)
-        } else if 364u32 as i64 == n {
-            Some(Op::GroupNonUniformLogicalXor)
-        } else if 365u32 as i64 == n {
-            Some(Op::GroupNonUniformQuadBroadcast)
-        } else if 366u32 as i64 == n {
-            Some(Op::GroupNonUniformQuadSwap)
-        } else if 4421u32 as i64 == n {
-            Some(Op::SubgroupBallotKHR)
-        } else if 4422u32 as i64 == n {
-            Some(Op::SubgroupFirstInvocationKHR)
-        } else if 4428u32 as i64 == n {
-            Some(Op::SubgroupAllKHR)
-        } else if 4429u32 as i64 == n {
-            Some(Op::SubgroupAnyKHR)
-        } else if 4430u32 as i64 == n {
-            Some(Op::SubgroupAllEqualKHR)
-        } else if 4432u32 as i64 == n {
-            Some(Op::SubgroupReadInvocationKHR)
-        } else if 5000u32 as i64 == n {
-            Some(Op::GroupIAddNonUniformAMD)
-        } else if 5001u32 as i64 == n {
-            Some(Op::GroupFAddNonUniformAMD)
-        } else if 5002u32 as i64 == n {
-            Some(Op::GroupFMinNonUniformAMD)
-        } else if 5003u32 as i64 == n {
-            Some(Op::GroupUMinNonUniformAMD)
-        } else if 5004u32 as i64 == n {
-            Some(Op::GroupSMinNonUniformAMD)
-        } else if 5005u32 as i64 == n {
-            Some(Op::GroupFMaxNonUniformAMD)
-        } else if 5006u32 as i64 == n {
-            Some(Op::GroupUMaxNonUniformAMD)
-        } else if 5007u32 as i64 == n {
-            Some(Op::GroupSMaxNonUniformAMD)
-        } else if 5011u32 as i64 == n {
-            Some(Op::FragmentMaskFetchAMD)
-        } else if 5012u32 as i64 == n {
-            Some(Op::FragmentFetchAMD)
-        } else if 5571u32 as i64 == n {
-            Some(Op::SubgroupShuffleINTEL)
-        } else if 5572u32 as i64 == n {
-            Some(Op::SubgroupShuffleDownINTEL)
-        } else if 5573u32 as i64 == n {
-            Some(Op::SubgroupShuffleUpINTEL)
-        } else if 5574u32 as i64 == n {
-            Some(Op::SubgroupShuffleXorINTEL)
-        } else if 5575u32 as i64 == n {
-            Some(Op::SubgroupBlockReadINTEL)
-        } else if 5576u32 as i64 == n {
-            Some(Op::SubgroupBlockWriteINTEL)
-        } else if 5577u32 as i64 == n {
-            Some(Op::SubgroupImageBlockReadINTEL)
-        } else if 5578u32 as i64 == n {
-            Some(Op::SubgroupImageBlockWriteINTEL)
-        } else if 5632u32 as i64 == n {
-            Some(Op::DecorateStringGOOGLE)
-        } else if 5633u32 as i64 == n {
-            Some(Op::MemberDecorateStringGOOGLE)
-        } else if 5296u32 as i64 == n {
-            Some(Op::GroupNonUniformPartitionNV)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(Op::Nop),
+            1u32 => Some(Op::Undef),
+            2u32 => Some(Op::SourceContinued),
+            3u32 => Some(Op::Source),
+            4u32 => Some(Op::SourceExtension),
+            5u32 => Some(Op::Name),
+            6u32 => Some(Op::MemberName),
+            7u32 => Some(Op::String),
+            8u32 => Some(Op::Line),
+            10u32 => Some(Op::Extension),
+            11u32 => Some(Op::ExtInstImport),
+            12u32 => Some(Op::ExtInst),
+            14u32 => Some(Op::MemoryModel),
+            15u32 => Some(Op::EntryPoint),
+            16u32 => Some(Op::ExecutionMode),
+            17u32 => Some(Op::Capability),
+            19u32 => Some(Op::TypeVoid),
+            20u32 => Some(Op::TypeBool),
+            21u32 => Some(Op::TypeInt),
+            22u32 => Some(Op::TypeFloat),
+            23u32 => Some(Op::TypeVector),
+            24u32 => Some(Op::TypeMatrix),
+            25u32 => Some(Op::TypeImage),
+            26u32 => Some(Op::TypeSampler),
+            27u32 => Some(Op::TypeSampledImage),
+            28u32 => Some(Op::TypeArray),
+            29u32 => Some(Op::TypeRuntimeArray),
+            30u32 => Some(Op::TypeStruct),
+            31u32 => Some(Op::TypeOpaque),
+            32u32 => Some(Op::TypePointer),
+            33u32 => Some(Op::TypeFunction),
+            34u32 => Some(Op::TypeEvent),
+            35u32 => Some(Op::TypeDeviceEvent),
+            36u32 => Some(Op::TypeReserveId),
+            37u32 => Some(Op::TypeQueue),
+            38u32 => Some(Op::TypePipe),
+            39u32 => Some(Op::TypeForwardPointer),
+            41u32 => Some(Op::ConstantTrue),
+            42u32 => Some(Op::ConstantFalse),
+            43u32 => Some(Op::Constant),
+            44u32 => Some(Op::ConstantComposite),
+            45u32 => Some(Op::ConstantSampler),
+            46u32 => Some(Op::ConstantNull),
+            48u32 => Some(Op::SpecConstantTrue),
+            49u32 => Some(Op::SpecConstantFalse),
+            50u32 => Some(Op::SpecConstant),
+            51u32 => Some(Op::SpecConstantComposite),
+            52u32 => Some(Op::SpecConstantOp),
+            54u32 => Some(Op::Function),
+            55u32 => Some(Op::FunctionParameter),
+            56u32 => Some(Op::FunctionEnd),
+            57u32 => Some(Op::FunctionCall),
+            59u32 => Some(Op::Variable),
+            60u32 => Some(Op::ImageTexelPointer),
+            61u32 => Some(Op::Load),
+            62u32 => Some(Op::Store),
+            63u32 => Some(Op::CopyMemory),
+            64u32 => Some(Op::CopyMemorySized),
+            65u32 => Some(Op::AccessChain),
+            66u32 => Some(Op::InBoundsAccessChain),
+            67u32 => Some(Op::PtrAccessChain),
+            68u32 => Some(Op::ArrayLength),
+            69u32 => Some(Op::GenericPtrMemSemantics),
+            70u32 => Some(Op::InBoundsPtrAccessChain),
+            71u32 => Some(Op::Decorate),
+            72u32 => Some(Op::MemberDecorate),
+            73u32 => Some(Op::DecorationGroup),
+            74u32 => Some(Op::GroupDecorate),
+            75u32 => Some(Op::GroupMemberDecorate),
+            77u32 => Some(Op::VectorExtractDynamic),
+            78u32 => Some(Op::VectorInsertDynamic),
+            79u32 => Some(Op::VectorShuffle),
+            80u32 => Some(Op::CompositeConstruct),
+            81u32 => Some(Op::CompositeExtract),
+            82u32 => Some(Op::CompositeInsert),
+            83u32 => Some(Op::CopyObject),
+            84u32 => Some(Op::Transpose),
+            86u32 => Some(Op::SampledImage),
+            87u32 => Some(Op::ImageSampleImplicitLod),
+            88u32 => Some(Op::ImageSampleExplicitLod),
+            89u32 => Some(Op::ImageSampleDrefImplicitLod),
+            90u32 => Some(Op::ImageSampleDrefExplicitLod),
+            91u32 => Some(Op::ImageSampleProjImplicitLod),
+            92u32 => Some(Op::ImageSampleProjExplicitLod),
+            93u32 => Some(Op::ImageSampleProjDrefImplicitLod),
+            94u32 => Some(Op::ImageSampleProjDrefExplicitLod),
+            95u32 => Some(Op::ImageFetch),
+            96u32 => Some(Op::ImageGather),
+            97u32 => Some(Op::ImageDrefGather),
+            98u32 => Some(Op::ImageRead),
+            99u32 => Some(Op::ImageWrite),
+            100u32 => Some(Op::Image),
+            101u32 => Some(Op::ImageQueryFormat),
+            102u32 => Some(Op::ImageQueryOrder),
+            103u32 => Some(Op::ImageQuerySizeLod),
+            104u32 => Some(Op::ImageQuerySize),
+            105u32 => Some(Op::ImageQueryLod),
+            106u32 => Some(Op::ImageQueryLevels),
+            107u32 => Some(Op::ImageQuerySamples),
+            109u32 => Some(Op::ConvertFToU),
+            110u32 => Some(Op::ConvertFToS),
+            111u32 => Some(Op::ConvertSToF),
+            112u32 => Some(Op::ConvertUToF),
+            113u32 => Some(Op::UConvert),
+            114u32 => Some(Op::SConvert),
+            115u32 => Some(Op::FConvert),
+            116u32 => Some(Op::QuantizeToF16),
+            117u32 => Some(Op::ConvertPtrToU),
+            118u32 => Some(Op::SatConvertSToU),
+            119u32 => Some(Op::SatConvertUToS),
+            120u32 => Some(Op::ConvertUToPtr),
+            121u32 => Some(Op::PtrCastToGeneric),
+            122u32 => Some(Op::GenericCastToPtr),
+            123u32 => Some(Op::GenericCastToPtrExplicit),
+            124u32 => Some(Op::Bitcast),
+            126u32 => Some(Op::SNegate),
+            127u32 => Some(Op::FNegate),
+            128u32 => Some(Op::IAdd),
+            129u32 => Some(Op::FAdd),
+            130u32 => Some(Op::ISub),
+            131u32 => Some(Op::FSub),
+            132u32 => Some(Op::IMul),
+            133u32 => Some(Op::FMul),
+            134u32 => Some(Op::UDiv),
+            135u32 => Some(Op::SDiv),
+            136u32 => Some(Op::FDiv),
+            137u32 => Some(Op::UMod),
+            138u32 => Some(Op::SRem),
+            139u32 => Some(Op::SMod),
+            140u32 => Some(Op::FRem),
+            141u32 => Some(Op::FMod),
+            142u32 => Some(Op::VectorTimesScalar),
+            143u32 => Some(Op::MatrixTimesScalar),
+            144u32 => Some(Op::VectorTimesMatrix),
+            145u32 => Some(Op::MatrixTimesVector),
+            146u32 => Some(Op::MatrixTimesMatrix),
+            147u32 => Some(Op::OuterProduct),
+            148u32 => Some(Op::Dot),
+            149u32 => Some(Op::IAddCarry),
+            150u32 => Some(Op::ISubBorrow),
+            151u32 => Some(Op::UMulExtended),
+            152u32 => Some(Op::SMulExtended),
+            154u32 => Some(Op::Any),
+            155u32 => Some(Op::All),
+            156u32 => Some(Op::IsNan),
+            157u32 => Some(Op::IsInf),
+            158u32 => Some(Op::IsFinite),
+            159u32 => Some(Op::IsNormal),
+            160u32 => Some(Op::SignBitSet),
+            161u32 => Some(Op::LessOrGreater),
+            162u32 => Some(Op::Ordered),
+            163u32 => Some(Op::Unordered),
+            164u32 => Some(Op::LogicalEqual),
+            165u32 => Some(Op::LogicalNotEqual),
+            166u32 => Some(Op::LogicalOr),
+            167u32 => Some(Op::LogicalAnd),
+            168u32 => Some(Op::LogicalNot),
+            169u32 => Some(Op::Select),
+            170u32 => Some(Op::IEqual),
+            171u32 => Some(Op::INotEqual),
+            172u32 => Some(Op::UGreaterThan),
+            173u32 => Some(Op::SGreaterThan),
+            174u32 => Some(Op::UGreaterThanEqual),
+            175u32 => Some(Op::SGreaterThanEqual),
+            176u32 => Some(Op::ULessThan),
+            177u32 => Some(Op::SLessThan),
+            178u32 => Some(Op::ULessThanEqual),
+            179u32 => Some(Op::SLessThanEqual),
+            180u32 => Some(Op::FOrdEqual),
+            181u32 => Some(Op::FUnordEqual),
+            182u32 => Some(Op::FOrdNotEqual),
+            183u32 => Some(Op::FUnordNotEqual),
+            184u32 => Some(Op::FOrdLessThan),
+            185u32 => Some(Op::FUnordLessThan),
+            186u32 => Some(Op::FOrdGreaterThan),
+            187u32 => Some(Op::FUnordGreaterThan),
+            188u32 => Some(Op::FOrdLessThanEqual),
+            189u32 => Some(Op::FUnordLessThanEqual),
+            190u32 => Some(Op::FOrdGreaterThanEqual),
+            191u32 => Some(Op::FUnordGreaterThanEqual),
+            194u32 => Some(Op::ShiftRightLogical),
+            195u32 => Some(Op::ShiftRightArithmetic),
+            196u32 => Some(Op::ShiftLeftLogical),
+            197u32 => Some(Op::BitwiseOr),
+            198u32 => Some(Op::BitwiseXor),
+            199u32 => Some(Op::BitwiseAnd),
+            200u32 => Some(Op::Not),
+            201u32 => Some(Op::BitFieldInsert),
+            202u32 => Some(Op::BitFieldSExtract),
+            203u32 => Some(Op::BitFieldUExtract),
+            204u32 => Some(Op::BitReverse),
+            205u32 => Some(Op::BitCount),
+            207u32 => Some(Op::DPdx),
+            208u32 => Some(Op::DPdy),
+            209u32 => Some(Op::Fwidth),
+            210u32 => Some(Op::DPdxFine),
+            211u32 => Some(Op::DPdyFine),
+            212u32 => Some(Op::FwidthFine),
+            213u32 => Some(Op::DPdxCoarse),
+            214u32 => Some(Op::DPdyCoarse),
+            215u32 => Some(Op::FwidthCoarse),
+            218u32 => Some(Op::EmitVertex),
+            219u32 => Some(Op::EndPrimitive),
+            220u32 => Some(Op::EmitStreamVertex),
+            221u32 => Some(Op::EndStreamPrimitive),
+            224u32 => Some(Op::ControlBarrier),
+            225u32 => Some(Op::MemoryBarrier),
+            227u32 => Some(Op::AtomicLoad),
+            228u32 => Some(Op::AtomicStore),
+            229u32 => Some(Op::AtomicExchange),
+            230u32 => Some(Op::AtomicCompareExchange),
+            231u32 => Some(Op::AtomicCompareExchangeWeak),
+            232u32 => Some(Op::AtomicIIncrement),
+            233u32 => Some(Op::AtomicIDecrement),
+            234u32 => Some(Op::AtomicIAdd),
+            235u32 => Some(Op::AtomicISub),
+            236u32 => Some(Op::AtomicSMin),
+            237u32 => Some(Op::AtomicUMin),
+            238u32 => Some(Op::AtomicSMax),
+            239u32 => Some(Op::AtomicUMax),
+            240u32 => Some(Op::AtomicAnd),
+            241u32 => Some(Op::AtomicOr),
+            242u32 => Some(Op::AtomicXor),
+            245u32 => Some(Op::Phi),
+            246u32 => Some(Op::LoopMerge),
+            247u32 => Some(Op::SelectionMerge),
+            248u32 => Some(Op::Label),
+            249u32 => Some(Op::Branch),
+            250u32 => Some(Op::BranchConditional),
+            251u32 => Some(Op::Switch),
+            252u32 => Some(Op::Kill),
+            253u32 => Some(Op::Return),
+            254u32 => Some(Op::ReturnValue),
+            255u32 => Some(Op::Unreachable),
+            256u32 => Some(Op::LifetimeStart),
+            257u32 => Some(Op::LifetimeStop),
+            259u32 => Some(Op::GroupAsyncCopy),
+            260u32 => Some(Op::GroupWaitEvents),
+            261u32 => Some(Op::GroupAll),
+            262u32 => Some(Op::GroupAny),
+            263u32 => Some(Op::GroupBroadcast),
+            264u32 => Some(Op::GroupIAdd),
+            265u32 => Some(Op::GroupFAdd),
+            266u32 => Some(Op::GroupFMin),
+            267u32 => Some(Op::GroupUMin),
+            268u32 => Some(Op::GroupSMin),
+            269u32 => Some(Op::GroupFMax),
+            270u32 => Some(Op::GroupUMax),
+            271u32 => Some(Op::GroupSMax),
+            274u32 => Some(Op::ReadPipe),
+            275u32 => Some(Op::WritePipe),
+            276u32 => Some(Op::ReservedReadPipe),
+            277u32 => Some(Op::ReservedWritePipe),
+            278u32 => Some(Op::ReserveReadPipePackets),
+            279u32 => Some(Op::ReserveWritePipePackets),
+            280u32 => Some(Op::CommitReadPipe),
+            281u32 => Some(Op::CommitWritePipe),
+            282u32 => Some(Op::IsValidReserveId),
+            283u32 => Some(Op::GetNumPipePackets),
+            284u32 => Some(Op::GetMaxPipePackets),
+            285u32 => Some(Op::GroupReserveReadPipePackets),
+            286u32 => Some(Op::GroupReserveWritePipePackets),
+            287u32 => Some(Op::GroupCommitReadPipe),
+            288u32 => Some(Op::GroupCommitWritePipe),
+            291u32 => Some(Op::EnqueueMarker),
+            292u32 => Some(Op::EnqueueKernel),
+            293u32 => Some(Op::GetKernelNDrangeSubGroupCount),
+            294u32 => Some(Op::GetKernelNDrangeMaxSubGroupSize),
+            295u32 => Some(Op::GetKernelWorkGroupSize),
+            296u32 => Some(Op::GetKernelPreferredWorkGroupSizeMultiple),
+            297u32 => Some(Op::RetainEvent),
+            298u32 => Some(Op::ReleaseEvent),
+            299u32 => Some(Op::CreateUserEvent),
+            300u32 => Some(Op::IsValidEvent),
+            301u32 => Some(Op::SetUserEventStatus),
+            302u32 => Some(Op::CaptureEventProfilingInfo),
+            303u32 => Some(Op::GetDefaultQueue),
+            304u32 => Some(Op::BuildNDRange),
+            305u32 => Some(Op::ImageSparseSampleImplicitLod),
+            306u32 => Some(Op::ImageSparseSampleExplicitLod),
+            307u32 => Some(Op::ImageSparseSampleDrefImplicitLod),
+            308u32 => Some(Op::ImageSparseSampleDrefExplicitLod),
+            309u32 => Some(Op::ImageSparseSampleProjImplicitLod),
+            310u32 => Some(Op::ImageSparseSampleProjExplicitLod),
+            311u32 => Some(Op::ImageSparseSampleProjDrefImplicitLod),
+            312u32 => Some(Op::ImageSparseSampleProjDrefExplicitLod),
+            313u32 => Some(Op::ImageSparseFetch),
+            314u32 => Some(Op::ImageSparseGather),
+            315u32 => Some(Op::ImageSparseDrefGather),
+            316u32 => Some(Op::ImageSparseTexelsResident),
+            317u32 => Some(Op::NoLine),
+            318u32 => Some(Op::AtomicFlagTestAndSet),
+            319u32 => Some(Op::AtomicFlagClear),
+            320u32 => Some(Op::ImageSparseRead),
+            321u32 => Some(Op::SizeOf),
+            322u32 => Some(Op::TypePipeStorage),
+            323u32 => Some(Op::ConstantPipeStorage),
+            324u32 => Some(Op::CreatePipeFromPipeStorage),
+            325u32 => Some(Op::GetKernelLocalSizeForSubgroupCount),
+            326u32 => Some(Op::GetKernelMaxNumSubgroups),
+            327u32 => Some(Op::TypeNamedBarrier),
+            328u32 => Some(Op::NamedBarrierInitialize),
+            329u32 => Some(Op::MemoryNamedBarrier),
+            330u32 => Some(Op::ModuleProcessed),
+            331u32 => Some(Op::ExecutionModeId),
+            332u32 => Some(Op::DecorateId),
+            333u32 => Some(Op::GroupNonUniformElect),
+            334u32 => Some(Op::GroupNonUniformAll),
+            335u32 => Some(Op::GroupNonUniformAny),
+            336u32 => Some(Op::GroupNonUniformAllEqual),
+            337u32 => Some(Op::GroupNonUniformBroadcast),
+            338u32 => Some(Op::GroupNonUniformBroadcastFirst),
+            339u32 => Some(Op::GroupNonUniformBallot),
+            340u32 => Some(Op::GroupNonUniformInverseBallot),
+            341u32 => Some(Op::GroupNonUniformBallotBitExtract),
+            342u32 => Some(Op::GroupNonUniformBallotBitCount),
+            343u32 => Some(Op::GroupNonUniformBallotFindLSB),
+            344u32 => Some(Op::GroupNonUniformBallotFindMSB),
+            345u32 => Some(Op::GroupNonUniformShuffle),
+            346u32 => Some(Op::GroupNonUniformShuffleXor),
+            347u32 => Some(Op::GroupNonUniformShuffleUp),
+            348u32 => Some(Op::GroupNonUniformShuffleDown),
+            349u32 => Some(Op::GroupNonUniformIAdd),
+            350u32 => Some(Op::GroupNonUniformFAdd),
+            351u32 => Some(Op::GroupNonUniformIMul),
+            352u32 => Some(Op::GroupNonUniformFMul),
+            353u32 => Some(Op::GroupNonUniformSMin),
+            354u32 => Some(Op::GroupNonUniformUMin),
+            355u32 => Some(Op::GroupNonUniformFMin),
+            356u32 => Some(Op::GroupNonUniformSMax),
+            357u32 => Some(Op::GroupNonUniformUMax),
+            358u32 => Some(Op::GroupNonUniformFMax),
+            359u32 => Some(Op::GroupNonUniformBitwiseAnd),
+            360u32 => Some(Op::GroupNonUniformBitwiseOr),
+            361u32 => Some(Op::GroupNonUniformBitwiseXor),
+            362u32 => Some(Op::GroupNonUniformLogicalAnd),
+            363u32 => Some(Op::GroupNonUniformLogicalOr),
+            364u32 => Some(Op::GroupNonUniformLogicalXor),
+            365u32 => Some(Op::GroupNonUniformQuadBroadcast),
+            366u32 => Some(Op::GroupNonUniformQuadSwap),
+            4421u32 => Some(Op::SubgroupBallotKHR),
+            4422u32 => Some(Op::SubgroupFirstInvocationKHR),
+            4428u32 => Some(Op::SubgroupAllKHR),
+            4429u32 => Some(Op::SubgroupAnyKHR),
+            4430u32 => Some(Op::SubgroupAllEqualKHR),
+            4432u32 => Some(Op::SubgroupReadInvocationKHR),
+            5000u32 => Some(Op::GroupIAddNonUniformAMD),
+            5001u32 => Some(Op::GroupFAddNonUniformAMD),
+            5002u32 => Some(Op::GroupFMinNonUniformAMD),
+            5003u32 => Some(Op::GroupUMinNonUniformAMD),
+            5004u32 => Some(Op::GroupSMinNonUniformAMD),
+            5005u32 => Some(Op::GroupFMaxNonUniformAMD),
+            5006u32 => Some(Op::GroupUMaxNonUniformAMD),
+            5007u32 => Some(Op::GroupSMaxNonUniformAMD),
+            5011u32 => Some(Op::FragmentMaskFetchAMD),
+            5012u32 => Some(Op::FragmentFetchAMD),
+            5571u32 => Some(Op::SubgroupShuffleINTEL),
+            5572u32 => Some(Op::SubgroupShuffleDownINTEL),
+            5573u32 => Some(Op::SubgroupShuffleUpINTEL),
+            5574u32 => Some(Op::SubgroupShuffleXorINTEL),
+            5575u32 => Some(Op::SubgroupBlockReadINTEL),
+            5576u32 => Some(Op::SubgroupBlockWriteINTEL),
+            5577u32 => Some(Op::SubgroupImageBlockReadINTEL),
+            5578u32 => Some(Op::SubgroupImageBlockWriteINTEL),
+            5632u32 => Some(Op::DecorateStringGOOGLE),
+            5633u32 => Some(Op::MemberDecorateStringGOOGLE),
+            5296u32 => Some(Op::GroupNonUniformPartitionNV),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -3490,170 +2694,89 @@ pub enum GLOp {
 impl num_traits::FromPrimitive for GLOp {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 1u32 as i64 == n {
-            Some(GLOp::Round)
-        } else if 2u32 as i64 == n {
-            Some(GLOp::RoundEven)
-        } else if 3u32 as i64 == n {
-            Some(GLOp::Trunc)
-        } else if 4u32 as i64 == n {
-            Some(GLOp::FAbs)
-        } else if 5u32 as i64 == n {
-            Some(GLOp::SAbs)
-        } else if 6u32 as i64 == n {
-            Some(GLOp::FSign)
-        } else if 7u32 as i64 == n {
-            Some(GLOp::SSign)
-        } else if 8u32 as i64 == n {
-            Some(GLOp::Floor)
-        } else if 9u32 as i64 == n {
-            Some(GLOp::Ceil)
-        } else if 10u32 as i64 == n {
-            Some(GLOp::Fract)
-        } else if 11u32 as i64 == n {
-            Some(GLOp::Radians)
-        } else if 12u32 as i64 == n {
-            Some(GLOp::Degrees)
-        } else if 13u32 as i64 == n {
-            Some(GLOp::Sin)
-        } else if 14u32 as i64 == n {
-            Some(GLOp::Cos)
-        } else if 15u32 as i64 == n {
-            Some(GLOp::Tan)
-        } else if 16u32 as i64 == n {
-            Some(GLOp::Asin)
-        } else if 17u32 as i64 == n {
-            Some(GLOp::Acos)
-        } else if 18u32 as i64 == n {
-            Some(GLOp::Atan)
-        } else if 19u32 as i64 == n {
-            Some(GLOp::Sinh)
-        } else if 20u32 as i64 == n {
-            Some(GLOp::Cosh)
-        } else if 21u32 as i64 == n {
-            Some(GLOp::Tanh)
-        } else if 22u32 as i64 == n {
-            Some(GLOp::Asinh)
-        } else if 23u32 as i64 == n {
-            Some(GLOp::Acosh)
-        } else if 24u32 as i64 == n {
-            Some(GLOp::Atanh)
-        } else if 25u32 as i64 == n {
-            Some(GLOp::Atan2)
-        } else if 26u32 as i64 == n {
-            Some(GLOp::Pow)
-        } else if 27u32 as i64 == n {
-            Some(GLOp::Exp)
-        } else if 28u32 as i64 == n {
-            Some(GLOp::Log)
-        } else if 29u32 as i64 == n {
-            Some(GLOp::Exp2)
-        } else if 30u32 as i64 == n {
-            Some(GLOp::Log2)
-        } else if 31u32 as i64 == n {
-            Some(GLOp::Sqrt)
-        } else if 32u32 as i64 == n {
-            Some(GLOp::InverseSqrt)
-        } else if 33u32 as i64 == n {
-            Some(GLOp::Determinant)
-        } else if 34u32 as i64 == n {
-            Some(GLOp::MatrixInverse)
-        } else if 35u32 as i64 == n {
-            Some(GLOp::Modf)
-        } else if 36u32 as i64 == n {
-            Some(GLOp::ModfStruct)
-        } else if 37u32 as i64 == n {
-            Some(GLOp::FMin)
-        } else if 38u32 as i64 == n {
-            Some(GLOp::UMin)
-        } else if 39u32 as i64 == n {
-            Some(GLOp::SMin)
-        } else if 40u32 as i64 == n {
-            Some(GLOp::FMax)
-        } else if 41u32 as i64 == n {
-            Some(GLOp::UMax)
-        } else if 42u32 as i64 == n {
-            Some(GLOp::SMax)
-        } else if 43u32 as i64 == n {
-            Some(GLOp::FClamp)
-        } else if 44u32 as i64 == n {
-            Some(GLOp::UClamp)
-        } else if 45u32 as i64 == n {
-            Some(GLOp::SClamp)
-        } else if 46u32 as i64 == n {
-            Some(GLOp::FMix)
-        } else if 47u32 as i64 == n {
-            Some(GLOp::IMix)
-        } else if 48u32 as i64 == n {
-            Some(GLOp::Step)
-        } else if 49u32 as i64 == n {
-            Some(GLOp::SmoothStep)
-        } else if 50u32 as i64 == n {
-            Some(GLOp::Fma)
-        } else if 51u32 as i64 == n {
-            Some(GLOp::Frexp)
-        } else if 52u32 as i64 == n {
-            Some(GLOp::FrexpStruct)
-        } else if 53u32 as i64 == n {
-            Some(GLOp::Ldexp)
-        } else if 54u32 as i64 == n {
-            Some(GLOp::PackSnorm4x8)
-        } else if 55u32 as i64 == n {
-            Some(GLOp::PackUnorm4x8)
-        } else if 56u32 as i64 == n {
-            Some(GLOp::PackSnorm2x16)
-        } else if 57u32 as i64 == n {
-            Some(GLOp::PackUnorm2x16)
-        } else if 58u32 as i64 == n {
-            Some(GLOp::PackHalf2x16)
-        } else if 59u32 as i64 == n {
-            Some(GLOp::PackDouble2x32)
-        } else if 60u32 as i64 == n {
-            Some(GLOp::UnpackSnorm2x16)
-        } else if 61u32 as i64 == n {
-            Some(GLOp::UnpackUnorm2x16)
-        } else if 62u32 as i64 == n {
-            Some(GLOp::UnpackHalf2x16)
-        } else if 63u32 as i64 == n {
-            Some(GLOp::UnpackSnorm4x8)
-        } else if 64u32 as i64 == n {
-            Some(GLOp::UnpackUnorm4x8)
-        } else if 65u32 as i64 == n {
-            Some(GLOp::UnpackDouble2x32)
-        } else if 66u32 as i64 == n {
-            Some(GLOp::Length)
-        } else if 67u32 as i64 == n {
-            Some(GLOp::Distance)
-        } else if 68u32 as i64 == n {
-            Some(GLOp::Cross)
-        } else if 69u32 as i64 == n {
-            Some(GLOp::Normalize)
-        } else if 70u32 as i64 == n {
-            Some(GLOp::FaceForward)
-        } else if 71u32 as i64 == n {
-            Some(GLOp::Reflect)
-        } else if 72u32 as i64 == n {
-            Some(GLOp::Refract)
-        } else if 73u32 as i64 == n {
-            Some(GLOp::FindILsb)
-        } else if 74u32 as i64 == n {
-            Some(GLOp::FindSMsb)
-        } else if 75u32 as i64 == n {
-            Some(GLOp::FindUMsb)
-        } else if 76u32 as i64 == n {
-            Some(GLOp::InterpolateAtCentroid)
-        } else if 77u32 as i64 == n {
-            Some(GLOp::InterpolateAtSample)
-        } else if 78u32 as i64 == n {
-            Some(GLOp::InterpolateAtOffset)
-        } else if 79u32 as i64 == n {
-            Some(GLOp::NMin)
-        } else if 80u32 as i64 == n {
-            Some(GLOp::NMax)
-        } else if 81u32 as i64 == n {
-            Some(GLOp::NClamp)
-        } else {
-            None
+        match n as u32 {
+            1u32 => Some(GLOp::Round),
+            2u32 => Some(GLOp::RoundEven),
+            3u32 => Some(GLOp::Trunc),
+            4u32 => Some(GLOp::FAbs),
+            5u32 => Some(GLOp::SAbs),
+            6u32 => Some(GLOp::FSign),
+            7u32 => Some(GLOp::SSign),
+            8u32 => Some(GLOp::Floor),
+            9u32 => Some(GLOp::Ceil),
+            10u32 => Some(GLOp::Fract),
+            11u32 => Some(GLOp::Radians),
+            12u32 => Some(GLOp::Degrees),
+            13u32 => Some(GLOp::Sin),
+            14u32 => Some(GLOp::Cos),
+            15u32 => Some(GLOp::Tan),
+            16u32 => Some(GLOp::Asin),
+            17u32 => Some(GLOp::Acos),
+            18u32 => Some(GLOp::Atan),
+            19u32 => Some(GLOp::Sinh),
+            20u32 => Some(GLOp::Cosh),
+            21u32 => Some(GLOp::Tanh),
+            22u32 => Some(GLOp::Asinh),
+            23u32 => Some(GLOp::Acosh),
+            24u32 => Some(GLOp::Atanh),
+            25u32 => Some(GLOp::Atan2),
+            26u32 => Some(GLOp::Pow),
+            27u32 => Some(GLOp::Exp),
+            28u32 => Some(GLOp::Log),
+            29u32 => Some(GLOp::Exp2),
+            30u32 => Some(GLOp::Log2),
+            31u32 => Some(GLOp::Sqrt),
+            32u32 => Some(GLOp::InverseSqrt),
+            33u32 => Some(GLOp::Determinant),
+            34u32 => Some(GLOp::MatrixInverse),
+            35u32 => Some(GLOp::Modf),
+            36u32 => Some(GLOp::ModfStruct),
+            37u32 => Some(GLOp::FMin),
+            38u32 => Some(GLOp::UMin),
+            39u32 => Some(GLOp::SMin),
+            40u32 => Some(GLOp::FMax),
+            41u32 => Some(GLOp::UMax),
+            42u32 => Some(GLOp::SMax),
+            43u32 => Some(GLOp::FClamp),
+            44u32 => Some(GLOp::UClamp),
+            45u32 => Some(GLOp::SClamp),
+            46u32 => Some(GLOp::FMix),
+            47u32 => Some(GLOp::IMix),
+            48u32 => Some(GLOp::Step),
+            49u32 => Some(GLOp::SmoothStep),
+            50u32 => Some(GLOp::Fma),
+            51u32 => Some(GLOp::Frexp),
+            52u32 => Some(GLOp::FrexpStruct),
+            53u32 => Some(GLOp::Ldexp),
+            54u32 => Some(GLOp::PackSnorm4x8),
+            55u32 => Some(GLOp::PackUnorm4x8),
+            56u32 => Some(GLOp::PackSnorm2x16),
+            57u32 => Some(GLOp::PackUnorm2x16),
+            58u32 => Some(GLOp::PackHalf2x16),
+            59u32 => Some(GLOp::PackDouble2x32),
+            60u32 => Some(GLOp::UnpackSnorm2x16),
+            61u32 => Some(GLOp::UnpackUnorm2x16),
+            62u32 => Some(GLOp::UnpackHalf2x16),
+            63u32 => Some(GLOp::UnpackSnorm4x8),
+            64u32 => Some(GLOp::UnpackUnorm4x8),
+            65u32 => Some(GLOp::UnpackDouble2x32),
+            66u32 => Some(GLOp::Length),
+            67u32 => Some(GLOp::Distance),
+            68u32 => Some(GLOp::Cross),
+            69u32 => Some(GLOp::Normalize),
+            70u32 => Some(GLOp::FaceForward),
+            71u32 => Some(GLOp::Reflect),
+            72u32 => Some(GLOp::Refract),
+            73u32 => Some(GLOp::FindILsb),
+            74u32 => Some(GLOp::FindSMsb),
+            75u32 => Some(GLOp::FindUMsb),
+            76u32 => Some(GLOp::InterpolateAtCentroid),
+            77u32 => Some(GLOp::InterpolateAtSample),
+            78u32 => Some(GLOp::InterpolateAtOffset),
+            79u32 => Some(GLOp::NMin),
+            80u32 => Some(GLOp::NMax),
+            81u32 => Some(GLOp::NClamp),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
@@ -3830,332 +2953,170 @@ pub enum CLOp {
 impl num_traits::FromPrimitive for CLOp {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
-        if 0u32 as i64 == n {
-            Some(CLOp::acos)
-        } else if 1u32 as i64 == n {
-            Some(CLOp::acosh)
-        } else if 2u32 as i64 == n {
-            Some(CLOp::acospi)
-        } else if 3u32 as i64 == n {
-            Some(CLOp::asin)
-        } else if 4u32 as i64 == n {
-            Some(CLOp::asinh)
-        } else if 5u32 as i64 == n {
-            Some(CLOp::asinpi)
-        } else if 6u32 as i64 == n {
-            Some(CLOp::atan)
-        } else if 7u32 as i64 == n {
-            Some(CLOp::atan2)
-        } else if 8u32 as i64 == n {
-            Some(CLOp::atanh)
-        } else if 9u32 as i64 == n {
-            Some(CLOp::atanpi)
-        } else if 10u32 as i64 == n {
-            Some(CLOp::atan2pi)
-        } else if 11u32 as i64 == n {
-            Some(CLOp::cbrt)
-        } else if 12u32 as i64 == n {
-            Some(CLOp::ceil)
-        } else if 13u32 as i64 == n {
-            Some(CLOp::copysign)
-        } else if 14u32 as i64 == n {
-            Some(CLOp::cos)
-        } else if 15u32 as i64 == n {
-            Some(CLOp::cosh)
-        } else if 16u32 as i64 == n {
-            Some(CLOp::cospi)
-        } else if 17u32 as i64 == n {
-            Some(CLOp::erfc)
-        } else if 18u32 as i64 == n {
-            Some(CLOp::erf)
-        } else if 19u32 as i64 == n {
-            Some(CLOp::exp)
-        } else if 20u32 as i64 == n {
-            Some(CLOp::exp2)
-        } else if 21u32 as i64 == n {
-            Some(CLOp::exp10)
-        } else if 22u32 as i64 == n {
-            Some(CLOp::expm1)
-        } else if 23u32 as i64 == n {
-            Some(CLOp::fabs)
-        } else if 24u32 as i64 == n {
-            Some(CLOp::fdim)
-        } else if 25u32 as i64 == n {
-            Some(CLOp::floor)
-        } else if 26u32 as i64 == n {
-            Some(CLOp::fma)
-        } else if 27u32 as i64 == n {
-            Some(CLOp::fmax)
-        } else if 28u32 as i64 == n {
-            Some(CLOp::fmin)
-        } else if 29u32 as i64 == n {
-            Some(CLOp::fmod)
-        } else if 30u32 as i64 == n {
-            Some(CLOp::fract)
-        } else if 31u32 as i64 == n {
-            Some(CLOp::frexp)
-        } else if 32u32 as i64 == n {
-            Some(CLOp::hypot)
-        } else if 33u32 as i64 == n {
-            Some(CLOp::ilogb)
-        } else if 34u32 as i64 == n {
-            Some(CLOp::ldexp)
-        } else if 35u32 as i64 == n {
-            Some(CLOp::lgamma)
-        } else if 36u32 as i64 == n {
-            Some(CLOp::lgamma_r)
-        } else if 37u32 as i64 == n {
-            Some(CLOp::log)
-        } else if 38u32 as i64 == n {
-            Some(CLOp::log2)
-        } else if 39u32 as i64 == n {
-            Some(CLOp::log10)
-        } else if 40u32 as i64 == n {
-            Some(CLOp::log1p)
-        } else if 41u32 as i64 == n {
-            Some(CLOp::logb)
-        } else if 42u32 as i64 == n {
-            Some(CLOp::mad)
-        } else if 43u32 as i64 == n {
-            Some(CLOp::maxmag)
-        } else if 44u32 as i64 == n {
-            Some(CLOp::minmag)
-        } else if 45u32 as i64 == n {
-            Some(CLOp::modf)
-        } else if 46u32 as i64 == n {
-            Some(CLOp::nan)
-        } else if 47u32 as i64 == n {
-            Some(CLOp::nextafter)
-        } else if 48u32 as i64 == n {
-            Some(CLOp::pow)
-        } else if 49u32 as i64 == n {
-            Some(CLOp::pown)
-        } else if 50u32 as i64 == n {
-            Some(CLOp::powr)
-        } else if 51u32 as i64 == n {
-            Some(CLOp::remainder)
-        } else if 52u32 as i64 == n {
-            Some(CLOp::remquo)
-        } else if 53u32 as i64 == n {
-            Some(CLOp::rint)
-        } else if 54u32 as i64 == n {
-            Some(CLOp::rootn)
-        } else if 55u32 as i64 == n {
-            Some(CLOp::round)
-        } else if 56u32 as i64 == n {
-            Some(CLOp::rsqrt)
-        } else if 57u32 as i64 == n {
-            Some(CLOp::sin)
-        } else if 58u32 as i64 == n {
-            Some(CLOp::sincos)
-        } else if 59u32 as i64 == n {
-            Some(CLOp::sinh)
-        } else if 60u32 as i64 == n {
-            Some(CLOp::sinpi)
-        } else if 61u32 as i64 == n {
-            Some(CLOp::sqrt)
-        } else if 62u32 as i64 == n {
-            Some(CLOp::tan)
-        } else if 63u32 as i64 == n {
-            Some(CLOp::tanh)
-        } else if 64u32 as i64 == n {
-            Some(CLOp::tanpi)
-        } else if 65u32 as i64 == n {
-            Some(CLOp::tgamma)
-        } else if 66u32 as i64 == n {
-            Some(CLOp::trunc)
-        } else if 67u32 as i64 == n {
-            Some(CLOp::half_cos)
-        } else if 68u32 as i64 == n {
-            Some(CLOp::half_divide)
-        } else if 69u32 as i64 == n {
-            Some(CLOp::half_exp)
-        } else if 70u32 as i64 == n {
-            Some(CLOp::half_exp2)
-        } else if 71u32 as i64 == n {
-            Some(CLOp::half_exp10)
-        } else if 72u32 as i64 == n {
-            Some(CLOp::half_log)
-        } else if 73u32 as i64 == n {
-            Some(CLOp::half_log2)
-        } else if 74u32 as i64 == n {
-            Some(CLOp::half_log10)
-        } else if 75u32 as i64 == n {
-            Some(CLOp::half_powr)
-        } else if 76u32 as i64 == n {
-            Some(CLOp::half_recip)
-        } else if 77u32 as i64 == n {
-            Some(CLOp::half_rsqrt)
-        } else if 78u32 as i64 == n {
-            Some(CLOp::half_sin)
-        } else if 79u32 as i64 == n {
-            Some(CLOp::half_sqrt)
-        } else if 80u32 as i64 == n {
-            Some(CLOp::half_tan)
-        } else if 81u32 as i64 == n {
-            Some(CLOp::native_cos)
-        } else if 82u32 as i64 == n {
-            Some(CLOp::native_divide)
-        } else if 83u32 as i64 == n {
-            Some(CLOp::native_exp)
-        } else if 84u32 as i64 == n {
-            Some(CLOp::native_exp2)
-        } else if 85u32 as i64 == n {
-            Some(CLOp::native_exp10)
-        } else if 86u32 as i64 == n {
-            Some(CLOp::native_log)
-        } else if 87u32 as i64 == n {
-            Some(CLOp::native_log2)
-        } else if 88u32 as i64 == n {
-            Some(CLOp::native_log10)
-        } else if 89u32 as i64 == n {
-            Some(CLOp::native_powr)
-        } else if 90u32 as i64 == n {
-            Some(CLOp::native_recip)
-        } else if 91u32 as i64 == n {
-            Some(CLOp::native_rsqrt)
-        } else if 92u32 as i64 == n {
-            Some(CLOp::native_sin)
-        } else if 93u32 as i64 == n {
-            Some(CLOp::native_sqrt)
-        } else if 94u32 as i64 == n {
-            Some(CLOp::native_tan)
-        } else if 141u32 as i64 == n {
-            Some(CLOp::s_abs)
-        } else if 142u32 as i64 == n {
-            Some(CLOp::s_abs_diff)
-        } else if 143u32 as i64 == n {
-            Some(CLOp::s_add_sat)
-        } else if 144u32 as i64 == n {
-            Some(CLOp::u_add_sat)
-        } else if 145u32 as i64 == n {
-            Some(CLOp::s_hadd)
-        } else if 146u32 as i64 == n {
-            Some(CLOp::u_hadd)
-        } else if 147u32 as i64 == n {
-            Some(CLOp::s_rhadd)
-        } else if 148u32 as i64 == n {
-            Some(CLOp::u_rhadd)
-        } else if 149u32 as i64 == n {
-            Some(CLOp::s_clamp)
-        } else if 150u32 as i64 == n {
-            Some(CLOp::u_clamp)
-        } else if 151u32 as i64 == n {
-            Some(CLOp::clz)
-        } else if 152u32 as i64 == n {
-            Some(CLOp::ctz)
-        } else if 153u32 as i64 == n {
-            Some(CLOp::s_mad_hi)
-        } else if 154u32 as i64 == n {
-            Some(CLOp::u_mad_sat)
-        } else if 155u32 as i64 == n {
-            Some(CLOp::s_mad_sat)
-        } else if 156u32 as i64 == n {
-            Some(CLOp::s_max)
-        } else if 157u32 as i64 == n {
-            Some(CLOp::u_max)
-        } else if 158u32 as i64 == n {
-            Some(CLOp::s_min)
-        } else if 159u32 as i64 == n {
-            Some(CLOp::u_min)
-        } else if 160u32 as i64 == n {
-            Some(CLOp::s_mul_hi)
-        } else if 161u32 as i64 == n {
-            Some(CLOp::rotate)
-        } else if 162u32 as i64 == n {
-            Some(CLOp::s_sub_sat)
-        } else if 163u32 as i64 == n {
-            Some(CLOp::u_sub_sat)
-        } else if 164u32 as i64 == n {
-            Some(CLOp::u_upsample)
-        } else if 165u32 as i64 == n {
-            Some(CLOp::s_upsample)
-        } else if 166u32 as i64 == n {
-            Some(CLOp::popcount)
-        } else if 167u32 as i64 == n {
-            Some(CLOp::s_mad24)
-        } else if 168u32 as i64 == n {
-            Some(CLOp::u_mad24)
-        } else if 169u32 as i64 == n {
-            Some(CLOp::s_mul24)
-        } else if 170u32 as i64 == n {
-            Some(CLOp::u_mul24)
-        } else if 201u32 as i64 == n {
-            Some(CLOp::u_abs)
-        } else if 202u32 as i64 == n {
-            Some(CLOp::u_abs_diff)
-        } else if 203u32 as i64 == n {
-            Some(CLOp::u_mul_hi)
-        } else if 204u32 as i64 == n {
-            Some(CLOp::u_mad_hi)
-        } else if 95u32 as i64 == n {
-            Some(CLOp::fclamp)
-        } else if 96u32 as i64 == n {
-            Some(CLOp::degrees)
-        } else if 97u32 as i64 == n {
-            Some(CLOp::fmax_common)
-        } else if 98u32 as i64 == n {
-            Some(CLOp::fmin_common)
-        } else if 99u32 as i64 == n {
-            Some(CLOp::mix)
-        } else if 100u32 as i64 == n {
-            Some(CLOp::radians)
-        } else if 101u32 as i64 == n {
-            Some(CLOp::step)
-        } else if 102u32 as i64 == n {
-            Some(CLOp::smoothstep)
-        } else if 103u32 as i64 == n {
-            Some(CLOp::sign)
-        } else if 104u32 as i64 == n {
-            Some(CLOp::cross)
-        } else if 105u32 as i64 == n {
-            Some(CLOp::distance)
-        } else if 106u32 as i64 == n {
-            Some(CLOp::length)
-        } else if 107u32 as i64 == n {
-            Some(CLOp::normalize)
-        } else if 108u32 as i64 == n {
-            Some(CLOp::fast_distance)
-        } else if 109u32 as i64 == n {
-            Some(CLOp::fast_length)
-        } else if 110u32 as i64 == n {
-            Some(CLOp::fast_normalize)
-        } else if 186u32 as i64 == n {
-            Some(CLOp::bitselect)
-        } else if 187u32 as i64 == n {
-            Some(CLOp::select)
-        } else if 171u32 as i64 == n {
-            Some(CLOp::vloadn)
-        } else if 172u32 as i64 == n {
-            Some(CLOp::vstoren)
-        } else if 173u32 as i64 == n {
-            Some(CLOp::vload_half)
-        } else if 174u32 as i64 == n {
-            Some(CLOp::vload_halfn)
-        } else if 175u32 as i64 == n {
-            Some(CLOp::vstore_half)
-        } else if 176u32 as i64 == n {
-            Some(CLOp::vstore_half_r)
-        } else if 177u32 as i64 == n {
-            Some(CLOp::vstore_halfn)
-        } else if 178u32 as i64 == n {
-            Some(CLOp::vstore_halfn_r)
-        } else if 179u32 as i64 == n {
-            Some(CLOp::vloada_halfn)
-        } else if 180u32 as i64 == n {
-            Some(CLOp::vstorea_halfn)
-        } else if 181u32 as i64 == n {
-            Some(CLOp::vstorea_halfn_r)
-        } else if 182u32 as i64 == n {
-            Some(CLOp::shuffle)
-        } else if 183u32 as i64 == n {
-            Some(CLOp::shuffle2)
-        } else if 184u32 as i64 == n {
-            Some(CLOp::printf)
-        } else if 185u32 as i64 == n {
-            Some(CLOp::prefetch)
-        } else {
-            None
+        match n as u32 {
+            0u32 => Some(CLOp::acos),
+            1u32 => Some(CLOp::acosh),
+            2u32 => Some(CLOp::acospi),
+            3u32 => Some(CLOp::asin),
+            4u32 => Some(CLOp::asinh),
+            5u32 => Some(CLOp::asinpi),
+            6u32 => Some(CLOp::atan),
+            7u32 => Some(CLOp::atan2),
+            8u32 => Some(CLOp::atanh),
+            9u32 => Some(CLOp::atanpi),
+            10u32 => Some(CLOp::atan2pi),
+            11u32 => Some(CLOp::cbrt),
+            12u32 => Some(CLOp::ceil),
+            13u32 => Some(CLOp::copysign),
+            14u32 => Some(CLOp::cos),
+            15u32 => Some(CLOp::cosh),
+            16u32 => Some(CLOp::cospi),
+            17u32 => Some(CLOp::erfc),
+            18u32 => Some(CLOp::erf),
+            19u32 => Some(CLOp::exp),
+            20u32 => Some(CLOp::exp2),
+            21u32 => Some(CLOp::exp10),
+            22u32 => Some(CLOp::expm1),
+            23u32 => Some(CLOp::fabs),
+            24u32 => Some(CLOp::fdim),
+            25u32 => Some(CLOp::floor),
+            26u32 => Some(CLOp::fma),
+            27u32 => Some(CLOp::fmax),
+            28u32 => Some(CLOp::fmin),
+            29u32 => Some(CLOp::fmod),
+            30u32 => Some(CLOp::fract),
+            31u32 => Some(CLOp::frexp),
+            32u32 => Some(CLOp::hypot),
+            33u32 => Some(CLOp::ilogb),
+            34u32 => Some(CLOp::ldexp),
+            35u32 => Some(CLOp::lgamma),
+            36u32 => Some(CLOp::lgamma_r),
+            37u32 => Some(CLOp::log),
+            38u32 => Some(CLOp::log2),
+            39u32 => Some(CLOp::log10),
+            40u32 => Some(CLOp::log1p),
+            41u32 => Some(CLOp::logb),
+            42u32 => Some(CLOp::mad),
+            43u32 => Some(CLOp::maxmag),
+            44u32 => Some(CLOp::minmag),
+            45u32 => Some(CLOp::modf),
+            46u32 => Some(CLOp::nan),
+            47u32 => Some(CLOp::nextafter),
+            48u32 => Some(CLOp::pow),
+            49u32 => Some(CLOp::pown),
+            50u32 => Some(CLOp::powr),
+            51u32 => Some(CLOp::remainder),
+            52u32 => Some(CLOp::remquo),
+            53u32 => Some(CLOp::rint),
+            54u32 => Some(CLOp::rootn),
+            55u32 => Some(CLOp::round),
+            56u32 => Some(CLOp::rsqrt),
+            57u32 => Some(CLOp::sin),
+            58u32 => Some(CLOp::sincos),
+            59u32 => Some(CLOp::sinh),
+            60u32 => Some(CLOp::sinpi),
+            61u32 => Some(CLOp::sqrt),
+            62u32 => Some(CLOp::tan),
+            63u32 => Some(CLOp::tanh),
+            64u32 => Some(CLOp::tanpi),
+            65u32 => Some(CLOp::tgamma),
+            66u32 => Some(CLOp::trunc),
+            67u32 => Some(CLOp::half_cos),
+            68u32 => Some(CLOp::half_divide),
+            69u32 => Some(CLOp::half_exp),
+            70u32 => Some(CLOp::half_exp2),
+            71u32 => Some(CLOp::half_exp10),
+            72u32 => Some(CLOp::half_log),
+            73u32 => Some(CLOp::half_log2),
+            74u32 => Some(CLOp::half_log10),
+            75u32 => Some(CLOp::half_powr),
+            76u32 => Some(CLOp::half_recip),
+            77u32 => Some(CLOp::half_rsqrt),
+            78u32 => Some(CLOp::half_sin),
+            79u32 => Some(CLOp::half_sqrt),
+            80u32 => Some(CLOp::half_tan),
+            81u32 => Some(CLOp::native_cos),
+            82u32 => Some(CLOp::native_divide),
+            83u32 => Some(CLOp::native_exp),
+            84u32 => Some(CLOp::native_exp2),
+            85u32 => Some(CLOp::native_exp10),
+            86u32 => Some(CLOp::native_log),
+            87u32 => Some(CLOp::native_log2),
+            88u32 => Some(CLOp::native_log10),
+            89u32 => Some(CLOp::native_powr),
+            90u32 => Some(CLOp::native_recip),
+            91u32 => Some(CLOp::native_rsqrt),
+            92u32 => Some(CLOp::native_sin),
+            93u32 => Some(CLOp::native_sqrt),
+            94u32 => Some(CLOp::native_tan),
+            141u32 => Some(CLOp::s_abs),
+            142u32 => Some(CLOp::s_abs_diff),
+            143u32 => Some(CLOp::s_add_sat),
+            144u32 => Some(CLOp::u_add_sat),
+            145u32 => Some(CLOp::s_hadd),
+            146u32 => Some(CLOp::u_hadd),
+            147u32 => Some(CLOp::s_rhadd),
+            148u32 => Some(CLOp::u_rhadd),
+            149u32 => Some(CLOp::s_clamp),
+            150u32 => Some(CLOp::u_clamp),
+            151u32 => Some(CLOp::clz),
+            152u32 => Some(CLOp::ctz),
+            153u32 => Some(CLOp::s_mad_hi),
+            154u32 => Some(CLOp::u_mad_sat),
+            155u32 => Some(CLOp::s_mad_sat),
+            156u32 => Some(CLOp::s_max),
+            157u32 => Some(CLOp::u_max),
+            158u32 => Some(CLOp::s_min),
+            159u32 => Some(CLOp::u_min),
+            160u32 => Some(CLOp::s_mul_hi),
+            161u32 => Some(CLOp::rotate),
+            162u32 => Some(CLOp::s_sub_sat),
+            163u32 => Some(CLOp::u_sub_sat),
+            164u32 => Some(CLOp::u_upsample),
+            165u32 => Some(CLOp::s_upsample),
+            166u32 => Some(CLOp::popcount),
+            167u32 => Some(CLOp::s_mad24),
+            168u32 => Some(CLOp::u_mad24),
+            169u32 => Some(CLOp::s_mul24),
+            170u32 => Some(CLOp::u_mul24),
+            201u32 => Some(CLOp::u_abs),
+            202u32 => Some(CLOp::u_abs_diff),
+            203u32 => Some(CLOp::u_mul_hi),
+            204u32 => Some(CLOp::u_mad_hi),
+            95u32 => Some(CLOp::fclamp),
+            96u32 => Some(CLOp::degrees),
+            97u32 => Some(CLOp::fmax_common),
+            98u32 => Some(CLOp::fmin_common),
+            99u32 => Some(CLOp::mix),
+            100u32 => Some(CLOp::radians),
+            101u32 => Some(CLOp::step),
+            102u32 => Some(CLOp::smoothstep),
+            103u32 => Some(CLOp::sign),
+            104u32 => Some(CLOp::cross),
+            105u32 => Some(CLOp::distance),
+            106u32 => Some(CLOp::length),
+            107u32 => Some(CLOp::normalize),
+            108u32 => Some(CLOp::fast_distance),
+            109u32 => Some(CLOp::fast_length),
+            110u32 => Some(CLOp::fast_normalize),
+            186u32 => Some(CLOp::bitselect),
+            187u32 => Some(CLOp::select),
+            171u32 => Some(CLOp::vloadn),
+            172u32 => Some(CLOp::vstoren),
+            173u32 => Some(CLOp::vload_half),
+            174u32 => Some(CLOp::vload_halfn),
+            175u32 => Some(CLOp::vstore_half),
+            176u32 => Some(CLOp::vstore_half_r),
+            177u32 => Some(CLOp::vstore_halfn),
+            178u32 => Some(CLOp::vstore_halfn_r),
+            179u32 => Some(CLOp::vloada_halfn),
+            180u32 => Some(CLOp::vstorea_halfn),
+            181u32 => Some(CLOp::vstorea_halfn_r),
+            182u32 => Some(CLOp::shuffle),
+            183u32 => Some(CLOp::shuffle2),
+            184u32 => Some(CLOp::printf),
+            185u32 => Some(CLOp::prefetch),
+            _ => None,
         }
     }
     fn from_u64(n: u64) -> Option<Self> {
