@@ -48,10 +48,10 @@ fn from_primitive_impl(from_prim: &[TokenStream], kind: &proc_macro2::Ident) -> 
         impl num_traits::FromPrimitive for #kind {
             #[allow(trivial_numeric_casts)]
             fn from_i64(n: i64) -> Option<Self> {
-                match n as u32 {
+                Some(match n as u32 {
                     #(#from_prim,)*
-                    _ => None
-                }
+                    _ => return None
+                })
             }
 
             fn from_u64(n: u64) -> Option<Self> {
@@ -114,7 +114,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
             enumerants.push(quote! { #name = #number });
-            from_prim_list.push(quote! { #number => Some(#kind::#name) });
+            from_prim_list.push(quote! { #number => #kind::#name });
 
             capability_clauses.entry(&e.capabilities).or_insert_with(Vec::new).push(name);
         }
@@ -189,7 +189,7 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     let from_prim_list = grammar.instructions.iter().map(|inst| {
         let opname = as_ident(&inst.opname[2..]);
         let opcode = inst.opcode;
-        quote! { #opcode => Some(Op::#opname) }
+        quote! { #opcode => Op::#opname }
     }).collect::<Vec<_>>();
 
     let comment = format!("SPIR-V {} opcodes", get_spec_link("instructions"));
@@ -228,7 +228,7 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
     let from_prim_list = grammar.instructions.iter().map(|inst| {
         let opname = as_ident(&inst.opname);
         let opcode = inst.opcode;
-        quote! { #opcode => Some(GLOp::#opname) }
+        quote! { #opcode => GLOp::#opname }
     }).collect::<Vec<_>>();
 
     let comment = format!("[GLSL.std.450]({}) extended instruction opcode", GLSL_STD_450_SPEC_LINK);
@@ -259,7 +259,7 @@ pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStre
     let from_prim_list = grammar.instructions.iter().map(|inst| {
         let opname = as_ident(&inst.opname);
         let opcode = inst.opcode;
-        quote! { #opcode => Some(CLOp::#opname) }
+        quote! { #opcode => CLOp::#opname }
     }).collect::<Vec<_>>();
 
     let comment = format!("[OpenCL.std]({}) extended instruction opcode", OPENCL_STD_SPEC_LINK);
