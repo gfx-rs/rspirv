@@ -46,16 +46,16 @@ pub struct ExecutionMode {
 pub struct Capability {
     pub(in crate::sr) capability: spirv::Capability,
 }
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Function {
     pub(in crate::sr) function_control: spirv::FunctionControl,
     pub(in crate::sr) function_type: Token<Type>,
 }
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct FunctionParameter {}
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct FunctionEnd {}
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug)]
 pub struct Label {}
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExecutionModeId {

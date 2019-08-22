@@ -162,14 +162,6 @@ impl OperandTokens {
     }
 }
 
-fn get_type_fn_name(name: &str) -> String {
-    if name == "Struct" {
-        "structure".to_string()
-    } else {
-        name.to_snake_case()
-    }
-}
-
 pub struct CodeGeneratedFromOperandKindGrammar {
     pub decoration: String,
 }
@@ -226,12 +218,6 @@ pub struct CodeGeneratedFromInstructionGrammar {
 }
 
 const TYPE_PREFIX_LENGTH: usize = 6;
-/// List of type instructions (prefixed by "OpType") that
-/// are represented by individual structs as opposed to variants
-/// of a big enum.
-const STANDALONE_TYPES: &[&str] = &[
-    "Function",
-];
 
 pub fn gen_sr_code_from_instruction_grammar(
     grammar_instructions: &[structs::Instruction],
@@ -241,10 +227,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut inst_structs = Vec::new();
     let mut op_variants = Vec::new();
     let mut terminators = Vec::new();
-    let mut type_structs = Vec::new();
     let mut type_variants = Vec::new();
-    let mut type_checks = Vec::new();
-    let mut type_constructors = Vec::new();
     let mut lifts = Vec::new();
 
     let mut field_names = Vec::new();
@@ -295,31 +278,6 @@ pub fn gen_sr_code_from_instruction_grammar(
         };
 
         match inst.class {
-            Some(structs::Class::Type) if STANDALONE_TYPES.contains(&type_name) => {
-                type_structs.push(quote! {
-                    #[derive(Clone, Debug, Eq, PartialEq)]
-                    pub struct #type_ident {
-                        #( pub(in crate::sr) #field_names: #field_types ),*
-                    }
-                });
-                let func_name = Ident::new(
-                    &format!("lift_type_{}", type_name.to_snake_case()),
-                    Span::call_site(),
-                );
-                lifts.push(quote! {
-                    pub fn #func_name(
-                        &mut self, raw: &dr::Instruction
-                    ) -> Result<types::#type_ident, InstructionError> {
-                        if raw.class.opcode as u32 != #opcode {
-                            return Err(InstructionError::WrongOpcode)
-                        }
-                        #iterator_init;
-                        Ok(types::#type_ident {
-                            #( #field_names: #field_lifts, )*
-                        })
-                    }
-                });
-            }
             Some(structs::Class::Type) => {
                 type_variants.push(if field_names.is_empty() {
                     quote!{ #type_ident }
@@ -328,57 +286,18 @@ pub fn gen_sr_code_from_instruction_grammar(
                         #( #field_names: #field_types ),*
                     }}
                 });
-
-                let generate_type_check = true;
-                if generate_type_check {
-                    let func_name_ident = Ident::new(
-                        &format!("is_{}_type", get_type_fn_name(type_name)),
-                        Span::call_site(),
-                    );
-                    // If the type requires parameters, attach `{ .. }` to the match arm.
-                    let check_params = if field_names.is_empty() {
-                        quote!{}
-                    } else {
-                        quote! { {..} }
-                    };
-                    type_checks.push(quote! {
-                        pub fn #func_name_ident(&self) -> bool {
-                            match self.ty {
-                                TypeEnum::#type_ident #check_params => true,
-                                _ => false
-                            }
-                        }
-                    });
-                }
-
-                if inst.opname != "OpTypeStruct" {
-                    let func_name_ident = Ident::new(
-                        &format!("type_{}", get_type_fn_name(type_name)),
-                        Span::call_site(),
-                    );
-                    let init_list = if field_names.is_empty() {
-                        quote!{}
-                    } else {
-                        quote! { {#( #field_names ),*} }
-                    };
-                    type_constructors.push(quote! {
-                        pub fn #func_name_ident(
-                            &mut self, #( #field_names: #field_types ),*
-                        ) -> Token<Type> {
-                            self.types.fetch_or_append(Type {
-                                ty: TypeEnum::#type_ident #init_list,
-                                decorations: Vec::new(),
-                            })
-                        }
-                    });
-                }
             }
             Some(ModeSetting) |
             Some(ExtensionDecl) |
             Some(FunctionStruct) => {
+                let derive = if let Some(FunctionStruct) = inst.class {
+                    quote! { #[derive(Clone, Debug)] }
+                } else {
+                    quote! { #[derive(Clone, Debug, Eq, PartialEq)] }
+                };
                 // Create a standalone struct
                 inst_structs.push(quote! {
-                    #[derive(Clone, Debug, Eq, PartialEq)]
+                    #derive
                     pub struct #name_ident {
                         #( pub(in crate::sr) #field_names: #field_types ),*
                     }
@@ -420,15 +339,9 @@ pub fn gen_sr_code_from_instruction_grammar(
     }
 
     let types = quote! {
-        #( #type_structs )*
-
-        #[derive(Clone, Debug, PartialEq, Eq)]
-        pub(in crate::sr) enum TypeEnum {
+        #[derive(Clone, Debug)]
+        pub enum Type {
             #( #type_variants ),*
-        }
-
-        impl Type {
-            #( #type_checks )*
         }
     };
     let instructions = quote! {
@@ -451,7 +364,6 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
     let context_logic = quote! {
         impl Context {
-            #( #type_constructors )*
             //TODO: these are DR-specific and may need a new home
             #( #lifts )*
         }
