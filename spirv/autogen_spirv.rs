@@ -31,7 +31,7 @@ bitflags! { # [ doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.o
 bitflags! { # [ doc = "SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)" ] pub struct KernelProfilingInfo : u32 { const NONE = 0u32 ; const CMD_EXEC_TIME = 1u32 ; } }
 #[doc = "/// SPIR-V operand kind: [SourceLanguage](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_source_language_a_source_language)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum SourceLanguage {
     Unknown = 0u32,
     ESSL = 1u32,
@@ -53,9 +53,32 @@ impl SourceLanguage {
         }
     }
 }
+impl num_traits::FromPrimitive for SourceLanguage {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(SourceLanguage::Unknown)
+        } else if 1u32 as i64 == n {
+            Some(SourceLanguage::ESSL)
+        } else if 2u32 as i64 == n {
+            Some(SourceLanguage::GLSL)
+        } else if 3u32 as i64 == n {
+            Some(SourceLanguage::OpenCL_C)
+        } else if 4u32 as i64 == n {
+            Some(SourceLanguage::OpenCL_CPP)
+        } else if 5u32 as i64 == n {
+            Some(SourceLanguage::HLSL)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ExecutionModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_model_a_execution_model)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ExecutionModel {
     Vertex = 0u32,
     TessellationControl = 1u32,
@@ -80,9 +103,34 @@ impl ExecutionModel {
         }
     }
 }
+impl num_traits::FromPrimitive for ExecutionModel {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(ExecutionModel::Vertex)
+        } else if 1u32 as i64 == n {
+            Some(ExecutionModel::TessellationControl)
+        } else if 2u32 as i64 == n {
+            Some(ExecutionModel::TessellationEvaluation)
+        } else if 3u32 as i64 == n {
+            Some(ExecutionModel::Geometry)
+        } else if 4u32 as i64 == n {
+            Some(ExecutionModel::Fragment)
+        } else if 5u32 as i64 == n {
+            Some(ExecutionModel::GLCompute)
+        } else if 6u32 as i64 == n {
+            Some(ExecutionModel::Kernel)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [AddressingModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_addressing_model_a_addressing_model)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum AddressingModel {
     Logical = 0u32,
     Physical32 = 1u32,
@@ -97,9 +145,26 @@ impl AddressingModel {
         }
     }
 }
+impl num_traits::FromPrimitive for AddressingModel {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(AddressingModel::Logical)
+        } else if 1u32 as i64 == n {
+            Some(AddressingModel::Physical32)
+        } else if 2u32 as i64 == n {
+            Some(AddressingModel::Physical64)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [MemoryModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_model_a_memory_model)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum MemoryModel {
     Simple = 0u32,
     GLSL450 = 1u32,
@@ -116,9 +181,28 @@ impl MemoryModel {
         }
     }
 }
+impl num_traits::FromPrimitive for MemoryModel {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(MemoryModel::Simple)
+        } else if 1u32 as i64 == n {
+            Some(MemoryModel::GLSL450)
+        } else if 2u32 as i64 == n {
+            Some(MemoryModel::OpenCL)
+        } else if 3u32 as i64 == n {
+            Some(MemoryModel::VulkanKHR)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ExecutionMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_mode_a_execution_mode)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ExecutionMode {
     Invocations = 0u32,
     SpacingEqual = 1u32,
@@ -208,9 +292,100 @@ impl ExecutionMode {
         }
     }
 }
+impl num_traits::FromPrimitive for ExecutionMode {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(ExecutionMode::Invocations)
+        } else if 1u32 as i64 == n {
+            Some(ExecutionMode::SpacingEqual)
+        } else if 2u32 as i64 == n {
+            Some(ExecutionMode::SpacingFractionalEven)
+        } else if 3u32 as i64 == n {
+            Some(ExecutionMode::SpacingFractionalOdd)
+        } else if 4u32 as i64 == n {
+            Some(ExecutionMode::VertexOrderCw)
+        } else if 5u32 as i64 == n {
+            Some(ExecutionMode::VertexOrderCcw)
+        } else if 6u32 as i64 == n {
+            Some(ExecutionMode::PixelCenterInteger)
+        } else if 7u32 as i64 == n {
+            Some(ExecutionMode::OriginUpperLeft)
+        } else if 8u32 as i64 == n {
+            Some(ExecutionMode::OriginLowerLeft)
+        } else if 9u32 as i64 == n {
+            Some(ExecutionMode::EarlyFragmentTests)
+        } else if 10u32 as i64 == n {
+            Some(ExecutionMode::PointMode)
+        } else if 11u32 as i64 == n {
+            Some(ExecutionMode::Xfb)
+        } else if 12u32 as i64 == n {
+            Some(ExecutionMode::DepthReplacing)
+        } else if 14u32 as i64 == n {
+            Some(ExecutionMode::DepthGreater)
+        } else if 15u32 as i64 == n {
+            Some(ExecutionMode::DepthLess)
+        } else if 16u32 as i64 == n {
+            Some(ExecutionMode::DepthUnchanged)
+        } else if 17u32 as i64 == n {
+            Some(ExecutionMode::LocalSize)
+        } else if 18u32 as i64 == n {
+            Some(ExecutionMode::LocalSizeHint)
+        } else if 19u32 as i64 == n {
+            Some(ExecutionMode::InputPoints)
+        } else if 20u32 as i64 == n {
+            Some(ExecutionMode::InputLines)
+        } else if 21u32 as i64 == n {
+            Some(ExecutionMode::InputLinesAdjacency)
+        } else if 22u32 as i64 == n {
+            Some(ExecutionMode::Triangles)
+        } else if 23u32 as i64 == n {
+            Some(ExecutionMode::InputTrianglesAdjacency)
+        } else if 24u32 as i64 == n {
+            Some(ExecutionMode::Quads)
+        } else if 25u32 as i64 == n {
+            Some(ExecutionMode::Isolines)
+        } else if 26u32 as i64 == n {
+            Some(ExecutionMode::OutputVertices)
+        } else if 27u32 as i64 == n {
+            Some(ExecutionMode::OutputPoints)
+        } else if 28u32 as i64 == n {
+            Some(ExecutionMode::OutputLineStrip)
+        } else if 29u32 as i64 == n {
+            Some(ExecutionMode::OutputTriangleStrip)
+        } else if 30u32 as i64 == n {
+            Some(ExecutionMode::VecTypeHint)
+        } else if 31u32 as i64 == n {
+            Some(ExecutionMode::ContractionOff)
+        } else if 33u32 as i64 == n {
+            Some(ExecutionMode::Initializer)
+        } else if 34u32 as i64 == n {
+            Some(ExecutionMode::Finalizer)
+        } else if 35u32 as i64 == n {
+            Some(ExecutionMode::SubgroupSize)
+        } else if 36u32 as i64 == n {
+            Some(ExecutionMode::SubgroupsPerWorkgroup)
+        } else if 37u32 as i64 == n {
+            Some(ExecutionMode::SubgroupsPerWorkgroupId)
+        } else if 38u32 as i64 == n {
+            Some(ExecutionMode::LocalSizeId)
+        } else if 39u32 as i64 == n {
+            Some(ExecutionMode::LocalSizeHintId)
+        } else if 4446u32 as i64 == n {
+            Some(ExecutionMode::PostDepthCoverage)
+        } else if 5027u32 as i64 == n {
+            Some(ExecutionMode::StencilRefReplacingEXT)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [StorageClass](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_storage_class_a_storage_class)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum StorageClass {
     UniformConstant = 0u32,
     Input = 1u32,
@@ -246,9 +421,46 @@ impl StorageClass {
         }
     }
 }
+impl num_traits::FromPrimitive for StorageClass {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(StorageClass::UniformConstant)
+        } else if 1u32 as i64 == n {
+            Some(StorageClass::Input)
+        } else if 2u32 as i64 == n {
+            Some(StorageClass::Uniform)
+        } else if 3u32 as i64 == n {
+            Some(StorageClass::Output)
+        } else if 4u32 as i64 == n {
+            Some(StorageClass::Workgroup)
+        } else if 5u32 as i64 == n {
+            Some(StorageClass::CrossWorkgroup)
+        } else if 6u32 as i64 == n {
+            Some(StorageClass::Private)
+        } else if 7u32 as i64 == n {
+            Some(StorageClass::Function)
+        } else if 8u32 as i64 == n {
+            Some(StorageClass::Generic)
+        } else if 9u32 as i64 == n {
+            Some(StorageClass::PushConstant)
+        } else if 10u32 as i64 == n {
+            Some(StorageClass::AtomicCounter)
+        } else if 11u32 as i64 == n {
+            Some(StorageClass::Image)
+        } else if 12u32 as i64 == n {
+            Some(StorageClass::StorageBuffer)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [Dim](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_dim_a_dim)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Dim {
     Dim1D = 0u32,
     Dim2D = 1u32,
@@ -276,9 +488,34 @@ impl Dim {
         }
     }
 }
+impl num_traits::FromPrimitive for Dim {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(Dim::Dim1D)
+        } else if 1u32 as i64 == n {
+            Some(Dim::Dim2D)
+        } else if 2u32 as i64 == n {
+            Some(Dim::Dim3D)
+        } else if 3u32 as i64 == n {
+            Some(Dim::DimCube)
+        } else if 4u32 as i64 == n {
+            Some(Dim::DimRect)
+        } else if 5u32 as i64 == n {
+            Some(Dim::DimBuffer)
+        } else if 6u32 as i64 == n {
+            Some(Dim::DimSubpassData)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [SamplerAddressingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_addressing_mode_a_sampler_addressing_mode)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum SamplerAddressingMode {
     None = 0u32,
     ClampToEdge = 1u32,
@@ -298,9 +535,30 @@ impl SamplerAddressingMode {
         }
     }
 }
+impl num_traits::FromPrimitive for SamplerAddressingMode {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(SamplerAddressingMode::None)
+        } else if 1u32 as i64 == n {
+            Some(SamplerAddressingMode::ClampToEdge)
+        } else if 2u32 as i64 == n {
+            Some(SamplerAddressingMode::Clamp)
+        } else if 3u32 as i64 == n {
+            Some(SamplerAddressingMode::Repeat)
+        } else if 4u32 as i64 == n {
+            Some(SamplerAddressingMode::RepeatMirrored)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [SamplerFilterMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_filter_mode_a_sampler_filter_mode)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum SamplerFilterMode {
     Nearest = 0u32,
     Linear = 1u32,
@@ -313,9 +571,24 @@ impl SamplerFilterMode {
         }
     }
 }
+impl num_traits::FromPrimitive for SamplerFilterMode {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(SamplerFilterMode::Nearest)
+        } else if 1u32 as i64 == n {
+            Some(SamplerFilterMode::Linear)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ImageFormat](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_format_a_image_format)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ImageFormat {
     Unknown = 0u32,
     Rgba32f = 1u32,
@@ -405,9 +678,100 @@ impl ImageFormat {
         }
     }
 }
+impl num_traits::FromPrimitive for ImageFormat {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(ImageFormat::Unknown)
+        } else if 1u32 as i64 == n {
+            Some(ImageFormat::Rgba32f)
+        } else if 2u32 as i64 == n {
+            Some(ImageFormat::Rgba16f)
+        } else if 3u32 as i64 == n {
+            Some(ImageFormat::R32f)
+        } else if 4u32 as i64 == n {
+            Some(ImageFormat::Rgba8)
+        } else if 5u32 as i64 == n {
+            Some(ImageFormat::Rgba8Snorm)
+        } else if 6u32 as i64 == n {
+            Some(ImageFormat::Rg32f)
+        } else if 7u32 as i64 == n {
+            Some(ImageFormat::Rg16f)
+        } else if 8u32 as i64 == n {
+            Some(ImageFormat::R11fG11fB10f)
+        } else if 9u32 as i64 == n {
+            Some(ImageFormat::R16f)
+        } else if 10u32 as i64 == n {
+            Some(ImageFormat::Rgba16)
+        } else if 11u32 as i64 == n {
+            Some(ImageFormat::Rgb10A2)
+        } else if 12u32 as i64 == n {
+            Some(ImageFormat::Rg16)
+        } else if 13u32 as i64 == n {
+            Some(ImageFormat::Rg8)
+        } else if 14u32 as i64 == n {
+            Some(ImageFormat::R16)
+        } else if 15u32 as i64 == n {
+            Some(ImageFormat::R8)
+        } else if 16u32 as i64 == n {
+            Some(ImageFormat::Rgba16Snorm)
+        } else if 17u32 as i64 == n {
+            Some(ImageFormat::Rg16Snorm)
+        } else if 18u32 as i64 == n {
+            Some(ImageFormat::Rg8Snorm)
+        } else if 19u32 as i64 == n {
+            Some(ImageFormat::R16Snorm)
+        } else if 20u32 as i64 == n {
+            Some(ImageFormat::R8Snorm)
+        } else if 21u32 as i64 == n {
+            Some(ImageFormat::Rgba32i)
+        } else if 22u32 as i64 == n {
+            Some(ImageFormat::Rgba16i)
+        } else if 23u32 as i64 == n {
+            Some(ImageFormat::Rgba8i)
+        } else if 24u32 as i64 == n {
+            Some(ImageFormat::R32i)
+        } else if 25u32 as i64 == n {
+            Some(ImageFormat::Rg32i)
+        } else if 26u32 as i64 == n {
+            Some(ImageFormat::Rg16i)
+        } else if 27u32 as i64 == n {
+            Some(ImageFormat::Rg8i)
+        } else if 28u32 as i64 == n {
+            Some(ImageFormat::R16i)
+        } else if 29u32 as i64 == n {
+            Some(ImageFormat::R8i)
+        } else if 30u32 as i64 == n {
+            Some(ImageFormat::Rgba32ui)
+        } else if 31u32 as i64 == n {
+            Some(ImageFormat::Rgba16ui)
+        } else if 32u32 as i64 == n {
+            Some(ImageFormat::Rgba8ui)
+        } else if 33u32 as i64 == n {
+            Some(ImageFormat::R32ui)
+        } else if 34u32 as i64 == n {
+            Some(ImageFormat::Rgb10a2ui)
+        } else if 35u32 as i64 == n {
+            Some(ImageFormat::Rg32ui)
+        } else if 36u32 as i64 == n {
+            Some(ImageFormat::Rg16ui)
+        } else if 37u32 as i64 == n {
+            Some(ImageFormat::Rg8ui)
+        } else if 38u32 as i64 == n {
+            Some(ImageFormat::R16ui)
+        } else if 39u32 as i64 == n {
+            Some(ImageFormat::R8ui)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ImageChannelOrder](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_order_a_image_channel_order)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ImageChannelOrder {
     R = 0u32,
     A = 1u32,
@@ -457,9 +821,60 @@ impl ImageChannelOrder {
         }
     }
 }
+impl num_traits::FromPrimitive for ImageChannelOrder {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(ImageChannelOrder::R)
+        } else if 1u32 as i64 == n {
+            Some(ImageChannelOrder::A)
+        } else if 2u32 as i64 == n {
+            Some(ImageChannelOrder::RG)
+        } else if 3u32 as i64 == n {
+            Some(ImageChannelOrder::RA)
+        } else if 4u32 as i64 == n {
+            Some(ImageChannelOrder::RGB)
+        } else if 5u32 as i64 == n {
+            Some(ImageChannelOrder::RGBA)
+        } else if 6u32 as i64 == n {
+            Some(ImageChannelOrder::BGRA)
+        } else if 7u32 as i64 == n {
+            Some(ImageChannelOrder::ARGB)
+        } else if 8u32 as i64 == n {
+            Some(ImageChannelOrder::Intensity)
+        } else if 9u32 as i64 == n {
+            Some(ImageChannelOrder::Luminance)
+        } else if 10u32 as i64 == n {
+            Some(ImageChannelOrder::Rx)
+        } else if 11u32 as i64 == n {
+            Some(ImageChannelOrder::RGx)
+        } else if 12u32 as i64 == n {
+            Some(ImageChannelOrder::RGBx)
+        } else if 13u32 as i64 == n {
+            Some(ImageChannelOrder::Depth)
+        } else if 14u32 as i64 == n {
+            Some(ImageChannelOrder::DepthStencil)
+        } else if 15u32 as i64 == n {
+            Some(ImageChannelOrder::sRGB)
+        } else if 16u32 as i64 == n {
+            Some(ImageChannelOrder::sRGBx)
+        } else if 17u32 as i64 == n {
+            Some(ImageChannelOrder::sRGBA)
+        } else if 18u32 as i64 == n {
+            Some(ImageChannelOrder::sBGRA)
+        } else if 19u32 as i64 == n {
+            Some(ImageChannelOrder::ABGR)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ImageChannelDataType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_data_type_a_image_channel_data_type)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ImageChannelDataType {
     SnormInt8 = 0u32,
     SnormInt16 = 1u32,
@@ -503,9 +918,54 @@ impl ImageChannelDataType {
         }
     }
 }
+impl num_traits::FromPrimitive for ImageChannelDataType {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(ImageChannelDataType::SnormInt8)
+        } else if 1u32 as i64 == n {
+            Some(ImageChannelDataType::SnormInt16)
+        } else if 2u32 as i64 == n {
+            Some(ImageChannelDataType::UnormInt8)
+        } else if 3u32 as i64 == n {
+            Some(ImageChannelDataType::UnormInt16)
+        } else if 4u32 as i64 == n {
+            Some(ImageChannelDataType::UnormShort565)
+        } else if 5u32 as i64 == n {
+            Some(ImageChannelDataType::UnormShort555)
+        } else if 6u32 as i64 == n {
+            Some(ImageChannelDataType::UnormInt101010)
+        } else if 7u32 as i64 == n {
+            Some(ImageChannelDataType::SignedInt8)
+        } else if 8u32 as i64 == n {
+            Some(ImageChannelDataType::SignedInt16)
+        } else if 9u32 as i64 == n {
+            Some(ImageChannelDataType::SignedInt32)
+        } else if 10u32 as i64 == n {
+            Some(ImageChannelDataType::UnsignedInt8)
+        } else if 11u32 as i64 == n {
+            Some(ImageChannelDataType::UnsignedInt16)
+        } else if 12u32 as i64 == n {
+            Some(ImageChannelDataType::UnsignedInt32)
+        } else if 13u32 as i64 == n {
+            Some(ImageChannelDataType::HalfFloat)
+        } else if 14u32 as i64 == n {
+            Some(ImageChannelDataType::Float)
+        } else if 15u32 as i64 == n {
+            Some(ImageChannelDataType::UnormInt24)
+        } else if 16u32 as i64 == n {
+            Some(ImageChannelDataType::UnormInt101010_2)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [FPRoundingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_rounding_mode_a_fp_rounding_mode)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum FPRoundingMode {
     RTE = 0u32,
     RTZ = 1u32,
@@ -523,9 +983,28 @@ impl FPRoundingMode {
         }
     }
 }
+impl num_traits::FromPrimitive for FPRoundingMode {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(FPRoundingMode::RTE)
+        } else if 1u32 as i64 == n {
+            Some(FPRoundingMode::RTZ)
+        } else if 2u32 as i64 == n {
+            Some(FPRoundingMode::RTP)
+        } else if 3u32 as i64 == n {
+            Some(FPRoundingMode::RTN)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [LinkageType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_linkage_type_a_linkage_type)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum LinkageType {
     Export = 0u32,
     Import = 1u32,
@@ -538,9 +1017,24 @@ impl LinkageType {
         }
     }
 }
+impl num_traits::FromPrimitive for LinkageType {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(LinkageType::Export)
+        } else if 1u32 as i64 == n {
+            Some(LinkageType::Import)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [AccessQualifier](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_access_qualifier_a_access_qualifier)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum AccessQualifier {
     ReadOnly = 0u32,
     WriteOnly = 1u32,
@@ -556,9 +1050,26 @@ impl AccessQualifier {
         }
     }
 }
+impl num_traits::FromPrimitive for AccessQualifier {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(AccessQualifier::ReadOnly)
+        } else if 1u32 as i64 == n {
+            Some(AccessQualifier::WriteOnly)
+        } else if 2u32 as i64 == n {
+            Some(AccessQualifier::ReadWrite)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [FunctionParameterAttribute](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_parameter_attribute_a_function_parameter_attribute)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum FunctionParameterAttribute {
     Zext = 0u32,
     Sext = 1u32,
@@ -584,9 +1095,36 @@ impl FunctionParameterAttribute {
         }
     }
 }
+impl num_traits::FromPrimitive for FunctionParameterAttribute {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(FunctionParameterAttribute::Zext)
+        } else if 1u32 as i64 == n {
+            Some(FunctionParameterAttribute::Sext)
+        } else if 2u32 as i64 == n {
+            Some(FunctionParameterAttribute::ByVal)
+        } else if 3u32 as i64 == n {
+            Some(FunctionParameterAttribute::Sret)
+        } else if 4u32 as i64 == n {
+            Some(FunctionParameterAttribute::NoAlias)
+        } else if 5u32 as i64 == n {
+            Some(FunctionParameterAttribute::NoCapture)
+        } else if 6u32 as i64 == n {
+            Some(FunctionParameterAttribute::NoWrite)
+        } else if 7u32 as i64 == n {
+            Some(FunctionParameterAttribute::NoReadWrite)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [Decoration](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_decoration_a_decoration)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Decoration {
     RelaxedPrecision = 0u32,
     SpecId = 1u32,
@@ -702,9 +1240,128 @@ impl Decoration {
         }
     }
 }
+impl num_traits::FromPrimitive for Decoration {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(Decoration::RelaxedPrecision)
+        } else if 1u32 as i64 == n {
+            Some(Decoration::SpecId)
+        } else if 2u32 as i64 == n {
+            Some(Decoration::Block)
+        } else if 3u32 as i64 == n {
+            Some(Decoration::BufferBlock)
+        } else if 4u32 as i64 == n {
+            Some(Decoration::RowMajor)
+        } else if 5u32 as i64 == n {
+            Some(Decoration::ColMajor)
+        } else if 6u32 as i64 == n {
+            Some(Decoration::ArrayStride)
+        } else if 7u32 as i64 == n {
+            Some(Decoration::MatrixStride)
+        } else if 8u32 as i64 == n {
+            Some(Decoration::GLSLShared)
+        } else if 9u32 as i64 == n {
+            Some(Decoration::GLSLPacked)
+        } else if 10u32 as i64 == n {
+            Some(Decoration::CPacked)
+        } else if 11u32 as i64 == n {
+            Some(Decoration::BuiltIn)
+        } else if 13u32 as i64 == n {
+            Some(Decoration::NoPerspective)
+        } else if 14u32 as i64 == n {
+            Some(Decoration::Flat)
+        } else if 15u32 as i64 == n {
+            Some(Decoration::Patch)
+        } else if 16u32 as i64 == n {
+            Some(Decoration::Centroid)
+        } else if 17u32 as i64 == n {
+            Some(Decoration::Sample)
+        } else if 18u32 as i64 == n {
+            Some(Decoration::Invariant)
+        } else if 19u32 as i64 == n {
+            Some(Decoration::Restrict)
+        } else if 20u32 as i64 == n {
+            Some(Decoration::Aliased)
+        } else if 21u32 as i64 == n {
+            Some(Decoration::Volatile)
+        } else if 22u32 as i64 == n {
+            Some(Decoration::Constant)
+        } else if 23u32 as i64 == n {
+            Some(Decoration::Coherent)
+        } else if 24u32 as i64 == n {
+            Some(Decoration::NonWritable)
+        } else if 25u32 as i64 == n {
+            Some(Decoration::NonReadable)
+        } else if 26u32 as i64 == n {
+            Some(Decoration::Uniform)
+        } else if 28u32 as i64 == n {
+            Some(Decoration::SaturatedConversion)
+        } else if 29u32 as i64 == n {
+            Some(Decoration::Stream)
+        } else if 30u32 as i64 == n {
+            Some(Decoration::Location)
+        } else if 31u32 as i64 == n {
+            Some(Decoration::Component)
+        } else if 32u32 as i64 == n {
+            Some(Decoration::Index)
+        } else if 33u32 as i64 == n {
+            Some(Decoration::Binding)
+        } else if 34u32 as i64 == n {
+            Some(Decoration::DescriptorSet)
+        } else if 35u32 as i64 == n {
+            Some(Decoration::Offset)
+        } else if 36u32 as i64 == n {
+            Some(Decoration::XfbBuffer)
+        } else if 37u32 as i64 == n {
+            Some(Decoration::XfbStride)
+        } else if 38u32 as i64 == n {
+            Some(Decoration::FuncParamAttr)
+        } else if 39u32 as i64 == n {
+            Some(Decoration::FPRoundingMode)
+        } else if 40u32 as i64 == n {
+            Some(Decoration::FPFastMathMode)
+        } else if 41u32 as i64 == n {
+            Some(Decoration::LinkageAttributes)
+        } else if 42u32 as i64 == n {
+            Some(Decoration::NoContraction)
+        } else if 43u32 as i64 == n {
+            Some(Decoration::InputAttachmentIndex)
+        } else if 44u32 as i64 == n {
+            Some(Decoration::Alignment)
+        } else if 45u32 as i64 == n {
+            Some(Decoration::MaxByteOffset)
+        } else if 46u32 as i64 == n {
+            Some(Decoration::AlignmentId)
+        } else if 47u32 as i64 == n {
+            Some(Decoration::MaxByteOffsetId)
+        } else if 4999u32 as i64 == n {
+            Some(Decoration::ExplicitInterpAMD)
+        } else if 5248u32 as i64 == n {
+            Some(Decoration::OverrideCoverageNV)
+        } else if 5250u32 as i64 == n {
+            Some(Decoration::PassthroughNV)
+        } else if 5252u32 as i64 == n {
+            Some(Decoration::ViewportRelativeNV)
+        } else if 5256u32 as i64 == n {
+            Some(Decoration::SecondaryViewportRelativeNV)
+        } else if 5300u32 as i64 == n {
+            Some(Decoration::NonUniformEXT)
+        } else if 5634u32 as i64 == n {
+            Some(Decoration::HlslCounterBufferGOOGLE)
+        } else if 5635u32 as i64 == n {
+            Some(Decoration::HlslSemanticGOOGLE)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [BuiltIn](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_built_in_a_built_in)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum BuiltIn {
     Position = 0u32,
     PointSize = 1u32,
@@ -858,9 +1515,150 @@ impl BuiltIn {
         }
     }
 }
+impl num_traits::FromPrimitive for BuiltIn {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(BuiltIn::Position)
+        } else if 1u32 as i64 == n {
+            Some(BuiltIn::PointSize)
+        } else if 3u32 as i64 == n {
+            Some(BuiltIn::ClipDistance)
+        } else if 4u32 as i64 == n {
+            Some(BuiltIn::CullDistance)
+        } else if 5u32 as i64 == n {
+            Some(BuiltIn::VertexId)
+        } else if 6u32 as i64 == n {
+            Some(BuiltIn::InstanceId)
+        } else if 7u32 as i64 == n {
+            Some(BuiltIn::PrimitiveId)
+        } else if 8u32 as i64 == n {
+            Some(BuiltIn::InvocationId)
+        } else if 9u32 as i64 == n {
+            Some(BuiltIn::Layer)
+        } else if 10u32 as i64 == n {
+            Some(BuiltIn::ViewportIndex)
+        } else if 11u32 as i64 == n {
+            Some(BuiltIn::TessLevelOuter)
+        } else if 12u32 as i64 == n {
+            Some(BuiltIn::TessLevelInner)
+        } else if 13u32 as i64 == n {
+            Some(BuiltIn::TessCoord)
+        } else if 14u32 as i64 == n {
+            Some(BuiltIn::PatchVertices)
+        } else if 15u32 as i64 == n {
+            Some(BuiltIn::FragCoord)
+        } else if 16u32 as i64 == n {
+            Some(BuiltIn::PointCoord)
+        } else if 17u32 as i64 == n {
+            Some(BuiltIn::FrontFacing)
+        } else if 18u32 as i64 == n {
+            Some(BuiltIn::SampleId)
+        } else if 19u32 as i64 == n {
+            Some(BuiltIn::SamplePosition)
+        } else if 20u32 as i64 == n {
+            Some(BuiltIn::SampleMask)
+        } else if 22u32 as i64 == n {
+            Some(BuiltIn::FragDepth)
+        } else if 23u32 as i64 == n {
+            Some(BuiltIn::HelperInvocation)
+        } else if 24u32 as i64 == n {
+            Some(BuiltIn::NumWorkgroups)
+        } else if 25u32 as i64 == n {
+            Some(BuiltIn::WorkgroupSize)
+        } else if 26u32 as i64 == n {
+            Some(BuiltIn::WorkgroupId)
+        } else if 27u32 as i64 == n {
+            Some(BuiltIn::LocalInvocationId)
+        } else if 28u32 as i64 == n {
+            Some(BuiltIn::GlobalInvocationId)
+        } else if 29u32 as i64 == n {
+            Some(BuiltIn::LocalInvocationIndex)
+        } else if 30u32 as i64 == n {
+            Some(BuiltIn::WorkDim)
+        } else if 31u32 as i64 == n {
+            Some(BuiltIn::GlobalSize)
+        } else if 32u32 as i64 == n {
+            Some(BuiltIn::EnqueuedWorkgroupSize)
+        } else if 33u32 as i64 == n {
+            Some(BuiltIn::GlobalOffset)
+        } else if 34u32 as i64 == n {
+            Some(BuiltIn::GlobalLinearId)
+        } else if 36u32 as i64 == n {
+            Some(BuiltIn::SubgroupSize)
+        } else if 37u32 as i64 == n {
+            Some(BuiltIn::SubgroupMaxSize)
+        } else if 38u32 as i64 == n {
+            Some(BuiltIn::NumSubgroups)
+        } else if 39u32 as i64 == n {
+            Some(BuiltIn::NumEnqueuedSubgroups)
+        } else if 40u32 as i64 == n {
+            Some(BuiltIn::SubgroupId)
+        } else if 41u32 as i64 == n {
+            Some(BuiltIn::SubgroupLocalInvocationId)
+        } else if 42u32 as i64 == n {
+            Some(BuiltIn::VertexIndex)
+        } else if 43u32 as i64 == n {
+            Some(BuiltIn::InstanceIndex)
+        } else if 4416u32 as i64 == n {
+            Some(BuiltIn::SubgroupEqMask)
+        } else if 4417u32 as i64 == n {
+            Some(BuiltIn::SubgroupGeMask)
+        } else if 4418u32 as i64 == n {
+            Some(BuiltIn::SubgroupGtMask)
+        } else if 4419u32 as i64 == n {
+            Some(BuiltIn::SubgroupLeMask)
+        } else if 4420u32 as i64 == n {
+            Some(BuiltIn::SubgroupLtMask)
+        } else if 4424u32 as i64 == n {
+            Some(BuiltIn::BaseVertex)
+        } else if 4425u32 as i64 == n {
+            Some(BuiltIn::BaseInstance)
+        } else if 4426u32 as i64 == n {
+            Some(BuiltIn::DrawIndex)
+        } else if 4438u32 as i64 == n {
+            Some(BuiltIn::DeviceIndex)
+        } else if 4440u32 as i64 == n {
+            Some(BuiltIn::ViewIndex)
+        } else if 4992u32 as i64 == n {
+            Some(BuiltIn::BaryCoordNoPerspAMD)
+        } else if 4993u32 as i64 == n {
+            Some(BuiltIn::BaryCoordNoPerspCentroidAMD)
+        } else if 4994u32 as i64 == n {
+            Some(BuiltIn::BaryCoordNoPerspSampleAMD)
+        } else if 4995u32 as i64 == n {
+            Some(BuiltIn::BaryCoordSmoothAMD)
+        } else if 4996u32 as i64 == n {
+            Some(BuiltIn::BaryCoordSmoothCentroidAMD)
+        } else if 4997u32 as i64 == n {
+            Some(BuiltIn::BaryCoordSmoothSampleAMD)
+        } else if 4998u32 as i64 == n {
+            Some(BuiltIn::BaryCoordPullModelAMD)
+        } else if 5014u32 as i64 == n {
+            Some(BuiltIn::FragStencilRefEXT)
+        } else if 5253u32 as i64 == n {
+            Some(BuiltIn::ViewportMaskNV)
+        } else if 5257u32 as i64 == n {
+            Some(BuiltIn::SecondaryPositionNV)
+        } else if 5258u32 as i64 == n {
+            Some(BuiltIn::SecondaryViewportMaskNV)
+        } else if 5261u32 as i64 == n {
+            Some(BuiltIn::PositionPerViewNV)
+        } else if 5262u32 as i64 == n {
+            Some(BuiltIn::ViewportMaskPerViewNV)
+        } else if 5264u32 as i64 == n {
+            Some(BuiltIn::FullyCoveredEXT)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [Scope](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_scope_a_scope)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Scope {
     CrossDevice = 0u32,
     Device = 1u32,
@@ -882,9 +1680,32 @@ impl Scope {
         }
     }
 }
+impl num_traits::FromPrimitive for Scope {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(Scope::CrossDevice)
+        } else if 1u32 as i64 == n {
+            Some(Scope::Device)
+        } else if 2u32 as i64 == n {
+            Some(Scope::Workgroup)
+        } else if 3u32 as i64 == n {
+            Some(Scope::Subgroup)
+        } else if 4u32 as i64 == n {
+            Some(Scope::Invocation)
+        } else if 5u32 as i64 == n {
+            Some(Scope::QueueFamilyKHR)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [GroupOperation](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_group_operation_a_group_operation)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum GroupOperation {
     Reduce = 0u32,
     InclusiveScan = 1u32,
@@ -914,9 +1735,34 @@ impl GroupOperation {
         }
     }
 }
+impl num_traits::FromPrimitive for GroupOperation {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(GroupOperation::Reduce)
+        } else if 1u32 as i64 == n {
+            Some(GroupOperation::InclusiveScan)
+        } else if 2u32 as i64 == n {
+            Some(GroupOperation::ExclusiveScan)
+        } else if 3u32 as i64 == n {
+            Some(GroupOperation::ClusteredReduce)
+        } else if 6u32 as i64 == n {
+            Some(GroupOperation::PartitionedReduceNV)
+        } else if 7u32 as i64 == n {
+            Some(GroupOperation::PartitionedInclusiveScanNV)
+        } else if 8u32 as i64 == n {
+            Some(GroupOperation::PartitionedExclusiveScanNV)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [KernelEnqueueFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_enqueue_flags_a_kernel_enqueue_flags)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum KernelEnqueueFlags {
     NoWait = 0u32,
     WaitKernel = 1u32,
@@ -932,9 +1778,26 @@ impl KernelEnqueueFlags {
         }
     }
 }
+impl num_traits::FromPrimitive for KernelEnqueueFlags {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(KernelEnqueueFlags::NoWait)
+        } else if 1u32 as i64 == n {
+            Some(KernelEnqueueFlags::WaitKernel)
+        } else if 2u32 as i64 == n {
+            Some(KernelEnqueueFlags::WaitWorkGroup)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "/// SPIR-V operand kind: [Capability](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_capability_a_capability)"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Capability {
     Matrix = 0u32,
     Shader = 1u32,
@@ -1184,9 +2047,246 @@ impl Capability {
         }
     }
 }
+impl num_traits::FromPrimitive for Capability {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(Capability::Matrix)
+        } else if 1u32 as i64 == n {
+            Some(Capability::Shader)
+        } else if 2u32 as i64 == n {
+            Some(Capability::Geometry)
+        } else if 3u32 as i64 == n {
+            Some(Capability::Tessellation)
+        } else if 4u32 as i64 == n {
+            Some(Capability::Addresses)
+        } else if 5u32 as i64 == n {
+            Some(Capability::Linkage)
+        } else if 6u32 as i64 == n {
+            Some(Capability::Kernel)
+        } else if 7u32 as i64 == n {
+            Some(Capability::Vector16)
+        } else if 8u32 as i64 == n {
+            Some(Capability::Float16Buffer)
+        } else if 9u32 as i64 == n {
+            Some(Capability::Float16)
+        } else if 10u32 as i64 == n {
+            Some(Capability::Float64)
+        } else if 11u32 as i64 == n {
+            Some(Capability::Int64)
+        } else if 12u32 as i64 == n {
+            Some(Capability::Int64Atomics)
+        } else if 13u32 as i64 == n {
+            Some(Capability::ImageBasic)
+        } else if 14u32 as i64 == n {
+            Some(Capability::ImageReadWrite)
+        } else if 15u32 as i64 == n {
+            Some(Capability::ImageMipmap)
+        } else if 17u32 as i64 == n {
+            Some(Capability::Pipes)
+        } else if 18u32 as i64 == n {
+            Some(Capability::Groups)
+        } else if 19u32 as i64 == n {
+            Some(Capability::DeviceEnqueue)
+        } else if 20u32 as i64 == n {
+            Some(Capability::LiteralSampler)
+        } else if 21u32 as i64 == n {
+            Some(Capability::AtomicStorage)
+        } else if 22u32 as i64 == n {
+            Some(Capability::Int16)
+        } else if 23u32 as i64 == n {
+            Some(Capability::TessellationPointSize)
+        } else if 24u32 as i64 == n {
+            Some(Capability::GeometryPointSize)
+        } else if 25u32 as i64 == n {
+            Some(Capability::ImageGatherExtended)
+        } else if 27u32 as i64 == n {
+            Some(Capability::StorageImageMultisample)
+        } else if 28u32 as i64 == n {
+            Some(Capability::UniformBufferArrayDynamicIndexing)
+        } else if 29u32 as i64 == n {
+            Some(Capability::SampledImageArrayDynamicIndexing)
+        } else if 30u32 as i64 == n {
+            Some(Capability::StorageBufferArrayDynamicIndexing)
+        } else if 31u32 as i64 == n {
+            Some(Capability::StorageImageArrayDynamicIndexing)
+        } else if 32u32 as i64 == n {
+            Some(Capability::ClipDistance)
+        } else if 33u32 as i64 == n {
+            Some(Capability::CullDistance)
+        } else if 34u32 as i64 == n {
+            Some(Capability::ImageCubeArray)
+        } else if 35u32 as i64 == n {
+            Some(Capability::SampleRateShading)
+        } else if 36u32 as i64 == n {
+            Some(Capability::ImageRect)
+        } else if 37u32 as i64 == n {
+            Some(Capability::SampledRect)
+        } else if 38u32 as i64 == n {
+            Some(Capability::GenericPointer)
+        } else if 39u32 as i64 == n {
+            Some(Capability::Int8)
+        } else if 40u32 as i64 == n {
+            Some(Capability::InputAttachment)
+        } else if 41u32 as i64 == n {
+            Some(Capability::SparseResidency)
+        } else if 42u32 as i64 == n {
+            Some(Capability::MinLod)
+        } else if 43u32 as i64 == n {
+            Some(Capability::Sampled1D)
+        } else if 44u32 as i64 == n {
+            Some(Capability::Image1D)
+        } else if 45u32 as i64 == n {
+            Some(Capability::SampledCubeArray)
+        } else if 46u32 as i64 == n {
+            Some(Capability::SampledBuffer)
+        } else if 47u32 as i64 == n {
+            Some(Capability::ImageBuffer)
+        } else if 48u32 as i64 == n {
+            Some(Capability::ImageMSArray)
+        } else if 49u32 as i64 == n {
+            Some(Capability::StorageImageExtendedFormats)
+        } else if 50u32 as i64 == n {
+            Some(Capability::ImageQuery)
+        } else if 51u32 as i64 == n {
+            Some(Capability::DerivativeControl)
+        } else if 52u32 as i64 == n {
+            Some(Capability::InterpolationFunction)
+        } else if 53u32 as i64 == n {
+            Some(Capability::TransformFeedback)
+        } else if 54u32 as i64 == n {
+            Some(Capability::GeometryStreams)
+        } else if 55u32 as i64 == n {
+            Some(Capability::StorageImageReadWithoutFormat)
+        } else if 56u32 as i64 == n {
+            Some(Capability::StorageImageWriteWithoutFormat)
+        } else if 57u32 as i64 == n {
+            Some(Capability::MultiViewport)
+        } else if 58u32 as i64 == n {
+            Some(Capability::SubgroupDispatch)
+        } else if 59u32 as i64 == n {
+            Some(Capability::NamedBarrier)
+        } else if 60u32 as i64 == n {
+            Some(Capability::PipeStorage)
+        } else if 61u32 as i64 == n {
+            Some(Capability::GroupNonUniform)
+        } else if 62u32 as i64 == n {
+            Some(Capability::GroupNonUniformVote)
+        } else if 63u32 as i64 == n {
+            Some(Capability::GroupNonUniformArithmetic)
+        } else if 64u32 as i64 == n {
+            Some(Capability::GroupNonUniformBallot)
+        } else if 65u32 as i64 == n {
+            Some(Capability::GroupNonUniformShuffle)
+        } else if 66u32 as i64 == n {
+            Some(Capability::GroupNonUniformShuffleRelative)
+        } else if 67u32 as i64 == n {
+            Some(Capability::GroupNonUniformClustered)
+        } else if 68u32 as i64 == n {
+            Some(Capability::GroupNonUniformQuad)
+        } else if 4423u32 as i64 == n {
+            Some(Capability::SubgroupBallotKHR)
+        } else if 4427u32 as i64 == n {
+            Some(Capability::DrawParameters)
+        } else if 4431u32 as i64 == n {
+            Some(Capability::SubgroupVoteKHR)
+        } else if 4433u32 as i64 == n {
+            Some(Capability::StorageBuffer16BitAccess)
+        } else if 4434u32 as i64 == n {
+            Some(Capability::UniformAndStorageBuffer16BitAccess)
+        } else if 4435u32 as i64 == n {
+            Some(Capability::StoragePushConstant16)
+        } else if 4436u32 as i64 == n {
+            Some(Capability::StorageInputOutput16)
+        } else if 4437u32 as i64 == n {
+            Some(Capability::DeviceGroup)
+        } else if 4439u32 as i64 == n {
+            Some(Capability::MultiView)
+        } else if 4441u32 as i64 == n {
+            Some(Capability::VariablePointersStorageBuffer)
+        } else if 4442u32 as i64 == n {
+            Some(Capability::VariablePointers)
+        } else if 4445u32 as i64 == n {
+            Some(Capability::AtomicStorageOps)
+        } else if 4447u32 as i64 == n {
+            Some(Capability::SampleMaskPostDepthCoverage)
+        } else if 4448u32 as i64 == n {
+            Some(Capability::StorageBuffer8BitAccess)
+        } else if 4449u32 as i64 == n {
+            Some(Capability::UniformAndStorageBuffer8BitAccess)
+        } else if 4450u32 as i64 == n {
+            Some(Capability::StoragePushConstant8)
+        } else if 5008u32 as i64 == n {
+            Some(Capability::Float16ImageAMD)
+        } else if 5009u32 as i64 == n {
+            Some(Capability::ImageGatherBiasLodAMD)
+        } else if 5010u32 as i64 == n {
+            Some(Capability::FragmentMaskAMD)
+        } else if 5013u32 as i64 == n {
+            Some(Capability::StencilExportEXT)
+        } else if 5015u32 as i64 == n {
+            Some(Capability::ImageReadWriteLodAMD)
+        } else if 5249u32 as i64 == n {
+            Some(Capability::SampleMaskOverrideCoverageNV)
+        } else if 5251u32 as i64 == n {
+            Some(Capability::GeometryShaderPassthroughNV)
+        } else if 5254u32 as i64 == n {
+            Some(Capability::ShaderViewportIndexLayerEXT)
+        } else if 5255u32 as i64 == n {
+            Some(Capability::ShaderViewportMaskNV)
+        } else if 5259u32 as i64 == n {
+            Some(Capability::ShaderStereoViewNV)
+        } else if 5260u32 as i64 == n {
+            Some(Capability::PerViewAttributesNV)
+        } else if 5265u32 as i64 == n {
+            Some(Capability::FragmentFullyCoveredEXT)
+        } else if 5301u32 as i64 == n {
+            Some(Capability::ShaderNonUniformEXT)
+        } else if 5302u32 as i64 == n {
+            Some(Capability::RuntimeDescriptorArrayEXT)
+        } else if 5303u32 as i64 == n {
+            Some(Capability::InputAttachmentArrayDynamicIndexingEXT)
+        } else if 5304u32 as i64 == n {
+            Some(Capability::UniformTexelBufferArrayDynamicIndexingEXT)
+        } else if 5305u32 as i64 == n {
+            Some(Capability::StorageTexelBufferArrayDynamicIndexingEXT)
+        } else if 5306u32 as i64 == n {
+            Some(Capability::UniformBufferArrayNonUniformIndexingEXT)
+        } else if 5307u32 as i64 == n {
+            Some(Capability::SampledImageArrayNonUniformIndexingEXT)
+        } else if 5308u32 as i64 == n {
+            Some(Capability::StorageBufferArrayNonUniformIndexingEXT)
+        } else if 5309u32 as i64 == n {
+            Some(Capability::StorageImageArrayNonUniformIndexingEXT)
+        } else if 5310u32 as i64 == n {
+            Some(Capability::InputAttachmentArrayNonUniformIndexingEXT)
+        } else if 5311u32 as i64 == n {
+            Some(Capability::UniformTexelBufferArrayNonUniformIndexingEXT)
+        } else if 5312u32 as i64 == n {
+            Some(Capability::StorageTexelBufferArrayNonUniformIndexingEXT)
+        } else if 5568u32 as i64 == n {
+            Some(Capability::SubgroupShuffleINTEL)
+        } else if 5569u32 as i64 == n {
+            Some(Capability::SubgroupBufferBlockIOINTEL)
+        } else if 5570u32 as i64 == n {
+            Some(Capability::SubgroupImageBlockIOINTEL)
+        } else if 5297u32 as i64 == n {
+            Some(Capability::GroupNonUniformPartitionedNV)
+        } else if 5345u32 as i64 == n {
+            Some(Capability::VulkanMemoryModelKHR)
+        } else if 5346u32 as i64 == n {
+            Some(Capability::VulkanMemoryModelDeviceScopeKHR)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_instructions_a_instructions) opcodes"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Op {
     Nop = 0u32,
     Undef = 1u32,
@@ -1556,9 +2656,754 @@ pub enum Op {
     MemberDecorateStringGOOGLE = 5633u32,
     GroupNonUniformPartitionNV = 5296u32,
 }
+impl num_traits::FromPrimitive for Op {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(Op::Nop)
+        } else if 1u32 as i64 == n {
+            Some(Op::Undef)
+        } else if 2u32 as i64 == n {
+            Some(Op::SourceContinued)
+        } else if 3u32 as i64 == n {
+            Some(Op::Source)
+        } else if 4u32 as i64 == n {
+            Some(Op::SourceExtension)
+        } else if 5u32 as i64 == n {
+            Some(Op::Name)
+        } else if 6u32 as i64 == n {
+            Some(Op::MemberName)
+        } else if 7u32 as i64 == n {
+            Some(Op::String)
+        } else if 8u32 as i64 == n {
+            Some(Op::Line)
+        } else if 10u32 as i64 == n {
+            Some(Op::Extension)
+        } else if 11u32 as i64 == n {
+            Some(Op::ExtInstImport)
+        } else if 12u32 as i64 == n {
+            Some(Op::ExtInst)
+        } else if 14u32 as i64 == n {
+            Some(Op::MemoryModel)
+        } else if 15u32 as i64 == n {
+            Some(Op::EntryPoint)
+        } else if 16u32 as i64 == n {
+            Some(Op::ExecutionMode)
+        } else if 17u32 as i64 == n {
+            Some(Op::Capability)
+        } else if 19u32 as i64 == n {
+            Some(Op::TypeVoid)
+        } else if 20u32 as i64 == n {
+            Some(Op::TypeBool)
+        } else if 21u32 as i64 == n {
+            Some(Op::TypeInt)
+        } else if 22u32 as i64 == n {
+            Some(Op::TypeFloat)
+        } else if 23u32 as i64 == n {
+            Some(Op::TypeVector)
+        } else if 24u32 as i64 == n {
+            Some(Op::TypeMatrix)
+        } else if 25u32 as i64 == n {
+            Some(Op::TypeImage)
+        } else if 26u32 as i64 == n {
+            Some(Op::TypeSampler)
+        } else if 27u32 as i64 == n {
+            Some(Op::TypeSampledImage)
+        } else if 28u32 as i64 == n {
+            Some(Op::TypeArray)
+        } else if 29u32 as i64 == n {
+            Some(Op::TypeRuntimeArray)
+        } else if 30u32 as i64 == n {
+            Some(Op::TypeStruct)
+        } else if 31u32 as i64 == n {
+            Some(Op::TypeOpaque)
+        } else if 32u32 as i64 == n {
+            Some(Op::TypePointer)
+        } else if 33u32 as i64 == n {
+            Some(Op::TypeFunction)
+        } else if 34u32 as i64 == n {
+            Some(Op::TypeEvent)
+        } else if 35u32 as i64 == n {
+            Some(Op::TypeDeviceEvent)
+        } else if 36u32 as i64 == n {
+            Some(Op::TypeReserveId)
+        } else if 37u32 as i64 == n {
+            Some(Op::TypeQueue)
+        } else if 38u32 as i64 == n {
+            Some(Op::TypePipe)
+        } else if 39u32 as i64 == n {
+            Some(Op::TypeForwardPointer)
+        } else if 41u32 as i64 == n {
+            Some(Op::ConstantTrue)
+        } else if 42u32 as i64 == n {
+            Some(Op::ConstantFalse)
+        } else if 43u32 as i64 == n {
+            Some(Op::Constant)
+        } else if 44u32 as i64 == n {
+            Some(Op::ConstantComposite)
+        } else if 45u32 as i64 == n {
+            Some(Op::ConstantSampler)
+        } else if 46u32 as i64 == n {
+            Some(Op::ConstantNull)
+        } else if 48u32 as i64 == n {
+            Some(Op::SpecConstantTrue)
+        } else if 49u32 as i64 == n {
+            Some(Op::SpecConstantFalse)
+        } else if 50u32 as i64 == n {
+            Some(Op::SpecConstant)
+        } else if 51u32 as i64 == n {
+            Some(Op::SpecConstantComposite)
+        } else if 52u32 as i64 == n {
+            Some(Op::SpecConstantOp)
+        } else if 54u32 as i64 == n {
+            Some(Op::Function)
+        } else if 55u32 as i64 == n {
+            Some(Op::FunctionParameter)
+        } else if 56u32 as i64 == n {
+            Some(Op::FunctionEnd)
+        } else if 57u32 as i64 == n {
+            Some(Op::FunctionCall)
+        } else if 59u32 as i64 == n {
+            Some(Op::Variable)
+        } else if 60u32 as i64 == n {
+            Some(Op::ImageTexelPointer)
+        } else if 61u32 as i64 == n {
+            Some(Op::Load)
+        } else if 62u32 as i64 == n {
+            Some(Op::Store)
+        } else if 63u32 as i64 == n {
+            Some(Op::CopyMemory)
+        } else if 64u32 as i64 == n {
+            Some(Op::CopyMemorySized)
+        } else if 65u32 as i64 == n {
+            Some(Op::AccessChain)
+        } else if 66u32 as i64 == n {
+            Some(Op::InBoundsAccessChain)
+        } else if 67u32 as i64 == n {
+            Some(Op::PtrAccessChain)
+        } else if 68u32 as i64 == n {
+            Some(Op::ArrayLength)
+        } else if 69u32 as i64 == n {
+            Some(Op::GenericPtrMemSemantics)
+        } else if 70u32 as i64 == n {
+            Some(Op::InBoundsPtrAccessChain)
+        } else if 71u32 as i64 == n {
+            Some(Op::Decorate)
+        } else if 72u32 as i64 == n {
+            Some(Op::MemberDecorate)
+        } else if 73u32 as i64 == n {
+            Some(Op::DecorationGroup)
+        } else if 74u32 as i64 == n {
+            Some(Op::GroupDecorate)
+        } else if 75u32 as i64 == n {
+            Some(Op::GroupMemberDecorate)
+        } else if 77u32 as i64 == n {
+            Some(Op::VectorExtractDynamic)
+        } else if 78u32 as i64 == n {
+            Some(Op::VectorInsertDynamic)
+        } else if 79u32 as i64 == n {
+            Some(Op::VectorShuffle)
+        } else if 80u32 as i64 == n {
+            Some(Op::CompositeConstruct)
+        } else if 81u32 as i64 == n {
+            Some(Op::CompositeExtract)
+        } else if 82u32 as i64 == n {
+            Some(Op::CompositeInsert)
+        } else if 83u32 as i64 == n {
+            Some(Op::CopyObject)
+        } else if 84u32 as i64 == n {
+            Some(Op::Transpose)
+        } else if 86u32 as i64 == n {
+            Some(Op::SampledImage)
+        } else if 87u32 as i64 == n {
+            Some(Op::ImageSampleImplicitLod)
+        } else if 88u32 as i64 == n {
+            Some(Op::ImageSampleExplicitLod)
+        } else if 89u32 as i64 == n {
+            Some(Op::ImageSampleDrefImplicitLod)
+        } else if 90u32 as i64 == n {
+            Some(Op::ImageSampleDrefExplicitLod)
+        } else if 91u32 as i64 == n {
+            Some(Op::ImageSampleProjImplicitLod)
+        } else if 92u32 as i64 == n {
+            Some(Op::ImageSampleProjExplicitLod)
+        } else if 93u32 as i64 == n {
+            Some(Op::ImageSampleProjDrefImplicitLod)
+        } else if 94u32 as i64 == n {
+            Some(Op::ImageSampleProjDrefExplicitLod)
+        } else if 95u32 as i64 == n {
+            Some(Op::ImageFetch)
+        } else if 96u32 as i64 == n {
+            Some(Op::ImageGather)
+        } else if 97u32 as i64 == n {
+            Some(Op::ImageDrefGather)
+        } else if 98u32 as i64 == n {
+            Some(Op::ImageRead)
+        } else if 99u32 as i64 == n {
+            Some(Op::ImageWrite)
+        } else if 100u32 as i64 == n {
+            Some(Op::Image)
+        } else if 101u32 as i64 == n {
+            Some(Op::ImageQueryFormat)
+        } else if 102u32 as i64 == n {
+            Some(Op::ImageQueryOrder)
+        } else if 103u32 as i64 == n {
+            Some(Op::ImageQuerySizeLod)
+        } else if 104u32 as i64 == n {
+            Some(Op::ImageQuerySize)
+        } else if 105u32 as i64 == n {
+            Some(Op::ImageQueryLod)
+        } else if 106u32 as i64 == n {
+            Some(Op::ImageQueryLevels)
+        } else if 107u32 as i64 == n {
+            Some(Op::ImageQuerySamples)
+        } else if 109u32 as i64 == n {
+            Some(Op::ConvertFToU)
+        } else if 110u32 as i64 == n {
+            Some(Op::ConvertFToS)
+        } else if 111u32 as i64 == n {
+            Some(Op::ConvertSToF)
+        } else if 112u32 as i64 == n {
+            Some(Op::ConvertUToF)
+        } else if 113u32 as i64 == n {
+            Some(Op::UConvert)
+        } else if 114u32 as i64 == n {
+            Some(Op::SConvert)
+        } else if 115u32 as i64 == n {
+            Some(Op::FConvert)
+        } else if 116u32 as i64 == n {
+            Some(Op::QuantizeToF16)
+        } else if 117u32 as i64 == n {
+            Some(Op::ConvertPtrToU)
+        } else if 118u32 as i64 == n {
+            Some(Op::SatConvertSToU)
+        } else if 119u32 as i64 == n {
+            Some(Op::SatConvertUToS)
+        } else if 120u32 as i64 == n {
+            Some(Op::ConvertUToPtr)
+        } else if 121u32 as i64 == n {
+            Some(Op::PtrCastToGeneric)
+        } else if 122u32 as i64 == n {
+            Some(Op::GenericCastToPtr)
+        } else if 123u32 as i64 == n {
+            Some(Op::GenericCastToPtrExplicit)
+        } else if 124u32 as i64 == n {
+            Some(Op::Bitcast)
+        } else if 126u32 as i64 == n {
+            Some(Op::SNegate)
+        } else if 127u32 as i64 == n {
+            Some(Op::FNegate)
+        } else if 128u32 as i64 == n {
+            Some(Op::IAdd)
+        } else if 129u32 as i64 == n {
+            Some(Op::FAdd)
+        } else if 130u32 as i64 == n {
+            Some(Op::ISub)
+        } else if 131u32 as i64 == n {
+            Some(Op::FSub)
+        } else if 132u32 as i64 == n {
+            Some(Op::IMul)
+        } else if 133u32 as i64 == n {
+            Some(Op::FMul)
+        } else if 134u32 as i64 == n {
+            Some(Op::UDiv)
+        } else if 135u32 as i64 == n {
+            Some(Op::SDiv)
+        } else if 136u32 as i64 == n {
+            Some(Op::FDiv)
+        } else if 137u32 as i64 == n {
+            Some(Op::UMod)
+        } else if 138u32 as i64 == n {
+            Some(Op::SRem)
+        } else if 139u32 as i64 == n {
+            Some(Op::SMod)
+        } else if 140u32 as i64 == n {
+            Some(Op::FRem)
+        } else if 141u32 as i64 == n {
+            Some(Op::FMod)
+        } else if 142u32 as i64 == n {
+            Some(Op::VectorTimesScalar)
+        } else if 143u32 as i64 == n {
+            Some(Op::MatrixTimesScalar)
+        } else if 144u32 as i64 == n {
+            Some(Op::VectorTimesMatrix)
+        } else if 145u32 as i64 == n {
+            Some(Op::MatrixTimesVector)
+        } else if 146u32 as i64 == n {
+            Some(Op::MatrixTimesMatrix)
+        } else if 147u32 as i64 == n {
+            Some(Op::OuterProduct)
+        } else if 148u32 as i64 == n {
+            Some(Op::Dot)
+        } else if 149u32 as i64 == n {
+            Some(Op::IAddCarry)
+        } else if 150u32 as i64 == n {
+            Some(Op::ISubBorrow)
+        } else if 151u32 as i64 == n {
+            Some(Op::UMulExtended)
+        } else if 152u32 as i64 == n {
+            Some(Op::SMulExtended)
+        } else if 154u32 as i64 == n {
+            Some(Op::Any)
+        } else if 155u32 as i64 == n {
+            Some(Op::All)
+        } else if 156u32 as i64 == n {
+            Some(Op::IsNan)
+        } else if 157u32 as i64 == n {
+            Some(Op::IsInf)
+        } else if 158u32 as i64 == n {
+            Some(Op::IsFinite)
+        } else if 159u32 as i64 == n {
+            Some(Op::IsNormal)
+        } else if 160u32 as i64 == n {
+            Some(Op::SignBitSet)
+        } else if 161u32 as i64 == n {
+            Some(Op::LessOrGreater)
+        } else if 162u32 as i64 == n {
+            Some(Op::Ordered)
+        } else if 163u32 as i64 == n {
+            Some(Op::Unordered)
+        } else if 164u32 as i64 == n {
+            Some(Op::LogicalEqual)
+        } else if 165u32 as i64 == n {
+            Some(Op::LogicalNotEqual)
+        } else if 166u32 as i64 == n {
+            Some(Op::LogicalOr)
+        } else if 167u32 as i64 == n {
+            Some(Op::LogicalAnd)
+        } else if 168u32 as i64 == n {
+            Some(Op::LogicalNot)
+        } else if 169u32 as i64 == n {
+            Some(Op::Select)
+        } else if 170u32 as i64 == n {
+            Some(Op::IEqual)
+        } else if 171u32 as i64 == n {
+            Some(Op::INotEqual)
+        } else if 172u32 as i64 == n {
+            Some(Op::UGreaterThan)
+        } else if 173u32 as i64 == n {
+            Some(Op::SGreaterThan)
+        } else if 174u32 as i64 == n {
+            Some(Op::UGreaterThanEqual)
+        } else if 175u32 as i64 == n {
+            Some(Op::SGreaterThanEqual)
+        } else if 176u32 as i64 == n {
+            Some(Op::ULessThan)
+        } else if 177u32 as i64 == n {
+            Some(Op::SLessThan)
+        } else if 178u32 as i64 == n {
+            Some(Op::ULessThanEqual)
+        } else if 179u32 as i64 == n {
+            Some(Op::SLessThanEqual)
+        } else if 180u32 as i64 == n {
+            Some(Op::FOrdEqual)
+        } else if 181u32 as i64 == n {
+            Some(Op::FUnordEqual)
+        } else if 182u32 as i64 == n {
+            Some(Op::FOrdNotEqual)
+        } else if 183u32 as i64 == n {
+            Some(Op::FUnordNotEqual)
+        } else if 184u32 as i64 == n {
+            Some(Op::FOrdLessThan)
+        } else if 185u32 as i64 == n {
+            Some(Op::FUnordLessThan)
+        } else if 186u32 as i64 == n {
+            Some(Op::FOrdGreaterThan)
+        } else if 187u32 as i64 == n {
+            Some(Op::FUnordGreaterThan)
+        } else if 188u32 as i64 == n {
+            Some(Op::FOrdLessThanEqual)
+        } else if 189u32 as i64 == n {
+            Some(Op::FUnordLessThanEqual)
+        } else if 190u32 as i64 == n {
+            Some(Op::FOrdGreaterThanEqual)
+        } else if 191u32 as i64 == n {
+            Some(Op::FUnordGreaterThanEqual)
+        } else if 194u32 as i64 == n {
+            Some(Op::ShiftRightLogical)
+        } else if 195u32 as i64 == n {
+            Some(Op::ShiftRightArithmetic)
+        } else if 196u32 as i64 == n {
+            Some(Op::ShiftLeftLogical)
+        } else if 197u32 as i64 == n {
+            Some(Op::BitwiseOr)
+        } else if 198u32 as i64 == n {
+            Some(Op::BitwiseXor)
+        } else if 199u32 as i64 == n {
+            Some(Op::BitwiseAnd)
+        } else if 200u32 as i64 == n {
+            Some(Op::Not)
+        } else if 201u32 as i64 == n {
+            Some(Op::BitFieldInsert)
+        } else if 202u32 as i64 == n {
+            Some(Op::BitFieldSExtract)
+        } else if 203u32 as i64 == n {
+            Some(Op::BitFieldUExtract)
+        } else if 204u32 as i64 == n {
+            Some(Op::BitReverse)
+        } else if 205u32 as i64 == n {
+            Some(Op::BitCount)
+        } else if 207u32 as i64 == n {
+            Some(Op::DPdx)
+        } else if 208u32 as i64 == n {
+            Some(Op::DPdy)
+        } else if 209u32 as i64 == n {
+            Some(Op::Fwidth)
+        } else if 210u32 as i64 == n {
+            Some(Op::DPdxFine)
+        } else if 211u32 as i64 == n {
+            Some(Op::DPdyFine)
+        } else if 212u32 as i64 == n {
+            Some(Op::FwidthFine)
+        } else if 213u32 as i64 == n {
+            Some(Op::DPdxCoarse)
+        } else if 214u32 as i64 == n {
+            Some(Op::DPdyCoarse)
+        } else if 215u32 as i64 == n {
+            Some(Op::FwidthCoarse)
+        } else if 218u32 as i64 == n {
+            Some(Op::EmitVertex)
+        } else if 219u32 as i64 == n {
+            Some(Op::EndPrimitive)
+        } else if 220u32 as i64 == n {
+            Some(Op::EmitStreamVertex)
+        } else if 221u32 as i64 == n {
+            Some(Op::EndStreamPrimitive)
+        } else if 224u32 as i64 == n {
+            Some(Op::ControlBarrier)
+        } else if 225u32 as i64 == n {
+            Some(Op::MemoryBarrier)
+        } else if 227u32 as i64 == n {
+            Some(Op::AtomicLoad)
+        } else if 228u32 as i64 == n {
+            Some(Op::AtomicStore)
+        } else if 229u32 as i64 == n {
+            Some(Op::AtomicExchange)
+        } else if 230u32 as i64 == n {
+            Some(Op::AtomicCompareExchange)
+        } else if 231u32 as i64 == n {
+            Some(Op::AtomicCompareExchangeWeak)
+        } else if 232u32 as i64 == n {
+            Some(Op::AtomicIIncrement)
+        } else if 233u32 as i64 == n {
+            Some(Op::AtomicIDecrement)
+        } else if 234u32 as i64 == n {
+            Some(Op::AtomicIAdd)
+        } else if 235u32 as i64 == n {
+            Some(Op::AtomicISub)
+        } else if 236u32 as i64 == n {
+            Some(Op::AtomicSMin)
+        } else if 237u32 as i64 == n {
+            Some(Op::AtomicUMin)
+        } else if 238u32 as i64 == n {
+            Some(Op::AtomicSMax)
+        } else if 239u32 as i64 == n {
+            Some(Op::AtomicUMax)
+        } else if 240u32 as i64 == n {
+            Some(Op::AtomicAnd)
+        } else if 241u32 as i64 == n {
+            Some(Op::AtomicOr)
+        } else if 242u32 as i64 == n {
+            Some(Op::AtomicXor)
+        } else if 245u32 as i64 == n {
+            Some(Op::Phi)
+        } else if 246u32 as i64 == n {
+            Some(Op::LoopMerge)
+        } else if 247u32 as i64 == n {
+            Some(Op::SelectionMerge)
+        } else if 248u32 as i64 == n {
+            Some(Op::Label)
+        } else if 249u32 as i64 == n {
+            Some(Op::Branch)
+        } else if 250u32 as i64 == n {
+            Some(Op::BranchConditional)
+        } else if 251u32 as i64 == n {
+            Some(Op::Switch)
+        } else if 252u32 as i64 == n {
+            Some(Op::Kill)
+        } else if 253u32 as i64 == n {
+            Some(Op::Return)
+        } else if 254u32 as i64 == n {
+            Some(Op::ReturnValue)
+        } else if 255u32 as i64 == n {
+            Some(Op::Unreachable)
+        } else if 256u32 as i64 == n {
+            Some(Op::LifetimeStart)
+        } else if 257u32 as i64 == n {
+            Some(Op::LifetimeStop)
+        } else if 259u32 as i64 == n {
+            Some(Op::GroupAsyncCopy)
+        } else if 260u32 as i64 == n {
+            Some(Op::GroupWaitEvents)
+        } else if 261u32 as i64 == n {
+            Some(Op::GroupAll)
+        } else if 262u32 as i64 == n {
+            Some(Op::GroupAny)
+        } else if 263u32 as i64 == n {
+            Some(Op::GroupBroadcast)
+        } else if 264u32 as i64 == n {
+            Some(Op::GroupIAdd)
+        } else if 265u32 as i64 == n {
+            Some(Op::GroupFAdd)
+        } else if 266u32 as i64 == n {
+            Some(Op::GroupFMin)
+        } else if 267u32 as i64 == n {
+            Some(Op::GroupUMin)
+        } else if 268u32 as i64 == n {
+            Some(Op::GroupSMin)
+        } else if 269u32 as i64 == n {
+            Some(Op::GroupFMax)
+        } else if 270u32 as i64 == n {
+            Some(Op::GroupUMax)
+        } else if 271u32 as i64 == n {
+            Some(Op::GroupSMax)
+        } else if 274u32 as i64 == n {
+            Some(Op::ReadPipe)
+        } else if 275u32 as i64 == n {
+            Some(Op::WritePipe)
+        } else if 276u32 as i64 == n {
+            Some(Op::ReservedReadPipe)
+        } else if 277u32 as i64 == n {
+            Some(Op::ReservedWritePipe)
+        } else if 278u32 as i64 == n {
+            Some(Op::ReserveReadPipePackets)
+        } else if 279u32 as i64 == n {
+            Some(Op::ReserveWritePipePackets)
+        } else if 280u32 as i64 == n {
+            Some(Op::CommitReadPipe)
+        } else if 281u32 as i64 == n {
+            Some(Op::CommitWritePipe)
+        } else if 282u32 as i64 == n {
+            Some(Op::IsValidReserveId)
+        } else if 283u32 as i64 == n {
+            Some(Op::GetNumPipePackets)
+        } else if 284u32 as i64 == n {
+            Some(Op::GetMaxPipePackets)
+        } else if 285u32 as i64 == n {
+            Some(Op::GroupReserveReadPipePackets)
+        } else if 286u32 as i64 == n {
+            Some(Op::GroupReserveWritePipePackets)
+        } else if 287u32 as i64 == n {
+            Some(Op::GroupCommitReadPipe)
+        } else if 288u32 as i64 == n {
+            Some(Op::GroupCommitWritePipe)
+        } else if 291u32 as i64 == n {
+            Some(Op::EnqueueMarker)
+        } else if 292u32 as i64 == n {
+            Some(Op::EnqueueKernel)
+        } else if 293u32 as i64 == n {
+            Some(Op::GetKernelNDrangeSubGroupCount)
+        } else if 294u32 as i64 == n {
+            Some(Op::GetKernelNDrangeMaxSubGroupSize)
+        } else if 295u32 as i64 == n {
+            Some(Op::GetKernelWorkGroupSize)
+        } else if 296u32 as i64 == n {
+            Some(Op::GetKernelPreferredWorkGroupSizeMultiple)
+        } else if 297u32 as i64 == n {
+            Some(Op::RetainEvent)
+        } else if 298u32 as i64 == n {
+            Some(Op::ReleaseEvent)
+        } else if 299u32 as i64 == n {
+            Some(Op::CreateUserEvent)
+        } else if 300u32 as i64 == n {
+            Some(Op::IsValidEvent)
+        } else if 301u32 as i64 == n {
+            Some(Op::SetUserEventStatus)
+        } else if 302u32 as i64 == n {
+            Some(Op::CaptureEventProfilingInfo)
+        } else if 303u32 as i64 == n {
+            Some(Op::GetDefaultQueue)
+        } else if 304u32 as i64 == n {
+            Some(Op::BuildNDRange)
+        } else if 305u32 as i64 == n {
+            Some(Op::ImageSparseSampleImplicitLod)
+        } else if 306u32 as i64 == n {
+            Some(Op::ImageSparseSampleExplicitLod)
+        } else if 307u32 as i64 == n {
+            Some(Op::ImageSparseSampleDrefImplicitLod)
+        } else if 308u32 as i64 == n {
+            Some(Op::ImageSparseSampleDrefExplicitLod)
+        } else if 309u32 as i64 == n {
+            Some(Op::ImageSparseSampleProjImplicitLod)
+        } else if 310u32 as i64 == n {
+            Some(Op::ImageSparseSampleProjExplicitLod)
+        } else if 311u32 as i64 == n {
+            Some(Op::ImageSparseSampleProjDrefImplicitLod)
+        } else if 312u32 as i64 == n {
+            Some(Op::ImageSparseSampleProjDrefExplicitLod)
+        } else if 313u32 as i64 == n {
+            Some(Op::ImageSparseFetch)
+        } else if 314u32 as i64 == n {
+            Some(Op::ImageSparseGather)
+        } else if 315u32 as i64 == n {
+            Some(Op::ImageSparseDrefGather)
+        } else if 316u32 as i64 == n {
+            Some(Op::ImageSparseTexelsResident)
+        } else if 317u32 as i64 == n {
+            Some(Op::NoLine)
+        } else if 318u32 as i64 == n {
+            Some(Op::AtomicFlagTestAndSet)
+        } else if 319u32 as i64 == n {
+            Some(Op::AtomicFlagClear)
+        } else if 320u32 as i64 == n {
+            Some(Op::ImageSparseRead)
+        } else if 321u32 as i64 == n {
+            Some(Op::SizeOf)
+        } else if 322u32 as i64 == n {
+            Some(Op::TypePipeStorage)
+        } else if 323u32 as i64 == n {
+            Some(Op::ConstantPipeStorage)
+        } else if 324u32 as i64 == n {
+            Some(Op::CreatePipeFromPipeStorage)
+        } else if 325u32 as i64 == n {
+            Some(Op::GetKernelLocalSizeForSubgroupCount)
+        } else if 326u32 as i64 == n {
+            Some(Op::GetKernelMaxNumSubgroups)
+        } else if 327u32 as i64 == n {
+            Some(Op::TypeNamedBarrier)
+        } else if 328u32 as i64 == n {
+            Some(Op::NamedBarrierInitialize)
+        } else if 329u32 as i64 == n {
+            Some(Op::MemoryNamedBarrier)
+        } else if 330u32 as i64 == n {
+            Some(Op::ModuleProcessed)
+        } else if 331u32 as i64 == n {
+            Some(Op::ExecutionModeId)
+        } else if 332u32 as i64 == n {
+            Some(Op::DecorateId)
+        } else if 333u32 as i64 == n {
+            Some(Op::GroupNonUniformElect)
+        } else if 334u32 as i64 == n {
+            Some(Op::GroupNonUniformAll)
+        } else if 335u32 as i64 == n {
+            Some(Op::GroupNonUniformAny)
+        } else if 336u32 as i64 == n {
+            Some(Op::GroupNonUniformAllEqual)
+        } else if 337u32 as i64 == n {
+            Some(Op::GroupNonUniformBroadcast)
+        } else if 338u32 as i64 == n {
+            Some(Op::GroupNonUniformBroadcastFirst)
+        } else if 339u32 as i64 == n {
+            Some(Op::GroupNonUniformBallot)
+        } else if 340u32 as i64 == n {
+            Some(Op::GroupNonUniformInverseBallot)
+        } else if 341u32 as i64 == n {
+            Some(Op::GroupNonUniformBallotBitExtract)
+        } else if 342u32 as i64 == n {
+            Some(Op::GroupNonUniformBallotBitCount)
+        } else if 343u32 as i64 == n {
+            Some(Op::GroupNonUniformBallotFindLSB)
+        } else if 344u32 as i64 == n {
+            Some(Op::GroupNonUniformBallotFindMSB)
+        } else if 345u32 as i64 == n {
+            Some(Op::GroupNonUniformShuffle)
+        } else if 346u32 as i64 == n {
+            Some(Op::GroupNonUniformShuffleXor)
+        } else if 347u32 as i64 == n {
+            Some(Op::GroupNonUniformShuffleUp)
+        } else if 348u32 as i64 == n {
+            Some(Op::GroupNonUniformShuffleDown)
+        } else if 349u32 as i64 == n {
+            Some(Op::GroupNonUniformIAdd)
+        } else if 350u32 as i64 == n {
+            Some(Op::GroupNonUniformFAdd)
+        } else if 351u32 as i64 == n {
+            Some(Op::GroupNonUniformIMul)
+        } else if 352u32 as i64 == n {
+            Some(Op::GroupNonUniformFMul)
+        } else if 353u32 as i64 == n {
+            Some(Op::GroupNonUniformSMin)
+        } else if 354u32 as i64 == n {
+            Some(Op::GroupNonUniformUMin)
+        } else if 355u32 as i64 == n {
+            Some(Op::GroupNonUniformFMin)
+        } else if 356u32 as i64 == n {
+            Some(Op::GroupNonUniformSMax)
+        } else if 357u32 as i64 == n {
+            Some(Op::GroupNonUniformUMax)
+        } else if 358u32 as i64 == n {
+            Some(Op::GroupNonUniformFMax)
+        } else if 359u32 as i64 == n {
+            Some(Op::GroupNonUniformBitwiseAnd)
+        } else if 360u32 as i64 == n {
+            Some(Op::GroupNonUniformBitwiseOr)
+        } else if 361u32 as i64 == n {
+            Some(Op::GroupNonUniformBitwiseXor)
+        } else if 362u32 as i64 == n {
+            Some(Op::GroupNonUniformLogicalAnd)
+        } else if 363u32 as i64 == n {
+            Some(Op::GroupNonUniformLogicalOr)
+        } else if 364u32 as i64 == n {
+            Some(Op::GroupNonUniformLogicalXor)
+        } else if 365u32 as i64 == n {
+            Some(Op::GroupNonUniformQuadBroadcast)
+        } else if 366u32 as i64 == n {
+            Some(Op::GroupNonUniformQuadSwap)
+        } else if 4421u32 as i64 == n {
+            Some(Op::SubgroupBallotKHR)
+        } else if 4422u32 as i64 == n {
+            Some(Op::SubgroupFirstInvocationKHR)
+        } else if 4428u32 as i64 == n {
+            Some(Op::SubgroupAllKHR)
+        } else if 4429u32 as i64 == n {
+            Some(Op::SubgroupAnyKHR)
+        } else if 4430u32 as i64 == n {
+            Some(Op::SubgroupAllEqualKHR)
+        } else if 4432u32 as i64 == n {
+            Some(Op::SubgroupReadInvocationKHR)
+        } else if 5000u32 as i64 == n {
+            Some(Op::GroupIAddNonUniformAMD)
+        } else if 5001u32 as i64 == n {
+            Some(Op::GroupFAddNonUniformAMD)
+        } else if 5002u32 as i64 == n {
+            Some(Op::GroupFMinNonUniformAMD)
+        } else if 5003u32 as i64 == n {
+            Some(Op::GroupUMinNonUniformAMD)
+        } else if 5004u32 as i64 == n {
+            Some(Op::GroupSMinNonUniformAMD)
+        } else if 5005u32 as i64 == n {
+            Some(Op::GroupFMaxNonUniformAMD)
+        } else if 5006u32 as i64 == n {
+            Some(Op::GroupUMaxNonUniformAMD)
+        } else if 5007u32 as i64 == n {
+            Some(Op::GroupSMaxNonUniformAMD)
+        } else if 5011u32 as i64 == n {
+            Some(Op::FragmentMaskFetchAMD)
+        } else if 5012u32 as i64 == n {
+            Some(Op::FragmentFetchAMD)
+        } else if 5571u32 as i64 == n {
+            Some(Op::SubgroupShuffleINTEL)
+        } else if 5572u32 as i64 == n {
+            Some(Op::SubgroupShuffleDownINTEL)
+        } else if 5573u32 as i64 == n {
+            Some(Op::SubgroupShuffleUpINTEL)
+        } else if 5574u32 as i64 == n {
+            Some(Op::SubgroupShuffleXorINTEL)
+        } else if 5575u32 as i64 == n {
+            Some(Op::SubgroupBlockReadINTEL)
+        } else if 5576u32 as i64 == n {
+            Some(Op::SubgroupBlockWriteINTEL)
+        } else if 5577u32 as i64 == n {
+            Some(Op::SubgroupImageBlockReadINTEL)
+        } else if 5578u32 as i64 == n {
+            Some(Op::SubgroupImageBlockWriteINTEL)
+        } else if 5632u32 as i64 == n {
+            Some(Op::DecorateStringGOOGLE)
+        } else if 5633u32 as i64 == n {
+            Some(Op::MemberDecorateStringGOOGLE)
+        } else if 5296u32 as i64 == n {
+            Some(Op::GroupNonUniformPartitionNV)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "[GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html) extended instruction opcode"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum GLOp {
     Round = 1u32,
     RoundEven = 2u32,
@@ -1642,9 +3487,182 @@ pub enum GLOp {
     NMax = 80u32,
     NClamp = 81u32,
 }
+impl num_traits::FromPrimitive for GLOp {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 1u32 as i64 == n {
+            Some(GLOp::Round)
+        } else if 2u32 as i64 == n {
+            Some(GLOp::RoundEven)
+        } else if 3u32 as i64 == n {
+            Some(GLOp::Trunc)
+        } else if 4u32 as i64 == n {
+            Some(GLOp::FAbs)
+        } else if 5u32 as i64 == n {
+            Some(GLOp::SAbs)
+        } else if 6u32 as i64 == n {
+            Some(GLOp::FSign)
+        } else if 7u32 as i64 == n {
+            Some(GLOp::SSign)
+        } else if 8u32 as i64 == n {
+            Some(GLOp::Floor)
+        } else if 9u32 as i64 == n {
+            Some(GLOp::Ceil)
+        } else if 10u32 as i64 == n {
+            Some(GLOp::Fract)
+        } else if 11u32 as i64 == n {
+            Some(GLOp::Radians)
+        } else if 12u32 as i64 == n {
+            Some(GLOp::Degrees)
+        } else if 13u32 as i64 == n {
+            Some(GLOp::Sin)
+        } else if 14u32 as i64 == n {
+            Some(GLOp::Cos)
+        } else if 15u32 as i64 == n {
+            Some(GLOp::Tan)
+        } else if 16u32 as i64 == n {
+            Some(GLOp::Asin)
+        } else if 17u32 as i64 == n {
+            Some(GLOp::Acos)
+        } else if 18u32 as i64 == n {
+            Some(GLOp::Atan)
+        } else if 19u32 as i64 == n {
+            Some(GLOp::Sinh)
+        } else if 20u32 as i64 == n {
+            Some(GLOp::Cosh)
+        } else if 21u32 as i64 == n {
+            Some(GLOp::Tanh)
+        } else if 22u32 as i64 == n {
+            Some(GLOp::Asinh)
+        } else if 23u32 as i64 == n {
+            Some(GLOp::Acosh)
+        } else if 24u32 as i64 == n {
+            Some(GLOp::Atanh)
+        } else if 25u32 as i64 == n {
+            Some(GLOp::Atan2)
+        } else if 26u32 as i64 == n {
+            Some(GLOp::Pow)
+        } else if 27u32 as i64 == n {
+            Some(GLOp::Exp)
+        } else if 28u32 as i64 == n {
+            Some(GLOp::Log)
+        } else if 29u32 as i64 == n {
+            Some(GLOp::Exp2)
+        } else if 30u32 as i64 == n {
+            Some(GLOp::Log2)
+        } else if 31u32 as i64 == n {
+            Some(GLOp::Sqrt)
+        } else if 32u32 as i64 == n {
+            Some(GLOp::InverseSqrt)
+        } else if 33u32 as i64 == n {
+            Some(GLOp::Determinant)
+        } else if 34u32 as i64 == n {
+            Some(GLOp::MatrixInverse)
+        } else if 35u32 as i64 == n {
+            Some(GLOp::Modf)
+        } else if 36u32 as i64 == n {
+            Some(GLOp::ModfStruct)
+        } else if 37u32 as i64 == n {
+            Some(GLOp::FMin)
+        } else if 38u32 as i64 == n {
+            Some(GLOp::UMin)
+        } else if 39u32 as i64 == n {
+            Some(GLOp::SMin)
+        } else if 40u32 as i64 == n {
+            Some(GLOp::FMax)
+        } else if 41u32 as i64 == n {
+            Some(GLOp::UMax)
+        } else if 42u32 as i64 == n {
+            Some(GLOp::SMax)
+        } else if 43u32 as i64 == n {
+            Some(GLOp::FClamp)
+        } else if 44u32 as i64 == n {
+            Some(GLOp::UClamp)
+        } else if 45u32 as i64 == n {
+            Some(GLOp::SClamp)
+        } else if 46u32 as i64 == n {
+            Some(GLOp::FMix)
+        } else if 47u32 as i64 == n {
+            Some(GLOp::IMix)
+        } else if 48u32 as i64 == n {
+            Some(GLOp::Step)
+        } else if 49u32 as i64 == n {
+            Some(GLOp::SmoothStep)
+        } else if 50u32 as i64 == n {
+            Some(GLOp::Fma)
+        } else if 51u32 as i64 == n {
+            Some(GLOp::Frexp)
+        } else if 52u32 as i64 == n {
+            Some(GLOp::FrexpStruct)
+        } else if 53u32 as i64 == n {
+            Some(GLOp::Ldexp)
+        } else if 54u32 as i64 == n {
+            Some(GLOp::PackSnorm4x8)
+        } else if 55u32 as i64 == n {
+            Some(GLOp::PackUnorm4x8)
+        } else if 56u32 as i64 == n {
+            Some(GLOp::PackSnorm2x16)
+        } else if 57u32 as i64 == n {
+            Some(GLOp::PackUnorm2x16)
+        } else if 58u32 as i64 == n {
+            Some(GLOp::PackHalf2x16)
+        } else if 59u32 as i64 == n {
+            Some(GLOp::PackDouble2x32)
+        } else if 60u32 as i64 == n {
+            Some(GLOp::UnpackSnorm2x16)
+        } else if 61u32 as i64 == n {
+            Some(GLOp::UnpackUnorm2x16)
+        } else if 62u32 as i64 == n {
+            Some(GLOp::UnpackHalf2x16)
+        } else if 63u32 as i64 == n {
+            Some(GLOp::UnpackSnorm4x8)
+        } else if 64u32 as i64 == n {
+            Some(GLOp::UnpackUnorm4x8)
+        } else if 65u32 as i64 == n {
+            Some(GLOp::UnpackDouble2x32)
+        } else if 66u32 as i64 == n {
+            Some(GLOp::Length)
+        } else if 67u32 as i64 == n {
+            Some(GLOp::Distance)
+        } else if 68u32 as i64 == n {
+            Some(GLOp::Cross)
+        } else if 69u32 as i64 == n {
+            Some(GLOp::Normalize)
+        } else if 70u32 as i64 == n {
+            Some(GLOp::FaceForward)
+        } else if 71u32 as i64 == n {
+            Some(GLOp::Reflect)
+        } else if 72u32 as i64 == n {
+            Some(GLOp::Refract)
+        } else if 73u32 as i64 == n {
+            Some(GLOp::FindILsb)
+        } else if 74u32 as i64 == n {
+            Some(GLOp::FindSMsb)
+        } else if 75u32 as i64 == n {
+            Some(GLOp::FindUMsb)
+        } else if 76u32 as i64 == n {
+            Some(GLOp::InterpolateAtCentroid)
+        } else if 77u32 as i64 == n {
+            Some(GLOp::InterpolateAtSample)
+        } else if 78u32 as i64 == n {
+            Some(GLOp::InterpolateAtOffset)
+        } else if 79u32 as i64 == n {
+            Some(GLOp::NMin)
+        } else if 80u32 as i64 == n {
+            Some(GLOp::NMax)
+        } else if 81u32 as i64 == n {
+            Some(GLOp::NClamp)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
 #[doc = "[OpenCL.std](https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum CLOp {
     acos = 0u32,
     acosh = 1u32,
@@ -1808,4 +3826,339 @@ pub enum CLOp {
     shuffle2 = 183u32,
     printf = 184u32,
     prefetch = 185u32,
+}
+impl num_traits::FromPrimitive for CLOp {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        if 0u32 as i64 == n {
+            Some(CLOp::acos)
+        } else if 1u32 as i64 == n {
+            Some(CLOp::acosh)
+        } else if 2u32 as i64 == n {
+            Some(CLOp::acospi)
+        } else if 3u32 as i64 == n {
+            Some(CLOp::asin)
+        } else if 4u32 as i64 == n {
+            Some(CLOp::asinh)
+        } else if 5u32 as i64 == n {
+            Some(CLOp::asinpi)
+        } else if 6u32 as i64 == n {
+            Some(CLOp::atan)
+        } else if 7u32 as i64 == n {
+            Some(CLOp::atan2)
+        } else if 8u32 as i64 == n {
+            Some(CLOp::atanh)
+        } else if 9u32 as i64 == n {
+            Some(CLOp::atanpi)
+        } else if 10u32 as i64 == n {
+            Some(CLOp::atan2pi)
+        } else if 11u32 as i64 == n {
+            Some(CLOp::cbrt)
+        } else if 12u32 as i64 == n {
+            Some(CLOp::ceil)
+        } else if 13u32 as i64 == n {
+            Some(CLOp::copysign)
+        } else if 14u32 as i64 == n {
+            Some(CLOp::cos)
+        } else if 15u32 as i64 == n {
+            Some(CLOp::cosh)
+        } else if 16u32 as i64 == n {
+            Some(CLOp::cospi)
+        } else if 17u32 as i64 == n {
+            Some(CLOp::erfc)
+        } else if 18u32 as i64 == n {
+            Some(CLOp::erf)
+        } else if 19u32 as i64 == n {
+            Some(CLOp::exp)
+        } else if 20u32 as i64 == n {
+            Some(CLOp::exp2)
+        } else if 21u32 as i64 == n {
+            Some(CLOp::exp10)
+        } else if 22u32 as i64 == n {
+            Some(CLOp::expm1)
+        } else if 23u32 as i64 == n {
+            Some(CLOp::fabs)
+        } else if 24u32 as i64 == n {
+            Some(CLOp::fdim)
+        } else if 25u32 as i64 == n {
+            Some(CLOp::floor)
+        } else if 26u32 as i64 == n {
+            Some(CLOp::fma)
+        } else if 27u32 as i64 == n {
+            Some(CLOp::fmax)
+        } else if 28u32 as i64 == n {
+            Some(CLOp::fmin)
+        } else if 29u32 as i64 == n {
+            Some(CLOp::fmod)
+        } else if 30u32 as i64 == n {
+            Some(CLOp::fract)
+        } else if 31u32 as i64 == n {
+            Some(CLOp::frexp)
+        } else if 32u32 as i64 == n {
+            Some(CLOp::hypot)
+        } else if 33u32 as i64 == n {
+            Some(CLOp::ilogb)
+        } else if 34u32 as i64 == n {
+            Some(CLOp::ldexp)
+        } else if 35u32 as i64 == n {
+            Some(CLOp::lgamma)
+        } else if 36u32 as i64 == n {
+            Some(CLOp::lgamma_r)
+        } else if 37u32 as i64 == n {
+            Some(CLOp::log)
+        } else if 38u32 as i64 == n {
+            Some(CLOp::log2)
+        } else if 39u32 as i64 == n {
+            Some(CLOp::log10)
+        } else if 40u32 as i64 == n {
+            Some(CLOp::log1p)
+        } else if 41u32 as i64 == n {
+            Some(CLOp::logb)
+        } else if 42u32 as i64 == n {
+            Some(CLOp::mad)
+        } else if 43u32 as i64 == n {
+            Some(CLOp::maxmag)
+        } else if 44u32 as i64 == n {
+            Some(CLOp::minmag)
+        } else if 45u32 as i64 == n {
+            Some(CLOp::modf)
+        } else if 46u32 as i64 == n {
+            Some(CLOp::nan)
+        } else if 47u32 as i64 == n {
+            Some(CLOp::nextafter)
+        } else if 48u32 as i64 == n {
+            Some(CLOp::pow)
+        } else if 49u32 as i64 == n {
+            Some(CLOp::pown)
+        } else if 50u32 as i64 == n {
+            Some(CLOp::powr)
+        } else if 51u32 as i64 == n {
+            Some(CLOp::remainder)
+        } else if 52u32 as i64 == n {
+            Some(CLOp::remquo)
+        } else if 53u32 as i64 == n {
+            Some(CLOp::rint)
+        } else if 54u32 as i64 == n {
+            Some(CLOp::rootn)
+        } else if 55u32 as i64 == n {
+            Some(CLOp::round)
+        } else if 56u32 as i64 == n {
+            Some(CLOp::rsqrt)
+        } else if 57u32 as i64 == n {
+            Some(CLOp::sin)
+        } else if 58u32 as i64 == n {
+            Some(CLOp::sincos)
+        } else if 59u32 as i64 == n {
+            Some(CLOp::sinh)
+        } else if 60u32 as i64 == n {
+            Some(CLOp::sinpi)
+        } else if 61u32 as i64 == n {
+            Some(CLOp::sqrt)
+        } else if 62u32 as i64 == n {
+            Some(CLOp::tan)
+        } else if 63u32 as i64 == n {
+            Some(CLOp::tanh)
+        } else if 64u32 as i64 == n {
+            Some(CLOp::tanpi)
+        } else if 65u32 as i64 == n {
+            Some(CLOp::tgamma)
+        } else if 66u32 as i64 == n {
+            Some(CLOp::trunc)
+        } else if 67u32 as i64 == n {
+            Some(CLOp::half_cos)
+        } else if 68u32 as i64 == n {
+            Some(CLOp::half_divide)
+        } else if 69u32 as i64 == n {
+            Some(CLOp::half_exp)
+        } else if 70u32 as i64 == n {
+            Some(CLOp::half_exp2)
+        } else if 71u32 as i64 == n {
+            Some(CLOp::half_exp10)
+        } else if 72u32 as i64 == n {
+            Some(CLOp::half_log)
+        } else if 73u32 as i64 == n {
+            Some(CLOp::half_log2)
+        } else if 74u32 as i64 == n {
+            Some(CLOp::half_log10)
+        } else if 75u32 as i64 == n {
+            Some(CLOp::half_powr)
+        } else if 76u32 as i64 == n {
+            Some(CLOp::half_recip)
+        } else if 77u32 as i64 == n {
+            Some(CLOp::half_rsqrt)
+        } else if 78u32 as i64 == n {
+            Some(CLOp::half_sin)
+        } else if 79u32 as i64 == n {
+            Some(CLOp::half_sqrt)
+        } else if 80u32 as i64 == n {
+            Some(CLOp::half_tan)
+        } else if 81u32 as i64 == n {
+            Some(CLOp::native_cos)
+        } else if 82u32 as i64 == n {
+            Some(CLOp::native_divide)
+        } else if 83u32 as i64 == n {
+            Some(CLOp::native_exp)
+        } else if 84u32 as i64 == n {
+            Some(CLOp::native_exp2)
+        } else if 85u32 as i64 == n {
+            Some(CLOp::native_exp10)
+        } else if 86u32 as i64 == n {
+            Some(CLOp::native_log)
+        } else if 87u32 as i64 == n {
+            Some(CLOp::native_log2)
+        } else if 88u32 as i64 == n {
+            Some(CLOp::native_log10)
+        } else if 89u32 as i64 == n {
+            Some(CLOp::native_powr)
+        } else if 90u32 as i64 == n {
+            Some(CLOp::native_recip)
+        } else if 91u32 as i64 == n {
+            Some(CLOp::native_rsqrt)
+        } else if 92u32 as i64 == n {
+            Some(CLOp::native_sin)
+        } else if 93u32 as i64 == n {
+            Some(CLOp::native_sqrt)
+        } else if 94u32 as i64 == n {
+            Some(CLOp::native_tan)
+        } else if 141u32 as i64 == n {
+            Some(CLOp::s_abs)
+        } else if 142u32 as i64 == n {
+            Some(CLOp::s_abs_diff)
+        } else if 143u32 as i64 == n {
+            Some(CLOp::s_add_sat)
+        } else if 144u32 as i64 == n {
+            Some(CLOp::u_add_sat)
+        } else if 145u32 as i64 == n {
+            Some(CLOp::s_hadd)
+        } else if 146u32 as i64 == n {
+            Some(CLOp::u_hadd)
+        } else if 147u32 as i64 == n {
+            Some(CLOp::s_rhadd)
+        } else if 148u32 as i64 == n {
+            Some(CLOp::u_rhadd)
+        } else if 149u32 as i64 == n {
+            Some(CLOp::s_clamp)
+        } else if 150u32 as i64 == n {
+            Some(CLOp::u_clamp)
+        } else if 151u32 as i64 == n {
+            Some(CLOp::clz)
+        } else if 152u32 as i64 == n {
+            Some(CLOp::ctz)
+        } else if 153u32 as i64 == n {
+            Some(CLOp::s_mad_hi)
+        } else if 154u32 as i64 == n {
+            Some(CLOp::u_mad_sat)
+        } else if 155u32 as i64 == n {
+            Some(CLOp::s_mad_sat)
+        } else if 156u32 as i64 == n {
+            Some(CLOp::s_max)
+        } else if 157u32 as i64 == n {
+            Some(CLOp::u_max)
+        } else if 158u32 as i64 == n {
+            Some(CLOp::s_min)
+        } else if 159u32 as i64 == n {
+            Some(CLOp::u_min)
+        } else if 160u32 as i64 == n {
+            Some(CLOp::s_mul_hi)
+        } else if 161u32 as i64 == n {
+            Some(CLOp::rotate)
+        } else if 162u32 as i64 == n {
+            Some(CLOp::s_sub_sat)
+        } else if 163u32 as i64 == n {
+            Some(CLOp::u_sub_sat)
+        } else if 164u32 as i64 == n {
+            Some(CLOp::u_upsample)
+        } else if 165u32 as i64 == n {
+            Some(CLOp::s_upsample)
+        } else if 166u32 as i64 == n {
+            Some(CLOp::popcount)
+        } else if 167u32 as i64 == n {
+            Some(CLOp::s_mad24)
+        } else if 168u32 as i64 == n {
+            Some(CLOp::u_mad24)
+        } else if 169u32 as i64 == n {
+            Some(CLOp::s_mul24)
+        } else if 170u32 as i64 == n {
+            Some(CLOp::u_mul24)
+        } else if 201u32 as i64 == n {
+            Some(CLOp::u_abs)
+        } else if 202u32 as i64 == n {
+            Some(CLOp::u_abs_diff)
+        } else if 203u32 as i64 == n {
+            Some(CLOp::u_mul_hi)
+        } else if 204u32 as i64 == n {
+            Some(CLOp::u_mad_hi)
+        } else if 95u32 as i64 == n {
+            Some(CLOp::fclamp)
+        } else if 96u32 as i64 == n {
+            Some(CLOp::degrees)
+        } else if 97u32 as i64 == n {
+            Some(CLOp::fmax_common)
+        } else if 98u32 as i64 == n {
+            Some(CLOp::fmin_common)
+        } else if 99u32 as i64 == n {
+            Some(CLOp::mix)
+        } else if 100u32 as i64 == n {
+            Some(CLOp::radians)
+        } else if 101u32 as i64 == n {
+            Some(CLOp::step)
+        } else if 102u32 as i64 == n {
+            Some(CLOp::smoothstep)
+        } else if 103u32 as i64 == n {
+            Some(CLOp::sign)
+        } else if 104u32 as i64 == n {
+            Some(CLOp::cross)
+        } else if 105u32 as i64 == n {
+            Some(CLOp::distance)
+        } else if 106u32 as i64 == n {
+            Some(CLOp::length)
+        } else if 107u32 as i64 == n {
+            Some(CLOp::normalize)
+        } else if 108u32 as i64 == n {
+            Some(CLOp::fast_distance)
+        } else if 109u32 as i64 == n {
+            Some(CLOp::fast_length)
+        } else if 110u32 as i64 == n {
+            Some(CLOp::fast_normalize)
+        } else if 186u32 as i64 == n {
+            Some(CLOp::bitselect)
+        } else if 187u32 as i64 == n {
+            Some(CLOp::select)
+        } else if 171u32 as i64 == n {
+            Some(CLOp::vloadn)
+        } else if 172u32 as i64 == n {
+            Some(CLOp::vstoren)
+        } else if 173u32 as i64 == n {
+            Some(CLOp::vload_half)
+        } else if 174u32 as i64 == n {
+            Some(CLOp::vload_halfn)
+        } else if 175u32 as i64 == n {
+            Some(CLOp::vstore_half)
+        } else if 176u32 as i64 == n {
+            Some(CLOp::vstore_half_r)
+        } else if 177u32 as i64 == n {
+            Some(CLOp::vstore_halfn)
+        } else if 178u32 as i64 == n {
+            Some(CLOp::vstore_halfn_r)
+        } else if 179u32 as i64 == n {
+            Some(CLOp::vloada_halfn)
+        } else if 180u32 as i64 == n {
+            Some(CLOp::vstorea_halfn)
+        } else if 181u32 as i64 == n {
+            Some(CLOp::vstorea_halfn_r)
+        } else if 182u32 as i64 == n {
+            Some(CLOp::shuffle)
+        } else if 183u32 as i64 == n {
+            Some(CLOp::shuffle2)
+        } else if 184u32 as i64 == n {
+            Some(CLOp::printf)
+        } else if 185u32 as i64 == n {
+            Some(CLOp::prefetch)
+        } else {
+            None
+        }
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
 }

@@ -39,7 +39,7 @@ fn get_spec_link(kind: &str) -> String {
 fn value_enum_attribute() -> TokenStream {
     quote! {
         #[repr(u32)]
-        #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, FromPrimitive, Hash)]
+        #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
     }
 }
 
@@ -68,11 +68,13 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     use std::collections::BTreeMap;
 
     let kind = as_ident(&grammar.kind);
+    let from_i64_var = quote! { n };
 
     // We can have more than one enumerants mapping to the same discriminator.
     // Use associated constants for these aliases.
     let mut seen_discriminator = BTreeMap::new();
     let mut enumerants = vec![];
+    let mut from_prim = vec![];
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
     for e in &grammar.enumerants {
@@ -95,6 +97,8 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
             enumerants.push(quote! { #name = #number });
+            from_prim.push(quote! { if #number as i64 == #from_i64_var { Some(#kind::#name) } });
+
             capability_clauses.entry(&e.capabilities).or_insert_with(Vec::new).push(name);
         }
     }
@@ -125,6 +129,19 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
                 match self {
                     #(#capabilities),*
                 }
+            }
+        }
+
+        impl num_traits::FromPrimitive for #kind {
+            #[allow(trivial_numeric_casts)]
+            fn from_i64(#from_i64_var: i64) -> Option<Self> {
+                #(#from_prim else)* {
+                    None
+                }
+            }
+
+            fn from_u64(n: u64) -> Option<Self> {
+                Self::from_i64(n as i64)
             }
         }
     }
@@ -160,9 +177,17 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         let opcode = inst.opcode;
         quote! { #opname = #opcode }
     });
+
+    let from_i64_var = quote! { n };
+
+    let from_prim = grammar.instructions.iter().map(|inst| {
+        let opname = as_ident(&inst.opname[2..]);
+        let opcode = inst.opcode;
+        quote! { if #opcode as i64 == #from_i64_var { Some(Op::#opname) } }
+    });
     let comment = format!("SPIR-V {} opcodes", get_spec_link("instructions"));
     let attribute = value_enum_attribute();
-
+    
     quote! {
         pub type Word = u32;
         pub const MAGIC_NUMBER: u32 = #magic_number;
@@ -177,6 +202,19 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         pub enum Op {
             #(#opcodes),*
         }
+
+        impl num_traits::FromPrimitive for Op {
+            #[allow(trivial_numeric_casts)]
+            fn from_i64(#from_i64_var: i64) -> Option<Self> {
+                #(#from_prim else)* {
+                    None
+                }
+            }
+
+            fn from_u64(n: u64) -> Option<Self> {
+                Self::from_i64(n as i64)
+            }
+        }
     }
 }
 
@@ -189,6 +227,15 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         let opcode = inst.opcode;
         quote! { #opname = #opcode }
     });
+    
+    let from_i64_var = quote! { n };
+
+    let from_prim = grammar.instructions.iter().map(|inst| {
+        let opname = as_ident(&inst.opname);
+        let opcode = inst.opcode;
+        quote! { if #opcode as i64 == #from_i64_var { Some(GLOp::#opname) } }
+    });
+
     let comment = format!("[GLSL.std.450]({}) extended instruction opcode", GLSL_STD_450_SPEC_LINK);
     let attribute = value_enum_attribute();
 
@@ -197,6 +244,19 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         #attribute
         pub enum GLOp {
             #(#opcodes),*
+        }
+        
+        impl num_traits::FromPrimitive for GLOp {
+            #[allow(trivial_numeric_casts)]
+            fn from_i64(#from_i64_var: i64) -> Option<Self> {
+                #(#from_prim else)* {
+                    None
+                }
+            }
+
+            fn from_u64(n: u64) -> Option<Self> {
+                Self::from_i64(n as i64)
+            }
         }
     }
 }
@@ -210,6 +270,16 @@ pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStre
         let opcode = inst.opcode;
         quote! { #opname = #opcode }
     });
+
+    
+    let from_i64_var = quote! { n };
+
+    let from_prim = grammar.instructions.iter().map(|inst| {
+        let opname = as_ident(&inst.opname);
+        let opcode = inst.opcode;
+        quote! { if #opcode as i64 == #from_i64_var { Some(CLOp::#opname) } }
+    });
+
     let comment = format!("[OpenCL.std]({}) extended instruction opcode", OPENCL_STD_SPEC_LINK);
     let attribute = value_enum_attribute();
 
@@ -218,6 +288,19 @@ pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStre
         #attribute
         pub enum CLOp {
             #(#opcodes),*
+        }
+
+        impl num_traits::FromPrimitive for CLOp {
+            #[allow(trivial_numeric_casts)]
+            fn from_i64(#from_i64_var: i64) -> Option<Self> {
+                #(#from_prim else)* {
+                    None
+                }
+            }
+
+            fn from_u64(n: u64) -> Option<Self> {
+                Self::from_i64(n as i64)
+            }
         }
     }
 }
