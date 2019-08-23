@@ -19,7 +19,9 @@ branches:
 
 before_script:
   - git submodule update --init
+  - rustup component add rustfmt
 
 script:
   - cargo check --verbose
+  - git diff --exit-code
   - cargo test --verbose
