@@ -24,7 +24,8 @@ mod autogen_decoration;
 pub mod autogen_instructions;
 pub mod autogen_ops;
 mod constants;
-pub mod items;
+pub mod module;
+pub mod storage;
 mod types;
 
 /// Error lifting a data representation of an operand into the structured

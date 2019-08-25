@@ -346,12 +346,12 @@ pub fn gen_sr_code_from_instruction_grammar(
         }
     };
     let instructions = quote! {
-        use crate::sr::{items::Token, Type};
+        use crate::sr::{storage::Token, Type};
 
         #( #inst_structs )*
     };
     let ops = quote! {
-        use crate::sr::{items::Token, Type};
+        use crate::sr::{storage::Token, Type};
 
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Terminator {
