@@ -12,23 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::marker::PhantomData;
+
 use std::{
     collections::HashMap,
     hash::BuildHasherDefault,
-    marker::PhantomData,
 };
 
 use fxhash::FxHasher;
-use spirv;
-
-use crate::{
-    dr,
-    sr::{instructions, InstructionError, OperandError},
-    sr::constants::Constant,
-    sr::types::Type,
-};
 
 type FastHashMap<K, V> = HashMap<K, V, BuildHasherDefault<FxHasher>>;
+
 /// An unique index in the storage array that a token points to.
 ///
 /// This type is independent of `spirv::Word`. `spirv::Word` is used in data
@@ -43,6 +37,7 @@ pub struct Token<T> {
     index: Index,
     marker: PhantomData<T>,
 }
+
 impl<T> Clone for Token<T> {
     fn clone(&self) -> Self {
         Token {
@@ -86,7 +81,7 @@ pub struct Storage<T> {
 }
 
 impl<T> Storage<T> {
-    fn new() -> Self {
+    pub(in crate::sr) fn new() -> Self {
         Storage {
             data: Vec::new(),
             lookup: FastHashMap::default(),
@@ -135,33 +130,6 @@ impl<T> std::ops::Index<Token<T>> for Storage<T> {
         &self.data[token.index as usize]
     }
 }
-
-
-/// The context class for SPIR-V structured representation.
-///
-/// This class holds all allocations for types, constants, decorations,
-/// instructions, etc. in structured representation. Thus, those objects
-/// are created using methods of this class. Tokens are returned for the
-/// object to be created, which can then be used to access the real object
-/// using the context again. Tokens are indeed indices into the vectors
-/// of objects inside the context. The context serves as the memory arena.
-#[derive(Debug)]
-pub struct Context {
-    /// All type objects.
-    pub types: Storage<Type>,
-    pub constants: Storage<Constant>,
-}
-
-impl Context {
-    pub fn new() -> Self {
-        Context {
-            types: Storage::new(),
-            constants: Storage::new(),
-        }
-    }
-}
-
-include!("autogen_context.rs");
 
 #[cfg(test)]
 mod tests {

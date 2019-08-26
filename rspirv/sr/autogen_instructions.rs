@@ -16,7 +16,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use crate::sr::{Token, Type};
+use crate::sr::{storage::Token, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Extension {
     pub(in crate::sr) name: String,

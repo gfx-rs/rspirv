@@ -192,7 +192,7 @@ fn main() {
         instructions.ops,
     );
     write_formatted(
-        &autogen_src_dir.join("../rspirv/sr/autogen_context.rs"),
-        instructions.context_logic,
+        &autogen_src_dir.join("../rspirv/sr/autogen_module.rs"),
+        instructions.module_logic,
     );
 }
