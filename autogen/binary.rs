@@ -131,7 +131,7 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>) -> TokenS
     });
 
     quote! {
-        use num::FromPrimitive;
+        use num_traits::FromPrimitive;
 
         impl<'a> Decoder<'a> {
             #(#methods)*
