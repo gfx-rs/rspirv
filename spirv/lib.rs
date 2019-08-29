@@ -25,6 +25,6 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use bitflags::bitflags;
-use num_derive::FromPrimitive;
+use num_traits;
 
 include!("autogen_spirv.rs");
