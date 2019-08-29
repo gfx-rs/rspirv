@@ -43,3 +43,14 @@ The above conventions helps us to have a clean and healthy Git history.
 
 * Code adding new functionalities should have tests.
 * Code adding new functionalities should have documentation for public APIs.
+
+## Licensing
+
+Copyrights are retained by their contributors, no copyright assignment is
+required to contribute to rspirv.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall
+be licensed under the Apache License, Version 2.0, see ([LICENSE](LICENSE) or
+http://www.apache.org/licenses/LICENSE-2.0), without any additional terms or
+conditions.
