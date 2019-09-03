@@ -18,9 +18,31 @@
 
 use crate::sr::{storage::Token, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub enum Branch {
+    Branch {
+        target_label: spirv::Word,
+    },
+    BranchConditional {
+        condition: spirv::Word,
+        true_label: spirv::Word,
+        false_label: spirv::Word,
+        branch_weights: Vec<u32>,
+    },
+    Switch {
+        selector: spirv::Word,
+        default: spirv::Word,
+        target: Vec<(u32, Token<Type>)>,
+    },
+    Return,
+    ReturnValue {
+        value: spirv::Word,
+    },
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Terminator {
-    Kill {},
-    Unreachable {},
+    Branch(Branch),
+    Kill,
+    Unreachable,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Op {
@@ -134,7 +156,7 @@ pub enum Op {
     },
     GroupMemberDecorate {
         decoration_group: spirv::Word,
-        targets: Vec<(spirv::Word, u32)>,
+        targets: Vec<(Token<Type>, u32)>,
     },
     VectorExtractDynamic {
         vector: spirv::Word,
@@ -771,24 +793,6 @@ pub enum Op {
     SelectionMerge {
         merge_block: spirv::Word,
         selection_control: spirv::SelectionControl,
-    },
-    Branch {
-        target_label: spirv::Word,
-    },
-    BranchConditional {
-        condition: spirv::Word,
-        true_label: spirv::Word,
-        false_label: spirv::Word,
-        branch_weights: Vec<u32>,
-    },
-    Switch {
-        selector: spirv::Word,
-        default: spirv::Word,
-        target: Vec<(u32, spirv::Word)>,
-    },
-    Return,
-    ReturnValue {
-        value: spirv::Word,
     },
     LifetimeStart {
         pointer: spirv::Word,
