@@ -1,16 +1,3 @@
-// Copyright 2016 Google Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 #![recursion_limit="128"]
 
 mod binary;
@@ -28,12 +15,12 @@ use std::{
     path::PathBuf,
     process,
 };
-use utils::write_copyright_autogen_comment;
+use utils::write_autogen_comment;
 
 fn write<T: ToString>(path: &PathBuf, contents: T) {
     let mut f = fs::File::create(path)
         .expect(&format!("cannot open file: {:?}", path));
-    write_copyright_autogen_comment(&mut f);
+    write_autogen_comment(&mut f);
     write!(f, "{}", contents.to_string()).unwrap()
 }
 

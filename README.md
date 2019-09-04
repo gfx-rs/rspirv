@@ -193,8 +193,9 @@ representations, ensuring the smooth round-trip.
 Contributions
 -------------
 
-This project is licensed under the [Apache 2](LICENSE) license. Please see
-[CONTRIBUTING](CONTRIBUTING.md) before contributing.
+This project is licensed under the Apache License, Version 2.0
+([LICENSE](LICENSE) or http://www.apache.org/licenses/LICENSE-2.0). 
+Please see [CONTRIBUTING](CONTRIBUTING.md) before contributing.
 
 ### Authors
 
