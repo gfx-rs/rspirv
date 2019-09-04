@@ -29,7 +29,7 @@ impl OperandTokens {
                 let (ty, value) = match operand.name.trim_matches('\'') {
                     "Length" => (
                         quote! { Token<Constant> },
-                        quote! { self.constants.lookup(*value).unwrap() },
+                        quote! { self.constants[value] },
                     ),
                     "Field Types" => (
                         quote! { StructMember },
@@ -37,11 +37,11 @@ impl OperandTokens {
                     ),
                     "Parameter Types" => (
                         quote! { Token<Type> },
-                        quote! { self.types.lookup(*value).unwrap() },
+                        quote! { self.types[value] },
                     ),
                     name if name.ends_with(" Type") => (
                         quote! { Token<Type> },
-                        quote! { self.types.lookup(*value).unwrap() },
+                        quote! { self.types[value] },
                     ),
                     //TODO:
                     //"Condition" => Token<Instruction>,
@@ -52,7 +52,7 @@ impl OperandTokens {
                         quote! { *value },
                         //TODO:
                         //quote! { Token<Type> },
-                        //quote! { self.types.lookup(*value).unwrap() },
+                        //quote! { self.types[value] },
                     ),
                     _ => (
                     	//TODO: proper `Token<>`
@@ -90,14 +90,14 @@ impl OperandTokens {
             ),
             "PairLiteralIntegerIdRef" => (
                 //TODO: Token<BasicBlock>
-                quote! { (u32, Token<Type>) },
-                quote! { (first, Token::new(second)) },
+                quote! { (u32, Token<BasicBlock>) },
+                quote! { (first, self.basic_blocks[&second]) },
                 "LiteralInt32",
                 Some("IdRef"),
             ),
             "PairIdRefLiteralInteger" => (
-                quote! { (Token<Type>, u32) },
-                quote! { (Token::new(first), second) },
+                quote! { (Token<BasicBlock>, u32) },
+                quote! { (self.basic_blocks[&first], second) },
                 "IdRef",
                 Some("LiteralInt32"),
             ),
@@ -225,7 +225,7 @@ pub struct CodeGeneratedFromInstructionGrammar {
     pub types: String,
     pub instructions: String,
     pub ops: String,
-    pub module_logic: String,
+    pub lift_context: String,
 }
 
 const TYPE_PREFIX_LENGTH: usize = 6;
@@ -315,7 +315,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                 inst_structs.push(quote! {
                     #derive
                     pub struct #name_ident {
-                        #( pub(in crate::sr) #field_names: #field_types ),*
+                        #( pub #field_names: #field_types ),*
                     }
                 });
                 let func_name = Ident::new(
@@ -324,7 +324,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                 );
                 lifts.push(quote! {
                     #[allow(unused)] //TODO
-                    pub(in crate::sr) fn #func_name(
+                    pub fn #func_name(
                         &mut self, raw: &dr::Instruction
                     ) -> Result<instructions::#name_ident, InstructionError> {
                         if raw.class.opcode as u32 != #opcode {
@@ -397,7 +397,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
 
     let ops = quote! {
-        use crate::sr::{storage::Token, Type};
+        use crate::sr::{module::BasicBlock, storage::Token, Type};
 
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Branch {
@@ -416,8 +416,8 @@ pub fn gen_sr_code_from_instruction_grammar(
         }
     };
 
-    let module_logic = quote! {
-        impl Module {
+    let lift_context = quote! {
+        impl LiftContext {
             pub fn lift_branch(
                 &mut self, raw: &dr::Instruction
             ) -> Result<ops::Branch, InstructionError> {
@@ -436,7 +436,6 @@ pub fn gen_sr_code_from_instruction_grammar(
                         .map(ops::Terminator::Branch)
                 }
             }
-            //TODO: these are DR-specific and may need a new home
             #( #lifts )*
         }
     };
@@ -445,7 +444,7 @@ pub fn gen_sr_code_from_instruction_grammar(
         types: types.to_string(),
         instructions: instructions.to_string(),
         ops: ops.to_string(),
-        module_logic: module_logic.to_string(),
+        lift_context: lift_context.to_string(),
     }
 }
 

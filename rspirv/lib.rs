@@ -86,5 +86,6 @@ pub mod binary;
 pub mod grammar;
 pub mod dr;
 pub mod sr;
+pub mod lift;
 
 mod utils;

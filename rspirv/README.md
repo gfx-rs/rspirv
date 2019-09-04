@@ -12,6 +12,8 @@ modules:
 * A [data representation][doc-dr] of SPIR-V modules and its loader and builder
 * A structured representation of SPIR-V modules (under developing)
 * SPIR-V [binary][doc-binary] module decoding and parsing functionalities
+* A [lifting infrastructure][doc-lift] for converting data representation into
+  structured representation.
 
 This crate defines a common SPIR-V [data representation][doc-dr] (DR) as the
 medium for various purposes. It also provides a [builder][doc-builder] to
@@ -54,6 +56,7 @@ Please see the [documentation][doc-rspirv] and project's
 [project-readme]: https://github.com/gfx-rs/rspirv/blob/master/README.md
 [doc-grammar]: https://docs.rs/rspirv/*/rspirv/grammar/index.html
 [doc-dr]: https://docs.rs/rspirv/*/rspirv/dr/index.html
+[doc-lift]: https://docs.rs/rspirv/*/rspirv/lift/index.html
 [doc-builder]: https://docs.rs/rspirv/*/rspirv/dr/struct.Builder.html
 [doc-binary]: https://docs.rs/rspirv/*/rspirv/binary/index.html
 [doc-parser]: https://docs.rs/rspirv/*/rspirv/binary/struct.Parser.html
