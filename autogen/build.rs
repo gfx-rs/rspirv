@@ -179,7 +179,7 @@ fn main() {
         instructions.ops,
     );
     write_formatted(
-        &autogen_src_dir.join("../rspirv/sr/autogen_module.rs"),
-        instructions.module_logic,
+        &autogen_src_dir.join("../rspirv/lift/autogen_context.rs"),
+        instructions.lift_context,
     );
 }

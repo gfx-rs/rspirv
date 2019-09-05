@@ -1,8 +1,8 @@
-use std::marker::PhantomData;
-
 use std::{
     collections::HashMap,
+    fmt,
     hash::BuildHasherDefault,
+    marker::PhantomData,
 };
 
 use fxhash::FxHasher;
@@ -12,13 +12,12 @@ type FastHashMap<K, V> = HashMap<K, V, BuildHasherDefault<FxHasher>>;
 /// An unique index in the storage array that a token points to.
 ///
 /// This type is independent of `spirv::Word`. `spirv::Word` is used in data
-// representation. It holds a SPIR-V and refers to that instruction. In
-// structured representation, we use Token to refer to an SPIR-V instruction.
-// Index is an implementation detail to Token.
+/// representation. It holds a SPIR-V and refers to that instruction. In
+/// structured representation, we use Token to refer to an SPIR-V instruction.
+/// Index is an implementation detail to Token.
 type Index = u32;
 
 /// A strongly typed reference to a SPIR-V element.
-#[derive(Debug)]
 pub struct Token<T> {
     index: Index,
     marker: PhantomData<T>,
@@ -39,6 +38,11 @@ impl<T> PartialEq for Token<T> {
     }
 }
 impl<T> Eq for Token<T> {}
+impl<T> fmt::Debug for Token<T> {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        write!(formatter, "Token({})", self.index)
+    }
+}
 
 impl<T> Token<T> {
     #[cfg(test)]
@@ -61,32 +65,13 @@ impl<T> Token<T> {
 pub struct Storage<T> {
     /// Values of this storage.
     data: Vec<T>,
-    /// Reverse lookup table that associates SPIR-V <id> with interal indices
-    /// in the main `data` table.
-    lookup: FastHashMap<spirv::Word, Index>,
 }
 
 impl<T> Storage<T> {
     pub(in crate::sr) fn new() -> Self {
         Storage {
             data: Vec::new(),
-            lookup: FastHashMap::default(),
         }
-    }
-
-    /// Look up a value by the given SPIR-V <id>.
-    pub fn lookup(&mut self, raw_index: spirv::Word) -> Option<Token<T>> {
-        self.lookup.get(&raw_index).cloned().map(Token::new)
-    }
-
-    /// Associates the given value to the given SPIR-V <id> inside this storage
-    /// and returns a token for representing this value.
-    pub fn assign(&mut self, raw_index: spirv::Word, value: T) -> Token<T> {
-        let index = self.data.len() as Index;
-        self.data.push(value);
-        let old = self.lookup.insert(raw_index, index);
-        assert_eq!(None, old);
-        Token::new(index)
     }
 
     /// Adds a new value to the storage, returning a typed token.
@@ -155,22 +140,5 @@ mod tests {
         let t2 = storage.fetch_or_append(std::f64::NAN);
         assert!(t1 != t2);
         assert!(storage[t1] != storage[t2]);
-    }
-
-    #[test]
-    fn lookup_exists() {
-        let mut storage: Storage<f64> = Storage::new();
-        let t1 = storage.assign(2, 0.0);
-        let t2 = storage.append(0.1);
-        assert!(t1 != t2);
-        assert!(storage.lookup(2) == Some(t1));
-        assert!(storage[t1] == 0.0);
-    }
-
-    #[test]
-    fn lookup_not_exists() {
-        let mut storage: Storage<f64> = Storage::new();
-        let _t1 = storage.append(0.1);
-        assert!(storage.lookup(0) == None);
     }
 }

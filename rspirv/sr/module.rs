@@ -1,7 +1,5 @@
 use crate::{
-    dr,
     dr::ModuleHeader,
-    sr::{InstructionError, OperandError},
     sr::constants::Constant,
     sr::instructions,
     sr::ops::{self, Op},
@@ -11,6 +9,7 @@ use crate::{
 
 use spirv;
 
+#[derive(Debug)]
 pub struct EntryPoint {
     pub execution_model: spirv::ExecutionModel,
     pub entry_point: Token<Function>,
@@ -18,6 +17,7 @@ pub struct EntryPoint {
     //pub interface: Vec<spirv::Word>,
 }
 
+#[derive(Debug)]
 pub struct BasicBlock {
    pub terminator: ops::Terminator,
    pub ops: Vec<Op>,
@@ -59,5 +59,3 @@ pub struct Module {
     /// All functions.
     pub functions: Vec<Function>,
 }
-
-include!("autogen_module.rs");

@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use crate::sr::{storage::Token, Type};
+use crate::sr::{module::BasicBlock, storage::Token, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Branch {
     Branch {
@@ -17,7 +17,7 @@ pub enum Branch {
     Switch {
         selector: spirv::Word,
         default: spirv::Word,
-        target: Vec<(u32, Token<Type>)>,
+        target: Vec<(u32, Token<BasicBlock>)>,
     },
     Return,
     ReturnValue {
@@ -142,7 +142,7 @@ pub enum Op {
     },
     GroupMemberDecorate {
         decoration_group: spirv::Word,
-        targets: Vec<(Token<Type>, u32)>,
+        targets: Vec<(Token<BasicBlock>, u32)>,
     },
     VectorExtractDynamic {
         vector: spirv::Word,

@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-impl Module {
+impl LiftContext {
     pub fn lift_branch(&mut self, raw: &dr::Instruction) -> Result<ops::Branch, InstructionError> {
         let mut operands = raw.operands.iter();
         match raw.class.opcode as u32 {
@@ -64,7 +64,7 @@ impl Module {
                         (
                             Some(&dr::Operand::LiteralInt32(first)),
                             Some(&dr::Operand::IdRef(second)),
-                        ) => Some((first, Token::new(second))),
+                        ) => Some((first, self.basic_blocks[&second])),
                         (None, None) => None,
                         _ => Err(OperandError::WrongType)?,
                     } {
@@ -96,7 +96,7 @@ impl Module {
         }
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_extension(
+    pub fn lift_extension(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::Extension, InstructionError> {
@@ -114,7 +114,7 @@ impl Module {
         })
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_ext_inst_import(
+    pub fn lift_ext_inst_import(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::ExtInstImport, InstructionError> {
@@ -132,7 +132,7 @@ impl Module {
         })
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_memory_model(
+    pub fn lift_memory_model(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::MemoryModel, InstructionError> {
@@ -156,7 +156,7 @@ impl Module {
         })
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_entry_point(
+    pub fn lift_entry_point(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::EntryPoint, InstructionError> {
@@ -197,7 +197,7 @@ impl Module {
         })
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_execution_mode(
+    pub fn lift_execution_mode(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::ExecutionMode, InstructionError> {
@@ -221,7 +221,7 @@ impl Module {
         })
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_capability(
+    pub fn lift_capability(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::Capability, InstructionError> {
@@ -239,7 +239,7 @@ impl Module {
         })
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_function(
+    pub fn lift_function(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::Function, InstructionError> {
@@ -255,7 +255,7 @@ impl Module {
             })
             .ok_or(OperandError::Missing)?,
             function_type: (match operands.next() {
-                Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup(*value).unwrap()),
+                Some(&dr::Operand::IdRef(ref value)) => Some(self.types[value]),
                 Some(_) => Err(OperandError::WrongType)?,
                 None => None,
             })
@@ -263,7 +263,7 @@ impl Module {
         })
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_function_parameter(
+    pub fn lift_function_parameter(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::FunctionParameter, InstructionError> {
@@ -273,7 +273,7 @@ impl Module {
         Ok(instructions::FunctionParameter {})
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_function_end(
+    pub fn lift_function_end(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::FunctionEnd, InstructionError> {
@@ -283,7 +283,7 @@ impl Module {
         Ok(instructions::FunctionEnd {})
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_label(
+    pub fn lift_label(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::Label, InstructionError> {
@@ -293,7 +293,7 @@ impl Module {
         Ok(instructions::Label {})
     }
     #[allow(unused)]
-    pub(in crate::sr) fn lift_execution_mode_id(
+    pub fn lift_execution_mode_id(
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<instructions::ExecutionModeId, InstructionError> {

@@ -5,37 +5,37 @@
 use crate::sr::{storage::Token, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Extension {
-    pub(in crate::sr) name: String,
+    pub name: String,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExtInstImport {
-    pub(in crate::sr) name: String,
+    pub name: String,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MemoryModel {
-    pub(in crate::sr) addressing_model: spirv::AddressingModel,
-    pub(in crate::sr) memory_model: spirv::MemoryModel,
+    pub addressing_model: spirv::AddressingModel,
+    pub memory_model: spirv::MemoryModel,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct EntryPoint {
-    pub(in crate::sr) execution_model: spirv::ExecutionModel,
-    pub(in crate::sr) entry_point: spirv::Word,
-    pub(in crate::sr) name: String,
-    pub(in crate::sr) interface: Vec<spirv::Word>,
+    pub execution_model: spirv::ExecutionModel,
+    pub entry_point: spirv::Word,
+    pub name: String,
+    pub interface: Vec<spirv::Word>,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExecutionMode {
-    pub(in crate::sr) entry_point: spirv::Word,
-    pub(in crate::sr) mode: spirv::ExecutionMode,
+    pub entry_point: spirv::Word,
+    pub mode: spirv::ExecutionMode,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Capability {
-    pub(in crate::sr) capability: spirv::Capability,
+    pub capability: spirv::Capability,
 }
 #[derive(Clone, Debug)]
 pub struct Function {
-    pub(in crate::sr) function_control: spirv::FunctionControl,
-    pub(in crate::sr) function_type: Token<Type>,
+    pub function_control: spirv::FunctionControl,
+    pub function_type: Token<Type>,
 }
 #[derive(Clone, Debug)]
 pub struct FunctionParameter {}
@@ -45,6 +45,6 @@ pub struct FunctionEnd {}
 pub struct Label {}
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExecutionModeId {
-    pub(in crate::sr) entry_point: spirv::Word,
-    pub(in crate::sr) mode: spirv::ExecutionMode,
+    pub entry_point: spirv::Word,
+    pub mode: spirv::ExecutionMode,
 }
