@@ -255,7 +255,7 @@ impl LiftContext {
             })
             .ok_or(OperandError::Missing)?,
             function_type: (match operands.next() {
-                Some(&dr::Operand::IdRef(ref value)) => Some(self.types[value]),
+                Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                 Some(_) => Err(OperandError::WrongType)?,
                 None => None,
             })

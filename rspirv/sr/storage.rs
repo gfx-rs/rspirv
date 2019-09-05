@@ -1,13 +1,7 @@
 use std::{
-    collections::HashMap,
     fmt,
-    hash::BuildHasherDefault,
     marker::PhantomData,
 };
-
-use fxhash::FxHasher;
-
-type FastHashMap<K, V> = HashMap<K, V, BuildHasherDefault<FxHasher>>;
 
 /// An unique index in the storage array that a token points to.
 ///
@@ -68,7 +62,7 @@ pub struct Storage<T> {
 }
 
 impl<T> Storage<T> {
-    pub(in crate::sr) fn new() -> Self {
+    pub fn new() -> Self {
         Storage {
             data: Vec::new(),
         }
