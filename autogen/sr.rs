@@ -39,6 +39,11 @@ impl OperandTokens {
                         quote! { Token<Type> },
                         quote! { self.types[value] },
                     ),
+                    // Function type is manually linked by the code.
+                    "Function Type" => (
+                        quote! { spirv::Word },
+                        quote! { *value },
+                    ),
                     name if name.ends_with(" Type") => (
                         quote! { Token<Type> },
                         quote! { self.types[value] },
@@ -89,7 +94,6 @@ impl OperandTokens {
                 None,
             ),
             "PairLiteralIntegerIdRef" => (
-                //TODO: Token<BasicBlock>
                 quote! { (u32, Token<BasicBlock>) },
                 quote! { (first, self.basic_blocks[&second]) },
                 "LiteralInt32",
@@ -391,8 +395,6 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
 
     let instructions = quote! {
-        use crate::sr::{storage::Token, Type};
-
         #( #inst_structs )*
     };
 
