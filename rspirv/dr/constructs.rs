@@ -66,16 +66,16 @@ pub struct Function {
     pub end: Option<Instruction>,
     /// Function parameters.
     pub parameters: Vec<Instruction>,
-    /// Basic blocks in this function.
-    pub basic_blocks: Vec<BasicBlock>,
+    /// Blocks in this function.
+    pub blocks: Vec<Block>,
 }
 
-/// Data representation of a SPIR-V basic block.
+/// Data representation of a SPIR-V block.
 #[derive(Debug, Default)]
-pub struct BasicBlock {
-    /// The label starting this basic block.
+pub struct Block {
+    /// The label starting this block.
     pub label: Option<Instruction>,
-    /// Instructions in this basic block.
+    /// Instructions in this block.
     pub instructions: Vec<Instruction>,
 }
 
@@ -186,15 +186,15 @@ impl Function {
             def: None,
             end: None,
             parameters: vec![],
-            basic_blocks: vec![],
+            blocks: vec![],
         }
     }
 }
 
-impl BasicBlock {
-    /// Creates a new empty `BasicBlock` instance.
+impl Block {
+    /// Creates a new empty `Block` instance.
     pub fn new() -> Self {
-        BasicBlock {
+        Block {
             label: None,
             instructions: vec![],
         }

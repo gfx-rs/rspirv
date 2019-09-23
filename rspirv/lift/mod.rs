@@ -32,10 +32,10 @@ impl Borrow<Token<ops::Op>> for OpInfo {
 }
 
 pub struct LiftContext {
-    //current_basic_block: Option<Token<module::BasicBlock>>,
+    //current_block: Option<Token<module::Block>>,
     //types: LookupMap<Type>,
     //constants: LookupMap<Constant>,
-    basic_blocks: LiftStorage<module::BasicBlock>,
+    blocks: LiftStorage<module::Block>,
     ops: LiftStorage<ops::Op, OpInfo>,
 }
 
@@ -90,7 +90,7 @@ impl LiftContext {
     /// Convert a module from the data representation into structured representation.
     pub fn convert(module: &dr::Module) -> Result<module::Module, ConversionError> {
         let mut context = LiftContext {
-            basic_blocks: LiftStorage::new(),
+            blocks: LiftStorage::new(),
             ops: LiftStorage::new(),
         };
         let mut types = Storage::new();
@@ -106,8 +106,8 @@ impl LiftContext {
             )?;
             //TODO: lift function type instruction
 
-            let mut basic_blocks = Vec::with_capacity(fun.basic_blocks.len());
-            for block in fun.basic_blocks.iter() {
+            let mut blocks = Vec::with_capacity(fun.blocks.len());
+            for block in fun.blocks.iter() {
                 let mut arguments = Vec::new();
                 for inst in &block.instructions {
                     match inst.class.opcode {
@@ -135,9 +135,9 @@ impl LiftContext {
                         .ok_or(ConversionError::MissingTerminator)?
                 )?;
 
-                basic_blocks.push(context.basic_blocks.append_id(
+                blocks.push(context.blocks.append_id(
                     block.label.as_ref().unwrap().result_id.unwrap(),
-                    module::BasicBlock {
+                    module::Block {
                         arguments,
                         ops: Vec::new(),
                         terminator,
@@ -149,7 +149,7 @@ impl LiftContext {
                 control: def.function_control,
                 result: types.append(Type::Void), //TODO: fty.return_type,
                 parameters: Vec::new(),
-                basic_blocks,
+                blocks,
             });
         }
 
@@ -171,14 +171,14 @@ impl LiftContext {
             entry_points,
             types,
             constants,
-            basic_blocks: context.basic_blocks.unwrap(),
+            blocks: context.blocks.unwrap(),
             ops: context.ops.unwrap(),
             functions,
         })
     }
 
     fn lookup_jump(&self, destination: spirv::Word) -> module::Jump {
-        let (_, block) = self.basic_blocks.lookup(destination);
+        let (_, block) = self.blocks.lookup(destination);
         module::Jump {
             block: *block,
             arguments: Vec::new(), //TODO

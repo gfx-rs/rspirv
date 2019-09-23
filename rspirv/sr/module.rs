@@ -17,7 +17,7 @@ pub struct EntryPoint {
 }
 
 #[derive(Debug)]
-pub struct BasicBlock {
+pub struct Block {
     pub arguments: Vec<Token<Type>>,
     pub ops: Vec<Token<Op>>,
     pub terminator: ops::Terminator,
@@ -26,9 +26,9 @@ pub struct BasicBlock {
 /// Jump destination parameters.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Jump {
-    /// The basic block to jump to.
-    pub block: Token<BasicBlock>,
-    /// The argument values corresponding to the basic block arguments.
+    /// The block to jump to.
+    pub block: Token<Block>,
+    /// The argument values corresponding to the block arguments.
     pub arguments: Vec<Token<Op>>,
 }
 
@@ -38,8 +38,8 @@ pub struct Function {
     pub result: Token<Type>,
     /// Function parameters.
     pub parameters: Vec<Token<Type>>,
-    /// Basic blocks in this function.
-    pub basic_blocks: Vec<Token<BasicBlock>>,
+    /// Blocks in this function.
+    pub blocks: Vec<Token<Block>>,
 }
 
 pub struct Module {
@@ -61,8 +61,8 @@ pub struct Module {
     /// All constants.
     pub constants: Storage<Constant>,
 
-    /// All basic blocks.
-    pub basic_blocks: Storage<BasicBlock>,
+    /// All blocks.
+    pub blocks: Storage<Block>,
     /// All operations.
     pub ops: Storage<Op>,
 

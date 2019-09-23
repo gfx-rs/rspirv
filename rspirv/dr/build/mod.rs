@@ -33,16 +33,16 @@ type BuildResult<T> = result::Result<T, Error>;
 ///   `result_id` parameter of the target instruction with the same id.
 ///
 /// Instructions belonging to the module (e.g., `OpDecorate`) can be appended
-/// at any time, no matter that a basic block is currently under construction
-/// or not. Intructions that can appear both in the module and basic block
-/// (e.g., `OpVariable`) will be inserted to the current basic block under
+/// at any time, no matter that a block is currently under construction
+/// or not. Intructions that can appear both in the module and block
+/// (e.g., `OpVariable`) will be inserted to the current block under
 /// construction first, if any.
 ///
 /// # Errors
 ///
 /// Methods in the builder implement little sanity check; only appending
 /// instructions that violates the module structure is guarded. So methods
-/// possibly returning errors are basically those related to function and basic
+/// possibly returning errors are basically those related to function and
 /// block construction (e.g., `OpFunction` and `OpLabel`).
 ///
 /// Errors returned are enumerants related to function structure from the
@@ -68,7 +68,7 @@ type BuildResult<T> = result::Result<T, Error>;
 ///                       spirv::FunctionControl::CONST),
 ///                      voidf)
 ///      .unwrap();
-///     b.begin_basic_block(None).unwrap();
+///     b.begin_block(None).unwrap();
 ///     b.ret().unwrap();
 ///     b.end_function().unwrap();
 ///
@@ -91,7 +91,7 @@ pub struct Builder {
     module: dr::Module,
     next_id: u32,
     function: Option<dr::Function>,
-    basic_block: Option<dr::BasicBlock>,
+    block: Option<dr::Block>,
     version: Option<(u8, u8)>,
 }
 
@@ -102,7 +102,7 @@ impl Builder {
             module: dr::Module::new(),
             next_id: 1,
             function: None,
-            basic_block: None,
+            block: None,
             version: None,
         }
     }
@@ -203,17 +203,17 @@ impl Builder {
         Ok(id)
     }
 
-    /// Begins building of a new basic block.
+    /// Begins building of a new block.
     ///
     /// If `label_id` is `Some(val)`, then `val` will be used as the result
-    /// id for the `OpLabel` instruction begining this basic block; otherwise,
+    /// id for the `OpLabel` instruction begining this block; otherwise,
     /// a unused result id will be automatically assigned.
-    pub fn begin_basic_block(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+    pub fn begin_block(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
         if self.function.is_none() {
-            return Err(Error::DetachedBasicBlock);
+            return Err(Error::DetachedBlock);
         }
-        if self.basic_block.is_some() {
-            return Err(Error::NestedBasicBlock);
+        if self.block.is_some() {
+            return Err(Error::NestedBlock);
         }
 
         let id = match label_id {
@@ -221,7 +221,7 @@ impl Builder {
             None => self.id(),
         };
 
-        let mut bb = dr::BasicBlock::new();
+        let mut bb = dr::Block::new();
         bb.label = Some(dr::Instruction::new(
             spirv::Op::Label,
             None,
@@ -229,18 +229,18 @@ impl Builder {
             vec![],
         ));
 
-        self.basic_block = Some(bb);
+        self.block = Some(bb);
         Ok(id)
     }
 
-    fn end_basic_block(&mut self, inst: dr::Instruction) -> BuildResult<()> {
-        if self.basic_block.is_none() {
+    fn end_block(&mut self, inst: dr::Instruction) -> BuildResult<()> {
+        if self.block.is_none() {
             return Err(Error::MismatchedTerminator);
         }
 
-        self.basic_block.as_mut().unwrap().instructions.push(inst);
-        self.function.as_mut().unwrap().basic_blocks.push(
-            self.basic_block.take().unwrap(),
+        self.block.as_mut().unwrap().instructions.push(inst);
+        self.function.as_mut().unwrap().blocks.push(
+            self.block.take().unwrap(),
         );
         Ok(())
     }
@@ -432,7 +432,7 @@ impl Builder {
     }
 
     /// Appends an OpConstant instruction with the given 32-bit float `value`.
-    /// or the module if no basic block is under construction.
+    /// or the module if no block is under construction.
     pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
@@ -446,7 +446,7 @@ impl Builder {
     }
 
     /// Appends an OpConstant instruction with the given 32-bit integer `value`.
-    /// or the module if no basic block is under construction.
+    /// or the module if no block is under construction.
     pub fn constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
@@ -460,7 +460,7 @@ impl Builder {
     }
 
     /// Appends an OpSpecConstant instruction with the given 32-bit float `value`.
-    /// or the module if no basic block is under construction.
+    /// or the module if no block is under construction.
     pub fn spec_constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
@@ -474,7 +474,7 @@ impl Builder {
     }
 
     /// Appends an OpSpecConstant instruction with the given 32-bit integer `value`.
-    /// or the module if no basic block is under construction.
+    /// or the module if no block is under construction.
     pub fn spec_constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
@@ -487,8 +487,8 @@ impl Builder {
         id
     }
 
-    /// Appends an OpVariable instruction to either the current basic block
-    /// or the module if no basic block is under construction.
+    /// Appends an OpVariable instruction to either the current block
+    /// or the module if no block is under construction.
     pub fn variable(
         &mut self,
         result_type: spirv::Word,
@@ -506,15 +506,15 @@ impl Builder {
         }
         let inst = dr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
 
-        match self.basic_block {
+        match self.block {
             Some(ref mut bb) => bb.instructions.push(inst),
             None => self.module.types_global_values.push(inst),
         }
         id
     }
 
-    /// Appends an OpUndef instruction to either the current basic block
-    /// or the module if no basic block is under construction.
+    /// Appends an OpUndef instruction to either the current block
+    /// or the module if no block is under construction.
     pub fn undef(
         &mut self,
         result_type: spirv::Word,
@@ -526,7 +526,7 @@ impl Builder {
         };
         let inst = dr::Instruction::new(spirv::Op::Undef, Some(result_type), Some(id), vec![]);
 
-        match self.basic_block {
+        match self.block {
             Some(ref mut bb) => bb.instructions.push(inst),
             None => self.module.types_global_values.push(inst),
         }
@@ -816,13 +816,13 @@ mod tests {
         let fid = b.begin_function(float, None, spirv::FunctionControl::NONE, f32ff32).unwrap();
         assert_eq!(4, fid);
 
-        let epid = b.begin_basic_block(None).unwrap(); // Entry block id
+        let epid = b.begin_block(None).unwrap(); // Entry block id
         assert_eq!(5, epid);
         let target1 = b.id();
         assert_eq!(6, target1);
         assert!(b.branch(target1).is_ok());
 
-        let pbid = b.begin_basic_block(Some(target1)).unwrap(); // Phi block id
+        let pbid = b.begin_block(Some(target1)).unwrap(); // Phi block id
         assert_eq!(target1, pbid);
         let target2 = b.id();
         assert_eq!(7, target2);
@@ -840,7 +840,7 @@ mod tests {
         assert_eq!(res_add, fr_add);
         assert!(b.branch(target2).is_ok());
 
-        let exid = b.begin_basic_block(Some(target2)).unwrap(); // Exit block id
+        let exid = b.begin_block(Some(target2)).unwrap(); // Exit block id
         assert_eq!(exid, target2);
         assert!(b.ret_value(c0).is_ok());
 
@@ -884,7 +884,7 @@ mod tests {
 
         let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
         assert_eq!(7, f);
-        let bb = b.begin_basic_block(None).unwrap();
+        let bb = b.begin_block(None).unwrap();
         assert_eq!(8, bb);
         // Local variable
         let v2 = b.variable(ffp, None, spirv::StorageClass::Function, None);
@@ -931,7 +931,7 @@ mod tests {
 
         let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
         assert_eq!(5, f);
-        let bb = b.begin_basic_block(None).unwrap();
+        let bb = b.begin_block(None).unwrap();
         assert_eq!(6, bb);
         // Local undef
         let v2 = b.undef(float, None);

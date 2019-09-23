@@ -42,7 +42,7 @@ impl OperandTokens {
                     ),
                     //TODO:
                     //"Condition" => Token<Instruction>,
-                    //"Default" => Token<BasicBlock>,
+                    //"Default" => Token<Block>,
                     //"Value" => Token<Instruction>,
                     name if name.ends_with(" Label") => (
                         quote! { spirv::Word },

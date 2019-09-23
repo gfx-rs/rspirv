@@ -17,7 +17,7 @@
 //! SPIR-V module; it uses plain vectors to hold data of SPIR-V instructions,
 //! following the instructions' layouts defined in the grammar. DR has little
 //! structure; only bare structures need for representing modules, functions,
-//! and basic blocks are adopted.
+//! and blocks are adopted.
 //!
 //! The structured representation (SR) focuses on presenting the structure
 //! within a SPIR-V module; it tries to links as much information as possible.
@@ -49,7 +49,7 @@
 //!                       spirv::FunctionControl::CONST),
 //!                      voidf)
 //!      .unwrap();
-//!     b.begin_basic_block(None).unwrap();
+//!     b.begin_block(None).unwrap();
 //!     b.ret().unwrap();
 //!     b.end_function().unwrap();
 //!     let module = b.module();
