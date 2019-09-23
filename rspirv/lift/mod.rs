@@ -1,6 +1,9 @@
 //! Infrastructure of lifting the data representation (DR) into structured
 //! representation (SR).
 
+mod storage;
+
+use self::storage::LiftStorage;
 use crate::{
     dr,
     sr::{
@@ -12,30 +15,28 @@ use crate::{
     },
 };
 
-use std::{
-    collections::HashMap,
-    hash::BuildHasherDefault,
-};
-
-use fxhash::FxHasher;
 use spirv;
 
+use std::borrow::Borrow;
 
-/// Reverse lookup table that associates SPIR-V <id> with SR tokens.
-type LookupMap<T> = HashMap<spirv::Word, Token<T>, BuildHasherDefault<FxHasher>>;
 
 struct OpInfo {
-    //op: Token<ops::Op>,
+    op: Token<ops::Op>,
     ty: Option<Token<Type>>,
 }
 
-#[derive(Default)]
+impl Borrow<Token<ops::Op>> for OpInfo {
+    fn borrow(&self) -> &Token<ops::Op> {
+        &self.op
+    }
+}
+
 pub struct LiftContext {
     //current_basic_block: Option<Token<module::BasicBlock>>,
     //types: LookupMap<Type>,
     //constants: LookupMap<Constant>,
-    basic_blocks: LookupMap<module::BasicBlock>,
-    ops: HashMap<spirv::Word, OpInfo, BuildHasherDefault<FxHasher>>,
+    basic_blocks: LiftStorage<module::BasicBlock>,
+    ops: LiftStorage<ops::Op, OpInfo>,
 }
 
 include!("autogen_context.rs");
@@ -88,11 +89,13 @@ impl From<InstructionError> for ConversionError {
 impl LiftContext {
     /// Convert a module from the data representation into structured representation.
     pub fn convert(module: &dr::Module) -> Result<module::Module, ConversionError> {
-        let mut context = LiftContext::default();
+        let mut context = LiftContext {
+            basic_blocks: LiftStorage::new(),
+            ops: LiftStorage::new(),
+        };
         let mut types = Storage::new();
         let constants = Storage::new();
         let mut functions = Vec::new();
-        let ops = Storage::new();
         let entry_points = Vec::new();
 
         for fun in module.functions.iter() {
@@ -111,10 +114,11 @@ impl LiftContext {
                         spirv::Op::Line => {} // skip line decorations
                         spirv::Op::Phi => {
                             match inst.operands[0] {
-                                dr::Operand::IdRef(ref id) => {
-                                    let ty = context.ops[id].ty
-                                        .expect("No return type for Phi source?");
-                                    arguments.push(ty);
+                                dr::Operand::IdRef(id) => {
+                                    let (_, info) = context.ops.lookup(id);
+                                    arguments.push(info.ty
+                                        .expect("No return type for Phi source?")
+                                    );
                                 }
                                 _ => return Err(ConversionError::Instruction(
                                     InstructionError::Operand(OperandError::Missing)
@@ -131,11 +135,14 @@ impl LiftContext {
                         .ok_or(ConversionError::MissingTerminator)?
                 )?;
 
-                basic_blocks.push(module::BasicBlock {
-                    arguments,
-                    ops: Vec::new(),
-                    terminator,
-                });
+                basic_blocks.push(context.basic_blocks.append_id(
+                    block.label.as_ref().unwrap().result_id.unwrap(),
+                    module::BasicBlock {
+                        arguments,
+                        ops: Vec::new(),
+                        terminator,
+                    },
+                ));
             }
 
             functions.push(module::Function {
@@ -164,14 +171,16 @@ impl LiftContext {
             entry_points,
             types,
             constants,
+            basic_blocks: context.basic_blocks.unwrap(),
+            ops: context.ops.unwrap(),
             functions,
-            ops,
         })
     }
 
     fn lookup_jump(&self, destination: spirv::Word) -> module::Jump {
+        let (_, block) = self.basic_blocks.lookup(destination);
         module::Jump {
-            block: self.basic_blocks[&destination],
+            block: *block,
             arguments: Vec::new(), //TODO
         }
     }

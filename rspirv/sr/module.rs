@@ -39,7 +39,7 @@ pub struct Function {
     /// Function parameters.
     pub parameters: Vec<Token<Type>>,
     /// Basic blocks in this function.
-    pub basic_blocks: Vec<BasicBlock>,
+    pub basic_blocks: Vec<Token<BasicBlock>>,
 }
 
 pub struct Module {
@@ -61,8 +61,11 @@ pub struct Module {
     /// All constants.
     pub constants: Storage<Constant>,
 
-    /// All functions.
-    pub functions: Vec<Function>,
+    /// All basic blocks.
+    pub basic_blocks: Storage<BasicBlock>,
     /// All operations.
     pub ops: Storage<Op>,
+
+    /// All functions.
+    pub functions: Vec<Function>,
 }
