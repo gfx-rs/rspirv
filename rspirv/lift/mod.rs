@@ -33,7 +33,7 @@ impl Borrow<Token<ops::Op>> for OpInfo {
 
 pub struct LiftContext {
     //current_block: Option<Token<module::Block>>,
-    //types: LookupMap<Type>,
+    types: LiftStorage<Type>,
     //constants: LookupMap<Constant>,
     blocks: LiftStorage<module::Block>,
     ops: LiftStorage<ops::Op, OpInfo>,
@@ -90,10 +90,10 @@ impl LiftContext {
     /// Convert a module from the data representation into structured representation.
     pub fn convert(module: &dr::Module) -> Result<module::Module, ConversionError> {
         let mut context = LiftContext {
+            types: LiftStorage::new(),
             blocks: LiftStorage::new(),
             ops: LiftStorage::new(),
         };
-        let mut types = Storage::new();
         let constants = Storage::new();
         let mut functions = Vec::new();
         let entry_points = Vec::new();
@@ -147,7 +147,7 @@ impl LiftContext {
 
             functions.push(module::Function {
                 control: def.function_control,
-                result: types.append(Type::Void), //TODO: fty.return_type,
+                result: context.types.append_id(1, Type::Void), //TODO: fty.return_type,
                 parameters: Vec::new(),
                 blocks,
             });
@@ -169,7 +169,7 @@ impl LiftContext {
                 None => return Err(ConversionError::MissingHeader),
             },
             entry_points,
-            types,
+            types: context.types.unwrap(),
             constants,
             blocks: context.blocks.unwrap(),
             ops: context.ops.unwrap(),

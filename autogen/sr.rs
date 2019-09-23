@@ -31,6 +31,14 @@ impl OperandTokens {
                         quote! { Token<Constant> },
                         quote! { self.constants[value] },
                     ),
+                    "Field Types" => (
+                        quote! { StructMember },
+                        quote! { types::StructMember::new(value.clone()) },
+                    ),
+                    "Parameter Types" => (
+                        quote! { Token<Type> },
+                        quote! { *self.types.lookup(*value).1 },
+                    ),
                     // Function type is manually linked by the code.
                     "Function Type" => (
                         quote! { spirv::Word },
@@ -38,7 +46,7 @@ impl OperandTokens {
                     ),
                     name if name.ends_with(" Type") => (
                         quote! { Token<Type> },
-                        quote! { self.types[value] },
+                        quote! { *self.types.lookup(*value).1 },
                     ),
                     //TODO:
                     //"Condition" => Token<Instruction>,
@@ -254,6 +262,7 @@ pub fn gen_sr_code_from_instruction_grammar(
 
     let mut inst_structs = Vec::new();
     let mut op_variants = Vec::new();
+    let mut op_lifts = Vec::new();
     let mut branch_variants = Vec::new();
     let mut branch_lifts = Vec::new();
     let mut terminator_variants = Vec::new();
@@ -392,13 +401,23 @@ pub fn gen_sr_code_from_instruction_grammar(
 
             }
             _ => {
-                op_variants.push(if field_names.is_empty() {
-                    quote!{ #name_ident }
+                if field_names.is_empty() {
+                    op_variants.push(quote!{ #name_ident });
+                    op_lifts.push(quote! {
+                        #opcode => Ok(ops::Op::#name_ident),
+                    });
                 } else {
-                    quote! { #name_ident {
-                        #( #field_names: #field_types ),*
-                    }}
-                });
+                    op_variants.push(quote! {
+                        #name_ident {
+                            #( #field_names: #field_types ),*
+                        }
+                    });
+                    op_lifts.push(quote! {
+                        #opcode => Ok(ops::Op::#name_ident {
+                            #( #field_names: #field_lifts, )*
+                        }),
+                    });
+                }
             }
         }
     }
@@ -452,6 +471,15 @@ pub fn gen_sr_code_from_instruction_grammar(
                     #( #terminator_lifts )*
                     _ => self.lift_branch(raw)
                         .map(ops::Terminator::Branch)
+                }
+            }
+            pub fn lift_op(
+                &mut self, raw: &dr::Instruction
+            ) -> Result<ops::Op, InstructionError> {
+                let mut #iter_ident = raw.operands.iter();
+                match raw.class.opcode as u32 {
+                    #( #op_lifts )*
+                    _ => Err(InstructionError::WrongOpcode),
                 }
             }
             #( #lifts )*
