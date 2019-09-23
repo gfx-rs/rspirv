@@ -3,8 +3,8 @@
 pub use self::autogen_decoration::Decoration;
 pub use self::autogen_instructions as instructions;
 pub use self::autogen_ops as ops;
-pub use self::constants::{Constant};
-pub use self::types::{Type};
+pub use self::constants::Constant;
+pub use self::types::Type;
 
 mod autogen_decoration;
 pub mod autogen_instructions;
