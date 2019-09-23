@@ -69,7 +69,7 @@ impl Disassemble for dr::Instruction {
     }
 }
 
-impl Disassemble for dr::BasicBlock {
+impl Disassemble for dr::Block {
     fn disassemble(&self) -> String {
         let label = self.label
                         .as_ref()
@@ -87,13 +87,13 @@ impl Disassemble for dr::Function {
         if self.parameters.is_empty() {
             format!("{def}\n{blocks}\n{end}",
                     def = def,
-                    blocks = disas_join(&self.basic_blocks, "\n"),
+                    blocks = disas_join(&self.blocks, "\n"),
                     end = end)
         } else {
             format!("{def}\n{params}\n{blocks}\n{end}",
                     def = def,
                     params = disas_join(&self.parameters, "\n"),
-                    blocks = disas_join(&self.basic_blocks, "\n"),
+                    blocks = disas_join(&self.blocks, "\n"),
                     end = end)
         }
     }
@@ -136,7 +136,7 @@ impl Disassemble for dr::Module {
             push!(&mut text,
                   f.def.as_ref().map_or(String::new(), |i| i.disassemble()));
             push!(&mut text, disas_join(&f.parameters, "\n"));
-            for bb in &f.basic_blocks {
+            for bb in &f.blocks {
                 push!(&mut text,
                       bb.label
                         .as_ref()
@@ -244,7 +244,7 @@ mod tests {
                                  spirv::FunctionControl::CONST,
                                  voidfvoid)
                  .unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         b.ret().unwrap();
         b.end_function().unwrap();
@@ -291,7 +291,7 @@ mod tests {
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
-        b.begin_basic_block(None).unwrap();
+        b.begin_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         assert!(b.ext_inst(float32, None, glsl, 6, vec![var]).is_ok());
         b.ret().unwrap();
@@ -328,7 +328,7 @@ mod tests {
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
-        b.begin_basic_block(None).unwrap();
+        b.begin_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
         assert!(b.ext_inst(float32, None, opencl, 15, vec![var]).is_ok());
         b.ret().unwrap();

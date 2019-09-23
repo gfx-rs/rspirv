@@ -13,9 +13,9 @@ pub enum Error {
     UnclosedFunction,
     MismatchedFunctionEnd,
     DetachedFunctionParameter,
-    DetachedBasicBlock,
-    NestedBasicBlock,
-    UnclosedBasicBlock,
+    DetachedBlock,
+    NestedBlock,
+    UnclosedBlock,
     MismatchedTerminator,
     DetachedInstruction,
     WrongOpCapabilityOperand,
@@ -38,11 +38,11 @@ impl Error {
             Error::DetachedFunctionParameter => {
                 "found function OpFunctionParameter not inside function"
             }
-            Error::DetachedBasicBlock => "found basic block not inside function",
-            Error::NestedBasicBlock => "found nested basic block",
-            Error::UnclosedBasicBlock => "found basic block without terminator",
+            Error::DetachedBlock => "found block not inside function",
+            Error::NestedBlock => "found nested block",
+            Error::UnclosedBlock => "found block without terminator",
             Error::MismatchedTerminator => "found mismatched terminator",
-            Error::DetachedInstruction => "found instruction not inside basic block",
+            Error::DetachedInstruction => "found instruction not inside block",
             Error::WrongOpCapabilityOperand => "wrong OpCapability operand",
             Error::WrongOpExtensionOperand => "wrong OpExtension operand",
             Error::WrongOpExtInstImportOperand => "wrong OpExtInstImport operand",
@@ -75,7 +75,7 @@ impl fmt::Display for Error {
 pub struct Loader {
     module: dr::Module,
     function: Option<dr::Function>,
-    block: Option<dr::BasicBlock>,
+    block: Option<dr::Block>,
 }
 
 impl Loader {
@@ -107,7 +107,7 @@ impl binary::Consumer for Loader {
     }
 
     fn finalize(&mut self) -> ParseAction {
-        if_ret_err!(self.block.is_some(), UnclosedBasicBlock);
+        if_ret_err!(self.block.is_some(), UnclosedBlock);
         if_ret_err!(self.function.is_some(), UnclosedFunction);
         ParseAction::Continue
     }
@@ -148,7 +148,7 @@ impl binary::Consumer for Loader {
             }
             spirv::Op::FunctionEnd => {
                 if_ret_err!(self.function.is_none(), MismatchedFunctionEnd);
-                if_ret_err!(self.block.is_some(), UnclosedBasicBlock);
+                if_ret_err!(self.block.is_some(), UnclosedBlock);
                 self.function.as_mut().unwrap().end = Some(inst);
                 self.module.functions.push(self.function.take().unwrap())
             }
@@ -157,9 +157,9 @@ impl binary::Consumer for Loader {
                 self.function.as_mut().unwrap().parameters.push(inst);
             }
             spirv::Op::Label => {
-                if_ret_err!(self.function.is_none(), DetachedBasicBlock);
-                if_ret_err!(self.block.is_some(), NestedBasicBlock);
-                let mut block = dr::BasicBlock::new();
+                if_ret_err!(self.function.is_none(), DetachedBlock);
+                if_ret_err!(self.block.is_some(), NestedBlock);
+                let mut block = dr::Block::new();
                 block.label = Some(inst);
                 self.block = Some(block)
             }
@@ -171,7 +171,7 @@ impl binary::Consumer for Loader {
                 self.function
                     .as_mut()
                     .unwrap()
-                    .basic_blocks
+                    .blocks
                     .push(self.block.take().unwrap())
             }
             _ => {
@@ -275,7 +275,7 @@ mod tests {
         let global = b.variable(float, None, spirv::StorageClass::Input, None);
 
         b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_block(None).unwrap();
         // Local variable
         let local = b.variable(float, None, spirv::StorageClass::Function, None);
         b.ret().unwrap();
@@ -290,8 +290,8 @@ mod tests {
 
         assert_eq!(m.functions.len(), 1);
         let f = &m.functions[0];
-        assert_eq!(f.basic_blocks.len(), 1);
-        let bb = &f.basic_blocks[0];
+        assert_eq!(f.blocks.len(), 1);
+        let bb = &f.blocks[0];
         assert!(bb.instructions.len() > 1);
         let inst = &bb.instructions[0];
         assert_eq!(inst.class.opcode, spirv::Op::Variable);
@@ -310,7 +310,7 @@ mod tests {
         let global = b.undef(float, None);
 
         b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
-        b.begin_basic_block(None).unwrap();
+        b.begin_block(None).unwrap();
         // Local variable
         let local = b.undef(float, None);
         b.ret().unwrap();
@@ -325,8 +325,8 @@ mod tests {
 
         assert_eq!(m.functions.len(), 1);
         let f = &m.functions[0];
-        assert_eq!(f.basic_blocks.len(), 1);
-        let bb = &f.basic_blocks[0];
+        assert_eq!(f.blocks.len(), 1);
+        let bb = &f.blocks[0];
         assert!(bb.instructions.len() > 1);
         let inst = &bb.instructions[0];
         assert_eq!(inst.class.opcode, spirv::Op::Undef);

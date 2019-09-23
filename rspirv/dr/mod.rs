@@ -1,7 +1,7 @@
 //! Data representation of various SPIR-V language constructs.
 //!
 //! By language constructs, I mean general language concepts like module,
-//! function, basic block, instruction, and operands. This is different
+//! function, block, instruction, and operands. This is different
 //! from the "control flow constructs" mentioned in the SPIR-V
 //! [specification](https://goo.gl/YQRcZT).
 //!
@@ -21,7 +21,7 @@
 //! interactively.
 
 pub use self::build::Builder;
-pub use self::constructs::{BasicBlock, Function, Instruction};
+pub use self::constructs::{Block, Function, Instruction};
 pub use self::constructs::{Module, ModuleHeader, Operand};
 pub use self::loader::{Error, load_bytes, load_words, Loader};
 

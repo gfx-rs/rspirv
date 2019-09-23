@@ -301,7 +301,7 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
         let (params, generic) = get_param_list(&inst.operands, false, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);
-        let comment = format!("Appends an Op{} instruction and ends the current basic block.", opcode);
+        let comment = format!("Appends an Op{} instruction and ends the current block.", opcode);
         let name = get_function_name(&inst.opname);
         let init = get_init_list(&inst.operands);
 
@@ -312,7 +312,7 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
                 let mut inst = dr::Instruction::new(
                     spirv::Op::#opcode, None, None, vec![#(#init),*]);
                 #(#extras)*
-                self.end_basic_block(inst)
+                self.end_block(inst)
             }
         }
     });
@@ -326,14 +326,14 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
 pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all normal instructions (instructions must be
-    // in some basic block).
+    // in some block).
     let elements = grammar.instructions.iter().filter(|inst| {
         inst.class.is_none()
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, true, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);
-        let comment = format!("Appends an Op{} instruction to the current basic block.", opcode);
+        let comment = format!("Appends an Op{} instruction to the current block.", opcode);
         let name = get_function_name(&inst.opname);
         let init = get_init_list(&inst.operands);
 
@@ -343,7 +343,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             quote! {
                 #[doc = #comment]
                 pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<spirv::Word> {
-                    if self.basic_block.is_none() {
+                    if self.block.is_none() {
                         return Err(Error::DetachedInstruction);
                     }
                     let _id = match result_id {
@@ -354,7 +354,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
                     #(#extras)*
-                    self.basic_block.as_mut().unwrap().instructions.push(inst);
+                    self.block.as_mut().unwrap().instructions.push(inst);
                     Ok(_id)
                 }
             }
@@ -362,14 +362,14 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             quote! {
                 #[doc = #comment]
                 pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<()> {
-                    if self.basic_block.is_none() {
+                    if self.block.is_none() {
                         return Err(Error::DetachedInstruction);
                     }
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
                     #(#extras)*
-                    self.basic_block.as_mut().unwrap().instructions.push(inst);
+                    self.block.as_mut().unwrap().instructions.push(inst);
                     Ok(())
                 }
             }
