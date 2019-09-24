@@ -29,15 +29,15 @@ impl OperandTokens {
                 let (ty, value) = match operand.name.trim_matches('\'') {
                     "Length" => (
                         quote! { Token<Constant> },
-                        quote! { self.constants[value] },
+                        quote! { self.constants.lookup_token(*value) },
                     ),
                     "Field Types" => (
                         quote! { StructMember },
-                        quote! { types::StructMember::new(value.clone()) },
+                        quote! { StructMember::new(self.types.lookup_token(*value)) },
                     ),
                     "Parameter Types" => (
                         quote! { Token<Type> },
-                        quote! { *self.types.lookup(*value).1 },
+                        quote! { self.types.lookup_token(*value) },
                     ),
                     // Function type is manually linked by the code.
                     "Function Type" => (
@@ -46,7 +46,7 @@ impl OperandTokens {
                     ),
                     name if name.ends_with(" Type") => (
                         quote! { Token<Type> },
-                        quote! { *self.types.lookup(*value).1 },
+                        quote! { self.types.lookup_token(*value) },
                     ),
                     //TODO:
                     //"Condition" => Token<Instruction>,
@@ -64,11 +64,11 @@ impl OperandTokens {
                             match inst.opname.as_str() {
                                 "OpTypeStruct" => Some((
                                     quote! { StructMember },
-                                    quote! { types::StructMember::new(value.clone()) },
+                                    quote! { StructMember::new(self.types.lookup_token(*value)) },
                                 )),
                                 "OpTypeFunction" => Some((
                                     quote! { Token<Type> },
-                                    quote! { self.types[value] },
+                                    quote! { self.types.lookup_token(*value) },
                                 )),
                                 _ => None
                             }
@@ -95,10 +95,16 @@ impl OperandTokens {
                 operand.kind.as_str(),
                 None,
             ),
-            "LiteralInteger" | "LiteralExtInstInteger" => (
+            "LiteralInteger" => (
                 quote! { u32 },
                 quote! { *value },
                 "LiteralInt32",
+                None
+            ),
+            "LiteralExtInstInteger" => (
+                quote! { u32 },
+                quote! { *value },
+                operand.kind.as_str(),
                 None
             ),
             "LiteralSpecConstantOpInteger" => (
@@ -268,6 +274,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut terminator_variants = Vec::new();
     let mut terminator_lifts = Vec::new();
     let mut type_variants = Vec::new();
+    let mut type_lifts = Vec::new();
     let mut lifts = Vec::new();
 
     let iter_ident = &Ident::new(OPERAND_ITER, Span::call_site());
@@ -320,14 +327,23 @@ pub fn gen_sr_code_from_instruction_grammar(
 
         match inst.class {
             Some(structs::Class::Type) => {
-                type_variants.push(if field_names.is_empty() {
-                    quote!{ #type_ident }
+                if field_names.is_empty() {
+                    type_variants.push(quote!{ #type_ident });
+                    type_lifts.push(quote! {
+                        #opcode => Ok(Type::#type_ident),
+                    });
                 } else {
-                    quote! { #type_ident {
-                        #( #field_names: #field_types ),*
-                    }}
-                });
-
+                    type_variants.push(quote! {
+                        #type_ident {
+                            #( #field_names: #field_types ),*
+                        }
+                    });
+                    type_lifts.push(quote! {
+                        #opcode => Ok(Type::#type_ident {
+                            #( #field_names: #field_lifts, )*
+                        }),
+                    });
+                }
             }
             Some(ModeSetting) |
             Some(ExtensionDecl) |
@@ -482,6 +498,16 @@ pub fn gen_sr_code_from_instruction_grammar(
                     _ => Err(InstructionError::WrongOpcode),
                 }
             }
+            pub fn lift_type(
+                &mut self, raw: &dr::Instruction
+            ) -> Result<Type, InstructionError> {
+                let mut #iter_ident = raw.operands.iter();
+                match raw.class.opcode as u32 {
+                    #( #type_lifts )*
+                    _ => Err(InstructionError::WrongOpcode),
+                }
+            }
+
             #( #lifts )*
         }
     };

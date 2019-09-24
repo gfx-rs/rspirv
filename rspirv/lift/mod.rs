@@ -10,8 +10,8 @@ use crate::{
         instructions,
         module,
         ops,
-        storage::{Storage, Token},
-        Type,
+        storage::Token,
+        Constant, StructMember, Type,
     },
 };
 
@@ -34,7 +34,7 @@ impl Borrow<Token<ops::Op>> for OpInfo {
 pub struct LiftContext {
     //current_block: Option<Token<module::Block>>,
     types: LiftStorage<Type>,
-    //constants: LookupMap<Constant>,
+    constants: LiftStorage<Constant>,
     blocks: LiftStorage<module::Block>,
     ops: LiftStorage<ops::Op, OpInfo>,
 }
@@ -47,6 +47,9 @@ include!("autogen_context.rs");
 pub enum OperandError {
     /// Operand has a wrong type.
     WrongType,
+    /// Operand is an integer value that corresponds to a specified enum,
+    /// but the given integer is not known to have a mapping.
+    WrongEnumValue,
     /// Operand is missing from the list.
     Missing,
 }
@@ -91,12 +94,35 @@ impl LiftContext {
     pub fn convert(module: &dr::Module) -> Result<module::Module, ConversionError> {
         let mut context = LiftContext {
             types: LiftStorage::new(),
+            constants: LiftStorage::new(),
             blocks: LiftStorage::new(),
             ops: LiftStorage::new(),
         };
-        let constants = Storage::new();
         let mut functions = Vec::new();
         let entry_points = Vec::new();
+
+        for inst in module.types_global_values.iter() {
+            match context.lift_type(inst) {
+                Ok(value) => {
+                    if let Some(id) = inst.result_id {
+                        context.types.append_id(id, value);
+                    }
+                    continue
+                }
+                Err(InstructionError::WrongOpcode) => {},
+                Err(e) => panic!("Type lift error: {:?}", e),
+            }
+            match context.lift_constant(inst) {
+                Ok(value) => {
+                    if let Some(id) = inst.result_id {
+                        context.constants.append_id(id, value);
+                    }
+                    continue
+                }
+                Err(InstructionError::WrongOpcode) => {},
+                Err(e) => panic!("Constant lift error: {:?}", e),
+            }
+        }
 
         for fun in module.functions.iter() {
             let def = context.lift_function(
@@ -125,7 +151,17 @@ impl LiftContext {
                                 )),
                             };
                         }
-                        _ => break,
+                        _ => {
+                            if let Some(id) = inst.result_id {
+                                let op = context.lift_op(inst)?;
+                                let types = &context.types;
+                                let (token, entry) = context.ops.append(id, op);
+                                entry.insert(OpInfo {
+                                    op: token,
+                                    ty: inst.result_type.map(|ty| *types.lookup(ty).1),
+                                });
+                            }
+                        }
                     }
                 }
 
@@ -170,7 +206,7 @@ impl LiftContext {
             },
             entry_points,
             types: context.types.unwrap(),
-            constants,
+            constants: context.constants.unwrap(),
             blocks: context.blocks.unwrap(),
             ops: context.ops.unwrap(),
             functions,
@@ -182,6 +218,76 @@ impl LiftContext {
         module::Jump {
             block: *block,
             arguments: Vec::new(), //TODO
+        }
+    }
+
+    fn lift_constant(
+        &self, inst: &dr::Instruction
+    ) -> Result<Constant, InstructionError> {
+        match inst.class.opcode {
+            spirv::Op::ConstantTrue => Ok(Constant::Bool(true)),
+            spirv::Op::ConstantFalse => Ok(Constant::Bool(false)),
+            spirv::Op::Constant => {
+                match inst.result_type {
+                    Some(id) => {
+                        let oper = inst.operands
+                            .first()
+                            .ok_or(InstructionError::Operand(OperandError::Missing))?;
+                        let (value, width) = match *self.types.lookup(id).0 {
+                            Type::Int { signedness: 0, width } => match *oper {
+                                dr::Operand::LiteralInt32(v) => (Constant::UInt(v), width),
+                                _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                            },
+                            Type::Int { width, .. } => match *oper {
+                                dr::Operand::LiteralInt32(v) => (Constant::Int(v as i32), width),
+                                _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                            },
+                            Type::Float { width } => match *oper {
+                                dr::Operand::LiteralFloat32(v) => (Constant::Float(v), width),
+                                _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                            },
+                            _ => return Err(InstructionError::MissingResult),
+                        };
+                        if width > 32 {
+                            //log::warn!("Constant <id> {} doesn't fit in 32 bits", id);
+                        }
+                        Ok(value)
+                    }
+                    _ => return Err(InstructionError::MissingResult),
+                }
+            }
+            spirv::Op::ConstantComposite => {
+                let mut vec = Vec::with_capacity(inst.operands.len());
+                for oper in inst.operands.iter() {
+                    let token = match *oper {
+                        dr::Operand::IdRef(v) => self.constants.lookup_token(v),
+                        _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                    };
+                    vec.push(token);
+                }
+                Ok(Constant::Composite(vec))
+            }
+            spirv::Op::ConstantSampler => {
+                if inst.operands.len() < 3 {
+                    return Err(InstructionError::Operand(OperandError::Missing))
+                }
+                Ok(Constant::Sampler {
+                    addressing_mode: match inst.operands[0] {
+                        dr::Operand::SamplerAddressingMode(v) => v,
+                        _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                    },
+                    normalized: match inst.operands[1] {
+                        dr::Operand::LiteralInt32(v) => v != 0,
+                        _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                    },
+                    filter_mode: match inst.operands[2] {
+                        dr::Operand::SamplerFilterMode(v) => v,
+                        _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                    },
+                })
+            }
+            spirv::Op::ConstantNull => Ok(Constant::Null),
+            _ => Err(InstructionError::WrongOpcode)
         }
     }
 }
