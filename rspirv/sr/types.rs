@@ -8,6 +8,15 @@ pub struct StructMember {
     pub decorations: Vec<Decoration>,
 }
 
+impl StructMember {
+    pub fn new(ty: Token<Type>) -> Self {
+        StructMember {
+            token: ty,
+            decorations: Vec::new(),
+        }
+    }
+}
+
 include!("autogen_types.rs");
 
 impl PartialEq for Type {

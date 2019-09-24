@@ -58,4 +58,10 @@ impl<T> LiftStorage<T> {
         entry.insert(token);
         token
     }
+
+    pub(in crate::lift) fn lookup_token(
+        &self, id: spirv::Word
+    ) -> Token<T> {
+        self.lookup[&id]
+    }
 }

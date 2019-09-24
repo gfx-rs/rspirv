@@ -210,7 +210,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 instruction: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralExtInstInteger(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -481,7 +481,7 @@ impl LiftContext {
             }),
             72u32 => Ok(ops::Op::MemberDecorate {
                 structure_type: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*self.types.lookup(*value).1),
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -5390,7 +5390,7 @@ impl LiftContext {
             }),
             5358u32 => Ok(ops::Op::TypeCooperativeMatrixNV {
                 component_type: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*self.types.lookup(*value).1),
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -5696,7 +5696,7 @@ impl LiftContext {
             }),
             5633u32 => Ok(ops::Op::MemberDecorateStringGOOGLE {
                 struct_type: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*self.types.lookup(*value).1),
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -5714,6 +5714,232 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            _ => Err(InstructionError::WrongOpcode),
+        }
+    }
+    pub fn lift_type(&mut self, raw: &dr::Instruction) -> Result<Type, InstructionError> {
+        let mut operands = raw.operands.iter();
+        match raw.class.opcode as u32 {
+            19u32 => Ok(Type::Void),
+            20u32 => Ok(Type::Bool),
+            21u32 => Ok(Type::Int {
+                width: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                signedness: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            22u32 => Ok(Type::Float {
+                width: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            23u32 => Ok(Type::Vector {
+                component_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                component_count: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            24u32 => Ok(Type::Matrix {
+                column_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                column_count: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            25u32 => Ok(Type::Image {
+                sampled_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                dim: (match operands.next() {
+                    Some(&dr::Operand::Dim(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                depth: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                arrayed: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ms: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sampled: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                image_format: (match operands.next() {
+                    Some(&dr::Operand::ImageFormat(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                access_qualifier: match operands.next() {
+                    Some(&dr::Operand::AccessQualifier(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                },
+            }),
+            26u32 => Ok(Type::Sampler),
+            27u32 => Ok(Type::SampledImage {
+                image_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            28u32 => Ok(Type::Array {
+                element_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                length: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => {
+                        Some(self.constants.lookup_token(*value))
+                    }
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            29u32 => Ok(Type::RuntimeArray {
+                element_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            30u32 => Ok(Type::Struct {
+                member_0_type_member_1_type: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => {
+                            Some(StructMember::new(self.types.lookup_token(*value)))
+                        }
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
+            31u32 => Ok(Type::Opaque {
+                type_name: (match operands.next() {
+                    Some(&dr::Operand::LiteralString(ref value)) => Some(value.clone()),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            32u32 => Ok(Type::Pointer {
+                storage_class: (match operands.next() {
+                    Some(&dr::Operand::StorageClass(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            33u32 => Ok(Type::Function {
+                return_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                parameter_0_type_parameter_1_type: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => {
+                            Some(self.types.lookup_token(*value))
+                        }
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
+            34u32 => Ok(Type::Event),
+            35u32 => Ok(Type::DeviceEvent),
+            36u32 => Ok(Type::ReserveId),
+            37u32 => Ok(Type::Queue),
+            38u32 => Ok(Type::Pipe {
+                qualifier: (match operands.next() {
+                    Some(&dr::Operand::AccessQualifier(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            39u32 => Ok(Type::ForwardPointer {
+                pointer_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                storage_class: (match operands.next() {
+                    Some(&dr::Operand::StorageClass(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            322u32 => Ok(Type::PipeStorage),
+            327u32 => Ok(Type::NamedBarrier),
             _ => Err(InstructionError::WrongOpcode),
         }
     }

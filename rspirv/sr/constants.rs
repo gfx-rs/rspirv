@@ -12,7 +12,11 @@ pub enum Constant {
     Float(f32),
     Composite(Vec<Token<Constant>>),
     Null,
-    Sampler(spirv::SamplerAddressingMode, u32, spirv::SamplerFilterMode),
+    Sampler {
+        addressing_mode: spirv::SamplerAddressingMode,
+        normalized: bool,
+        filter_mode: spirv::SamplerFilterMode,
+    },
     SpecBool(bool),
     SpecInt(i32),
     SpecUInt(u32),
