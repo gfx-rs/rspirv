@@ -1,7 +1,5 @@
 use crate::{
-    sr::{
-        storage::{Storage, Token},
-    },
+    sr::storage::{Storage, Token},
 };
 
 use std::{

@@ -19,7 +19,8 @@ use spirv;
 
 use std::borrow::Borrow;
 
-
+/// A structure that we associate an <id> with, containing
+/// both the operation token and the resutl type.
 struct OpInfo {
     op: Token<ops::Op>,
     ty: Option<Token<Type>>,
@@ -143,7 +144,7 @@ impl LiftContext {
                                 dr::Operand::IdRef(id) => {
                                     let (_, info) = context.ops.lookup(id);
                                     arguments.push(info.ty
-                                        .expect("No return type for Phi source?")
+                                        .ok_or(InstructionError::MissingResult)?
                                     );
                                 }
                                 _ => return Err(ConversionError::Instruction(
