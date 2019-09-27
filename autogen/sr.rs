@@ -413,8 +413,8 @@ pub fn gen_sr_code_from_instruction_grammar(
                     });
                 }
             }
+            // Skip OpPhi as explicitly processed
             _ if inst_name == "Phi" => {
-
             }
             _ => {
                 if field_names.is_empty() {
