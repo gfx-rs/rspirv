@@ -38,8 +38,10 @@ pub struct Function {
     pub result: Token<Type>,
     /// Function parameters.
     pub parameters: Vec<Token<Type>>,
-    /// Blocks in this function.
-    pub blocks: Vec<Token<Block>>,
+    /// All blocks in this function.
+    pub blocks: Storage<Block>,
+    /// The first block of this function.
+    pub start_block: Token<Block>,
 }
 
 pub struct Module {
@@ -61,8 +63,6 @@ pub struct Module {
     /// All constants.
     pub constants: Storage<Constant>,
 
-    /// All blocks.
-    pub blocks: Storage<Block>,
     /// All operations.
     pub ops: Storage<Op>,
 

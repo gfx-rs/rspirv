@@ -17,7 +17,7 @@ use crate::{
 
 use spirv;
 
-use std::borrow::Borrow;
+use std::{borrow::Borrow, mem};
 
 /// A structure that we associate an <id> with, containing
 /// both the operation token and the resutl type.
@@ -133,7 +133,6 @@ impl LiftContext {
             )?;
             //TODO: lift function type instruction
 
-            let mut blocks = Vec::with_capacity(fun.blocks.len());
             for block in fun.blocks.iter() {
                 let mut arguments = Vec::new();
                 for inst in &block.instructions {
@@ -172,21 +171,27 @@ impl LiftContext {
                         .ok_or(ConversionError::MissingTerminator)?
                 )?;
 
-                blocks.push(context.blocks.append_id(
+                context.blocks.append_id(
                     block.label.as_ref().unwrap().result_id.unwrap(),
                     module::Block {
                         arguments,
                         ops: Vec::new(),
                         terminator,
                     },
-                ));
+                );
             }
+
+            let start_label = fun.blocks[0].label.as_ref().unwrap().result_id.unwrap();
+            let start_block = context.blocks.lookup_token(start_label);
+            let blocks = mem::replace(&mut context.blocks, LiftStorage::new())
+                .unwrap();
 
             functions.push(module::Function {
                 control: def.function_control,
                 result: context.types.append_id(1, Type::Void), //TODO: fty.return_type,
                 parameters: Vec::new(),
                 blocks,
+                start_block,
             });
         }
 
@@ -208,7 +213,6 @@ impl LiftContext {
             entry_points,
             types: context.types.unwrap(),
             constants: context.constants.unwrap(),
-            blocks: context.blocks.unwrap(),
             ops: context.ops.unwrap(),
             functions,
         })
