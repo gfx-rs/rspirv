@@ -24,11 +24,18 @@ use spirv;
 /// Reverse lookup table that associates SPIR-V <id> with SR tokens.
 type LookupMap<T> = HashMap<spirv::Word, Token<T>, BuildHasherDefault<FxHasher>>;
 
+struct OpInfo {
+    //op: Token<ops::Op>,
+    ty: Option<Token<Type>>,
+}
+
 #[derive(Default)]
 pub struct LiftContext {
+    //current_basic_block: Option<Token<module::BasicBlock>>,
     //types: LookupMap<Type>,
     //constants: LookupMap<Constant>,
     basic_blocks: LookupMap<module::BasicBlock>,
+    ops: HashMap<spirv::Word, OpInfo, BuildHasherDefault<FxHasher>>,
 }
 
 include!("autogen_context.rs");
@@ -48,6 +55,8 @@ pub enum OperandError {
 pub enum InstructionError {
     /// Instruction has a wrong opcode.
     WrongOpcode,
+    /// Instruction is missing a result <id> or type.
+    MissingResult,
     /// One of the operands can not be lifted.
     Operand(OperandError),
 }
@@ -83,6 +92,7 @@ impl LiftContext {
         let mut types = Storage::new();
         let constants = Storage::new();
         let mut functions = Vec::new();
+        let ops = Storage::new();
         let entry_points = Vec::new();
 
         for fun in module.functions.iter() {
@@ -95,13 +105,36 @@ impl LiftContext {
 
             let mut basic_blocks = Vec::with_capacity(fun.basic_blocks.len());
             for block in fun.basic_blocks.iter() {
+                let mut arguments = Vec::new();
+                for inst in &block.instructions {
+                    match inst.class.opcode {
+                        spirv::Op::Line => {} // skip line decorations
+                        spirv::Op::Phi => {
+                            match inst.operands[0] {
+                                dr::Operand::IdRef(ref id) => {
+                                    let ty = context.ops[id].ty
+                                        .expect("No return type for Phi source?");
+                                    arguments.push(ty);
+                                }
+                                _ => return Err(ConversionError::Instruction(
+                                    InstructionError::Operand(OperandError::Missing)
+                                )),
+                            };
+                        }
+                        _ => break,
+                    }
+                }
+
+                let terminator = context.lift_terminator(
+                    block.instructions
+                        .last()
+                        .ok_or(ConversionError::MissingTerminator)?
+                )?;
+
                 basic_blocks.push(module::BasicBlock {
+                    arguments,
                     ops: Vec::new(),
-                    terminator: context.lift_terminator(
-                        block.instructions
-                            .last()
-                            .ok_or(ConversionError::MissingTerminator)?
-                    )?,
+                    terminator,
                 });
             }
 
@@ -132,6 +165,14 @@ impl LiftContext {
             types,
             constants,
             functions,
+            ops,
         })
+    }
+
+    fn lookup_jump(&self, destination: spirv::Word) -> module::Jump {
+        module::Jump {
+            block: self.basic_blocks[&destination],
+            arguments: Vec::new(), //TODO
+        }
     }
 }

@@ -64,7 +64,7 @@ impl LiftContext {
                         (
                             Some(&dr::Operand::LiteralInt32(first)),
                             Some(&dr::Operand::IdRef(second)),
-                        ) => Some((first, self.basic_blocks[&second])),
+                        ) => Some((first, self.lookup_jump(second))),
                         (None, None) => None,
                         _ => Err(OperandError::WrongType)?,
                     } {

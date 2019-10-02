@@ -94,14 +94,14 @@ impl OperandTokens {
                 None,
             ),
             "PairLiteralIntegerIdRef" => (
-                quote! { (u32, Token<BasicBlock>) },
-                quote! { (first, self.basic_blocks[&second]) },
+                quote! { (u32, Jump) },
+                quote! { (first, self.lookup_jump(second)) },
                 "LiteralInt32",
                 Some("IdRef"),
             ),
             "PairIdRefLiteralInteger" => (
-                quote! { (Token<BasicBlock>, u32) },
-                quote! { (self.basic_blocks[&first], second) },
+                quote! { (Jump, u32) },
+                quote! { (self.lookup_jump(first), second) },
                 "IdRef",
                 Some("LiteralInt32"),
             ),
@@ -375,6 +375,9 @@ pub fn gen_sr_code_from_instruction_grammar(
                     });
                 }
             }
+            _ if inst_name == "Phi" => {
+
+            }
             _ => {
                 op_variants.push(if field_names.is_empty() {
                     quote!{ #name_ident }
@@ -399,7 +402,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
 
     let ops = quote! {
-        use crate::sr::{module::BasicBlock, storage::Token, Type};
+        use crate::sr::{module::Jump, storage::Token, Type};
 
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Branch {
