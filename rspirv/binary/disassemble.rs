@@ -81,11 +81,6 @@ impl Disassemble for dr::BasicBlock {
 }
 
 impl Disassemble for dr::Function {
-    /// Disassembles this module and returns the disassembly text.
-    ///
-    /// This method will try to link information together to be wise. E.g.,
-    /// If the extended instruction set is recognized, the symbolic opcode for
-    /// instructions in it will be shown.
     fn disassemble(&self) -> String {
         let def = self.def.as_ref().map_or(String::new(), |i| i.disassemble());
         let end = self.end.as_ref().map_or(String::new(), |i| i.disassemble());
@@ -112,6 +107,11 @@ macro_rules! push {
 }
 
 impl Disassemble for dr::Module {
+    /// Disassembles this module and returns the disassembly text.
+    ///
+    /// This method will try to link information together to be wise. E.g.,
+    /// If the extended instruction set is recognized, the symbolic opcode for
+    /// instructions in it will be shown.
     fn disassemble(&self) -> String {
         let mut ext_inst_set_tracker = tracker::ExtInstSetTracker::new();
         for i in &self.ext_inst_imports {
@@ -129,7 +129,9 @@ impl Disassemble for dr::Module {
                                .join("\n");
         push!(&mut text, global_insts);
 
-        // TODO: Code here is essentially duplicated.
+        // TODO: Code here is essentially duplicated. Ideally we should be able
+        // to call dr::Function and dr::BasicBlock's disassemble() method here
+        // but because of the ExtInstSetTracker, we are not able to directly.
         for f in &self.functions {
             push!(&mut text,
                   f.def.as_ref().map_or(String::new(), |i| i.disassemble()));
