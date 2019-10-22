@@ -51,7 +51,7 @@ pub enum Op {
         name: String,
     },
     MemberName {
-        target_type: spirv::Word,
+        ty: spirv::Word,
         member: u32,
         name: String,
     },
@@ -66,11 +66,11 @@ pub enum Op {
     ExtInst {
         set: spirv::Word,
         instruction: u32,
-        operands: Vec<spirv::Word>,
+        operand_1_operand_2: Vec<spirv::Word>,
     },
     FunctionCall {
         function: spirv::Word,
-        arguments: Vec<spirv::Word>,
+        argument_0_argument_1: Vec<spirv::Word>,
     },
     Variable {
         storage_class: spirv::StorageClass,
@@ -673,24 +673,24 @@ pub enum Op {
     },
     AtomicLoad {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     },
     AtomicStore {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicExchange {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicCompareExchange {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         equal: spirv::Word,
         unequal: spirv::Word,
         value: spirv::Word,
@@ -698,7 +698,7 @@ pub enum Op {
     },
     AtomicCompareExchangeWeak {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         equal: spirv::Word,
         unequal: spirv::Word,
         value: spirv::Word,
@@ -706,65 +706,65 @@ pub enum Op {
     },
     AtomicIIncrement {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     },
     AtomicIDecrement {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     },
     AtomicIAdd {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicISub {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicSMin {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicUMin {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicSMax {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicUMax {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicAnd {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicOr {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
     AtomicXor {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     },
@@ -1081,12 +1081,12 @@ pub enum Op {
     NoLine,
     AtomicFlagTestAndSet {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     },
     AtomicFlagClear {
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     },
     ImageSparseRead {
@@ -1304,6 +1304,21 @@ pub enum Op {
         value: spirv::Word,
         direction: spirv::Word,
     },
+    CopyLogical {
+        operand: spirv::Word,
+    },
+    PtrEqual {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    PtrNotEqual {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    PtrDiff {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
     SubgroupBallotKHR {
         predicate: spirv::Word,
     },
@@ -1372,6 +1387,71 @@ pub enum Op {
         coordinate: spirv::Word,
         fragment_index: spirv::Word,
     },
+    ImageSampleFootprintNV {
+        sampled_image: spirv::Word,
+        coordinate: spirv::Word,
+        granularity: spirv::Word,
+        coarse: spirv::Word,
+        image_operands: Option<spirv::ImageOperands>,
+    },
+    GroupNonUniformPartitionNV {
+        value: spirv::Word,
+    },
+    WritePackedPrimitiveIndices4x8NV {
+        index_offset: spirv::Word,
+        packed_indices: spirv::Word,
+    },
+    ReportIntersectionNV {
+        hit: spirv::Word,
+        hit_kind: spirv::Word,
+    },
+    IgnoreIntersectionNV,
+    TerminateRayNV,
+    TraceNV {
+        accel: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload_id: spirv::Word,
+    },
+    TypeAccelerationStructureNV,
+    ExecuteCallableNV {
+        sbt_index: spirv::Word,
+        callable_data_id: spirv::Word,
+    },
+    TypeCooperativeMatrixNV {
+        component_type: Token<Type>,
+        execution: spirv::Word,
+        rows: spirv::Word,
+        columns: spirv::Word,
+    },
+    CooperativeMatrixLoadNV {
+        pointer: spirv::Word,
+        stride: spirv::Word,
+        column_major: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+    },
+    CooperativeMatrixStoreNV {
+        pointer: spirv::Word,
+        object: spirv::Word,
+        stride: spirv::Word,
+        column_major: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+    },
+    CooperativeMatrixMulAddNV {
+        a: spirv::Word,
+        b: spirv::Word,
+        c: spirv::Word,
+    },
+    CooperativeMatrixLengthNV {
+        ty: spirv::Word,
+    },
     SubgroupShuffleINTEL {
         data: spirv::Word,
         invocation_id: spirv::Word,
@@ -1406,7 +1486,20 @@ pub enum Op {
         coordinate: spirv::Word,
         data: spirv::Word,
     },
-    DecorateStringGOOGLE {
+    SubgroupImageMediaBlockReadINTEL {
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        width: spirv::Word,
+        height: spirv::Word,
+    },
+    SubgroupImageMediaBlockWriteINTEL {
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        width: spirv::Word,
+        height: spirv::Word,
+        data: spirv::Word,
+    },
+    DecorateString {
         target: spirv::Word,
         decoration: spirv::Decoration,
     },
@@ -1414,8 +1507,5 @@ pub enum Op {
         struct_type: Token<Type>,
         member: u32,
         decoration: spirv::Decoration,
-    },
-    GroupNonUniformPartitionNV {
-        value: spirv::Word,
     },
 }

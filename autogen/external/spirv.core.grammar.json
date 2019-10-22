@@ -569,7 +569,6 @@
       "operands" : [
         { "kind" : "IdRef",                            "name" : "'Target'" },
         { "kind" : "IdRef",                            "name" : "'Source'" },
-        { "kind" : "MemoryAccess", "quantifier" : "?" },
         { "kind" : "MemoryAccess", "quantifier" : "?" }
       ]
     },
@@ -580,7 +579,6 @@
         { "kind" : "IdRef",                            "name" : "'Target'" },
         { "kind" : "IdRef",                            "name" : "'Source'" },
         { "kind" : "IdRef",                            "name" : "'Size'" },
-        { "kind" : "MemoryAccess", "quantifier" : "?" },
         { "kind" : "MemoryAccess", "quantifier" : "?" }
       ],
       "capabilities" : [ "Addresses" ]
@@ -4247,16 +4245,6 @@
       "version" : "1.4"
     },
     {
-      "opname" : "OpDecorateStringGOOGLE",
-      "opcode" : 5632,
-      "operands" : [
-        { "kind" : "IdRef",         "name" : "'Target'" },
-        { "kind" : "Decoration" }
-      ],
-      "extensions" : [ "SPV_GOOGLE_decorate_string", "SPV_GOOGLE_hlsl_functionality1" ],
-      "version" : "None"
-    },
-    {
       "class": "Annotation",
       "opname" : "OpMemberDecorateStringGOOGLE",
       "opcode" : 5633,
@@ -4266,18 +4254,6 @@
         { "kind" : "Decoration" }
       ],
       "extensions" : [ "SPV_GOOGLE_decorate_string", "SPV_GOOGLE_hlsl_functionality1" ],
-      "version" : "None"
-    },
-    {
-      "opname" : "OpGroupNonUniformPartitionNV",
-      "opcode" : 5296,
-      "operands" : [
-        { "kind" : "IdResultType" },
-        { "kind" : "IdResult" },
-        { "kind" : "IdRef", "name" : "'Value'" }
-      ],
-      "capabilities" : [ "GroupNonUniformPartitionedNV" ],
-      "extensions" : [ "SPV_NV_shader_subgroup_partitioned" ],
       "version" : "None"
     }
   ],
@@ -6962,6 +6938,36 @@
           "version" : "None"
         },
         {
+          "enumerant" : "DenormPreserve",
+          "value" : 4464,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "DenormFlushToZero",
+          "value" : 4465,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "SignedZeroInfNanPreserve",
+          "value" : 4466,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "RoundingModeRTE",
+          "value" : 4467,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "RoundingModeRTZ",
+          "value" : 4468,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
           "enumerant" : "Float16ImageAMD",
           "value" : 5008,
           "capabilities" : [ "Shader" ],
@@ -7053,6 +7059,13 @@
           "version" : "None"
         },
         {
+          "enumerant" : "MeshShadingNV",
+          "value" : 5266,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_mesh_shader" ],
+          "version" : "None"
+        },
+        {
           "enumerant" : "ShaderNonUniformEXT",
           "value" : 5301,
           "capabilities" : [ "Shader" ],
@@ -7137,6 +7150,13 @@
           "version" : "None"
         },
         {
+          "enumerant" : "RayTracingNV",
+          "value" : 5340,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_ray_tracing" ],
+          "version" : "None"
+        },
+        {
           "enumerant" : "SubgroupShuffleINTEL",
           "value" : 5568,
           "extensions" : [ "SPV_INTEL_subgroups" ],
@@ -7155,6 +7175,30 @@
           "version" : "None"
         },
         {
+          "enumerant" : "SubgroupImageMediaBlockIOINTEL",
+          "value" : 5579,
+          "extensions" : [ "SPV_INTEL_media_block_io" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "SubgroupAvcMotionEstimationINTEL",
+          "value" : 5696,
+          "extensions" : [ "SPV_INTEL_device_side_avc_motion_estimation" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "SubgroupAvcMotionEstimationIntraINTEL",
+          "value" : 5697,
+          "extensions" : [ "SPV_INTEL_device_side_avc_motion_estimation" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "SubgroupAvcMotionEstimationChromaINTEL",
+          "value" : 5698,
+          "extensions" : [ "SPV_INTEL_device_side_avc_motion_estimation" ],
+          "version" : "None"
+        },
+        {
           "enumerant" : "GroupNonUniformPartitionedNV",
           "value" : 5297,
           "extensions" : [ "SPV_NV_shader_subgroup_partitioned" ],
@@ -7170,6 +7214,58 @@
           "enumerant" : "VulkanMemoryModelDeviceScopeKHR",
           "value" : 5346,
           "extensions" : [ "SPV_KHR_vulkan_memory_model" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ImageFootprintNV",
+          "value" : 5282,
+          "extensions" : [ "SPV_NV_shader_image_footprint" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "FragmentBarycentricNV",
+          "value" : 5284,
+          "extensions" : [ "SPV_NV_fragment_shader_barycentric" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ComputeDerivativeGroupQuadsNV",
+          "value" : 5288,
+          "extensions" : [ "SPV_NV_compute_shader_derivatives" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ComputeDerivativeGroupLinearNV",
+          "value" : 5350,
+          "extensions" : [ "SPV_NV_compute_shader_derivatives" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "FragmentDensityEXT",
+          "value" : 5291,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ShadingRateNV",
+          "value" : 5291,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_shading_rate", "SPV_EXT_fragment_invocation_density" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "PhysicalStorageBufferAddressesEXT",
+          "value" : 5347,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_EXT_physical_storage_buffer" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "CooperativeMatrixNV",
+          "value" : 5357,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_cooperative_matrix" ],
           "version" : "None"
         }
       ]

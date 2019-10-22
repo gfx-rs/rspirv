@@ -68,14 +68,14 @@ impl Builder {
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpMemberName instruction."]
-    pub fn member_name<T: Into<String>>(&mut self, target_type: spirv::Word, member: u32, name: T) {
+    pub fn member_name<T: Into<String>>(&mut self, ty: spirv::Word, member: u32, name: T) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MemberName,
             None,
             None,
             vec![
-                dr::Operand::IdRef(target_type),
+                dr::Operand::IdRef(ty),
                 dr::Operand::LiteralInt32(member),
                 dr::Operand::LiteralString(name.into()),
             ],

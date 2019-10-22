@@ -5,7 +5,7 @@
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u8 = 1u8;
-pub const MINOR_VERSION: u8 = 3u8;
+pub const MINOR_VERSION: u8 = 4u8;
 pub const REVISION: u8 = 1u8;
 bitflags! { # [ doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)" ] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)" ] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; } }
@@ -1552,6 +1552,11 @@ pub enum Capability {
     StorageBuffer8BitAccess = 4448u32,
     UniformAndStorageBuffer8BitAccess = 4449u32,
     StoragePushConstant8 = 4450u32,
+    DenormPreserve = 4464u32,
+    DenormFlushToZero = 4465u32,
+    SignedZeroInfNanPreserve = 4466u32,
+    RoundingModeRTE = 4467u32,
+    RoundingModeRTZ = 4468u32,
     Float16ImageAMD = 5008u32,
     ImageGatherBiasLodAMD = 5009u32,
     FragmentMaskAMD = 5010u32,
@@ -1564,6 +1569,7 @@ pub enum Capability {
     ShaderStereoViewNV = 5259u32,
     PerViewAttributesNV = 5260u32,
     FragmentFullyCoveredEXT = 5265u32,
+    MeshShadingNV = 5266u32,
     ShaderNonUniformEXT = 5301u32,
     RuntimeDescriptorArrayEXT = 5302u32,
     InputAttachmentArrayDynamicIndexingEXT = 5303u32,
@@ -1576,18 +1582,31 @@ pub enum Capability {
     InputAttachmentArrayNonUniformIndexingEXT = 5310u32,
     UniformTexelBufferArrayNonUniformIndexingEXT = 5311u32,
     StorageTexelBufferArrayNonUniformIndexingEXT = 5312u32,
+    RayTracingNV = 5340u32,
     SubgroupShuffleINTEL = 5568u32,
     SubgroupBufferBlockIOINTEL = 5569u32,
     SubgroupImageBlockIOINTEL = 5570u32,
+    SubgroupImageMediaBlockIOINTEL = 5579u32,
+    SubgroupAvcMotionEstimationINTEL = 5696u32,
+    SubgroupAvcMotionEstimationIntraINTEL = 5697u32,
+    SubgroupAvcMotionEstimationChromaINTEL = 5698u32,
     GroupNonUniformPartitionedNV = 5297u32,
     VulkanMemoryModelKHR = 5345u32,
     VulkanMemoryModelDeviceScopeKHR = 5346u32,
+    ImageFootprintNV = 5282u32,
+    FragmentBarycentricNV = 5284u32,
+    ComputeDerivativeGroupQuadsNV = 5288u32,
+    ComputeDerivativeGroupLinearNV = 5350u32,
+    FragmentDensityEXT = 5291u32,
+    PhysicalStorageBufferAddressesEXT = 5347u32,
+    CooperativeMatrixNV = 5357u32,
 }
 #[allow(non_upper_case_globals)]
 impl Capability {
     pub const StorageUniformBufferBlock16: Capability = Capability::StorageBuffer16BitAccess;
     pub const StorageUniform16: Capability = Capability::UniformAndStorageBuffer16BitAccess;
     pub const ShaderViewportIndexLayerNV: Capability = Capability::ShaderViewportIndexLayerEXT;
+    pub const ShadingRateNV: Capability = Capability::FragmentDensityEXT;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Capability::Matrix
@@ -1613,12 +1632,25 @@ impl Capability {
             | Capability::SampleMaskPostDepthCoverage
             | Capability::StorageBuffer8BitAccess
             | Capability::StoragePushConstant8
+            | Capability::DenormPreserve
+            | Capability::DenormFlushToZero
+            | Capability::SignedZeroInfNanPreserve
+            | Capability::RoundingModeRTE
+            | Capability::RoundingModeRTZ
             | Capability::SubgroupShuffleINTEL
             | Capability::SubgroupBufferBlockIOINTEL
             | Capability::SubgroupImageBlockIOINTEL
+            | Capability::SubgroupImageMediaBlockIOINTEL
+            | Capability::SubgroupAvcMotionEstimationINTEL
+            | Capability::SubgroupAvcMotionEstimationIntraINTEL
+            | Capability::SubgroupAvcMotionEstimationChromaINTEL
             | Capability::GroupNonUniformPartitionedNV
             | Capability::VulkanMemoryModelKHR
-            | Capability::VulkanMemoryModelDeviceScopeKHR => &[],
+            | Capability::VulkanMemoryModelDeviceScopeKHR
+            | Capability::ImageFootprintNV
+            | Capability::FragmentBarycentricNV
+            | Capability::ComputeDerivativeGroupQuadsNV
+            | Capability::ComputeDerivativeGroupLinearNV => &[],
             Capability::GenericPointer => &[Capability::Addresses],
             Capability::SubgroupDispatch => &[Capability::DeviceEnqueue],
             Capability::GeometryPointSize
@@ -1697,8 +1729,13 @@ impl Capability {
             | Capability::StencilExportEXT
             | Capability::ImageReadWriteLodAMD
             | Capability::FragmentFullyCoveredEXT
+            | Capability::MeshShadingNV
             | Capability::ShaderNonUniformEXT
-            | Capability::RuntimeDescriptorArrayEXT => &[Capability::Shader],
+            | Capability::RuntimeDescriptorArrayEXT
+            | Capability::RayTracingNV
+            | Capability::FragmentDensityEXT
+            | Capability::PhysicalStorageBufferAddressesEXT
+            | Capability::CooperativeMatrixNV => &[Capability::Shader],
             Capability::UniformBufferArrayNonUniformIndexingEXT
             | Capability::SampledImageArrayNonUniformIndexingEXT
             | Capability::StorageBufferArrayNonUniformIndexingEXT
@@ -1804,6 +1841,11 @@ impl num_traits::FromPrimitive for Capability {
             4448u32 => Capability::StorageBuffer8BitAccess,
             4449u32 => Capability::UniformAndStorageBuffer8BitAccess,
             4450u32 => Capability::StoragePushConstant8,
+            4464u32 => Capability::DenormPreserve,
+            4465u32 => Capability::DenormFlushToZero,
+            4466u32 => Capability::SignedZeroInfNanPreserve,
+            4467u32 => Capability::RoundingModeRTE,
+            4468u32 => Capability::RoundingModeRTZ,
             5008u32 => Capability::Float16ImageAMD,
             5009u32 => Capability::ImageGatherBiasLodAMD,
             5010u32 => Capability::FragmentMaskAMD,
@@ -1816,6 +1858,7 @@ impl num_traits::FromPrimitive for Capability {
             5259u32 => Capability::ShaderStereoViewNV,
             5260u32 => Capability::PerViewAttributesNV,
             5265u32 => Capability::FragmentFullyCoveredEXT,
+            5266u32 => Capability::MeshShadingNV,
             5301u32 => Capability::ShaderNonUniformEXT,
             5302u32 => Capability::RuntimeDescriptorArrayEXT,
             5303u32 => Capability::InputAttachmentArrayDynamicIndexingEXT,
@@ -1828,12 +1871,24 @@ impl num_traits::FromPrimitive for Capability {
             5310u32 => Capability::InputAttachmentArrayNonUniformIndexingEXT,
             5311u32 => Capability::UniformTexelBufferArrayNonUniformIndexingEXT,
             5312u32 => Capability::StorageTexelBufferArrayNonUniformIndexingEXT,
+            5340u32 => Capability::RayTracingNV,
             5568u32 => Capability::SubgroupShuffleINTEL,
             5569u32 => Capability::SubgroupBufferBlockIOINTEL,
             5570u32 => Capability::SubgroupImageBlockIOINTEL,
+            5579u32 => Capability::SubgroupImageMediaBlockIOINTEL,
+            5696u32 => Capability::SubgroupAvcMotionEstimationINTEL,
+            5697u32 => Capability::SubgroupAvcMotionEstimationIntraINTEL,
+            5698u32 => Capability::SubgroupAvcMotionEstimationChromaINTEL,
             5297u32 => Capability::GroupNonUniformPartitionedNV,
             5345u32 => Capability::VulkanMemoryModelKHR,
             5346u32 => Capability::VulkanMemoryModelDeviceScopeKHR,
+            5282u32 => Capability::ImageFootprintNV,
+            5284u32 => Capability::FragmentBarycentricNV,
+            5288u32 => Capability::ComputeDerivativeGroupQuadsNV,
+            5350u32 => Capability::ComputeDerivativeGroupLinearNV,
+            5291u32 => Capability::FragmentDensityEXT,
+            5347u32 => Capability::PhysicalStorageBufferAddressesEXT,
+            5357u32 => Capability::CooperativeMatrixNV,
             _ => return None,
         })
     }
@@ -2185,6 +2240,10 @@ pub enum Op {
     GroupNonUniformLogicalXor = 364u32,
     GroupNonUniformQuadBroadcast = 365u32,
     GroupNonUniformQuadSwap = 366u32,
+    CopyLogical = 400u32,
+    PtrEqual = 401u32,
+    PtrNotEqual = 402u32,
+    PtrDiff = 403u32,
     SubgroupBallotKHR = 4421u32,
     SubgroupFirstInvocationKHR = 4422u32,
     SubgroupAllKHR = 4428u32,
@@ -2201,6 +2260,20 @@ pub enum Op {
     GroupSMaxNonUniformAMD = 5007u32,
     FragmentMaskFetchAMD = 5011u32,
     FragmentFetchAMD = 5012u32,
+    ImageSampleFootprintNV = 5283u32,
+    GroupNonUniformPartitionNV = 5296u32,
+    WritePackedPrimitiveIndices4x8NV = 5299u32,
+    ReportIntersectionNV = 5334u32,
+    IgnoreIntersectionNV = 5335u32,
+    TerminateRayNV = 5336u32,
+    TraceNV = 5337u32,
+    TypeAccelerationStructureNV = 5341u32,
+    ExecuteCallableNV = 5344u32,
+    TypeCooperativeMatrixNV = 5358u32,
+    CooperativeMatrixLoadNV = 5359u32,
+    CooperativeMatrixStoreNV = 5360u32,
+    CooperativeMatrixMulAddNV = 5361u32,
+    CooperativeMatrixLengthNV = 5362u32,
     SubgroupShuffleINTEL = 5571u32,
     SubgroupShuffleDownINTEL = 5572u32,
     SubgroupShuffleUpINTEL = 5573u32,
@@ -2209,9 +2282,10 @@ pub enum Op {
     SubgroupBlockWriteINTEL = 5576u32,
     SubgroupImageBlockReadINTEL = 5577u32,
     SubgroupImageBlockWriteINTEL = 5578u32,
-    DecorateStringGOOGLE = 5632u32,
+    SubgroupImageMediaBlockReadINTEL = 5580u32,
+    SubgroupImageMediaBlockWriteINTEL = 5581u32,
+    DecorateString = 5632u32,
     MemberDecorateStringGOOGLE = 5633u32,
-    GroupNonUniformPartitionNV = 5296u32,
 }
 impl num_traits::FromPrimitive for Op {
     #[allow(trivial_numeric_casts)]
@@ -2557,6 +2631,10 @@ impl num_traits::FromPrimitive for Op {
             364u32 => Op::GroupNonUniformLogicalXor,
             365u32 => Op::GroupNonUniformQuadBroadcast,
             366u32 => Op::GroupNonUniformQuadSwap,
+            400u32 => Op::CopyLogical,
+            401u32 => Op::PtrEqual,
+            402u32 => Op::PtrNotEqual,
+            403u32 => Op::PtrDiff,
             4421u32 => Op::SubgroupBallotKHR,
             4422u32 => Op::SubgroupFirstInvocationKHR,
             4428u32 => Op::SubgroupAllKHR,
@@ -2573,6 +2651,20 @@ impl num_traits::FromPrimitive for Op {
             5007u32 => Op::GroupSMaxNonUniformAMD,
             5011u32 => Op::FragmentMaskFetchAMD,
             5012u32 => Op::FragmentFetchAMD,
+            5283u32 => Op::ImageSampleFootprintNV,
+            5296u32 => Op::GroupNonUniformPartitionNV,
+            5299u32 => Op::WritePackedPrimitiveIndices4x8NV,
+            5334u32 => Op::ReportIntersectionNV,
+            5335u32 => Op::IgnoreIntersectionNV,
+            5336u32 => Op::TerminateRayNV,
+            5337u32 => Op::TraceNV,
+            5341u32 => Op::TypeAccelerationStructureNV,
+            5344u32 => Op::ExecuteCallableNV,
+            5358u32 => Op::TypeCooperativeMatrixNV,
+            5359u32 => Op::CooperativeMatrixLoadNV,
+            5360u32 => Op::CooperativeMatrixStoreNV,
+            5361u32 => Op::CooperativeMatrixMulAddNV,
+            5362u32 => Op::CooperativeMatrixLengthNV,
             5571u32 => Op::SubgroupShuffleINTEL,
             5572u32 => Op::SubgroupShuffleDownINTEL,
             5573u32 => Op::SubgroupShuffleUpINTEL,
@@ -2581,9 +2673,10 @@ impl num_traits::FromPrimitive for Op {
             5576u32 => Op::SubgroupBlockWriteINTEL,
             5577u32 => Op::SubgroupImageBlockReadINTEL,
             5578u32 => Op::SubgroupImageBlockWriteINTEL,
-            5632u32 => Op::DecorateStringGOOGLE,
+            5580u32 => Op::SubgroupImageMediaBlockReadINTEL,
+            5581u32 => Op::SubgroupImageMediaBlockWriteINTEL,
+            5632u32 => Op::DecorateString,
             5633u32 => Op::MemberDecorateStringGOOGLE,
-            5296u32 => Op::GroupNonUniformPartitionNV,
             _ => return None,
         })
     }
