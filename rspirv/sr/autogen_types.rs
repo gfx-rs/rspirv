@@ -43,7 +43,7 @@ pub enum Type {
         element_type: Token<Type>,
     },
     Struct {
-        member_0_type_member_1_type: Vec<spirv::Word>,
+        member_0_type_member_1_type: Vec<StructMember>,
     },
     Opaque {
         type_name: String,
@@ -54,7 +54,7 @@ pub enum Type {
     },
     Function {
         return_type: Token<Type>,
-        parameter_0_type_parameter_1_type: Vec<spirv::Word>,
+        parameter_0_type_parameter_1_type: Vec<Token<Type>>,
     },
     Event,
     DeviceEvent,
