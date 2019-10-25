@@ -28,7 +28,7 @@ Rust.
 Documentation
 -------------
 
-The current implementation supports SPIR-V 1.3 (Revision 4).
+The current implementation supports SPIR-V 1.4 (Revision 1).
 
 Multiple crates are published from this project:
 
