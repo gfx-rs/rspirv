@@ -20,7 +20,7 @@ struct OperandTokens {
 }
 
 impl OperandTokens {
-    fn new(operand: &structs::Operand) -> Self {
+    fn new(operand: &structs::Operand, inst: Option<&structs::Instruction>) -> Self {
         let name = get_param_name(operand);
         let iter = Ident::new(OPERAND_ITER, Span::call_site());
 
@@ -30,14 +30,6 @@ impl OperandTokens {
                     "Length" => (
                         quote! { Token<Constant> },
                         quote! { self.constants[value] },
-                    ),
-                    "Field Types" => (
-                        quote! { StructMember },
-                        quote! { types::StructMember::new(value.clone()) },
-                    ),
-                    "Parameter Types" => (
-                        quote! { Token<Type> },
-                        quote! { self.types[value] },
                     ),
                     // Function type is manually linked by the code.
                     "Function Type" => (
@@ -59,11 +51,32 @@ impl OperandTokens {
                         //quote! { Token<Type> },
                         //quote! { self.types[value] },
                     ),
-                    _ => (
-                    	//TODO: proper `Token<>`
-                        quote! { spirv::Word },
-                        quote! { *value },
-                    ),
+                    _ => {
+                        let special_case = if let Some(inst) = inst {
+                            match inst.opname.as_str() {
+                                "OpTypeStruct" => Some((
+                                    quote! { StructMember },
+                                    quote! { types::StructMember::new(value.clone()) },
+                                )),
+                                "OpTypeFunction" => Some((
+                                    quote! { Token<Type> },
+                                    quote! { self.types[value] },
+                                )),
+                                _ => None
+                            }
+                        } else { None };
+
+                        if let Some(special_case) = special_case {
+                            special_case
+                        }
+                        else {
+                            (
+                                //TODO: proper `Token<>`
+                                quote! { spirv::Word },
+                                quote! { *value },
+                            )
+                        }
+                    },
                 };
                 (ty, value, operand.kind.as_str(), None)
             },
@@ -198,7 +211,7 @@ pub fn gen_sr_code_from_operand_kind_grammar(
             let types: Vec<_> = enumerant
                 .parameters
                 .iter()
-                .map(|p| OperandTokens::new(p).quantified_type)
+                .map(|p| OperandTokens::new(p, None).quantified_type)
                 .collect();
             let params = if types.is_empty() {
                 quote!{}
@@ -280,7 +293,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             if operand.kind.starts_with("IdResult") {
                 continue
             }
-            let tokens = OperandTokens::new(operand);
+            let tokens = OperandTokens::new(operand, Some(&inst));
             field_names.push(tokens.name);
             field_types.push(tokens.quantified_type);
             field_lifts.push(tokens.lift_expression);

@@ -43,18 +43,18 @@ pub enum Type {
         element_type: Token<Type>,
     },
     Struct {
-        field_types: Vec<StructMember>,
+        member_0_type_member_1_type: Vec<StructMember>,
     },
     Opaque {
         type_name: String,
     },
     Pointer {
         storage_class: spirv::StorageClass,
-        pointee_type: Token<Type>,
+        ty: spirv::Word,
     },
     Function {
         return_type: Token<Type>,
-        parameter_types: Vec<Token<Type>>,
+        parameter_0_type_parameter_1_type: Vec<Token<Type>>,
     },
     Event,
     DeviceEvent,

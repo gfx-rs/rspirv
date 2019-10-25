@@ -170,7 +170,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(TypePipe, [Pipes], [(IdResult, One), (AccessQualifier, One)]),
     inst!(
         TypeForwardPointer,
-        [Addresses],
+        [Addresses, PhysicalStorageBufferAddressesEXT],
         [(IdRef, One), (StorageClass, One)]
     ),
     inst!(ConstantTrue, [], [(IdResultType, One), (IdResult, One)]),
@@ -329,7 +329,12 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         PtrAccessChain,
-        [Addresses, VariablePointers, VariablePointersStorageBuffer],
+        [
+            Addresses,
+            VariablePointers,
+            VariablePointersStorageBuffer,
+            PhysicalStorageBufferAddressesEXT
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -695,7 +700,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         ConvertPtrToU,
-        [Addresses],
+        [Addresses, PhysicalStorageBufferAddressesEXT],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
@@ -710,7 +715,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         ConvertUToPtr,
-        [Addresses],
+        [Addresses, PhysicalStorageBufferAddressesEXT],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
@@ -2551,7 +2556,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformIAdd,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2563,7 +2572,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformFAdd,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2575,7 +2588,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformIMul,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2587,7 +2604,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformFMul,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2599,7 +2620,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformSMin,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2611,7 +2636,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformUMin,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2623,7 +2652,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformFMin,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2635,7 +2668,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformSMax,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2647,7 +2684,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformUMax,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2659,7 +2700,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformFMax,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2671,7 +2716,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformBitwiseAnd,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2683,7 +2732,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformBitwiseOr,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2695,7 +2748,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformBitwiseXor,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2707,7 +2764,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformLogicalAnd,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2719,7 +2780,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformLogicalOr,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2731,7 +2796,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         GroupNonUniformLogicalXor,
-        [GroupNonUniformArithmetic, GroupNonUniformClustered],
+        [
+            GroupNonUniformArithmetic,
+            GroupNonUniformClustered,
+            GroupNonUniformPartitionedNV
+        ],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -2759,6 +2828,41 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdResultType, One),
             (IdResult, One),
             (IdScope, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        CopyLogical,
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        PtrEqual,
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        PtrNotEqual,
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        PtrDiff,
+        [Addresses, VariablePointers, VariablePointersStorageBuffer],
+        [
+            (IdResultType, One),
+            (IdResult, One),
             (IdRef, One),
             (IdRef, One)
         ]
@@ -2908,6 +3012,118 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        ImageSampleFootprintNV,
+        [ImageFootprintNV],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (ImageOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        GroupNonUniformPartitionNV,
+        [GroupNonUniformPartitionedNV],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        WritePackedPrimitiveIndices4x8NV,
+        [MeshShadingNV],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        ReportIntersectionNV,
+        [RayTracingNV],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(IgnoreIntersectionNV, [RayTracingNV], []),
+    inst!(TerminateRayNV, [RayTracingNV], []),
+    inst!(
+        TraceNV,
+        [RayTracingNV],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        TypeAccelerationStructureNV,
+        [RayTracingNV],
+        [(IdResult, One)]
+    ),
+    inst!(
+        ExecuteCallableNV,
+        [RayTracingNV],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        TypeCooperativeMatrixNV,
+        [CooperativeMatrixNV],
+        [
+            (IdResult, One),
+            (IdRef, One),
+            (IdScope, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixLoadNV,
+        [CooperativeMatrixNV],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixStoreNV,
+        [CooperativeMatrixNV],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixMulAddNV,
+        [CooperativeMatrixNV],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixLengthNV,
+        [CooperativeMatrixNV],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
         SubgroupShuffleINTEL,
         [SubgroupShuffleINTEL],
         [
@@ -2974,15 +3190,33 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [SubgroupImageBlockIOINTEL],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    inst!(DecorateStringGOOGLE, [], [(IdRef, One), (Decoration, One)]),
+    inst!(
+        SubgroupImageMediaBlockReadINTEL,
+        [SubgroupImageMediaBlockIOINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupImageMediaBlockWriteINTEL,
+        [SubgroupImageMediaBlockIOINTEL],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(DecorateString, [], [(IdRef, One), (Decoration, One)]),
     inst!(
         MemberDecorateStringGOOGLE,
         [],
         [(IdRef, One), (LiteralInteger, One), (Decoration, One)]
-    ),
-    inst!(
-        GroupNonUniformPartitionNV,
-        [GroupNonUniformPartitionedNV],
-        [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
 ];

@@ -21,7 +21,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         set: spirv::Word,
         instruction: u32,
-        operands: T,
+        operand_1_operand_2: T,
     ) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
@@ -40,7 +40,7 @@ impl Builder {
                 dr::Operand::LiteralExtInstInteger(instruction),
             ],
         );
-        for v in operands.as_ref() {
+        for v in operand_1_operand_2.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -52,7 +52,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         function: spirv::Word,
-        arguments: T,
+        argument_0_argument_1: T,
     ) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
@@ -68,7 +68,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(function)],
         );
-        for v in arguments.as_ref() {
+        for v in argument_0_argument_1.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
         self.basic_block.as_mut().unwrap().instructions.push(inst);
@@ -3913,7 +3913,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
@@ -3930,7 +3930,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
@@ -3941,7 +3941,7 @@ impl Builder {
     pub fn atomic_store(
         &mut self,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<()> {
@@ -3955,7 +3955,7 @@ impl Builder {
             None,
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -3969,7 +3969,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -3987,7 +3987,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4001,7 +4001,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         equal: spirv::Word,
         unequal: spirv::Word,
         value: spirv::Word,
@@ -4021,7 +4021,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(equal),
                 dr::Operand::IdMemorySemantics(unequal),
                 dr::Operand::IdRef(value),
@@ -4037,7 +4037,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         equal: spirv::Word,
         unequal: spirv::Word,
         value: spirv::Word,
@@ -4057,7 +4057,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(equal),
                 dr::Operand::IdMemorySemantics(unequal),
                 dr::Operand::IdRef(value),
@@ -4073,7 +4073,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
@@ -4090,7 +4090,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
@@ -4103,7 +4103,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
@@ -4120,7 +4120,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
@@ -4133,7 +4133,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4151,7 +4151,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4165,7 +4165,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4183,7 +4183,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4197,7 +4197,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4215,7 +4215,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4229,7 +4229,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4247,7 +4247,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4261,7 +4261,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4279,7 +4279,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4293,7 +4293,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4311,7 +4311,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4325,7 +4325,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4343,7 +4343,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4357,7 +4357,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4375,7 +4375,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4389,7 +4389,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
@@ -4407,7 +4407,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
                 dr::Operand::IdRef(value),
             ],
@@ -4420,7 +4420,7 @@ impl Builder {
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
-        value_label_pairs: T,
+        variable_parent: T,
     ) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
@@ -4431,7 +4431,7 @@ impl Builder {
         };
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(_id), vec![]);
-        for v in value_label_pairs.as_ref() {
+        for v in variable_parent.as_ref() {
             inst.operands.push(dr::Operand::IdRef(v.0));
             inst.operands.push(dr::Operand::IdRef(v.1));
         }
@@ -6159,7 +6159,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
         if self.basic_block.is_none() {
@@ -6176,7 +6176,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
@@ -6187,7 +6187,7 @@ impl Builder {
     pub fn atomic_flag_clear(
         &mut self,
         pointer: spirv::Word,
-        scope: spirv::Word,
+        memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
         if self.basic_block.is_none() {
@@ -6200,7 +6200,7 @@ impl Builder {
             None,
             vec![
                 dr::Operand::IdRef(pointer),
-                dr::Operand::IdScope(scope),
+                dr::Operand::IdScope(memory),
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
@@ -7464,6 +7464,105 @@ impl Builder {
         self.basic_block.as_mut().unwrap().instructions.push(inst);
         Ok(_id)
     }
+    #[doc = "Appends an OpCopyLogical instruction to the current basic block."]
+    pub fn copy_logical(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        operand: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CopyLogical,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(operand)],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpPtrEqual instruction to the current basic block."]
+    pub fn ptr_equal(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::PtrEqual,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpPtrNotEqual instruction to the current basic block."]
+    pub fn ptr_not_equal(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::PtrNotEqual,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpPtrDiff instruction to the current basic block."]
+    pub fn ptr_diff(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::PtrDiff,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
     #[doc = "Appends an OpSubgroupBallotKHR instruction to the current basic block."]
     pub fn subgroup_ballot_khr(
         &mut self,
@@ -7904,6 +8003,363 @@ impl Builder {
         self.basic_block.as_mut().unwrap().instructions.push(inst);
         Ok(_id)
     }
+    #[doc = "Appends an OpImageSampleFootprintNV instruction to the current basic block."]
+    pub fn image_sample_footprint_nv<T: AsRef<[dr::Operand]>>(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        sampled_image: spirv::Word,
+        coordinate: spirv::Word,
+        granularity: spirv::Word,
+        coarse: spirv::Word,
+        image_operands: Option<spirv::ImageOperands>,
+        additional_params: T,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageSampleFootprintNV,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(sampled_image),
+                dr::Operand::IdRef(coordinate),
+                dr::Operand::IdRef(granularity),
+                dr::Operand::IdRef(coarse),
+            ],
+        );
+        if let Some(v) = image_operands {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+        }
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current basic block."]
+    pub fn group_non_uniform_partition_nv(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupNonUniformPartitionNV,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(value)],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpWritePackedPrimitiveIndices4x8NV instruction to the current basic block."]
+    pub fn write_packed_primitive_indices4x8_nv(
+        &mut self,
+        index_offset: spirv::Word,
+        packed_indices: spirv::Word,
+    ) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::WritePackedPrimitiveIndices4x8NV,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(index_offset),
+                dr::Operand::IdRef(packed_indices),
+            ],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpReportIntersectionNV instruction to the current basic block."]
+    pub fn report_intersection_nv(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit: spirv::Word,
+        hit_kind: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReportIntersectionNV,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpIgnoreIntersectionNV instruction to the current basic block."]
+    pub fn ignore_intersection_nv(&mut self) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionNV, None, None, vec![]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpTerminateRayNV instruction to the current basic block."]
+    pub fn terminate_ray_nv(&mut self) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::TerminateRayNV, None, None, vec![]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpTraceNV instruction to the current basic block."]
+    pub fn trace_nv(
+        &mut self,
+        accel: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload_id: spirv::Word,
+    ) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TraceNV,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(accel),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(payload_id),
+            ],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpTypeAccelerationStructureNV instruction to the current basic block."]
+    pub fn type_acceleration_structure_nv(
+        &mut self,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst =
+            dr::Instruction::new(spirv::Op::TypeAccelerationStructureNV, None, None, vec![]);
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpExecuteCallableNV instruction to the current basic block."]
+    pub fn execute_callable_nv(
+        &mut self,
+        sbt_index: spirv::Word,
+        callable_data_id: spirv::Word,
+    ) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ExecuteCallableNV,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(sbt_index),
+                dr::Operand::IdRef(callable_data_id),
+            ],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpTypeCooperativeMatrixNV instruction to the current basic block."]
+    pub fn type_cooperative_matrix_nv(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        component_type: spirv::Word,
+        execution: spirv::Word,
+        rows: spirv::Word,
+        columns: spirv::Word,
+    ) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeCooperativeMatrixNV,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(component_type),
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdRef(rows),
+                dr::Operand::IdRef(columns),
+            ],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpCooperativeMatrixLoadNV instruction to the current basic block."]
+    pub fn cooperative_matrix_load_nv<T: AsRef<[dr::Operand]>>(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        pointer: spirv::Word,
+        stride: spirv::Word,
+        column_major: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        additional_params: T,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CooperativeMatrixLoadNV,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(pointer),
+                dr::Operand::IdRef(stride),
+                dr::Operand::IdRef(column_major),
+            ],
+        );
+        if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpCooperativeMatrixStoreNV instruction to the current basic block."]
+    pub fn cooperative_matrix_store_nv<T: AsRef<[dr::Operand]>>(
+        &mut self,
+        pointer: spirv::Word,
+        object: spirv::Word,
+        stride: spirv::Word,
+        column_major: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        additional_params: T,
+    ) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CooperativeMatrixStoreNV,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(pointer),
+                dr::Operand::IdRef(object),
+                dr::Operand::IdRef(stride),
+                dr::Operand::IdRef(column_major),
+            ],
+        );
+        if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
+    }
+    #[doc = "Appends an OpCooperativeMatrixMulAddNV instruction to the current basic block."]
+    pub fn cooperative_matrix_mul_add_nv(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        a: spirv::Word,
+        b: spirv::Word,
+        c: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CooperativeMatrixMulAddNV,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(a),
+                dr::Operand::IdRef(b),
+                dr::Operand::IdRef(c),
+            ],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpCooperativeMatrixLengthNV instruction to the current basic block."]
+    pub fn cooperative_matrix_length_nv(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        ty: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CooperativeMatrixLengthNV,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(ty)],
+        );
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
     #[doc = "Appends an OpSubgroupShuffleINTEL instruction to the current basic block."]
     pub fn subgroup_shuffle_intel(
         &mut self,
@@ -8106,28 +8562,56 @@ impl Builder {
         self.basic_block.as_mut().unwrap().instructions.push(inst);
         Ok(())
     }
-    #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current basic block."]
-    pub fn group_non_uniform_partition_nv(
+    #[doc = "Appends an OpSubgroupImageMediaBlockWriteINTEL instruction to the current basic block."]
+    pub fn subgroup_image_media_block_write_intel(
         &mut self,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        value: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        width: spirv::Word,
+        height: spirv::Word,
+        data: spirv::Word,
+    ) -> BuildResult<()> {
         if self.basic_block.is_none() {
             return Err(Error::DetachedInstruction);
         }
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
-            spirv::Op::GroupNonUniformPartitionNV,
-            Some(result_type),
-            Some(_id),
-            vec![dr::Operand::IdRef(value)],
+            spirv::Op::SubgroupImageMediaBlockWriteINTEL,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(image),
+                dr::Operand::IdRef(coordinate),
+                dr::Operand::IdRef(width),
+                dr::Operand::IdRef(height),
+                dr::Operand::IdRef(data),
+            ],
         );
         self.basic_block.as_mut().unwrap().instructions.push(inst);
-        Ok(_id)
+        Ok(())
+    }
+    #[doc = "Appends an OpDecorateString instruction to the current basic block."]
+    pub fn decorate_string<T: AsRef<[dr::Operand]>>(
+        &mut self,
+        target: spirv::Word,
+        decoration: spirv::Decoration,
+        additional_params: T,
+    ) -> BuildResult<()> {
+        if self.basic_block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::DecorateString,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(target),
+                dr::Operand::Decoration(decoration),
+            ],
+        );
+        inst.operands.extend_from_slice(additional_params.as_ref());
+        self.basic_block.as_mut().unwrap().instructions.push(inst);
+        Ok(())
     }
 }

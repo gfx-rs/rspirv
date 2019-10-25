@@ -165,7 +165,10 @@ impl Builder {
         id
     }
     #[doc = "Appends an OpTypeStruct instruction and returns the result id."]
-    pub fn type_struct<T: AsRef<[spirv::Word]>>(&mut self, field_types: T) -> spirv::Word {
+    pub fn type_struct<T: AsRef<[spirv::Word]>>(
+        &mut self,
+        member_0_type_member_1_type: T,
+    ) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(dr::Instruction::new(
             spirv::Op::TypeStruct,
@@ -173,7 +176,7 @@ impl Builder {
             Some(id),
             vec![],
         ));
-        for v in field_types.as_ref() {
+        for v in member_0_type_member_1_type.as_ref() {
             self.module
                 .types_global_values
                 .last_mut()
@@ -187,7 +190,7 @@ impl Builder {
     pub fn type_function<T: AsRef<[spirv::Word]>>(
         &mut self,
         return_type: spirv::Word,
-        parameter_types: T,
+        parameter_0_type_parameter_1_type: T,
     ) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(dr::Instruction::new(
@@ -196,7 +199,7 @@ impl Builder {
             Some(id),
             vec![dr::Operand::IdRef(return_type)],
         ));
-        for v in parameter_types.as_ref() {
+        for v in parameter_0_type_parameter_1_type.as_ref() {
             self.module
                 .types_global_values
                 .last_mut()

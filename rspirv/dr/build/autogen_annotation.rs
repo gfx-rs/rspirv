@@ -102,24 +102,27 @@ impl Builder {
         inst.operands.extend_from_slice(additional_params.as_ref());
         self.module.annotations.push(inst);
     }
-    #[doc = "Appends an OpDecorateStringGOOGLE instruction."]
-    pub fn decorate_string_google<T: AsRef<[dr::Operand]>>(
+    #[doc = "Appends an OpSubgroupImageMediaBlockReadINTEL instruction."]
+    pub fn subgroup_image_media_block_read_intel(
         &mut self,
-        target: spirv::Word,
-        decoration: spirv::Decoration,
-        additional_params: T,
+        result_type: spirv::Word,
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        width: spirv::Word,
+        height: spirv::Word,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
-            spirv::Op::DecorateStringGOOGLE,
+            spirv::Op::SubgroupImageMediaBlockReadINTEL,
             None,
             None,
             vec![
-                dr::Operand::IdRef(target),
-                dr::Operand::Decoration(decoration),
+                dr::Operand::IdRef(image),
+                dr::Operand::IdRef(coordinate),
+                dr::Operand::IdRef(width),
+                dr::Operand::IdRef(height),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpMemberDecorateStringGOOGLE instruction."]

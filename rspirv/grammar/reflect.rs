@@ -36,7 +36,7 @@ pub fn is_annotation(opcode: spirv::Op) -> bool {
         spirv::Op::DecorationGroup |
         spirv::Op::GroupDecorate |
         spirv::Op::GroupMemberDecorate |
-        spirv::Op::DecorateStringGOOGLE |
+        spirv::Op::DecorateString |
         spirv::Op::MemberDecorateStringGOOGLE => true,
         _ => false,
     }

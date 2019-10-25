@@ -26,7 +26,7 @@
   ],
   "magic_number" : "0x07230203",
   "major_version" : 1,
-  "minor_version" : 3,
+  "minor_version" : 4,
   "revision" : 1,
   "instructions" : [
     {
@@ -83,7 +83,7 @@
       "opname" : "OpMemberName",
       "opcode" : 6,
       "operands" : [
-        { "kind" : "IdRef",          "name" : "'TargetType'" },
+        { "kind" : "IdRef",          "name" : "'Type'" },
         { "kind" : "LiteralInteger", "name" : "'Member'" },
         { "kind" : "LiteralString",  "name" : "'Name'" }
       ]
@@ -132,7 +132,7 @@
         { "kind" : "IdResult" },
         { "kind" : "IdRef",                                     "name" : "'Set'" },
         { "kind" : "LiteralExtInstInteger",                     "name" : "'Instruction'" },
-        { "kind" : "IdRef",                 "quantifier" : "*", "name" : "Operands" }
+        { "kind" : "IdRef",                 "quantifier" : "*", "name" : "'Operand 1', +\n'Operand 2', +\n..." }
       ]
     },
     {
@@ -287,7 +287,7 @@
       "opcode" : 30,
       "operands" : [
         { "kind" : "IdResult" },
-        { "kind" : "IdRef",    "quantifier" : "*", "name" : "Field Types" }
+        { "kind" : "IdRef",    "quantifier" : "*", "name" : "'Member 0 type', +\n'member 1 type', +\n..." }
       ]
     },
     {
@@ -307,7 +307,7 @@
       "operands" : [
         { "kind" : "IdResult" },
         { "kind" : "StorageClass" },
-        { "kind" : "IdRef",        "name" : "Pointee Type" }
+        { "kind" : "IdRef",        "name" : "'Type'" }
       ]
     },
     {
@@ -317,7 +317,7 @@
       "operands" : [
         { "kind" : "IdResult" },
         { "kind" : "IdRef",                        "name" : "'Return Type'" },
-        { "kind" : "IdRef",    "quantifier" : "*", "name" : "Parameter Types" }
+        { "kind" : "IdRef",    "quantifier" : "*", "name" : "'Parameter 0 Type', +\n'Parameter 1 Type', +\n..." }
       ]
     },
     {
@@ -374,7 +374,10 @@
         { "kind" : "IdRef",        "name" : "'Pointer Type'" },
         { "kind" : "StorageClass" }
       ],
-      "capabilities" : [ "Addresses" ]
+      "capabilities" : [
+        "Addresses",
+        "PhysicalStorageBufferAddressesEXT"
+      ]
     },
     {
       "class": "Constant",
@@ -516,7 +519,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",                            "name" : "'Function'" },
-        { "kind" : "IdRef",        "quantifier" : "*", "name" : "Arguments" }
+        { "kind" : "IdRef",        "quantifier" : "*", "name" : "'Argument 0', +\n'Argument 1', +\n..." }
       ]
     },
     {
@@ -613,7 +616,8 @@
       "capabilities" : [
         "Addresses",
         "VariablePointers",
-        "VariablePointersStorageBuffer"
+        "VariablePointersStorageBuffer",
+        "PhysicalStorageBufferAddressesEXT"
       ]
     },
     {
@@ -1103,7 +1107,10 @@
         { "kind" : "IdResult" },
         { "kind" : "IdRef",        "name" : "'Pointer'" }
       ],
-      "capabilities" : [ "Addresses" ]
+      "capabilities" : [
+        "Addresses",
+        "PhysicalStorageBufferAddressesEXT"
+      ]
     },
     {
       "opname" : "OpSatConvertSToU",
@@ -1133,7 +1140,10 @@
         { "kind" : "IdResult" },
         { "kind" : "IdRef",        "name" : "'Integer Value'" }
       ],
-      "capabilities" : [ "Addresses" ]
+      "capabilities" : [
+        "Addresses",
+        "PhysicalStorageBufferAddressesEXT"
+      ]
     },
     {
       "opname" : "OpPtrCastToGeneric",
@@ -2092,7 +2102,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" }
       ]
     },
@@ -2101,7 +2111,7 @@
       "opcode" : 228,
       "operands" : [
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2113,7 +2123,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2125,7 +2135,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Equal'" },
         { "kind" : "IdMemorySemantics", "name" : "'Unequal'" },
         { "kind" : "IdRef",             "name" : "'Value'" },
@@ -2139,13 +2149,14 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Equal'" },
         { "kind" : "IdMemorySemantics", "name" : "'Unequal'" },
         { "kind" : "IdRef",             "name" : "'Value'" },
         { "kind" : "IdRef",             "name" : "'Comparator'" }
       ],
-      "capabilities" : [ "Kernel" ]
+      "capabilities" : [ "Kernel" ],
+      "lastVersion" : "1.3"
     },
     {
       "opname" : "OpAtomicIIncrement",
@@ -2154,7 +2165,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" }
       ]
     },
@@ -2165,7 +2176,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" }
       ]
     },
@@ -2176,7 +2187,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2188,7 +2199,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2200,7 +2211,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2212,7 +2223,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2224,7 +2235,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2236,7 +2247,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2248,7 +2259,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2260,7 +2271,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2272,7 +2283,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" },
         { "kind" : "IdRef",             "name" : "'Value'" }
       ]
@@ -2283,7 +2294,7 @@
       "operands" : [
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
-        { "kind" : "PairIdRefIdRef", "quantifier" : "*", "name" : "ValueLabelPairs" }
+        { "kind" : "PairIdRefIdRef", "quantifier" : "*", "name" : "'Variable, Parent, ...'" }
       ]
     },
     {
@@ -3053,7 +3064,7 @@
         { "kind" : "IdResultType" },
         { "kind" : "IdResult" },
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" }
       ],
       "capabilities" : [ "Kernel" ]
@@ -3063,7 +3074,7 @@
       "opcode" : 319,
       "operands" : [
         { "kind" : "IdRef",             "name" : "'Pointer'" },
-        { "kind" : "IdScope",           "name" : "'Scope'" },
+        { "kind" : "IdScope",           "name" : "'Memory'" },
         { "kind" : "IdMemorySemantics", "name" : "'Semantics'" }
       ],
       "capabilities" : [ "Kernel" ]
@@ -3426,7 +3437,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3440,7 +3451,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3454,7 +3465,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3468,7 +3479,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3482,7 +3493,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3496,7 +3507,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3510,7 +3521,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3524,7 +3535,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3538,7 +3549,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3552,7 +3563,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3566,7 +3577,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3580,7 +3591,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3594,7 +3605,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3608,7 +3619,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3622,7 +3633,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3636,7 +3647,7 @@
         { "kind" : "IdRef", "name" : "'Value'" },
         { "kind" : "IdRef", "name" : "'ClusterSize'", "quantifier" : "?" }
       ],
-      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered" ],
+      "capabilities" : [ "GroupNonUniformArithmetic", "GroupNonUniformClustered", "GroupNonUniformPartitionedNV" ],
       "version" : "1.3"
     },
     {
@@ -3664,6 +3675,50 @@
       ],
       "capabilities" : [ "GroupNonUniformQuad" ],
       "version" : "1.3"
+    },
+    {
+      "opname" : "OpCopyLogical",
+      "opcode" : 400,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",        "name" : "'Operand'" }
+      ],
+      "version" : "1.4"
+    },
+    {
+      "opname" : "OpPtrEqual",
+      "opcode" : 401,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",        "name" : "'Operand 1'" },
+        { "kind" : "IdRef",        "name" : "'Operand 2'" }
+      ],
+      "version" : "1.4"
+    },
+    {
+      "opname" : "OpPtrNotEqual",
+      "opcode" : 402,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",        "name" : "'Operand 1'" },
+        { "kind" : "IdRef",        "name" : "'Operand 2'" }
+      ],
+      "version" : "1.4"
+    },
+    {
+      "opname" : "OpPtrDiff",
+      "opcode" : 403,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",        "name" : "'Operand 1'" },
+        { "kind" : "IdRef",        "name" : "'Operand 2'" }
+      ],
+      "capabilities" : [ "Addresses", "VariablePointers", "VariablePointersStorageBuffer" ],
+      "version" : "1.4"
     },
     {
       "opname" : "OpSubgroupBallotKHR",
@@ -3884,6 +3939,180 @@
       "version" : "None"
     },
     {
+      "opname" : "OpImageSampleFootprintNV",
+      "opcode" : 5283,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Sampled Image'" },
+        { "kind" : "IdRef", "name" : "'Coordinate'" },
+        { "kind" : "IdRef", "name" : "'Granularity'" },
+        { "kind" : "IdRef", "name" : "'Coarse'" },
+        { "kind" : "ImageOperands", "quantifier" : "?" }
+      ],
+      "capabilities" : [ "ImageFootprintNV" ],
+      "extensions" : [ "SPV_NV_shader_image_footprint" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpGroupNonUniformPartitionNV",
+      "opcode" : 5296,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Value'" }
+      ],
+      "capabilities" : [ "GroupNonUniformPartitionedNV" ],
+      "extensions" : [ "SPV_NV_shader_subgroup_partitioned" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpWritePackedPrimitiveIndices4x8NV",
+      "opcode" : 5299,
+      "operands" : [
+        { "kind" : "IdRef", "name" : "'Index Offset'" },
+        { "kind" : "IdRef", "name" : "'Packed Indices'" }
+      ],
+      "capabilities" : [ "MeshShadingNV" ],
+      "extensions" : [ "SPV_NV_mesh_shader" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpReportIntersectionNV",
+      "opcode" : 5334,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Hit'" },
+        { "kind" : "IdRef", "name" : "'HitKind'" }
+      ],
+      "capabilities" : [ "RayTracingNV" ],
+      "extensions" : [ "SPV_NV_ray_tracing" ]
+    },
+    {
+      "opname" : "OpIgnoreIntersectionNV",
+      "opcode" : 5335,
+
+      "capabilities" : [ "RayTracingNV" ],
+      "extensions" : [ "SPV_NV_ray_tracing" ]
+    },
+    {
+      "opname" : "OpTerminateRayNV",
+      "opcode" : 5336,
+
+      "capabilities" : [ "RayTracingNV" ],
+      "extensions" : [ "SPV_NV_ray_tracing" ]
+    },
+    {
+      "opname" : "OpTraceNV",
+      "opcode" : 5337,
+      "operands" : [
+
+        { "kind" : "IdRef", "name" : "'Accel'" },
+        { "kind" : "IdRef", "name" : "'Ray Flags'" },
+        { "kind" : "IdRef", "name" : "'Cull Mask'" },
+        { "kind" : "IdRef", "name" : "'SBT Offset'" },
+        { "kind" : "IdRef", "name" : "'SBT Stride'" },
+        { "kind" : "IdRef", "name" : "'Miss Index'" },
+        { "kind" : "IdRef", "name" : "'Ray Origin'" },
+        { "kind" : "IdRef", "name" : "'Ray Tmin'" },
+        { "kind" : "IdRef", "name" : "'Ray Direction'" },
+        { "kind" : "IdRef", "name" : "'Ray Tmax'" },
+        { "kind" : "IdRef", "name" : "'PayloadId'" }
+      ],
+      "capabilities" : [ "RayTracingNV" ],
+      "extensions" : [ "SPV_NV_ray_tracing" ]
+    },
+    {
+      "opname" : "OpTypeAccelerationStructureNV",
+      "opcode" : 5341,
+      "operands" : [
+        { "kind" : "IdResult" }
+      ],
+      "capabilities" : [ "RayTracingNV" ],
+      "extensions" : [ "SPV_NV_ray_tracing" ]
+    },
+    {
+      "opname" : "OpExecuteCallableNV",
+      "opcode" : 5344,
+      "operands" : [
+
+        { "kind" : "IdRef", "name" : "'SBT Index'" },
+        { "kind" : "IdRef", "name" : "'Callable DataId'" }
+      ],
+      "capabilities" : [ "RayTracingNV" ],
+      "extensions" : [ "SPV_NV_ray_tracing" ]
+    },
+    {
+      "opname" : "OpTypeCooperativeMatrixNV",
+      "opcode" : 5358,
+      "operands" : [
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",        "name" : "'Component Type'" },
+        { "kind" : "IdScope",      "name" : "'Execution'" },
+        { "kind" : "IdRef",        "name" : "'Rows'" },
+        { "kind" : "IdRef",        "name" : "'Columns'" }
+      ],
+      "capabilities" : [ "CooperativeMatrixNV" ],
+      "extensions" : [ "SPV_NV_cooperative_matrix" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpCooperativeMatrixLoadNV",
+      "opcode" : 5359,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",             "name" : "'Pointer'" },
+        { "kind" : "IdRef",             "name" : "'Stride'" },
+        { "kind" : "IdRef",             "name" : "'Column Major'" },
+        { "kind" : "MemoryAccess",      "quantifier" : "?" }
+      ],
+      "capabilities" : [ "CooperativeMatrixNV" ],
+      "extensions" : [ "SPV_NV_cooperative_matrix" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpCooperativeMatrixStoreNV",
+      "opcode" : 5360,
+      "operands" : [
+        { "kind" : "IdRef",             "name" : "'Pointer'" },
+        { "kind" : "IdRef",             "name" : "'Object'" },
+        { "kind" : "IdRef",             "name" : "'Stride'" },
+        { "kind" : "IdRef",             "name" : "'Column Major'" },
+        { "kind" : "MemoryAccess",      "quantifier" : "?" }
+      ],
+      "capabilities" : [ "CooperativeMatrixNV" ],
+      "extensions" : [ "SPV_NV_cooperative_matrix" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpCooperativeMatrixMulAddNV",
+      "opcode" : 5361,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",             "name" : "'A'" },
+        { "kind" : "IdRef",             "name" : "'B'" },
+        { "kind" : "IdRef",             "name" : "'C'" }
+      ],
+      "capabilities" : [ "CooperativeMatrixNV" ],
+      "extensions" : [ "SPV_NV_cooperative_matrix" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpCooperativeMatrixLengthNV",
+      "opcode" : 5362,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef",        "name" : "'Type'" }
+      ],
+      "capabilities" : [ "CooperativeMatrixNV" ],
+      "extensions" : [ "SPV_NV_cooperative_matrix" ],
+      "version" : "None"
+    },
+    {
       "opname" : "OpSubgroupShuffleINTEL",
       "opcode" : 5571,
       "operands" : [
@@ -3978,15 +4207,42 @@
       "version" : "None"
     },
     {
+      "opname" : "OpSubgroupImageMediaBlockReadINTEL",
       "class": "Annotation",
-      "opname" : "OpDecorateStringGOOGLE",
+      "opcode" : 5580,
+      "operands" : [
+        { "kind" : "IdResultType" },
+        { "kind" : "IdResult" },
+        { "kind" : "IdRef", "name" : "'Image'" },
+        { "kind" : "IdRef", "name" : "'Coordinate'" },
+        { "kind" : "IdRef", "name" : "'Width'" },
+        { "kind" : "IdRef", "name" : "'Height'" }
+      ],
+      "capabilities" : [ "SubgroupImageMediaBlockIOINTEL" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpSubgroupImageMediaBlockWriteINTEL",
+      "opcode" : 5581,
+      "operands" : [
+        { "kind" : "IdRef", "name" : "'Image'" },
+        { "kind" : "IdRef", "name" : "'Coordinate'" },
+        { "kind" : "IdRef", "name" : "'Width'" },
+        { "kind" : "IdRef", "name" : "'Height'" },
+        { "kind" : "IdRef", "name" : "'Data'" }
+      ],
+      "capabilities" : [ "SubgroupImageMediaBlockIOINTEL" ],
+      "version" : "None"
+    },
+    {
+      "opname" : "OpDecorateString",
       "opcode" : 5632,
       "operands" : [
         { "kind" : "IdRef",         "name" : "'Target'" },
         { "kind" : "Decoration" }
       ],
       "extensions" : [ "SPV_GOOGLE_decorate_string", "SPV_GOOGLE_hlsl_functionality1" ],
-      "version" : "None"
+      "version" : "1.4"
     },
     {
       "class": "Annotation",
@@ -3998,18 +4254,6 @@
         { "kind" : "Decoration" }
       ],
       "extensions" : [ "SPV_GOOGLE_decorate_string", "SPV_GOOGLE_hlsl_functionality1" ],
-      "version" : "None"
-    },
-    {
-      "opname" : "OpGroupNonUniformPartitionNV",
-      "opcode" : 5296,
-      "operands" : [
-        { "kind" : "IdResultType" },
-        { "kind" : "IdResult" },
-        { "kind" : "IdRef", "name" : "'Value'" }
-      ],
-      "capabilities" : [ "GroupNonUniformPartitionedNV" ],
-      "extensions" : [ "SPV_NV_shader_subgroup_partitioned" ],
       "version" : "None"
     }
   ],
@@ -6694,6 +6938,36 @@
           "version" : "None"
         },
         {
+          "enumerant" : "DenormPreserve",
+          "value" : 4464,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "DenormFlushToZero",
+          "value" : 4465,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "SignedZeroInfNanPreserve",
+          "value" : 4466,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "RoundingModeRTE",
+          "value" : 4467,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
+          "enumerant" : "RoundingModeRTZ",
+          "value" : 4468,
+          "extensions" : [ "SPV_KHR_float_controls" ],
+          "version" : "1.4"
+        },
+        {
           "enumerant" : "Float16ImageAMD",
           "value" : 5008,
           "capabilities" : [ "Shader" ],
@@ -6785,6 +7059,13 @@
           "version" : "None"
         },
         {
+          "enumerant" : "MeshShadingNV",
+          "value" : 5266,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_mesh_shader" ],
+          "version" : "None"
+        },
+        {
           "enumerant" : "ShaderNonUniformEXT",
           "value" : 5301,
           "capabilities" : [ "Shader" ],
@@ -6869,6 +7150,13 @@
           "version" : "None"
         },
         {
+          "enumerant" : "RayTracingNV",
+          "value" : 5340,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_ray_tracing" ],
+          "version" : "None"
+        },
+        {
           "enumerant" : "SubgroupShuffleINTEL",
           "value" : 5568,
           "extensions" : [ "SPV_INTEL_subgroups" ],
@@ -6887,6 +7175,30 @@
           "version" : "None"
         },
         {
+          "enumerant" : "SubgroupImageMediaBlockIOINTEL",
+          "value" : 5579,
+          "extensions" : [ "SPV_INTEL_media_block_io" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "SubgroupAvcMotionEstimationINTEL",
+          "value" : 5696,
+          "extensions" : [ "SPV_INTEL_device_side_avc_motion_estimation" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "SubgroupAvcMotionEstimationIntraINTEL",
+          "value" : 5697,
+          "extensions" : [ "SPV_INTEL_device_side_avc_motion_estimation" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "SubgroupAvcMotionEstimationChromaINTEL",
+          "value" : 5698,
+          "extensions" : [ "SPV_INTEL_device_side_avc_motion_estimation" ],
+          "version" : "None"
+        },
+        {
           "enumerant" : "GroupNonUniformPartitionedNV",
           "value" : 5297,
           "extensions" : [ "SPV_NV_shader_subgroup_partitioned" ],
@@ -6902,6 +7214,58 @@
           "enumerant" : "VulkanMemoryModelDeviceScopeKHR",
           "value" : 5346,
           "extensions" : [ "SPV_KHR_vulkan_memory_model" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ImageFootprintNV",
+          "value" : 5282,
+          "extensions" : [ "SPV_NV_shader_image_footprint" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "FragmentBarycentricNV",
+          "value" : 5284,
+          "extensions" : [ "SPV_NV_fragment_shader_barycentric" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ComputeDerivativeGroupQuadsNV",
+          "value" : 5288,
+          "extensions" : [ "SPV_NV_compute_shader_derivatives" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ComputeDerivativeGroupLinearNV",
+          "value" : 5350,
+          "extensions" : [ "SPV_NV_compute_shader_derivatives" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "FragmentDensityEXT",
+          "value" : 5291,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "ShadingRateNV",
+          "value" : 5291,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_shading_rate", "SPV_EXT_fragment_invocation_density" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "PhysicalStorageBufferAddressesEXT",
+          "value" : 5347,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_EXT_physical_storage_buffer" ],
+          "version" : "None"
+        },
+        {
+          "enumerant" : "CooperativeMatrixNV",
+          "value" : 5357,
+          "capabilities" : [ "Shader" ],
+          "extensions" : [ "SPV_NV_cooperative_matrix" ],
           "version" : "None"
         }
       ]
