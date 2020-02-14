@@ -11,7 +11,7 @@ use crate::{
         module,
         ops,
         storage::Token,
-        Constant, StructMember, Type,
+        Constant, ConstEnum, StructMember, Type, TypeEnum,
     },
 };
 
@@ -106,7 +106,10 @@ impl LiftContext {
             match context.lift_type(inst) {
                 Ok(value) => {
                     if let Some(id) = inst.result_id {
-                        context.types.append_id(id, value);
+                        context.types.append_id(id, Type {
+                            raw: value,
+                            name: String::new(),
+                        });
                     }
                     continue
                 }
@@ -116,7 +119,10 @@ impl LiftContext {
             match context.lift_constant(inst) {
                 Ok(value) => {
                     if let Some(id) = inst.result_id {
-                        context.constants.append_id(id, value);
+                        context.constants.append_id(id, Constant {
+                            raw: value,
+                            name: String::new(),
+                        });
                     }
                     continue
                 }
@@ -171,11 +177,11 @@ impl LiftContext {
                             if let Some(op) = context.ops.try_lookup_mut(target) {
                                 op.name = name;
                             } else
-                            if let Some(_ty) = context.types.try_lookup_mut(target) {
-                                //ty.name = name; //TODO
+                            if let Some(ty) = context.types.try_lookup_mut(target) {
+                                ty.name = name;
                             } else
-                            if let Some(_c) = context.constants.try_lookup_mut(target) {
-                                //c.name = name; //TODO
+                            if let Some(con) = context.constants.try_lookup_mut(target) {
+                                con.name = name;
                             } else {
                                 //log::warn!("Unable to assign name {} -> {}", target, name);
                             }
@@ -273,27 +279,27 @@ impl LiftContext {
 
     fn lift_constant(
         &self, inst: &dr::Instruction
-    ) -> Result<Constant, InstructionError> {
+    ) -> Result<ConstEnum, InstructionError> {
         match inst.class.opcode {
-            spirv::Op::ConstantTrue => Ok(Constant::Bool(true)),
-            spirv::Op::ConstantFalse => Ok(Constant::Bool(false)),
+            spirv::Op::ConstantTrue => Ok(ConstEnum::Bool(true)),
+            spirv::Op::ConstantFalse => Ok(ConstEnum::Bool(false)),
             spirv::Op::Constant => {
                 match inst.result_type {
                     Some(id) => {
                         let oper = inst.operands
                             .first()
                             .ok_or(InstructionError::Operand(OperandError::Missing))?;
-                        let (value, width) = match *self.types.lookup(id).0 {
-                            Type::Int { signedness: 0, width } => match *oper {
-                                dr::Operand::LiteralInt32(v) => (Constant::UInt(v), width),
+                        let (value, width) = match self.types.lookup(id).0.raw {
+                            TypeEnum::Int { signedness: 0, width } => match *oper {
+                                dr::Operand::LiteralInt32(v) => (ConstEnum::UInt(v), width),
                                 _ => return Err(InstructionError::Operand(OperandError::WrongType)),
                             },
-                            Type::Int { width, .. } => match *oper {
-                                dr::Operand::LiteralInt32(v) => (Constant::Int(v as i32), width),
+                            TypeEnum::Int { width, .. } => match *oper {
+                                dr::Operand::LiteralInt32(v) => (ConstEnum::Int(v as i32), width),
                                 _ => return Err(InstructionError::Operand(OperandError::WrongType)),
                             },
-                            Type::Float { width } => match *oper {
-                                dr::Operand::LiteralFloat32(v) => (Constant::Float(v), width),
+                            TypeEnum::Float { width } => match *oper {
+                                dr::Operand::LiteralFloat32(v) => (ConstEnum::Float(v), width),
                                 _ => return Err(InstructionError::Operand(OperandError::WrongType)),
                             },
                             _ => return Err(InstructionError::MissingResult),
@@ -315,13 +321,13 @@ impl LiftContext {
                     };
                     vec.push(token);
                 }
-                Ok(Constant::Composite(vec))
+                Ok(ConstEnum::Composite(vec))
             }
             spirv::Op::ConstantSampler => {
                 if inst.operands.len() < 3 {
                     return Err(InstructionError::Operand(OperandError::Missing))
                 }
-                Ok(Constant::Sampler {
+                Ok(ConstEnum::Sampler {
                     addressing_mode: match inst.operands[0] {
                         dr::Operand::SamplerAddressingMode(v) => v,
                         _ => return Err(InstructionError::Operand(OperandError::WrongType)),
@@ -336,7 +342,7 @@ impl LiftContext {
                     },
                 })
             }
-            spirv::Op::ConstantNull => Ok(Constant::Null),
+            spirv::Op::ConstantNull => Ok(ConstEnum::Null),
             _ => Err(InstructionError::WrongOpcode)
         }
     }

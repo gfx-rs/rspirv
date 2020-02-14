@@ -335,7 +335,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                 if field_names.is_empty() {
                     type_variants.push(quote!{ #type_ident });
                     type_lifts.push(quote! {
-                        #opcode => Ok(Type::#type_ident),
+                        #opcode => Ok(TypeEnum::#type_ident),
                     });
                 } else {
                     type_variants.push(quote! {
@@ -344,7 +344,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                         }
                     });
                     type_lifts.push(quote! {
-                        #opcode => Ok(Type::#type_ident {
+                        #opcode => Ok(TypeEnum::#type_ident {
                             #( #field_names: #field_lifts, )*
                         }),
                     });
@@ -445,7 +445,7 @@ pub fn gen_sr_code_from_instruction_grammar(
 
     let types = quote! {
         #[derive(Clone, Debug)]
-        pub enum Type {
+        pub enum TypeEnum {
             #( #type_variants ),*
         }
     };
@@ -505,7 +505,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             }
             pub fn lift_type(
                 &mut self, raw: &dr::Instruction
-            ) -> Result<Type, InstructionError> {
+            ) -> Result<TypeEnum, InstructionError> {
                 let mut #iter_ident = raw.operands.iter();
                 match raw.class.opcode as u32 {
                     #( #type_lifts )*

@@ -3,7 +3,7 @@
 // DO NOT MODIFY!
 
 #[derive(Clone, Debug)]
-pub enum Type {
+pub enum TypeEnum {
     Void,
     Bool,
     Int {
