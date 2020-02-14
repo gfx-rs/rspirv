@@ -46,6 +46,12 @@ impl<T, L: Borrow<Token<T>>> LiftStorage<T, L> {
             Entry::Vacant(e) => (token, e),
         }
     }
+
+    pub(in crate::lift) fn append_noid(
+        &mut self, value: T
+    ) -> Token<T> {
+        self.values.append(value)
+    }
 }
 
 impl<T> LiftStorage<T> {

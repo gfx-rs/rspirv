@@ -134,7 +134,12 @@ impl LiftContext {
 
             for block in fun.blocks.iter() {
                 let mut arguments = Vec::new();
-                for inst in &block.instructions {
+                let mut ops = Vec::new();
+                if block.instructions.is_empty() {
+                    return Err(ConversionError::MissingTerminator);
+                }
+
+                for inst in &block.instructions[.. block.instructions.len() - 1] {
                     match inst.class.opcode {
                         spirv::Op::Line => {} // skip line decorations
                         spirv::Op::Phi => {
@@ -151,15 +156,22 @@ impl LiftContext {
                             };
                         }
                         _ => {
-                            if let Some(id) = inst.result_id {
-                                let op = context.lift_op(inst)?;
-                                let types = &context.types;
-                                let (token, entry) = context.ops.append(id, op);
-                                entry.insert(OpInfo {
-                                    op: token,
-                                    ty: inst.result_type.map(|ty| *types.lookup(ty).1),
-                                });
-                            }
+                            let op = context.lift_op(inst)?;
+                            let token = match inst.result_id {
+                                Some(id) => {
+                                    let types = &context.types;
+                                    let (token, entry) = context.ops.append(id, op);
+                                    entry.insert(OpInfo {
+                                        op: token,
+                                        ty: inst.result_type.map(|ty| *types.lookup(ty).1),
+                                    });
+                                    token
+                                }
+                                None => {
+                                    context.ops.append_noid(op)
+                                }
+                            };
+                            ops.push(token);
                         }
                     }
                 }
@@ -174,7 +186,7 @@ impl LiftContext {
                     block.label.as_ref().unwrap().result_id.unwrap(),
                     module::Block {
                         arguments,
-                        ops: Vec::new(),
+                        ops,
                         terminator,
                     },
                 );
