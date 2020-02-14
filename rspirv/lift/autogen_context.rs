@@ -5821,7 +5821,7 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             30u32 => Ok(TypeEnum::Struct {
-                member_0_type_member_1_type: {
+                members: {
                     let mut vec = Vec::new();
                     while let Some(item) = match operands.next() {
                         Some(&dr::Operand::IdRef(ref value)) => {

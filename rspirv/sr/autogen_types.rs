@@ -43,7 +43,7 @@ pub enum TypeEnum {
         element_type: Token<Type>,
     },
     Struct {
-        member_0_type_member_1_type: Vec<StructMember>,
+        members: Vec<StructMember>,
     },
     Opaque {
         type_name: String,

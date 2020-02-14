@@ -206,8 +206,8 @@ impl LiftContext {
                                 )),
                             };
                             match context.types.try_lookup_mut(target) {
-                                Some(Type { raw: TypeEnum::Struct { ref mut member_0_type_member_1_type }, .. }) => {
-                                    match member_0_type_member_1_type.get_mut(member as usize) {
+                                Some(Type { raw: TypeEnum::Struct { ref mut members }, .. }) => {
+                                    match members.get_mut(member as usize) {
                                         Some(sm) => {
                                             sm.name = name;
                                         }
