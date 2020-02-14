@@ -131,7 +131,6 @@ impl LiftContext {
                     .as_ref()
                     .ok_or(ConversionError::MissingFunction)?
             )?;
-            //TODO: lift function type instruction
 
             for block in fun.blocks.iter() {
                 let mut arguments = Vec::new();
@@ -188,7 +187,7 @@ impl LiftContext {
 
             functions.push(module::Function {
                 control: def.function_control,
-                result: context.types.append_id(1, Type::Void), //TODO: fty.return_type,
+                result: context.types.lookup_token(def.function_type),
                 parameters: Vec::new(),
                 blocks,
                 start_block,
