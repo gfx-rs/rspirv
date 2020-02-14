@@ -140,20 +140,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5u32 => Ok(ops::Op::Name {
-                target: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                name: (match operands.next() {
-                    Some(&dr::Operand::LiteralString(ref value)) => Some(value.clone()),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
             6u32 => Ok(ops::Op::MemberName {
                 ty: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),

@@ -37,6 +37,15 @@ impl<T, L: Borrow<Token<T>>> LiftStorage<T, L> {
         (&self.values[*info.borrow()], info)
     }
 
+    pub(in crate::lift) fn try_lookup_mut(
+        &mut self, id: spirv::Word
+    ) -> Option<&mut T> {
+        let values = &mut self.values;
+        self.lookup
+            .get(&id)
+            .map(move |info| &mut values[*info.borrow()])
+    }
+
     pub(in crate::lift) fn append(
         &mut self, id: spirv::Word, value: T
     ) -> (Token<T>, VacantEntry<spirv::Word, L>) {

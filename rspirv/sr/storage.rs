@@ -96,6 +96,12 @@ impl<T> std::ops::Index<Token<T>> for Storage<T> {
     }
 }
 
+impl<T> std::ops::IndexMut<Token<T>> for Storage<T> {
+    fn index_mut(&mut self, token: Token<T>) -> &mut T {
+        &mut self.data[token.index as usize]
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

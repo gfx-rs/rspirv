@@ -5,6 +5,7 @@ use heck::SnakeCase;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
+
 /// The name of a local variable in the generated code that
 /// represents an iterator over instruction operands.
 const OPERAND_ITER: &str = "operands";
@@ -260,6 +261,10 @@ pub struct CodeGeneratedFromInstructionGrammar {
 }
 
 const TYPE_PREFIX_LENGTH: usize = 6;
+const IGNORE_INSTRUCTIONS: &[&str] = &[
+    "Name",
+    "Phi",
+];
 
 pub fn gen_sr_code_from_instruction_grammar(
     grammar_instructions: &[structs::Instruction],
@@ -413,8 +418,8 @@ pub fn gen_sr_code_from_instruction_grammar(
                     });
                 }
             }
-            // Skip OpPhi as explicitly processed
-            _ if inst_name == "Phi" => {
+            // Skip instructions that are manually processed
+            _ if IGNORE_INSTRUCTIONS.contains(&inst_name) => {
             }
             _ => {
                 if field_names.is_empty() {

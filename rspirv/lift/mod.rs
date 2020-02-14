@@ -20,14 +20,14 @@ use spirv;
 use std::{borrow::Borrow, mem};
 
 /// A structure that we associate an <id> with, containing
-/// both the operation token and the resutl type.
+/// both the operation token and the result type.
 struct OpInfo {
-    op: Token<ops::Op>,
+    op: Token<module::Operation>,
     ty: Option<Token<Type>>,
 }
 
-impl Borrow<Token<ops::Op>> for OpInfo {
-    fn borrow(&self) -> &Token<ops::Op> {
+impl Borrow<Token<module::Operation>> for OpInfo {
+    fn borrow(&self) -> &Token<module::Operation> {
         &self.op
     }
 }
@@ -37,7 +37,7 @@ pub struct LiftContext {
     types: LiftStorage<Type>,
     constants: LiftStorage<Constant>,
     blocks: LiftStorage<module::Block>,
-    ops: LiftStorage<ops::Op, OpInfo>,
+    ops: LiftStorage<module::Operation, OpInfo>,
 }
 
 include!("autogen_context.rs");
@@ -155,8 +155,36 @@ impl LiftContext {
                                 )),
                             };
                         }
+                        spirv::Op::Name => {
+                            let target = match inst.operands[0] {
+                                dr::Operand::IdRef(id) => id,
+                                _ => return Err(ConversionError::Instruction(
+                                    InstructionError::Operand(OperandError::Missing)
+                                )),
+                            };
+                            let name = match inst.operands[1] {
+                                dr::Operand::LiteralString(ref name) => name.clone(),
+                                _ => return Err(ConversionError::Instruction(
+                                    InstructionError::Operand(OperandError::Missing)
+                                )),
+                            };
+                            if let Some(op) = context.ops.try_lookup_mut(target) {
+                                op.name = name;
+                            } else
+                            if let Some(_ty) = context.types.try_lookup_mut(target) {
+                                //ty.name = name; //TODO
+                            } else
+                            if let Some(_c) = context.constants.try_lookup_mut(target) {
+                                //c.name = name; //TODO
+                            } else {
+                                //log::warn!("Unable to assign name {} -> {}", target, name);
+                            }
+                        }
                         _ => {
-                            let op = context.lift_op(inst)?;
+                            let op = module::Operation {
+                                raw: context.lift_op(inst)?,
+                                name: String::new(),
+                            };
                             let token = match inst.result_id {
                                 Some(id) => {
                                     let types = &context.types;
