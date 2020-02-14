@@ -263,6 +263,7 @@ pub struct CodeGeneratedFromInstructionGrammar {
 const TYPE_PREFIX_LENGTH: usize = 6;
 const IGNORE_INSTRUCTIONS: &[&str] = &[
     "Name",
+    "MemberName",
     "Phi",
 ];
 

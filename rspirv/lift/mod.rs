@@ -186,6 +186,51 @@ impl LiftContext {
                                 //log::warn!("Unable to assign name {} -> {}", target, name);
                             }
                         }
+                        spirv::Op::MemberName => {
+                            let target = match inst.operands[0] {
+                                dr::Operand::IdRef(id) => id,
+                                _ => return Err(ConversionError::Instruction(
+                                    InstructionError::Operand(OperandError::Missing)
+                                )),
+                            };
+                            let member = match inst.operands[1] {
+                                dr::Operand::LiteralInt32(index) => index,
+                                _ => return Err(ConversionError::Instruction(
+                                    InstructionError::Operand(OperandError::Missing)
+                                )),
+                            };
+                            let name = match inst.operands[2] {
+                                dr::Operand::LiteralString(ref name) => name.clone(),
+                                _ => return Err(ConversionError::Instruction(
+                                    InstructionError::Operand(OperandError::Missing)
+                                )),
+                            };
+                            match context.types.try_lookup_mut(target) {
+                                Some(Type { raw: TypeEnum::Struct { ref mut member_0_type_member_1_type }, .. }) => {
+                                    match member_0_type_member_1_type.get_mut(member as usize) {
+                                        Some(sm) => {
+                                            sm.name = name;
+                                        }
+                                        None => {
+                                            return Err(ConversionError::Instruction(
+                                                InstructionError::Operand(OperandError::WrongType)
+                                            ));
+                                        }
+                                    }
+                                }
+                                Some(_) => {
+                                    return Err(ConversionError::Instruction(
+                                        InstructionError::Operand(OperandError::WrongType)
+                                    ));
+                                }
+                                None => {
+                                    //TODO: better error here
+                                    return Err(ConversionError::Instruction(
+                                        InstructionError::Operand(OperandError::Missing)
+                                    ));
+                                }
+                            }
+                        }
                         _ => {
                             let op = module::Operation {
                                 raw: context.lift_op(inst)?,

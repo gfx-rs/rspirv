@@ -5,6 +5,7 @@ use super::{Constant, Decoration, storage::Token};
 #[derive(Clone, Debug)]
 pub struct StructMember {
     pub token: Token<Type>,
+    pub name: String,
     pub decorations: Vec<Decoration>,
 }
 
@@ -12,6 +13,7 @@ impl StructMember {
     pub fn new(ty: Token<Type>) -> Self {
         StructMember {
             token: ty,
+            name: String::new(),
             decorations: Vec::new(),
         }
     }

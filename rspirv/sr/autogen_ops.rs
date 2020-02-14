@@ -46,11 +46,6 @@ pub enum Op {
     SourceExtension {
         extension: String,
     },
-    MemberName {
-        ty: spirv::Word,
-        member: u32,
-        name: String,
-    },
     String {
         string: String,
     },

@@ -51,6 +51,10 @@ impl<T> Token<T> {
             marker: PhantomData,
         }
     }
+
+    pub fn index(&self) -> usize {
+        self.index as usize
+    }
 }
 
 /// A structure holding some kind of SPIR-V entity (e.g., type, constant,
@@ -66,6 +70,13 @@ impl<T> Storage<T> {
         Storage {
             data: Vec::new(),
         }
+    }
+
+    pub fn iter<'a>(&'a self) -> impl Iterator<Item = (Token<T>, &'a T)> {
+        self.data
+            .iter()
+            .enumerate()
+            .map(|(i, v)| (Token::new(i as Index), v))
     }
 
     /// Adds a new value to the storage, returning a typed token.
