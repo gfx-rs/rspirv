@@ -204,8 +204,14 @@ impl LiftContext {
                 .iter()
                 .map(|cap| context.lift_capability(cap).map(|cap| cap.capability))
                 .collect::<Result<_, InstructionError>>()?,
-            extensions: Vec::new(),
-            ext_inst_imports: Vec::new(),
+            extensions: module.extensions
+                .iter()
+                .map(|ext| context.lift_extension(ext).map(|ext| ext.name))
+                .collect::<Result<_, InstructionError>>()?,
+            ext_inst_imports: module.extensions
+                .iter()
+                .map(|ext| context.lift_ext_inst_import(ext).map(|ext| ext.name))
+                .collect::<Result<_, InstructionError>>()?,
             memory_model: match module.memory_model {
                 Some(ref mm) => context.lift_memory_model(mm)?,
                 None => return Err(ConversionError::MissingHeader),
