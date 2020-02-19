@@ -166,7 +166,8 @@ impl Builder {
         &mut self,
         target: spirv::Word,
         source: spirv::Word,
-        memory_access: Option<spirv::MemoryAccess>,
+        src_mem_access: Option<spirv::MemoryAccess>,
+        dst_mem_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<()> {
         if self.block.is_none() {
@@ -179,7 +180,11 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(target), dr::Operand::IdRef(source)],
         );
-        if let Some(v) = memory_access {
+        if let Some(v) = src_mem_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        if let Some(v) = dst_mem_access {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
@@ -193,7 +198,8 @@ impl Builder {
         target: spirv::Word,
         source: spirv::Word,
         size: spirv::Word,
-        memory_access: Option<spirv::MemoryAccess>,
+        src_mem_access: Option<spirv::MemoryAccess>,
+        dst_mem_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<()> {
         if self.block.is_none() {
@@ -210,7 +216,11 @@ impl Builder {
                 dr::Operand::IdRef(size),
             ],
         );
-        if let Some(v) = memory_access {
+        if let Some(v) = src_mem_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        if let Some(v) = dst_mem_access {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
@@ -8173,20 +8183,6 @@ impl Builder {
         self.block.as_mut().unwrap().instructions.push(inst);
         Ok(())
     }
-    #[doc = "Appends an OpTypeAccelerationStructureNV instruction to the current block."]
-    pub fn type_acceleration_structure_nv(
-        &mut self,
-        result_id: Option<spirv::Word>,
-    ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
-        #[allow(unused_mut)]
-        let mut inst =
-            dr::Instruction::new(spirv::Op::TypeAccelerationStructureNV, None, None, vec![]);
-        self.block.as_mut().unwrap().instructions.push(inst);
-        Ok(())
-    }
     #[doc = "Appends an OpExecuteCallableNV instruction to the current block."]
     pub fn execute_callable_nv(
         &mut self,
@@ -8204,33 +8200,6 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sbt_index),
                 dr::Operand::IdRef(callable_data_id),
-            ],
-        );
-        self.block.as_mut().unwrap().instructions.push(inst);
-        Ok(())
-    }
-    #[doc = "Appends an OpTypeCooperativeMatrixNV instruction to the current block."]
-    pub fn type_cooperative_matrix_nv(
-        &mut self,
-        result_id: Option<spirv::Word>,
-        component_type: spirv::Word,
-        execution: spirv::Word,
-        rows: spirv::Word,
-        columns: spirv::Word,
-    ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TypeCooperativeMatrixNV,
-            None,
-            None,
-            vec![
-                dr::Operand::IdRef(component_type),
-                dr::Operand::IdScope(execution),
-                dr::Operand::IdRef(rows),
-                dr::Operand::IdRef(columns),
             ],
         );
         self.block.as_mut().unwrap().instructions.push(inst);
@@ -8562,6 +8531,38 @@ impl Builder {
         self.block.as_mut().unwrap().instructions.push(inst);
         Ok(())
     }
+    #[doc = "Appends an OpSubgroupImageMediaBlockReadINTEL instruction to the current block."]
+    pub fn subgroup_image_media_block_read_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        width: spirv::Word,
+        height: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupImageMediaBlockReadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(image),
+                dr::Operand::IdRef(coordinate),
+                dr::Operand::IdRef(width),
+                dr::Operand::IdRef(height),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
     #[doc = "Appends an OpSubgroupImageMediaBlockWriteINTEL instruction to the current block."]
     pub fn subgroup_image_media_block_write_intel(
         &mut self,
@@ -8590,28 +8591,2861 @@ impl Builder {
         self.block.as_mut().unwrap().instructions.push(inst);
         Ok(())
     }
-    #[doc = "Appends an OpDecorateString instruction to the current block."]
-    pub fn decorate_string<T: AsRef<[dr::Operand]>>(
+    #[doc = "Appends an OpVmeImageINTEL instruction to the current block."]
+    pub fn vme_image_intel(
         &mut self,
-        target: spirv::Word,
-        decoration: spirv::Decoration,
-        additional_params: T,
-    ) -> BuildResult<()> {
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        image_type: spirv::Word,
+        sampler: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
         if self.block.is_none() {
             return Err(Error::DetachedInstruction);
         }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
-            spirv::Op::DecorateString,
-            None,
-            None,
+            spirv::Op::VmeImageINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(image_type), dr::Operand::IdRef(sampler)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_inter_base_multi_reference_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        slice_type: spirv::Word,
+        qp: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(slice_type), dr::Operand::IdRef(qp)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_inter_base_multi_reference_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        reference_base_penalty: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
             vec![
-                dr::Operand::IdRef(target),
-                dr::Operand::Decoration(decoration),
+                dr::Operand::IdRef(reference_base_penalty),
+                dr::Operand::IdRef(payload),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
         self.block.as_mut().unwrap().instructions.push(inst);
-        Ok(())
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultInterShapePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_inter_shape_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        slice_type: spirv::Word,
+        qp: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultInterShapePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(slice_type), dr::Operand::IdRef(qp)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetInterShapePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_inter_shape_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packed_shape_penalty: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetInterShapePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packed_shape_penalty),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_inter_direction_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        slice_type: spirv::Word,
+        qp: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(slice_type), dr::Operand::IdRef(qp)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetInterDirectionPenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_inter_direction_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        direction_cost: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetInterDirectionPenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(direction_cost),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_intra_luma_shape_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        slice_type: spirv::Word,
+        qp: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(slice_type), dr::Operand::IdRef(qp)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_inter_motion_vector_cost_table_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        slice_type: spirv::Word,
+        qp: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(slice_type), dr::Operand::IdRef(qp)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_high_penalty_cost_table_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_medium_penalty_cost_table_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_low_penalty_cost_table_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetMotionVectorCostFunctionINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_motion_vector_cost_function_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packed_cost_center_delta: spirv::Word,
+        packed_cost_table: spirv::Word,
+        cost_precision: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetMotionVectorCostFunctionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packed_cost_center_delta),
+                dr::Operand::IdRef(packed_cost_table),
+                dr::Operand::IdRef(cost_precision),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_intra_luma_mode_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        slice_type: spirv::Word,
+        qp: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(slice_type), dr::Operand::IdRef(qp)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_non_dc_luma_intra_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_default_intra_chroma_mode_base_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetAcOnlyHaarINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_ac_only_haar_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetAcOnlyHaarINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_source_interlaced_field_polarity_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        source_field_polarity: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(source_field_polarity),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_single_reference_interlaced_field_polarity_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        reference_field_polarity: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(reference_field_polarity),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_set_dual_reference_interlaced_field_polarities_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        forward_reference_field_polarity: spirv::Word,
+        backward_reference_field_polarity: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(forward_reference_field_polarity),
+                dr::Operand::IdRef(backward_reference_field_polarity),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceConvertToImePayloadINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_convert_to_ime_payload_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceConvertToImePayloadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceConvertToImeResultINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_convert_to_ime_result_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceConvertToImeResultINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceConvertToRefPayloadINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_convert_to_ref_payload_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceConvertToRefPayloadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceConvertToRefResultINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_convert_to_ref_result_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceConvertToRefResultINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceConvertToSicPayloadINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_convert_to_sic_payload_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceConvertToSicPayloadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceConvertToSicResultINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_convert_to_sic_result_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceConvertToSicResultINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetMotionVectorsINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_motion_vectors_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetMotionVectorsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetInterDistortionsINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_inter_distortions_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetInterDistortionsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetBestInterDistortionsINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_best_inter_distortions_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetBestInterDistortionsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetInterMajorShapeINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_inter_major_shape_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetInterMajorShapeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetInterMinorShapeINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_inter_minor_shape_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetInterMinorShapeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetInterDirectionsINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_inter_directions_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetInterDirectionsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetInterMotionVectorCountINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_inter_motion_vector_count_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetInterMotionVectorCountINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetInterReferenceIdsINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_inter_reference_ids_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetInterReferenceIdsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL instruction to the current block."]
+    pub fn subgroup_avc_mce_get_inter_reference_interlaced_field_polarities_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packed_reference_ids: spirv::Word,
+        packed_reference_parameter_field_polarities: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packed_reference_ids),
+                dr::Operand::IdRef(packed_reference_parameter_field_polarities),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeInitializeINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_initialize_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_coord: spirv::Word,
+        partition_mask: spirv::Word,
+        sad_adjustment: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeInitializeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_coord),
+                dr::Operand::IdRef(partition_mask),
+                dr::Operand::IdRef(sad_adjustment),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeSetSingleReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_set_single_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        ref_offset: spirv::Word,
+        search_window_config: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeSetSingleReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(ref_offset),
+                dr::Operand::IdRef(search_window_config),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeSetDualReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_set_dual_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        fwd_ref_offset: spirv::Word,
+        bwd_ref_offset: spirv::Word,
+        id_search_window_config: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeSetDualReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(fwd_ref_offset),
+                dr::Operand::IdRef(bwd_ref_offset),
+                dr::Operand::IdRef(id_search_window_config),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeRefWindowSizeINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_ref_window_size_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        search_window_config: spirv::Word,
+        dual_ref: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeRefWindowSizeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(search_window_config),
+                dr::Operand::IdRef(dual_ref),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeAdjustRefOffsetINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_adjust_ref_offset_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        ref_offset: spirv::Word,
+        src_coord: spirv::Word,
+        ref_window_size: spirv::Word,
+        image_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeAdjustRefOffsetINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(ref_offset),
+                dr::Operand::IdRef(src_coord),
+                dr::Operand::IdRef(ref_window_size),
+                dr::Operand::IdRef(image_size),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeConvertToMcePayloadINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_convert_to_mce_payload_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeConvertToMcePayloadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeSetMaxMotionVectorCountINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_set_max_motion_vector_count_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        max_motion_vector_count: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeSetMaxMotionVectorCountINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(max_motion_vector_count),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeSetUnidirectionalMixDisableINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_set_unidirectional_mix_disable_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeSetUnidirectionalMixDisableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeSetEarlySearchTerminationThresholdINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_set_early_search_termination_threshold_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        threshold: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeSetEarlySearchTerminationThresholdINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(threshold), dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeSetWeightedSadINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_set_weighted_sad_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packed_sad_weights: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeSetWeightedSadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packed_sad_weights),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithSingleReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_single_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithSingleReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithDualReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_dual_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithDualReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(fwd_ref_image),
+                dr::Operand::IdRef(bwd_ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_single_reference_streamin_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(ref_image),
+                dr::Operand::IdRef(payload),
+                dr::Operand::IdRef(streamin_components),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_dual_reference_streamin_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(fwd_ref_image),
+                dr::Operand::IdRef(bwd_ref_image),
+                dr::Operand::IdRef(payload),
+                dr::Operand::IdRef(streamin_components),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_single_reference_streamout_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_dual_reference_streamout_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(fwd_ref_image),
+                dr::Operand::IdRef(bwd_ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_single_reference_streaminout_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(ref_image),
+                dr::Operand::IdRef(payload),
+                dr::Operand::IdRef(streamin_components),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_evaluate_with_dual_reference_streaminout_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(fwd_ref_image),
+                dr::Operand::IdRef(bwd_ref_image),
+                dr::Operand::IdRef(payload),
+                dr::Operand::IdRef(streamin_components),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeConvertToMceResultINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_convert_to_mce_result_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeConvertToMceResultINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetSingleReferenceStreaminINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_single_reference_streamin_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetSingleReferenceStreaminINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetDualReferenceStreaminINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_dual_reference_streamin_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetDualReferenceStreaminINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeStripSingleReferenceStreamoutINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_strip_single_reference_streamout_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeStripSingleReferenceStreamoutINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeStripDualReferenceStreamoutINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_strip_dual_reference_streamout_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeStripDualReferenceStreamoutINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_streamout_single_reference_major_shape_motion_vectors_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload), dr::Operand::IdRef(major_shape)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_streamout_single_reference_major_shape_distortions_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload), dr::Operand::IdRef(major_shape)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_streamout_single_reference_major_shape_reference_ids_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload), dr::Operand::IdRef(major_shape)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_streamout_dual_reference_major_shape_motion_vectors_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+        direction: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(payload),
+                dr::Operand::IdRef(major_shape),
+                dr::Operand::IdRef(direction),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_streamout_dual_reference_major_shape_distortions_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+        direction: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(payload),
+                dr::Operand::IdRef(major_shape),
+                dr::Operand::IdRef(direction),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_streamout_dual_reference_major_shape_reference_ids_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+        direction: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(payload),
+                dr::Operand::IdRef(major_shape),
+                dr::Operand::IdRef(direction),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetBorderReachedINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_border_reached_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        image_select: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetBorderReachedINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(image_select),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetTruncatedSearchIndicationINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_truncated_search_indication_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetTruncatedSearchIndicationINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_unidirectional_early_search_termination_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_weighting_pattern_minimum_motion_vector_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL instruction to the current block."]
+    pub fn subgroup_avc_ime_get_weighting_pattern_minimum_distortion_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcFmeInitializeINTEL instruction to the current block."]
+    pub fn subgroup_avc_fme_initialize_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_coord: spirv::Word,
+        motion_vectors: spirv::Word,
+        major_shapes: spirv::Word,
+        minor_shapes: spirv::Word,
+        direction: spirv::Word,
+        pixel_resolution: spirv::Word,
+        sad_adjustment: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcFmeInitializeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_coord),
+                dr::Operand::IdRef(motion_vectors),
+                dr::Operand::IdRef(major_shapes),
+                dr::Operand::IdRef(minor_shapes),
+                dr::Operand::IdRef(direction),
+                dr::Operand::IdRef(pixel_resolution),
+                dr::Operand::IdRef(sad_adjustment),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcBmeInitializeINTEL instruction to the current block."]
+    pub fn subgroup_avc_bme_initialize_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_coord: spirv::Word,
+        motion_vectors: spirv::Word,
+        major_shapes: spirv::Word,
+        minor_shapes: spirv::Word,
+        direction: spirv::Word,
+        pixel_resolution: spirv::Word,
+        bidirectional_weight: spirv::Word,
+        sad_adjustment: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcBmeInitializeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_coord),
+                dr::Operand::IdRef(motion_vectors),
+                dr::Operand::IdRef(major_shapes),
+                dr::Operand::IdRef(minor_shapes),
+                dr::Operand::IdRef(direction),
+                dr::Operand::IdRef(pixel_resolution),
+                dr::Operand::IdRef(bidirectional_weight),
+                dr::Operand::IdRef(sad_adjustment),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefConvertToMcePayloadINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_convert_to_mce_payload_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefConvertToMcePayloadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefSetBidirectionalMixDisableINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_set_bidirectional_mix_disable_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefSetBidirectionalMixDisableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefSetBilinearFilterEnableINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_set_bilinear_filter_enable_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefSetBilinearFilterEnableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefEvaluateWithSingleReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_evaluate_with_single_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefEvaluateWithSingleReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefEvaluateWithDualReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_evaluate_with_dual_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefEvaluateWithDualReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(fwd_ref_image),
+                dr::Operand::IdRef(bwd_ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefEvaluateWithMultiReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_evaluate_with_multi_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefEvaluateWithMultiReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(packed_reference_ids),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_evaluate_with_multi_reference_interlaced_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        packed_reference_field_polarities: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(packed_reference_ids),
+                dr::Operand::IdRef(packed_reference_field_polarities),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcRefConvertToMceResultINTEL instruction to the current block."]
+    pub fn subgroup_avc_ref_convert_to_mce_result_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcRefConvertToMceResultINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicInitializeINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_initialize_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_coord: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicInitializeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(src_coord)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicConfigureSkcINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_configure_skc_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        skip_block_partition_type: spirv::Word,
+        skip_motion_vector_mask: spirv::Word,
+        motion_vectors: spirv::Word,
+        bidirectional_weight: spirv::Word,
+        sad_adjustment: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicConfigureSkcINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(skip_block_partition_type),
+                dr::Operand::IdRef(skip_motion_vector_mask),
+                dr::Operand::IdRef(motion_vectors),
+                dr::Operand::IdRef(bidirectional_weight),
+                dr::Operand::IdRef(sad_adjustment),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicConfigureIpeLumaINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_configure_ipe_luma_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        luma_intra_partition_mask: spirv::Word,
+        intra_neighbour_availabilty: spirv::Word,
+        left_edge_luma_pixels: spirv::Word,
+        upper_left_corner_luma_pixel: spirv::Word,
+        upper_edge_luma_pixels: spirv::Word,
+        upper_right_edge_luma_pixels: spirv::Word,
+        sad_adjustment: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicConfigureIpeLumaINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(luma_intra_partition_mask),
+                dr::Operand::IdRef(intra_neighbour_availabilty),
+                dr::Operand::IdRef(left_edge_luma_pixels),
+                dr::Operand::IdRef(upper_left_corner_luma_pixel),
+                dr::Operand::IdRef(upper_edge_luma_pixels),
+                dr::Operand::IdRef(upper_right_edge_luma_pixels),
+                dr::Operand::IdRef(sad_adjustment),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicConfigureIpeLumaChromaINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_configure_ipe_luma_chroma_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        luma_intra_partition_mask: spirv::Word,
+        intra_neighbour_availabilty: spirv::Word,
+        left_edge_luma_pixels: spirv::Word,
+        upper_left_corner_luma_pixel: spirv::Word,
+        upper_edge_luma_pixels: spirv::Word,
+        upper_right_edge_luma_pixels: spirv::Word,
+        left_edge_chroma_pixels: spirv::Word,
+        upper_left_corner_chroma_pixel: spirv::Word,
+        upper_edge_chroma_pixels: spirv::Word,
+        sad_adjustment: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicConfigureIpeLumaChromaINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(luma_intra_partition_mask),
+                dr::Operand::IdRef(intra_neighbour_availabilty),
+                dr::Operand::IdRef(left_edge_luma_pixels),
+                dr::Operand::IdRef(upper_left_corner_luma_pixel),
+                dr::Operand::IdRef(upper_edge_luma_pixels),
+                dr::Operand::IdRef(upper_right_edge_luma_pixels),
+                dr::Operand::IdRef(left_edge_chroma_pixels),
+                dr::Operand::IdRef(upper_left_corner_chroma_pixel),
+                dr::Operand::IdRef(upper_edge_chroma_pixels),
+                dr::Operand::IdRef(sad_adjustment),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetMotionVectorMaskINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_motion_vector_mask_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        skip_block_partition_type: spirv::Word,
+        direction: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetMotionVectorMaskINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(skip_block_partition_type),
+                dr::Operand::IdRef(direction),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicConvertToMcePayloadINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_convert_to_mce_payload_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicConvertToMcePayloadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicSetIntraLumaShapePenaltyINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_set_intra_luma_shape_penalty_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packed_shape_penalty: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicSetIntraLumaShapePenaltyINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packed_shape_penalty),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicSetIntraLumaModeCostFunctionINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_set_intra_luma_mode_cost_function_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        luma_mode_penalty: spirv::Word,
+        luma_packed_neighbor_modes: spirv::Word,
+        luma_packed_non_dc_penalty: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicSetIntraLumaModeCostFunctionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(luma_mode_penalty),
+                dr::Operand::IdRef(luma_packed_neighbor_modes),
+                dr::Operand::IdRef(luma_packed_non_dc_penalty),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicSetIntraChromaModeCostFunctionINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_set_intra_chroma_mode_cost_function_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        chroma_mode_base_penalty: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicSetIntraChromaModeCostFunctionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(chroma_mode_base_penalty),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicSetBilinearFilterEnableINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_set_bilinear_filter_enable_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicSetBilinearFilterEnableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicSetSkcForwardTransformEnableINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_set_skc_forward_transform_enable_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packed_sad_coefficients: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicSetSkcForwardTransformEnableINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packed_sad_coefficients),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicSetBlockBasedRawSkipSadINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_set_block_based_raw_skip_sad_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        block_based_skip_type: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicSetBlockBasedRawSkipSadINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(block_based_skip_type),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicEvaluateIpeINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_evaluate_ipe_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicEvaluateIpeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(src_image), dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicEvaluateWithSingleReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_evaluate_with_single_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicEvaluateWithSingleReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicEvaluateWithDualReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_evaluate_with_dual_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicEvaluateWithDualReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(fwd_ref_image),
+                dr::Operand::IdRef(bwd_ref_image),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicEvaluateWithMultiReferenceINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_evaluate_with_multi_reference_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicEvaluateWithMultiReferenceINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(packed_reference_ids),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_evaluate_with_multi_reference_interlaced_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        packed_reference_field_polarities: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(src_image),
+                dr::Operand::IdRef(packed_reference_ids),
+                dr::Operand::IdRef(packed_reference_field_polarities),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicConvertToMceResultINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_convert_to_mce_result_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicConvertToMceResultINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetIpeLumaShapeINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_ipe_luma_shape_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetIpeLumaShapeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetBestIpeLumaDistortionINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_best_ipe_luma_distortion_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetBestIpeLumaDistortionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetBestIpeChromaDistortionINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_best_ipe_chroma_distortion_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetBestIpeChromaDistortionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetPackedIpeLumaModesINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_packed_ipe_luma_modes_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetPackedIpeLumaModesINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetIpeChromaModeINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_ipe_chroma_mode_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetIpeChromaModeINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_packed_skc_luma_count_threshold_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_packed_skc_luma_sum_threshold_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSubgroupAvcSicGetInterRawSadsINTEL instruction to the current block."]
+    pub fn subgroup_avc_sic_get_inter_raw_sads_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        payload: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        if self.block.is_none() {
+            return Err(Error::DetachedInstruction);
+        }
+        let _id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupAvcSicGetInterRawSadsINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(payload)],
+        );
+        self.block.as_mut().unwrap().instructions.push(inst);
+        Ok(_id)
     }
 }

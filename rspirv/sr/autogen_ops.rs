@@ -93,13 +93,15 @@ pub enum Op {
     CopyMemory {
         target: spirv::Word,
         source: spirv::Word,
-        memory_access: Option<spirv::MemoryAccess>,
+        src_mem_access: Option<spirv::MemoryAccess>,
+        dst_mem_access: Option<spirv::MemoryAccess>,
     },
     CopyMemorySized {
         target: spirv::Word,
         source: spirv::Word,
         size: spirv::Word,
-        memory_access: Option<spirv::MemoryAccess>,
+        src_mem_access: Option<spirv::MemoryAccess>,
+        dst_mem_access: Option<spirv::MemoryAccess>,
     },
     AccessChain {
         base: spirv::Word,
@@ -1420,16 +1422,9 @@ pub enum Op {
         ray_tmax: spirv::Word,
         payload_id: spirv::Word,
     },
-    TypeAccelerationStructureNV,
     ExecuteCallableNV {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
-    },
-    TypeCooperativeMatrixNV {
-        component_type: Token<Type>,
-        execution: spirv::Word,
-        rows: spirv::Word,
-        columns: spirv::Word,
     },
     CooperativeMatrixLoadNV {
         pointer: spirv::Word,
@@ -1503,9 +1498,454 @@ pub enum Op {
         target: spirv::Word,
         decoration: spirv::Decoration,
     },
+    DecorateStringGOOGLE {
+        target: spirv::Word,
+        decoration: spirv::Decoration,
+    },
+    MemberDecorateString {
+        struct_type: Token<Type>,
+        member: u32,
+        decoration: spirv::Decoration,
+    },
     MemberDecorateStringGOOGLE {
         struct_type: Token<Type>,
         member: u32,
         decoration: spirv::Decoration,
+    },
+    VmeImageINTEL {
+        image_type: Token<Type>,
+        sampler: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL {
+        slice_type: Token<Type>,
+        qp: spirv::Word,
+    },
+    SubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL {
+        reference_base_penalty: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultInterShapePenaltyINTEL {
+        slice_type: Token<Type>,
+        qp: spirv::Word,
+    },
+    SubgroupAvcMceSetInterShapePenaltyINTEL {
+        packed_shape_penalty: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL {
+        slice_type: Token<Type>,
+        qp: spirv::Word,
+    },
+    SubgroupAvcMceSetInterDirectionPenaltyINTEL {
+        direction_cost: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL {
+        slice_type: Token<Type>,
+        qp: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL {
+        slice_type: Token<Type>,
+        qp: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL,
+    SubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL,
+    SubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL,
+    SubgroupAvcMceSetMotionVectorCostFunctionINTEL {
+        packed_cost_center_delta: spirv::Word,
+        packed_cost_table: spirv::Word,
+        cost_precision: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL {
+        slice_type: Token<Type>,
+        qp: spirv::Word,
+    },
+    SubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL,
+    SubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL,
+    SubgroupAvcMceSetAcOnlyHaarINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL {
+        source_field_polarity: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL {
+        reference_field_polarity: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL {
+        forward_reference_field_polarity: spirv::Word,
+        backward_reference_field_polarity: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceConvertToImePayloadINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceConvertToImeResultINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceConvertToRefPayloadINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceConvertToRefResultINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceConvertToSicPayloadINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceConvertToSicResultINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetMotionVectorsINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetInterDistortionsINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetBestInterDistortionsINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetInterMajorShapeINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetInterMinorShapeINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetInterDirectionsINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetInterMotionVectorCountINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetInterReferenceIdsINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL {
+        packed_reference_ids: spirv::Word,
+        packed_reference_parameter_field_polarities: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeInitializeINTEL {
+        src_coord: spirv::Word,
+        partition_mask: spirv::Word,
+        sad_adjustment: spirv::Word,
+    },
+    SubgroupAvcImeSetSingleReferenceINTEL {
+        ref_offset: spirv::Word,
+        search_window_config: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeSetDualReferenceINTEL {
+        fwd_ref_offset: spirv::Word,
+        bwd_ref_offset: spirv::Word,
+        id_search_window_config: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeRefWindowSizeINTEL {
+        search_window_config: spirv::Word,
+        dual_ref: spirv::Word,
+    },
+    SubgroupAvcImeAdjustRefOffsetINTEL {
+        ref_offset: spirv::Word,
+        src_coord: spirv::Word,
+        ref_window_size: spirv::Word,
+        image_size: spirv::Word,
+    },
+    SubgroupAvcImeConvertToMcePayloadINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeSetMaxMotionVectorCountINTEL {
+        max_motion_vector_count: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeSetUnidirectionalMixDisableINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeSetEarlySearchTerminationThresholdINTEL {
+        threshold: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeSetWeightedSadINTEL {
+        packed_sad_weights: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithSingleReferenceINTEL {
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithDualReferenceINTEL {
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL {
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL {
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL {
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL {
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL {
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    },
+    SubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL {
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+        streamin_components: spirv::Word,
+    },
+    SubgroupAvcImeConvertToMceResultINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeGetSingleReferenceStreaminINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeGetDualReferenceStreaminINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeStripSingleReferenceStreamoutINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeStripDualReferenceStreamoutINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL {
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+    },
+    SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL {
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+    },
+    SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL {
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+    },
+    SubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL {
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+        direction: spirv::Word,
+    },
+    SubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL {
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+        direction: spirv::Word,
+    },
+    SubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL {
+        payload: spirv::Word,
+        major_shape: spirv::Word,
+        direction: spirv::Word,
+    },
+    SubgroupAvcImeGetBorderReachedINTEL {
+        image_select: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeGetTruncatedSearchIndicationINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcFmeInitializeINTEL {
+        src_coord: spirv::Word,
+        motion_vectors: spirv::Word,
+        major_shapes: spirv::Word,
+        minor_shapes: spirv::Word,
+        direction: spirv::Word,
+        pixel_resolution: spirv::Word,
+        sad_adjustment: spirv::Word,
+    },
+    SubgroupAvcBmeInitializeINTEL {
+        src_coord: spirv::Word,
+        motion_vectors: spirv::Word,
+        major_shapes: spirv::Word,
+        minor_shapes: spirv::Word,
+        direction: spirv::Word,
+        pixel_resolution: spirv::Word,
+        bidirectional_weight: spirv::Word,
+        sad_adjustment: spirv::Word,
+    },
+    SubgroupAvcRefConvertToMcePayloadINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcRefSetBidirectionalMixDisableINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcRefSetBilinearFilterEnableINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcRefEvaluateWithSingleReferenceINTEL {
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcRefEvaluateWithDualReferenceINTEL {
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcRefEvaluateWithMultiReferenceINTEL {
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL {
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        packed_reference_field_polarities: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcRefConvertToMceResultINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicInitializeINTEL {
+        src_coord: spirv::Word,
+    },
+    SubgroupAvcSicConfigureSkcINTEL {
+        skip_block_partition_type: Token<Type>,
+        skip_motion_vector_mask: spirv::Word,
+        motion_vectors: spirv::Word,
+        bidirectional_weight: spirv::Word,
+        sad_adjustment: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicConfigureIpeLumaINTEL {
+        luma_intra_partition_mask: spirv::Word,
+        intra_neighbour_availabilty: spirv::Word,
+        left_edge_luma_pixels: spirv::Word,
+        upper_left_corner_luma_pixel: spirv::Word,
+        upper_edge_luma_pixels: spirv::Word,
+        upper_right_edge_luma_pixels: spirv::Word,
+        sad_adjustment: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicConfigureIpeLumaChromaINTEL {
+        luma_intra_partition_mask: spirv::Word,
+        intra_neighbour_availabilty: spirv::Word,
+        left_edge_luma_pixels: spirv::Word,
+        upper_left_corner_luma_pixel: spirv::Word,
+        upper_edge_luma_pixels: spirv::Word,
+        upper_right_edge_luma_pixels: spirv::Word,
+        left_edge_chroma_pixels: spirv::Word,
+        upper_left_corner_chroma_pixel: spirv::Word,
+        upper_edge_chroma_pixels: spirv::Word,
+        sad_adjustment: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetMotionVectorMaskINTEL {
+        skip_block_partition_type: Token<Type>,
+        direction: spirv::Word,
+    },
+    SubgroupAvcSicConvertToMcePayloadINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicSetIntraLumaShapePenaltyINTEL {
+        packed_shape_penalty: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicSetIntraLumaModeCostFunctionINTEL {
+        luma_mode_penalty: spirv::Word,
+        luma_packed_neighbor_modes: spirv::Word,
+        luma_packed_non_dc_penalty: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicSetIntraChromaModeCostFunctionINTEL {
+        chroma_mode_base_penalty: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicSetBilinearFilterEnableINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicSetSkcForwardTransformEnableINTEL {
+        packed_sad_coefficients: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicSetBlockBasedRawSkipSadINTEL {
+        block_based_skip_type: Token<Type>,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicEvaluateIpeINTEL {
+        src_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicEvaluateWithSingleReferenceINTEL {
+        src_image: spirv::Word,
+        ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicEvaluateWithDualReferenceINTEL {
+        src_image: spirv::Word,
+        fwd_ref_image: spirv::Word,
+        bwd_ref_image: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicEvaluateWithMultiReferenceINTEL {
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL {
+        src_image: spirv::Word,
+        packed_reference_ids: spirv::Word,
+        packed_reference_field_polarities: spirv::Word,
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicConvertToMceResultINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetIpeLumaShapeINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetBestIpeLumaDistortionINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetBestIpeChromaDistortionINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetPackedIpeLumaModesINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetIpeChromaModeINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL {
+        payload: spirv::Word,
+    },
+    SubgroupAvcSicGetInterRawSadsINTEL {
+        payload: spirv::Word,
     },
 }

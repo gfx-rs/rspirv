@@ -295,7 +295,12 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         CopyMemory,
         [],
-        [(IdRef, One), (IdRef, One), (MemoryAccess, ZeroOrOne)]
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne),
+            (MemoryAccess, ZeroOrOne)
+        ]
     ),
     inst!(
         CopyMemorySized,
@@ -304,6 +309,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One),
             (IdRef, One),
             (IdRef, One),
+            (MemoryAccess, ZeroOrOne),
             (MemoryAccess, ZeroOrOne)
         ]
     ),
@@ -3214,9 +3220,1013 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(DecorateString, [], [(IdRef, One), (Decoration, One)]),
+    inst!(DecorateStringGOOGLE, [], [(IdRef, One), (Decoration, One)]),
+    inst!(
+        MemberDecorateString,
+        [],
+        [(IdRef, One), (LiteralInteger, One), (Decoration, One)]
+    ),
     inst!(
         MemberDecorateStringGOOGLE,
         [],
         [(IdRef, One), (LiteralInteger, One), (Decoration, One)]
+    ),
+    inst!(
+        VmeImageINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        TypeVmeImageINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        TypeAvcImePayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcRefPayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcSicPayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcMcePayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcMceResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcImeResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcImeResultSingleReferenceStreamoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcImeResultDualReferenceStreamoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcImeSingleReferenceStreaminINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcImeDualReferenceStreaminINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcRefResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        TypeAvcSicResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResult, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultInterShapePenaltyINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceSetInterShapePenaltyINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceSetInterDirectionPenaltyINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        SubgroupAvcMceSetMotionVectorCostFunctionINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationChromaINTEL
+        ],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        SubgroupAvcMceSetAcOnlyHaarINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcMceConvertToImePayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceConvertToImeResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceConvertToRefPayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceConvertToRefResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceConvertToSicPayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceConvertToSicResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetMotionVectorsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetInterDistortionsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetBestInterDistortionsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetInterMajorShapeINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetInterMinorShapeINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetInterDirectionsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetInterMotionVectorCountINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetInterReferenceIdsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeInitializeINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeSetSingleReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeSetDualReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeRefWindowSizeINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeAdjustRefOffsetINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeConvertToMcePayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeSetMaxMotionVectorCountINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeSetUnidirectionalMixDisableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeSetEarlySearchTerminationThresholdINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeSetWeightedSadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithSingleReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithDualReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeConvertToMceResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeGetSingleReferenceStreaminINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeGetDualReferenceStreaminINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeStripSingleReferenceStreamoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeStripDualReferenceStreamoutINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeGetBorderReachedINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcImeGetTruncatedSearchIndicationINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcFmeInitializeINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcBmeInitializeINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcRefConvertToMcePayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcRefSetBidirectionalMixDisableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcRefSetBilinearFilterEnableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcRefEvaluateWithSingleReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcRefEvaluateWithDualReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcRefEvaluateWithMultiReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcRefConvertToMceResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicInitializeINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicConfigureSkcINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicConfigureIpeLumaINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicConfigureIpeLumaChromaINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationChromaINTEL
+        ],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicGetMotionVectorMaskINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicConvertToMcePayloadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicSetIntraLumaShapePenaltyINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicSetIntraLumaModeCostFunctionINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicSetIntraChromaModeCostFunctionINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationChromaINTEL
+        ],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicSetBilinearFilterEnableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicSetSkcForwardTransformEnableINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicSetBlockBasedRawSkipSadINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicEvaluateIpeINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicEvaluateWithSingleReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicEvaluateWithDualReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicEvaluateWithMultiReferenceINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupAvcSicConvertToMceResultINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetIpeLumaShapeINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetBestIpeLumaDistortionINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetBestIpeChromaDistortionINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetPackedIpeLumaModesINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetIpeChromaModeINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationChromaINTEL
+        ],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL,
+        [
+            SubgroupAvcMotionEstimationINTEL,
+            SubgroupAvcMotionEstimationIntraINTEL
+        ],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SubgroupAvcSicGetInterRawSadsINTEL,
+        [SubgroupAvcMotionEstimationINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
 ];

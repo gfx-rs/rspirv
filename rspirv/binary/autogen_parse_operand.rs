@@ -168,6 +168,21 @@ impl<'c, 'd> Parser<'c, 'd> {
         if loop_control.contains(spirv::LoopControl::DEPENDENCY_LENGTH) {
             params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
         }
+        if loop_control.contains(spirv::LoopControl::MIN_ITERATIONS) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::MAX_ITERATIONS) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::ITERATION_MULTIPLE) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::PEEL_COUNT) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::PARTIAL_COUNT) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
         Ok(params)
     }
     fn parse_memory_access_arguments(
@@ -186,6 +201,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         }
         Ok(params)
     }
+    #[allow(unreachable_patterns)]
     fn parse_execution_mode_arguments(
         &mut self,
         execution_mode: spirv::ExecutionMode,
@@ -225,9 +241,28 @@ impl<'c, 'd> Parser<'c, 'd> {
                 dr::Operand::IdRef(self.decoder.id()?),
             ],
             spirv::ExecutionMode::LocalSizeHintId => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::ExecutionMode::DenormPreserve => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::DenormFlushToZero => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::SignedZeroInfNanPreserve => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::RoundingModeRTE => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::RoundingModeRTZ => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::OutputPrimitivesNV => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             _ => vec![],
         })
     }
+    #[allow(unreachable_patterns)]
     fn parse_decoration_arguments(
         &mut self,
         decoration: spirv::Decoration,
@@ -241,6 +276,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
             spirv::Decoration::BuiltIn => vec![dr::Operand::BuiltIn(self.decoder.built_in()?)],
+            spirv::Decoration::UniformId => vec![dr::Operand::IdScope(self.decoder.id()?)],
             spirv::Decoration::Stream => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::Location => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
             spirv::Decoration::Component => vec![dr::Operand::LiteralInt32(self.decoder.int32()?)],
@@ -277,8 +313,12 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::SecondaryViewportRelativeNV => {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
+            spirv::Decoration::CounterBuffer => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::HlslCounterBufferGOOGLE => {
                 vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::Decoration::UserSemantic => {
+                vec![dr::Operand::LiteralString(self.decoder.string()?)]
             }
             spirv::Decoration::HlslSemanticGOOGLE => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]

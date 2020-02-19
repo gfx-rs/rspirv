@@ -7,10 +7,10 @@ pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u8 = 1u8;
 pub const MINOR_VERSION: u8 = 4u8;
 pub const REVISION: u8 = 1u8;
-bitflags! { # [ doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)" ] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; } }
+bitflags! { # [ doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)" ] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; const SIGN_EXTEND = 4096u32 ; const ZERO_EXTEND = 8192u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)" ] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)" ] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)" ] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; } }
+bitflags! { # [ doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)" ] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_control_a_function_control)" ] pub struct FunctionControl : u32 { const NONE = 0u32 ; const INLINE = 1u32 ; const DONT_INLINE = 2u32 ; const PURE = 4u32 ; const CONST = 8u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)" ] pub struct MemorySemantics : u32 { const RELAXED = 0u32 ; const NONE = 0u32 ; const ACQUIRE = 2u32 ; const RELEASE = 4u32 ; const ACQUIRE_RELEASE = 8u32 ; const SEQUENTIALLY_CONSISTENT = 16u32 ; const UNIFORM_MEMORY = 64u32 ; const SUBGROUP_MEMORY = 128u32 ; const WORKGROUP_MEMORY = 256u32 ; const CROSS_WORKGROUP_MEMORY = 512u32 ; const ATOMIC_COUNTER_MEMORY = 1024u32 ; const IMAGE_MEMORY = 2048u32 ; const OUTPUT_MEMORY_KHR = 4096u32 ; const MAKE_AVAILABLE_KHR = 8192u32 ; const MAKE_VISIBLE_KHR = 16384u32 ; } }
 bitflags! { # [ doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_access_a_memory_access)" ] pub struct MemoryAccess : u32 { const NONE = 0u32 ; const VOLATILE = 1u32 ; const ALIGNED = 2u32 ; const NONTEMPORAL = 4u32 ; const MAKE_POINTER_AVAILABLE_KHR = 8u32 ; const MAKE_POINTER_VISIBLE_KHR = 16u32 ; const NON_PRIVATE_POINTER_KHR = 32u32 ; } }
@@ -67,6 +67,14 @@ pub enum ExecutionModel {
     Fragment = 4u32,
     GLCompute = 5u32,
     Kernel = 6u32,
+    TaskNV = 5267u32,
+    MeshNV = 5268u32,
+    RayGenerationNV = 5313u32,
+    IntersectionNV = 5314u32,
+    AnyHitNV = 5315u32,
+    ClosestHitNV = 5316u32,
+    MissNV = 5317u32,
+    CallableNV = 5318u32,
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionModel {
@@ -74,6 +82,13 @@ impl ExecutionModel {
         match self {
             ExecutionModel::Geometry => &[Capability::Geometry],
             ExecutionModel::Kernel => &[Capability::Kernel],
+            ExecutionModel::TaskNV | ExecutionModel::MeshNV => &[Capability::MeshShadingNV],
+            ExecutionModel::RayGenerationNV
+            | ExecutionModel::IntersectionNV
+            | ExecutionModel::AnyHitNV
+            | ExecutionModel::ClosestHitNV
+            | ExecutionModel::MissNV
+            | ExecutionModel::CallableNV => &[Capability::RayTracingNV],
             ExecutionModel::Vertex | ExecutionModel::Fragment | ExecutionModel::GLCompute => {
                 &[Capability::Shader]
             }
@@ -94,6 +109,14 @@ impl num_traits::FromPrimitive for ExecutionModel {
             4u32 => ExecutionModel::Fragment,
             5u32 => ExecutionModel::GLCompute,
             6u32 => ExecutionModel::Kernel,
+            5267u32 => ExecutionModel::TaskNV,
+            5268u32 => ExecutionModel::MeshNV,
+            5313u32 => ExecutionModel::RayGenerationNV,
+            5314u32 => ExecutionModel::IntersectionNV,
+            5315u32 => ExecutionModel::AnyHitNV,
+            5316u32 => ExecutionModel::ClosestHitNV,
+            5317u32 => ExecutionModel::MissNV,
+            5318u32 => ExecutionModel::CallableNV,
             _ => return None,
         })
     }
@@ -108,6 +131,7 @@ pub enum AddressingModel {
     Logical = 0u32,
     Physical32 = 1u32,
     Physical64 = 2u32,
+    PhysicalStorageBuffer64EXT = 5348u32,
 }
 #[allow(non_upper_case_globals)]
 impl AddressingModel {
@@ -115,6 +139,9 @@ impl AddressingModel {
         match self {
             AddressingModel::Logical => &[],
             AddressingModel::Physical32 | AddressingModel::Physical64 => &[Capability::Addresses],
+            AddressingModel::PhysicalStorageBuffer64EXT => {
+                &[Capability::PhysicalStorageBufferAddressesEXT]
+            }
         }
     }
 }
@@ -125,6 +152,7 @@ impl num_traits::FromPrimitive for AddressingModel {
             0u32 => AddressingModel::Logical,
             1u32 => AddressingModel::Physical32,
             2u32 => AddressingModel::Physical64,
+            5348u32 => AddressingModel::PhysicalStorageBuffer64EXT,
             _ => return None,
         })
     }
@@ -209,30 +237,52 @@ pub enum ExecutionMode {
     LocalSizeId = 38u32,
     LocalSizeHintId = 39u32,
     PostDepthCoverage = 4446u32,
+    DenormPreserve = 4459u32,
+    DenormFlushToZero = 4460u32,
+    SignedZeroInfNanPreserve = 4461u32,
+    RoundingModeRTE = 4462u32,
+    RoundingModeRTZ = 4463u32,
     StencilRefReplacingEXT = 5027u32,
+    OutputLinesNV = 5269u32,
+    OutputPrimitivesNV = 5270u32,
+    DerivativeGroupQuadsNV = 5289u32,
+    DerivativeGroupLinearNV = 5290u32,
+    OutputTrianglesNV = 5298u32,
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionMode {
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ExecutionMode::LocalSize | ExecutionMode::LocalSizeId => &[],
+            ExecutionMode::DerivativeGroupLinearNV => &[Capability::ComputeDerivativeGroupLinearNV],
+            ExecutionMode::DerivativeGroupQuadsNV => &[Capability::ComputeDerivativeGroupQuadsNV],
+            ExecutionMode::DenormFlushToZero => &[Capability::DenormFlushToZero],
+            ExecutionMode::DenormPreserve => &[Capability::DenormPreserve],
             ExecutionMode::Invocations
             | ExecutionMode::InputPoints
             | ExecutionMode::InputLines
             | ExecutionMode::InputLinesAdjacency
             | ExecutionMode::InputTrianglesAdjacency
-            | ExecutionMode::OutputPoints
             | ExecutionMode::OutputLineStrip
             | ExecutionMode::OutputTriangleStrip => &[Capability::Geometry],
-            ExecutionMode::Triangles | ExecutionMode::OutputVertices => {
-                &[Capability::Geometry, Capability::Tessellation]
-            }
+            ExecutionMode::OutputPoints => &[Capability::Geometry, Capability::MeshShadingNV],
+            ExecutionMode::Triangles => &[Capability::Geometry, Capability::Tessellation],
+            ExecutionMode::OutputVertices => &[
+                Capability::Geometry,
+                Capability::Tessellation,
+                Capability::MeshShadingNV,
+            ],
             ExecutionMode::LocalSizeHint
             | ExecutionMode::VecTypeHint
             | ExecutionMode::ContractionOff
             | ExecutionMode::Initializer
             | ExecutionMode::Finalizer
             | ExecutionMode::LocalSizeHintId => &[Capability::Kernel],
+            ExecutionMode::OutputLinesNV
+            | ExecutionMode::OutputPrimitivesNV
+            | ExecutionMode::OutputTrianglesNV => &[Capability::MeshShadingNV],
+            ExecutionMode::RoundingModeRTE => &[Capability::RoundingModeRTE],
+            ExecutionMode::RoundingModeRTZ => &[Capability::RoundingModeRTZ],
             ExecutionMode::PostDepthCoverage => &[Capability::SampleMaskPostDepthCoverage],
             ExecutionMode::PixelCenterInteger
             | ExecutionMode::OriginUpperLeft
@@ -242,6 +292,7 @@ impl ExecutionMode {
             | ExecutionMode::DepthGreater
             | ExecutionMode::DepthLess
             | ExecutionMode::DepthUnchanged => &[Capability::Shader],
+            ExecutionMode::SignedZeroInfNanPreserve => &[Capability::SignedZeroInfNanPreserve],
             ExecutionMode::StencilRefReplacingEXT => &[Capability::StencilExportEXT],
             ExecutionMode::SubgroupSize
             | ExecutionMode::SubgroupsPerWorkgroup
@@ -301,7 +352,17 @@ impl num_traits::FromPrimitive for ExecutionMode {
             38u32 => ExecutionMode::LocalSizeId,
             39u32 => ExecutionMode::LocalSizeHintId,
             4446u32 => ExecutionMode::PostDepthCoverage,
+            4459u32 => ExecutionMode::DenormPreserve,
+            4460u32 => ExecutionMode::DenormFlushToZero,
+            4461u32 => ExecutionMode::SignedZeroInfNanPreserve,
+            4462u32 => ExecutionMode::RoundingModeRTE,
+            4463u32 => ExecutionMode::RoundingModeRTZ,
             5027u32 => ExecutionMode::StencilRefReplacingEXT,
+            5269u32 => ExecutionMode::OutputLinesNV,
+            5270u32 => ExecutionMode::OutputPrimitivesNV,
+            5289u32 => ExecutionMode::DerivativeGroupQuadsNV,
+            5290u32 => ExecutionMode::DerivativeGroupLinearNV,
+            5298u32 => ExecutionMode::OutputTrianglesNV,
             _ => return None,
         })
     }
@@ -326,6 +387,13 @@ pub enum StorageClass {
     AtomicCounter = 10u32,
     Image = 11u32,
     StorageBuffer = 12u32,
+    CallableDataNV = 5328u32,
+    IncomingCallableDataNV = 5329u32,
+    RayPayloadNV = 5338u32,
+    HitAttributeNV = 5339u32,
+    IncomingRayPayloadNV = 5342u32,
+    ShaderRecordBufferNV = 5343u32,
+    PhysicalStorageBufferEXT = 5349u32,
 }
 #[allow(non_upper_case_globals)]
 impl StorageClass {
@@ -339,6 +407,15 @@ impl StorageClass {
             | StorageClass::Image => &[],
             StorageClass::AtomicCounter => &[Capability::AtomicStorage],
             StorageClass::Generic => &[Capability::GenericPointer],
+            StorageClass::PhysicalStorageBufferEXT => {
+                &[Capability::PhysicalStorageBufferAddressesEXT]
+            }
+            StorageClass::CallableDataNV
+            | StorageClass::IncomingCallableDataNV
+            | StorageClass::RayPayloadNV
+            | StorageClass::HitAttributeNV
+            | StorageClass::IncomingRayPayloadNV
+            | StorageClass::ShaderRecordBufferNV => &[Capability::RayTracingNV],
             StorageClass::Uniform
             | StorageClass::Output
             | StorageClass::Private
@@ -364,6 +441,13 @@ impl num_traits::FromPrimitive for StorageClass {
             10u32 => StorageClass::AtomicCounter,
             11u32 => StorageClass::Image,
             12u32 => StorageClass::StorageBuffer,
+            5328u32 => StorageClass::CallableDataNV,
+            5329u32 => StorageClass::IncomingCallableDataNV,
+            5338u32 => StorageClass::RayPayloadNV,
+            5339u32 => StorageClass::HitAttributeNV,
+            5342u32 => StorageClass::IncomingRayPayloadNV,
+            5343u32 => StorageClass::ShaderRecordBufferNV,
+            5349u32 => StorageClass::PhysicalStorageBufferEXT,
             _ => return None,
         })
     }
@@ -957,6 +1041,7 @@ pub enum Decoration {
     NonWritable = 24u32,
     NonReadable = 25u32,
     Uniform = 26u32,
+    UniformId = 27u32,
     SaturatedConversion = 28u32,
     Stream = 29u32,
     Location = 30u32,
@@ -977,17 +1062,27 @@ pub enum Decoration {
     MaxByteOffset = 45u32,
     AlignmentId = 46u32,
     MaxByteOffsetId = 47u32,
+    NoSignedWrap = 4469u32,
+    NoUnsignedWrap = 4470u32,
     ExplicitInterpAMD = 4999u32,
     OverrideCoverageNV = 5248u32,
     PassthroughNV = 5250u32,
     ViewportRelativeNV = 5252u32,
     SecondaryViewportRelativeNV = 5256u32,
+    PerPrimitiveNV = 5271u32,
+    PerViewNV = 5272u32,
+    PerTaskNV = 5273u32,
+    PerVertexNV = 5285u32,
     NonUniformEXT = 5300u32,
-    HlslCounterBufferGOOGLE = 5634u32,
-    HlslSemanticGOOGLE = 5635u32,
+    CounterBuffer = 5634u32,
+    UserSemantic = 5635u32,
+    RestrictPointerEXT = 5355u32,
+    AliasedPointerEXT = 5356u32,
 }
 #[allow(non_upper_case_globals)]
 impl Decoration {
+    pub const HlslCounterBufferGOOGLE: Decoration = Decoration::CounterBuffer;
+    pub const HlslSemanticGOOGLE: Decoration = Decoration::UserSemantic;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Decoration::BuiltIn
@@ -998,10 +1093,13 @@ impl Decoration {
             | Decoration::NonWritable
             | Decoration::NonReadable
             | Decoration::FPRoundingMode
+            | Decoration::NoSignedWrap
+            | Decoration::NoUnsignedWrap
             | Decoration::ExplicitInterpAMD
-            | Decoration::HlslCounterBufferGOOGLE
-            | Decoration::HlslSemanticGOOGLE => &[],
+            | Decoration::CounterBuffer
+            | Decoration::UserSemantic => &[],
             Decoration::MaxByteOffset | Decoration::MaxByteOffsetId => &[Capability::Addresses],
+            Decoration::PerVertexNV => &[Capability::FragmentBarycentricNV],
             Decoration::PassthroughNV => &[Capability::GeometryShaderPassthroughNV],
             Decoration::Stream => &[Capability::GeometryStreams],
             Decoration::InputAttachmentIndex => &[Capability::InputAttachment],
@@ -1016,6 +1114,12 @@ impl Decoration {
             Decoration::RowMajor | Decoration::ColMajor | Decoration::MatrixStride => {
                 &[Capability::Matrix]
             }
+            Decoration::PerPrimitiveNV | Decoration::PerViewNV | Decoration::PerTaskNV => {
+                &[Capability::MeshShadingNV]
+            }
+            Decoration::RestrictPointerEXT | Decoration::AliasedPointerEXT => {
+                &[Capability::PhysicalStorageBufferAddressesEXT]
+            }
             Decoration::OverrideCoverageNV => &[Capability::SampleMaskOverrideCoverageNV],
             Decoration::Sample => &[Capability::SampleRateShading],
             Decoration::RelaxedPrecision
@@ -1029,6 +1133,7 @@ impl Decoration {
             | Decoration::Centroid
             | Decoration::Invariant
             | Decoration::Uniform
+            | Decoration::UniformId
             | Decoration::Location
             | Decoration::Component
             | Decoration::Index
@@ -1075,6 +1180,7 @@ impl num_traits::FromPrimitive for Decoration {
             24u32 => Decoration::NonWritable,
             25u32 => Decoration::NonReadable,
             26u32 => Decoration::Uniform,
+            27u32 => Decoration::UniformId,
             28u32 => Decoration::SaturatedConversion,
             29u32 => Decoration::Stream,
             30u32 => Decoration::Location,
@@ -1095,14 +1201,22 @@ impl num_traits::FromPrimitive for Decoration {
             45u32 => Decoration::MaxByteOffset,
             46u32 => Decoration::AlignmentId,
             47u32 => Decoration::MaxByteOffsetId,
+            4469u32 => Decoration::NoSignedWrap,
+            4470u32 => Decoration::NoUnsignedWrap,
             4999u32 => Decoration::ExplicitInterpAMD,
             5248u32 => Decoration::OverrideCoverageNV,
             5250u32 => Decoration::PassthroughNV,
             5252u32 => Decoration::ViewportRelativeNV,
             5256u32 => Decoration::SecondaryViewportRelativeNV,
+            5271u32 => Decoration::PerPrimitiveNV,
+            5272u32 => Decoration::PerViewNV,
+            5273u32 => Decoration::PerTaskNV,
+            5285u32 => Decoration::PerVertexNV,
             5300u32 => Decoration::NonUniformEXT,
-            5634u32 => Decoration::HlslCounterBufferGOOGLE,
-            5635u32 => Decoration::HlslSemanticGOOGLE,
+            5634u32 => Decoration::CounterBuffer,
+            5635u32 => Decoration::UserSemantic,
+            5355u32 => Decoration::RestrictPointerEXT,
+            5356u32 => Decoration::AliasedPointerEXT,
             _ => return None,
         })
     }
@@ -1179,6 +1293,32 @@ pub enum BuiltIn {
     PositionPerViewNV = 5261u32,
     ViewportMaskPerViewNV = 5262u32,
     FullyCoveredEXT = 5264u32,
+    TaskCountNV = 5274u32,
+    PrimitiveCountNV = 5275u32,
+    PrimitiveIndicesNV = 5276u32,
+    ClipDistancePerViewNV = 5277u32,
+    CullDistancePerViewNV = 5278u32,
+    LayerPerViewNV = 5279u32,
+    MeshViewCountNV = 5280u32,
+    MeshViewIndicesNV = 5281u32,
+    BaryCoordNV = 5286u32,
+    BaryCoordNoPerspNV = 5287u32,
+    FragSizeEXT = 5292u32,
+    FragInvocationCountEXT = 5293u32,
+    LaunchIdNV = 5319u32,
+    LaunchSizeNV = 5320u32,
+    WorldRayOriginNV = 5321u32,
+    WorldRayDirectionNV = 5322u32,
+    ObjectRayOriginNV = 5323u32,
+    ObjectRayDirectionNV = 5324u32,
+    RayTminNV = 5325u32,
+    RayTmaxNV = 5326u32,
+    InstanceCustomIndexNV = 5327u32,
+    ObjectToWorldNV = 5330u32,
+    WorldToObjectNV = 5331u32,
+    HitTNV = 5332u32,
+    HitKindNV = 5333u32,
+    IncomingRayFlagsNV = 5351u32,
 }
 #[allow(non_upper_case_globals)]
 impl BuiltIn {
@@ -1187,6 +1327,8 @@ impl BuiltIn {
     pub const SubgroupGtMaskKHR: BuiltIn = BuiltIn::SubgroupGtMask;
     pub const SubgroupLeMaskKHR: BuiltIn = BuiltIn::SubgroupLeMask;
     pub const SubgroupLtMaskKHR: BuiltIn = BuiltIn::SubgroupLtMask;
+    pub const FragmentSizeNV: BuiltIn = BuiltIn::FragSizeEXT;
+    pub const InvocationsPerPixelNV: BuiltIn = BuiltIn::FragInvocationCountEXT;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             BuiltIn::NumWorkgroups
@@ -1205,14 +1347,22 @@ impl BuiltIn {
             BuiltIn::ClipDistance => &[Capability::ClipDistance],
             BuiltIn::CullDistance => &[Capability::CullDistance],
             BuiltIn::DeviceIndex => &[Capability::DeviceGroup],
-            BuiltIn::BaseVertex | BuiltIn::BaseInstance | BuiltIn::DrawIndex => {
-                &[Capability::DrawParameters]
+            BuiltIn::BaseVertex | BuiltIn::BaseInstance => &[Capability::DrawParameters],
+            BuiltIn::DrawIndex => &[Capability::DrawParameters, Capability::MeshShadingNV],
+            BuiltIn::BaryCoordNV | BuiltIn::BaryCoordNoPerspNV => {
+                &[Capability::FragmentBarycentricNV]
+            }
+            BuiltIn::FragSizeEXT | BuiltIn::FragInvocationCountEXT => {
+                &[Capability::FragmentDensityEXT, Capability::ShadingRateNV]
             }
             BuiltIn::FullyCoveredEXT => &[Capability::FragmentFullyCoveredEXT],
             BuiltIn::Layer => &[Capability::Geometry],
-            BuiltIn::PrimitiveId | BuiltIn::InvocationId => {
-                &[Capability::Geometry, Capability::Tessellation]
-            }
+            BuiltIn::InvocationId => &[Capability::Geometry, Capability::Tessellation],
+            BuiltIn::PrimitiveId => &[
+                Capability::Geometry,
+                Capability::Tessellation,
+                Capability::RayTracingNV,
+            ],
             BuiltIn::WorkDim
             | BuiltIn::GlobalSize
             | BuiltIn::EnqueuedWorkgroupSize
@@ -1228,11 +1378,33 @@ impl BuiltIn {
                 Capability::GroupNonUniform,
                 Capability::SubgroupBallotKHR,
             ],
+            BuiltIn::TaskCountNV
+            | BuiltIn::PrimitiveCountNV
+            | BuiltIn::PrimitiveIndicesNV
+            | BuiltIn::ClipDistancePerViewNV
+            | BuiltIn::CullDistancePerViewNV
+            | BuiltIn::LayerPerViewNV
+            | BuiltIn::MeshViewCountNV
+            | BuiltIn::MeshViewIndicesNV => &[Capability::MeshShadingNV],
             BuiltIn::ViewIndex => &[Capability::MultiView],
             BuiltIn::ViewportIndex => &[Capability::MultiViewport],
             BuiltIn::PositionPerViewNV | BuiltIn::ViewportMaskPerViewNV => {
-                &[Capability::PerViewAttributesNV]
+                &[Capability::PerViewAttributesNV, Capability::MeshShadingNV]
             }
+            BuiltIn::LaunchIdNV
+            | BuiltIn::LaunchSizeNV
+            | BuiltIn::WorldRayOriginNV
+            | BuiltIn::WorldRayDirectionNV
+            | BuiltIn::ObjectRayOriginNV
+            | BuiltIn::ObjectRayDirectionNV
+            | BuiltIn::RayTminNV
+            | BuiltIn::RayTmaxNV
+            | BuiltIn::InstanceCustomIndexNV
+            | BuiltIn::ObjectToWorldNV
+            | BuiltIn::WorldToObjectNV
+            | BuiltIn::HitTNV
+            | BuiltIn::HitKindNV
+            | BuiltIn::IncomingRayFlagsNV => &[Capability::RayTracingNV],
             BuiltIn::SampleId | BuiltIn::SamplePosition => &[Capability::SampleRateShading],
             BuiltIn::Position
             | BuiltIn::PointSize
@@ -1249,7 +1421,9 @@ impl BuiltIn {
             BuiltIn::SecondaryPositionNV | BuiltIn::SecondaryViewportMaskNV => {
                 &[Capability::ShaderStereoViewNV]
             }
-            BuiltIn::ViewportMaskNV => &[Capability::ShaderViewportMaskNV],
+            BuiltIn::ViewportMaskNV => {
+                &[Capability::ShaderViewportMaskNV, Capability::MeshShadingNV]
+            }
             BuiltIn::FragStencilRefEXT => &[Capability::StencilExportEXT],
             BuiltIn::SubgroupEqMask
             | BuiltIn::SubgroupGeMask
@@ -1335,6 +1509,32 @@ impl num_traits::FromPrimitive for BuiltIn {
             5261u32 => BuiltIn::PositionPerViewNV,
             5262u32 => BuiltIn::ViewportMaskPerViewNV,
             5264u32 => BuiltIn::FullyCoveredEXT,
+            5274u32 => BuiltIn::TaskCountNV,
+            5275u32 => BuiltIn::PrimitiveCountNV,
+            5276u32 => BuiltIn::PrimitiveIndicesNV,
+            5277u32 => BuiltIn::ClipDistancePerViewNV,
+            5278u32 => BuiltIn::CullDistancePerViewNV,
+            5279u32 => BuiltIn::LayerPerViewNV,
+            5280u32 => BuiltIn::MeshViewCountNV,
+            5281u32 => BuiltIn::MeshViewIndicesNV,
+            5286u32 => BuiltIn::BaryCoordNV,
+            5287u32 => BuiltIn::BaryCoordNoPerspNV,
+            5292u32 => BuiltIn::FragSizeEXT,
+            5293u32 => BuiltIn::FragInvocationCountEXT,
+            5319u32 => BuiltIn::LaunchIdNV,
+            5320u32 => BuiltIn::LaunchSizeNV,
+            5321u32 => BuiltIn::WorldRayOriginNV,
+            5322u32 => BuiltIn::WorldRayDirectionNV,
+            5323u32 => BuiltIn::ObjectRayOriginNV,
+            5324u32 => BuiltIn::ObjectRayDirectionNV,
+            5325u32 => BuiltIn::RayTminNV,
+            5326u32 => BuiltIn::RayTmaxNV,
+            5327u32 => BuiltIn::InstanceCustomIndexNV,
+            5330u32 => BuiltIn::ObjectToWorldNV,
+            5331u32 => BuiltIn::WorldToObjectNV,
+            5332u32 => BuiltIn::HitTNV,
+            5333u32 => BuiltIn::HitKindNV,
+            5351u32 => BuiltIn::IncomingRayFlagsNV,
             _ => return None,
         })
     }
@@ -2285,7 +2485,130 @@ pub enum Op {
     SubgroupImageMediaBlockReadINTEL = 5580u32,
     SubgroupImageMediaBlockWriteINTEL = 5581u32,
     DecorateString = 5632u32,
-    MemberDecorateStringGOOGLE = 5633u32,
+    MemberDecorateString = 5633u32,
+    VmeImageINTEL = 5699u32,
+    TypeVmeImageINTEL = 5700u32,
+    TypeAvcImePayloadINTEL = 5701u32,
+    TypeAvcRefPayloadINTEL = 5702u32,
+    TypeAvcSicPayloadINTEL = 5703u32,
+    TypeAvcMcePayloadINTEL = 5704u32,
+    TypeAvcMceResultINTEL = 5705u32,
+    TypeAvcImeResultINTEL = 5706u32,
+    TypeAvcImeResultSingleReferenceStreamoutINTEL = 5707u32,
+    TypeAvcImeResultDualReferenceStreamoutINTEL = 5708u32,
+    TypeAvcImeSingleReferenceStreaminINTEL = 5709u32,
+    TypeAvcImeDualReferenceStreaminINTEL = 5710u32,
+    TypeAvcRefResultINTEL = 5711u32,
+    TypeAvcSicResultINTEL = 5712u32,
+    SubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL = 5713u32,
+    SubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL = 5714u32,
+    SubgroupAvcMceGetDefaultInterShapePenaltyINTEL = 5715u32,
+    SubgroupAvcMceSetInterShapePenaltyINTEL = 5716u32,
+    SubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL = 5717u32,
+    SubgroupAvcMceSetInterDirectionPenaltyINTEL = 5718u32,
+    SubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL = 5719u32,
+    SubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL = 5720u32,
+    SubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL = 5721u32,
+    SubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL = 5722u32,
+    SubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL = 5723u32,
+    SubgroupAvcMceSetMotionVectorCostFunctionINTEL = 5724u32,
+    SubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL = 5725u32,
+    SubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL = 5726u32,
+    SubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL = 5727u32,
+    SubgroupAvcMceSetAcOnlyHaarINTEL = 5728u32,
+    SubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL = 5729u32,
+    SubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL = 5730u32,
+    SubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL = 5731u32,
+    SubgroupAvcMceConvertToImePayloadINTEL = 5732u32,
+    SubgroupAvcMceConvertToImeResultINTEL = 5733u32,
+    SubgroupAvcMceConvertToRefPayloadINTEL = 5734u32,
+    SubgroupAvcMceConvertToRefResultINTEL = 5735u32,
+    SubgroupAvcMceConvertToSicPayloadINTEL = 5736u32,
+    SubgroupAvcMceConvertToSicResultINTEL = 5737u32,
+    SubgroupAvcMceGetMotionVectorsINTEL = 5738u32,
+    SubgroupAvcMceGetInterDistortionsINTEL = 5739u32,
+    SubgroupAvcMceGetBestInterDistortionsINTEL = 5740u32,
+    SubgroupAvcMceGetInterMajorShapeINTEL = 5741u32,
+    SubgroupAvcMceGetInterMinorShapeINTEL = 5742u32,
+    SubgroupAvcMceGetInterDirectionsINTEL = 5743u32,
+    SubgroupAvcMceGetInterMotionVectorCountINTEL = 5744u32,
+    SubgroupAvcMceGetInterReferenceIdsINTEL = 5745u32,
+    SubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL = 5746u32,
+    SubgroupAvcImeInitializeINTEL = 5747u32,
+    SubgroupAvcImeSetSingleReferenceINTEL = 5748u32,
+    SubgroupAvcImeSetDualReferenceINTEL = 5749u32,
+    SubgroupAvcImeRefWindowSizeINTEL = 5750u32,
+    SubgroupAvcImeAdjustRefOffsetINTEL = 5751u32,
+    SubgroupAvcImeConvertToMcePayloadINTEL = 5752u32,
+    SubgroupAvcImeSetMaxMotionVectorCountINTEL = 5753u32,
+    SubgroupAvcImeSetUnidirectionalMixDisableINTEL = 5754u32,
+    SubgroupAvcImeSetEarlySearchTerminationThresholdINTEL = 5755u32,
+    SubgroupAvcImeSetWeightedSadINTEL = 5756u32,
+    SubgroupAvcImeEvaluateWithSingleReferenceINTEL = 5757u32,
+    SubgroupAvcImeEvaluateWithDualReferenceINTEL = 5758u32,
+    SubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL = 5759u32,
+    SubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL = 5760u32,
+    SubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL = 5761u32,
+    SubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL = 5762u32,
+    SubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL = 5763u32,
+    SubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL = 5764u32,
+    SubgroupAvcImeConvertToMceResultINTEL = 5765u32,
+    SubgroupAvcImeGetSingleReferenceStreaminINTEL = 5766u32,
+    SubgroupAvcImeGetDualReferenceStreaminINTEL = 5767u32,
+    SubgroupAvcImeStripSingleReferenceStreamoutINTEL = 5768u32,
+    SubgroupAvcImeStripDualReferenceStreamoutINTEL = 5769u32,
+    SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL = 5770u32,
+    SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL = 5771u32,
+    SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL = 5772u32,
+    SubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL = 5773u32,
+    SubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL = 5774u32,
+    SubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL = 5775u32,
+    SubgroupAvcImeGetBorderReachedINTEL = 5776u32,
+    SubgroupAvcImeGetTruncatedSearchIndicationINTEL = 5777u32,
+    SubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL = 5778u32,
+    SubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL = 5779u32,
+    SubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL = 5780u32,
+    SubgroupAvcFmeInitializeINTEL = 5781u32,
+    SubgroupAvcBmeInitializeINTEL = 5782u32,
+    SubgroupAvcRefConvertToMcePayloadINTEL = 5783u32,
+    SubgroupAvcRefSetBidirectionalMixDisableINTEL = 5784u32,
+    SubgroupAvcRefSetBilinearFilterEnableINTEL = 5785u32,
+    SubgroupAvcRefEvaluateWithSingleReferenceINTEL = 5786u32,
+    SubgroupAvcRefEvaluateWithDualReferenceINTEL = 5787u32,
+    SubgroupAvcRefEvaluateWithMultiReferenceINTEL = 5788u32,
+    SubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL = 5789u32,
+    SubgroupAvcRefConvertToMceResultINTEL = 5790u32,
+    SubgroupAvcSicInitializeINTEL = 5791u32,
+    SubgroupAvcSicConfigureSkcINTEL = 5792u32,
+    SubgroupAvcSicConfigureIpeLumaINTEL = 5793u32,
+    SubgroupAvcSicConfigureIpeLumaChromaINTEL = 5794u32,
+    SubgroupAvcSicGetMotionVectorMaskINTEL = 5795u32,
+    SubgroupAvcSicConvertToMcePayloadINTEL = 5796u32,
+    SubgroupAvcSicSetIntraLumaShapePenaltyINTEL = 5797u32,
+    SubgroupAvcSicSetIntraLumaModeCostFunctionINTEL = 5798u32,
+    SubgroupAvcSicSetIntraChromaModeCostFunctionINTEL = 5799u32,
+    SubgroupAvcSicSetBilinearFilterEnableINTEL = 5800u32,
+    SubgroupAvcSicSetSkcForwardTransformEnableINTEL = 5801u32,
+    SubgroupAvcSicSetBlockBasedRawSkipSadINTEL = 5802u32,
+    SubgroupAvcSicEvaluateIpeINTEL = 5803u32,
+    SubgroupAvcSicEvaluateWithSingleReferenceINTEL = 5804u32,
+    SubgroupAvcSicEvaluateWithDualReferenceINTEL = 5805u32,
+    SubgroupAvcSicEvaluateWithMultiReferenceINTEL = 5806u32,
+    SubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL = 5807u32,
+    SubgroupAvcSicConvertToMceResultINTEL = 5808u32,
+    SubgroupAvcSicGetIpeLumaShapeINTEL = 5809u32,
+    SubgroupAvcSicGetBestIpeLumaDistortionINTEL = 5810u32,
+    SubgroupAvcSicGetBestIpeChromaDistortionINTEL = 5811u32,
+    SubgroupAvcSicGetPackedIpeLumaModesINTEL = 5812u32,
+    SubgroupAvcSicGetIpeChromaModeINTEL = 5813u32,
+    SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL = 5814u32,
+    SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL = 5815u32,
+    SubgroupAvcSicGetInterRawSadsINTEL = 5816u32,
+}
+#[allow(non_upper_case_globals)]
+impl Op {
+    pub const DecorateStringGOOGLE: Op = Op::DecorateString;
+    pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
 }
 impl num_traits::FromPrimitive for Op {
     #[allow(trivial_numeric_casts)]
@@ -2676,7 +2999,125 @@ impl num_traits::FromPrimitive for Op {
             5580u32 => Op::SubgroupImageMediaBlockReadINTEL,
             5581u32 => Op::SubgroupImageMediaBlockWriteINTEL,
             5632u32 => Op::DecorateString,
-            5633u32 => Op::MemberDecorateStringGOOGLE,
+            5633u32 => Op::MemberDecorateString,
+            5699u32 => Op::VmeImageINTEL,
+            5700u32 => Op::TypeVmeImageINTEL,
+            5701u32 => Op::TypeAvcImePayloadINTEL,
+            5702u32 => Op::TypeAvcRefPayloadINTEL,
+            5703u32 => Op::TypeAvcSicPayloadINTEL,
+            5704u32 => Op::TypeAvcMcePayloadINTEL,
+            5705u32 => Op::TypeAvcMceResultINTEL,
+            5706u32 => Op::TypeAvcImeResultINTEL,
+            5707u32 => Op::TypeAvcImeResultSingleReferenceStreamoutINTEL,
+            5708u32 => Op::TypeAvcImeResultDualReferenceStreamoutINTEL,
+            5709u32 => Op::TypeAvcImeSingleReferenceStreaminINTEL,
+            5710u32 => Op::TypeAvcImeDualReferenceStreaminINTEL,
+            5711u32 => Op::TypeAvcRefResultINTEL,
+            5712u32 => Op::TypeAvcSicResultINTEL,
+            5713u32 => Op::SubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL,
+            5714u32 => Op::SubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL,
+            5715u32 => Op::SubgroupAvcMceGetDefaultInterShapePenaltyINTEL,
+            5716u32 => Op::SubgroupAvcMceSetInterShapePenaltyINTEL,
+            5717u32 => Op::SubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL,
+            5718u32 => Op::SubgroupAvcMceSetInterDirectionPenaltyINTEL,
+            5719u32 => Op::SubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL,
+            5720u32 => Op::SubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL,
+            5721u32 => Op::SubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL,
+            5722u32 => Op::SubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL,
+            5723u32 => Op::SubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL,
+            5724u32 => Op::SubgroupAvcMceSetMotionVectorCostFunctionINTEL,
+            5725u32 => Op::SubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL,
+            5726u32 => Op::SubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL,
+            5727u32 => Op::SubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL,
+            5728u32 => Op::SubgroupAvcMceSetAcOnlyHaarINTEL,
+            5729u32 => Op::SubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL,
+            5730u32 => Op::SubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL,
+            5731u32 => Op::SubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL,
+            5732u32 => Op::SubgroupAvcMceConvertToImePayloadINTEL,
+            5733u32 => Op::SubgroupAvcMceConvertToImeResultINTEL,
+            5734u32 => Op::SubgroupAvcMceConvertToRefPayloadINTEL,
+            5735u32 => Op::SubgroupAvcMceConvertToRefResultINTEL,
+            5736u32 => Op::SubgroupAvcMceConvertToSicPayloadINTEL,
+            5737u32 => Op::SubgroupAvcMceConvertToSicResultINTEL,
+            5738u32 => Op::SubgroupAvcMceGetMotionVectorsINTEL,
+            5739u32 => Op::SubgroupAvcMceGetInterDistortionsINTEL,
+            5740u32 => Op::SubgroupAvcMceGetBestInterDistortionsINTEL,
+            5741u32 => Op::SubgroupAvcMceGetInterMajorShapeINTEL,
+            5742u32 => Op::SubgroupAvcMceGetInterMinorShapeINTEL,
+            5743u32 => Op::SubgroupAvcMceGetInterDirectionsINTEL,
+            5744u32 => Op::SubgroupAvcMceGetInterMotionVectorCountINTEL,
+            5745u32 => Op::SubgroupAvcMceGetInterReferenceIdsINTEL,
+            5746u32 => Op::SubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL,
+            5747u32 => Op::SubgroupAvcImeInitializeINTEL,
+            5748u32 => Op::SubgroupAvcImeSetSingleReferenceINTEL,
+            5749u32 => Op::SubgroupAvcImeSetDualReferenceINTEL,
+            5750u32 => Op::SubgroupAvcImeRefWindowSizeINTEL,
+            5751u32 => Op::SubgroupAvcImeAdjustRefOffsetINTEL,
+            5752u32 => Op::SubgroupAvcImeConvertToMcePayloadINTEL,
+            5753u32 => Op::SubgroupAvcImeSetMaxMotionVectorCountINTEL,
+            5754u32 => Op::SubgroupAvcImeSetUnidirectionalMixDisableINTEL,
+            5755u32 => Op::SubgroupAvcImeSetEarlySearchTerminationThresholdINTEL,
+            5756u32 => Op::SubgroupAvcImeSetWeightedSadINTEL,
+            5757u32 => Op::SubgroupAvcImeEvaluateWithSingleReferenceINTEL,
+            5758u32 => Op::SubgroupAvcImeEvaluateWithDualReferenceINTEL,
+            5759u32 => Op::SubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL,
+            5760u32 => Op::SubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL,
+            5761u32 => Op::SubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL,
+            5762u32 => Op::SubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL,
+            5763u32 => Op::SubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL,
+            5764u32 => Op::SubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL,
+            5765u32 => Op::SubgroupAvcImeConvertToMceResultINTEL,
+            5766u32 => Op::SubgroupAvcImeGetSingleReferenceStreaminINTEL,
+            5767u32 => Op::SubgroupAvcImeGetDualReferenceStreaminINTEL,
+            5768u32 => Op::SubgroupAvcImeStripSingleReferenceStreamoutINTEL,
+            5769u32 => Op::SubgroupAvcImeStripDualReferenceStreamoutINTEL,
+            5770u32 => Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL,
+            5771u32 => Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL,
+            5772u32 => Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL,
+            5773u32 => Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL,
+            5774u32 => Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL,
+            5775u32 => Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL,
+            5776u32 => Op::SubgroupAvcImeGetBorderReachedINTEL,
+            5777u32 => Op::SubgroupAvcImeGetTruncatedSearchIndicationINTEL,
+            5778u32 => Op::SubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL,
+            5779u32 => Op::SubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL,
+            5780u32 => Op::SubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL,
+            5781u32 => Op::SubgroupAvcFmeInitializeINTEL,
+            5782u32 => Op::SubgroupAvcBmeInitializeINTEL,
+            5783u32 => Op::SubgroupAvcRefConvertToMcePayloadINTEL,
+            5784u32 => Op::SubgroupAvcRefSetBidirectionalMixDisableINTEL,
+            5785u32 => Op::SubgroupAvcRefSetBilinearFilterEnableINTEL,
+            5786u32 => Op::SubgroupAvcRefEvaluateWithSingleReferenceINTEL,
+            5787u32 => Op::SubgroupAvcRefEvaluateWithDualReferenceINTEL,
+            5788u32 => Op::SubgroupAvcRefEvaluateWithMultiReferenceINTEL,
+            5789u32 => Op::SubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL,
+            5790u32 => Op::SubgroupAvcRefConvertToMceResultINTEL,
+            5791u32 => Op::SubgroupAvcSicInitializeINTEL,
+            5792u32 => Op::SubgroupAvcSicConfigureSkcINTEL,
+            5793u32 => Op::SubgroupAvcSicConfigureIpeLumaINTEL,
+            5794u32 => Op::SubgroupAvcSicConfigureIpeLumaChromaINTEL,
+            5795u32 => Op::SubgroupAvcSicGetMotionVectorMaskINTEL,
+            5796u32 => Op::SubgroupAvcSicConvertToMcePayloadINTEL,
+            5797u32 => Op::SubgroupAvcSicSetIntraLumaShapePenaltyINTEL,
+            5798u32 => Op::SubgroupAvcSicSetIntraLumaModeCostFunctionINTEL,
+            5799u32 => Op::SubgroupAvcSicSetIntraChromaModeCostFunctionINTEL,
+            5800u32 => Op::SubgroupAvcSicSetBilinearFilterEnableINTEL,
+            5801u32 => Op::SubgroupAvcSicSetSkcForwardTransformEnableINTEL,
+            5802u32 => Op::SubgroupAvcSicSetBlockBasedRawSkipSadINTEL,
+            5803u32 => Op::SubgroupAvcSicEvaluateIpeINTEL,
+            5804u32 => Op::SubgroupAvcSicEvaluateWithSingleReferenceINTEL,
+            5805u32 => Op::SubgroupAvcSicEvaluateWithDualReferenceINTEL,
+            5806u32 => Op::SubgroupAvcSicEvaluateWithMultiReferenceINTEL,
+            5807u32 => Op::SubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL,
+            5808u32 => Op::SubgroupAvcSicConvertToMceResultINTEL,
+            5809u32 => Op::SubgroupAvcSicGetIpeLumaShapeINTEL,
+            5810u32 => Op::SubgroupAvcSicGetBestIpeLumaDistortionINTEL,
+            5811u32 => Op::SubgroupAvcSicGetBestIpeChromaDistortionINTEL,
+            5812u32 => Op::SubgroupAvcSicGetPackedIpeLumaModesINTEL,
+            5813u32 => Op::SubgroupAvcSicGetIpeChromaModeINTEL,
+            5814u32 => Op::SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL,
+            5815u32 => Op::SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL,
+            5816u32 => Op::SubgroupAvcSicGetInterRawSadsINTEL,
             _ => return None,
         })
     }

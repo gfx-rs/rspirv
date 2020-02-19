@@ -489,6 +489,9 @@ pub fn gen_sr_code_from_instruction_grammar(
                         .map(ops::Terminator::Branch)
                 }
             }
+            // TODO: filter duplicated symbols mapping to the same discriminator to avoid
+            // unreachable patterns.
+            #[allow(unreachable_patterns)]
             pub fn lift_op(
                 &mut self, raw: &dr::Instruction
             ) -> Result<ops::Op, InstructionError> {

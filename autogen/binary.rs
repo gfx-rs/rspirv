@@ -112,7 +112,7 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>) -> TokenS
                 } else {
                     Err(Error::StreamExpected(self.offset))
                 }
-            } 
+            }
         }
     });
 
@@ -201,7 +201,10 @@ fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>) -> Vec<(
                     spirv::#kind::#symbol => vec![#(#params),*]
                 }
             });
+            // TODO: filter duplicated symbols mapping to the same discriminator to avoid
+            // unreachable patterns.
             quote! {
+                #[allow(unreachable_patterns)]
                 fn #function_name(&mut self, #lo_kind: spirv::#kind) -> Result<Vec<dr::Operand>> {
                     Ok(match #lo_kind {
                         #(#cases),*,
@@ -325,7 +328,7 @@ pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> Token
                     if self.is_empty() {
                         return "None".to_string();
                     }
-                    
+
                     let mut bits = vec![];
                     #(#checks)*
                     bits.join("|")

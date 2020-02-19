@@ -4,6 +4,7 @@ use crate::utils::*;
 use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::TokenStream;
 use quote::quote;
+use std::collections::BTreeMap;
 
 static GLSL_STD_450_SPEC_LINK: &'static str = "\
 https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html";
@@ -69,8 +70,6 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 }
 
 fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
-    use std::collections::BTreeMap;
-
     let kind = as_ident(&grammar.kind);
 
     // We can have more than one enumerants mapping to the same discriminator.
@@ -164,24 +163,32 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     let kinds = grammar.operand_kinds.iter().filter_map(gen_operand_kind);
 
     // Opcodes.
+
+    // We can have more than one op symbol mapping to the same opcode.
+    // Use associated constants for these aliases.
+    let mut seen_discriminator = BTreeMap::new();
+    let mut opcodes = vec![];
+    let mut aliases = vec![];
+    let mut from_prim_list = vec![];
+
     // Get the instruction table.
-    let opcodes = grammar.instructions.iter().map(|inst| {
+    for inst in &grammar.instructions {
         // Omit the "Op" prefix.
         let opname = as_ident(&inst.opname[2..]);
         let opcode = inst.opcode;
-        quote! { #opname = #opcode }
-    });
-
-    let from_prim_list = grammar.instructions.iter().map(|inst| {
-        let opname = as_ident(&inst.opname[2..]);
-        let opcode = inst.opcode;
-        quote! { #opcode => Op::#opname }
-    }).collect::<Vec<_>>();
+        if let Some(discriminator) = seen_discriminator.get(&opcode) {
+            aliases.push(quote! { pub const #opname : Op = Op::#discriminator; });
+        } else {
+            opcodes.push(quote! { #opname = #opcode });
+            from_prim_list.push(quote! { #opcode => Op::#opname });
+            seen_discriminator.insert(opcode, opname.clone());
+        }
+    };
 
     let comment = format!("SPIR-V {} opcodes", get_spec_link("instructions"));
     let attribute = value_enum_attribute();
     let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("Op"));
-    
+
     quote! {
         pub type Word = u32;
         pub const MAGIC_NUMBER: u32 = #magic_number;
@@ -190,11 +197,16 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         pub const REVISION: u8 = #revision;
 
         #(#kinds)*
-        
+
         #[doc = #comment]
         #attribute
         pub enum Op {
             #(#opcodes),*
+        }
+
+        #[allow(non_upper_case_globals)]
+        impl Op {
+            #(#aliases)*
         }
 
         #from_prim_impl
@@ -210,7 +222,7 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         let opcode = inst.opcode;
         quote! { #opname = #opcode }
     });
-    
+
     let from_prim_list = grammar.instructions.iter().map(|inst| {
         let opname = as_ident(&inst.opname);
         let opcode = inst.opcode;
@@ -227,7 +239,7 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         pub enum GLOp {
             #(#opcodes),*
         }
-        
+
         #from_prim_impl
     }
 }
@@ -241,7 +253,7 @@ pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStre
         let opcode = inst.opcode;
         quote! { #opname = #opcode }
     });
-    
+
     let from_prim_list = grammar.instructions.iter().map(|inst| {
         let opname = as_ident(&inst.opname);
         let opcode = inst.opcode;

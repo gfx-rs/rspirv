@@ -44,6 +44,12 @@ impl Disassemble for spirv::ImageOperands {
         if self.contains(spirv::ImageOperands::VOLATILE_TEXEL_KHR) {
             bits.push("VolatileTexelKHR")
         }
+        if self.contains(spirv::ImageOperands::SIGN_EXTEND) {
+            bits.push("SignExtend")
+        }
+        if self.contains(spirv::ImageOperands::ZERO_EXTEND) {
+            bits.push("ZeroExtend")
+        }
         bits.join("|")
     }
 }
@@ -103,6 +109,21 @@ impl Disassemble for spirv::LoopControl {
         }
         if self.contains(spirv::LoopControl::DEPENDENCY_LENGTH) {
             bits.push("DependencyLength")
+        }
+        if self.contains(spirv::LoopControl::MIN_ITERATIONS) {
+            bits.push("MinIterations")
+        }
+        if self.contains(spirv::LoopControl::MAX_ITERATIONS) {
+            bits.push("MaxIterations")
+        }
+        if self.contains(spirv::LoopControl::ITERATION_MULTIPLE) {
+            bits.push("IterationMultiple")
+        }
+        if self.contains(spirv::LoopControl::PEEL_COUNT) {
+            bits.push("PeelCount")
+        }
+        if self.contains(spirv::LoopControl::PARTIAL_COUNT) {
+            bits.push("PartialCount")
         }
         bits.join("|")
     }

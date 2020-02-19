@@ -95,6 +95,7 @@ impl LiftContext {
             _ => self.lift_branch(raw).map(ops::Terminator::Branch),
         }
     }
+    #[allow(unreachable_patterns)]
     pub fn lift_op(&mut self, raw: &dr::Instruction) -> Result<ops::Op, InstructionError> {
         let mut operands = raw.operands.iter();
         match raw.class.opcode as u32 {
@@ -324,7 +325,12 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
-                memory_access: match operands.next() {
+                src_mem_access: match operands.next() {
+                    Some(&dr::Operand::MemoryAccess(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                },
+                dst_mem_access: match operands.next() {
                     Some(&dr::Operand::MemoryAccess(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
@@ -349,7 +355,12 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
-                memory_access: match operands.next() {
+                src_mem_access: match operands.next() {
+                    Some(&dr::Operand::MemoryAccess(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                },
+                dst_mem_access: match operands.next() {
                     Some(&dr::Operand::MemoryAccess(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
@@ -5373,7 +5384,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5341u32 => Ok(ops::Op::TypeAccelerationStructureNV),
             5344u32 => Ok(ops::Op::ExecuteCallableNV {
                 sbt_index: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -5382,32 +5392,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 callable_data_id: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
-            5358u32 => Ok(ops::Op::TypeCooperativeMatrixNV {
-                component_type: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                execution: (match operands.next() {
-                    Some(&dr::Operand::IdScope(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                rows: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                columns: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
@@ -5694,6 +5678,40 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5632u32 => Ok(ops::Op::DecorateStringGOOGLE {
+                target: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                decoration: (match operands.next() {
+                    Some(&dr::Operand::Decoration(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5633u32 => Ok(ops::Op::MemberDecorateString {
+                struct_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                member: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                decoration: (match operands.next() {
+                    Some(&dr::Operand::Decoration(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5633u32 => Ok(ops::Op::MemberDecorateStringGOOGLE {
                 struct_type: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
@@ -5709,6 +5727,1659 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
                 decoration: (match operands.next() {
                     Some(&dr::Operand::Decoration(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5699u32 => Ok(ops::Op::VmeImageINTEL {
+                image_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sampler: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5713u32 => Ok(
+                ops::Op::SubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL {
+                    slice_type: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => {
+                            Some(self.types.lookup_token(*value))
+                        }
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    qp: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5714u32 => Ok(
+                ops::Op::SubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL {
+                    reference_base_penalty: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5715u32 => Ok(ops::Op::SubgroupAvcMceGetDefaultInterShapePenaltyINTEL {
+                slice_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                qp: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5716u32 => Ok(ops::Op::SubgroupAvcMceSetInterShapePenaltyINTEL {
+                packed_shape_penalty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5717u32 => Ok(
+                ops::Op::SubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL {
+                    slice_type: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => {
+                            Some(self.types.lookup_token(*value))
+                        }
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    qp: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5718u32 => Ok(ops::Op::SubgroupAvcMceSetInterDirectionPenaltyINTEL {
+                direction_cost: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5719u32 => Ok(
+                ops::Op::SubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL {
+                    slice_type: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => {
+                            Some(self.types.lookup_token(*value))
+                        }
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    qp: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5720u32 => Ok(
+                ops::Op::SubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL {
+                    slice_type: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => {
+                            Some(self.types.lookup_token(*value))
+                        }
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    qp: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5721u32 => Ok(ops::Op::SubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL),
+            5722u32 => Ok(ops::Op::SubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL),
+            5723u32 => Ok(ops::Op::SubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL),
+            5724u32 => Ok(ops::Op::SubgroupAvcMceSetMotionVectorCostFunctionINTEL {
+                packed_cost_center_delta: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_cost_table: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                cost_precision: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5725u32 => Ok(ops::Op::SubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL {
+                slice_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                qp: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5726u32 => Ok(ops::Op::SubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL),
+            5727u32 => Ok(ops::Op::SubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL),
+            5728u32 => Ok(ops::Op::SubgroupAvcMceSetAcOnlyHaarINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5729u32 => Ok(
+                ops::Op::SubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL {
+                    source_field_polarity: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5730u32 => Ok(
+                ops::Op::SubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL {
+                    reference_field_polarity: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5731u32 => Ok(
+                ops::Op::SubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL {
+                    forward_reference_field_polarity: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    backward_reference_field_polarity: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5732u32 => Ok(ops::Op::SubgroupAvcMceConvertToImePayloadINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5733u32 => Ok(ops::Op::SubgroupAvcMceConvertToImeResultINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5734u32 => Ok(ops::Op::SubgroupAvcMceConvertToRefPayloadINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5735u32 => Ok(ops::Op::SubgroupAvcMceConvertToRefResultINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5736u32 => Ok(ops::Op::SubgroupAvcMceConvertToSicPayloadINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5737u32 => Ok(ops::Op::SubgroupAvcMceConvertToSicResultINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5738u32 => Ok(ops::Op::SubgroupAvcMceGetMotionVectorsINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5739u32 => Ok(ops::Op::SubgroupAvcMceGetInterDistortionsINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5740u32 => Ok(ops::Op::SubgroupAvcMceGetBestInterDistortionsINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5741u32 => Ok(ops::Op::SubgroupAvcMceGetInterMajorShapeINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5742u32 => Ok(ops::Op::SubgroupAvcMceGetInterMinorShapeINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5743u32 => Ok(ops::Op::SubgroupAvcMceGetInterDirectionsINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5744u32 => Ok(ops::Op::SubgroupAvcMceGetInterMotionVectorCountINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5745u32 => Ok(ops::Op::SubgroupAvcMceGetInterReferenceIdsINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5746u32 => Ok(
+                ops::Op::SubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL {
+                    packed_reference_ids: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    packed_reference_parameter_field_polarities: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5747u32 => Ok(ops::Op::SubgroupAvcImeInitializeINTEL {
+                src_coord: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                partition_mask: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sad_adjustment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5748u32 => Ok(ops::Op::SubgroupAvcImeSetSingleReferenceINTEL {
+                ref_offset: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                search_window_config: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5749u32 => Ok(ops::Op::SubgroupAvcImeSetDualReferenceINTEL {
+                fwd_ref_offset: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                bwd_ref_offset: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                id_search_window_config: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5750u32 => Ok(ops::Op::SubgroupAvcImeRefWindowSizeINTEL {
+                search_window_config: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                dual_ref: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5751u32 => Ok(ops::Op::SubgroupAvcImeAdjustRefOffsetINTEL {
+                ref_offset: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                src_coord: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ref_window_size: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                image_size: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5752u32 => Ok(ops::Op::SubgroupAvcImeConvertToMcePayloadINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5753u32 => Ok(ops::Op::SubgroupAvcImeSetMaxMotionVectorCountINTEL {
+                max_motion_vector_count: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5754u32 => Ok(ops::Op::SubgroupAvcImeSetUnidirectionalMixDisableINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5755u32 => Ok(
+                ops::Op::SubgroupAvcImeSetEarlySearchTerminationThresholdINTEL {
+                    threshold: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5756u32 => Ok(ops::Op::SubgroupAvcImeSetWeightedSadINTEL {
+                packed_sad_weights: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5757u32 => Ok(ops::Op::SubgroupAvcImeEvaluateWithSingleReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5758u32 => Ok(ops::Op::SubgroupAvcImeEvaluateWithDualReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                fwd_ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                bwd_ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5759u32 => Ok(
+                ops::Op::SubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    streamin_components: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5760u32 => Ok(
+                ops::Op::SubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    fwd_ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    bwd_ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    streamin_components: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5761u32 => Ok(
+                ops::Op::SubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5762u32 => Ok(
+                ops::Op::SubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    fwd_ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    bwd_ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5763u32 => Ok(
+                ops::Op::SubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    streamin_components: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5764u32 => Ok(
+                ops::Op::SubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    fwd_ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    bwd_ref_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    streamin_components: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5765u32 => Ok(ops::Op::SubgroupAvcImeConvertToMceResultINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5766u32 => Ok(ops::Op::SubgroupAvcImeGetSingleReferenceStreaminINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5767u32 => Ok(ops::Op::SubgroupAvcImeGetDualReferenceStreaminINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5768u32 => Ok(ops::Op::SubgroupAvcImeStripSingleReferenceStreamoutINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5769u32 => Ok(ops::Op::SubgroupAvcImeStripDualReferenceStreamoutINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5770u32 => Ok(
+                ops::Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    major_shape: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5771u32 => Ok(
+                ops::Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    major_shape: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5772u32 => Ok(
+                ops::Op::SubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    major_shape: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5773u32 => Ok(
+                ops::Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    major_shape: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    direction: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5774u32 => Ok(
+                ops::Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    major_shape: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    direction: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5775u32 => Ok(
+                ops::Op::SubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    major_shape: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    direction: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5776u32 => Ok(ops::Op::SubgroupAvcImeGetBorderReachedINTEL {
+                image_select: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5777u32 => Ok(ops::Op::SubgroupAvcImeGetTruncatedSearchIndicationINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5778u32 => Ok(
+                ops::Op::SubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5779u32 => Ok(
+                ops::Op::SubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5780u32 => Ok(
+                ops::Op::SubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL {
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5781u32 => Ok(ops::Op::SubgroupAvcFmeInitializeINTEL {
+                src_coord: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                motion_vectors: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                major_shapes: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                minor_shapes: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                direction: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                pixel_resolution: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sad_adjustment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5782u32 => Ok(ops::Op::SubgroupAvcBmeInitializeINTEL {
+                src_coord: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                motion_vectors: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                major_shapes: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                minor_shapes: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                direction: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                pixel_resolution: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                bidirectional_weight: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sad_adjustment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5783u32 => Ok(ops::Op::SubgroupAvcRefConvertToMcePayloadINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5784u32 => Ok(ops::Op::SubgroupAvcRefSetBidirectionalMixDisableINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5785u32 => Ok(ops::Op::SubgroupAvcRefSetBilinearFilterEnableINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5786u32 => Ok(ops::Op::SubgroupAvcRefEvaluateWithSingleReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5787u32 => Ok(ops::Op::SubgroupAvcRefEvaluateWithDualReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                fwd_ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                bwd_ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5788u32 => Ok(ops::Op::SubgroupAvcRefEvaluateWithMultiReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_reference_ids: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5789u32 => Ok(
+                ops::Op::SubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    packed_reference_ids: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    packed_reference_field_polarities: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5790u32 => Ok(ops::Op::SubgroupAvcRefConvertToMceResultINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5791u32 => Ok(ops::Op::SubgroupAvcSicInitializeINTEL {
+                src_coord: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5792u32 => Ok(ops::Op::SubgroupAvcSicConfigureSkcINTEL {
+                skip_block_partition_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                skip_motion_vector_mask: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                motion_vectors: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                bidirectional_weight: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sad_adjustment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5793u32 => Ok(ops::Op::SubgroupAvcSicConfigureIpeLumaINTEL {
+                luma_intra_partition_mask: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                intra_neighbour_availabilty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                left_edge_luma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_left_corner_luma_pixel: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_edge_luma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_right_edge_luma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sad_adjustment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5794u32 => Ok(ops::Op::SubgroupAvcSicConfigureIpeLumaChromaINTEL {
+                luma_intra_partition_mask: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                intra_neighbour_availabilty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                left_edge_luma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_left_corner_luma_pixel: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_edge_luma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_right_edge_luma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                left_edge_chroma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_left_corner_chroma_pixel: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                upper_edge_chroma_pixels: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sad_adjustment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5795u32 => Ok(ops::Op::SubgroupAvcSicGetMotionVectorMaskINTEL {
+                skip_block_partition_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                direction: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5796u32 => Ok(ops::Op::SubgroupAvcSicConvertToMcePayloadINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5797u32 => Ok(ops::Op::SubgroupAvcSicSetIntraLumaShapePenaltyINTEL {
+                packed_shape_penalty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5798u32 => Ok(ops::Op::SubgroupAvcSicSetIntraLumaModeCostFunctionINTEL {
+                luma_mode_penalty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                luma_packed_neighbor_modes: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                luma_packed_non_dc_penalty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5799u32 => Ok(ops::Op::SubgroupAvcSicSetIntraChromaModeCostFunctionINTEL {
+                chroma_mode_base_penalty: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5800u32 => Ok(ops::Op::SubgroupAvcSicSetBilinearFilterEnableINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5801u32 => Ok(ops::Op::SubgroupAvcSicSetSkcForwardTransformEnableINTEL {
+                packed_sad_coefficients: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5802u32 => Ok(ops::Op::SubgroupAvcSicSetBlockBasedRawSkipSadINTEL {
+                block_based_skip_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5803u32 => Ok(ops::Op::SubgroupAvcSicEvaluateIpeINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5804u32 => Ok(ops::Op::SubgroupAvcSicEvaluateWithSingleReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5805u32 => Ok(ops::Op::SubgroupAvcSicEvaluateWithDualReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                fwd_ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                bwd_ref_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5806u32 => Ok(ops::Op::SubgroupAvcSicEvaluateWithMultiReferenceINTEL {
+                src_image: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_reference_ids: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5807u32 => Ok(
+                ops::Op::SubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL {
+                    src_image: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    packed_reference_ids: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    packed_reference_field_polarities: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                    payload: (match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    })
+                    .ok_or(OperandError::Missing)?,
+                },
+            ),
+            5808u32 => Ok(ops::Op::SubgroupAvcSicConvertToMceResultINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5809u32 => Ok(ops::Op::SubgroupAvcSicGetIpeLumaShapeINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5810u32 => Ok(ops::Op::SubgroupAvcSicGetBestIpeLumaDistortionINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5811u32 => Ok(ops::Op::SubgroupAvcSicGetBestIpeChromaDistortionINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5812u32 => Ok(ops::Op::SubgroupAvcSicGetPackedIpeLumaModesINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5813u32 => Ok(ops::Op::SubgroupAvcSicGetIpeChromaModeINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5814u32 => Ok(ops::Op::SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5815u32 => Ok(ops::Op::SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5816u32 => Ok(ops::Op::SubgroupAvcSicGetInterRawSadsINTEL {
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -5940,6 +7611,53 @@ impl LiftContext {
             }),
             322u32 => Ok(Type::PipeStorage),
             327u32 => Ok(Type::NamedBarrier),
+            5341u32 => Ok(Type::AccelerationStructureNV),
+            5358u32 => Ok(Type::CooperativeMatrixNV {
+                component_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                execution: (match operands.next() {
+                    Some(&dr::Operand::IdScope(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rows: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                columns: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5700u32 => Ok(Type::VmeImageINTEL {
+                image_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5701u32 => Ok(Type::AvcImePayloadINTEL),
+            5702u32 => Ok(Type::AvcRefPayloadINTEL),
+            5703u32 => Ok(Type::AvcSicPayloadINTEL),
+            5704u32 => Ok(Type::AvcMcePayloadINTEL),
+            5705u32 => Ok(Type::AvcMceResultINTEL),
+            5706u32 => Ok(Type::AvcImeResultINTEL),
+            5707u32 => Ok(Type::AvcImeResultSingleReferenceStreamoutINTEL),
+            5708u32 => Ok(Type::AvcImeResultDualReferenceStreamoutINTEL),
+            5709u32 => Ok(Type::AvcImeSingleReferenceStreaminINTEL),
+            5710u32 => Ok(Type::AvcImeDualReferenceStreaminINTEL),
+            5711u32 => Ok(Type::AvcRefResultINTEL),
+            5712u32 => Ok(Type::AvcSicResultINTEL),
             _ => Err(InstructionError::WrongOpcode),
         }
     }
