@@ -263,7 +263,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "rspirv"
-version = "0.5.5"
+version = "0.6.0"
 dependencies = [
  "assert_matches 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "clippy 0.0.302 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -290,7 +290,7 @@ name = "rspirv-dis"
 version = "0.1.0"
 dependencies = [
  "clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "rspirv 0.5.5",
+ "rspirv 0.6.0",
 ]
 
 [[package]]
