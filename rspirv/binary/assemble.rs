@@ -62,9 +62,9 @@ impl Assemble for dr::Operand {
             dr::Operand::IdRef(v) |
             dr::Operand::LiteralInt32(v) |
             dr::Operand::LiteralExtInstInteger(v) => vec![v],
-            dr::Operand::LiteralInt64(_) => unimplemented!(),
+            dr::Operand::LiteralInt64(v) => vec![v as u32, (v >> 32) as u32],
             dr::Operand::LiteralFloat32(v) => vec![v.to_bits()],
-            dr::Operand::LiteralFloat64(_) => unimplemented!(),
+            dr::Operand::LiteralFloat64(v) => vec![v.to_bits() as u32, (v.to_bits() >> 32) as u32],
             dr::Operand::LiteralSpecConstantOpInteger(v) => vec![v as u32],
             dr::Operand::LiteralString(ref v) => assemble_str(v),
         }
