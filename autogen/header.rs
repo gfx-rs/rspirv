@@ -27,13 +27,15 @@ fn value_enum_attribute() -> TokenStream {
     quote! {
         #[repr(u32)]
         #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+        #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
     }
 }
 
 fn bit_enum_attribute() -> TokenStream {
     quote! {
-        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+        #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
     }
 }
 

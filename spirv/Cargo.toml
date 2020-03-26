@@ -11,6 +11,10 @@ readme = "README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "definition", "struct", "enum"]
 
+[features]
+serialize = ['serde']
+deserialize = ['serde']
+
 [lib]
 path = "lib.rs"
 
