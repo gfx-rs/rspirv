@@ -17,3 +17,4 @@ path = "lib.rs"
 [dependencies]
 bitflags = "1"
 num-traits = "0.2"
+serde = {version = "1", optional = true, features = ["derive"]}
