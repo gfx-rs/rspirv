@@ -27,6 +27,15 @@ fn value_enum_attribute() -> TokenStream {
     quote! {
         #[repr(u32)]
         #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+        #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+    }
+}
+
+fn bit_enum_attribute() -> TokenStream {
+    quote! {
+        #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+        #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
     }
 }
 
@@ -59,9 +68,12 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     });
     let comment = format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind));
     let kind = as_ident(&grammar.kind);
+    let attribute = bit_enum_attribute();
+
     quote! {
         bitflags! {
             #[doc = #comment]
+            #attribute
             pub struct #kind: u32 {
                 #(#elements)*
             }
