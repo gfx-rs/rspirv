@@ -445,6 +445,19 @@ impl Builder {
         id
     }
 
+    /// Appends an OpConstant instruction with the given 64-bit float `value`.
+    pub fn constant_f64(&mut self, result_type: spirv::Word, value: f64) -> spirv::Word {
+        let id = self.id();
+        let inst = dr::Instruction::new(
+            spirv::Op::Constant,
+            Some(result_type),
+            Some(id),
+            vec![dr::Operand::LiteralFloat64(value)],
+        );
+        self.module.types_global_values.push(inst);
+        id
+    }
+
     /// Appends an OpConstant instruction with the given 32-bit integer `value`.
     /// or the module if no block is under construction.
     pub fn constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
@@ -454,6 +467,19 @@ impl Builder {
             Some(result_type),
             Some(id),
             vec![dr::Operand::LiteralInt32(value)],
+        );
+        self.module.types_global_values.push(inst);
+        id
+    }
+
+    /// Appends an OpConstant instruction with the given 64-bit integer `value`.
+    pub fn constant_u64(&mut self, result_type: spirv::Word, value: u64) -> spirv::Word {
+        let id = self.id();
+        let inst = dr::Instruction::new(
+            spirv::Op::Constant,
+            Some(result_type),
+            Some(id),
+            vec![dr::Operand::LiteralInt64(value)],
         );
         self.module.types_global_values.push(inst);
         id
@@ -473,6 +499,19 @@ impl Builder {
         id
     }
 
+    /// Appends an OpSpecConstant instruction with the given 64-bit float `value`.
+    pub fn spec_constant_f64(&mut self, result_type: spirv::Word, value: f64) -> spirv::Word {
+        let id = self.id();
+        let inst = dr::Instruction::new(
+            spirv::Op::SpecConstant,
+            Some(result_type),
+            Some(id),
+            vec![dr::Operand::LiteralFloat64(value)],
+        );
+        self.module.types_global_values.push(inst);
+        id
+    }
+
     /// Appends an OpSpecConstant instruction with the given 32-bit integer `value`.
     /// or the module if no block is under construction.
     pub fn spec_constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
@@ -482,6 +521,19 @@ impl Builder {
             Some(result_type),
             Some(id),
             vec![dr::Operand::LiteralInt32(value)],
+        );
+        self.module.types_global_values.push(inst);
+        id
+    }
+
+    /// Appends an OpSpecConstant instruction with the given 32-bit integer `value`.
+    pub fn spec_constant_u64(&mut self, result_type: spirv::Word, value: u64) -> spirv::Word {
+        let id = self.id();
+        let inst = dr::Instruction::new(
+            spirv::Op::SpecConstant,
+            Some(result_type),
+            Some(id),
+            vec![dr::Operand::LiteralInt64(value)],
         );
         self.module.types_global_values.push(inst);
         id
