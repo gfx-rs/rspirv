@@ -10,36 +10,21 @@ before_script:
 
 jobs:
   include:
-    - stage: install_rustfmt
-      os: linux
+    - os: linux
       rust: stable
-      script: rustup component add rustfmt
-    - stage: install_rustfmt
-      os: osx
-      rust: stable
-      script: rustup component add rustfmt
-    - stage: install_rustfmt
-      os: windows
-      rust: stable
-      script: rustup component add rustfmt
-    - stage: test
-      os: linux
-      rust: stable
-    - stage: test
-      os: linux
+    - os: linux
       rust: nightly 
-    - stage: test
-      os: osx
+      script: # rustfmt is not always available on nightly
+        - cargo check --verbose
+        - git diff --exit-code
+        - cargo test --verbose
+    - os: osx
       rust: stable
-    - stage: test
-      os: windows
+    - os: windows
       rust: stable
 
 script:
+  - rustup component add rustfmt
   - cargo check --verbose
   - git diff --exit-code
   - cargo test --verbose
-
-stages:
-  - install_rustfmt
-  - test
