@@ -16,7 +16,6 @@ jobs:
       rust: nightly 
       script: # rustfmt is not always available on nightly
         - cargo check --verbose
-        - git diff --exit-code
         - cargo test --verbose
     - os: osx
       rust: stable
