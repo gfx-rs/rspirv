@@ -19,9 +19,19 @@ branches:
 
 before_script:
   - git submodule update --init
-  - rustup component add rustfmt
 
-script:
-  - cargo check --verbose
-  - git diff --exit-code
-  - cargo test --verbose
+jobs:
+  include:
+    - stage: install_rustfmt
+      script:
+        - rustup component add rustfmt
+    - stage: test
+      script:
+        - cargo check --verbose
+        - git diff --exit-code
+        - cargo test --verbose
+
+stages:
+  - name: install_rustfmt
+    if: env(TRAVIS_RUST_VERSION) =~ stable
+  - test
