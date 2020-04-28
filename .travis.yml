@@ -1,18 +1,6 @@
 language: rust
 
 sudo: false
-matrix:
-  fast_finish: true
-  include:
-    - os: linux
-      rust: stable
-    - os: linux
-      rust: nightly
-    - os: osx
-      rust: stable
-    - os: windows
-      rust: stable
-
 branches:
   except:
     - staging.tmp
@@ -23,14 +11,35 @@ before_script:
 jobs:
   include:
     - stage: install_rustfmt
+      os: linux
+      rust: stable
+      script: rustup component add rustfmt
+    - stage: install_rustfmt
+      os: osx
+      rust: stable
+      script: rustup component add rustfmt
+    - stage: install_rustfmt
+      os: windows
+      rust: stable
       script: rustup component add rustfmt
     - stage: test
-      script:
-        - cargo check --verbose
-        - git diff --exit-code
-        - cargo test --verbose
+      os: linux
+      rust: stable
+    - stage: test
+      os: linux
+      rust: nightly 
+    - stage: test
+      os: osx
+      rust: stable
+    - stage: test
+      os: windows
+      rust: stable
+
+script:
+  - cargo check --verbose
+  - git diff --exit-code
+  - cargo test --verbose
 
 stages:
-  - name: install_rustfmt
-    if: env(TRAVIS_RUST_VERSION) =~ stable
+  - install_rustfmt
   - test
