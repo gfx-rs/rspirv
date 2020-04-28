@@ -2,7 +2,7 @@ rspirv
 ======
 
 [![Build Status](https://travis-ci.org/gfx-rs/rspirv.svg?branch=master)](https://travis-ci.org/gfx-rs/rspirv)
-[![Gitter Room](https://badges.gitter.im/gfx-rs/low-level.svg)](https://gitter.im/gfx-rs/low-level)
+[![Matrix Room](https://img.shields.io/badge/Matrix-%23gfx%3Amatrix.org-blueviolet.svg)](https://matrix.to/#/#gfx:matrix.org)
 
 **R**u**s**t implementation of S**PIR**-**V** module processing functionalities.
 It aims to provide:
