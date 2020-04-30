@@ -1,27 +1,29 @@
 language: rust
 
 sudo: false
-matrix:
-  fast_finish: true
-  include:
-    - os: linux
-      rust: stable
-    - os: linux
-      rust: nightly
-    - os: osx
-      rust: stable
-    - os: windows
-      rust: stable
-
 branches:
   except:
     - staging.tmp
 
 before_script:
   - git submodule update --init
-  - rustup component add rustfmt
+
+jobs:
+  include:
+    - os: linux
+      rust: stable
+    - os: linux
+      rust: nightly 
+      script: # rustfmt is not always available on nightly
+        - cargo check --verbose
+        - cargo test --verbose
+    - os: osx
+      rust: stable
+    - os: windows
+      rust: stable
 
 script:
+  - rustup component add rustfmt
   - cargo check --verbose
   - git diff --exit-code
   - cargo test --verbose
