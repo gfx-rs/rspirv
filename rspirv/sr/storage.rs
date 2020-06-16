@@ -51,6 +51,10 @@ impl<T> Token<T> {
             marker: PhantomData,
         }
     }
+
+    pub fn index(&self) -> Index {
+        self.index
+    }
 }
 
 /// A structure holding some kind of SPIR-V entity (e.g., type, constant,
