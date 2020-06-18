@@ -116,10 +116,41 @@ pub enum Class {
     DebugLine,
     ExtensionDecl,
     FunctionStruct,
+    #[serde(rename="Mode-Setting")]
     ModeSetting,
     Terminator,
     Type,
     Variable,
+    Miscellaneous,
+    Extension,
+    #[serde(rename="Type-Declaration")]
+    TypeDeclaration,
+    #[serde(rename="Constant-Creation")]
+    ConstantCreation,
+    Function,
+    Memory,
+    Composite,
+    Image,
+    Conversion,
+    Arithmetic,
+    #[serde(rename="Relational_and_Logical")]
+    RelationalAndLogical,
+    Bit,
+    Derivative,
+    Primitive,
+    Barrier,
+    Atomic,
+    #[serde(rename="Control-Flow")]
+    ControlFlow,
+    Group,
+    Pipe,
+    #[serde(rename="Device-Side_Enqueue")]
+    DeviceSideEnqueue,
+    #[serde(rename="Non-Uniform")]
+    NonUniform,
+    Reserved,
+    #[serde(rename="@exclude")]
+    Exclude
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
