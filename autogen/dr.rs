@@ -189,7 +189,7 @@ pub fn gen_dr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> TokenStream 
             quote! { LiteralExtInstInteger(u32) },
             quote! { LiteralSpecConstantOpInteger(spirv::Op) },
             ];
-        
+
         let str_kinds = kinds.iter().filter(|element| {
             element.to_string().ends_with("String")
         }).map(|element| {
@@ -285,7 +285,7 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
             }
         }
     });
-    quote! { 
+    quote! {
         impl Builder {
             #(#elements)*
         }
@@ -305,12 +305,18 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
         let name = get_function_name(&inst.opname);
         let init = get_init_list(&inst.operands);
 
+        let result_type = if inst.opname == "OpPhi" {
+            quote! { Some(result_type) }
+        } else {
+            quote! { None }
+        };
+
         quote! {
             #[doc = #comment]
             pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<()> {
                 #[allow(unused_mut)]
                 let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, None, None, vec![#(#init),*]);
+                    spirv::Op::#opcode, #result_type, None, vec![#(#init),*]);
                 #(#extras)*
                 self.end_block(inst)
             }
@@ -324,11 +330,32 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
 }
 
 pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
+    use crate::structs::Class::*;
+
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all normal instructions (instructions must be
     // in some block).
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class.is_none()
+        let skip =
+            inst.class == Some(Type) ||
+            inst.class == Some(Constant) ||
+            inst.class == Some(ExtensionDecl) ||
+            inst.class == Some(FunctionStruct) ||
+            inst.class == Some(Debug) ||
+            inst.class == Some(Annotation) ||
+            inst.class == Some(Terminator) ||
+            inst.class == Some(Branch) ||
+            inst.class == Some(ModeSetting) ||
+            inst.class == Some(Exclude) ||
+            inst.opname == "OpTypeForwardPointer" ||
+            inst.opname == "OpTypePointer" ||
+            inst.opname == "OpTypeOpaque" ||
+            inst.opname == "OpUndef" ||
+            inst.opname == "OpVariable" ||
+            inst.opname == "OpCopyMemory" ||
+            inst.opname == "OpCopyMemorySized" ||
+            inst.opname.starts_with("OpType");
+        !skip
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, true, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
@@ -459,7 +486,7 @@ pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> TokenStream {
         let comment = format!("Appends an Op{} instruction.", opcode);
         let name = get_function_name(&inst.opname);
         let init = get_init_list(&inst.operands);
-        
+
         quote! {
             #[doc = #comment]
             pub fn #name#generic(&mut self,#(#params),*) {

@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use crate::sr::{constants::Constant, module::Jump, storage::Token, types::StructMember, Type};
+use crate::sr::{module::Jump, storage::Token, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Branch {
     Phi {

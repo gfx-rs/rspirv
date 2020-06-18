@@ -10,7 +10,7 @@ impl Builder {
         variable_parent: T,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::Phi, None, None, vec![]);
+        let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), None, vec![]);
         for v in variable_parent.as_ref() {
             inst.operands.push(dr::Operand::IdRef(v.0));
             inst.operands.push(dr::Operand::IdRef(v.1));
