@@ -32,14 +32,26 @@ impl Disassemble for spirv::ImageOperands {
         if self.contains(spirv::ImageOperands::MIN_LOD) {
             bits.push("MinLod")
         }
+        if self.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE) {
+            bits.push("MakeTexelAvailable")
+        }
         if self.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE_KHR) {
             bits.push("MakeTexelAvailableKHR")
+        }
+        if self.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE) {
+            bits.push("MakeTexelVisible")
         }
         if self.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE_KHR) {
             bits.push("MakeTexelVisibleKHR")
         }
+        if self.contains(spirv::ImageOperands::NON_PRIVATE_TEXEL) {
+            bits.push("NonPrivateTexel")
+        }
         if self.contains(spirv::ImageOperands::NON_PRIVATE_TEXEL_KHR) {
             bits.push("NonPrivateTexelKHR")
+        }
+        if self.contains(spirv::ImageOperands::VOLATILE_TEXEL) {
+            bits.push("VolatileTexel")
         }
         if self.contains(spirv::ImageOperands::VOLATILE_TEXEL_KHR) {
             bits.push("VolatileTexelKHR")
@@ -185,14 +197,26 @@ impl Disassemble for spirv::MemorySemantics {
         if self.contains(spirv::MemorySemantics::IMAGE_MEMORY) {
             bits.push("ImageMemory")
         }
+        if self.contains(spirv::MemorySemantics::OUTPUT_MEMORY) {
+            bits.push("OutputMemory")
+        }
         if self.contains(spirv::MemorySemantics::OUTPUT_MEMORY_KHR) {
             bits.push("OutputMemoryKHR")
+        }
+        if self.contains(spirv::MemorySemantics::MAKE_AVAILABLE) {
+            bits.push("MakeAvailable")
         }
         if self.contains(spirv::MemorySemantics::MAKE_AVAILABLE_KHR) {
             bits.push("MakeAvailableKHR")
         }
+        if self.contains(spirv::MemorySemantics::MAKE_VISIBLE) {
+            bits.push("MakeVisible")
+        }
         if self.contains(spirv::MemorySemantics::MAKE_VISIBLE_KHR) {
             bits.push("MakeVisibleKHR")
+        }
+        if self.contains(spirv::MemorySemantics::VOLATILE) {
+            bits.push("Volatile")
         }
         bits.join("|")
     }
@@ -212,11 +236,20 @@ impl Disassemble for spirv::MemoryAccess {
         if self.contains(spirv::MemoryAccess::NONTEMPORAL) {
             bits.push("Nontemporal")
         }
+        if self.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE) {
+            bits.push("MakePointerAvailable")
+        }
         if self.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE_KHR) {
             bits.push("MakePointerAvailableKHR")
         }
+        if self.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE) {
+            bits.push("MakePointerVisible")
+        }
         if self.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE_KHR) {
             bits.push("MakePointerVisibleKHR")
+        }
+        if self.contains(spirv::MemoryAccess::NON_PRIVATE_POINTER) {
+            bits.push("NonPrivatePointer")
         }
         if self.contains(spirv::MemoryAccess::NON_PRIVATE_POINTER_KHR) {
             bits.push("NonPrivatePointerKHR")
@@ -232,6 +265,45 @@ impl Disassemble for spirv::KernelProfilingInfo {
         let mut bits = vec![];
         if self.contains(spirv::KernelProfilingInfo::CMD_EXEC_TIME) {
             bits.push("CmdExecTime")
+        }
+        bits.join("|")
+    }
+}
+impl Disassemble for spirv::RayFlags {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::RayFlags::OPAQUE_KHR) {
+            bits.push("OpaqueKHR")
+        }
+        if self.contains(spirv::RayFlags::NO_OPAQUE_KHR) {
+            bits.push("NoOpaqueKHR")
+        }
+        if self.contains(spirv::RayFlags::TERMINATE_ON_FIRST_HIT_KHR) {
+            bits.push("TerminateOnFirstHitKHR")
+        }
+        if self.contains(spirv::RayFlags::SKIP_CLOSEST_HIT_SHADER_KHR) {
+            bits.push("SkipClosestHitShaderKHR")
+        }
+        if self.contains(spirv::RayFlags::CULL_BACK_FACING_TRIANGLES_KHR) {
+            bits.push("CullBackFacingTrianglesKHR")
+        }
+        if self.contains(spirv::RayFlags::CULL_FRONT_FACING_TRIANGLES_KHR) {
+            bits.push("CullFrontFacingTrianglesKHR")
+        }
+        if self.contains(spirv::RayFlags::CULL_OPAQUE_KHR) {
+            bits.push("CullOpaqueKHR")
+        }
+        if self.contains(spirv::RayFlags::CULL_NO_OPAQUE_KHR) {
+            bits.push("CullNoOpaqueKHR")
+        }
+        if self.contains(spirv::RayFlags::SKIP_TRIANGLES_KHR) {
+            bits.push("SkipTrianglesKHR")
+        }
+        if self.contains(spirv::RayFlags::SKIP_AAB_BS_KHR) {
+            bits.push("SkipAABBsKHR")
         }
         bits.join("|")
     }

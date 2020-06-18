@@ -136,27 +136,4 @@ impl Builder {
         self.module.types_global_values.push(inst);
         id
     }
-    #[doc = "Appends an OpConstantPipeStorage instruction."]
-    pub fn constant_pipe_storage(
-        &mut self,
-        result_type: spirv::Word,
-        packet_size: u32,
-        packet_alignment: u32,
-        capacity: u32,
-    ) -> spirv::Word {
-        let id = self.id();
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ConstantPipeStorage,
-            Some(result_type),
-            Some(id),
-            vec![
-                dr::Operand::LiteralInt32(packet_size),
-                dr::Operand::LiteralInt32(packet_alignment),
-                dr::Operand::LiteralInt32(capacity),
-            ],
-        );
-        self.module.types_global_values.push(inst);
-        id
-    }
 }

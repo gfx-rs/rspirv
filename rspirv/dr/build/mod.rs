@@ -368,14 +368,6 @@ impl Builder {
         ));
         id
     }
-
-    #[allow(unused_variables)]
-    pub fn line(&mut self, file: spirv::Word, line: spirv::Word, column: spirv::Word) {
-        unimplemented!()
-    }
-    pub fn no_line(&mut self) {
-        unimplemented!()
-    }
 }
 
 impl Builder {

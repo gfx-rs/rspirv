@@ -46,7 +46,7 @@ pub enum Type {
         member_0_type_member_1_type: Vec<StructMember>,
     },
     Opaque {
-        type_name: String,
+        the_name_of_the_opaque_type: String,
     },
     Pointer {
         storage_class: spirv::StorageClass,
@@ -69,26 +69,4 @@ pub enum Type {
     },
     PipeStorage,
     NamedBarrier,
-    AccelerationStructureNV,
-    CooperativeMatrixNV {
-        component_type: Token<Type>,
-        execution: spirv::Word,
-        rows: spirv::Word,
-        columns: spirv::Word,
-    },
-    VmeImageINTEL {
-        image_type: Token<Type>,
-    },
-    AvcImePayloadINTEL,
-    AvcRefPayloadINTEL,
-    AvcSicPayloadINTEL,
-    AvcMcePayloadINTEL,
-    AvcMceResultINTEL,
-    AvcImeResultINTEL,
-    AvcImeResultSingleReferenceStreamoutINTEL,
-    AvcImeResultDualReferenceStreamoutINTEL,
-    AvcImeSingleReferenceStreaminINTEL,
-    AvcImeDualReferenceStreaminINTEL,
-    AvcRefResultINTEL,
-    AvcSicResultINTEL,
 }

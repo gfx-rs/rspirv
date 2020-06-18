@@ -67,6 +67,10 @@ impl Assemble for dr::Operand {
             dr::Operand::LiteralFloat64(v) => vec![v.to_bits() as u32, (v.to_bits() >> 32) as u32],
             dr::Operand::LiteralSpecConstantOpInteger(v) => vec![v as u32],
             dr::Operand::LiteralString(ref v) => assemble_str(v),
+            dr::Operand::RayFlags(ref v)  => vec![v.bits()],
+            dr::Operand::RayQueryIntersection(v)  => vec![v as u32],
+            dr::Operand::RayQueryCommittedIntersectionType(v)  => vec![v as u32],
+            dr::Operand::RayQueryCandidateIntersectionType(v)  => vec![v as u32],
         }
     }
 }

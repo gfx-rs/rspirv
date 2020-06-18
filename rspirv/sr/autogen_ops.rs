@@ -2,9 +2,22 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use crate::sr::{module::Jump, storage::Token, Type};
+use crate::sr::{constants::Constant, module::Jump, storage::Token, types::StructMember, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Branch {
+    Phi {
+        variable_parent: Vec<(spirv::Word, spirv::Word)>,
+    },
+    LoopMerge {
+        merge_block: spirv::Word,
+        continue_target: spirv::Word,
+        loop_control: spirv::LoopControl,
+    },
+    SelectionMerge {
+        merge_block: spirv::Word,
+        selection_control: spirv::SelectionControl,
+    },
+    Label,
     Branch {
         target_label: spirv::Word,
     },
@@ -19,16 +32,24 @@ pub enum Branch {
         default: spirv::Word,
         target: Vec<(u32, Jump)>,
     },
+    Kill,
     Return,
     ReturnValue {
         value: spirv::Word,
+    },
+    Unreachable,
+    LifetimeStart {
+        pointer: spirv::Word,
+        size: u32,
+    },
+    LifetimeStop {
+        pointer: spirv::Word,
+        size: u32,
     },
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Terminator {
     Branch(Branch),
-    Kill,
-    Unreachable,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Op {
@@ -63,15 +84,6 @@ pub enum Op {
         line: u32,
         column: u32,
     },
-    ExtInst {
-        set: spirv::Word,
-        instruction: u32,
-        operand_1_operand_2: Vec<spirv::Word>,
-    },
-    FunctionCall {
-        function: spirv::Word,
-        argument_0_argument_1: Vec<spirv::Word>,
-    },
     Variable {
         storage_class: spirv::StorageClass,
         initializer: Option<spirv::Word>,
@@ -89,19 +101,6 @@ pub enum Op {
         pointer: spirv::Word,
         object: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-    },
-    CopyMemory {
-        target: spirv::Word,
-        source: spirv::Word,
-        src_mem_access: Option<spirv::MemoryAccess>,
-        dst_mem_access: Option<spirv::MemoryAccess>,
-    },
-    CopyMemorySized {
-        target: spirv::Word,
-        source: spirv::Word,
-        size: spirv::Word,
-        src_mem_access: Option<spirv::MemoryAccess>,
-        dst_mem_access: Option<spirv::MemoryAccess>,
     },
     AccessChain {
         base: spirv::Word,
@@ -770,23 +769,6 @@ pub enum Op {
         semantics: spirv::Word,
         value: spirv::Word,
     },
-    LoopMerge {
-        merge_block: spirv::Word,
-        continue_target: spirv::Word,
-        loop_control: spirv::LoopControl,
-    },
-    SelectionMerge {
-        merge_block: spirv::Word,
-        selection_control: spirv::SelectionControl,
-    },
-    LifetimeStart {
-        pointer: spirv::Word,
-        size: u32,
-    },
-    LifetimeStop {
-        pointer: spirv::Word,
-        size: u32,
-    },
     GroupAsyncCopy {
         execution: spirv::Word,
         destination: spirv::Word,
@@ -1099,6 +1081,11 @@ pub enum Op {
     SizeOf {
         pointer: spirv::Word,
     },
+    ConstantPipeStorage {
+        packet_size: u32,
+        packet_alignment: u32,
+        capacity: u32,
+    },
     CreatePipeFromPipeStorage {
         pipe_storage: spirv::Word,
     },
@@ -1340,6 +1327,34 @@ pub enum Op {
         value: spirv::Word,
         index: spirv::Word,
     },
+    TypeRayQueryProvisionalKHR,
+    RayQueryInitializeKHR {
+        ray_query: spirv::Word,
+        accel: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_t_min: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_t_max: spirv::Word,
+    },
+    RayQueryTerminateKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryGenerateIntersectionKHR {
+        ray_query: spirv::Word,
+        hit_t: spirv::Word,
+    },
+    RayQueryConfirmIntersectionKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryProceedKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryGetIntersectionTypeKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
     GroupIAddNonUniformAMD {
         execution: spirv::Word,
         operation: spirv::GroupOperation,
@@ -1389,6 +1404,9 @@ pub enum Op {
         coordinate: spirv::Word,
         fragment_index: spirv::Word,
     },
+    ReadClockKHR {
+        execution: spirv::Word,
+    },
     ImageSampleFootprintNV {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
@@ -1407,8 +1425,14 @@ pub enum Op {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     },
+    ReportIntersectionKHR {
+        hit: spirv::Word,
+        hit_kind: spirv::Word,
+    },
     IgnoreIntersectionNV,
+    IgnoreIntersectionKHR,
     TerminateRayNV,
+    TerminateRayKHR,
     TraceNV {
         accel: spirv::Word,
         ray_flags: spirv::Word,
@@ -1422,9 +1446,34 @@ pub enum Op {
         ray_tmax: spirv::Word,
         payload_id: spirv::Word,
     },
+    TraceRayKHR {
+        accel: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload_id: spirv::Word,
+    },
+    TypeAccelerationStructureNV,
+    TypeAccelerationStructureKHR,
     ExecuteCallableNV {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
+    },
+    ExecuteCallableKHR {
+        sbt_index: spirv::Word,
+        callable_data_id: spirv::Word,
+    },
+    TypeCooperativeMatrixNV {
+        component_type: Token<Type>,
+        execution: spirv::Word,
+        rows: spirv::Word,
+        columns: spirv::Word,
     },
     CooperativeMatrixLoadNV {
         pointer: spirv::Word,
@@ -1447,6 +1496,10 @@ pub enum Op {
     CooperativeMatrixLengthNV {
         ty: spirv::Word,
     },
+    BeginInvocationInterlockEXT,
+    EndInvocationInterlockEXT,
+    DemoteToHelperInvocationEXT,
+    IsHelperInvocationEXT,
     SubgroupShuffleINTEL {
         data: spirv::Word,
         invocation_id: spirv::Word,
@@ -1494,6 +1547,60 @@ pub enum Op {
         height: spirv::Word,
         data: spirv::Word,
     },
+    UCountLeadingZerosINTEL {
+        operand: spirv::Word,
+    },
+    UCountTrailingZerosINTEL {
+        operand: spirv::Word,
+    },
+    AbsISubINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    AbsUSubINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    IAddSatINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    UAddSatINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    IAverageINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    UAverageINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    IAverageRoundedINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    UAverageRoundedINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    ISubSatINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    USubSatINTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    IMul32x16INTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
+    UMul32x16INTEL {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+    },
     DecorateString {
         target: spirv::Word,
         decoration: spirv::Decoration,
@@ -1516,6 +1623,21 @@ pub enum Op {
         image_type: Token<Type>,
         sampler: spirv::Word,
     },
+    TypeVmeImageINTEL {
+        image_type: Token<Type>,
+    },
+    TypeAvcImePayloadINTEL,
+    TypeAvcRefPayloadINTEL,
+    TypeAvcSicPayloadINTEL,
+    TypeAvcMcePayloadINTEL,
+    TypeAvcMceResultINTEL,
+    TypeAvcImeResultINTEL,
+    TypeAvcImeResultSingleReferenceStreamoutINTEL,
+    TypeAvcImeResultDualReferenceStreamoutINTEL,
+    TypeAvcImeSingleReferenceStreaminINTEL,
+    TypeAvcImeDualReferenceStreaminINTEL,
+    TypeAvcRefResultINTEL,
+    TypeAvcSicResultINTEL,
     SubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL {
         slice_type: Token<Type>,
         qp: spirv::Word,
@@ -1947,5 +2069,68 @@ pub enum Op {
     },
     SubgroupAvcSicGetInterRawSadsINTEL {
         payload: spirv::Word,
+    },
+    RayQueryGetRayTMinKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryGetRayFlagsKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryGetIntersectionTKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionInstanceCustomIndexKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionInstanceIdKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionGeometryIndexKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionPrimitiveIndexKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionBarycentricsKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionFrontFaceKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionCandidateAABBOpaqueKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryGetIntersectionObjectRayDirectionKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionObjectRayOriginKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetWorldRayDirectionKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryGetWorldRayOriginKHR {
+        ray_query: spirv::Word,
+    },
+    RayQueryGetIntersectionObjectToWorldKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionWorldToObjectKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
     },
 }

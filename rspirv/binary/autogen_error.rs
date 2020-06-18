@@ -17,6 +17,7 @@ pub enum Error {
     MemorySemanticsUnknown(usize, spirv::Word),
     MemoryAccessUnknown(usize, spirv::Word),
     KernelProfilingInfoUnknown(usize, spirv::Word),
+    RayFlagsUnknown(usize, spirv::Word),
     SourceLanguageUnknown(usize, spirv::Word),
     ExecutionModelUnknown(usize, spirv::Word),
     AddressingModelUnknown(usize, spirv::Word),
@@ -39,6 +40,9 @@ pub enum Error {
     GroupOperationUnknown(usize, spirv::Word),
     KernelEnqueueFlagsUnknown(usize, spirv::Word),
     CapabilityUnknown(usize, spirv::Word),
+    RayQueryIntersectionUnknown(usize, spirv::Word),
+    RayQueryCommittedIntersectionTypeUnknown(usize, spirv::Word),
+    RayQueryCandidateIntersectionTypeUnknown(usize, spirv::Word),
     #[doc = r"Failed to decode a string."]
     #[doc = r""]
     #[doc = r"For structured error handling, the second element could be"]
@@ -91,6 +95,11 @@ impl fmt::Display for Error {
             Error::KernelProfilingInfoUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind KernelProfilingInfo at index {}",
+                word, index
+            ),
+            Error::RayFlagsUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind RayFlags at index {}",
                 word, index
             ),
             Error::SourceLanguageUnknown(index, word) => write!(
@@ -201,6 +210,21 @@ impl fmt::Display for Error {
             Error::CapabilityUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind Capability at index {}",
+                word, index
+            ),
+            Error::RayQueryIntersectionUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind RayQueryIntersection at index {}",
+                word, index
+            ),
+            Error::RayQueryCommittedIntersectionTypeUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind RayQueryCommittedIntersectionType at index {}",
+                word, index
+            ),
+            Error::RayQueryCandidateIntersectionTypeUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind RayQueryCandidateIntersectionType at index {}",
                 word, index
             ),
             Error::DecodeStringFailed(index, ref e) => {

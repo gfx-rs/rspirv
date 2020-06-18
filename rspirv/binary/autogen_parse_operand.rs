@@ -20,6 +20,7 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::KernelProfilingInfo => vec![dr::Operand::KernelProfilingInfo(
                 self.decoder.kernel_profiling_info()?,
             )],
+            GOpKind::RayFlags => vec![dr::Operand::RayFlags(self.decoder.ray_flags()?)],
             GOpKind::SourceLanguage => {
                 vec![dr::Operand::SourceLanguage(self.decoder.source_language()?)]
             }
@@ -64,6 +65,19 @@ impl<'c, 'd> Parser<'c, 'd> {
                 self.decoder.kernel_enqueue_flags()?,
             )],
             GOpKind::Capability => vec![dr::Operand::Capability(self.decoder.capability()?)],
+            GOpKind::RayQueryIntersection => vec![dr::Operand::RayQueryIntersection(
+                self.decoder.ray_query_intersection()?,
+            )],
+            GOpKind::RayQueryCommittedIntersectionType => {
+                vec![dr::Operand::RayQueryCommittedIntersectionType(
+                    self.decoder.ray_query_committed_intersection_type()?,
+                )]
+            }
+            GOpKind::RayQueryCandidateIntersectionType => {
+                vec![dr::Operand::RayQueryCandidateIntersectionType(
+                    self.decoder.ray_query_candidate_intersection_type()?,
+                )]
+            }
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
@@ -152,7 +166,13 @@ impl<'c, 'd> Parser<'c, 'd> {
         if image_operands.contains(spirv::ImageOperands::MIN_LOD) {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
         }
+        if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE) {
+            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
+        }
         if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE_KHR) {
+            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
+        }
+        if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
         if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE_KHR) {
@@ -193,7 +213,13 @@ impl<'c, 'd> Parser<'c, 'd> {
         if memory_access.contains(spirv::MemoryAccess::ALIGNED) {
             params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
         }
+        if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE) {
+            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
+        }
         if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE_KHR) {
+            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
+        }
+        if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
         if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE_KHR) {
@@ -321,6 +347,9 @@ impl<'c, 'd> Parser<'c, 'd> {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
             }
             spirv::Decoration::HlslSemanticGOOGLE => {
+                vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            }
+            spirv::Decoration::UserTypeGOOGLE => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
             }
             _ => vec![],

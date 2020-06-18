@@ -113,7 +113,12 @@ impl OperandTokens {
                 operand.kind.as_str(),
                 None,
             ),
-            "LiteralContextDependentNumber" => panic!("this kind is not expected to be handled here"),
+            "LiteralContextDependentNumber" => (
+                quote! { u32 },
+                quote! { *value },
+                operand.kind.as_str(),
+                None
+            ),
             "LiteralString" => (
                 quote! { String },
                 quote! { value.clone() },
@@ -290,13 +295,27 @@ pub fn gen_sr_code_from_instruction_grammar(
     {
         // Get the token for its enumerant
         let inst_name = &inst.opname[2..];
+
+        // todo: these have parameters with duplicate names in the .json - just skip them for now
+        if inst_name == "CopyMemory" || inst_name == "CopyMemorySized" {
+            continue;
+        }
         let name_ident = Ident::new(inst_name, Span::call_site());
         let type_name = if inst.opname.len() > TYPE_PREFIX_LENGTH {
             &inst.opname[TYPE_PREFIX_LENGTH ..]
         } else {
             "_"
         };
-        let type_ident = Ident::new(type_name, Span::call_site());
+
+        let type_name = if type_name.chars().nth(0).unwrap().is_ascii_digit() {
+            format!("p_{}", type_name)
+        } else {
+            type_name.to_string()
+        };
+
+        dbg!(&type_name);
+
+        let type_ident = Ident::new(&type_name, Span::call_site());
         let opcode = inst.opcode;
 
         // Re-use the allocation between iterations of the loop
@@ -325,7 +344,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             }
         };
 
-        match inst.class {
+        match dbg!(inst.class) {
             Some(structs::Class::Type) => {
                 if field_names.is_empty() {
                     type_variants.push(quote!{ #type_ident });
@@ -450,7 +469,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
 
     let ops = quote! {
-        use crate::sr::{module::Jump, storage::Token, Type};
+        use crate::sr::{module::Jump, storage::Token, Type, constants::Constant, types::StructMember};
 
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Branch {
