@@ -313,8 +313,6 @@ pub fn gen_sr_code_from_instruction_grammar(
             type_name.to_string()
         };
 
-        dbg!(&type_name);
-
         let type_ident = Ident::new(&type_name, Span::call_site());
         let opcode = inst.opcode;
 
@@ -344,7 +342,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             }
         };
 
-        match dbg!(inst.class) {
+        match inst.class {
             Some(structs::Class::Type) => {
                 if field_names.is_empty() {
                     type_variants.push(quote!{ #type_ident });
