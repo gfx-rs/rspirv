@@ -107,6 +107,20 @@ impl Builder {
         }
     }
 
+    /// Create a new builder from an existing module
+    pub fn new_from_module(module: dr::Module) -> Builder {
+        let next_id = module.header.as_ref().map(|h| h.bound).expect("Expecting ModuleHeader with valid bound");
+        let version = module.header.as_ref().map(|h| h.version());
+
+        Builder {
+            module,
+            next_id,
+            function: None,
+            block: None,
+            version
+        }
+    }
+
     /// Sets the SPIR-V version to the given major.minor version.
     ///
     /// If this method is not called, the generated SPIR-V will be set as the newest version
