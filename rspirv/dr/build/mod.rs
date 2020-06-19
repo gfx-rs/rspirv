@@ -160,6 +160,22 @@ impl Builder {
         Ok(())
     }
 
+    pub fn pop_instruction(&mut self) -> BuildResult<dr::Instruction> {
+        let allow = self.new_block.is_some() || self.selected_function.is_some() && self.selected_block.is_some();
+
+        if !allow {
+            return Err(Error::DetachedInstruction);
+        }
+
+        let ref mut block = if self.new_block.is_some() {
+            self.new_block.as_mut().unwrap()
+        } else {
+            &mut self.module.functions[self.selected_function.unwrap()].blocks[self.selected_block.unwrap()]
+        };
+
+        block.instructions.pop().ok_or_else(|| Error::EmptyInstructionList)
+    }
+
     /// Sets the SPIR-V version to the given major.minor version.
     ///
     /// If this method is not called, the generated SPIR-V will be set as the newest version
@@ -270,10 +286,10 @@ impl Builder {
     /// id for the `OpLabel` instruction begining this block; otherwise,
     /// a unused result id will be automatically assigned.
     pub fn begin_block(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
-        if self.new_function.is_none() {
+        if !(self.new_function.is_some() || self.selected_function.is_some()) {
             return Err(Error::DetachedBlock);
         }
-        if self.new_block.is_some() {
+        if self.new_block.is_some() || self.selected_block.is_some() {
             return Err(Error::NestedBlock);
         }
 
@@ -294,16 +310,55 @@ impl Builder {
         Ok(id)
     }
 
-    fn end_block(&mut self, inst: dr::Instruction) -> BuildResult<()> {
-        if self.new_block.is_none() {
-            return Err(Error::MismatchedTerminator);
+    pub fn begin_block_no_label(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if !(self.new_function.is_some() || self.selected_function.is_some()) {
+            return Err(Error::DetachedBlock);
+        }
+        if self.new_block.is_some() || self.selected_block.is_some() {
+            return Err(Error::NestedBlock);
         }
 
-        self.new_block.as_mut().unwrap().instructions.push(inst);
-        self.new_function.as_mut().unwrap().blocks.push(
-            self.new_block.take().unwrap(),
-        );
-        Ok(())
+        let id = match label_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+
+        let mut bb = dr::Block::new();
+        self.new_block = Some(bb);
+        Ok(id)
+    }
+
+    fn end_block(&mut self, inst: dr::Instruction) -> BuildResult<()> {
+        self.insert_end_block(InsertPoint::End, inst)
+    }
+
+    fn insert_end_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
+        if self.new_block.is_some() {
+            //self.new_block.as_mut().unwrap().instructions.push(inst);
+            self.insert_into_block(insert_point, inst)?;
+
+            if self.new_function.is_some() {
+                self.new_function.as_mut().unwrap().blocks.push(
+                    self.new_block.take().unwrap(),
+                );
+            }
+
+            if let Some(idx) = self.selected_function {
+                self.module.functions[idx].blocks.push(
+                    self.new_block.take().unwrap(),
+                );
+            }
+
+            return Ok(())
+        }
+
+        if self.selected_block.is_some() {
+            self.insert_into_block(insert_point, inst)?;
+            self.selected_block = None;
+            return Ok(())
+        }
+
+        Err(Error::MismatchedTerminator)
     }
 
     /// Appends an OpCapability instruction.
