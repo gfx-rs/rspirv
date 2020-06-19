@@ -71,6 +71,18 @@ fn get_function_name(opname: &str) -> TokenStream {
     }
 }
 
+/// Returns a suitable function name for the given `opname`.
+fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
+    if opname == "OpReturn" {
+        quote! { ret }
+    } else if opname == "OpReturnValue" {
+        quote! { ret_value }
+    } else {
+        let name = as_ident(&format!("{}{}", prepend, &opname[2..].to_snake_case()));
+        quote! { #name }
+    }
+}
+
 /// Returns the initializer list for all the parameters required to appear
 /// once and only once.
 fn get_init_list(params: &[structs::Operand]) -> Vec<TokenStream> {
@@ -361,7 +373,9 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);
         let comment = format!("Appends an Op{} instruction to the current block.", opcode);
+        let insert_comment = format!("Appends an Op{} instruction to the current block.", opcode);
         let name = get_function_name(&inst.opname);
+        let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
         let init = get_init_list(&inst.operands);
 
         if !inst.operands.is_empty() && inst.operands[0].kind == "IdResultType" {
@@ -381,7 +395,24 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
                     #(#extras)*
-                    self.block.as_mut().unwrap().instructions.push(inst);
+                    self.insert_into_block_unchecked(InsertPoint::End, inst);
+                    Ok(_id)
+                }
+
+                #[doc = #insert_comment]
+                pub fn #insert_name#generic(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<spirv::Word> {
+                    if self.block.is_none() {
+                        return Err(Error::DetachedInstruction);
+                    }
+                    let _id = match result_id {
+                        Some(v) => v,
+                        None => self.id(),
+                    };
+                    #[allow(unused_mut)]
+                    let mut inst = dr::Instruction::new(
+                        spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
+                    #(#extras)*
+                    self.insert_into_block_unchecked(insert_point, inst);
                     Ok(_id)
                 }
             }
@@ -396,7 +427,20 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
                     #(#extras)*
-                    self.block.as_mut().unwrap().instructions.push(inst);
+                    self.insert_into_block_unchecked(InsertPoint::End, inst);
+                    Ok(())
+                }
+
+                #[doc = #comment]
+                pub fn #insert_name#generic(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
+                    if self.block.is_none() {
+                        return Err(Error::DetachedInstruction);
+                    }
+                    #[allow(unused_mut)]
+                    let mut inst = dr::Instruction::new(
+                        spirv::Op::#opcode, None, None, vec![#(#init),*]);
+                    #(#extras)*
+                    self.insert_into_block_unchecked(insert_point, inst);
                     Ok(())
                 }
             }

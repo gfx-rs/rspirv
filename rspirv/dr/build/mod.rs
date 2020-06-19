@@ -95,6 +95,13 @@ pub struct Builder {
     version: Option<(u8, u8)>,
 }
 
+pub enum InsertPoint {
+    Begin,
+    End,
+    FromBegin(usize),
+    FromEnd(usize),
+}
+
 impl Builder {
     /// Creates a new empty builder.
     pub fn new() -> Builder {
@@ -118,6 +125,18 @@ impl Builder {
             function: None,
             block: None,
             version
+        }
+    }
+
+    fn insert_into_block_unchecked(&mut self, insert_point: InsertPoint, inst: dr::Instruction) {
+        match insert_point {
+            InsertPoint::End => self.block.as_mut().unwrap().instructions.push(inst),
+            InsertPoint::Begin => self.block.as_mut().unwrap().instructions.insert(0, inst),
+            InsertPoint::FromEnd(offset) => {
+                let end = self.block.as_ref().unwrap().instructions.len();
+                self.block.as_mut().unwrap().instructions.insert(end - offset, inst)
+            },
+            InsertPoint::FromBegin(offset) => self.block.as_mut().unwrap().instructions.insert(offset, inst),
         }
     }
 
