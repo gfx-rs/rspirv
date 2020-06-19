@@ -6,22 +6,16 @@
 impl Builder {
     #[doc = "Appends an OpNop instruction to the current block."]
     pub fn nop(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::Nop, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpNop instruction to the current block."]
     pub fn insert_nop(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::Nop, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpImageTexelPointer instruction to the current block."]
@@ -33,9 +27,6 @@ impl Builder {
         coordinate: spirv::Word,
         sample: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -51,7 +42,7 @@ impl Builder {
                 dr::Operand::IdRef(sample),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageTexelPointer instruction to the current block."]
@@ -64,9 +55,6 @@ impl Builder {
         coordinate: spirv::Word,
         sample: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -82,7 +70,7 @@ impl Builder {
                 dr::Operand::IdRef(sample),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLoad instruction to the current block."]
@@ -94,9 +82,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -113,7 +98,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLoad instruction to the current block."]
@@ -126,9 +111,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -145,7 +127,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpStore instruction to the current block."]
@@ -156,9 +138,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Store,
@@ -171,7 +150,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpStore instruction to the current block."]
@@ -183,9 +162,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Store,
@@ -198,7 +174,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpAccessChain instruction to the current block."]
@@ -209,9 +185,6 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -226,7 +199,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAccessChain instruction to the current block."]
@@ -238,9 +211,6 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -255,7 +225,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsAccessChain instruction to the current block."]
@@ -266,9 +236,6 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -283,7 +250,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsAccessChain instruction to the current block."]
@@ -295,9 +262,6 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -312,7 +276,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrAccessChain instruction to the current block."]
@@ -324,9 +288,6 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -341,7 +302,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrAccessChain instruction to the current block."]
@@ -354,9 +315,6 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -371,7 +329,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpArrayLength instruction to the current block."]
@@ -382,9 +340,6 @@ impl Builder {
         structure: spirv::Word,
         array_member: u32,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -399,7 +354,7 @@ impl Builder {
                 dr::Operand::LiteralInt32(array_member),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpArrayLength instruction to the current block."]
@@ -411,9 +366,6 @@ impl Builder {
         structure: spirv::Word,
         array_member: u32,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -428,7 +380,7 @@ impl Builder {
                 dr::Operand::LiteralInt32(array_member),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGenericPtrMemSemantics instruction to the current block."]
@@ -438,9 +390,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -452,7 +401,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGenericPtrMemSemantics instruction to the current block."]
@@ -463,9 +412,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -477,7 +423,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsPtrAccessChain instruction to the current block."]
@@ -489,9 +435,6 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -506,7 +449,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsPtrAccessChain instruction to the current block."]
@@ -519,9 +462,6 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -536,7 +476,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorExtractDynamic instruction to the current block."]
@@ -547,9 +487,6 @@ impl Builder {
         vector: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -561,7 +498,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector), dr::Operand::IdRef(index)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorExtractDynamic instruction to the current block."]
@@ -573,9 +510,6 @@ impl Builder {
         vector: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -587,7 +521,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector), dr::Operand::IdRef(index)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorInsertDynamic instruction to the current block."]
@@ -599,9 +533,6 @@ impl Builder {
         component: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -617,7 +548,7 @@ impl Builder {
                 dr::Operand::IdRef(index),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorInsertDynamic instruction to the current block."]
@@ -630,9 +561,6 @@ impl Builder {
         component: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -648,7 +576,7 @@ impl Builder {
                 dr::Operand::IdRef(index),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorShuffle instruction to the current block."]
@@ -660,9 +588,6 @@ impl Builder {
         vector_2: spirv::Word,
         components: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -677,7 +602,7 @@ impl Builder {
         for v in components.as_ref() {
             inst.operands.push(dr::Operand::LiteralInt32(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorShuffle instruction to the current block."]
@@ -690,9 +615,6 @@ impl Builder {
         vector_2: spirv::Word,
         components: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -707,7 +629,7 @@ impl Builder {
         for v in components.as_ref() {
             inst.operands.push(dr::Operand::LiteralInt32(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeConstruct instruction to the current block."]
@@ -717,9 +639,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         constituents: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -734,7 +653,7 @@ impl Builder {
         for v in constituents.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeConstruct instruction to the current block."]
@@ -745,9 +664,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         constituents: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -762,7 +678,7 @@ impl Builder {
         for v in constituents.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeExtract instruction to the current block."]
@@ -773,9 +689,6 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -790,7 +703,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::LiteralInt32(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeExtract instruction to the current block."]
@@ -802,9 +715,6 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -819,7 +729,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::LiteralInt32(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeInsert instruction to the current block."]
@@ -831,9 +741,6 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -848,7 +755,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::LiteralInt32(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeInsert instruction to the current block."]
@@ -861,9 +768,6 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -878,7 +782,7 @@ impl Builder {
         for v in indexes.as_ref() {
             inst.operands.push(dr::Operand::LiteralInt32(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCopyObject instruction to the current block."]
@@ -888,9 +792,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -902,7 +803,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCopyObject instruction to the current block."]
@@ -913,9 +814,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -927,7 +825,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpTranspose instruction to the current block."]
@@ -937,9 +835,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -951,7 +846,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(matrix)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpTranspose instruction to the current block."]
@@ -962,9 +857,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -976,7 +868,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(matrix)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSampledImage instruction to the current block."]
@@ -987,9 +879,6 @@ impl Builder {
         image: spirv::Word,
         sampler: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1001,7 +890,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(sampler)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSampledImage instruction to the current block."]
@@ -1013,9 +902,6 @@ impl Builder {
         image: spirv::Word,
         sampler: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1027,7 +913,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(sampler)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleImplicitLod instruction to the current block."]
@@ -1040,9 +926,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1062,7 +945,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleImplicitLod instruction to the current block."]
@@ -1076,9 +959,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1098,7 +978,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleExplicitLod instruction to the current block."]
@@ -1111,9 +991,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1130,7 +1007,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleExplicitLod instruction to the current block."]
@@ -1144,9 +1021,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1163,7 +1037,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefImplicitLod instruction to the current block."]
@@ -1177,9 +1051,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1200,7 +1071,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefImplicitLod instruction to the current block."]
@@ -1215,9 +1086,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1238,7 +1106,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefExplicitLod instruction to the current block."]
@@ -1252,9 +1120,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1272,7 +1137,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefExplicitLod instruction to the current block."]
@@ -1287,9 +1152,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1307,7 +1169,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjImplicitLod instruction to the current block."]
@@ -1320,9 +1182,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1342,7 +1201,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjImplicitLod instruction to the current block."]
@@ -1356,9 +1215,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1378,7 +1234,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjExplicitLod instruction to the current block."]
@@ -1391,9 +1247,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1410,7 +1263,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjExplicitLod instruction to the current block."]
@@ -1424,9 +1277,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1443,7 +1293,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefImplicitLod instruction to the current block."]
@@ -1457,9 +1307,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1480,7 +1327,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefImplicitLod instruction to the current block."]
@@ -1495,9 +1342,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1518,7 +1362,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefExplicitLod instruction to the current block."]
@@ -1532,9 +1376,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1552,7 +1393,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefExplicitLod instruction to the current block."]
@@ -1567,9 +1408,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1587,7 +1425,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageFetch instruction to the current block."]
@@ -1600,9 +1438,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1619,7 +1454,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageFetch instruction to the current block."]
@@ -1633,9 +1468,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1652,7 +1484,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageGather instruction to the current block."]
@@ -1666,9 +1498,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1689,7 +1518,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageGather instruction to the current block."]
@@ -1704,9 +1533,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1727,7 +1553,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageDrefGather instruction to the current block."]
@@ -1741,9 +1567,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1764,7 +1587,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageDrefGather instruction to the current block."]
@@ -1779,9 +1602,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1802,7 +1622,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageRead instruction to the current block."]
@@ -1815,9 +1635,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1834,7 +1651,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageRead instruction to the current block."]
@@ -1848,9 +1665,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1867,7 +1681,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageWrite instruction to the current block."]
@@ -1879,9 +1693,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageWrite,
@@ -1898,7 +1709,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpImageWrite instruction to the current block."]
@@ -1911,9 +1722,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageWrite,
@@ -1930,7 +1738,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpImage instruction to the current block."]
@@ -1940,9 +1748,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1954,7 +1759,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(sampled_image)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImage instruction to the current block."]
@@ -1965,9 +1770,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -1979,7 +1781,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(sampled_image)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryFormat instruction to the current block."]
@@ -1989,9 +1791,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2003,7 +1802,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryFormat instruction to the current block."]
@@ -2014,9 +1813,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2028,7 +1824,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryOrder instruction to the current block."]
@@ -2038,9 +1834,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2052,7 +1845,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryOrder instruction to the current block."]
@@ -2063,9 +1856,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2077,7 +1867,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQuerySizeLod instruction to the current block."]
@@ -2088,9 +1878,6 @@ impl Builder {
         image: spirv::Word,
         level_of_detail: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2105,7 +1892,7 @@ impl Builder {
                 dr::Operand::IdRef(level_of_detail),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQuerySizeLod instruction to the current block."]
@@ -2117,9 +1904,6 @@ impl Builder {
         image: spirv::Word,
         level_of_detail: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2134,7 +1918,7 @@ impl Builder {
                 dr::Operand::IdRef(level_of_detail),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQuerySize instruction to the current block."]
@@ -2144,9 +1928,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2158,7 +1939,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQuerySize instruction to the current block."]
@@ -2169,9 +1950,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2183,7 +1961,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryLod instruction to the current block."]
@@ -2194,9 +1972,6 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2211,7 +1986,7 @@ impl Builder {
                 dr::Operand::IdRef(coordinate),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryLod instruction to the current block."]
@@ -2223,9 +1998,6 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2240,7 +2012,7 @@ impl Builder {
                 dr::Operand::IdRef(coordinate),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryLevels instruction to the current block."]
@@ -2250,9 +2022,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2264,7 +2033,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQueryLevels instruction to the current block."]
@@ -2275,9 +2044,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2289,7 +2055,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQuerySamples instruction to the current block."]
@@ -2299,9 +2065,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2313,7 +2076,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageQuerySamples instruction to the current block."]
@@ -2324,9 +2087,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2338,7 +2098,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertFToU instruction to the current block."]
@@ -2348,9 +2108,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2362,7 +2119,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(float_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertFToU instruction to the current block."]
@@ -2373,9 +2130,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2387,7 +2141,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(float_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertFToS instruction to the current block."]
@@ -2397,9 +2151,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2411,7 +2162,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(float_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertFToS instruction to the current block."]
@@ -2422,9 +2173,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2436,7 +2184,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(float_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertSToF instruction to the current block."]
@@ -2446,9 +2194,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2460,7 +2205,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(signed_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertSToF instruction to the current block."]
@@ -2471,9 +2216,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2485,7 +2227,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(signed_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertUToF instruction to the current block."]
@@ -2495,9 +2237,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2509,7 +2248,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(unsigned_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertUToF instruction to the current block."]
@@ -2520,9 +2259,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2534,7 +2270,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(unsigned_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUConvert instruction to the current block."]
@@ -2544,9 +2280,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2558,7 +2291,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(unsigned_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUConvert instruction to the current block."]
@@ -2569,9 +2302,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2583,7 +2313,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(unsigned_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSConvert instruction to the current block."]
@@ -2593,9 +2323,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2607,7 +2334,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(signed_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSConvert instruction to the current block."]
@@ -2618,9 +2345,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2632,7 +2356,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(signed_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFConvert instruction to the current block."]
@@ -2642,9 +2366,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2656,7 +2377,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(float_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFConvert instruction to the current block."]
@@ -2667,9 +2388,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2681,7 +2399,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(float_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpQuantizeToF16 instruction to the current block."]
@@ -2691,9 +2409,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2705,7 +2420,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpQuantizeToF16 instruction to the current block."]
@@ -2716,9 +2431,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2730,7 +2442,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertPtrToU instruction to the current block."]
@@ -2740,9 +2452,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2754,7 +2463,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertPtrToU instruction to the current block."]
@@ -2765,9 +2474,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2779,7 +2485,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSatConvertSToU instruction to the current block."]
@@ -2789,9 +2495,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2803,7 +2506,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(signed_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSatConvertSToU instruction to the current block."]
@@ -2814,9 +2517,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2828,7 +2528,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(signed_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSatConvertUToS instruction to the current block."]
@@ -2838,9 +2538,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2852,7 +2549,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(unsigned_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSatConvertUToS instruction to the current block."]
@@ -2863,9 +2560,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2877,7 +2571,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(unsigned_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertUToPtr instruction to the current block."]
@@ -2887,9 +2581,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         integer_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2901,7 +2592,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(integer_value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConvertUToPtr instruction to the current block."]
@@ -2912,9 +2603,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         integer_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2926,7 +2614,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(integer_value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrCastToGeneric instruction to the current block."]
@@ -2936,9 +2624,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2950,7 +2635,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrCastToGeneric instruction to the current block."]
@@ -2961,9 +2646,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2975,7 +2657,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGenericCastToPtr instruction to the current block."]
@@ -2985,9 +2667,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -2999,7 +2678,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGenericCastToPtr instruction to the current block."]
@@ -3010,9 +2689,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3024,7 +2700,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGenericCastToPtrExplicit instruction to the current block."]
@@ -3035,9 +2711,6 @@ impl Builder {
         pointer: spirv::Word,
         storage: spirv::StorageClass,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3052,7 +2725,7 @@ impl Builder {
                 dr::Operand::StorageClass(storage),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGenericCastToPtrExplicit instruction to the current block."]
@@ -3064,9 +2737,6 @@ impl Builder {
         pointer: spirv::Word,
         storage: spirv::StorageClass,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3081,7 +2751,7 @@ impl Builder {
                 dr::Operand::StorageClass(storage),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitcast instruction to the current block."]
@@ -3091,9 +2761,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3105,7 +2772,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitcast instruction to the current block."]
@@ -3116,9 +2783,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3130,7 +2794,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSNegate instruction to the current block."]
@@ -3140,9 +2804,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3154,7 +2815,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSNegate instruction to the current block."]
@@ -3165,9 +2826,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3179,7 +2837,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFNegate instruction to the current block."]
@@ -3189,9 +2847,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3203,7 +2858,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFNegate instruction to the current block."]
@@ -3214,9 +2869,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3228,7 +2880,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAdd instruction to the current block."]
@@ -3239,9 +2891,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3253,7 +2902,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAdd instruction to the current block."]
@@ -3265,9 +2914,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3279,7 +2925,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFAdd instruction to the current block."]
@@ -3290,9 +2936,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3304,7 +2947,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFAdd instruction to the current block."]
@@ -3316,9 +2959,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3330,7 +2970,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpISub instruction to the current block."]
@@ -3341,9 +2981,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3355,7 +2992,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpISub instruction to the current block."]
@@ -3367,9 +3004,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3381,7 +3015,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFSub instruction to the current block."]
@@ -3392,9 +3026,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3406,7 +3037,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFSub instruction to the current block."]
@@ -3418,9 +3049,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3432,7 +3060,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIMul instruction to the current block."]
@@ -3443,9 +3071,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3457,7 +3082,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIMul instruction to the current block."]
@@ -3469,9 +3094,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3483,7 +3105,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFMul instruction to the current block."]
@@ -3494,9 +3116,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3508,7 +3127,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFMul instruction to the current block."]
@@ -3520,9 +3139,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3534,7 +3150,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUDiv instruction to the current block."]
@@ -3545,9 +3161,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3559,7 +3172,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUDiv instruction to the current block."]
@@ -3571,9 +3184,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3585,7 +3195,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSDiv instruction to the current block."]
@@ -3596,9 +3206,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3610,7 +3217,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSDiv instruction to the current block."]
@@ -3622,9 +3229,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3636,7 +3240,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFDiv instruction to the current block."]
@@ -3647,9 +3251,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3661,7 +3262,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFDiv instruction to the current block."]
@@ -3673,9 +3274,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3687,7 +3285,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUMod instruction to the current block."]
@@ -3698,9 +3296,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3712,7 +3307,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUMod instruction to the current block."]
@@ -3724,9 +3319,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3738,7 +3330,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSRem instruction to the current block."]
@@ -3749,9 +3341,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3763,7 +3352,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSRem instruction to the current block."]
@@ -3775,9 +3364,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3789,7 +3375,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSMod instruction to the current block."]
@@ -3800,9 +3386,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3814,7 +3397,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSMod instruction to the current block."]
@@ -3826,9 +3409,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3840,7 +3420,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFRem instruction to the current block."]
@@ -3851,9 +3431,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3865,7 +3442,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFRem instruction to the current block."]
@@ -3877,9 +3454,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3891,7 +3465,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFMod instruction to the current block."]
@@ -3902,9 +3476,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3916,7 +3487,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFMod instruction to the current block."]
@@ -3928,9 +3499,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3942,7 +3510,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorTimesScalar instruction to the current block."]
@@ -3953,9 +3521,6 @@ impl Builder {
         vector: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3967,7 +3532,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector), dr::Operand::IdRef(scalar)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorTimesScalar instruction to the current block."]
@@ -3979,9 +3544,6 @@ impl Builder {
         vector: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -3993,7 +3555,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector), dr::Operand::IdRef(scalar)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpMatrixTimesScalar instruction to the current block."]
@@ -4004,9 +3566,6 @@ impl Builder {
         matrix: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4018,7 +3577,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(matrix), dr::Operand::IdRef(scalar)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpMatrixTimesScalar instruction to the current block."]
@@ -4030,9 +3589,6 @@ impl Builder {
         matrix: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4044,7 +3600,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(matrix), dr::Operand::IdRef(scalar)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorTimesMatrix instruction to the current block."]
@@ -4055,9 +3611,6 @@ impl Builder {
         vector: spirv::Word,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4069,7 +3622,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector), dr::Operand::IdRef(matrix)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorTimesMatrix instruction to the current block."]
@@ -4081,9 +3634,6 @@ impl Builder {
         vector: spirv::Word,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4095,7 +3645,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector), dr::Operand::IdRef(matrix)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpMatrixTimesVector instruction to the current block."]
@@ -4106,9 +3656,6 @@ impl Builder {
         matrix: spirv::Word,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4120,7 +3667,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(matrix), dr::Operand::IdRef(vector)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpMatrixTimesVector instruction to the current block."]
@@ -4132,9 +3679,6 @@ impl Builder {
         matrix: spirv::Word,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4146,7 +3690,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(matrix), dr::Operand::IdRef(vector)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpMatrixTimesMatrix instruction to the current block."]
@@ -4157,9 +3701,6 @@ impl Builder {
         left_matrix: spirv::Word,
         right_matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4174,7 +3715,7 @@ impl Builder {
                 dr::Operand::IdRef(right_matrix),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpMatrixTimesMatrix instruction to the current block."]
@@ -4186,9 +3727,6 @@ impl Builder {
         left_matrix: spirv::Word,
         right_matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4203,7 +3741,7 @@ impl Builder {
                 dr::Operand::IdRef(right_matrix),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpOuterProduct instruction to the current block."]
@@ -4214,9 +3752,6 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4228,7 +3763,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpOuterProduct instruction to the current block."]
@@ -4240,9 +3775,6 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4254,7 +3786,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDot instruction to the current block."]
@@ -4265,9 +3797,6 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4279,7 +3808,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDot instruction to the current block."]
@@ -4291,9 +3820,6 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4305,7 +3831,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAddCarry instruction to the current block."]
@@ -4316,9 +3842,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4330,7 +3853,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAddCarry instruction to the current block."]
@@ -4342,9 +3865,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4356,7 +3876,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpISubBorrow instruction to the current block."]
@@ -4367,9 +3887,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4381,7 +3898,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpISubBorrow instruction to the current block."]
@@ -4393,9 +3910,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4407,7 +3921,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUMulExtended instruction to the current block."]
@@ -4418,9 +3932,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4432,7 +3943,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUMulExtended instruction to the current block."]
@@ -4444,9 +3955,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4458,7 +3966,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSMulExtended instruction to the current block."]
@@ -4469,9 +3977,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4483,7 +3988,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSMulExtended instruction to the current block."]
@@ -4495,9 +4000,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4509,7 +4011,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAny instruction to the current block."]
@@ -4519,9 +4021,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4533,7 +4032,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAny instruction to the current block."]
@@ -4544,9 +4043,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4558,7 +4054,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAll instruction to the current block."]
@@ -4568,9 +4064,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4582,7 +4075,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAll instruction to the current block."]
@@ -4593,9 +4086,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4607,7 +4097,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsNan instruction to the current block."]
@@ -4617,9 +4107,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4631,7 +4118,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsNan instruction to the current block."]
@@ -4642,9 +4129,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4656,7 +4140,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsInf instruction to the current block."]
@@ -4666,9 +4150,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4680,7 +4161,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsInf instruction to the current block."]
@@ -4691,9 +4172,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4705,7 +4183,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsFinite instruction to the current block."]
@@ -4715,9 +4193,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4729,7 +4204,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsFinite instruction to the current block."]
@@ -4740,9 +4215,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4754,7 +4226,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsNormal instruction to the current block."]
@@ -4764,9 +4236,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4778,7 +4247,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsNormal instruction to the current block."]
@@ -4789,9 +4258,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4803,7 +4269,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSignBitSet instruction to the current block."]
@@ -4813,9 +4279,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4827,7 +4290,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSignBitSet instruction to the current block."]
@@ -4838,9 +4301,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4852,7 +4312,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLessOrGreater instruction to the current block."]
@@ -4863,9 +4323,6 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4877,7 +4334,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x), dr::Operand::IdRef(y)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLessOrGreater instruction to the current block."]
@@ -4889,9 +4346,6 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4903,7 +4357,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x), dr::Operand::IdRef(y)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpOrdered instruction to the current block."]
@@ -4914,9 +4368,6 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4928,7 +4379,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x), dr::Operand::IdRef(y)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpOrdered instruction to the current block."]
@@ -4940,9 +4391,6 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4954,7 +4402,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x), dr::Operand::IdRef(y)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUnordered instruction to the current block."]
@@ -4965,9 +4413,6 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -4979,7 +4424,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x), dr::Operand::IdRef(y)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUnordered instruction to the current block."]
@@ -4991,9 +4436,6 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5005,7 +4447,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(x), dr::Operand::IdRef(y)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalEqual instruction to the current block."]
@@ -5016,9 +4458,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5030,7 +4469,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalEqual instruction to the current block."]
@@ -5042,9 +4481,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5056,7 +4492,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalNotEqual instruction to the current block."]
@@ -5067,9 +4503,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5081,7 +4514,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalNotEqual instruction to the current block."]
@@ -5093,9 +4526,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5107,7 +4537,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalOr instruction to the current block."]
@@ -5118,9 +4548,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5132,7 +4559,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalOr instruction to the current block."]
@@ -5144,9 +4571,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5158,7 +4582,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalAnd instruction to the current block."]
@@ -5169,9 +4593,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5183,7 +4604,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalAnd instruction to the current block."]
@@ -5195,9 +4616,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5209,7 +4627,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalNot instruction to the current block."]
@@ -5219,9 +4637,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5233,7 +4648,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLogicalNot instruction to the current block."]
@@ -5244,9 +4659,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5258,7 +4670,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSelect instruction to the current block."]
@@ -5270,9 +4682,6 @@ impl Builder {
         object_1: spirv::Word,
         object_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5288,7 +4697,7 @@ impl Builder {
                 dr::Operand::IdRef(object_2),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSelect instruction to the current block."]
@@ -5301,9 +4710,6 @@ impl Builder {
         object_1: spirv::Word,
         object_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5319,7 +4725,7 @@ impl Builder {
                 dr::Operand::IdRef(object_2),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIEqual instruction to the current block."]
@@ -5330,9 +4736,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5344,7 +4747,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIEqual instruction to the current block."]
@@ -5356,9 +4759,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5370,7 +4770,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpINotEqual instruction to the current block."]
@@ -5381,9 +4781,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5395,7 +4792,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpINotEqual instruction to the current block."]
@@ -5407,9 +4804,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5421,7 +4815,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUGreaterThan instruction to the current block."]
@@ -5432,9 +4826,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5446,7 +4837,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUGreaterThan instruction to the current block."]
@@ -5458,9 +4849,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5472,7 +4860,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSGreaterThan instruction to the current block."]
@@ -5483,9 +4871,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5497,7 +4882,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSGreaterThan instruction to the current block."]
@@ -5509,9 +4894,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5523,7 +4905,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUGreaterThanEqual instruction to the current block."]
@@ -5534,9 +4916,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5548,7 +4927,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUGreaterThanEqual instruction to the current block."]
@@ -5560,9 +4939,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5574,7 +4950,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSGreaterThanEqual instruction to the current block."]
@@ -5585,9 +4961,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5599,7 +4972,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSGreaterThanEqual instruction to the current block."]
@@ -5611,9 +4984,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5625,7 +4995,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpULessThan instruction to the current block."]
@@ -5636,9 +5006,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5650,7 +5017,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpULessThan instruction to the current block."]
@@ -5662,9 +5029,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5676,7 +5040,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSLessThan instruction to the current block."]
@@ -5687,9 +5051,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5701,7 +5062,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSLessThan instruction to the current block."]
@@ -5713,9 +5074,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5727,7 +5085,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpULessThanEqual instruction to the current block."]
@@ -5738,9 +5096,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5752,7 +5107,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpULessThanEqual instruction to the current block."]
@@ -5764,9 +5119,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5778,7 +5130,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSLessThanEqual instruction to the current block."]
@@ -5789,9 +5141,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5803,7 +5152,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSLessThanEqual instruction to the current block."]
@@ -5815,9 +5164,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5829,7 +5175,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdEqual instruction to the current block."]
@@ -5840,9 +5186,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5854,7 +5197,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdEqual instruction to the current block."]
@@ -5866,9 +5209,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5880,7 +5220,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordEqual instruction to the current block."]
@@ -5891,9 +5231,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5905,7 +5242,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordEqual instruction to the current block."]
@@ -5917,9 +5254,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5931,7 +5265,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdNotEqual instruction to the current block."]
@@ -5942,9 +5276,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5956,7 +5287,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdNotEqual instruction to the current block."]
@@ -5968,9 +5299,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -5982,7 +5310,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordNotEqual instruction to the current block."]
@@ -5993,9 +5321,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6007,7 +5332,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordNotEqual instruction to the current block."]
@@ -6019,9 +5344,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6033,7 +5355,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdLessThan instruction to the current block."]
@@ -6044,9 +5366,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6058,7 +5377,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdLessThan instruction to the current block."]
@@ -6070,9 +5389,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6084,7 +5400,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordLessThan instruction to the current block."]
@@ -6095,9 +5411,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6109,7 +5422,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordLessThan instruction to the current block."]
@@ -6121,9 +5434,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6135,7 +5445,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdGreaterThan instruction to the current block."]
@@ -6146,9 +5456,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6160,7 +5467,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdGreaterThan instruction to the current block."]
@@ -6172,9 +5479,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6186,7 +5490,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordGreaterThan instruction to the current block."]
@@ -6197,9 +5501,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6211,7 +5512,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordGreaterThan instruction to the current block."]
@@ -6223,9 +5524,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6237,7 +5535,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdLessThanEqual instruction to the current block."]
@@ -6248,9 +5546,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6262,7 +5557,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdLessThanEqual instruction to the current block."]
@@ -6274,9 +5569,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6288,7 +5580,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordLessThanEqual instruction to the current block."]
@@ -6299,9 +5591,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6313,7 +5602,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordLessThanEqual instruction to the current block."]
@@ -6325,9 +5614,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6339,7 +5625,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdGreaterThanEqual instruction to the current block."]
@@ -6350,9 +5636,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6364,7 +5647,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFOrdGreaterThanEqual instruction to the current block."]
@@ -6376,9 +5659,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6390,7 +5670,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordGreaterThanEqual instruction to the current block."]
@@ -6401,9 +5681,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6415,7 +5692,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFUnordGreaterThanEqual instruction to the current block."]
@@ -6427,9 +5704,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6441,7 +5715,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpShiftRightLogical instruction to the current block."]
@@ -6452,9 +5726,6 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6466,7 +5737,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(shift)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpShiftRightLogical instruction to the current block."]
@@ -6478,9 +5749,6 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6492,7 +5760,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(shift)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpShiftRightArithmetic instruction to the current block."]
@@ -6503,9 +5771,6 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6517,7 +5782,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(shift)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpShiftRightArithmetic instruction to the current block."]
@@ -6529,9 +5794,6 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6543,7 +5805,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(shift)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpShiftLeftLogical instruction to the current block."]
@@ -6554,9 +5816,6 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6568,7 +5827,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(shift)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpShiftLeftLogical instruction to the current block."]
@@ -6580,9 +5839,6 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6594,7 +5850,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(shift)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitwiseOr instruction to the current block."]
@@ -6605,9 +5861,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6619,7 +5872,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitwiseOr instruction to the current block."]
@@ -6631,9 +5884,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6645,7 +5895,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitwiseXor instruction to the current block."]
@@ -6656,9 +5906,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6670,7 +5917,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitwiseXor instruction to the current block."]
@@ -6682,9 +5929,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6696,7 +5940,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitwiseAnd instruction to the current block."]
@@ -6707,9 +5951,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6721,7 +5962,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitwiseAnd instruction to the current block."]
@@ -6733,9 +5974,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6747,7 +5985,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpNot instruction to the current block."]
@@ -6757,9 +5995,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6771,7 +6006,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpNot instruction to the current block."]
@@ -6782,9 +6017,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6796,7 +6028,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldInsert instruction to the current block."]
@@ -6809,9 +6041,6 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6828,7 +6057,7 @@ impl Builder {
                 dr::Operand::IdRef(count),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldInsert instruction to the current block."]
@@ -6842,9 +6071,6 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6861,7 +6087,7 @@ impl Builder {
                 dr::Operand::IdRef(count),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldSExtract instruction to the current block."]
@@ -6873,9 +6099,6 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6891,7 +6114,7 @@ impl Builder {
                 dr::Operand::IdRef(count),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldSExtract instruction to the current block."]
@@ -6904,9 +6127,6 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6922,7 +6142,7 @@ impl Builder {
                 dr::Operand::IdRef(count),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldUExtract instruction to the current block."]
@@ -6934,9 +6154,6 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6952,7 +6169,7 @@ impl Builder {
                 dr::Operand::IdRef(count),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitFieldUExtract instruction to the current block."]
@@ -6965,9 +6182,6 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -6983,7 +6197,7 @@ impl Builder {
                 dr::Operand::IdRef(count),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitReverse instruction to the current block."]
@@ -6993,9 +6207,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7007,7 +6218,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitReverse instruction to the current block."]
@@ -7018,9 +6229,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7032,7 +6240,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitCount instruction to the current block."]
@@ -7042,9 +6250,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7056,7 +6261,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBitCount instruction to the current block."]
@@ -7067,9 +6272,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7081,7 +6283,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdx instruction to the current block."]
@@ -7091,9 +6293,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7105,7 +6304,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdx instruction to the current block."]
@@ -7116,9 +6315,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7130,7 +6326,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdy instruction to the current block."]
@@ -7140,9 +6336,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7154,7 +6347,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdy instruction to the current block."]
@@ -7165,9 +6358,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7179,7 +6369,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFwidth instruction to the current block."]
@@ -7189,9 +6379,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7203,7 +6390,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFwidth instruction to the current block."]
@@ -7214,9 +6401,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7228,7 +6412,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdxFine instruction to the current block."]
@@ -7238,9 +6422,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7252,7 +6433,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdxFine instruction to the current block."]
@@ -7263,9 +6444,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7277,7 +6455,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdyFine instruction to the current block."]
@@ -7287,9 +6465,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7301,7 +6476,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdyFine instruction to the current block."]
@@ -7312,9 +6487,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7326,7 +6498,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFwidthFine instruction to the current block."]
@@ -7336,9 +6508,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7350,7 +6519,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFwidthFine instruction to the current block."]
@@ -7361,9 +6530,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7375,7 +6541,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdxCoarse instruction to the current block."]
@@ -7385,9 +6551,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7399,7 +6562,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdxCoarse instruction to the current block."]
@@ -7410,9 +6573,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7424,7 +6584,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdyCoarse instruction to the current block."]
@@ -7434,9 +6594,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7448,7 +6605,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpDPdyCoarse instruction to the current block."]
@@ -7459,9 +6616,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7473,7 +6627,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFwidthCoarse instruction to the current block."]
@@ -7483,9 +6637,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7497,7 +6648,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFwidthCoarse instruction to the current block."]
@@ -7508,9 +6659,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7522,54 +6670,39 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(p)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpEmitVertex instruction to the current block."]
     pub fn emit_vertex(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::EmitVertex, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEmitVertex instruction to the current block."]
     pub fn insert_emit_vertex(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::EmitVertex, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEndPrimitive instruction to the current block."]
     pub fn end_primitive(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::EndPrimitive, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEndPrimitive instruction to the current block."]
     pub fn insert_end_primitive(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::EndPrimitive, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEmitStreamVertex instruction to the current block."]
     pub fn emit_stream_vertex(&mut self, stream: spirv::Word) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EmitStreamVertex,
@@ -7577,7 +6710,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(stream)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEmitStreamVertex instruction to the current block."]
@@ -7586,9 +6719,6 @@ impl Builder {
         insert_point: InsertPoint,
         stream: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EmitStreamVertex,
@@ -7596,14 +6726,11 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(stream)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEndStreamPrimitive instruction to the current block."]
     pub fn end_stream_primitive(&mut self, stream: spirv::Word) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EndStreamPrimitive,
@@ -7611,7 +6738,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(stream)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEndStreamPrimitive instruction to the current block."]
@@ -7620,9 +6747,6 @@ impl Builder {
         insert_point: InsertPoint,
         stream: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EndStreamPrimitive,
@@ -7630,7 +6754,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(stream)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpControlBarrier instruction to the current block."]
@@ -7640,9 +6764,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ControlBarrier,
@@ -7654,7 +6775,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpControlBarrier instruction to the current block."]
@@ -7665,9 +6786,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ControlBarrier,
@@ -7679,7 +6797,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpMemoryBarrier instruction to the current block."]
@@ -7688,9 +6806,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MemoryBarrier,
@@ -7701,7 +6816,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpMemoryBarrier instruction to the current block."]
@@ -7711,9 +6826,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MemoryBarrier,
@@ -7724,7 +6836,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpAtomicLoad instruction to the current block."]
@@ -7736,9 +6848,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7754,7 +6863,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicLoad instruction to the current block."]
@@ -7767,9 +6876,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7785,7 +6891,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicStore instruction to the current block."]
@@ -7796,9 +6902,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicStore,
@@ -7811,7 +6914,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpAtomicStore instruction to the current block."]
@@ -7823,9 +6926,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicStore,
@@ -7838,7 +6938,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpAtomicExchange instruction to the current block."]
@@ -7851,9 +6951,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7870,7 +6967,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicExchange instruction to the current block."]
@@ -7884,9 +6981,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7903,7 +6997,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicCompareExchange instruction to the current block."]
@@ -7918,9 +7012,6 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7939,7 +7030,7 @@ impl Builder {
                 dr::Operand::IdRef(comparator),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicCompareExchange instruction to the current block."]
@@ -7955,9 +7046,6 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -7976,7 +7064,7 @@ impl Builder {
                 dr::Operand::IdRef(comparator),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicCompareExchangeWeak instruction to the current block."]
@@ -7991,9 +7079,6 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8012,7 +7097,7 @@ impl Builder {
                 dr::Operand::IdRef(comparator),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicCompareExchangeWeak instruction to the current block."]
@@ -8028,9 +7113,6 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8049,7 +7131,7 @@ impl Builder {
                 dr::Operand::IdRef(comparator),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIIncrement instruction to the current block."]
@@ -8061,9 +7143,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8079,7 +7158,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIIncrement instruction to the current block."]
@@ -8092,9 +7171,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8110,7 +7186,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIDecrement instruction to the current block."]
@@ -8122,9 +7198,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8140,7 +7213,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIDecrement instruction to the current block."]
@@ -8153,9 +7226,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8171,7 +7241,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIAdd instruction to the current block."]
@@ -8184,9 +7254,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8203,7 +7270,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicIAdd instruction to the current block."]
@@ -8217,9 +7284,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8236,7 +7300,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicISub instruction to the current block."]
@@ -8249,9 +7313,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8268,7 +7329,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicISub instruction to the current block."]
@@ -8282,9 +7343,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8301,7 +7359,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicSMin instruction to the current block."]
@@ -8314,9 +7372,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8333,7 +7388,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicSMin instruction to the current block."]
@@ -8347,9 +7402,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8366,7 +7418,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicUMin instruction to the current block."]
@@ -8379,9 +7431,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8398,7 +7447,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicUMin instruction to the current block."]
@@ -8412,9 +7461,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8431,7 +7477,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicSMax instruction to the current block."]
@@ -8444,9 +7490,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8463,7 +7506,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicSMax instruction to the current block."]
@@ -8477,9 +7520,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8496,7 +7536,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicUMax instruction to the current block."]
@@ -8509,9 +7549,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8528,7 +7565,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicUMax instruction to the current block."]
@@ -8542,9 +7579,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8561,7 +7595,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicAnd instruction to the current block."]
@@ -8574,9 +7608,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8593,7 +7624,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicAnd instruction to the current block."]
@@ -8607,9 +7638,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8626,7 +7654,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicOr instruction to the current block."]
@@ -8639,9 +7667,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8658,7 +7683,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicOr instruction to the current block."]
@@ -8672,9 +7697,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8691,7 +7713,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicXor instruction to the current block."]
@@ -8704,9 +7726,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8723,7 +7742,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicXor instruction to the current block."]
@@ -8737,9 +7756,6 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8756,7 +7772,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupAsyncCopy instruction to the current block."]
@@ -8771,9 +7787,6 @@ impl Builder {
         stride: spirv::Word,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8792,7 +7805,7 @@ impl Builder {
                 dr::Operand::IdRef(event),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupAsyncCopy instruction to the current block."]
@@ -8808,9 +7821,6 @@ impl Builder {
         stride: spirv::Word,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8829,7 +7839,7 @@ impl Builder {
                 dr::Operand::IdRef(event),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupWaitEvents instruction to the current block."]
@@ -8839,9 +7849,6 @@ impl Builder {
         num_events: spirv::Word,
         events_list: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupWaitEvents,
@@ -8853,7 +7860,7 @@ impl Builder {
                 dr::Operand::IdRef(events_list),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpGroupWaitEvents instruction to the current block."]
@@ -8864,9 +7871,6 @@ impl Builder {
         num_events: spirv::Word,
         events_list: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupWaitEvents,
@@ -8878,7 +7882,7 @@ impl Builder {
                 dr::Operand::IdRef(events_list),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpGroupAll instruction to the current block."]
@@ -8889,9 +7893,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8906,7 +7907,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupAll instruction to the current block."]
@@ -8918,9 +7919,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8935,7 +7933,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupAny instruction to the current block."]
@@ -8946,9 +7944,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8963,7 +7958,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupAny instruction to the current block."]
@@ -8975,9 +7970,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -8992,7 +7984,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupBroadcast instruction to the current block."]
@@ -9004,9 +7996,6 @@ impl Builder {
         value: spirv::Word,
         local_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9022,7 +8011,7 @@ impl Builder {
                 dr::Operand::IdRef(local_id),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupBroadcast instruction to the current block."]
@@ -9035,9 +8024,6 @@ impl Builder {
         value: spirv::Word,
         local_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9053,7 +8039,7 @@ impl Builder {
                 dr::Operand::IdRef(local_id),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupIAdd instruction to the current block."]
@@ -9065,9 +8051,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9083,7 +8066,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupIAdd instruction to the current block."]
@@ -9096,9 +8079,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9114,7 +8094,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFAdd instruction to the current block."]
@@ -9126,9 +8106,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9144,7 +8121,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFAdd instruction to the current block."]
@@ -9157,9 +8134,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9175,7 +8149,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMin instruction to the current block."]
@@ -9187,9 +8161,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9205,7 +8176,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMin instruction to the current block."]
@@ -9218,9 +8189,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9236,7 +8204,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMin instruction to the current block."]
@@ -9248,9 +8216,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9266,7 +8231,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMin instruction to the current block."]
@@ -9279,9 +8244,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9297,7 +8259,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMin instruction to the current block."]
@@ -9309,9 +8271,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9327,7 +8286,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMin instruction to the current block."]
@@ -9340,9 +8299,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9358,7 +8314,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMax instruction to the current block."]
@@ -9370,9 +8326,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9388,7 +8341,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMax instruction to the current block."]
@@ -9401,9 +8354,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9419,7 +8369,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMax instruction to the current block."]
@@ -9431,9 +8381,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9449,7 +8396,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMax instruction to the current block."]
@@ -9462,9 +8409,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9480,7 +8424,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMax instruction to the current block."]
@@ -9492,9 +8436,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9510,7 +8451,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMax instruction to the current block."]
@@ -9523,9 +8464,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9541,7 +8479,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReadPipe instruction to the current block."]
@@ -9554,9 +8492,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9573,7 +8508,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReadPipe instruction to the current block."]
@@ -9587,9 +8522,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9606,7 +8538,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpWritePipe instruction to the current block."]
@@ -9619,9 +8551,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9638,7 +8567,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpWritePipe instruction to the current block."]
@@ -9652,9 +8581,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9671,7 +8597,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReservedReadPipe instruction to the current block."]
@@ -9686,9 +8612,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9707,7 +8630,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReservedReadPipe instruction to the current block."]
@@ -9723,9 +8646,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9744,7 +8664,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReservedWritePipe instruction to the current block."]
@@ -9759,9 +8679,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9780,7 +8697,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReservedWritePipe instruction to the current block."]
@@ -9796,9 +8713,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9817,7 +8731,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReserveReadPipePackets instruction to the current block."]
@@ -9830,9 +8744,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9849,7 +8760,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReserveReadPipePackets instruction to the current block."]
@@ -9863,9 +8774,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9882,7 +8790,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReserveWritePipePackets instruction to the current block."]
@@ -9895,9 +8803,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9914,7 +8819,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReserveWritePipePackets instruction to the current block."]
@@ -9928,9 +8833,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -9947,7 +8849,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCommitReadPipe instruction to the current block."]
@@ -9958,9 +8860,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CommitReadPipe,
@@ -9973,7 +8872,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCommitReadPipe instruction to the current block."]
@@ -9985,9 +8884,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CommitReadPipe,
@@ -10000,7 +8896,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCommitWritePipe instruction to the current block."]
@@ -10011,9 +8907,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CommitWritePipe,
@@ -10026,7 +8919,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCommitWritePipe instruction to the current block."]
@@ -10038,9 +8931,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CommitWritePipe,
@@ -10053,7 +8943,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpIsValidReserveId instruction to the current block."]
@@ -10063,9 +8953,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         reserve_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10077,7 +8964,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(reserve_id)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsValidReserveId instruction to the current block."]
@@ -10088,9 +8975,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         reserve_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10102,7 +8986,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(reserve_id)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetNumPipePackets instruction to the current block."]
@@ -10114,9 +8998,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10132,7 +9013,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetNumPipePackets instruction to the current block."]
@@ -10145,9 +9026,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10163,7 +9041,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetMaxPipePackets instruction to the current block."]
@@ -10175,9 +9053,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10193,7 +9068,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetMaxPipePackets instruction to the current block."]
@@ -10206,9 +9081,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10224,7 +9096,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupReserveReadPipePackets instruction to the current block."]
@@ -10238,9 +9110,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10258,7 +9127,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupReserveReadPipePackets instruction to the current block."]
@@ -10273,9 +9142,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10293,7 +9159,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupReserveWritePipePackets instruction to the current block."]
@@ -10307,9 +9173,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10327,7 +9190,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupReserveWritePipePackets instruction to the current block."]
@@ -10342,9 +9205,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10362,7 +9222,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupCommitReadPipe instruction to the current block."]
@@ -10374,9 +9234,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupCommitReadPipe,
@@ -10390,7 +9247,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpGroupCommitReadPipe instruction to the current block."]
@@ -10403,9 +9260,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupCommitReadPipe,
@@ -10419,7 +9273,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpGroupCommitWritePipe instruction to the current block."]
@@ -10431,9 +9285,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupCommitWritePipe,
@@ -10447,7 +9298,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpGroupCommitWritePipe instruction to the current block."]
@@ -10460,9 +9311,6 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupCommitWritePipe,
@@ -10476,7 +9324,7 @@ impl Builder {
                 dr::Operand::IdRef(packet_alignment),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEnqueueMarker instruction to the current block."]
@@ -10489,9 +9337,6 @@ impl Builder {
         wait_events: spirv::Word,
         ret_event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10508,7 +9353,7 @@ impl Builder {
                 dr::Operand::IdRef(ret_event),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpEnqueueMarker instruction to the current block."]
@@ -10522,9 +9367,6 @@ impl Builder {
         wait_events: spirv::Word,
         ret_event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10541,7 +9383,7 @@ impl Builder {
                 dr::Operand::IdRef(ret_event),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpEnqueueKernel instruction to the current block."]
@@ -10561,9 +9403,6 @@ impl Builder {
         param_align: spirv::Word,
         local_size: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10589,7 +9428,7 @@ impl Builder {
         for v in local_size.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpEnqueueKernel instruction to the current block."]
@@ -10610,9 +9449,6 @@ impl Builder {
         param_align: spirv::Word,
         local_size: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10638,7 +9474,7 @@ impl Builder {
         for v in local_size.as_ref() {
             inst.operands.push(dr::Operand::IdRef(*v));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelNDrangeSubGroupCount instruction to the current block."]
@@ -10652,9 +9488,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10672,7 +9505,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelNDrangeSubGroupCount instruction to the current block."]
@@ -10687,9 +9520,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10707,7 +9537,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelNDrangeMaxSubGroupSize instruction to the current block."]
@@ -10721,9 +9551,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10741,7 +9568,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelNDrangeMaxSubGroupSize instruction to the current block."]
@@ -10756,9 +9583,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10776,7 +9600,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelWorkGroupSize instruction to the current block."]
@@ -10789,9 +9613,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10808,7 +9629,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelWorkGroupSize instruction to the current block."]
@@ -10822,9 +9643,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10841,7 +9659,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelPreferredWorkGroupSizeMultiple instruction to the current block."]
@@ -10854,9 +9672,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10873,7 +9688,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelPreferredWorkGroupSizeMultiple instruction to the current block."]
@@ -10887,9 +9702,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10906,14 +9718,11 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRetainEvent instruction to the current block."]
     pub fn retain_event(&mut self, event: spirv::Word) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RetainEvent,
@@ -10921,7 +9730,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRetainEvent instruction to the current block."]
@@ -10930,9 +9739,6 @@ impl Builder {
         insert_point: InsertPoint,
         event: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RetainEvent,
@@ -10940,14 +9746,11 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpReleaseEvent instruction to the current block."]
     pub fn release_event(&mut self, event: spirv::Word) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReleaseEvent,
@@ -10955,7 +9758,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpReleaseEvent instruction to the current block."]
@@ -10964,9 +9767,6 @@ impl Builder {
         insert_point: InsertPoint,
         event: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReleaseEvent,
@@ -10974,7 +9774,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCreateUserEvent instruction to the current block."]
@@ -10983,9 +9783,6 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -10997,7 +9794,7 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCreateUserEvent instruction to the current block."]
@@ -11007,9 +9804,6 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11021,7 +9815,7 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsValidEvent instruction to the current block."]
@@ -11031,9 +9825,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11045,7 +9836,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(event)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsValidEvent instruction to the current block."]
@@ -11056,9 +9847,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11070,7 +9858,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(event)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSetUserEventStatus instruction to the current block."]
@@ -11079,9 +9867,6 @@ impl Builder {
         event: spirv::Word,
         status: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SetUserEventStatus,
@@ -11089,7 +9874,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event), dr::Operand::IdRef(status)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpSetUserEventStatus instruction to the current block."]
@@ -11099,9 +9884,6 @@ impl Builder {
         event: spirv::Word,
         status: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SetUserEventStatus,
@@ -11109,7 +9891,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(event), dr::Operand::IdRef(status)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCaptureEventProfilingInfo instruction to the current block."]
@@ -11119,9 +9901,6 @@ impl Builder {
         profiling_info: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CaptureEventProfilingInfo,
@@ -11133,7 +9912,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCaptureEventProfilingInfo instruction to the current block."]
@@ -11144,9 +9923,6 @@ impl Builder {
         profiling_info: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CaptureEventProfilingInfo,
@@ -11158,7 +9934,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpGetDefaultQueue instruction to the current block."]
@@ -11167,9 +9943,6 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11181,7 +9954,7 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetDefaultQueue instruction to the current block."]
@@ -11191,9 +9964,6 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11205,7 +9975,7 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBuildNDRange instruction to the current block."]
@@ -11217,9 +9987,6 @@ impl Builder {
         local_work_size: spirv::Word,
         global_work_offset: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11235,7 +10002,7 @@ impl Builder {
                 dr::Operand::IdRef(global_work_offset),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBuildNDRange instruction to the current block."]
@@ -11248,9 +10015,6 @@ impl Builder {
         local_work_size: spirv::Word,
         global_work_offset: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11266,7 +10030,7 @@ impl Builder {
                 dr::Operand::IdRef(global_work_offset),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleImplicitLod instruction to the current block."]
@@ -11279,9 +10043,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11301,7 +10062,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleImplicitLod instruction to the current block."]
@@ -11315,9 +10076,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11337,7 +10095,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleExplicitLod instruction to the current block."]
@@ -11350,9 +10108,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11369,7 +10124,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleExplicitLod instruction to the current block."]
@@ -11383,9 +10138,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11402,7 +10154,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefImplicitLod instruction to the current block."]
@@ -11416,9 +10168,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11439,7 +10188,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefImplicitLod instruction to the current block."]
@@ -11454,9 +10203,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11477,7 +10223,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefExplicitLod instruction to the current block."]
@@ -11491,9 +10237,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11511,7 +10254,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefExplicitLod instruction to the current block."]
@@ -11526,9 +10269,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11546,7 +10286,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjImplicitLod instruction to the current block."]
@@ -11559,9 +10299,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11581,7 +10318,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjImplicitLod instruction to the current block."]
@@ -11595,9 +10332,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11617,7 +10351,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjExplicitLod instruction to the current block."]
@@ -11630,9 +10364,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11649,7 +10380,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjExplicitLod instruction to the current block."]
@@ -11663,9 +10394,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11682,7 +10410,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefImplicitLod instruction to the current block."]
@@ -11696,9 +10424,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11719,7 +10444,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefImplicitLod instruction to the current block."]
@@ -11734,9 +10459,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11757,7 +10479,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefExplicitLod instruction to the current block."]
@@ -11771,9 +10493,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11791,7 +10510,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefExplicitLod instruction to the current block."]
@@ -11806,9 +10525,6 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11826,7 +10542,7 @@ impl Builder {
             ],
         );
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseFetch instruction to the current block."]
@@ -11839,9 +10555,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11858,7 +10571,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseFetch instruction to the current block."]
@@ -11872,9 +10585,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11891,7 +10601,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseGather instruction to the current block."]
@@ -11905,9 +10615,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11928,7 +10635,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseGather instruction to the current block."]
@@ -11943,9 +10650,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -11966,7 +10670,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseDrefGather instruction to the current block."]
@@ -11980,9 +10684,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12003,7 +10704,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseDrefGather instruction to the current block."]
@@ -12018,9 +10719,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12041,7 +10739,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseTexelsResident instruction to the current block."]
@@ -12051,9 +10749,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         resident_code: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12065,7 +10760,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(resident_code)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseTexelsResident instruction to the current block."]
@@ -12076,9 +10771,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         resident_code: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12090,7 +10782,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(resident_code)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicFlagTestAndSet instruction to the current block."]
@@ -12102,9 +10794,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12120,7 +10809,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicFlagTestAndSet instruction to the current block."]
@@ -12133,9 +10822,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12151,7 +10837,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAtomicFlagClear instruction to the current block."]
@@ -12161,9 +10847,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicFlagClear,
@@ -12175,7 +10858,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpAtomicFlagClear instruction to the current block."]
@@ -12186,9 +10869,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicFlagClear,
@@ -12200,7 +10880,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpImageSparseRead instruction to the current block."]
@@ -12213,9 +10893,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12232,7 +10909,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseRead instruction to the current block."]
@@ -12246,9 +10923,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12265,7 +10939,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSizeOf instruction to the current block."]
@@ -12275,9 +10949,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12289,7 +10960,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSizeOf instruction to the current block."]
@@ -12300,9 +10971,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12314,7 +10982,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pointer)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConstantPipeStorage instruction to the current block."]
@@ -12326,9 +10994,6 @@ impl Builder {
         packet_alignment: u32,
         capacity: u32,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12344,7 +11009,7 @@ impl Builder {
                 dr::Operand::LiteralInt32(capacity),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpConstantPipeStorage instruction to the current block."]
@@ -12357,9 +11022,6 @@ impl Builder {
         packet_alignment: u32,
         capacity: u32,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12375,7 +11037,7 @@ impl Builder {
                 dr::Operand::LiteralInt32(capacity),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCreatePipeFromPipeStorage instruction to the current block."]
@@ -12385,9 +11047,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pipe_storage: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12399,7 +11058,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pipe_storage)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCreatePipeFromPipeStorage instruction to the current block."]
@@ -12410,9 +11069,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pipe_storage: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12424,7 +11080,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(pipe_storage)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelLocalSizeForSubgroupCount instruction to the current block."]
@@ -12438,9 +11094,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12458,7 +11111,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelLocalSizeForSubgroupCount instruction to the current block."]
@@ -12473,9 +11126,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12493,7 +11143,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelMaxNumSubgroups instruction to the current block."]
@@ -12506,9 +11156,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12525,7 +11172,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGetKernelMaxNumSubgroups instruction to the current block."]
@@ -12539,9 +11186,6 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12558,7 +11202,7 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpNamedBarrierInitialize instruction to the current block."]
@@ -12568,9 +11212,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         subgroup_count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12582,7 +11223,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(subgroup_count)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpNamedBarrierInitialize instruction to the current block."]
@@ -12593,9 +11234,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         subgroup_count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12607,7 +11245,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(subgroup_count)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpMemoryNamedBarrier instruction to the current block."]
@@ -12617,9 +11255,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MemoryNamedBarrier,
@@ -12631,7 +11266,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpMemoryNamedBarrier instruction to the current block."]
@@ -12642,9 +11277,6 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MemoryNamedBarrier,
@@ -12656,7 +11288,7 @@ impl Builder {
                 dr::Operand::IdMemorySemantics(semantics),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpGroupNonUniformElect instruction to the current block."]
@@ -12666,9 +11298,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12680,7 +11309,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformElect instruction to the current block."]
@@ -12691,9 +11320,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12705,7 +11331,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformAll instruction to the current block."]
@@ -12716,9 +11342,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12733,7 +11356,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformAll instruction to the current block."]
@@ -12745,9 +11368,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12762,7 +11382,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformAny instruction to the current block."]
@@ -12773,9 +11393,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12790,7 +11407,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformAny instruction to the current block."]
@@ -12802,9 +11419,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12819,7 +11433,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformAllEqual instruction to the current block."]
@@ -12830,9 +11444,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12844,7 +11455,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformAllEqual instruction to the current block."]
@@ -12856,9 +11467,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12870,7 +11478,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBroadcast instruction to the current block."]
@@ -12882,9 +11490,6 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12900,7 +11505,7 @@ impl Builder {
                 dr::Operand::IdRef(id),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBroadcast instruction to the current block."]
@@ -12913,9 +11518,6 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12931,7 +11533,7 @@ impl Builder {
                 dr::Operand::IdRef(id),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBroadcastFirst instruction to the current block."]
@@ -12942,9 +11544,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12956,7 +11555,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBroadcastFirst instruction to the current block."]
@@ -12968,9 +11567,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -12982,7 +11578,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallot instruction to the current block."]
@@ -12993,9 +11589,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13010,7 +11603,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallot instruction to the current block."]
@@ -13022,9 +11615,6 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13039,7 +11629,7 @@ impl Builder {
                 dr::Operand::IdRef(predicate),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformInverseBallot instruction to the current block."]
@@ -13050,9 +11640,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13064,7 +11651,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformInverseBallot instruction to the current block."]
@@ -13076,9 +11663,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13090,7 +11674,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotBitExtract instruction to the current block."]
@@ -13102,9 +11686,6 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13120,7 +11701,7 @@ impl Builder {
                 dr::Operand::IdRef(index),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotBitExtract instruction to the current block."]
@@ -13133,9 +11714,6 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13151,7 +11729,7 @@ impl Builder {
                 dr::Operand::IdRef(index),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotBitCount instruction to the current block."]
@@ -13163,9 +11741,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13181,7 +11756,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotBitCount instruction to the current block."]
@@ -13194,9 +11769,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13212,7 +11784,7 @@ impl Builder {
                 dr::Operand::IdRef(value),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotFindLSB instruction to the current block."]
@@ -13223,9 +11795,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13237,7 +11806,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotFindLSB instruction to the current block."]
@@ -13249,9 +11818,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13263,7 +11829,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotFindMSB instruction to the current block."]
@@ -13274,9 +11840,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13288,7 +11851,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBallotFindMSB instruction to the current block."]
@@ -13300,9 +11863,6 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13314,7 +11874,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffle instruction to the current block."]
@@ -13326,9 +11886,6 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13344,7 +11901,7 @@ impl Builder {
                 dr::Operand::IdRef(id),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffle instruction to the current block."]
@@ -13357,9 +11914,6 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13375,7 +11929,7 @@ impl Builder {
                 dr::Operand::IdRef(id),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffleXor instruction to the current block."]
@@ -13387,9 +11941,6 @@ impl Builder {
         value: spirv::Word,
         mask: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13405,7 +11956,7 @@ impl Builder {
                 dr::Operand::IdRef(mask),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffleXor instruction to the current block."]
@@ -13418,9 +11969,6 @@ impl Builder {
         value: spirv::Word,
         mask: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13436,7 +11984,7 @@ impl Builder {
                 dr::Operand::IdRef(mask),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffleUp instruction to the current block."]
@@ -13448,9 +11996,6 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13466,7 +12011,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffleUp instruction to the current block."]
@@ -13479,9 +12024,6 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13497,7 +12039,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffleDown instruction to the current block."]
@@ -13509,9 +12051,6 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13527,7 +12066,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformShuffleDown instruction to the current block."]
@@ -13540,9 +12079,6 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13558,7 +12094,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformIAdd instruction to the current block."]
@@ -13571,9 +12107,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13593,7 +12126,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformIAdd instruction to the current block."]
@@ -13607,9 +12140,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13629,7 +12159,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFAdd instruction to the current block."]
@@ -13642,9 +12172,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13664,7 +12191,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFAdd instruction to the current block."]
@@ -13678,9 +12205,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13700,7 +12224,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformIMul instruction to the current block."]
@@ -13713,9 +12237,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13735,7 +12256,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformIMul instruction to the current block."]
@@ -13749,9 +12270,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13771,7 +12289,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMul instruction to the current block."]
@@ -13784,9 +12302,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13806,7 +12321,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMul instruction to the current block."]
@@ -13820,9 +12335,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13842,7 +12354,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformSMin instruction to the current block."]
@@ -13855,9 +12367,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13877,7 +12386,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformSMin instruction to the current block."]
@@ -13891,9 +12400,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13913,7 +12419,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformUMin instruction to the current block."]
@@ -13926,9 +12432,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13948,7 +12451,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformUMin instruction to the current block."]
@@ -13962,9 +12465,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -13984,7 +12484,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMin instruction to the current block."]
@@ -13997,9 +12497,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14019,7 +12516,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMin instruction to the current block."]
@@ -14033,9 +12530,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14055,7 +12549,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformSMax instruction to the current block."]
@@ -14068,9 +12562,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14090,7 +12581,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformSMax instruction to the current block."]
@@ -14104,9 +12595,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14126,7 +12614,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformUMax instruction to the current block."]
@@ -14139,9 +12627,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14161,7 +12646,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformUMax instruction to the current block."]
@@ -14175,9 +12660,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14197,7 +12679,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMax instruction to the current block."]
@@ -14210,9 +12692,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14232,7 +12711,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformFMax instruction to the current block."]
@@ -14246,9 +12725,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14268,7 +12744,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBitwiseAnd instruction to the current block."]
@@ -14281,9 +12757,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14303,7 +12776,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBitwiseAnd instruction to the current block."]
@@ -14317,9 +12790,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14339,7 +12809,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBitwiseOr instruction to the current block."]
@@ -14352,9 +12822,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14374,7 +12841,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBitwiseOr instruction to the current block."]
@@ -14388,9 +12855,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14410,7 +12874,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBitwiseXor instruction to the current block."]
@@ -14423,9 +12887,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14445,7 +12906,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformBitwiseXor instruction to the current block."]
@@ -14459,9 +12920,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14481,7 +12939,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformLogicalAnd instruction to the current block."]
@@ -14494,9 +12952,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14516,7 +12971,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformLogicalAnd instruction to the current block."]
@@ -14530,9 +12985,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14552,7 +13004,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformLogicalOr instruction to the current block."]
@@ -14565,9 +13017,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14587,7 +13036,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformLogicalOr instruction to the current block."]
@@ -14601,9 +13050,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14623,7 +13069,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformLogicalXor instruction to the current block."]
@@ -14636,9 +13082,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14658,7 +13101,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformLogicalXor instruction to the current block."]
@@ -14672,9 +13115,6 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14694,7 +13134,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::IdRef(v.into()));
         }
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformQuadBroadcast instruction to the current block."]
@@ -14706,9 +13146,6 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14724,7 +13161,7 @@ impl Builder {
                 dr::Operand::IdRef(index),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformQuadBroadcast instruction to the current block."]
@@ -14737,9 +13174,6 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14755,7 +13189,7 @@ impl Builder {
                 dr::Operand::IdRef(index),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformQuadSwap instruction to the current block."]
@@ -14767,9 +13201,6 @@ impl Builder {
         value: spirv::Word,
         direction: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14785,7 +13216,7 @@ impl Builder {
                 dr::Operand::IdRef(direction),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformQuadSwap instruction to the current block."]
@@ -14798,9 +13229,6 @@ impl Builder {
         value: spirv::Word,
         direction: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14816,7 +13244,7 @@ impl Builder {
                 dr::Operand::IdRef(direction),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCopyLogical instruction to the current block."]
@@ -14826,9 +13254,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14840,7 +13265,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCopyLogical instruction to the current block."]
@@ -14851,9 +13276,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14865,7 +13287,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrEqual instruction to the current block."]
@@ -14876,9 +13298,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14890,7 +13309,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrEqual instruction to the current block."]
@@ -14902,9 +13321,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14916,7 +13332,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrNotEqual instruction to the current block."]
@@ -14927,9 +13343,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14941,7 +13354,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrNotEqual instruction to the current block."]
@@ -14953,9 +13366,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14967,7 +13377,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrDiff instruction to the current block."]
@@ -14978,9 +13388,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -14992,7 +13399,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrDiff instruction to the current block."]
@@ -15004,9 +13411,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15018,7 +13422,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupBallotKHR instruction to the current block."]
@@ -15028,9 +13432,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15042,7 +13443,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupBallotKHR instruction to the current block."]
@@ -15053,9 +13454,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15067,7 +13465,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupFirstInvocationKHR instruction to the current block."]
@@ -15077,9 +13475,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15091,7 +13486,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupFirstInvocationKHR instruction to the current block."]
@@ -15102,9 +13497,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15116,7 +13508,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupAllKHR instruction to the current block."]
@@ -15126,9 +13518,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15140,7 +13529,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupAllKHR instruction to the current block."]
@@ -15151,9 +13540,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15165,7 +13551,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupAnyKHR instruction to the current block."]
@@ -15175,9 +13561,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15189,7 +13572,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupAnyKHR instruction to the current block."]
@@ -15200,9 +13583,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15214,7 +13594,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupAllEqualKHR instruction to the current block."]
@@ -15224,9 +13604,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15238,7 +13615,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupAllEqualKHR instruction to the current block."]
@@ -15249,9 +13626,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15263,7 +13637,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(predicate)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupReadInvocationKHR instruction to the current block."]
@@ -15274,9 +13648,6 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15288,7 +13659,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value), dr::Operand::IdRef(index)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupReadInvocationKHR instruction to the current block."]
@@ -15300,9 +13671,6 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15314,7 +13682,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value), dr::Operand::IdRef(index)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryInitializeKHR instruction to the current block."]
@@ -15329,9 +13697,6 @@ impl Builder {
         ray_direction: spirv::Word,
         ray_t_max: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryInitializeKHR,
@@ -15348,7 +13713,7 @@ impl Builder {
                 dr::Operand::IdRef(ray_t_max),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryInitializeKHR instruction to the current block."]
@@ -15364,9 +13729,6 @@ impl Builder {
         ray_direction: spirv::Word,
         ray_t_max: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryInitializeKHR,
@@ -15383,14 +13745,11 @@ impl Builder {
                 dr::Operand::IdRef(ray_t_max),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryTerminateKHR instruction to the current block."]
     pub fn ray_query_terminate_khr(&mut self, ray_query: spirv::Word) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryTerminateKHR,
@@ -15398,7 +13757,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryTerminateKHR instruction to the current block."]
@@ -15407,9 +13766,6 @@ impl Builder {
         insert_point: InsertPoint,
         ray_query: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryTerminateKHR,
@@ -15417,7 +13773,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryGenerateIntersectionKHR instruction to the current block."]
@@ -15426,9 +13782,6 @@ impl Builder {
         ray_query: spirv::Word,
         hit_t: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGenerateIntersectionKHR,
@@ -15436,7 +13789,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ray_query), dr::Operand::IdRef(hit_t)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryGenerateIntersectionKHR instruction to the current block."]
@@ -15446,9 +13799,6 @@ impl Builder {
         ray_query: spirv::Word,
         hit_t: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGenerateIntersectionKHR,
@@ -15456,7 +13806,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ray_query), dr::Operand::IdRef(hit_t)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryConfirmIntersectionKHR instruction to the current block."]
@@ -15464,9 +13814,6 @@ impl Builder {
         &mut self,
         ray_query: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryConfirmIntersectionKHR,
@@ -15474,7 +13821,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryConfirmIntersectionKHR instruction to the current block."]
@@ -15483,9 +13830,6 @@ impl Builder {
         insert_point: InsertPoint,
         ray_query: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryConfirmIntersectionKHR,
@@ -15493,7 +13837,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpRayQueryProceedKHR instruction to the current block."]
@@ -15503,9 +13847,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15517,7 +13858,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryProceedKHR instruction to the current block."]
@@ -15528,9 +13869,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15542,7 +13880,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionTypeKHR instruction to the current block."]
@@ -15553,9 +13891,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15570,7 +13905,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionTypeKHR instruction to the current block."]
@@ -15582,9 +13917,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15599,7 +13931,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupIAddNonUniformAMD instruction to the current block."]
@@ -15611,9 +13943,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15629,7 +13958,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupIAddNonUniformAMD instruction to the current block."]
@@ -15642,9 +13971,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15660,7 +13986,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFAddNonUniformAMD instruction to the current block."]
@@ -15672,9 +13998,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15690,7 +14013,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFAddNonUniformAMD instruction to the current block."]
@@ -15703,9 +14026,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15721,7 +14041,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMinNonUniformAMD instruction to the current block."]
@@ -15733,9 +14053,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15751,7 +14068,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMinNonUniformAMD instruction to the current block."]
@@ -15764,9 +14081,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15782,7 +14096,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMinNonUniformAMD instruction to the current block."]
@@ -15794,9 +14108,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15812,7 +14123,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMinNonUniformAMD instruction to the current block."]
@@ -15825,9 +14136,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15843,7 +14151,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMinNonUniformAMD instruction to the current block."]
@@ -15855,9 +14163,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15873,7 +14178,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMinNonUniformAMD instruction to the current block."]
@@ -15886,9 +14191,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15904,7 +14206,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMaxNonUniformAMD instruction to the current block."]
@@ -15916,9 +14218,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15934,7 +14233,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupFMaxNonUniformAMD instruction to the current block."]
@@ -15947,9 +14246,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15965,7 +14261,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMaxNonUniformAMD instruction to the current block."]
@@ -15977,9 +14273,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -15995,7 +14288,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupUMaxNonUniformAMD instruction to the current block."]
@@ -16008,9 +14301,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16026,7 +14316,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMaxNonUniformAMD instruction to the current block."]
@@ -16038,9 +14328,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16056,7 +14343,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupSMaxNonUniformAMD instruction to the current block."]
@@ -16069,9 +14356,6 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16087,7 +14371,7 @@ impl Builder {
                 dr::Operand::IdRef(x),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFragmentMaskFetchAMD instruction to the current block."]
@@ -16098,9 +14382,6 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16112,7 +14393,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFragmentMaskFetchAMD instruction to the current block."]
@@ -16124,9 +14405,6 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16138,7 +14416,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFragmentFetchAMD instruction to the current block."]
@@ -16150,9 +14428,6 @@ impl Builder {
         coordinate: spirv::Word,
         fragment_index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16168,7 +14443,7 @@ impl Builder {
                 dr::Operand::IdRef(fragment_index),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFragmentFetchAMD instruction to the current block."]
@@ -16181,9 +14456,6 @@ impl Builder {
         coordinate: spirv::Word,
         fragment_index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16199,7 +14471,7 @@ impl Builder {
                 dr::Operand::IdRef(fragment_index),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReadClockKHR instruction to the current block."]
@@ -16209,9 +14481,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16223,7 +14492,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReadClockKHR instruction to the current block."]
@@ -16234,9 +14503,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16248,7 +14514,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdScope(execution)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleFootprintNV instruction to the current block."]
@@ -16263,9 +14529,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16287,7 +14550,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleFootprintNV instruction to the current block."]
@@ -16303,9 +14566,6 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16327,7 +14587,7 @@ impl Builder {
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current block."]
@@ -16337,9 +14597,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16351,7 +14608,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current block."]
@@ -16362,9 +14619,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16376,7 +14630,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpWritePackedPrimitiveIndices4x8NV instruction to the current block."]
@@ -16385,9 +14639,6 @@ impl Builder {
         index_offset: spirv::Word,
         packed_indices: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::WritePackedPrimitiveIndices4x8NV,
@@ -16398,7 +14649,7 @@ impl Builder {
                 dr::Operand::IdRef(packed_indices),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpWritePackedPrimitiveIndices4x8NV instruction to the current block."]
@@ -16408,9 +14659,6 @@ impl Builder {
         index_offset: spirv::Word,
         packed_indices: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::WritePackedPrimitiveIndices4x8NV,
@@ -16421,7 +14669,7 @@ impl Builder {
                 dr::Operand::IdRef(packed_indices),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpReportIntersectionNV instruction to the current block."]
@@ -16432,9 +14680,6 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16446,7 +14691,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReportIntersectionNV instruction to the current block."]
@@ -16458,9 +14703,6 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16472,7 +14714,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReportIntersectionKHR instruction to the current block."]
@@ -16483,9 +14725,6 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16497,7 +14736,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpReportIntersectionKHR instruction to the current block."]
@@ -16509,9 +14748,6 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16523,87 +14759,63 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIgnoreIntersectionNV instruction to the current block."]
     pub fn ignore_intersection_nv(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionNV, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpIgnoreIntersectionNV instruction to the current block."]
     pub fn insert_ignore_intersection_nv(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionNV, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpIgnoreIntersectionKHR instruction to the current block."]
     pub fn ignore_intersection_khr(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionKHR, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpIgnoreIntersectionKHR instruction to the current block."]
     pub fn insert_ignore_intersection_khr(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionKHR, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTerminateRayNV instruction to the current block."]
     pub fn terminate_ray_nv(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::TerminateRayNV, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTerminateRayNV instruction to the current block."]
     pub fn insert_terminate_ray_nv(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::TerminateRayNV, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTerminateRayKHR instruction to the current block."]
     pub fn terminate_ray_khr(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTerminateRayKHR instruction to the current block."]
     pub fn insert_terminate_ray_khr(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTraceNV instruction to the current block."]
@@ -16621,9 +14833,6 @@ impl Builder {
         ray_tmax: spirv::Word,
         payload_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::TraceNV,
@@ -16643,7 +14852,7 @@ impl Builder {
                 dr::Operand::IdRef(payload_id),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTraceNV instruction to the current block."]
@@ -16662,9 +14871,6 @@ impl Builder {
         ray_tmax: spirv::Word,
         payload_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::TraceNV,
@@ -16684,7 +14890,7 @@ impl Builder {
                 dr::Operand::IdRef(payload_id),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTraceRayKHR instruction to the current block."]
@@ -16702,9 +14908,6 @@ impl Builder {
         ray_tmax: spirv::Word,
         payload_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::TraceRayKHR,
@@ -16724,7 +14927,7 @@ impl Builder {
                 dr::Operand::IdRef(payload_id),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpTraceRayKHR instruction to the current block."]
@@ -16743,9 +14946,6 @@ impl Builder {
         ray_tmax: spirv::Word,
         payload_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::TraceRayKHR,
@@ -16765,7 +14965,7 @@ impl Builder {
                 dr::Operand::IdRef(payload_id),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpExecuteCallableNV instruction to the current block."]
@@ -16774,9 +14974,6 @@ impl Builder {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ExecuteCallableNV,
@@ -16787,7 +14984,7 @@ impl Builder {
                 dr::Operand::IdRef(callable_data_id),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpExecuteCallableNV instruction to the current block."]
@@ -16797,9 +14994,6 @@ impl Builder {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ExecuteCallableNV,
@@ -16810,7 +15004,7 @@ impl Builder {
                 dr::Operand::IdRef(callable_data_id),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpExecuteCallableKHR instruction to the current block."]
@@ -16819,9 +15013,6 @@ impl Builder {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ExecuteCallableKHR,
@@ -16832,7 +15023,7 @@ impl Builder {
                 dr::Operand::IdRef(callable_data_id),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpExecuteCallableKHR instruction to the current block."]
@@ -16842,9 +15033,6 @@ impl Builder {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ExecuteCallableKHR,
@@ -16855,7 +15043,7 @@ impl Builder {
                 dr::Operand::IdRef(callable_data_id),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCooperativeMatrixLoadNV instruction to the current block."]
@@ -16869,9 +15057,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16892,7 +15077,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixLoadNV instruction to the current block."]
@@ -16907,9 +15092,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -16930,7 +15112,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixStoreNV instruction to the current block."]
@@ -16943,9 +15125,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixStoreNV,
@@ -16963,7 +15142,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCooperativeMatrixStoreNV instruction to the current block."]
@@ -16977,9 +15156,6 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixStoreNV,
@@ -16997,7 +15173,7 @@ impl Builder {
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
         inst.operands.extend_from_slice(additional_params.as_ref());
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCooperativeMatrixMulAddNV instruction to the current block."]
@@ -17009,9 +15185,6 @@ impl Builder {
         b: spirv::Word,
         c: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17027,7 +15200,7 @@ impl Builder {
                 dr::Operand::IdRef(c),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixMulAddNV instruction to the current block."]
@@ -17040,9 +15213,6 @@ impl Builder {
         b: spirv::Word,
         c: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17058,7 +15228,7 @@ impl Builder {
                 dr::Operand::IdRef(c),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixLengthNV instruction to the current block."]
@@ -17068,9 +15238,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ty: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17082,7 +15249,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ty)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixLengthNV instruction to the current block."]
@@ -17093,9 +15260,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ty: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17107,18 +15271,15 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ty)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpBeginInvocationInterlockEXT instruction to the current block."]
     pub fn begin_invocation_interlock_ext(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst =
             dr::Instruction::new(spirv::Op::BeginInvocationInterlockEXT, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpBeginInvocationInterlockEXT instruction to the current block."]
@@ -17126,24 +15287,18 @@ impl Builder {
         &mut self,
         insert_point: InsertPoint,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst =
             dr::Instruction::new(spirv::Op::BeginInvocationInterlockEXT, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEndInvocationInterlockEXT instruction to the current block."]
     pub fn end_invocation_interlock_ext(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst =
             dr::Instruction::new(spirv::Op::EndInvocationInterlockEXT, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpEndInvocationInterlockEXT instruction to the current block."]
@@ -17151,24 +15306,18 @@ impl Builder {
         &mut self,
         insert_point: InsertPoint,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst =
             dr::Instruction::new(spirv::Op::EndInvocationInterlockEXT, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpDemoteToHelperInvocationEXT instruction to the current block."]
     pub fn demote_to_helper_invocation_ext(&mut self) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst =
             dr::Instruction::new(spirv::Op::DemoteToHelperInvocationEXT, None, None, vec![]);
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpDemoteToHelperInvocationEXT instruction to the current block."]
@@ -17176,13 +15325,10 @@ impl Builder {
         &mut self,
         insert_point: InsertPoint,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst =
             dr::Instruction::new(spirv::Op::DemoteToHelperInvocationEXT, None, None, vec![]);
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpIsHelperInvocationEXT instruction to the current block."]
@@ -17191,9 +15337,6 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17205,7 +15348,7 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIsHelperInvocationEXT instruction to the current block."]
@@ -17215,9 +15358,6 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17229,7 +15369,7 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleINTEL instruction to the current block."]
@@ -17240,9 +15380,6 @@ impl Builder {
         data: spirv::Word,
         invocation_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17254,7 +15391,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(data), dr::Operand::IdRef(invocation_id)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleINTEL instruction to the current block."]
@@ -17266,9 +15403,6 @@ impl Builder {
         data: spirv::Word,
         invocation_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17280,7 +15414,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(data), dr::Operand::IdRef(invocation_id)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleDownINTEL instruction to the current block."]
@@ -17292,9 +15426,6 @@ impl Builder {
         next: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17310,7 +15441,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleDownINTEL instruction to the current block."]
@@ -17323,9 +15454,6 @@ impl Builder {
         next: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17341,7 +15469,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleUpINTEL instruction to the current block."]
@@ -17353,9 +15481,6 @@ impl Builder {
         current: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17371,7 +15496,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleUpINTEL instruction to the current block."]
@@ -17384,9 +15509,6 @@ impl Builder {
         current: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17402,7 +15524,7 @@ impl Builder {
                 dr::Operand::IdRef(delta),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleXorINTEL instruction to the current block."]
@@ -17413,9 +15535,6 @@ impl Builder {
         data: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17427,7 +15546,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(data), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupShuffleXorINTEL instruction to the current block."]
@@ -17439,9 +15558,6 @@ impl Builder {
         data: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17453,7 +15569,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(data), dr::Operand::IdRef(value)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupBlockReadINTEL instruction to the current block."]
@@ -17463,9 +15579,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ptr: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17477,7 +15590,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ptr)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupBlockReadINTEL instruction to the current block."]
@@ -17488,9 +15601,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ptr: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17502,7 +15612,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ptr)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupBlockWriteINTEL instruction to the current block."]
@@ -17511,9 +15621,6 @@ impl Builder {
         ptr: spirv::Word,
         data: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupBlockWriteINTEL,
@@ -17521,7 +15628,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ptr), dr::Operand::IdRef(data)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpSubgroupBlockWriteINTEL instruction to the current block."]
@@ -17531,9 +15638,6 @@ impl Builder {
         ptr: spirv::Word,
         data: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupBlockWriteINTEL,
@@ -17541,7 +15645,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(ptr), dr::Operand::IdRef(data)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpSubgroupImageBlockReadINTEL instruction to the current block."]
@@ -17552,9 +15656,6 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17566,7 +15667,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupImageBlockReadINTEL instruction to the current block."]
@@ -17578,9 +15679,6 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17592,7 +15690,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupImageBlockWriteINTEL instruction to the current block."]
@@ -17602,9 +15700,6 @@ impl Builder {
         coordinate: spirv::Word,
         data: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageBlockWriteINTEL,
@@ -17616,7 +15711,7 @@ impl Builder {
                 dr::Operand::IdRef(data),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpSubgroupImageBlockWriteINTEL instruction to the current block."]
@@ -17627,9 +15722,6 @@ impl Builder {
         coordinate: spirv::Word,
         data: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageBlockWriteINTEL,
@@ -17641,7 +15733,7 @@ impl Builder {
                 dr::Operand::IdRef(data),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpSubgroupImageMediaBlockReadINTEL instruction to the current block."]
@@ -17654,9 +15746,6 @@ impl Builder {
         width: spirv::Word,
         height: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17673,7 +15762,7 @@ impl Builder {
                 dr::Operand::IdRef(height),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupImageMediaBlockReadINTEL instruction to the current block."]
@@ -17687,9 +15776,6 @@ impl Builder {
         width: spirv::Word,
         height: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17706,7 +15792,7 @@ impl Builder {
                 dr::Operand::IdRef(height),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpSubgroupImageMediaBlockWriteINTEL instruction to the current block."]
@@ -17718,9 +15804,6 @@ impl Builder {
         height: spirv::Word,
         data: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageMediaBlockWriteINTEL,
@@ -17734,7 +15817,7 @@ impl Builder {
                 dr::Operand::IdRef(data),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpSubgroupImageMediaBlockWriteINTEL instruction to the current block."]
@@ -17747,9 +15830,6 @@ impl Builder {
         height: spirv::Word,
         data: spirv::Word,
     ) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageMediaBlockWriteINTEL,
@@ -17763,7 +15843,7 @@ impl Builder {
                 dr::Operand::IdRef(data),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpUCountLeadingZerosINTEL instruction to the current block."]
@@ -17773,9 +15853,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17787,7 +15864,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUCountLeadingZerosINTEL instruction to the current block."]
@@ -17798,9 +15875,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17812,7 +15886,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUCountTrailingZerosINTEL instruction to the current block."]
@@ -17822,9 +15896,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17836,7 +15907,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUCountTrailingZerosINTEL instruction to the current block."]
@@ -17847,9 +15918,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17861,7 +15929,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAbsISubINTEL instruction to the current block."]
@@ -17872,9 +15940,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17886,7 +15951,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAbsISubINTEL instruction to the current block."]
@@ -17898,9 +15963,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17912,7 +15974,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAbsUSubINTEL instruction to the current block."]
@@ -17923,9 +15985,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17937,7 +15996,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAbsUSubINTEL instruction to the current block."]
@@ -17949,9 +16008,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17963,7 +16019,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAddSatINTEL instruction to the current block."]
@@ -17974,9 +16030,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -17988,7 +16041,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAddSatINTEL instruction to the current block."]
@@ -18000,9 +16053,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18014,7 +16064,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUAddSatINTEL instruction to the current block."]
@@ -18025,9 +16075,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18039,7 +16086,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUAddSatINTEL instruction to the current block."]
@@ -18051,9 +16098,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18065,7 +16109,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAverageINTEL instruction to the current block."]
@@ -18076,9 +16120,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18090,7 +16131,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAverageINTEL instruction to the current block."]
@@ -18102,9 +16143,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18116,7 +16154,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUAverageINTEL instruction to the current block."]
@@ -18127,9 +16165,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18141,7 +16176,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUAverageINTEL instruction to the current block."]
@@ -18153,9 +16188,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18167,7 +16199,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAverageRoundedINTEL instruction to the current block."]
@@ -18178,9 +16210,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18192,7 +16221,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIAverageRoundedINTEL instruction to the current block."]
@@ -18204,9 +16233,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18218,7 +16244,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUAverageRoundedINTEL instruction to the current block."]
@@ -18229,9 +16255,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18243,7 +16266,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUAverageRoundedINTEL instruction to the current block."]
@@ -18255,9 +16278,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18269,7 +16289,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpISubSatINTEL instruction to the current block."]
@@ -18280,9 +16300,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18294,7 +16311,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpISubSatINTEL instruction to the current block."]
@@ -18306,9 +16323,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18320,7 +16334,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUSubSatINTEL instruction to the current block."]
@@ -18331,9 +16345,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18345,7 +16356,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUSubSatINTEL instruction to the current block."]
@@ -18357,9 +16368,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18371,7 +16379,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIMul32x16INTEL instruction to the current block."]
@@ -18382,9 +16390,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18396,7 +16401,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpIMul32x16INTEL instruction to the current block."]
@@ -18408,9 +16413,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18422,7 +16424,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUMul32x16INTEL instruction to the current block."]
@@ -18433,9 +16435,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18447,7 +16446,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpUMul32x16INTEL instruction to the current block."]
@@ -18459,9 +16458,6 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18473,7 +16469,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(operand_1), dr::Operand::IdRef(operand_2)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetRayTMinKHR instruction to the current block."]
@@ -18483,9 +16479,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18497,7 +16490,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetRayTMinKHR instruction to the current block."]
@@ -18508,9 +16501,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18522,7 +16512,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetRayFlagsKHR instruction to the current block."]
@@ -18532,9 +16522,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18546,7 +16533,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetRayFlagsKHR instruction to the current block."]
@@ -18557,9 +16544,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18571,7 +16555,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionTKHR instruction to the current block."]
@@ -18582,9 +16566,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18599,7 +16580,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionTKHR instruction to the current block."]
@@ -18611,9 +16592,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18628,7 +16606,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionInstanceCustomIndexKHR instruction to the current block."]
@@ -18639,9 +16617,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18656,7 +16631,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionInstanceCustomIndexKHR instruction to the current block."]
@@ -18668,9 +16643,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18685,7 +16657,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionInstanceIdKHR instruction to the current block."]
@@ -18696,9 +16668,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18713,7 +16682,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionInstanceIdKHR instruction to the current block."]
@@ -18725,9 +16694,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18742,7 +16708,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR instruction to the current block."]
@@ -18753,9 +16719,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18770,7 +16733,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR instruction to the current block."]
@@ -18782,9 +16745,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18799,7 +16759,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionGeometryIndexKHR instruction to the current block."]
@@ -18810,9 +16770,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18827,7 +16784,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionGeometryIndexKHR instruction to the current block."]
@@ -18839,9 +16796,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18856,7 +16810,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionPrimitiveIndexKHR instruction to the current block."]
@@ -18867,9 +16821,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18884,7 +16835,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionPrimitiveIndexKHR instruction to the current block."]
@@ -18896,9 +16847,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18913,7 +16861,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionBarycentricsKHR instruction to the current block."]
@@ -18924,9 +16872,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18941,7 +16886,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionBarycentricsKHR instruction to the current block."]
@@ -18953,9 +16898,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18970,7 +16912,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionFrontFaceKHR instruction to the current block."]
@@ -18981,9 +16923,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -18998,7 +16937,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionFrontFaceKHR instruction to the current block."]
@@ -19010,9 +16949,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19027,7 +16963,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionCandidateAABBOpaqueKHR instruction to the current block."]
@@ -19037,9 +16973,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19051,7 +16984,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionCandidateAABBOpaqueKHR instruction to the current block."]
@@ -19062,9 +16995,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19076,7 +17006,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionObjectRayDirectionKHR instruction to the current block."]
@@ -19087,9 +17017,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19104,7 +17031,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionObjectRayDirectionKHR instruction to the current block."]
@@ -19116,9 +17043,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19133,7 +17057,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionObjectRayOriginKHR instruction to the current block."]
@@ -19144,9 +17068,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19161,7 +17082,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionObjectRayOriginKHR instruction to the current block."]
@@ -19173,9 +17094,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19190,7 +17108,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetWorldRayDirectionKHR instruction to the current block."]
@@ -19200,9 +17118,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19214,7 +17129,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetWorldRayDirectionKHR instruction to the current block."]
@@ -19225,9 +17140,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19239,7 +17151,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetWorldRayOriginKHR instruction to the current block."]
@@ -19249,9 +17161,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19263,7 +17172,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetWorldRayOriginKHR instruction to the current block."]
@@ -19274,9 +17183,6 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19288,7 +17194,7 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(ray_query)],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionObjectToWorldKHR instruction to the current block."]
@@ -19299,9 +17205,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19316,7 +17219,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionObjectToWorldKHR instruction to the current block."]
@@ -19328,9 +17231,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19345,7 +17245,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionWorldToObjectKHR instruction to the current block."]
@@ -19356,9 +17256,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19373,7 +17270,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(InsertPoint::End, inst);
+        self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpRayQueryGetIntersectionWorldToObjectKHR instruction to the current block."]
@@ -19385,9 +17282,6 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.block.is_none() {
-            return Err(Error::DetachedInstruction);
-        }
         let _id = match result_id {
             Some(v) => v,
             None => self.id(),
@@ -19402,7 +17296,7 @@ impl Builder {
                 dr::Operand::IdRef(intersection),
             ],
         );
-        self.insert_into_block_unchecked(insert_point, inst);
+        self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
 }

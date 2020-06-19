@@ -384,9 +384,6 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             quote! {
                 #[doc = #comment]
                 pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<spirv::Word> {
-                    if self.block.is_none() {
-                        return Err(Error::DetachedInstruction);
-                    }
                     let _id = match result_id {
                         Some(v) => v,
                         None => self.id(),
@@ -395,15 +392,12 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
                     #(#extras)*
-                    self.insert_into_block_unchecked(InsertPoint::End, inst);
+                    self.insert_into_block(InsertPoint::End, inst)?;
                     Ok(_id)
                 }
 
                 #[doc = #insert_comment]
                 pub fn #insert_name#generic(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<spirv::Word> {
-                    if self.block.is_none() {
-                        return Err(Error::DetachedInstruction);
-                    }
                     let _id = match result_id {
                         Some(v) => v,
                         None => self.id(),
@@ -412,7 +406,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
                     #(#extras)*
-                    self.insert_into_block_unchecked(insert_point, inst);
+                    self.insert_into_block(insert_point, inst)?;
                     Ok(_id)
                 }
             }
@@ -420,27 +414,21 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             quote! {
                 #[doc = #comment]
                 pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<()> {
-                    if self.block.is_none() {
-                        return Err(Error::DetachedInstruction);
-                    }
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
                     #(#extras)*
-                    self.insert_into_block_unchecked(InsertPoint::End, inst);
+                    self.insert_into_block(InsertPoint::End, inst)?;
                     Ok(())
                 }
 
                 #[doc = #comment]
                 pub fn #insert_name#generic(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
-                    if self.block.is_none() {
-                        return Err(Error::DetachedInstruction);
-                    }
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
                     #(#extras)*
-                    self.insert_into_block_unchecked(insert_point, inst);
+                    self.insert_into_block(insert_point, inst)?;
                     Ok(())
                 }
             }
