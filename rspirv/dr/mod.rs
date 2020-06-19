@@ -20,7 +20,7 @@
 //! [builder](struct.Builder.html) for building a SPIR-V data representation
 //! interactively.
 
-pub use self::build::Builder;
+pub use self::build::{InsertPoint, Builder};
 pub use self::constructs::{Block, Function, Instruction};
 pub use self::constructs::{Module, ModuleHeader, Operand};
 pub use self::loader::{Error, load_bytes, load_words, Loader};
