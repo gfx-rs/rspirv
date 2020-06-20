@@ -286,16 +286,46 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
                                      quote! { self.module.types_global_values.last_mut().expect("interal error").operands });
         let opcode = as_ident(&inst.opname[2..]);
         let name = as_ident(&inst.opname[2..].to_snake_case());
-        let comment = format!("Appends an Op{} instruction and returns the result id.", opcode);
-        quote! {
-            #[doc = #comment]
-            pub fn #name#generic(&mut self,#(#param_list),*) -> spirv::Word {
-                let id = self.id();
-                self.module.types_global_values.push(
-                    dr::Instruction::new(spirv::Op::#opcode, None, Some(id), vec![#(#init_list),*])
-                );
-                #(#extras)*
-                id
+
+        let aggregate = match inst.opname.as_ref() {
+            "SpvOpTypeArray" | "SpvOpTypeRuntimeArray" | "SpvOpTypePointer" | "SpvOpTypeStruct" => true,
+            _ => false
+        };
+
+        if aggregate {
+            let comment = format!("Appends an Op{} instruction and returns the result id.", opcode);
+            quote! {
+                #[doc = #comment]
+                pub fn #name#generic(&mut self,#(#param_list),*) -> spirv::Word {
+                    let id = self.id();
+                    self.module.types_global_values.push(
+                        dr::Instruction::new(spirv::Op::#opcode, None, Some(id), vec![#(#init_list),*])
+                    );
+                    #(#extras)*
+                    id
+                }
+            }
+        } else {
+            let comment = format!("Appends an Op{} instruction and returns the result id, or return the existing id if the instruction was already present.", opcode);
+            quote! {
+                #[doc = #comment]
+                pub fn #name#generic(&mut self,#(#param_list),*) -> spirv::Word {
+                    let mut inst = dr::Instruction::new(spirv::Op::#opcode, None, None, vec![#(#init_list),*]);
+
+                    for ty in &self.module.types_global_values {
+                        if ty.is_type_identical(&inst) {
+                            if let Some(id) = ty.result_id {
+                                return id
+                            }
+                        }
+                    }
+
+                    let id = self.id();
+                    inst.result_id = Some(id);
+                    self.module.types_global_values.push(inst);
+                    #(#extras)*
+                    id
+                }
             }
         }
     });
