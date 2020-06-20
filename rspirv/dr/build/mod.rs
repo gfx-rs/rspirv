@@ -197,6 +197,11 @@ impl Builder {
         module
     }
 
+    /// Returns the `Module` as reference under construction.
+    pub fn module_ref<'a>(&'a self) -> &'a dr::Module {
+        &self.module
+    }
+
     /// Returns the next unused id.
     pub fn id(&mut self) -> spirv::Word {
         let id = self.next_id;
@@ -334,7 +339,6 @@ impl Builder {
 
     fn insert_end_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
         if self.new_block.is_some() {
-            //self.new_block.as_mut().unwrap().instructions.push(inst);
             self.insert_into_block(insert_point, inst)?;
 
             if self.new_function.is_some() {
