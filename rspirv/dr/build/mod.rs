@@ -214,6 +214,26 @@ impl Builder {
         id
     }
 
+    /// Find all blocks that end in OpReturn
+    pub fn find_return_block_indices(&self) -> Vec<usize> {
+        let mut result = vec![];
+
+        if let Some(sel_fn) = self.selected_function {
+            let func = &self.module.functions[sel_fn];
+
+            for (idx, blk) in func.blocks.iter().enumerate() {
+                // OpReturn must be the last instruction in a block
+                let last_instr = blk.instructions.last().unwrap();
+
+                if last_instr.class.opcode == spirv::Op::Return {
+                    result.push(idx);
+                }
+            }
+        }
+
+        result
+    }
+
     /// Select a function to insert instructions into by name
     pub fn select_function_by_name(&mut self, name: &str) -> BuildResult<()> {
         for dbg in &self.module.debugs {
