@@ -225,8 +225,11 @@ impl Builder {
                 // OpReturn must be the last instruction in a block
                 let last_instr = blk.instructions.last().unwrap();
 
-                if last_instr.class.opcode == spirv::Op::Return {
-                    result.push(idx);
+                match last_instr.class.opcode{
+                    spirv::Op::Return | spirv::Op::ReturnValue => {
+                        result.push(idx);
+                    },
+                    _ => {}
                 }
             }
         }
