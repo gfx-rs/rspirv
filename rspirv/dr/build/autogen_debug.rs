@@ -82,6 +82,27 @@ impl Builder {
         );
         self.module.debugs.push(inst);
     }
+    #[doc = "Appends an OpLine instruction."]
+    pub fn line<T: Into<String>>(&mut self, file: spirv::Word, line: u32, column: u32) {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::Line,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(file),
+                dr::Operand::LiteralInt32(line),
+                dr::Operand::LiteralInt32(column),
+            ],
+        );
+        self.module.debugs.push(inst);
+    }
+    #[doc = "Appends an OpNoLine instruction."]
+    pub fn no_line<T: Into<String>>(&mut self) {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::NoLine, None, None, vec![]);
+        self.module.debugs.push(inst);
+    }
     #[doc = "Appends an OpModuleProcessed instruction."]
     pub fn module_processed<T: Into<String>>(&mut self, process: T) {
         #[allow(unused_mut)]

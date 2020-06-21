@@ -51,7 +51,7 @@ fn main() {
     let mut contents = String::new();
 
     {
-        let path = autogen_src_dir.join("external/spirv.core.grammar.json");
+        let path = autogen_src_dir.join("external/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json");
         let mut file = fs::File::open(path).unwrap();
         file.read_to_string(&mut contents).unwrap();
     }

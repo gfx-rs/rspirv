@@ -92,6 +92,15 @@ impl<'a> Decoder<'a> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V RayFlags value."]
+    pub fn ray_flags(&mut self) -> Result<spirv::RayFlags> {
+        if let Ok(word) = self.word() {
+            spirv::RayFlags::from_bits(word)
+                .ok_or(Error::RayFlagsUnknown(self.offset - WORD_NUM_BYTES, word))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V SourceLanguage value."]
     pub fn source_language(&mut self) -> Result<spirv::SourceLanguage> {
         if let Ok(word) = self.word() {
@@ -318,6 +327,41 @@ impl<'a> Decoder<'a> {
         if let Ok(word) = self.word() {
             spirv::Capability::from_u32(word)
                 .ok_or(Error::CapabilityUnknown(self.offset - WORD_NUM_BYTES, word))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V RayQueryIntersection value."]
+    pub fn ray_query_intersection(&mut self) -> Result<spirv::RayQueryIntersection> {
+        if let Ok(word) = self.word() {
+            spirv::RayQueryIntersection::from_u32(word).ok_or(Error::RayQueryIntersectionUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V RayQueryCommittedIntersectionType value."]
+    pub fn ray_query_committed_intersection_type(
+        &mut self,
+    ) -> Result<spirv::RayQueryCommittedIntersectionType> {
+        if let Ok(word) = self.word() {
+            spirv::RayQueryCommittedIntersectionType::from_u32(word).ok_or(
+                Error::RayQueryCommittedIntersectionTypeUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V RayQueryCandidateIntersectionType value."]
+    pub fn ray_query_candidate_intersection_type(
+        &mut self,
+    ) -> Result<spirv::RayQueryCandidateIntersectionType> {
+        if let Ok(word) = self.word() {
+            spirv::RayQueryCandidateIntersectionType::from_u32(word).ok_or(
+                Error::RayQueryCandidateIntersectionTypeUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
         } else {
             Err(Error::StreamExpected(self.offset))
         }

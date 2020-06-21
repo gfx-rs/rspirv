@@ -11,6 +11,12 @@ pub struct ExtInstImport {
     pub name: String,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ExtInst {
+    pub set: spirv::Word,
+    pub instruction: u32,
+    pub operand_1_operand_2: Vec<spirv::Word>,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct MemoryModel {
     pub addressing_model: spirv::AddressingModel,
     pub memory_model: spirv::MemoryModel,
@@ -41,7 +47,10 @@ pub struct FunctionParameter {}
 #[derive(Clone, Debug)]
 pub struct FunctionEnd {}
 #[derive(Clone, Debug)]
-pub struct Label {}
+pub struct FunctionCall {
+    pub function: spirv::Word,
+    pub argument_0_argument_1: Vec<spirv::Word>,
+}
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ExecutionModeId {
     pub entry_point: spirv::Word,

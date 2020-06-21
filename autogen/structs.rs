@@ -110,16 +110,47 @@ impl Default for Quantifier {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
 pub enum Class {
     Annotation,
+    #[serde(rename="Control-Flow")]
     Branch,
+    #[serde(rename="Constant-Creation")]
     Constant,
     Debug,
     DebugLine,
+    #[serde(rename="Extension")]
     ExtensionDecl,
+    #[serde(rename="Function")]
     FunctionStruct,
+    #[serde(rename="Mode-Setting")]
     ModeSetting,
     Terminator,
+    #[serde(rename="Type-Declaration")]
     Type,
     Variable,
+
+    //////
+    Miscellaneous,
+    //Extension,
+    Memory,
+    Composite,
+    Image,
+    Conversion,
+    Arithmetic,
+    #[serde(rename="Relational_and_Logical")]
+    RelationalAndLogical,
+    Bit,
+    Derivative,
+    Primitive,
+    Barrier,
+    Atomic,
+    Group,
+    Pipe,
+    #[serde(rename="Device-Side_Enqueue")]
+    DeviceSideEnqueue,
+    #[serde(rename="Non-Uniform")]
+    NonUniform,
+    Reserved,
+    #[serde(rename="@exclude")]
+    Exclude
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
