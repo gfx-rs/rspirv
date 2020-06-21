@@ -174,6 +174,9 @@ impl binary::Consumer for Loader {
                     .blocks
                     .push(self.block.take().unwrap())
             }
+            spirv::Op::ModuleProcessed => {
+                // Ignore
+            }
             _ => {
                 if_ret_err!(self.block.is_none(), DetachedInstruction);
                 self.block.as_mut().unwrap().instructions.push(inst)
