@@ -371,6 +371,10 @@ impl Builder {
         Ok(id)
     }
 
+    /// Begins building of a new block.
+    ///
+    /// Counter to `begin_block` that always generates a new OpLabel at the beginning of a block - in some cases
+    /// this is undesirable (such as when constructing a branch).
     pub fn begin_block_no_label(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
         if !(self.new_function.is_some() || self.selected_function.is_some()) {
             return Err(Error::DetachedBlock);
