@@ -363,6 +363,12 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
             quote! { None }
         };
 
+        let result_type = if inst.opname == "OpPhi" {
+            quote! { Some(result_type) }
+        } else {
+            quote! { None }
+        };
+
         quote! {
             #[doc = #comment]
             pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<()> {
