@@ -388,7 +388,7 @@ impl Builder {
             None => self.id(),
         };
 
-        let mut bb = dr::Block::new();
+        let bb = dr::Block::new();
         self.new_block = Some(bb);
         Ok(id)
     }
