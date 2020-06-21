@@ -24,6 +24,7 @@ pub enum Error {
     WrongOpExtInstImportOperand,
     WrongOpMemoryModelOperand,
     WrongOpNameOperand,
+    FunctionNotFound,
 }
 
 impl Error {
@@ -50,6 +51,7 @@ impl Error {
             Error::WrongOpExtInstImportOperand => "wrong OpExtInstImport operand",
             Error::WrongOpMemoryModelOperand => "wrong OpMemoryModel operand",
             Error::WrongOpNameOperand => "wrong OpName operand",
+            Error::FunctionNotFound => "can't find the function",
         }
     }
 }

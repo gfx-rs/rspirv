@@ -184,6 +184,11 @@ impl Builder {
         self.version = Some((major, minor));
     }
 
+    /// Get the SPIR-V version as a (major, minor) tuple
+    pub fn version(&self) -> Option<(u8, u8)> {
+        self.version
+    }
+
     /// Returns the `Module` under construction.
     pub fn module(self) -> dr::Module {
         let mut module = self.module;
@@ -209,10 +214,38 @@ impl Builder {
         id
     }
 
-    pub fn select_function(&mut self, idx: usize) {
-        self.selected_function = Some(idx);
+    /// Select a function to insert instructions into by name
+    pub fn select_function_by_name(&mut self, name: &str) -> BuildResult<()> {
+        for dbg in &self.module.debugs {
+            if dbg.class.opcode == spirv::Op::Name {
+                if let dr::Operand::IdRef(target_id) = dbg.operands[0] {
+                    if let dr::Operand::LiteralString(found_name)  = &dbg.operands[1] {
+                        if found_name == name {
+                            for (idx, func) in self.module.functions.iter().enumerate() {
+                                if func.def.as_ref().unwrap().result_id.unwrap() == target_id {
+                                    return self.select_function(idx);
+                               }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Err(Error::FunctionNotFound)
     }
 
+    /// Select a function to insert instructions into by index (indexed into self.module.functions)
+    pub fn select_function(&mut self, idx: usize) -> BuildResult<()> {
+        if idx < self.module.functions.len() {
+            self.selected_function = Some(idx);
+            Ok(())
+        } else {
+            Err(Error::FunctionNotFound)
+        }
+    }
+
+    /// Select a basic block (by index) to insert instructions into, indexed off of self.modules.functions[self.selected_function].blocks[idx]
     pub fn select_block(&mut self, idx: usize) {
         self.selected_block = Some(idx);
     }
