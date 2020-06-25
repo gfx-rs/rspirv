@@ -214,6 +214,21 @@ impl Builder {
         id
     }
 
+    /// Insert a OpType instruction, deduplicate it if needed and either return the existing ID
+    /// or a new unused ID if we can't find find the instruction already. Useful to uphold
+    /// the SPIR-V rule that non-aggregate types can't be duplicates.
+    pub fn dedup_insert_type(&mut self, inst: &dr::Instruction) -> spirv::Word {
+        for ty in &self.module.types_global_values {
+            if ty.is_type_identical(&inst) {
+                if let Some(id) = ty.result_id {
+                    return id;
+                }
+            }
+        }
+
+        self.id()
+    }
+
     /// Find all blocks that end in OpReturn
     pub fn find_return_block_indices(&self) -> Vec<usize> {
         let mut result = vec![];
