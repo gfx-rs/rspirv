@@ -73,16 +73,15 @@ fn get_function_name(opname: &str) -> TokenStream {
 
 /// Returns a suitable function name for the given `opname`.
 fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
-    if opname == "OpReturn" {
-        let name = as_ident(&format!("{}ret", prepend));
-        quote! { #name }
+    let name = if opname == "OpReturn" {
+        as_ident(&format!("{}ret", prepend))
     } else if opname == "OpReturnValue" {
-        let name = as_ident(&format!("{}ret_value", prepend));
-        quote! { #name }
+        as_ident(&format!("{}ret_value", prepend))
     } else {
-        let name = as_ident(&format!("{}{}", prepend, &opname[2..].to_snake_case()));
-        quote! { #name }
-    }
+        as_ident(&format!("{}{}", prepend, &opname[2..].to_snake_case()))
+    };
+
+    quote! { #name }
 }
 
 /// Returns the initializer list for all the parameters required to appear
@@ -350,12 +349,6 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
         let name = get_function_name(&inst.opname);
         let init = get_init_list(&inst.operands);
         let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
-
-        let result_type = if inst.opname == "OpPhi" {
-            quote! { Some(result_type) }
-        } else {
-            quote! { None }
-        };
 
         let result_id = if inst.opname == "OpLabel" {
             quote! { result_id }
