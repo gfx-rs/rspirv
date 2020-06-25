@@ -18,11 +18,13 @@ pub enum Error {
     UnclosedBlock,
     MismatchedTerminator,
     DetachedInstruction,
+    EmptyInstructionList,
     WrongOpCapabilityOperand,
     WrongOpExtensionOperand,
     WrongOpExtInstImportOperand,
     WrongOpMemoryModelOperand,
     WrongOpNameOperand,
+    FunctionNotFound,
 }
 
 impl Error {
@@ -43,11 +45,13 @@ impl Error {
             Error::UnclosedBlock => "found block without terminator",
             Error::MismatchedTerminator => "found mismatched terminator",
             Error::DetachedInstruction => "found instruction not inside block",
+            Error::EmptyInstructionList => "list of instructions is empty",
             Error::WrongOpCapabilityOperand => "wrong OpCapability operand",
             Error::WrongOpExtensionOperand => "wrong OpExtension operand",
             Error::WrongOpExtInstImportOperand => "wrong OpExtInstImport operand",
             Error::WrongOpMemoryModelOperand => "wrong OpMemoryModel operand",
             Error::WrongOpNameOperand => "wrong OpName operand",
+            Error::FunctionNotFound => "can't find the function",
         }
     }
 }

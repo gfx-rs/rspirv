@@ -90,9 +90,18 @@ type BuildResult<T> = result::Result<T, Error>;
 pub struct Builder {
     module: dr::Module,
     next_id: u32,
-    function: Option<dr::Function>,
-    block: Option<dr::Block>,
+    new_function: Option<dr::Function>,
+    new_block: Option<dr::Block>,
+    selected_function: Option<usize>,
+    selected_block: Option<usize>,
     version: Option<(u8, u8)>,
+}
+
+pub enum InsertPoint {
+    Begin,
+    End,
+    FromBegin(usize),
+    FromEnd(usize),
 }
 
 impl Builder {
@@ -101,10 +110,70 @@ impl Builder {
         Builder {
             module: dr::Module::new(),
             next_id: 1,
-            function: None,
-            block: None,
+            new_function: None,
+            selected_function: None,
+            new_block: None,
+            selected_block: None,
             version: None,
         }
+    }
+
+    /// Create a new builder from an existing module
+    pub fn new_from_module(module: dr::Module) -> Builder {
+        let next_id = module.header.as_ref().map(|h| h.bound).expect("Expecting ModuleHeader with valid bound");
+        let version = module.header.as_ref().map(|h| h.version());
+
+        Builder {
+            module,
+            next_id,
+            new_function: None,
+            selected_function: None,
+            new_block: None,
+            selected_block: None,
+            version
+        }
+    }
+
+    fn insert_into_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
+        let allow = self.new_block.is_some() || self.selected_function.is_some() && self.selected_block.is_some();
+
+        if !allow {
+            return Err(Error::DetachedInstruction);
+        }
+
+        let ref mut block = if self.new_block.is_some() {
+            self.new_block.as_mut().unwrap()
+        } else {
+            &mut self.module.functions[self.selected_function.unwrap()].blocks[self.selected_block.unwrap()]
+        };
+
+        match insert_point {
+            InsertPoint::End => block.instructions.push(inst),
+            InsertPoint::Begin => block.instructions.insert(0, inst),
+            InsertPoint::FromEnd(offset) => {
+                let end = block.instructions.len();
+                block.instructions.insert(end - offset, inst)
+            },
+            InsertPoint::FromBegin(offset) => block.instructions.insert(offset, inst),
+        }
+
+        Ok(())
+    }
+
+    pub fn pop_instruction(&mut self) -> BuildResult<dr::Instruction> {
+        let allow = self.new_block.is_some() || self.selected_function.is_some() && self.selected_block.is_some();
+
+        if !allow {
+            return Err(Error::DetachedInstruction);
+        }
+
+        let ref mut block = if self.new_block.is_some() {
+            self.new_block.as_mut().unwrap()
+        } else {
+            &mut self.module.functions[self.selected_function.unwrap()].blocks[self.selected_block.unwrap()]
+        };
+
+        block.instructions.pop().ok_or_else(|| Error::EmptyInstructionList)
     }
 
     /// Sets the SPIR-V version to the given major.minor version.
@@ -113,6 +182,11 @@ impl Builder {
     /// supported.
     pub fn set_version(&mut self, major: u8, minor: u8) {
         self.version = Some((major, minor));
+    }
+
+    /// Get the SPIR-V version as a (major, minor) tuple
+    pub fn version(&self) -> Option<(u8, u8)> {
+        self.version
     }
 
     /// Returns the `Module` under construction.
@@ -128,11 +202,90 @@ impl Builder {
         module
     }
 
+    /// Returns the `Module` as reference under construction.
+    pub fn module_ref<'a>(&'a self) -> &'a dr::Module {
+        &self.module
+    }
+
     /// Returns the next unused id.
     pub fn id(&mut self) -> spirv::Word {
         let id = self.next_id;
         self.next_id += 1;
         id
+    }
+
+    /// Insert a OpType instruction, deduplicate it if needed and either return the existing ID
+    /// or a new unused ID if we can't find find the instruction already. Useful to uphold
+    /// the SPIR-V rule that non-aggregate types can't be duplicates.
+    pub fn dedup_insert_type(&mut self, inst: &dr::Instruction) -> spirv::Word {
+        for ty in &self.module.types_global_values {
+            if ty.is_type_identical(&inst) {
+                if let Some(id) = ty.result_id {
+                    return id;
+                }
+            }
+        }
+
+        self.id()
+    }
+
+    /// Find all blocks that end in OpReturn
+    pub fn find_return_block_indices(&self) -> Vec<usize> {
+        let mut result = vec![];
+
+        if let Some(sel_fn) = self.selected_function {
+            let func = &self.module.functions[sel_fn];
+
+            for (idx, blk) in func.blocks.iter().enumerate() {
+                // OpReturn must be the last instruction in a block
+                let last_instr = blk.instructions.last().unwrap();
+
+                match last_instr.class.opcode{
+                    spirv::Op::Return | spirv::Op::ReturnValue => {
+                        result.push(idx);
+                    },
+                    _ => {}
+                }
+            }
+        }
+
+        result
+    }
+
+    /// Select a function to insert instructions into by name
+    pub fn select_function_by_name(&mut self, name: &str) -> BuildResult<()> {
+        for dbg in &self.module.debugs {
+            if dbg.class.opcode == spirv::Op::Name {
+                if let dr::Operand::IdRef(target_id) = dbg.operands[0] {
+                    if let dr::Operand::LiteralString(found_name)  = &dbg.operands[1] {
+                        if found_name == name {
+                            for (idx, func) in self.module.functions.iter().enumerate() {
+                                if func.def.as_ref().unwrap().result_id.unwrap() == target_id {
+                                    return self.select_function(idx);
+                               }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Err(Error::FunctionNotFound)
+    }
+
+    /// Select a function to insert instructions into by index (indexed into self.module.functions)
+    pub fn select_function(&mut self, idx: usize) -> BuildResult<()> {
+        if idx < self.module.functions.len() {
+            self.selected_function = Some(idx);
+            Ok(())
+        } else {
+            Err(Error::FunctionNotFound)
+        }
+    }
+
+    /// Select a basic block (by index) to insert instructions into, indexed off of self.modules.functions[self.selected_function].blocks[idx]
+    pub fn select_block(&mut self, idx: usize) {
+        self.selected_block = Some(idx);
     }
 
     /// Begins building of a new function.
@@ -147,7 +300,7 @@ impl Builder {
         control: spirv::FunctionControl,
         function_type: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.function.is_some() {
+        if self.new_function.is_some() {
             return Err(Error::NestedFunction);
         }
 
@@ -166,17 +319,17 @@ impl Builder {
                 dr::Operand::IdRef(function_type),
             ],
         ));
-        self.function = Some(f);
+        self.new_function = Some(f);
         Ok(id)
     }
 
     /// Ends building of the current function.
     pub fn end_function(&mut self) -> BuildResult<()> {
-        if self.function.is_none() {
+        if self.new_function.is_none() {
             return Err(Error::MismatchedFunctionEnd);
         }
 
-        let mut f = self.function.take().unwrap();
+        let mut f = self.new_function.take().unwrap();
         f.end = Some(dr::Instruction::new(
             spirv::Op::FunctionEnd,
             None,
@@ -189,7 +342,7 @@ impl Builder {
 
     /// Declares a formal parameter for the current function.
     pub fn function_parameter(&mut self, result_type: spirv::Word) -> BuildResult<spirv::Word> {
-        if self.function.is_none() {
+        if self.new_function.is_none() {
             return Err(Error::DetachedFunctionParameter);
         }
         let id = self.id();
@@ -199,7 +352,7 @@ impl Builder {
             Some(id),
             vec![],
         );
-        self.function.as_mut().unwrap().parameters.push(inst);
+        self.new_function.as_mut().unwrap().parameters.push(inst);
         Ok(id)
     }
 
@@ -209,10 +362,10 @@ impl Builder {
     /// id for the `OpLabel` instruction begining this block; otherwise,
     /// a unused result id will be automatically assigned.
     pub fn begin_block(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
-        if self.function.is_none() {
+        if !(self.new_function.is_some() || self.selected_function.is_some()) {
             return Err(Error::DetachedBlock);
         }
-        if self.block.is_some() {
+        if self.new_block.is_some() || self.selected_block.is_some() {
             return Err(Error::NestedBlock);
         }
 
@@ -229,20 +382,62 @@ impl Builder {
             vec![],
         ));
 
-        self.block = Some(bb);
+        self.new_block = Some(bb);
+        Ok(id)
+    }
+
+    /// Begins building of a new block.
+    ///
+    /// Counter to `begin_block` that always generates a new OpLabel at the beginning of a block - in some cases
+    /// this is undesirable (such as when constructing a branch).
+    pub fn begin_block_no_label(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+        if !(self.new_function.is_some() || self.selected_function.is_some()) {
+            return Err(Error::DetachedBlock);
+        }
+        if self.new_block.is_some() || self.selected_block.is_some() {
+            return Err(Error::NestedBlock);
+        }
+
+        let id = match label_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+
+        let bb = dr::Block::new();
+        self.new_block = Some(bb);
         Ok(id)
     }
 
     fn end_block(&mut self, inst: dr::Instruction) -> BuildResult<()> {
-        if self.block.is_none() {
-            return Err(Error::MismatchedTerminator);
+        self.insert_end_block(InsertPoint::End, inst)
+    }
+
+    fn insert_end_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
+        if self.new_block.is_some() {
+            self.insert_into_block(insert_point, inst)?;
+
+            if self.new_function.is_some() {
+                self.new_function.as_mut().unwrap().blocks.push(
+                    self.new_block.take().unwrap(),
+                );
+            }
+
+            if let Some(idx) = self.selected_function {
+                self.module.functions[idx].blocks.push(
+                    self.new_block.take().unwrap(),
+                );
+            }
+
+            return Ok(())
         }
 
-        self.block.as_mut().unwrap().instructions.push(inst);
-        self.function.as_mut().unwrap().blocks.push(
-            self.block.take().unwrap(),
-        );
-        Ok(())
+        if self.selected_block.is_some() {
+            self.insert_into_block(insert_point, inst)?;
+            self.selected_block = None;
+            return Ok(())
+        }
+
+        Err(Error::MismatchedTerminator)
     }
 
     /// Appends an OpCapability instruction.
@@ -550,7 +745,7 @@ impl Builder {
         }
         let inst = dr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
 
-        match self.block {
+        match self.new_block {
             Some(ref mut bb) => bb.instructions.push(inst),
             None => self.module.types_global_values.push(inst),
         }
@@ -570,7 +765,7 @@ impl Builder {
         };
         let inst = dr::Instruction::new(spirv::Op::Undef, Some(result_type), Some(id), vec![]);
 
-        match self.block {
+        match self.new_block {
             Some(ref mut bb) => bb.instructions.push(inst),
             None => self.module.types_global_values.push(inst),
         }

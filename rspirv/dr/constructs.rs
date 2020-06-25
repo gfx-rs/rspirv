@@ -92,6 +92,13 @@ pub struct Instruction {
     pub operands: Vec<Operand>,
 }
 
+impl Instruction {
+    /// Compare two instructions by opcode and operands; this is the equality identity for `OpType` instructions
+    pub fn is_type_identical(&self, other: &Instruction) -> bool {
+        self.class.opcode == other.class.opcode && self.operands == other.operands
+    }
+}
+
 include!("autogen_operand.rs");
 
 impl Module {
