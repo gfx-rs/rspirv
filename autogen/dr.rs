@@ -310,7 +310,8 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
                 #[doc = #comment]
                 pub fn #name#generic(&mut self,#(#param_list),*) -> spirv::Word {
                     let mut inst = dr::Instruction::new(spirv::Op::#opcode, None, None, vec![#(#init_list),*]);
-                    inst.result_id = Some(self.dedup_insert_type(&inst));
+                    let id = self.dedup_insert_type(&inst);
+                    inst.result_id = Some(id);
                     self.module.types_global_values.push(inst);
                     #(#extras)*
                     id
