@@ -67,7 +67,7 @@
 //!     // Disassembling
 //!     assert_eq!(module.disassemble(),
 //!                "; SPIR-V\n\
-//!                 ; Version: 1.4\n\
+//!                 ; Version: 1.5\n\
 //!                 ; Generator: rspirv\n\
 //!                 ; Bound: 5\n\
 //!                 OpMemoryModel Logical GLSL450\n\
