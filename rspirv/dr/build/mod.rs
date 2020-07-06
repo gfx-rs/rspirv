@@ -134,7 +134,7 @@ impl Builder {
         }
     }
 
-    fn insert_into_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
+    pub fn insert_into_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
         let allow = self.new_block.is_some() || self.selected_function.is_some() && self.selected_block.is_some();
 
         if !allow {
