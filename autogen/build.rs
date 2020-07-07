@@ -1,16 +1,15 @@
-#![recursion_limit="128"]
+#![recursion_limit = "128"]
 
 mod binary;
-mod header;
 mod dr;
+mod header;
 mod sr;
 mod structs;
 mod table;
 mod utils;
 
 use std::{
-    env,
-    fs,
+    env, fs,
     io::{Read, Write},
     path::PathBuf,
     process,
@@ -18,25 +17,22 @@ use std::{
 use utils::write_autogen_comment;
 
 fn write<T: ToString>(path: &PathBuf, contents: T) {
-    let mut f = fs::File::create(path)
-        .expect(&format!("cannot open file: {:?}", path));
+    let mut f = fs::File::create(path).expect(&format!("cannot open file: {:?}", path));
     write_autogen_comment(&mut f);
     write!(f, "{}", contents.to_string()).unwrap()
 }
 
 fn write_formatted<T: ToString>(path: &PathBuf, contents: T) {
     write(path, contents);
-    match process::Command::new("rustfmt")
-        .arg(path)
-        .status() {
-            Ok(status) if !status.success() => {
-                println!("cargo:warning=failed to rustfmt {:?}", path);
-            }
-            Ok(_) => {}
-            Err(_) => {
-                println!("cargo:warning=failed to execute rustfmt");
-            }
-        };
+    match process::Command::new("rustfmt").arg(path).status() {
+        Ok(status) if !status.success() => {
+            println!("cargo:warning=failed to rustfmt {:?}", path);
+        }
+        Ok(_) => {}
+        Err(_) => {
+            println!("cargo:warning=failed to execute rustfmt");
+        }
+    };
 }
 
 fn main() {
@@ -51,7 +47,8 @@ fn main() {
     let mut contents = String::new();
 
     {
-        let path = autogen_src_dir.join("external/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json");
+        let path = autogen_src_dir
+            .join("external/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json");
         let mut file = fs::File::open(path).unwrap();
         file.read_to_string(&mut contents).unwrap();
     }
@@ -60,7 +57,8 @@ fn main() {
     // For GLSLstd450 extended instruction set.
     {
         let path = autogen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/unified1/extinst.glsl.std.450.grammar.json");
+            "external/SPIRV-Headers/include/spirv/unified1/extinst.glsl.std.450.grammar.json",
+        );
         let mut file = fs::File::open(path).unwrap();
         contents.clear();
         file.read_to_string(&mut contents).unwrap();
@@ -70,7 +68,8 @@ fn main() {
     // For OpenCL extended instruction set.
     {
         let path = autogen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/unified1/extinst.opencl.std.100.grammar.json");
+            "external/SPIRV-Headers/include/spirv/unified1/extinst.opencl.std.100.grammar.json",
+        );
         let mut file = fs::File::open(path).unwrap();
         contents.clear();
         file.read_to_string(&mut contents).unwrap();
@@ -78,15 +77,12 @@ fn main() {
     let cl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
 
     // Path to the generated SPIR-V header file.
-    write_formatted(
-        &autogen_src_dir.join("../spirv/autogen_spirv.rs"),
-        {
-            let core = header::gen_spirv_header(&grammar);
-            let gl = header::gen_glsl_std_450_opcodes(&gl_grammar);
-            let cl = header::gen_opencl_std_opcodes(&cl_grammar);
-            format!("{}\n{}\n{}", core, gl, cl)
-        }
-    );
+    write_formatted(&autogen_src_dir.join("../spirv/autogen_spirv.rs"), {
+        let core = header::gen_spirv_header(&grammar);
+        let gl = header::gen_glsl_std_450_opcodes(&gl_grammar);
+        let cl = header::gen_opencl_std_opcodes(&cl_grammar);
+        format!("{}\n{}\n{}", core, gl, cl)
+    });
 
     // Path to the generated instruction table.
     write_formatted(

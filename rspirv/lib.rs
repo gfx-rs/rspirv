@@ -83,9 +83,9 @@
 extern crate spirv_headers as spirv;
 
 pub mod binary;
-pub mod grammar;
 pub mod dr;
-pub mod sr;
+pub mod grammar;
 pub mod lift;
+pub mod sr;
 
 mod utils;

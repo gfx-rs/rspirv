@@ -40,10 +40,7 @@ impl OperandTokens {
                         quote! { self.types.lookup_token(*value) },
                     ),
                     // Function type is manually linked by the code.
-                    "Function Type" => (
-                        quote! { spirv::Word },
-                        quote! { *value },
-                    ),
+                    "Function Type" => (quote! { spirv::Word }, quote! { *value }),
                     name if name.ends_with(" Type") => (
                         quote! { Token<Type> },
                         quote! { self.types.lookup_token(*value) },
@@ -70,24 +67,25 @@ impl OperandTokens {
                                     quote! { Token<Type> },
                                     quote! { self.types.lookup_token(*value) },
                                 )),
-                                _ => None
+                                _ => None,
                             }
-                        } else { None };
+                        } else {
+                            None
+                        };
 
                         if let Some(special_case) = special_case {
                             special_case
-                        }
-                        else {
+                        } else {
                             (
                                 //TODO: proper `Token<>`
                                 quote! { spirv::Word },
                                 quote! { *value },
                             )
                         }
-                    },
+                    }
                 };
                 (ty, value, operand.kind.as_str(), None)
-            },
+            }
             "IdMemorySemantics" | "IdScope" | "IdResult" => (
                 //TODO: proper `Token<>`
                 quote! { spirv::Word },
@@ -95,17 +93,12 @@ impl OperandTokens {
                 operand.kind.as_str(),
                 None,
             ),
-            "LiteralInteger" => (
-                quote! { u32 },
-                quote! { *value },
-                "LiteralInt32",
-                None
-            ),
+            "LiteralInteger" => (quote! { u32 }, quote! { *value }, "LiteralInt32", None),
             "LiteralExtInstInteger" => (
                 quote! { u32 },
                 quote! { *value },
                 operand.kind.as_str(),
-                None
+                None,
             ),
             "LiteralSpecConstantOpInteger" => (
                 quote! { spirv::Op },
@@ -117,7 +110,7 @@ impl OperandTokens {
                 quote! { u32 },
                 quote! { *value },
                 operand.kind.as_str(),
-                None
+                None,
             ),
             "LiteralString" => (
                 quote! { String },
@@ -175,7 +168,7 @@ impl OperandTokens {
                         _ => Err(OperandError::WrongType)?,
                     }
                 }
-           }
+            }
         };
 
         let (quantified_type, lift_expression) = match operand.quantifier {
@@ -185,10 +178,7 @@ impl OperandTokens {
                     (#lift).ok_or(OperandError::Missing)?
                 },
             ),
-            structs::Quantifier::ZeroOrOne => (
-                quote! { Option<#ty> },
-                lift
-            ),
+            structs::Quantifier::ZeroOrOne => (quote! { Option<#ty> }, lift),
             structs::Quantifier::ZeroOrMore => (
                 quote! { Vec<#ty> },
                 quote! {{
@@ -233,7 +223,7 @@ pub fn gen_sr_code_from_operand_kind_grammar(
                 .map(|p| OperandTokens::new(p, None).quantified_type)
                 .collect();
             let params = if types.is_empty() {
-                quote!{}
+                quote! {}
             } else {
                 quote! { (#( #types ),*) }
             };
@@ -291,7 +281,8 @@ pub fn gen_sr_code_from_instruction_grammar(
     // Compose the token stream for all instructions
     for inst in grammar_instructions
         .iter() // Loop over all instructions
-        .filter(|i| i.class != Some(structs::Class::Constant)) // Skip constants
+        .filter(|i| i.class != Some(structs::Class::Constant))
+    // Skip constants
     {
         // Get the token for its enumerant
         let inst_name = &inst.opname[2..];
@@ -302,7 +293,7 @@ pub fn gen_sr_code_from_instruction_grammar(
         }
         let name_ident = Ident::new(inst_name, Span::call_site());
         let type_name = if inst.opname.len() > TYPE_PREFIX_LENGTH {
-            &inst.opname[TYPE_PREFIX_LENGTH ..]
+            &inst.opname[TYPE_PREFIX_LENGTH..]
         } else {
             "_"
         };
@@ -324,7 +315,7 @@ pub fn gen_sr_code_from_instruction_grammar(
         // Compose the token stream for all parameters
         for operand in inst.operands.iter() {
             if operand.kind.starts_with("IdResult") {
-                continue
+                continue;
             }
             let tokens = OperandTokens::new(operand, Some(&inst));
             field_names.push(tokens.name);
@@ -345,7 +336,7 @@ pub fn gen_sr_code_from_instruction_grammar(
         match inst.class {
             Some(structs::Class::Type) => {
                 if field_names.is_empty() {
-                    type_variants.push(quote!{ #type_ident });
+                    type_variants.push(quote! { #type_ident });
                     type_lifts.push(quote! {
                         #opcode => Ok(Type::#type_ident),
                     });
@@ -362,9 +353,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                     });
                 }
             }
-            Some(ModeSetting) |
-            Some(ExtensionDecl) |
-            Some(FunctionStruct) => {
+            Some(ModeSetting) | Some(ExtensionDecl) | Some(FunctionStruct) => {
                 let derive = if let Some(FunctionStruct) = inst.class {
                     quote! { #[derive(Clone, Debug)] }
                 } else {
@@ -431,11 +420,10 @@ pub fn gen_sr_code_from_instruction_grammar(
                 }
             }
             // Skip OpPhi as explicitly processed
-            _ if inst_name == "Phi" => {
-            }
+            _ if inst_name == "Phi" => {}
             _ => {
                 if field_names.is_empty() {
-                    op_variants.push(quote!{ #name_ident });
+                    op_variants.push(quote! { #name_ident });
                     op_lifts.push(quote! {
                         #opcode => Ok(ops::Op::#name_ident),
                     });
@@ -539,4 +527,3 @@ pub fn gen_sr_code_from_instruction_grammar(
         lift_context: lift_context.to_string(),
     }
 }
-

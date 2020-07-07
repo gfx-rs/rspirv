@@ -1,7 +1,6 @@
 use rspirv::{
     binary::{Assemble as _, Disassemble as _},
-    dr,
-    lift,
+    dr, lift,
 };
 
 use std::path::PathBuf;
@@ -31,10 +30,10 @@ fn test_external_dir(dir_path: PathBuf) {
             match path.extension() {
                 Some(ext) => {
                     if ext.to_string_lossy() != "spv" {
-                        continue
+                        continue;
                     }
                 }
-                None => continue
+                None => continue,
             }
             let spv = fs::read(path).unwrap();
             test_spv(&spv);
