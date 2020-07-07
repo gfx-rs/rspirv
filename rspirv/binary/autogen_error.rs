@@ -233,11 +233,4 @@ impl fmt::Display for Error {
         }
     }
 }
-impl error::Error for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::StreamExpected(_) => "expected more bytes in the stream",
-            _ => "unknown operand value for the given kind",
-        }
-    }
-}
+impl error::Error for Error {}
