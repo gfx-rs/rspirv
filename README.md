@@ -1,7 +1,7 @@
 rspirv
 ======
 
-[![Build Status](https://travis-ci.org/gfx-rs/rspirv.svg?branch=master)](https://travis-ci.org/gfx-rs/rspirv)
+[![Actions Status](https://github.com/gfx-rs/rspirv/workflows/Continuous%20integration/badge.svg)](https://github.com/gfx-rs/rspirv/actions)
 [![Matrix Room](https://img.shields.io/badge/Matrix-%23gfx%3Amatrix.org-blueviolet.svg)](https://matrix.to/#/#gfx:matrix.org)
 
 **R**u**s**t implementation of S**PIR**-**V** module processing functionalities.
