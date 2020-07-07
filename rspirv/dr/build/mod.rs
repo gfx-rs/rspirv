@@ -134,7 +134,7 @@ impl Builder {
         }
     }
 
-    fn insert_into_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
+    pub fn insert_into_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
         let allow = self.new_block.is_some() || self.selected_function.is_some() && self.selected_block.is_some();
 
         if !allow {
@@ -1137,7 +1137,7 @@ mod tests {
 
         assert_eq!(
             b.module().disassemble(),
-            "; SPIR-V\n; Version: 1.4\n; Generator: rspirv\n; Bound: 11\n\
+            "; SPIR-V\n; Version: 1.5\n; Generator: rspirv\n; Bound: 11\n\
                     %1 = OpTypeVoid\n\
                     %2 = OpTypeFloat 32\n\
                     %3 = OpTypePointer Input %2\n\
@@ -1184,7 +1184,7 @@ mod tests {
 
         assert_eq!(
             b.module().disassemble(),
-            "; SPIR-V\n; Version: 1.4\n; Generator: rspirv\n; Bound: 9\n\
+            "; SPIR-V\n; Version: 1.5\n; Generator: rspirv\n; Bound: 9\n\
                     %1 = OpTypeVoid\n\
                     %2 = OpTypeFloat 32\n\
                     %3 = OpTypeFunction %1 %1\n\

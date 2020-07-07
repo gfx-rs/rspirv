@@ -256,7 +256,7 @@ mod tests {
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
-                    ; Version: 1.4\n\
+                    ; Version: 1.5\n\
                     ; Generator: rspirv\n\
                     ; Bound: 8\n\
                     OpCapability Shader\n\
@@ -293,13 +293,23 @@ mod tests {
         assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
         b.begin_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
-        assert!(b.ext_inst(float32, None, glsl, 6, vec![var]).is_ok());
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ExtInst,
+            Some(float32),
+            Some(b.id()),
+            vec![
+                dr::Operand::IdRef(glsl),
+                dr::Operand::LiteralExtInstInteger(6),
+            ],
+        );
+        inst.operands.push(dr::Operand::IdRef(var));
+        assert!(b.insert_into_block(dr::InsertPoint::End, inst).is_ok());
         b.ret().unwrap();
         b.end_function().unwrap();
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
-                    ; Version: 1.4\n\
+                    ; Version: 1.5\n\
                     ; Generator: rspirv\n\
                     ; Bound: 9\n\
                     OpCapability Shader\n\
@@ -330,13 +340,25 @@ mod tests {
         assert!(b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).is_ok());
         b.begin_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
-        assert!(b.ext_inst(float32, None, opencl, 15, vec![var]).is_ok());
+
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ExtInst,
+            Some(float32),
+            Some(b.id()),
+            vec![
+                dr::Operand::IdRef(opencl),
+                dr::Operand::LiteralExtInstInteger(15),
+            ],
+        );
+        inst.operands.push(dr::Operand::IdRef(var));
+        assert!(b.insert_into_block(dr::InsertPoint::End, inst).is_ok());
         b.ret().unwrap();
+
         b.end_function().unwrap();
 
         assert_eq!(b.module().disassemble(),
                    "; SPIR-V\n\
-                    ; Version: 1.4\n\
+                    ; Version: 1.5\n\
                     ; Generator: rspirv\n\
                     ; Bound: 9\n\
                     %1 = OpExtInstImport \"OpenCL.std\"\n\

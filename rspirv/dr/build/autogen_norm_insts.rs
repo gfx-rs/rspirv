@@ -7775,6 +7775,41 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpPhi instruction to the current block."]
+    pub fn phi<T: AsRef<[(spirv::Word, spirv::Word)]>>(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        variable_parent: T,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(_id), vec![]);
+        for v in variable_parent.as_ref() {
+            inst.operands.push(dr::Operand::IdRef(v.0));
+            inst.operands.push(dr::Operand::IdRef(v.1));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpPhi instruction to the current block."]
+    pub fn insert_phi<T: AsRef<[(spirv::Word, spirv::Word)]>>(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        variable_parent: T,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(_id), vec![]);
+        for v in variable_parent.as_ref() {
+            inst.operands.push(dr::Operand::IdRef(v.0));
+            inst.operands.push(dr::Operand::IdRef(v.1));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpGroupAsyncCopy instruction to the current block."]
     pub fn group_async_copy(
         &mut self,

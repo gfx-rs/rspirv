@@ -310,7 +310,8 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
                 #[doc = #comment]
                 pub fn #name#generic(&mut self,#(#param_list),*) -> spirv::Word {
                     let mut inst = dr::Instruction::new(spirv::Op::#opcode, None, None, vec![#(#init_list),*]);
-                    inst.result_id = Some(self.dedup_insert_type(&inst));
+                    let id = self.dedup_insert_type(&inst);
+                    inst.result_id = Some(id);
                     self.module.types_global_values.push(inst);
                     #(#extras)*
                     id
@@ -329,7 +330,8 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == Some(structs::Class::Terminator) || inst.class == Some(structs::Class::Branch)
+        inst.class == Some(structs::Class::Terminator) ||
+        (inst.class == Some(structs::Class::Branch) && inst.opname != "OpPhi")
     }).map(|inst| {
         let (params, generic) = get_param_list(&inst.operands, inst.opname == "OpLabel", kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
@@ -394,7 +396,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             inst.class == Some(Debug) ||
             inst.class == Some(Annotation) ||
             inst.class == Some(Terminator) ||
-            inst.class == Some(Branch) ||
+            (inst.class == Some(Branch) && inst.opname != "OpPhi") ||
             inst.class == Some(ModeSetting) ||
             inst.class == Some(Exclude) ||
             inst.opname == "OpTypeForwardPointer" ||
