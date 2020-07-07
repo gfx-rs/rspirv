@@ -59,25 +59,7 @@ impl From<DecodeError> for State {
     }
 }
 
-impl error::Error for State {
-    fn description(&self) -> &str {
-        match *self {
-            State::Complete => "completed parsing",
-            State::ConsumerStopRequested => "stop parsing requested by consumer",
-            State::ConsumerError(_) => "consumer error",
-            State::HeaderIncomplete(_) => "incomplete module header",
-            State::HeaderIncorrect => "incorrect module header",
-            State::EndiannessUnsupported => "unsupported endianness",
-            State::WordCountZero(..) => "zero word count found",
-            State::OpcodeUnknown(..) => "unknown opcode",
-            State::OperandExpected(..) => "expected more operands",
-            State::OperandExceeded(..) => "found extra operands",
-            State::OperandError(_) => "operand decoding error",
-            State::TypeUnsupported(..) => "unsupported type",
-            State::SpecConstantOpIntegerIncorrect(..) => "incorrect SpecConstantOp Integer",
-        }
-    }
-}
+impl error::Error for State {}
 
 impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -103,8 +85,7 @@ impl fmt::Display for State {
             }
             State::OperandExpected(offset, index) => {
                 write!(f,
-                       "expected more operands for instruction #{} at offset \
-                        {}",
+                       "expected more operands for instruction #{} at offset {}",
                        index,
                        offset)
             }
@@ -752,11 +733,7 @@ mod tests {
 
     #[derive(Debug)]
     struct ErrorString(&'static str);
-    impl error::Error for ErrorString {
-        fn description(&self) -> &str {
-            "consumer error"
-        }
-    }
+    impl error::Error for ErrorString {}
     impl fmt::Display for ErrorString {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
             let &ErrorString(ref s) = self;
@@ -787,12 +764,7 @@ mod tests {
         let p = Parser::new(&v, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
-        if let Err(State::ConsumerError(err)) = ret {
-            assert_eq!("consumer error", err.description());
-            assert_eq!("init error", format!("{}", err));
-        } else {
-            assert!(false);
-        }
+        assert_eq!("consumer error: init error", format!("{}", ret.unwrap_err()));
     }
 
     struct FinalizeErrorConsumer;
@@ -817,12 +789,7 @@ mod tests {
         let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
-        if let Err(State::ConsumerError(err)) = ret {
-            assert_eq!("consumer error", err.description());
-            assert_eq!("fin error", format!("{}", err));
-        } else {
-            assert!(false);
-        }
+        assert_eq!("consumer error: fin error", format!("{}", ret.unwrap_err()));
     }
 
     struct ParseHeaderErrorConsumer;
@@ -847,12 +814,7 @@ mod tests {
         let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
-        if let Err(State::ConsumerError(err)) = ret {
-            assert_eq!("consumer error", err.description());
-            assert_eq!("parse header error", format!("{}", err));
-        } else {
-            assert!(false);
-        }
+        assert_eq!("consumer error: parse header error", format!("{}", ret.unwrap_err()));
     }
 
     struct ParseInstErrorConsumer;
@@ -879,12 +841,7 @@ mod tests {
         let p = Parser::new(b.get(), &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
-        if let Err(State::ConsumerError(err)) = ret {
-            assert_eq!("consumer error", err.description());
-            assert_eq!("parse inst error", format!("{}", err));
-        } else {
-            assert!(false);
-        }
+        assert_eq!("consumer error: parse inst error", format!("{}", ret.unwrap_err()));
     }
 
     #[test]

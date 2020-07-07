@@ -75,14 +75,7 @@ pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>) -> TokenSt
             }
         }
 
-        impl error::Error for Error {
-            fn description(&self) -> &str {
-                match *self {
-                    Error::StreamExpected(_) => "expected more bytes in the stream",
-                    _ => "unknown operand value for the given kind",
-                }
-            }
-        }
+        impl error::Error for Error {}
     }
 }
 
