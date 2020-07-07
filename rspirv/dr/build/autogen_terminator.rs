@@ -3,35 +3,6 @@
 // DO NOT MODIFY!
 
 impl Builder {
-    #[doc = "Appends an OpPhi instruction and ends the current block."]
-    pub fn phi<T: AsRef<[(spirv::Word, spirv::Word)]>>(
-        &mut self,
-        result_type: spirv::Word,
-        variable_parent: T,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), None, vec![]);
-        for v in variable_parent.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(v.0));
-            inst.operands.push(dr::Operand::IdRef(v.1));
-        }
-        self.end_block(inst)
-    }
-    #[doc = "Insert an OpPhi instruction and ends the current block."]
-    pub fn insert_phi<T: AsRef<[(spirv::Word, spirv::Word)]>>(
-        &mut self,
-        insert_point: InsertPoint,
-        result_type: spirv::Word,
-        variable_parent: T,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), None, vec![]);
-        for v in variable_parent.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(v.0));
-            inst.operands.push(dr::Operand::IdRef(v.1));
-        }
-        self.insert_end_block(insert_point, inst)
-    }
     #[doc = "Appends an OpLoopMerge instruction and ends the current block."]
     pub fn loop_merge<T: AsRef<[dr::Operand]>>(
         &mut self,
