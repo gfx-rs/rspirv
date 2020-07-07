@@ -424,10 +424,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             quote! {
                 #[doc = #comment]
                 pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<spirv::Word> {
-                    let _id = match result_id {
-                        Some(v) => v,
-                        None => self.id(),
-                    };
+                    let _id = result_id.unwrap_or_else(|| self.id());
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
@@ -438,10 +435,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
 
                 #[doc = #insert_comment]
                 pub fn #insert_name#generic(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<spirv::Word> {
-                    let _id = match result_id {
-                        Some(v) => v,
-                        None => self.id(),
-                    };
+                    let _id = result_id.unwrap_or_else(|| self.id());
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);

@@ -27,10 +27,7 @@ impl Builder {
         coordinate: spirv::Word,
         sample: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageTexelPointer,
@@ -55,10 +52,7 @@ impl Builder {
         coordinate: spirv::Word,
         sample: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageTexelPointer,
@@ -82,10 +76,7 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Load,
@@ -111,10 +102,7 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Load,
@@ -185,10 +173,7 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AccessChain,
@@ -211,10 +196,7 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AccessChain,
@@ -236,10 +218,7 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::InBoundsAccessChain,
@@ -262,10 +241,7 @@ impl Builder {
         base: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::InBoundsAccessChain,
@@ -288,10 +264,7 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrAccessChain,
@@ -315,10 +288,7 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrAccessChain,
@@ -340,10 +310,7 @@ impl Builder {
         structure: spirv::Word,
         array_member: u32,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ArrayLength,
@@ -366,10 +333,7 @@ impl Builder {
         structure: spirv::Word,
         array_member: u32,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ArrayLength,
@@ -390,10 +354,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GenericPtrMemSemantics,
@@ -412,10 +373,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GenericPtrMemSemantics,
@@ -435,10 +393,7 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::InBoundsPtrAccessChain,
@@ -462,10 +417,7 @@ impl Builder {
         element: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::InBoundsPtrAccessChain,
@@ -487,10 +439,7 @@ impl Builder {
         vector: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorExtractDynamic,
@@ -510,10 +459,7 @@ impl Builder {
         vector: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorExtractDynamic,
@@ -533,10 +479,7 @@ impl Builder {
         component: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorInsertDynamic,
@@ -561,10 +504,7 @@ impl Builder {
         component: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorInsertDynamic,
@@ -588,10 +528,7 @@ impl Builder {
         vector_2: spirv::Word,
         components: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorShuffle,
@@ -615,10 +552,7 @@ impl Builder {
         vector_2: spirv::Word,
         components: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorShuffle,
@@ -639,10 +573,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         constituents: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CompositeConstruct,
@@ -664,10 +595,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         constituents: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CompositeConstruct,
@@ -689,10 +617,7 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CompositeExtract,
@@ -715,10 +640,7 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CompositeExtract,
@@ -741,10 +663,7 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CompositeInsert,
@@ -768,10 +687,7 @@ impl Builder {
         composite: spirv::Word,
         indexes: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CompositeInsert,
@@ -792,10 +708,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CopyObject,
@@ -814,10 +727,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CopyObject,
@@ -835,10 +745,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Transpose,
@@ -857,10 +764,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Transpose,
@@ -879,10 +783,7 @@ impl Builder {
         image: spirv::Word,
         sampler: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SampledImage,
@@ -902,10 +803,7 @@ impl Builder {
         image: spirv::Word,
         sampler: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SampledImage,
@@ -926,10 +824,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleImplicitLod,
@@ -959,10 +854,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleImplicitLod,
@@ -991,10 +883,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleExplicitLod,
@@ -1021,10 +910,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleExplicitLod,
@@ -1051,10 +937,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleDrefImplicitLod,
@@ -1086,10 +969,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleDrefImplicitLod,
@@ -1120,10 +1000,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleDrefExplicitLod,
@@ -1152,10 +1029,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleDrefExplicitLod,
@@ -1182,10 +1056,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjImplicitLod,
@@ -1215,10 +1086,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjImplicitLod,
@@ -1247,10 +1115,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjExplicitLod,
@@ -1277,10 +1142,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjExplicitLod,
@@ -1307,10 +1169,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjDrefImplicitLod,
@@ -1342,10 +1201,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjDrefImplicitLod,
@@ -1376,10 +1232,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjDrefExplicitLod,
@@ -1408,10 +1261,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleProjDrefExplicitLod,
@@ -1438,10 +1288,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageFetch,
@@ -1468,10 +1315,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageFetch,
@@ -1498,10 +1342,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageGather,
@@ -1533,10 +1374,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageGather,
@@ -1567,10 +1405,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageDrefGather,
@@ -1602,10 +1437,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageDrefGather,
@@ -1635,10 +1467,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageRead,
@@ -1665,10 +1494,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageRead,
@@ -1748,10 +1574,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Image,
@@ -1770,10 +1593,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Image,
@@ -1791,10 +1611,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryFormat,
@@ -1813,10 +1630,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryFormat,
@@ -1834,10 +1648,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryOrder,
@@ -1856,10 +1667,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryOrder,
@@ -1878,10 +1686,7 @@ impl Builder {
         image: spirv::Word,
         level_of_detail: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQuerySizeLod,
@@ -1904,10 +1709,7 @@ impl Builder {
         image: spirv::Word,
         level_of_detail: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQuerySizeLod,
@@ -1928,10 +1730,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQuerySize,
@@ -1950,10 +1749,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQuerySize,
@@ -1972,10 +1768,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryLod,
@@ -1998,10 +1791,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryLod,
@@ -2022,10 +1812,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryLevels,
@@ -2044,10 +1831,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQueryLevels,
@@ -2065,10 +1849,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQuerySamples,
@@ -2087,10 +1868,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         image: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageQuerySamples,
@@ -2108,10 +1886,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertFToU,
@@ -2130,10 +1905,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertFToU,
@@ -2151,10 +1923,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertFToS,
@@ -2173,10 +1942,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertFToS,
@@ -2194,10 +1960,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertSToF,
@@ -2216,10 +1979,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertSToF,
@@ -2237,10 +1997,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertUToF,
@@ -2259,10 +2016,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertUToF,
@@ -2280,10 +2034,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UConvert,
@@ -2302,10 +2053,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UConvert,
@@ -2323,10 +2071,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SConvert,
@@ -2345,10 +2090,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SConvert,
@@ -2366,10 +2108,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FConvert,
@@ -2388,10 +2127,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         float_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FConvert,
@@ -2409,10 +2145,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::QuantizeToF16,
@@ -2431,10 +2164,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::QuantizeToF16,
@@ -2452,10 +2182,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertPtrToU,
@@ -2474,10 +2201,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertPtrToU,
@@ -2495,10 +2219,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SatConvertSToU,
@@ -2517,10 +2238,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         signed_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SatConvertSToU,
@@ -2538,10 +2256,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SatConvertUToS,
@@ -2560,10 +2275,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         unsigned_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SatConvertUToS,
@@ -2581,10 +2293,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         integer_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertUToPtr,
@@ -2603,10 +2312,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         integer_value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConvertUToPtr,
@@ -2624,10 +2330,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrCastToGeneric,
@@ -2646,10 +2349,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrCastToGeneric,
@@ -2667,10 +2367,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GenericCastToPtr,
@@ -2689,10 +2386,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GenericCastToPtr,
@@ -2711,10 +2405,7 @@ impl Builder {
         pointer: spirv::Word,
         storage: spirv::StorageClass,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GenericCastToPtrExplicit,
@@ -2737,10 +2428,7 @@ impl Builder {
         pointer: spirv::Word,
         storage: spirv::StorageClass,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GenericCastToPtrExplicit,
@@ -2761,10 +2449,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Bitcast,
@@ -2783,10 +2468,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Bitcast,
@@ -2804,10 +2486,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SNegate,
@@ -2826,10 +2505,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SNegate,
@@ -2847,10 +2523,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FNegate,
@@ -2869,10 +2542,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FNegate,
@@ -2891,10 +2561,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAdd,
@@ -2914,10 +2581,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAdd,
@@ -2936,10 +2600,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FAdd,
@@ -2959,10 +2620,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FAdd,
@@ -2981,10 +2639,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ISub,
@@ -3004,10 +2659,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ISub,
@@ -3026,10 +2678,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FSub,
@@ -3049,10 +2698,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FSub,
@@ -3071,10 +2717,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IMul,
@@ -3094,10 +2737,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IMul,
@@ -3116,10 +2756,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FMul,
@@ -3139,10 +2776,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FMul,
@@ -3161,10 +2795,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UDiv,
@@ -3184,10 +2815,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UDiv,
@@ -3206,10 +2834,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SDiv,
@@ -3229,10 +2854,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SDiv,
@@ -3251,10 +2873,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FDiv,
@@ -3274,10 +2893,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FDiv,
@@ -3296,10 +2912,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UMod,
@@ -3319,10 +2932,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UMod,
@@ -3341,10 +2951,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SRem,
@@ -3364,10 +2971,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SRem,
@@ -3386,10 +2990,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SMod,
@@ -3409,10 +3010,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SMod,
@@ -3431,10 +3029,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FRem,
@@ -3454,10 +3049,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FRem,
@@ -3476,10 +3068,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FMod,
@@ -3499,10 +3088,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FMod,
@@ -3521,10 +3107,7 @@ impl Builder {
         vector: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorTimesScalar,
@@ -3544,10 +3127,7 @@ impl Builder {
         vector: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorTimesScalar,
@@ -3566,10 +3146,7 @@ impl Builder {
         matrix: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MatrixTimesScalar,
@@ -3589,10 +3166,7 @@ impl Builder {
         matrix: spirv::Word,
         scalar: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MatrixTimesScalar,
@@ -3611,10 +3185,7 @@ impl Builder {
         vector: spirv::Word,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorTimesMatrix,
@@ -3634,10 +3205,7 @@ impl Builder {
         vector: spirv::Word,
         matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::VectorTimesMatrix,
@@ -3656,10 +3224,7 @@ impl Builder {
         matrix: spirv::Word,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MatrixTimesVector,
@@ -3679,10 +3244,7 @@ impl Builder {
         matrix: spirv::Word,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MatrixTimesVector,
@@ -3701,10 +3263,7 @@ impl Builder {
         left_matrix: spirv::Word,
         right_matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MatrixTimesMatrix,
@@ -3727,10 +3286,7 @@ impl Builder {
         left_matrix: spirv::Word,
         right_matrix: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MatrixTimesMatrix,
@@ -3752,10 +3308,7 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::OuterProduct,
@@ -3775,10 +3328,7 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::OuterProduct,
@@ -3797,10 +3347,7 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Dot,
@@ -3820,10 +3367,7 @@ impl Builder {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Dot,
@@ -3842,10 +3386,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAddCarry,
@@ -3865,10 +3406,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAddCarry,
@@ -3887,10 +3425,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ISubBorrow,
@@ -3910,10 +3445,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ISubBorrow,
@@ -3932,10 +3464,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UMulExtended,
@@ -3955,10 +3484,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UMulExtended,
@@ -3977,10 +3503,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SMulExtended,
@@ -4000,10 +3523,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SMulExtended,
@@ -4021,10 +3541,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Any,
@@ -4043,10 +3560,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Any,
@@ -4064,10 +3578,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::All,
@@ -4086,10 +3597,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         vector: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::All,
@@ -4107,10 +3615,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsNan,
@@ -4129,10 +3634,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsNan,
@@ -4150,10 +3652,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsInf,
@@ -4172,10 +3671,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsInf,
@@ -4193,10 +3689,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsFinite,
@@ -4215,10 +3708,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsFinite,
@@ -4236,10 +3726,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsNormal,
@@ -4258,10 +3745,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsNormal,
@@ -4279,10 +3763,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SignBitSet,
@@ -4301,10 +3782,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SignBitSet,
@@ -4323,10 +3801,7 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LessOrGreater,
@@ -4346,10 +3821,7 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LessOrGreater,
@@ -4368,10 +3840,7 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Ordered,
@@ -4391,10 +3860,7 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Ordered,
@@ -4413,10 +3879,7 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Unordered,
@@ -4436,10 +3899,7 @@ impl Builder {
         x: spirv::Word,
         y: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Unordered,
@@ -4458,10 +3918,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalEqual,
@@ -4481,10 +3938,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalEqual,
@@ -4503,10 +3957,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalNotEqual,
@@ -4526,10 +3977,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalNotEqual,
@@ -4548,10 +3996,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalOr,
@@ -4571,10 +4016,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalOr,
@@ -4593,10 +4035,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalAnd,
@@ -4616,10 +4055,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalAnd,
@@ -4637,10 +4073,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalNot,
@@ -4659,10 +4092,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::LogicalNot,
@@ -4682,10 +4112,7 @@ impl Builder {
         object_1: spirv::Word,
         object_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Select,
@@ -4710,10 +4137,7 @@ impl Builder {
         object_1: spirv::Word,
         object_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Select,
@@ -4736,10 +4160,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IEqual,
@@ -4759,10 +4180,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IEqual,
@@ -4781,10 +4199,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::INotEqual,
@@ -4804,10 +4219,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::INotEqual,
@@ -4826,10 +4238,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UGreaterThan,
@@ -4849,10 +4258,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UGreaterThan,
@@ -4871,10 +4277,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SGreaterThan,
@@ -4894,10 +4297,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SGreaterThan,
@@ -4916,10 +4316,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UGreaterThanEqual,
@@ -4939,10 +4336,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UGreaterThanEqual,
@@ -4961,10 +4355,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SGreaterThanEqual,
@@ -4984,10 +4375,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SGreaterThanEqual,
@@ -5006,10 +4394,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ULessThan,
@@ -5029,10 +4414,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ULessThan,
@@ -5051,10 +4433,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SLessThan,
@@ -5074,10 +4453,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SLessThan,
@@ -5096,10 +4472,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ULessThanEqual,
@@ -5119,10 +4492,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ULessThanEqual,
@@ -5141,10 +4511,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SLessThanEqual,
@@ -5164,10 +4531,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SLessThanEqual,
@@ -5186,10 +4550,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdEqual,
@@ -5209,10 +4570,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdEqual,
@@ -5231,10 +4589,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordEqual,
@@ -5254,10 +4609,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordEqual,
@@ -5276,10 +4628,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdNotEqual,
@@ -5299,10 +4648,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdNotEqual,
@@ -5321,10 +4667,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordNotEqual,
@@ -5344,10 +4687,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordNotEqual,
@@ -5366,10 +4706,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdLessThan,
@@ -5389,10 +4726,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdLessThan,
@@ -5411,10 +4745,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordLessThan,
@@ -5434,10 +4765,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordLessThan,
@@ -5456,10 +4784,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdGreaterThan,
@@ -5479,10 +4804,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdGreaterThan,
@@ -5501,10 +4823,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordGreaterThan,
@@ -5524,10 +4843,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordGreaterThan,
@@ -5546,10 +4862,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdLessThanEqual,
@@ -5569,10 +4882,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdLessThanEqual,
@@ -5591,10 +4901,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordLessThanEqual,
@@ -5614,10 +4921,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordLessThanEqual,
@@ -5636,10 +4940,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdGreaterThanEqual,
@@ -5659,10 +4960,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FOrdGreaterThanEqual,
@@ -5681,10 +4979,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordGreaterThanEqual,
@@ -5704,10 +4999,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FUnordGreaterThanEqual,
@@ -5726,10 +5018,7 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ShiftRightLogical,
@@ -5749,10 +5038,7 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ShiftRightLogical,
@@ -5771,10 +5057,7 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ShiftRightArithmetic,
@@ -5794,10 +5077,7 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ShiftRightArithmetic,
@@ -5816,10 +5096,7 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ShiftLeftLogical,
@@ -5839,10 +5116,7 @@ impl Builder {
         base: spirv::Word,
         shift: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ShiftLeftLogical,
@@ -5861,10 +5135,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitwiseOr,
@@ -5884,10 +5155,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitwiseOr,
@@ -5906,10 +5174,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitwiseXor,
@@ -5929,10 +5194,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitwiseXor,
@@ -5951,10 +5213,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitwiseAnd,
@@ -5974,10 +5233,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitwiseAnd,
@@ -5995,10 +5251,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Not,
@@ -6017,10 +5270,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Not,
@@ -6041,10 +5291,7 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitFieldInsert,
@@ -6071,10 +5318,7 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitFieldInsert,
@@ -6099,10 +5343,7 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitFieldSExtract,
@@ -6127,10 +5368,7 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitFieldSExtract,
@@ -6154,10 +5392,7 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitFieldUExtract,
@@ -6182,10 +5417,7 @@ impl Builder {
         offset: spirv::Word,
         count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitFieldUExtract,
@@ -6207,10 +5439,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitReverse,
@@ -6229,10 +5458,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitReverse,
@@ -6250,10 +5476,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitCount,
@@ -6272,10 +5495,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         base: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BitCount,
@@ -6293,10 +5513,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdx,
@@ -6315,10 +5532,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdx,
@@ -6336,10 +5550,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdy,
@@ -6358,10 +5569,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdy,
@@ -6379,10 +5587,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Fwidth,
@@ -6401,10 +5606,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Fwidth,
@@ -6422,10 +5624,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdxFine,
@@ -6444,10 +5643,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdxFine,
@@ -6465,10 +5661,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdyFine,
@@ -6487,10 +5680,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdyFine,
@@ -6508,10 +5698,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FwidthFine,
@@ -6530,10 +5717,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FwidthFine,
@@ -6551,10 +5735,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdxCoarse,
@@ -6573,10 +5754,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdxCoarse,
@@ -6594,10 +5772,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdyCoarse,
@@ -6616,10 +5791,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DPdyCoarse,
@@ -6637,10 +5809,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FwidthCoarse,
@@ -6659,10 +5828,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         p: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FwidthCoarse,
@@ -6848,10 +6014,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicLoad,
@@ -6876,10 +6039,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicLoad,
@@ -6951,10 +6111,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicExchange,
@@ -6981,10 +6138,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicExchange,
@@ -7012,10 +6166,7 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicCompareExchange,
@@ -7046,10 +6197,7 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicCompareExchange,
@@ -7079,10 +6227,7 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicCompareExchangeWeak,
@@ -7113,10 +6258,7 @@ impl Builder {
         value: spirv::Word,
         comparator: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicCompareExchangeWeak,
@@ -7143,10 +6285,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicIIncrement,
@@ -7171,10 +6310,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicIIncrement,
@@ -7198,10 +6334,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicIDecrement,
@@ -7226,10 +6359,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicIDecrement,
@@ -7254,10 +6384,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicIAdd,
@@ -7284,10 +6411,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicIAdd,
@@ -7313,10 +6437,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicISub,
@@ -7343,10 +6464,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicISub,
@@ -7372,10 +6490,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicSMin,
@@ -7402,10 +6517,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicSMin,
@@ -7431,10 +6543,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicUMin,
@@ -7461,10 +6570,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicUMin,
@@ -7490,10 +6596,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicSMax,
@@ -7520,10 +6623,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicSMax,
@@ -7549,10 +6649,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicUMax,
@@ -7579,10 +6676,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicUMax,
@@ -7608,10 +6702,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicAnd,
@@ -7638,10 +6729,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicAnd,
@@ -7667,10 +6755,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicOr,
@@ -7697,10 +6782,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicOr,
@@ -7726,10 +6808,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicXor,
@@ -7756,10 +6835,7 @@ impl Builder {
         semantics: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicXor,
@@ -7822,10 +6898,7 @@ impl Builder {
         stride: spirv::Word,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupAsyncCopy,
@@ -7856,10 +6929,7 @@ impl Builder {
         stride: spirv::Word,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupAsyncCopy,
@@ -7928,10 +6998,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupAll,
@@ -7954,10 +7021,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupAll,
@@ -7979,10 +7043,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupAny,
@@ -8005,10 +7066,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupAny,
@@ -8031,10 +7089,7 @@ impl Builder {
         value: spirv::Word,
         local_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupBroadcast,
@@ -8059,10 +7114,7 @@ impl Builder {
         value: spirv::Word,
         local_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupBroadcast,
@@ -8086,10 +7138,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupIAdd,
@@ -8114,10 +7163,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupIAdd,
@@ -8141,10 +7187,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFAdd,
@@ -8169,10 +7212,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFAdd,
@@ -8196,10 +7236,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMin,
@@ -8224,10 +7261,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMin,
@@ -8251,10 +7285,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMin,
@@ -8279,10 +7310,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMin,
@@ -8306,10 +7334,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMin,
@@ -8334,10 +7359,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMin,
@@ -8361,10 +7383,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMax,
@@ -8389,10 +7408,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMax,
@@ -8416,10 +7432,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMax,
@@ -8444,10 +7457,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMax,
@@ -8471,10 +7481,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMax,
@@ -8499,10 +7506,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMax,
@@ -8527,10 +7531,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReadPipe,
@@ -8557,10 +7558,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReadPipe,
@@ -8586,10 +7584,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::WritePipe,
@@ -8616,10 +7611,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::WritePipe,
@@ -8647,10 +7639,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReservedReadPipe,
@@ -8681,10 +7670,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReservedReadPipe,
@@ -8714,10 +7700,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReservedWritePipe,
@@ -8748,10 +7731,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReservedWritePipe,
@@ -8779,10 +7759,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReserveReadPipePackets,
@@ -8809,10 +7786,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReserveReadPipePackets,
@@ -8838,10 +7812,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReserveWritePipePackets,
@@ -8868,10 +7839,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReserveWritePipePackets,
@@ -8988,10 +7956,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         reserve_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsValidReserveId,
@@ -9010,10 +7975,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         reserve_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsValidReserveId,
@@ -9033,10 +7995,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetNumPipePackets,
@@ -9061,10 +8020,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetNumPipePackets,
@@ -9088,10 +8044,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetMaxPipePackets,
@@ -9116,10 +8069,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetMaxPipePackets,
@@ -9145,10 +8095,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupReserveReadPipePackets,
@@ -9177,10 +8124,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupReserveReadPipePackets,
@@ -9208,10 +8152,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupReserveWritePipePackets,
@@ -9240,10 +8181,7 @@ impl Builder {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupReserveWritePipePackets,
@@ -9372,10 +8310,7 @@ impl Builder {
         wait_events: spirv::Word,
         ret_event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EnqueueMarker,
@@ -9402,10 +8337,7 @@ impl Builder {
         wait_events: spirv::Word,
         ret_event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EnqueueMarker,
@@ -9438,10 +8370,7 @@ impl Builder {
         param_align: spirv::Word,
         local_size: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EnqueueKernel,
@@ -9484,10 +8413,7 @@ impl Builder {
         param_align: spirv::Word,
         local_size: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::EnqueueKernel,
@@ -9523,10 +8449,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelNDrangeSubGroupCount,
@@ -9555,10 +8478,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelNDrangeSubGroupCount,
@@ -9586,10 +8506,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelNDrangeMaxSubGroupSize,
@@ -9618,10 +8535,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelNDrangeMaxSubGroupSize,
@@ -9648,10 +8562,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelWorkGroupSize,
@@ -9678,10 +8589,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelWorkGroupSize,
@@ -9707,10 +8615,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelPreferredWorkGroupSizeMultiple,
@@ -9737,10 +8642,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelPreferredWorkGroupSizeMultiple,
@@ -9818,10 +8720,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CreateUserEvent,
@@ -9839,10 +8738,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CreateUserEvent,
@@ -9860,10 +8756,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsValidEvent,
@@ -9882,10 +8775,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         event: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsValidEvent,
@@ -9978,10 +8868,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetDefaultQueue,
@@ -9999,10 +8886,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetDefaultQueue,
@@ -10022,10 +8906,7 @@ impl Builder {
         local_work_size: spirv::Word,
         global_work_offset: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BuildNDRange,
@@ -10050,10 +8931,7 @@ impl Builder {
         local_work_size: spirv::Word,
         global_work_offset: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::BuildNDRange,
@@ -10078,10 +8956,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleImplicitLod,
@@ -10111,10 +8986,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleImplicitLod,
@@ -10143,10 +9015,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleExplicitLod,
@@ -10173,10 +9042,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleExplicitLod,
@@ -10203,10 +9069,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleDrefImplicitLod,
@@ -10238,10 +9101,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleDrefImplicitLod,
@@ -10272,10 +9132,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleDrefExplicitLod,
@@ -10304,10 +9161,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleDrefExplicitLod,
@@ -10334,10 +9188,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjImplicitLod,
@@ -10367,10 +9218,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjImplicitLod,
@@ -10399,10 +9247,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjExplicitLod,
@@ -10429,10 +9274,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjExplicitLod,
@@ -10459,10 +9301,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjDrefImplicitLod,
@@ -10494,10 +9333,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjDrefImplicitLod,
@@ -10528,10 +9364,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjDrefExplicitLod,
@@ -10560,10 +9393,7 @@ impl Builder {
         image_operands: spirv::ImageOperands,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseSampleProjDrefExplicitLod,
@@ -10590,10 +9420,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseFetch,
@@ -10620,10 +9447,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseFetch,
@@ -10650,10 +9474,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseGather,
@@ -10685,10 +9506,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseGather,
@@ -10719,10 +9537,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseDrefGather,
@@ -10754,10 +9569,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseDrefGather,
@@ -10784,10 +9596,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         resident_code: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseTexelsResident,
@@ -10806,10 +9615,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         resident_code: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseTexelsResident,
@@ -10829,10 +9635,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicFlagTestAndSet,
@@ -10857,10 +9660,7 @@ impl Builder {
         memory: spirv::Word,
         semantics: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AtomicFlagTestAndSet,
@@ -10928,10 +9728,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseRead,
@@ -10958,10 +9755,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSparseRead,
@@ -10984,10 +9778,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SizeOf,
@@ -11006,10 +9797,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SizeOf,
@@ -11029,10 +9817,7 @@ impl Builder {
         packet_alignment: u32,
         capacity: u32,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConstantPipeStorage,
@@ -11057,10 +9842,7 @@ impl Builder {
         packet_alignment: u32,
         capacity: u32,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ConstantPipeStorage,
@@ -11082,10 +9864,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pipe_storage: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CreatePipeFromPipeStorage,
@@ -11104,10 +9883,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         pipe_storage: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CreatePipeFromPipeStorage,
@@ -11129,10 +9905,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelLocalSizeForSubgroupCount,
@@ -11161,10 +9934,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelLocalSizeForSubgroupCount,
@@ -11191,10 +9961,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelMaxNumSubgroups,
@@ -11221,10 +9988,7 @@ impl Builder {
         param_size: spirv::Word,
         param_align: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GetKernelMaxNumSubgroups,
@@ -11247,10 +10011,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         subgroup_count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::NamedBarrierInitialize,
@@ -11269,10 +10030,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         subgroup_count: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::NamedBarrierInitialize,
@@ -11333,10 +10091,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformElect,
@@ -11355,10 +10110,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformElect,
@@ -11377,10 +10129,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformAll,
@@ -11403,10 +10152,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformAll,
@@ -11428,10 +10174,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformAny,
@@ -11454,10 +10197,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformAny,
@@ -11479,10 +10219,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformAllEqual,
@@ -11502,10 +10239,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformAllEqual,
@@ -11525,10 +10259,7 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBroadcast,
@@ -11553,10 +10284,7 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBroadcast,
@@ -11579,10 +10307,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBroadcastFirst,
@@ -11602,10 +10327,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBroadcastFirst,
@@ -11624,10 +10346,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallot,
@@ -11650,10 +10369,7 @@ impl Builder {
         execution: spirv::Word,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallot,
@@ -11675,10 +10391,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformInverseBallot,
@@ -11698,10 +10411,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformInverseBallot,
@@ -11721,10 +10431,7 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotBitExtract,
@@ -11749,10 +10456,7 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotBitExtract,
@@ -11776,10 +10480,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotBitCount,
@@ -11804,10 +10505,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotBitCount,
@@ -11830,10 +10528,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotFindLSB,
@@ -11853,10 +10548,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotFindLSB,
@@ -11875,10 +10567,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotFindMSB,
@@ -11898,10 +10587,7 @@ impl Builder {
         execution: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBallotFindMSB,
@@ -11921,10 +10607,7 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffle,
@@ -11949,10 +10632,7 @@ impl Builder {
         value: spirv::Word,
         id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffle,
@@ -11976,10 +10656,7 @@ impl Builder {
         value: spirv::Word,
         mask: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffleXor,
@@ -12004,10 +10681,7 @@ impl Builder {
         value: spirv::Word,
         mask: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffleXor,
@@ -12031,10 +10705,7 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffleUp,
@@ -12059,10 +10730,7 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffleUp,
@@ -12086,10 +10754,7 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffleDown,
@@ -12114,10 +10779,7 @@ impl Builder {
         value: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformShuffleDown,
@@ -12142,10 +10804,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformIAdd,
@@ -12175,10 +10834,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformIAdd,
@@ -12207,10 +10863,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFAdd,
@@ -12240,10 +10893,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFAdd,
@@ -12272,10 +10922,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformIMul,
@@ -12305,10 +10952,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformIMul,
@@ -12337,10 +10981,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFMul,
@@ -12370,10 +11011,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFMul,
@@ -12402,10 +11040,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformSMin,
@@ -12435,10 +11070,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformSMin,
@@ -12467,10 +11099,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformUMin,
@@ -12500,10 +11129,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformUMin,
@@ -12532,10 +11158,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFMin,
@@ -12565,10 +11188,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFMin,
@@ -12597,10 +11217,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformSMax,
@@ -12630,10 +11247,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformSMax,
@@ -12662,10 +11276,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformUMax,
@@ -12695,10 +11306,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformUMax,
@@ -12727,10 +11335,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFMax,
@@ -12760,10 +11365,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformFMax,
@@ -12792,10 +11394,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBitwiseAnd,
@@ -12825,10 +11424,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBitwiseAnd,
@@ -12857,10 +11453,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBitwiseOr,
@@ -12890,10 +11483,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBitwiseOr,
@@ -12922,10 +11512,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBitwiseXor,
@@ -12955,10 +11542,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformBitwiseXor,
@@ -12987,10 +11571,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformLogicalAnd,
@@ -13020,10 +11601,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformLogicalAnd,
@@ -13052,10 +11630,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformLogicalOr,
@@ -13085,10 +11660,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformLogicalOr,
@@ -13117,10 +11689,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformLogicalXor,
@@ -13150,10 +11719,7 @@ impl Builder {
         value: spirv::Word,
         cluster_size: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformLogicalXor,
@@ -13181,10 +11747,7 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformQuadBroadcast,
@@ -13209,10 +11772,7 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformQuadBroadcast,
@@ -13236,10 +11796,7 @@ impl Builder {
         value: spirv::Word,
         direction: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformQuadSwap,
@@ -13264,10 +11821,7 @@ impl Builder {
         value: spirv::Word,
         direction: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformQuadSwap,
@@ -13289,10 +11843,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CopyLogical,
@@ -13311,10 +11862,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CopyLogical,
@@ -13333,10 +11881,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrEqual,
@@ -13356,10 +11901,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrEqual,
@@ -13378,10 +11920,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrNotEqual,
@@ -13401,10 +11940,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrNotEqual,
@@ -13423,10 +11959,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrDiff,
@@ -13446,10 +11979,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::PtrDiff,
@@ -13467,10 +11997,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupBallotKHR,
@@ -13489,10 +12016,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupBallotKHR,
@@ -13510,10 +12034,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupFirstInvocationKHR,
@@ -13532,10 +12053,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupFirstInvocationKHR,
@@ -13553,10 +12071,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupAllKHR,
@@ -13575,10 +12090,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupAllKHR,
@@ -13596,10 +12108,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupAnyKHR,
@@ -13618,10 +12127,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupAnyKHR,
@@ -13639,10 +12145,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupAllEqualKHR,
@@ -13661,10 +12164,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         predicate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupAllEqualKHR,
@@ -13683,10 +12183,7 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupReadInvocationKHR,
@@ -13706,10 +12203,7 @@ impl Builder {
         value: spirv::Word,
         index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupReadInvocationKHR,
@@ -13882,10 +12376,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryProceedKHR,
@@ -13904,10 +12395,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryProceedKHR,
@@ -13926,10 +12414,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionTypeKHR,
@@ -13952,10 +12437,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionTypeKHR,
@@ -13978,10 +12460,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupIAddNonUniformAMD,
@@ -14006,10 +12485,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupIAddNonUniformAMD,
@@ -14033,10 +12509,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFAddNonUniformAMD,
@@ -14061,10 +12534,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFAddNonUniformAMD,
@@ -14088,10 +12558,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMinNonUniformAMD,
@@ -14116,10 +12583,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMinNonUniformAMD,
@@ -14143,10 +12607,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMinNonUniformAMD,
@@ -14171,10 +12632,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMinNonUniformAMD,
@@ -14198,10 +12656,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMinNonUniformAMD,
@@ -14226,10 +12681,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMinNonUniformAMD,
@@ -14253,10 +12705,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMaxNonUniformAMD,
@@ -14281,10 +12730,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupFMaxNonUniformAMD,
@@ -14308,10 +12754,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMaxNonUniformAMD,
@@ -14336,10 +12779,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupUMaxNonUniformAMD,
@@ -14363,10 +12803,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMaxNonUniformAMD,
@@ -14391,10 +12828,7 @@ impl Builder {
         operation: spirv::GroupOperation,
         x: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupSMaxNonUniformAMD,
@@ -14417,10 +12851,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FragmentMaskFetchAMD,
@@ -14440,10 +12871,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FragmentMaskFetchAMD,
@@ -14463,10 +12891,7 @@ impl Builder {
         coordinate: spirv::Word,
         fragment_index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FragmentFetchAMD,
@@ -14491,10 +12916,7 @@ impl Builder {
         coordinate: spirv::Word,
         fragment_index: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::FragmentFetchAMD,
@@ -14516,10 +12938,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReadClockKHR,
@@ -14538,10 +12957,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         execution: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReadClockKHR,
@@ -14564,10 +12980,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleFootprintNV,
@@ -14601,10 +13014,7 @@ impl Builder {
         image_operands: Option<spirv::ImageOperands>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ImageSampleFootprintNV,
@@ -14632,10 +13042,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformPartitionNV,
@@ -14654,10 +13061,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::GroupNonUniformPartitionNV,
@@ -14715,10 +13119,7 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReportIntersectionNV,
@@ -14738,10 +13139,7 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReportIntersectionNV,
@@ -14760,10 +13158,7 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReportIntersectionKHR,
@@ -14783,10 +13178,7 @@ impl Builder {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReportIntersectionKHR,
@@ -15092,10 +13484,7 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixLoadNV,
@@ -15127,10 +13516,7 @@ impl Builder {
         memory_access: Option<spirv::MemoryAccess>,
         additional_params: T,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixLoadNV,
@@ -15220,10 +13606,7 @@ impl Builder {
         b: spirv::Word,
         c: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixMulAddNV,
@@ -15248,10 +13631,7 @@ impl Builder {
         b: spirv::Word,
         c: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixMulAddNV,
@@ -15273,10 +13653,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ty: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixLengthNV,
@@ -15295,10 +13672,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ty: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::CooperativeMatrixLengthNV,
@@ -15372,10 +13746,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsHelperInvocationEXT,
@@ -15393,10 +13764,7 @@ impl Builder {
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IsHelperInvocationEXT,
@@ -15415,10 +13783,7 @@ impl Builder {
         data: spirv::Word,
         invocation_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleINTEL,
@@ -15438,10 +13803,7 @@ impl Builder {
         data: spirv::Word,
         invocation_id: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleINTEL,
@@ -15461,10 +13823,7 @@ impl Builder {
         next: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleDownINTEL,
@@ -15489,10 +13848,7 @@ impl Builder {
         next: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleDownINTEL,
@@ -15516,10 +13872,7 @@ impl Builder {
         current: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleUpINTEL,
@@ -15544,10 +13897,7 @@ impl Builder {
         current: spirv::Word,
         delta: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleUpINTEL,
@@ -15570,10 +13920,7 @@ impl Builder {
         data: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleXorINTEL,
@@ -15593,10 +13940,7 @@ impl Builder {
         data: spirv::Word,
         value: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupShuffleXorINTEL,
@@ -15614,10 +13958,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ptr: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupBlockReadINTEL,
@@ -15636,10 +13977,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ptr: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupBlockReadINTEL,
@@ -15691,10 +14029,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageBlockReadINTEL,
@@ -15714,10 +14049,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageBlockReadINTEL,
@@ -15781,10 +14113,7 @@ impl Builder {
         width: spirv::Word,
         height: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageMediaBlockReadINTEL,
@@ -15811,10 +14140,7 @@ impl Builder {
         width: spirv::Word,
         height: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SubgroupImageMediaBlockReadINTEL,
@@ -15888,10 +14214,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UCountLeadingZerosINTEL,
@@ -15910,10 +14233,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UCountLeadingZerosINTEL,
@@ -15931,10 +14251,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UCountTrailingZerosINTEL,
@@ -15953,10 +14270,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         operand: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UCountTrailingZerosINTEL,
@@ -15975,10 +14289,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AbsISubINTEL,
@@ -15998,10 +14309,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AbsISubINTEL,
@@ -16020,10 +14328,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AbsUSubINTEL,
@@ -16043,10 +14348,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::AbsUSubINTEL,
@@ -16065,10 +14367,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAddSatINTEL,
@@ -16088,10 +14387,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAddSatINTEL,
@@ -16110,10 +14406,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UAddSatINTEL,
@@ -16133,10 +14426,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UAddSatINTEL,
@@ -16155,10 +14445,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAverageINTEL,
@@ -16178,10 +14465,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAverageINTEL,
@@ -16200,10 +14484,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UAverageINTEL,
@@ -16223,10 +14504,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UAverageINTEL,
@@ -16245,10 +14523,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAverageRoundedINTEL,
@@ -16268,10 +14543,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IAverageRoundedINTEL,
@@ -16290,10 +14562,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UAverageRoundedINTEL,
@@ -16313,10 +14582,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UAverageRoundedINTEL,
@@ -16335,10 +14601,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ISubSatINTEL,
@@ -16358,10 +14621,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ISubSatINTEL,
@@ -16380,10 +14640,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::USubSatINTEL,
@@ -16403,10 +14660,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::USubSatINTEL,
@@ -16425,10 +14679,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IMul32x16INTEL,
@@ -16448,10 +14699,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::IMul32x16INTEL,
@@ -16470,10 +14718,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UMul32x16INTEL,
@@ -16493,10 +14738,7 @@ impl Builder {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UMul32x16INTEL,
@@ -16514,10 +14756,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetRayTMinKHR,
@@ -16536,10 +14775,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetRayTMinKHR,
@@ -16557,10 +14793,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetRayFlagsKHR,
@@ -16579,10 +14812,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetRayFlagsKHR,
@@ -16601,10 +14831,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionTKHR,
@@ -16627,10 +14854,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionTKHR,
@@ -16652,10 +14876,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionInstanceCustomIndexKHR,
@@ -16678,10 +14899,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionInstanceCustomIndexKHR,
@@ -16703,10 +14921,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionInstanceIdKHR,
@@ -16729,10 +14944,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionInstanceIdKHR,
@@ -16754,10 +14966,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR,
@@ -16780,10 +14989,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR,
@@ -16805,10 +15011,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionGeometryIndexKHR,
@@ -16831,10 +15034,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionGeometryIndexKHR,
@@ -16856,10 +15056,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionPrimitiveIndexKHR,
@@ -16882,10 +15079,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionPrimitiveIndexKHR,
@@ -16907,10 +15101,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionBarycentricsKHR,
@@ -16933,10 +15124,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionBarycentricsKHR,
@@ -16958,10 +15146,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionFrontFaceKHR,
@@ -16984,10 +15169,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionFrontFaceKHR,
@@ -17008,10 +15190,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionCandidateAABBOpaqueKHR,
@@ -17030,10 +15209,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionCandidateAABBOpaqueKHR,
@@ -17052,10 +15228,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionObjectRayDirectionKHR,
@@ -17078,10 +15251,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionObjectRayDirectionKHR,
@@ -17103,10 +15273,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionObjectRayOriginKHR,
@@ -17129,10 +15296,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionObjectRayOriginKHR,
@@ -17153,10 +15317,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetWorldRayDirectionKHR,
@@ -17175,10 +15336,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetWorldRayDirectionKHR,
@@ -17196,10 +15354,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetWorldRayOriginKHR,
@@ -17218,10 +15373,7 @@ impl Builder {
         result_id: Option<spirv::Word>,
         ray_query: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetWorldRayOriginKHR,
@@ -17240,10 +15392,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionObjectToWorldKHR,
@@ -17266,10 +15415,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionObjectToWorldKHR,
@@ -17291,10 +15437,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionWorldToObjectKHR,
@@ -17317,10 +15460,7 @@ impl Builder {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        let _id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
+        let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::RayQueryGetIntersectionWorldToObjectKHR,
