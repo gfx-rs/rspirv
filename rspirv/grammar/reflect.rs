@@ -66,6 +66,7 @@ pub fn is_type(opcode: spirv::Op) -> bool {
         spirv::Op::TypeReserveId |
         spirv::Op::TypeQueue |
         spirv::Op::TypePipe |
+        spirv::Op::TypeAccelerationStructureKHR |
         spirv::Op::TypeForwardPointer => true,
         _ => false,
     }
