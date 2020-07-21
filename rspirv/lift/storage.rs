@@ -1,15 +1,12 @@
-use crate::{
-    sr::storage::{Storage, Token},
-};
+use crate::sr::storage::{Storage, Token};
 
 use std::{
     borrow::Borrow,
-    collections::hash_map::{Entry, VacantEntry, HashMap},
+    collections::hash_map::{Entry, HashMap, VacantEntry},
     hash::BuildHasherDefault,
 };
 
 use fxhash::FxHasher;
-
 
 /// A wrapper around `Storage` that tracks associated SPIR-V <id>
 /// with the elements, allowing the lookup of `Token<T>` by <id>.
@@ -30,15 +27,15 @@ impl<T, L: Borrow<Token<T>>> LiftStorage<T, L> {
         self.values
     }
 
-    pub(in crate::lift) fn lookup(
-        &self, id: spirv::Word
-    ) -> (&T, &L) {
+    pub(in crate::lift) fn lookup(&self, id: spirv::Word) -> (&T, &L) {
         let info = &self.lookup[&id];
         (&self.values[*info.borrow()], info)
     }
 
     pub(in crate::lift) fn append(
-        &mut self, id: spirv::Word, value: T
+        &mut self,
+        id: spirv::Word,
+        value: T,
     ) -> (Token<T>, VacantEntry<spirv::Word, L>) {
         let token = self.values.append(value);
         match self.lookup.entry(id) {
@@ -49,17 +46,13 @@ impl<T, L: Borrow<Token<T>>> LiftStorage<T, L> {
 }
 
 impl<T> LiftStorage<T> {
-    pub(in crate::lift) fn append_id(
-        &mut self, id: spirv::Word, value: T
-    ) -> Token<T> {
+    pub(in crate::lift) fn append_id(&mut self, id: spirv::Word, value: T) -> Token<T> {
         let (token, entry) = self.append(id, value);
         entry.insert(token);
         token
     }
 
-    pub(in crate::lift) fn lookup_token(
-        &self, id: spirv::Word
-    ) -> Token<T> {
+    pub(in crate::lift) fn lookup_token(&self, id: spirv::Word) -> Token<T> {
         self.lookup[&id]
     }
 }

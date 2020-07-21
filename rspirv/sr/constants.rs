@@ -28,40 +28,35 @@ pub enum Constant {
 impl Constant {
     pub fn is_bool_constant(&self) -> bool {
         match self {
-            Constant::Bool { .. } |
-            Constant::SpecBool { .. } => true,
+            Constant::Bool { .. } | Constant::SpecBool { .. } => true,
             _ => false,
         }
     }
 
     pub fn is_int_constant(&self) -> bool {
         match self {
-            Constant::Int { .. } |
-            Constant::SpecInt { .. } => true,
+            Constant::Int { .. } | Constant::SpecInt { .. } => true,
             _ => false,
         }
     }
 
     pub fn is_uint_constant(&self) -> bool {
         match self {
-            Constant::UInt { .. } |
-            Constant::SpecUInt { .. } => true,
+            Constant::UInt { .. } | Constant::SpecUInt { .. } => true,
             _ => false,
         }
     }
 
     pub fn is_float_constant(&self) -> bool {
         match self {
-            Constant::Float { .. } |
-            Constant::SpecFloat { .. } => true,
+            Constant::Float { .. } | Constant::SpecFloat { .. } => true,
             _ => false,
         }
     }
 
     pub fn is_composite_constant(&self) -> bool {
         match self {
-            Constant::Composite { .. } |
-            Constant::SpecComposite { .. } => true,
+            Constant::Composite { .. } | Constant::SpecComposite { .. } => true,
             _ => false,
         }
     }
@@ -82,12 +77,12 @@ impl Constant {
 
     pub fn is_spec_constant(&self) -> bool {
         match self {
-            Constant::SpecBool { .. } |
-            Constant::SpecInt { .. } |
-            Constant::SpecUInt { .. } |
-            Constant::SpecFloat { .. } |
-            Constant::SpecComposite { .. } |
-            Constant::SpecOp { .. } => true,
+            Constant::SpecBool { .. }
+            | Constant::SpecInt { .. }
+            | Constant::SpecUInt { .. }
+            | Constant::SpecFloat { .. }
+            | Constant::SpecComposite { .. }
+            | Constant::SpecOp { .. } => true,
             _ => false,
         }
     }

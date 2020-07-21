@@ -16,11 +16,15 @@ https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructio
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
     let symbol = kind.to_snake_case();
-    format!("[{text}]({link})",
-            text = kind,
-            link = format!("https://www.khronos.org/registry/spir-v/\
+    format!(
+        "[{text}]({link})",
+        text = kind,
+        link = format!(
+            "https://www.khronos.org/registry/spir-v/\
                             specs/unified1/SPIRV.html#_a_id_{}_a_{}",
-                           symbol, symbol))
+            symbol, symbol
+        )
+    )
 }
 
 fn value_enum_attribute() -> TokenStream {
@@ -60,7 +64,12 @@ fn from_primitive_impl(from_prim: &[TokenStream], kind: &proc_macro2::Ident) -> 
 fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let elements = grammar.enumerants.iter().map(|enumerant| {
         // Special treatment for "NaN"
-        let symbol = as_ident(&enumerant.symbol.to_shouty_snake_case().replace("NA_N", "NAN"));
+        let symbol = as_ident(
+            &enumerant
+                .symbol
+                .to_shouty_snake_case()
+                .replace("NA_N", "NAN"),
+        );
         let value = enumerant.value;
         quote! {
             const #symbol = #value;
@@ -113,7 +122,10 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             enumerants.push(quote! { #name = #number });
             from_prim_list.push(quote! { #number => #kind::#name });
 
-            capability_clauses.entry(&e.capabilities).or_insert_with(Vec::new).push(name);
+            capability_clauses
+                .entry(&e.capabilities)
+                .or_insert_with(Vec::new)
+                .push(name);
         }
     }
 
@@ -166,7 +178,9 @@ fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<TokenStream> {
 /// Returns the generated SPIR-V header.
 pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     // constants and types.
-    let magic_number = format!("{:#010X}", grammar.magic_number).parse::<TokenStream>().unwrap();
+    let magic_number = format!("{:#010X}", grammar.magic_number)
+        .parse::<TokenStream>()
+        .unwrap();
     let major_version = grammar.major_version;
     let minor_version = grammar.minor_version;
     let revision = grammar.revision;
@@ -195,7 +209,7 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
             from_prim_list.push(quote! { #opcode => Op::#opname });
             seen_discriminator.insert(opcode, opname.clone());
         }
-    };
+    }
 
     let comment = format!("SPIR-V {} opcodes", get_spec_link("instructions"));
     let attribute = value_enum_attribute();
@@ -235,13 +249,20 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         quote! { #opname = #opcode }
     });
 
-    let from_prim_list = grammar.instructions.iter().map(|inst| {
-        let opname = as_ident(&inst.opname);
-        let opcode = inst.opcode;
-        quote! { #opcode => GLOp::#opname }
-    }).collect::<Vec<_>>();
+    let from_prim_list = grammar
+        .instructions
+        .iter()
+        .map(|inst| {
+            let opname = as_ident(&inst.opname);
+            let opcode = inst.opcode;
+            quote! { #opcode => GLOp::#opname }
+        })
+        .collect::<Vec<_>>();
 
-    let comment = format!("[GLSL.std.450]({}) extended instruction opcode", GLSL_STD_450_SPEC_LINK);
+    let comment = format!(
+        "[GLSL.std.450]({}) extended instruction opcode",
+        GLSL_STD_450_SPEC_LINK
+    );
     let attribute = value_enum_attribute();
     let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("GLOp"));
 
@@ -266,13 +287,20 @@ pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStre
         quote! { #opname = #opcode }
     });
 
-    let from_prim_list = grammar.instructions.iter().map(|inst| {
-        let opname = as_ident(&inst.opname);
-        let opcode = inst.opcode;
-        quote! { #opcode => CLOp::#opname }
-    }).collect::<Vec<_>>();
+    let from_prim_list = grammar
+        .instructions
+        .iter()
+        .map(|inst| {
+            let opname = as_ident(&inst.opname);
+            let opcode = inst.opcode;
+            quote! { #opcode => CLOp::#opname }
+        })
+        .collect::<Vec<_>>();
 
-    let comment = format!("[OpenCL.std]({}) extended instruction opcode", OPENCL_STD_SPEC_LINK);
+    let comment = format!(
+        "[OpenCL.std]({}) extended instruction opcode",
+        OPENCL_STD_SPEC_LINK
+    );
     let attribute = value_enum_attribute();
     let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("CLOp"));
 

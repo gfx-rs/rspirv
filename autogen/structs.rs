@@ -1,5 +1,4 @@
 /// Rust structs for deserializing the SPIR-V JSON grammar.
-
 use serde::de;
 use serde_derive::*;
 use std::{convert::TryInto, fmt, result, str};
@@ -68,7 +67,6 @@ pub struct ExtInstSetGrammar {
     pub instructions: Vec<Instruction>,
 }
 
-
 fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Error> {
     struct NumOrStr;
 
@@ -93,11 +91,11 @@ fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Err
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
 pub enum Quantifier {
-    #[serde(rename="")]
+    #[serde(rename = "")]
     One,
-    #[serde(rename="?")]
+    #[serde(rename = "?")]
     ZeroOrOne,
-    #[serde(rename="*")]
+    #[serde(rename = "*")]
     ZeroOrMore,
 }
 
@@ -110,20 +108,20 @@ impl Default for Quantifier {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
 pub enum Class {
     Annotation,
-    #[serde(rename="Control-Flow")]
+    #[serde(rename = "Control-Flow")]
     Branch,
-    #[serde(rename="Constant-Creation")]
+    #[serde(rename = "Constant-Creation")]
     Constant,
     Debug,
     DebugLine,
-    #[serde(rename="Extension")]
+    #[serde(rename = "Extension")]
     ExtensionDecl,
-    #[serde(rename="Function")]
+    #[serde(rename = "Function")]
     FunctionStruct,
-    #[serde(rename="Mode-Setting")]
+    #[serde(rename = "Mode-Setting")]
     ModeSetting,
     Terminator,
-    #[serde(rename="Type-Declaration")]
+    #[serde(rename = "Type-Declaration")]
     Type,
     Variable,
 
@@ -135,7 +133,7 @@ pub enum Class {
     Image,
     Conversion,
     Arithmetic,
-    #[serde(rename="Relational_and_Logical")]
+    #[serde(rename = "Relational_and_Logical")]
     RelationalAndLogical,
     Bit,
     Derivative,
@@ -144,13 +142,13 @@ pub enum Class {
     Atomic,
     Group,
     Pipe,
-    #[serde(rename="Device-Side_Enqueue")]
+    #[serde(rename = "Device-Side_Enqueue")]
     DeviceSideEnqueue,
-    #[serde(rename="Non-Uniform")]
+    #[serde(rename = "Non-Uniform")]
     NonUniform,
     Reserved,
-    #[serde(rename="@exclude")]
-    Exclude
+    #[serde(rename = "@exclude")]
+    Exclude,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]

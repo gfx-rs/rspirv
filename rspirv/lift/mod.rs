@@ -6,13 +6,7 @@ mod storage;
 use self::storage::LiftStorage;
 use crate::{
     dr,
-    sr::{
-        instructions,
-        module,
-        ops,
-        storage::Token,
-        Constant, StructMember, Type,
-    },
+    sr::{instructions, module, ops, storage::Token, Constant, StructMember, Type},
 };
 
 use spirv;
@@ -108,9 +102,9 @@ impl LiftContext {
                     if let Some(id) = inst.result_id {
                         context.types.append_id(id, value);
                     }
-                    continue
+                    continue;
                 }
-                Err(InstructionError::WrongOpcode) => {},
+                Err(InstructionError::WrongOpcode) => {}
                 Err(e) => panic!("Type lift error: {:?}", e),
             }
             match context.lift_constant(inst) {
@@ -118,19 +112,16 @@ impl LiftContext {
                     if let Some(id) = inst.result_id {
                         context.constants.append_id(id, value);
                     }
-                    continue
+                    continue;
                 }
-                Err(InstructionError::WrongOpcode) => {},
+                Err(InstructionError::WrongOpcode) => {}
                 Err(e) => panic!("Constant lift error: {:?}", e),
             }
         }
 
         for fun in module.functions.iter() {
-            let def = context.lift_function(
-                fun.def
-                    .as_ref()
-                    .ok_or(ConversionError::MissingFunction)?
-            )?;
+            let def =
+                context.lift_function(fun.def.as_ref().ok_or(ConversionError::MissingFunction)?)?;
             //TODO: lift function type instruction
 
             for block in fun.blocks.iter() {
@@ -142,13 +133,13 @@ impl LiftContext {
                             match inst.operands[0] {
                                 dr::Operand::IdRef(id) => {
                                     let (_, info) = context.ops.lookup(id);
-                                    arguments.push(info.ty
-                                        .ok_or(InstructionError::MissingResult)?
-                                    );
+                                    arguments.push(info.ty.ok_or(InstructionError::MissingResult)?);
                                 }
-                                _ => return Err(ConversionError::Instruction(
-                                    InstructionError::Operand(OperandError::Missing)
-                                )),
+                                _ => {
+                                    return Err(ConversionError::Instruction(
+                                        InstructionError::Operand(OperandError::Missing),
+                                    ))
+                                }
                             };
                         }
                         _ => {
@@ -166,9 +157,10 @@ impl LiftContext {
                 }
 
                 let terminator = context.lift_terminator(
-                    block.instructions
+                    block
+                        .instructions
                         .last()
-                        .ok_or(ConversionError::MissingTerminator)?
+                        .ok_or(ConversionError::MissingTerminator)?,
                 )?;
 
                 context.blocks.append_id(
@@ -183,8 +175,7 @@ impl LiftContext {
 
             let start_label = fun.blocks[0].label.as_ref().unwrap().result_id.unwrap();
             let start_block = context.blocks.lookup_token(start_label);
-            let blocks = mem::replace(&mut context.blocks, LiftStorage::new())
-                .unwrap();
+            let blocks = mem::replace(&mut context.blocks, LiftStorage::new()).unwrap();
 
             functions.push(module::Function {
                 control: def.function_control,
@@ -200,7 +191,8 @@ impl LiftContext {
                 Some(ref header) => header.version,
                 None => return Err(ConversionError::MissingHeader),
             },
-            capabilities: module.capabilities
+            capabilities: module
+                .capabilities
                 .iter()
                 .map(|cap| context.lift_capability(cap).map(|cap| cap.capability))
                 .collect::<Result<_, InstructionError>>()?,
@@ -226,30 +218,38 @@ impl LiftContext {
         }
     }
 
-    fn lift_constant(
-        &self, inst: &dr::Instruction
-    ) -> Result<Constant, InstructionError> {
+    fn lift_constant(&self, inst: &dr::Instruction) -> Result<Constant, InstructionError> {
         match inst.class.opcode {
             spirv::Op::ConstantTrue => Ok(Constant::Bool(true)),
             spirv::Op::ConstantFalse => Ok(Constant::Bool(false)),
             spirv::Op::Constant => {
                 match inst.result_type {
                     Some(id) => {
-                        let oper = inst.operands
+                        let oper = inst
+                            .operands
                             .first()
                             .ok_or(InstructionError::Operand(OperandError::Missing))?;
                         let (value, width) = match *self.types.lookup(id).0 {
-                            Type::Int { signedness: 0, width } => match *oper {
+                            Type::Int {
+                                signedness: 0,
+                                width,
+                            } => match *oper {
                                 dr::Operand::LiteralInt32(v) => (Constant::UInt(v), width),
-                                _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                                _ => {
+                                    return Err(InstructionError::Operand(OperandError::WrongType))
+                                }
                             },
                             Type::Int { width, .. } => match *oper {
                                 dr::Operand::LiteralInt32(v) => (Constant::Int(v as i32), width),
-                                _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                                _ => {
+                                    return Err(InstructionError::Operand(OperandError::WrongType))
+                                }
                             },
                             Type::Float { width } => match *oper {
                                 dr::Operand::LiteralFloat32(v) => (Constant::Float(v), width),
-                                _ => return Err(InstructionError::Operand(OperandError::WrongType)),
+                                _ => {
+                                    return Err(InstructionError::Operand(OperandError::WrongType))
+                                }
                             },
                             _ => return Err(InstructionError::MissingResult),
                         };
@@ -274,7 +274,7 @@ impl LiftContext {
             }
             spirv::Op::ConstantSampler => {
                 if inst.operands.len() < 3 {
-                    return Err(InstructionError::Operand(OperandError::Missing))
+                    return Err(InstructionError::Operand(OperandError::Missing));
                 }
                 Ok(Constant::Sampler {
                     addressing_mode: match inst.operands[0] {
@@ -292,7 +292,7 @@ impl LiftContext {
                 })
             }
             spirv::Op::ConstantNull => Ok(Constant::Null),
-            _ => Err(InstructionError::WrongOpcode)
+            _ => Err(InstructionError::WrongOpcode),
         }
     }
 }

@@ -95,9 +95,9 @@ impl CoreInstructionTable {
     /// Looks up the given `opcode` in the instruction table and returns
     /// a reference to the instruction grammar entry if found.
     pub fn lookup_opcode(opcode: u16) -> Option<&'static Instruction<'static>> {
-        INSTRUCTION_TABLE.iter().find(|inst| {
-            (inst.opcode as u16) == opcode
-        })
+        INSTRUCTION_TABLE
+            .iter()
+            .find(|inst| (inst.opcode as u16) == opcode)
     }
 
     /// Returns a reference to the instruction grammar entry with the given
@@ -121,9 +121,9 @@ impl GlslStd450InstructionTable {
     /// Looks up the given `opcode` in the instruction table and returns
     /// a reference to the instruction grammar entry if found.
     pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
-        GLSL_STD_450_INSTRUCTION_TABLE.iter().find(|inst| {
-            inst.opcode == opcode
-        })
+        GLSL_STD_450_INSTRUCTION_TABLE
+            .iter()
+            .find(|inst| inst.opcode == opcode)
     }
 
     /// Returns a reference to the instruction grammar entry with the given
@@ -147,9 +147,9 @@ impl OpenCLStd100InstructionTable {
     /// Looks up the given `opcode` in the instruction table and returns
     /// a reference to the instruction grammar entry if found.
     pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
-        OPENCL_STD_100_INSTRUCTION_TABLE.iter().find(|inst| {
-            inst.opcode == opcode
-        })
+        OPENCL_STD_100_INSTRUCTION_TABLE
+            .iter()
+            .find(|inst| inst.opcode == opcode)
     }
 
     /// Returns a reference to the instruction grammar entry with the given

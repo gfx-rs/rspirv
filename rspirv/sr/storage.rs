@@ -1,7 +1,4 @@
-use std::{
-    fmt,
-    marker::PhantomData,
-};
+use std::{fmt, marker::PhantomData};
 
 /// An unique index in the storage array that a token points to.
 ///
@@ -67,9 +64,7 @@ pub struct Storage<T> {
 
 impl<T> Storage<T> {
     pub fn new() -> Self {
-        Storage {
-            data: Vec::new(),
-        }
+        Storage { data: Vec::new() }
     }
 
     /// Adds a new value to the storage, returning a typed token.
@@ -84,7 +79,10 @@ impl<T> Storage<T> {
     /// Adds a value with a check for uniqueness: returns a token pointing to
     /// an existing element if its value matches the given one, or adds a new
     /// element otherwise.
-    pub fn fetch_or_append(&mut self, value: T) -> Token<T> where T: PartialEq {
+    pub fn fetch_or_append(&mut self, value: T) -> Token<T>
+    where
+        T: PartialEq,
+    {
         if let Some(index) = self.data.iter().position(|d| d == &value) {
             Token::new(index as Index)
         } else {

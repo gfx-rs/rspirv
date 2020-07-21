@@ -210,11 +210,12 @@ impl Block {
 
 impl Instruction {
     /// Creates a new `Instruction` instance.
-    pub fn new(opcode: spirv::Op,
-               result_type: Option<Word>,
-               result_id: Option<Word>,
-               operands: Vec<Operand>)
-               -> Self {
+    pub fn new(
+        opcode: spirv::Op,
+        result_type: Option<Word>,
+        result_id: Option<Word>,
+        operands: Vec<Operand>,
+    ) -> Self {
         Instruction {
             class: grammar::CoreInstructionTable::get(opcode),
             result_type,
@@ -245,43 +246,62 @@ mod tests {
 
     #[test]
     fn test_convert_from_string() {
-        assert_eq!(dr::Operand::LiteralString("wow".to_string()),
-                   dr::Operand::from("wow"));
-        assert_eq!(dr::Operand::LiteralString("wow".to_string()),
-                   dr::Operand::from("wow".to_string()));
+        assert_eq!(
+            dr::Operand::LiteralString("wow".to_string()),
+            dr::Operand::from("wow")
+        );
+        assert_eq!(
+            dr::Operand::LiteralString("wow".to_string()),
+            dr::Operand::from("wow".to_string())
+        );
     }
 
     #[test]
     fn test_convert_from_numbers() {
         assert_eq!(dr::Operand::LiteralInt32(16u32), dr::Operand::from(16u32));
-        assert_eq!(dr::Operand::LiteralInt64(128934u64),
-                   dr::Operand::from(128934u64));
-        assert_eq!(dr::Operand::LiteralFloat32(3.14f32),
-                   dr::Operand::from(3.14f32));
-        assert_eq!(dr::Operand::LiteralFloat64(10.4235f64),
-                   dr::Operand::from(10.4235f64));
+        assert_eq!(
+            dr::Operand::LiteralInt64(128934u64),
+            dr::Operand::from(128934u64)
+        );
+        assert_eq!(
+            dr::Operand::LiteralFloat32(3.14f32),
+            dr::Operand::from(3.14f32)
+        );
+        assert_eq!(
+            dr::Operand::LiteralFloat64(10.4235f64),
+            dr::Operand::from(10.4235f64)
+        );
     }
 
     #[test]
     fn test_convert_from_bit_enums() {
-        assert_eq!(dr::Operand::LoopControl(spirv::LoopControl::DONT_UNROLL |
-                                            spirv::LoopControl::UNROLL),
-                   dr::Operand::from(spirv::LoopControl::DONT_UNROLL | spirv::LoopControl::UNROLL));
-        assert_eq!(dr::Operand::MemoryAccess(spirv::MemoryAccess::NONE),
-                   dr::Operand::from(spirv::MemoryAccess::NONE));
+        assert_eq!(
+            dr::Operand::LoopControl(spirv::LoopControl::DONT_UNROLL | spirv::LoopControl::UNROLL),
+            dr::Operand::from(spirv::LoopControl::DONT_UNROLL | spirv::LoopControl::UNROLL)
+        );
+        assert_eq!(
+            dr::Operand::MemoryAccess(spirv::MemoryAccess::NONE),
+            dr::Operand::from(spirv::MemoryAccess::NONE)
+        );
     }
 
     #[test]
     fn test_convert_from_value_enums() {
-        assert_eq!(dr::Operand::BuiltIn(spirv::BuiltIn::Position),
-                   dr::Operand::from(spirv::BuiltIn::Position));
-        assert_eq!(dr::Operand::Capability(spirv::Capability::Pipes),
-                   dr::Operand::from(spirv::Capability::Pipes));
+        assert_eq!(
+            dr::Operand::BuiltIn(spirv::BuiltIn::Position),
+            dr::Operand::from(spirv::BuiltIn::Position)
+        );
+        assert_eq!(
+            dr::Operand::Capability(spirv::Capability::Pipes),
+            dr::Operand::from(spirv::Capability::Pipes)
+        );
     }
 
     #[test]
     fn test_convert_from_op() {
-        assert_eq!(dr::Operand::LiteralSpecConstantOpInteger(spirv::Op::IAdd),
-                   dr::Operand::from(spirv::Op::IAdd));
+        assert_eq!(
+            dr::Operand::LiteralSpecConstantOpInteger(spirv::Op::IAdd),
+            dr::Operand::from(spirv::Op::IAdd)
+        );
     }
 }
