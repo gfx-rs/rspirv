@@ -5,10 +5,10 @@
 //!
 //! It also provides many reflect functions.
 
-pub use self::syntax::{Instruction, ExtendedInstruction};
 pub use self::syntax::CoreInstructionTable;
 pub use self::syntax::GlslStd450InstructionTable;
 pub use self::syntax::OpenCLStd100InstructionTable;
+pub use self::syntax::{ExtendedInstruction, Instruction};
 pub use self::syntax::{LogicalOperand, OperandKind, OperandQuantifier};
 
 pub mod reflect;

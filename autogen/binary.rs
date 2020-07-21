@@ -25,13 +25,15 @@ fn get_decode_method(kind: &str) -> Ident {
 /// Returns the generated operand decoding errors for binary::Decoder by
 /// walking the given SPIR-V operand kinds `grammar`.
 pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>) -> TokenStream {
-    let kinds: Vec<&str> = grammar.iter().filter(|element| {
-        !(element.kind.starts_with("Pair") ||
-          element.kind.starts_with("Id") ||
-          element.kind.starts_with("Literal"))
-    }).map(|element| {
-        element.kind.as_str()
-    }).collect();
+    let kinds: Vec<&str> = grammar
+        .iter()
+        .filter(|element| {
+            !(element.kind.starts_with("Pair")
+                || element.kind.starts_with("Id")
+                || element.kind.starts_with("Literal"))
+        })
+        .map(|element| element.kind.as_str())
+        .collect();
 
     let error_types = kinds.iter().map(|kind| {
         let error_name = as_ident(&format!("{}Unknown", kind));
@@ -122,7 +124,9 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>) -> TokenS
 /// Returns a vector of tuples, with the first element being the enumerant
 /// symbol, and the second element being a list of parameter kinds to that
 /// enumerant.
-fn gen_operand_param_parse_methods(grammar: &Vec<structs::OperandKind>) -> Vec<(&str, TokenStream)> {
+fn gen_operand_param_parse_methods(
+    grammar: &Vec<structs::OperandKind>,
+) -> Vec<(&str, TokenStream)> {
     grammar.iter().filter(|element| {
         // Filter out all the operand kinds without any enumerants.
         element.enumerants.len() != 0
@@ -217,20 +221,19 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
     // to decode more than just the enumerants themselves.
     let (further_parse_kinds, further_parse_methods): (Vec<_>, Vec<_>) =
         gen_operand_param_parse_methods(grammar).into_iter().unzip();
-    let further_parse_cases =
-        further_parse_kinds.iter().map(|kind| {
-            let function_name = as_ident(&format!("parse_{}_arguments", kind.to_snake_case()));
-            let decode = get_decode_method(kind);
-            let kind = as_ident(kind);
-            quote! {
-                GOpKind::#kind => {
-                    let val = self.decoder.#decode()?;
-                    let mut ops = vec![dr::Operand::#kind(val)];
-                    ops.append(&mut self.#function_name(val)?);
-                    ops
-                }
+    let further_parse_cases = further_parse_kinds.iter().map(|kind| {
+        let function_name = as_ident(&format!("parse_{}_arguments", kind.to_snake_case()));
+        let decode = get_decode_method(kind);
+        let kind = as_ident(kind);
+        quote! {
+            GOpKind::#kind => {
+                let val = self.decoder.#decode()?;
+                let mut ops = vec![dr::Operand::#kind(val)];
+                ops.append(&mut self.#function_name(val)?);
+                ops
             }
-        });
+        }
+    });
 
     // Logic operands that expand to concrete operand pairs,
     // that is, those operand kinds with 'Pair' name prefix.
@@ -255,27 +258,34 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
     });
 
     // These kinds are manually handled.
-    let manual_kinds = vec!["IdResultType", "IdResult",
-                            "LiteralContextDependentNumber",
-                            "LiteralSpecConstantOpInteger"];
+    let manual_kinds = vec![
+        "IdResultType",
+        "IdResult",
+        "LiteralContextDependentNumber",
+        "LiteralSpecConstantOpInteger",
+    ];
 
     // For the rest operand kinds, which takes exactly one word.
-    let normal_cases = grammar.iter().filter_map(|element| {
-        if further_parse_kinds.contains(&element.kind.as_str()) ||
-            manual_kinds.contains(&element.kind.as_str()) ||
-            element.kind.starts_with("Pair") {
+    let normal_cases = grammar
+        .iter()
+        .filter_map(|element| {
+            if further_parse_kinds.contains(&element.kind.as_str())
+                || manual_kinds.contains(&element.kind.as_str())
+                || element.kind.starts_with("Pair")
+            {
                 None
             } else {
                 Some(element.kind.as_str())
             }
-    }).map(|kind| {
-        let gkind = as_ident(kind);
-        let dkind = get_dr_operand_kind(kind);
-        let decode = get_decode_method(kind);
-        quote! {
-            GOpKind::#gkind => vec![dr::Operand::#dkind(self.decoder.#decode()?)]
-        }
-    });
+        })
+        .map(|kind| {
+            let gkind = as_ident(kind);
+            let dkind = get_dr_operand_kind(kind);
+            let decode = get_decode_method(kind);
+            quote! {
+                GOpKind::#gkind => vec![dr::Operand::#dkind(self.decoder.#decode()?)]
+            }
+        });
 
     let manual_cases = manual_kinds.iter().map(|kind| {
         let kind = as_ident(kind);
@@ -300,35 +310,46 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
 }
 
 pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> TokenStream {
-    let elements = grammar.iter().filter(|op_kind| {
-        op_kind.category == structs::Category::BitEnum
-    }).map(|op_kind| {
-        let kind = as_ident(&op_kind.kind);
-        let checks = op_kind.enumerants.iter().filter_map(|enumerant| {
-            if enumerant.value == 0x0000 {
-                None
-            } else {
-                let symbol = as_ident(&enumerant.symbol.to_snake_case().replace("na_n", "nan").to_uppercase());
-                Some((quote! { #kind::#symbol }, &enumerant.symbol))
-            }
-        }).map(|(check, show)| {
-            quote! { if self.contains(spirv::#check) { bits.push(#show) } }
-        });
-
-        quote! {
-            impl Disassemble for spirv::#kind {
-                fn disassemble(&self) -> String {
-                    if self.is_empty() {
-                        return "None".to_string();
+    let elements = grammar
+        .iter()
+        .filter(|op_kind| op_kind.category == structs::Category::BitEnum)
+        .map(|op_kind| {
+            let kind = as_ident(&op_kind.kind);
+            let checks = op_kind
+                .enumerants
+                .iter()
+                .filter_map(|enumerant| {
+                    if enumerant.value == 0x0000 {
+                        None
+                    } else {
+                        let symbol = as_ident(
+                            &enumerant
+                                .symbol
+                                .to_snake_case()
+                                .replace("na_n", "nan")
+                                .to_uppercase(),
+                        );
+                        Some((quote! { #kind::#symbol }, &enumerant.symbol))
                     }
+                })
+                .map(|(check, show)| {
+                    quote! { if self.contains(spirv::#check) { bits.push(#show) } }
+                });
 
-                    let mut bits = vec![];
-                    #(#checks)*
-                    bits.join("|")
+            quote! {
+                impl Disassemble for spirv::#kind {
+                    fn disassemble(&self) -> String {
+                        if self.is_empty() {
+                            return "None".to_string();
+                        }
+
+                        let mut bits = vec![];
+                        #(#checks)*
+                        bits.join("|")
+                    }
                 }
             }
-        }
-    });
+        });
 
     quote! {
         #(#elements)*

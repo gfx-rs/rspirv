@@ -2,12 +2,12 @@ use crate::dr;
 use crate::grammar;
 use crate::spirv;
 
-use std::{error, fmt, result, slice};
 use super::{
     decoder,
-    DecodeError,
     tracker::{Type, TypeTracker},
+    DecodeError,
 };
+use std::{error, fmt, result, slice};
 
 use crate::grammar::CoreInstructionTable as GInstTable;
 use crate::grammar::OperandKind as GOpKind;
@@ -70,44 +70,37 @@ impl fmt::Display for State {
             State::HeaderIncomplete(ref err) => write!(f, "incomplete module header: {}", err),
             State::HeaderIncorrect => write!(f, "incorrect module header"),
             State::EndiannessUnsupported => write!(f, "unsupported endianness"),
-            State::WordCountZero(offset, index) => {
-                write!(f,
-                       "zero word count found for instruction #{} at offset {}",
-                       index,
-                       offset)
-            }
-            State::OpcodeUnknown(offset, index, opcode) => {
-                write!(f,
-                       "unknown opcode ({}) for instruction #{} at offset {}",
-                       opcode,
-                       index,
-                       offset)
-            }
-            State::OperandExpected(offset, index) => {
-                write!(f,
-                       "expected more operands for instruction #{} at offset {}",
-                       index,
-                       offset)
-            }
-            State::OperandExceeded(offset, index) => {
-                write!(f,
-                       "found extra operands for instruction #{} at offset {}",
-                       index,
-                       offset)
-            }
+            State::WordCountZero(offset, index) => write!(
+                f,
+                "zero word count found for instruction #{} at offset {}",
+                index, offset
+            ),
+            State::OpcodeUnknown(offset, index, opcode) => write!(
+                f,
+                "unknown opcode ({}) for instruction #{} at offset {}",
+                opcode, index, offset
+            ),
+            State::OperandExpected(offset, index) => write!(
+                f,
+                "expected more operands for instruction #{} at offset {}",
+                index, offset
+            ),
+            State::OperandExceeded(offset, index) => write!(
+                f,
+                "found extra operands for instruction #{} at offset {}",
+                index, offset
+            ),
             State::OperandError(ref err) => write!(f, "operand decoding error: {}", err),
-            State::TypeUnsupported(offset, index) => {
-                write!(f,
-                       "unsupported type for instruction #{} at offset {}",
-                       index,
-                       offset)
-            }
-            State::SpecConstantOpIntegerIncorrect(offset, index) => {
-                write!(f,
-                       "incorrect SpecConstantOp number for instruction #{} at offset {}",
-                       index,
-                       offset)
-            }
+            State::TypeUnsupported(offset, index) => write!(
+                f,
+                "unsupported type for instruction #{} at offset {}",
+                index, offset
+            ),
+            State::SpecConstantOpIntegerIncorrect(offset, index) => write!(
+                f,
+                "incorrect SpecConstantOp number for instruction #{} at offset {}",
+                index, offset
+            ),
         }
     }
 }
@@ -293,21 +286,28 @@ impl<'c, 'd> Parser<'c, 'd> {
         if let Ok(word) = self.decoder.word() {
             let (wc, opcode) = Parser::split_into_word_count_and_opcode(word);
             if wc == 0 {
-                return Err(State::WordCountZero(self.decoder.offset() - WORD_NUM_BYTES,
-                                                self.inst_index));
+                return Err(State::WordCountZero(
+                    self.decoder.offset() - WORD_NUM_BYTES,
+                    self.inst_index,
+                ));
             }
             if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
                 self.decoder.set_limit((wc - 1) as usize);
                 let result = self.parse_operands(grammar);
                 if !self.decoder.limit_reached() {
-                    return Err(State::OperandExceeded(self.decoder.offset(), self.inst_index));
+                    return Err(State::OperandExceeded(
+                        self.decoder.offset(),
+                        self.inst_index,
+                    ));
                 }
                 self.decoder.clear_limit();
                 result
             } else {
-                Err(State::OpcodeUnknown(self.decoder.offset() - WORD_NUM_BYTES,
-                                         self.inst_index,
-                                         opcode))
+                Err(State::OpcodeUnknown(
+                    self.decoder.offset() - WORD_NUM_BYTES,
+                    self.inst_index,
+                    opcode,
+                ))
             }
         } else {
             Err(State::Complete)
@@ -317,32 +317,24 @@ impl<'c, 'd> Parser<'c, 'd> {
     fn parse_literal(&mut self, type_id: spirv::Word) -> Result<dr::Operand> {
         let tracked_type = self.type_tracker.resolve(type_id);
         match tracked_type {
-            Some(t) => {
-                match t {
-                    Type::Integer(size, _) => {
-                        match size {
-                            32 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
-                            64 => Ok(dr::Operand::LiteralInt64(self.decoder.int64()?)),
-                            _ => {
-                                Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
-                            }
-                        }
-                    }
-                    Type::Float(size) => {
-                        match size {
-                            32 => {
-                                Ok(dr::Operand::LiteralFloat32(self.decoder.float32()?))
-                            }
-                            64 => {
-                                Ok(dr::Operand::LiteralFloat64(self.decoder.float64()?))
-                            }
-                            _ => {
-                                Err(State::TypeUnsupported(self.decoder.offset(), self.inst_index))
-                            }
-                        }
-                    }
-                }
-            }
+            Some(t) => match t {
+                Type::Integer(size, _) => match size {
+                    32 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
+                    64 => Ok(dr::Operand::LiteralInt64(self.decoder.int64()?)),
+                    _ => Err(State::TypeUnsupported(
+                        self.decoder.offset(),
+                        self.inst_index,
+                    )),
+                },
+                Type::Float(size) => match size {
+                    32 => Ok(dr::Operand::LiteralFloat32(self.decoder.float32()?)),
+                    64 => Ok(dr::Operand::LiteralFloat64(self.decoder.float64()?)),
+                    _ => Err(State::TypeUnsupported(
+                        self.decoder.offset(),
+                        self.inst_index,
+                    )),
+                },
+            },
             // Treat as a normal SPIR-V word if we don't know the type.
             // TODO: find a better way to handle this.
             None => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
@@ -364,7 +356,10 @@ impl<'c, 'd> Parser<'c, 'd> {
             }
             Ok(operands)
         } else {
-            Err(State::SpecConstantOpIntegerIncorrect(self.decoder.offset(), self.inst_index))
+            Err(State::SpecConstantOpIntegerIncorrect(
+                self.decoder.offset(),
+                self.inst_index,
+            ))
         }
     }
 
@@ -385,10 +380,14 @@ impl<'c, 'd> Parser<'c, 'd> {
                         // Only constant defining instructions use this kind.
                         // If it is not true, that means the grammar is wrong
                         // or has changed.
-                        assert!(grammar.opcode == spirv::Op::Constant ||
-                                grammar.opcode == spirv::Op::SpecConstant);
-                        let id = rtype.expect("internal error: \
-                            should already decoded result type id before context dependent number");
+                        assert!(
+                            grammar.opcode == spirv::Op::Constant
+                                || grammar.opcode == spirv::Op::SpecConstant
+                        );
+                        let id = rtype.expect(
+                            "internal error: \
+                            should already decoded result type id before context dependent number",
+                        );
                         coperands.push(self.parse_literal(id)?)
                     }
                     GOpKind::LiteralSpecConstantOpInteger => {
@@ -404,7 +403,10 @@ impl<'c, 'd> Parser<'c, 'd> {
                 // We still have logical operands to match but no no more words.
                 match loperand.quantifier {
                     GOpCount::One => {
-                        return Err(State::OperandExpected(self.decoder.offset(), self.inst_index))
+                        return Err(State::OperandExpected(
+                            self.decoder.offset(),
+                            self.inst_index,
+                        ))
                     }
                     GOpCount::ZeroOrOne | GOpCount::ZeroOrMore => break,
                 }
@@ -423,9 +425,9 @@ mod tests {
     use crate::dr;
     use crate::spirv;
 
+    use super::{parse_words, Action, Consumer, Parser, State, WORD_NUM_BYTES};
     use crate::binary::DecodeError;
     use std::{error, fmt};
-    use super::{Action, Consumer, parse_words, Parser, State, WORD_NUM_BYTES};
 
     // TODO: It's unfortunate that we have these numbers directly coded here
     // and repeat them in the following tests. Should have a better way.
@@ -482,7 +484,9 @@ mod tests {
     }
     impl ModuleBuilder {
         fn new() -> ModuleBuilder {
-            ModuleBuilder { insts: ZERO_BOUND_HEADER.to_vec() }
+            ModuleBuilder {
+                insts: ZERO_BOUND_HEADER.to_vec(),
+            }
         }
 
         /// Appends an instruction with the given `opcode` and `operands` into
@@ -525,8 +529,10 @@ mod tests {
         let v = vec![];
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
-        assert_matches!(p.parse(),
-                        Err(State::HeaderIncomplete(DecodeError::StreamExpected(0))));
+        assert_matches!(
+            p.parse(),
+            Err(State::HeaderIncomplete(DecodeError::StreamExpected(0)))
+        );
     }
 
     #[test]
@@ -534,8 +540,10 @@ mod tests {
         let v = vec![0x03, 0x02, 0x23, 0x07];
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
-        assert_matches!(p.parse(),
-                        Err(State::HeaderIncomplete(DecodeError::StreamExpected(4))));
+        assert_matches!(
+            p.parse(),
+            Err(State::HeaderIncomplete(DecodeError::StreamExpected(4)))
+        );
     }
 
     #[test]
@@ -584,9 +592,13 @@ mod tests {
         assert_eq!("MemoryModel", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::AddressingModel(spirv::AddressingModel::Logical),
-                        dr::Operand::MemoryModel(spirv::MemoryModel::GLSL450)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::AddressingModel(spirv::AddressingModel::Logical),
+                dr::Operand::MemoryModel(spirv::MemoryModel::GLSL450)
+            ],
+            inst.operands
+        );
     }
 
     #[test]
@@ -622,8 +634,10 @@ mod tests {
         let p = Parser::new(&v, &mut c);
         // The missing operand to the OpMemoryModel instruction starts at
         // byte offset (20 + 4 + 4 + 4).
-        assert_matches!(p.parse(),
-                        Err(State::OperandError(DecodeError::StreamExpected(32))));
+        assert_matches!(
+            p.parse(),
+            Err(State::OperandError(DecodeError::StreamExpected(32)))
+        );
     }
 
     #[test]
@@ -643,10 +657,14 @@ mod tests {
         assert_eq!("Decorate", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::IdRef(5),
-                        dr::Operand::Decoration(spirv::Decoration::BuiltIn),
-                        dr::Operand::BuiltIn(spirv::BuiltIn::InstanceId)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::IdRef(5),
+                dr::Operand::Decoration(spirv::Decoration::BuiltIn),
+                dr::Operand::BuiltIn(spirv::BuiltIn::InstanceId)
+            ],
+            inst.operands
+        );
     }
 
     #[test]
@@ -657,8 +675,10 @@ mod tests {
         v.append(&mut vec![0x0b, 0x00, 0x00, 0x00]); // BuiltIn
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
-        assert_matches!(p.parse(),
-                        Err(State::OperandError(DecodeError::StreamExpected(32))));
+        assert_matches!(
+            p.parse(),
+            Err(State::OperandError(DecodeError::StreamExpected(32)))
+        );
     }
 
     #[test]
@@ -668,8 +688,8 @@ mod tests {
         v.append(&mut vec![0x02, 0x00, 0x00, 0x00]); // GLSL
         v.append(&mut vec![0xc2, 0x01, 0x00, 0x00]); // 450 (0x1c2)
         v.append(&mut vec![0x06, 0x00, 0x00, 0x00]); // File id
-        v.append(&mut b"wow".to_vec());              // Source
-        v.push(0x00);                                // EOS
+        v.append(&mut b"wow".to_vec()); // Source
+        v.push(0x00); // EOS
         let mut c = RetainingConsumer::new();
         {
             let p = Parser::new(&v, &mut c);
@@ -680,11 +700,15 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                        dr::Operand::LiteralInt32(450),
-                        dr::Operand::IdRef(6),
-                        dr::Operand::from("wow")],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                dr::Operand::LiteralInt32(450),
+                dr::Operand::IdRef(6),
+                dr::Operand::from("wow")
+            ],
+            inst.operands
+        );
     }
 
     #[test]
@@ -704,10 +728,14 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                        dr::Operand::LiteralInt32(450),
-                        dr::Operand::IdRef(6)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                dr::Operand::LiteralInt32(450),
+                dr::Operand::IdRef(6)
+            ],
+            inst.operands
+        );
     }
 
     #[test]
@@ -726,9 +754,13 @@ mod tests {
         assert_eq!("Source", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                        dr::Operand::LiteralInt32(450)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
+                dr::Operand::LiteralInt32(450)
+            ],
+            inst.operands
+        );
     }
 
     #[derive(Debug)]
@@ -764,7 +796,10 @@ mod tests {
         let p = Parser::new(&v, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
-        assert_eq!("consumer error: init error", format!("{}", ret.unwrap_err()));
+        assert_eq!(
+            "consumer error: init error",
+            format!("{}", ret.unwrap_err())
+        );
     }
 
     struct FinalizeErrorConsumer;
@@ -814,7 +849,10 @@ mod tests {
         let p = Parser::new(ZERO_BOUND_HEADER, &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
-        assert_eq!("consumer error: parse header error", format!("{}", ret.unwrap_err()));
+        assert_eq!(
+            "consumer error: parse header error",
+            format!("{}", ret.unwrap_err())
+        );
     }
 
     struct ParseInstErrorConsumer;
@@ -841,7 +879,10 @@ mod tests {
         let p = Parser::new(b.get(), &mut c);
         let ret = p.parse();
         assert_matches!(ret, Err(State::ConsumerError(_)));
-        assert_eq!("consumer error: parse inst error", format!("{}", ret.unwrap_err()));
+        assert_eq!(
+            "consumer error: parse inst error",
+            format!("{}", ret.unwrap_err())
+        );
     }
 
     #[test]
@@ -892,8 +933,10 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![dr::Operand::LiteralInt64(0xefcdab9078563412)],
-                   inst.operands);
+        assert_eq!(
+            vec![dr::Operand::LiteralInt64(0xefcdab9078563412)],
+            inst.operands
+        );
     }
 
     #[test]
@@ -962,9 +1005,13 @@ mod tests {
         assert_eq!("SpecConstantOp", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![dr::Operand::LiteralSpecConstantOpInteger(spirv::Op::SNegate),
-                        dr::Operand::IdRef(3)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::LiteralSpecConstantOpInteger(spirv::Op::SNegate),
+                dr::Operand::IdRef(3)
+            ],
+            inst.operands
+        );
     }
 
     #[test]
@@ -977,10 +1024,12 @@ mod tests {
         v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // id ref: 3
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
-        assert_matches!(p.parse(),
-                        // The header has 5 words, the above instruction has 5 words,
-                        // so in total 40 bytes.
-                        Err(State::OperandError(DecodeError::LimitReached(40))));
+        assert_matches!(
+            p.parse(),
+            // The header has 5 words, the above instruction has 5 words,
+            // so in total 40 bytes.
+            Err(State::OperandError(DecodeError::LimitReached(40)))
+        );
     }
 
     #[test]
@@ -999,8 +1048,10 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::IdRef(1), dr::Operand::IdRef(2)],
-                   inst.operands);
+        assert_eq!(
+            vec![dr::Operand::IdRef(1), dr::Operand::IdRef(2)],
+            inst.operands
+        );
     }
     #[test]
     fn test_parsing_bitmasks_requiring_params_mem_access_no_param() {
@@ -1019,10 +1070,14 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::IdRef(1),
-                        dr::Operand::IdRef(2),
-                        dr::Operand::MemoryAccess(spirv::MemoryAccess::VOLATILE)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::IdRef(1),
+                dr::Operand::IdRef(2),
+                dr::Operand::MemoryAccess(spirv::MemoryAccess::VOLATILE)
+            ],
+            inst.operands
+        );
     }
     #[test]
     fn test_parsing_bitmasks_requiring_params_mem_access_with_param() {
@@ -1042,11 +1097,15 @@ mod tests {
         assert_eq!("Store", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::IdRef(1),
-                        dr::Operand::IdRef(2),
-                        dr::Operand::MemoryAccess(spirv::MemoryAccess::from_bits(3).unwrap()),
-                        dr::Operand::LiteralInt32(4)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::IdRef(1),
+                dr::Operand::IdRef(2),
+                dr::Operand::MemoryAccess(spirv::MemoryAccess::from_bits(3).unwrap()),
+                dr::Operand::LiteralInt32(4)
+            ],
+            inst.operands
+        );
     }
     #[test]
     fn test_parsing_bitmasks_requiring_params_mem_access_missing_param() {
@@ -1057,10 +1116,12 @@ mod tests {
         v.append(&mut vec![0x03, 0x00, 0x00, 0x00]); // Volatile & Aligned
         let mut c = RetainingConsumer::new();
         let p = Parser::new(&v, &mut c);
-        assert_matches!(p.parse(),
-                        // The header has 5 words, the above instruction has 4 words,
-                        // so in total 36 bytes.
-                        Err(State::OperandError(DecodeError::LimitReached(36))));
+        assert_matches!(
+            p.parse(),
+            // The header has 5 words, the above instruction has 4 words,
+            // so in total 36 bytes.
+            Err(State::OperandError(DecodeError::LimitReached(36)))
+        );
     }
     #[test]
     fn test_parsing_bitmasks_requiring_params_img_operands_param_order() {
@@ -1083,14 +1144,18 @@ mod tests {
         assert_eq!("ImageWrite", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::IdRef(1),
-                        dr::Operand::IdRef(2),
-                        dr::Operand::IdRef(3),
-                        dr::Operand::ImageOperands(spirv::ImageOperands::from_bits(5).unwrap()),
-                        dr::Operand::IdRef(0xaa),
-                        dr::Operand::IdRef(0xbb),
-                        dr::Operand::IdRef(0xcc)],
-                   inst.operands);
+        assert_eq!(
+            vec![
+                dr::Operand::IdRef(1),
+                dr::Operand::IdRef(2),
+                dr::Operand::IdRef(3),
+                dr::Operand::ImageOperands(spirv::ImageOperands::from_bits(5).unwrap()),
+                dr::Operand::IdRef(0xaa),
+                dr::Operand::IdRef(0xbb),
+                dr::Operand::IdRef(0xcc)
+            ],
+            inst.operands
+        );
     }
 
     #[test]
@@ -1103,7 +1168,9 @@ mod tests {
         assert_eq!("Capability", inst.class.opname);
         assert_eq!(None, inst.result_type);
         assert_eq!(None, inst.result_id);
-        assert_eq!(vec![dr::Operand::Capability(spirv::Capability::Int16)],
-                   inst.operands);
+        assert_eq!(
+            vec![dr::Operand::Capability(spirv::Capability::Int16)],
+            inst.operands
+        );
     }
 }

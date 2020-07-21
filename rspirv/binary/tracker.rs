@@ -31,7 +31,9 @@ pub struct TypeTracker {
 
 impl TypeTracker {
     pub fn new() -> TypeTracker {
-        TypeTracker { types: collections::HashMap::new() }
+        TypeTracker {
+            types: collections::HashMap::new(),
+        }
     }
 
     pub fn track(&mut self, inst: &dr::Instruction) {
@@ -39,11 +41,12 @@ impl TypeTracker {
             if grammar::reflect::is_type(inst.class.opcode) {
                 match inst.class.opcode {
                     spirv::Op::TypeInt => {
-                        if let (&dr::Operand::LiteralInt32(bits),
-                                &dr::Operand::LiteralInt32(sign)) = (&inst.operands[0],
-                                                                     &inst.operands[1]) {
-                            self.types
-                                .insert(rid, Type::Integer(bits, sign == 1));
+                        if let (
+                            &dr::Operand::LiteralInt32(bits),
+                            &dr::Operand::LiteralInt32(sign),
+                        ) = (&inst.operands[0], &inst.operands[1])
+                        {
+                            self.types.insert(rid, Type::Integer(bits, sign == 1));
                         }
                     }
                     spirv::Op::TypeFloat => {
@@ -82,7 +85,9 @@ pub struct ExtInstSetTracker {
 
 impl ExtInstSetTracker {
     pub fn new() -> ExtInstSetTracker {
-        ExtInstSetTracker { sets: collections::HashMap::new() }
+        ExtInstSetTracker {
+            sets: collections::HashMap::new(),
+        }
     }
 
     /// Tracks the extended instruction set declared by the given `inst`.
@@ -90,8 +95,10 @@ impl ExtInstSetTracker {
     /// If the given extended instruction set is not recognized, it will
     /// be silently ignored.
     pub fn track(&mut self, inst: &dr::Instruction) {
-        if inst.class.opcode != spirv::Op::ExtInstImport || inst.result_id.is_none() ||
-           inst.operands.is_empty() {
+        if inst.class.opcode != spirv::Op::ExtInstImport
+            || inst.result_id.is_none()
+            || inst.operands.is_empty()
+        {
             return;
         }
         if let dr::Operand::LiteralString(ref s) = inst.operands[0] {

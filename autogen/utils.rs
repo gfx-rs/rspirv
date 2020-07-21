@@ -48,7 +48,11 @@ pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> TokenStream
     } else if kind == "LiteralContextDependentNumber" {
         panic!("this kind is not expected to be handled here")
     } else if kind == "LiteralString" {
-        if generic_string { quote! { T } } else { quote! { String } }
+        if generic_string {
+            quote! { T }
+        } else {
+            quote! { String }
+        }
     } else if kind == "PairLiteralIntegerIdRef" {
         quote! { (u32, spirv::Word) }
     } else if kind == "PairIdRefLiteralInteger" {

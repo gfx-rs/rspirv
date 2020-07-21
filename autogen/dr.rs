@@ -14,41 +14,46 @@ pub fn has_additional_params(grammar: &structs::OperandKind) -> bool {
 
 /// Returns true if the given operand can potentially have additional
 /// parameters.
-pub fn operand_has_additional_params(operand: &structs::Operand,
-                                     kinds: &[structs::OperandKind])
-                                     -> bool {
-    kinds.iter()
-         .find(|kind| kind.kind == operand.kind)
-         .map_or(false, |kind| has_additional_params(kind))
-
+pub fn operand_has_additional_params(
+    operand: &structs::Operand,
+    kinds: &[structs::OperandKind],
+) -> bool {
+    kinds
+        .iter()
+        .find(|kind| kind.kind == operand.kind)
+        .map_or(false, |kind| has_additional_params(kind))
 }
 
 /// Returns the parameter list excluding result id.
-fn get_param_list(params: &[structs::Operand],
-                  keep_result_id: bool,
-                  kinds: &[structs::OperandKind])
-                  -> (Vec<TokenStream>, TokenStream) {
+fn get_param_list(
+    params: &[structs::Operand],
+    keep_result_id: bool,
+    kinds: &[structs::OperandKind],
+) -> (Vec<TokenStream>, TokenStream) {
     let mut type_generics = TokenStream::new();
-    let mut list: Vec<_> = params.iter().filter_map(|param| {
-        let name = get_param_name(param);
-        let kind = get_enum_underlying_type(&param.kind, true);
-        if param.kind == "IdResult" {
-            if keep_result_id {
-                Some(quote! { result_id: Option<spirv::Word> })
+    let mut list: Vec<_> = params
+        .iter()
+        .filter_map(|param| {
+            let name = get_param_name(param);
+            let kind = get_enum_underlying_type(&param.kind, true);
+            if param.kind == "IdResult" {
+                if keep_result_id {
+                    Some(quote! { result_id: Option<spirv::Word> })
+                } else {
+                    None
+                }
             } else {
-                None
+                Some(match param.quantifier {
+                    structs::Quantifier::One => quote! { #name: #kind },
+                    structs::Quantifier::ZeroOrOne => quote! { #name: Option<#kind> },
+                    structs::Quantifier::ZeroOrMore => {
+                        type_generics = quote! { <T: AsRef<[#kind]>> };
+                        quote! { #name: T }
+                    }
+                })
             }
-        } else {
-            Some(match param.quantifier {
-                structs::Quantifier::One => quote! { #name: #kind },
-                structs::Quantifier::ZeroOrOne => quote! { #name: Option<#kind> },
-                structs::Quantifier::ZeroOrMore => {
-                    type_generics = quote! { <T: AsRef<[#kind]>> };
-                    quote! { #name: T }
-                },
-            })
-        }
-    }).collect();
+        })
+        .collect();
     // The last operand may require additional parameters.
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
@@ -87,78 +92,85 @@ fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
 /// Returns the initializer list for all the parameters required to appear
 /// once and only once.
 fn get_init_list(params: &[structs::Operand]) -> Vec<TokenStream> {
-    params.iter().filter_map(|param| {
-        if param.quantifier == structs::Quantifier::One  {
-            if param.kind == "IdResult" || param.kind == "IdResultType" {
-                // These two operands are not stored in the operands field.
-                None
-            } else {
-                let name = get_param_name(param);
-                let kind = get_dr_operand_kind(&param.kind);
-                Some(if kind == "LiteralString" {
-                    quote! { dr::Operand::LiteralString(#name.into()) }
+    params
+        .iter()
+        .filter_map(|param| {
+            if param.quantifier == structs::Quantifier::One {
+                if param.kind == "IdResult" || param.kind == "IdResultType" {
+                    // These two operands are not stored in the operands field.
+                    None
                 } else {
-                    quote! { dr::Operand::#kind(#name) }
-                })
+                    let name = get_param_name(param);
+                    let kind = get_dr_operand_kind(&param.kind);
+                    Some(if kind == "LiteralString" {
+                        quote! { dr::Operand::LiteralString(#name.into()) }
+                    } else {
+                        quote! { dr::Operand::#kind(#name) }
+                    })
+                }
+            } else {
+                None
             }
-        } else {
-            None
-        }
-    }).collect()
+        })
+        .collect()
 }
 
-fn get_push_extras(params: &[structs::Operand],
-                   kinds: &[structs::OperandKind],
-                   container: TokenStream)
-                   -> Vec<TokenStream> {
-    let mut list: Vec<_> = params.iter().filter_map(|param| {
-        let name = get_param_name(param);
-        match param.quantifier {
-            structs::Quantifier::One => None,
-            structs::Quantifier::ZeroOrOne => {
-                let kind = get_dr_operand_kind(&param.kind);
-                Some(quote! {
-                    if let Some(v) = #name {
-                        #[allow(clippy::identity_conversion)]
-                        #container.push(dr::Operand::#kind(v.into()));
-                    }
-                })
-            },
-            structs::Quantifier::ZeroOrMore => {
-                // TODO: Ouch! Bad smell. This has special case treatment yet
-                // still doesn't solve 64-bit selectors in OpSwitch.
-                if param.kind == "PairLiteralIntegerIdRef" {
-                    Some(quote! {
-                        for v in #name.as_ref() {
-                            #container.push(dr::Operand::LiteralInt32(v.0));
-                            #container.push(dr::Operand::IdRef(v.1));
-                        }
-                    })
-                } else if param.kind == "PairIdRefLiteralInteger" {
-                    Some(quote! {
-                        for v in #name.as_ref() {
-                            #container.push(dr::Operand::IdRef(v.0));
-                            #container.push(dr::Operand::LiteralInt32(v.1));
-                        }
-                    })
-                } else if param.kind == "PairIdRefIdRef" {
-                    Some(quote! {
-                        for v in #name.as_ref() {
-                            #container.push(dr::Operand::IdRef(v.0));
-                            #container.push(dr::Operand::IdRef(v.1));
-                        }
-                    })
-                } else {
+fn get_push_extras(
+    params: &[structs::Operand],
+    kinds: &[structs::OperandKind],
+    container: TokenStream,
+) -> Vec<TokenStream> {
+    let mut list: Vec<_> = params
+        .iter()
+        .filter_map(|param| {
+            let name = get_param_name(param);
+            match param.quantifier {
+                structs::Quantifier::One => None,
+                structs::Quantifier::ZeroOrOne => {
                     let kind = get_dr_operand_kind(&param.kind);
                     Some(quote! {
-                        for v in #name.as_ref() {
-                            #container.push(dr::Operand::#kind(*v));
+                        if let Some(v) = #name {
+                            #[allow(clippy::identity_conversion)]
+                            #container.push(dr::Operand::#kind(v.into()));
                         }
                     })
                 }
-            },
-        }
-    }).collect();
+                structs::Quantifier::ZeroOrMore => {
+                    // TODO: Ouch! Bad smell. This has special case treatment yet
+                    // still doesn't solve 64-bit selectors in OpSwitch.
+                    if param.kind == "PairLiteralIntegerIdRef" {
+                        Some(quote! {
+                            for v in #name.as_ref() {
+                                #container.push(dr::Operand::LiteralInt32(v.0));
+                                #container.push(dr::Operand::IdRef(v.1));
+                            }
+                        })
+                    } else if param.kind == "PairIdRefLiteralInteger" {
+                        Some(quote! {
+                            for v in #name.as_ref() {
+                                #container.push(dr::Operand::IdRef(v.0));
+                                #container.push(dr::Operand::LiteralInt32(v.1));
+                            }
+                        })
+                    } else if param.kind == "PairIdRefIdRef" {
+                        Some(quote! {
+                            for v in #name.as_ref() {
+                                #container.push(dr::Operand::IdRef(v.0));
+                                #container.push(dr::Operand::IdRef(v.1));
+                            }
+                        })
+                    } else {
+                        let kind = get_dr_operand_kind(&param.kind);
+                        Some(quote! {
+                            for v in #name.as_ref() {
+                                #container.push(dr::Operand::#kind(*v));
+                            }
+                        })
+                    }
+                }
+            }
+        })
+        .collect();
     // The last operand may require additional parameters.
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
@@ -173,26 +185,31 @@ fn get_push_extras(params: &[structs::Operand],
 /// Returns the generated dr::Operand and its fmt::Display implementation by
 /// walking the given SPIR-V operand kinds `grammar`.
 pub fn gen_dr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> TokenStream {
-    let kinds: Vec<_> = grammar.iter().map(|element| {
-            element.kind.as_str()
-        }).filter(|element| {
+    let kinds: Vec<_> = grammar
+        .iter()
+        .map(|element| element.kind.as_str())
+        .filter(|element| {
             // Pair kinds are not used in dr::Operand.
             // LiteralContextDependentNumber is replaced by suitable literals.
             // LiteralInteger is replaced by LiteralInt32.
             // IdResult and IdResultType are not stored as operands in `dr`.
-            !(element.starts_with("Pair") ||
-              *element == "LiteralContextDependentNumber" ||
-              *element == "LiteralInteger" ||
-              *element == "IdResult" ||
-              *element == "IdResultType")
-        }).map(as_ident).collect();
+            !(element.starts_with("Pair")
+                || *element == "LiteralContextDependentNumber"
+                || *element == "LiteralInteger"
+                || *element == "IdResult"
+                || *element == "IdResultType")
+        })
+        .map(as_ident)
+        .collect();
 
-    let kind_enum = { // Enum for all operand kinds in data representation.
-        let id_kinds = kinds.iter().filter(|element| {
-            element.to_string().starts_with("Id")
-        }).map(|element| {
-            quote! { #element(spirv::Word) }
-        });
+    let kind_enum = {
+        // Enum for all operand kinds in data representation.
+        let id_kinds = kinds
+            .iter()
+            .filter(|element| element.to_string().starts_with("Id"))
+            .map(|element| {
+                quote! { #element(spirv::Word) }
+            });
 
         let num_kinds = vec![
             quote! { LiteralInt32(u32) },
@@ -201,25 +218,29 @@ pub fn gen_dr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> TokenStream 
             quote! { LiteralFloat64(f64) },
             quote! { LiteralExtInstInteger(u32) },
             quote! { LiteralSpecConstantOpInteger(spirv::Op) },
-            ];
+        ];
 
-        let str_kinds = kinds.iter().filter(|element| {
-            element.to_string().ends_with("String")
-        }).map(|element| {
-            quote! { #element(String) }
-        });
+        let str_kinds = kinds
+            .iter()
+            .filter(|element| element.to_string().ends_with("String"))
+            .map(|element| {
+                quote! { #element(String) }
+            });
 
-        let enum_kinds = kinds.iter().filter(|element| {
-            let element = element.to_string();
-            !(element.starts_with("Id") ||
-              element.ends_with("String") ||
-              element.ends_with("Integer") ||
-              element.ends_with("Number"))
-        }).map(|element| {
-            quote! { #element(spirv::#element) }
-        });
+        let enum_kinds = kinds
+            .iter()
+            .filter(|element| {
+                let element = element.to_string();
+                !(element.starts_with("Id")
+                    || element.ends_with("String")
+                    || element.ends_with("Integer")
+                    || element.ends_with("Number"))
+            })
+            .map(|element| {
+                quote! { #element(spirv::#element) }
+            });
 
-        quote!{
+        quote! {
             #[doc = "Data representation of a SPIR-V operand."]
             #[derive(Clone, Debug, PartialEq, From)]
             pub enum Operand {
@@ -231,23 +252,33 @@ pub fn gen_dr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> TokenStream 
         }
     };
 
-    let impl_code = { // impl fmt::Display for dr::Operand.
+    let impl_code = {
+        // impl fmt::Display for dr::Operand.
         let mut kinds = kinds;
-        kinds.extend(["LiteralInt32", "LiteralInt64", "LiteralFloat32", "LiteralFloat64"].iter().cloned().map(as_ident));
-        let cases =
-            kinds.iter().map(|element| {
-                if &element.to_string() == &"Dim" {
-                    // Skip the "Dim" prefix, which is only used in the API to
-                    // avoid having an enumerant name starting with a number
-                    quote! {
-                        Operand::#element(ref v) => write!(f, "{}", &format!("{:?}", v)[3..])
-                    }
-                } else {
-                    quote! {
-                        Operand::#element(ref v) => write!(f, "{:?}", v)
-                    }
+        kinds.extend(
+            [
+                "LiteralInt32",
+                "LiteralInt64",
+                "LiteralFloat32",
+                "LiteralFloat64",
+            ]
+            .iter()
+            .cloned()
+            .map(as_ident),
+        );
+        let cases = kinds.iter().map(|element| {
+            if &element.to_string() == &"Dim" {
+                // Skip the "Dim" prefix, which is only used in the API to
+                // avoid having an enumerant name starting with a number
+                quote! {
+                    Operand::#element(ref v) => write!(f, "{}", &format!("{:?}", v)[3..])
                 }
-            });
+            } else {
+                quote! {
+                    Operand::#element(ref v) => write!(f, "{:?}", v)
+                }
+            }
+        });
         quote! {
             impl fmt::Display for Operand {
                 fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -479,28 +510,34 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
 pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
-    let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == Some(structs::Class::Constant) && inst.opname != "OpConstant" && inst.opname != "OpSpecConstant"
-    }).map(|inst| {
-        let (params, generic) = get_param_list(&inst.operands, false, kinds);
-        let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-        let opcode = as_ident(&inst.opname[2..]);
-        let comment = format!("Appends an Op{} instruction.", opcode);
-        let name = get_function_name(&inst.opname);
-        let init = get_init_list(&inst.operands);
-        quote! {
-            #[doc = #comment]
-            pub fn #name#generic(&mut self,#(#params),*) -> spirv::Word {
-                let id = self.id();
-                #[allow(unused_mut)]
-                let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, Some(result_type), Some(id), vec![#(#init),*]);
-                #(#extras)*
-                self.module.types_global_values.push(inst);
-                id
+    let elements = grammar
+        .instructions
+        .iter()
+        .filter(|inst| {
+            inst.class == Some(structs::Class::Constant)
+                && inst.opname != "OpConstant"
+                && inst.opname != "OpSpecConstant"
+        })
+        .map(|inst| {
+            let (params, generic) = get_param_list(&inst.operands, false, kinds);
+            let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
+            let opcode = as_ident(&inst.opname[2..]);
+            let comment = format!("Appends an Op{} instruction.", opcode);
+            let name = get_function_name(&inst.opname);
+            let init = get_init_list(&inst.operands);
+            quote! {
+                #[doc = #comment]
+                pub fn #name#generic(&mut self,#(#params),*) -> spirv::Word {
+                    let id = self.id();
+                    #[allow(unused_mut)]
+                    let mut inst = dr::Instruction::new(
+                        spirv::Op::#opcode, Some(result_type), Some(id), vec![#(#init),*]);
+                    #(#extras)*
+                    self.module.types_global_values.push(inst);
+                    id
+                }
             }
-        }
-    });
+        });
 
     quote! {
         impl Builder {
@@ -512,27 +549,29 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
 pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
-    let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == Some(structs::Class::Debug) && inst.opname != "OpString"
-    }).map(|inst| {
-        let (params, generic) = get_param_list(&inst.operands, false, kinds);
-        assert!(generic.is_empty());
-        let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-        let opcode = as_ident(&inst.opname[2..]);
-        let comment = format!("Appends an Op{} instruction.", opcode);
-        let name = get_function_name(&inst.opname);
-        let init = get_init_list(&inst.operands);
-        quote! {
-            #[doc = #comment]
-            pub fn #name<T: Into<String>>(&mut self,#(#params),*) {
-                #[allow(unused_mut)]
-                let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, None, None, vec![#(#init),*]);
-                #(#extras)*
-                self.module.debugs.push(inst);
+    let elements = grammar
+        .instructions
+        .iter()
+        .filter(|inst| inst.class == Some(structs::Class::Debug) && inst.opname != "OpString")
+        .map(|inst| {
+            let (params, generic) = get_param_list(&inst.operands, false, kinds);
+            assert!(generic.is_empty());
+            let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
+            let opcode = as_ident(&inst.opname[2..]);
+            let comment = format!("Appends an Op{} instruction.", opcode);
+            let name = get_function_name(&inst.opname);
+            let init = get_init_list(&inst.operands);
+            quote! {
+                #[doc = #comment]
+                pub fn #name<T: Into<String>>(&mut self,#(#params),*) {
+                    #[allow(unused_mut)]
+                    let mut inst = dr::Instruction::new(
+                        spirv::Op::#opcode, None, None, vec![#(#init),*]);
+                    #(#extras)*
+                    self.module.debugs.push(inst);
+                }
             }
-        }
-    });
+        });
     quote! {
         impl Builder {
             #(#elements)*
@@ -543,27 +582,31 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
 pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all constants.
-    let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == Some(structs::Class::Annotation) && inst.opname != "OpDecorationGroup"
-    }).map(|inst| {
-        let (params, generic) = get_param_list(&inst.operands, false, kinds);
-        let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-        let opcode = as_ident(&inst.opname[2..]);
-        let comment = format!("Appends an Op{} instruction.", opcode);
-        let name = get_function_name(&inst.opname);
-        let init = get_init_list(&inst.operands);
+    let elements = grammar
+        .instructions
+        .iter()
+        .filter(|inst| {
+            inst.class == Some(structs::Class::Annotation) && inst.opname != "OpDecorationGroup"
+        })
+        .map(|inst| {
+            let (params, generic) = get_param_list(&inst.operands, false, kinds);
+            let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
+            let opcode = as_ident(&inst.opname[2..]);
+            let comment = format!("Appends an Op{} instruction.", opcode);
+            let name = get_function_name(&inst.opname);
+            let init = get_init_list(&inst.operands);
 
-        quote! {
-            #[doc = #comment]
-            pub fn #name#generic(&mut self,#(#params),*) {
-                #[allow(unused_mut)]
-                let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, None, None, vec![#(#init),*]);
-                #(#extras)*
-                self.module.annotations.push(inst);
+            quote! {
+                #[doc = #comment]
+                pub fn #name#generic(&mut self,#(#params),*) {
+                    #[allow(unused_mut)]
+                    let mut inst = dr::Instruction::new(
+                        spirv::Op::#opcode, None, None, vec![#(#init),*]);
+                    #(#extras)*
+                    self.module.annotations.push(inst);
+                }
             }
-        }
-    });
+        });
     quote! {
         impl Builder {
             #(#elements)*

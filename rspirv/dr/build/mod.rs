@@ -3,8 +3,8 @@
 use crate::dr;
 use crate::spirv;
 
-use std::result;
 use super::Error;
+use std::result;
 
 type BuildResult<T> = result::Result<T, Error>;
 
@@ -120,7 +120,11 @@ impl Builder {
 
     /// Create a new builder from an existing module
     pub fn new_from_module(module: dr::Module) -> Builder {
-        let next_id = module.header.as_ref().map(|h| h.bound).expect("Expecting ModuleHeader with valid bound");
+        let next_id = module
+            .header
+            .as_ref()
+            .map(|h| h.bound)
+            .expect("Expecting ModuleHeader with valid bound");
         let version = module.header.as_ref().map(|h| h.version());
 
         Builder {
@@ -130,12 +134,17 @@ impl Builder {
             selected_function: None,
             new_block: None,
             selected_block: None,
-            version
+            version,
         }
     }
 
-    pub fn insert_into_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
-        let allow = self.new_block.is_some() || self.selected_function.is_some() && self.selected_block.is_some();
+    pub fn insert_into_block(
+        &mut self,
+        insert_point: InsertPoint,
+        inst: dr::Instruction,
+    ) -> BuildResult<()> {
+        let allow = self.new_block.is_some()
+            || self.selected_function.is_some() && self.selected_block.is_some();
 
         if !allow {
             return Err(Error::DetachedInstruction);
@@ -144,7 +153,8 @@ impl Builder {
         let ref mut block = if self.new_block.is_some() {
             self.new_block.as_mut().unwrap()
         } else {
-            &mut self.module.functions[self.selected_function.unwrap()].blocks[self.selected_block.unwrap()]
+            &mut self.module.functions[self.selected_function.unwrap()].blocks
+                [self.selected_block.unwrap()]
         };
 
         match insert_point {
@@ -153,7 +163,7 @@ impl Builder {
             InsertPoint::FromEnd(offset) => {
                 let end = block.instructions.len();
                 block.instructions.insert(end - offset, inst)
-            },
+            }
             InsertPoint::FromBegin(offset) => block.instructions.insert(offset, inst),
         }
 
@@ -161,7 +171,8 @@ impl Builder {
     }
 
     pub fn pop_instruction(&mut self) -> BuildResult<dr::Instruction> {
-        let allow = self.new_block.is_some() || self.selected_function.is_some() && self.selected_block.is_some();
+        let allow = self.new_block.is_some()
+            || self.selected_function.is_some() && self.selected_block.is_some();
 
         if !allow {
             return Err(Error::DetachedInstruction);
@@ -170,10 +181,14 @@ impl Builder {
         let ref mut block = if self.new_block.is_some() {
             self.new_block.as_mut().unwrap()
         } else {
-            &mut self.module.functions[self.selected_function.unwrap()].blocks[self.selected_block.unwrap()]
+            &mut self.module.functions[self.selected_function.unwrap()].blocks
+                [self.selected_block.unwrap()]
         };
 
-        block.instructions.pop().ok_or_else(|| Error::EmptyInstructionList)
+        block
+            .instructions
+            .pop()
+            .ok_or_else(|| Error::EmptyInstructionList)
     }
 
     /// Sets the SPIR-V version to the given major.minor version.
@@ -240,10 +255,10 @@ impl Builder {
                 // OpReturn must be the last instruction in a block
                 let last_instr = blk.instructions.last().unwrap();
 
-                match last_instr.class.opcode{
+                match last_instr.class.opcode {
                     spirv::Op::Return | spirv::Op::ReturnValue => {
                         result.push(idx);
-                    },
+                    }
                     _ => {}
                 }
             }
@@ -257,12 +272,12 @@ impl Builder {
         for dbg in &self.module.debugs {
             if dbg.class.opcode == spirv::Op::Name {
                 if let dr::Operand::IdRef(target_id) = dbg.operands[0] {
-                    if let dr::Operand::LiteralString(found_name)  = &dbg.operands[1] {
+                    if let dr::Operand::LiteralString(found_name) = &dbg.operands[1] {
                         if found_name == name {
                             for (idx, func) in self.module.functions.iter().enumerate() {
                                 if func.def.as_ref().unwrap().result_id.unwrap() == target_id {
                                     return self.select_function(idx);
-                               }
+                                }
                             }
                         }
                     }
@@ -390,7 +405,10 @@ impl Builder {
     ///
     /// Counter to `begin_block` that always generates a new OpLabel at the beginning of a block - in some cases
     /// this is undesirable (such as when constructing a branch).
-    pub fn begin_block_no_label(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
+    pub fn begin_block_no_label(
+        &mut self,
+        label_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
         if !(self.new_function.is_some() || self.selected_function.is_some()) {
             return Err(Error::DetachedBlock);
         }
@@ -412,29 +430,35 @@ impl Builder {
         self.insert_end_block(InsertPoint::End, inst)
     }
 
-    fn insert_end_block(&mut self, insert_point: InsertPoint, inst: dr::Instruction) -> BuildResult<()> {
+    fn insert_end_block(
+        &mut self,
+        insert_point: InsertPoint,
+        inst: dr::Instruction,
+    ) -> BuildResult<()> {
         if self.new_block.is_some() {
             self.insert_into_block(insert_point, inst)?;
 
             if self.new_function.is_some() {
-                self.new_function.as_mut().unwrap().blocks.push(
-                    self.new_block.take().unwrap(),
-                );
+                self.new_function
+                    .as_mut()
+                    .unwrap()
+                    .blocks
+                    .push(self.new_block.take().unwrap());
             }
 
             if let Some(idx) = self.selected_function {
-                self.module.functions[idx].blocks.push(
-                    self.new_block.take().unwrap(),
-                );
+                self.module.functions[idx]
+                    .blocks
+                    .push(self.new_block.take().unwrap());
             }
 
-            return Ok(())
+            return Ok(());
         }
 
         if self.selected_block.is_some() {
             self.insert_into_block(insert_point, inst)?;
             self.selected_block = None;
-            return Ok(())
+            return Ok(());
         }
 
         Err(Error::MismatchedTerminator)
@@ -780,8 +804,8 @@ mod tests {
     use crate::dr;
     use crate::spirv;
 
-    use std::f32;
     use super::Builder;
+    use std::f32;
 
     use crate::binary::Disassemble;
 
@@ -789,11 +813,16 @@ mod tests {
         if !module.functions.is_empty() {
             return false;
         }
-        (module.capabilities.len() + module.extensions.len() + module.ext_inst_imports.len() +
-             module.entry_points.len() +
-             module.types_global_values.len() + module.execution_modes.len() +
-             module.debugs.len() + module.annotations.len()) +
-            (if module.memory_model.is_some() { 1 } else { 0 }) == 1
+        (module.capabilities.len()
+            + module.extensions.len()
+            + module.ext_inst_imports.len()
+            + module.entry_points.len()
+            + module.types_global_values.len()
+            + module.execution_modes.len()
+            + module.debugs.len()
+            + module.annotations.len())
+            + (if module.memory_model.is_some() { 1 } else { 0 })
+            == 1
     }
 
     #[test]
@@ -986,9 +1015,9 @@ mod tests {
     fn test_forward_ref_pointer_type() {
         let mut b = Builder::new();
         let float = b.type_float(32); // 1
-        // Let builder generate
+                                      // Let builder generate
         let p1 = b.type_pointer(None, spirv::StorageClass::Input, float); // 2
-        // We supply
+                                                                          // We supply
         let pointee = b.id(); // 3
         b.type_forward_pointer(pointee, spirv::StorageClass::Output);
         let p2 = b.type_pointer(Some(pointee), spirv::StorageClass::Output, float);
@@ -1052,7 +1081,9 @@ mod tests {
         let c0 = b.constant_f32(float, 0.0f32);
         assert_eq!(3, c0);
 
-        let fid = b.begin_function(float, None, spirv::FunctionControl::NONE, f32ff32).unwrap();
+        let fid = b
+            .begin_function(float, None, spirv::FunctionControl::NONE, f32ff32)
+            .unwrap();
         assert_eq!(4, fid);
 
         let epid = b.begin_block(None).unwrap(); // Entry block id
@@ -1068,12 +1099,14 @@ mod tests {
         let fr_add = b.id();
         assert_eq!(8, fr_add);
         // OpPhi can forward reference ids for both labels and results
-        let phi = b.phi(
-            float,
-            None,
-            // From above, from this, from below
-            vec![(c0, epid), (fr_add, pbid), (c0, target2)],
-        ).unwrap();
+        let phi = b
+            .phi(
+                float,
+                None,
+                // From above, from this, from below
+                vec![(c0, epid), (fr_add, pbid), (c0, target2)],
+            )
+            .unwrap();
         assert_eq!(9, phi);
         let res_add = b.f_add(float, Some(fr_add), c0, c0).unwrap();
         assert_eq!(res_add, fr_add);
@@ -1121,7 +1154,9 @@ mod tests {
         let v1 = b.variable(ifp, None, spirv::StorageClass::Input, None);
         assert_eq!(6, v1);
 
-        let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
+        let f = b
+            .begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid)
+            .unwrap();
         assert_eq!(7, f);
         let bb = b.begin_block(None).unwrap();
         assert_eq!(8, bb);
@@ -1168,7 +1203,9 @@ mod tests {
         let v1 = b.undef(float, None);
         assert_eq!(4, v1);
 
-        let f = b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
+        let f = b
+            .begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid)
+            .unwrap();
         assert_eq!(5, f);
         let bb = b.begin_block(None).unwrap();
         assert_eq!(6, bb);

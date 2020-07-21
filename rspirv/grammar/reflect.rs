@@ -13,12 +13,12 @@ pub fn is_location_debug(opcode: spirv::Op) -> bool {
 /// Returns true if the given opcode is for a non-location debug instruction.
 pub fn is_nonlocation_debug(opcode: spirv::Op) -> bool {
     match opcode {
-        spirv::Op::SourceContinued |
-        spirv::Op::Source |
-        spirv::Op::SourceExtension |
-        spirv::Op::Name |
-        spirv::Op::MemberName |
-        spirv::Op::String => true,
+        spirv::Op::SourceContinued
+        | spirv::Op::Source
+        | spirv::Op::SourceExtension
+        | spirv::Op::Name
+        | spirv::Op::MemberName
+        | spirv::Op::String => true,
         _ => false,
     }
 }
@@ -31,17 +31,16 @@ pub fn is_debug(opcode: spirv::Op) -> bool {
 /// Returns true if the given opcode is for an annotation instruction.
 pub fn is_annotation(opcode: spirv::Op) -> bool {
     match opcode {
-        spirv::Op::Decorate |
-        spirv::Op::MemberDecorate |
-        spirv::Op::DecorationGroup |
-        spirv::Op::GroupDecorate |
-        spirv::Op::GroupMemberDecorate |
-        spirv::Op::DecorateString |
-        spirv::Op::MemberDecorateStringGOOGLE => true,
+        spirv::Op::Decorate
+        | spirv::Op::MemberDecorate
+        | spirv::Op::DecorationGroup
+        | spirv::Op::GroupDecorate
+        | spirv::Op::GroupMemberDecorate
+        | spirv::Op::DecorateString
+        | spirv::Op::MemberDecorateStringGOOGLE => true,
         _ => false,
     }
 }
-
 
 /// Returns true if the given opcode is for a type-declaring instruction.
 pub fn is_type(opcode: spirv::Op) -> bool {
@@ -75,17 +74,17 @@ pub fn is_type(opcode: spirv::Op) -> bool {
 /// Returns true if the given opcode is for a constant-defining instruction.
 pub fn is_constant(opcode: spirv::Op) -> bool {
     match opcode {
-        spirv::Op::ConstantTrue |
-        spirv::Op::ConstantFalse |
-        spirv::Op::Constant |
-        spirv::Op::ConstantComposite |
-        spirv::Op::ConstantSampler |
-        spirv::Op::ConstantNull |
-        spirv::Op::SpecConstantTrue |
-        spirv::Op::SpecConstantFalse |
-        spirv::Op::SpecConstant |
-        spirv::Op::SpecConstantComposite |
-        spirv::Op::SpecConstantOp => true,
+        spirv::Op::ConstantTrue
+        | spirv::Op::ConstantFalse
+        | spirv::Op::Constant
+        | spirv::Op::ConstantComposite
+        | spirv::Op::ConstantSampler
+        | spirv::Op::ConstantNull
+        | spirv::Op::SpecConstantTrue
+        | spirv::Op::SpecConstantFalse
+        | spirv::Op::SpecConstant
+        | spirv::Op::SpecConstantComposite
+        | spirv::Op::SpecConstantOp => true,
         _ => false,
     }
 }
@@ -98,13 +97,13 @@ pub fn is_variable(opcode: spirv::Op) -> bool {
 /// Returns true if the given opcode is for a terminator instruction.
 pub fn is_terminator(opcode: spirv::Op) -> bool {
     match opcode {
-        spirv::Op::Branch |
-        spirv::Op::BranchConditional |
-        spirv::Op::Switch |
-        spirv::Op::Kill |
-        spirv::Op::Return |
-        spirv::Op::ReturnValue |
-        spirv::Op::Unreachable => true,
+        spirv::Op::Branch
+        | spirv::Op::BranchConditional
+        | spirv::Op::Switch
+        | spirv::Op::Kill
+        | spirv::Op::Return
+        | spirv::Op::ReturnValue
+        | spirv::Op::Unreachable => true,
         _ => false,
     }
 }

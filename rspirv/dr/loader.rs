@@ -1,7 +1,7 @@
 use crate::binary;
 use crate::dr;
-use crate::spirv;
 use crate::grammar;
+use crate::spirv;
 
 use crate::binary::{ParseAction, ParseResult};
 use std::{error, fmt};
@@ -96,9 +96,11 @@ impl Loader {
 
 /// Returns `$error` if `$condition` evaluates to false.
 macro_rules! if_ret_err {
-    ($condition: expr, $error: ident) => (if $condition {
-        return ParseAction::Error(Box::new(Error::$error))
-    });
+    ($condition: expr, $error: ident) => {
+        if $condition {
+            return ParseAction::Error(Box::new(Error::$error));
+        }
+    };
 }
 
 impl binary::Consumer for Loader {
@@ -130,8 +132,9 @@ impl binary::Consumer for Loader {
                 self.module.debugs.push(inst)
             }
             opcode if grammar::reflect::is_annotation(opcode) => self.module.annotations.push(inst),
-            opcode if grammar::reflect::is_type(opcode) ||
-                      grammar::reflect::is_constant(opcode) => {
+            opcode
+                if grammar::reflect::is_type(opcode) || grammar::reflect::is_constant(opcode) =>
+            {
                 self.module.types_global_values.push(inst)
             }
             spirv::Op::Variable if self.function.is_none() => {
@@ -277,7 +280,8 @@ mod tests {
         // Global variable
         let global = b.variable(float, None, spirv::StorageClass::Input, None);
 
-        b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
+        b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid)
+            .unwrap();
         b.begin_block(None).unwrap();
         // Local variable
         let local = b.variable(float, None, spirv::StorageClass::Function, None);
@@ -312,7 +316,8 @@ mod tests {
         // Global variable
         let global = b.undef(float, None);
 
-        b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid).unwrap();
+        b.begin_function(void, None, spirv::FunctionControl::NONE, voidfvoid)
+            .unwrap();
         b.begin_block(None).unwrap();
         // Local variable
         let local = b.undef(float, None);

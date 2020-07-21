@@ -19,7 +19,11 @@ fn convert_quantifier(quantifier: structs::Quantifier) -> Ident {
 /// `grammar` is expected to be an array of SPIR-V instructions.
 /// `name` is the name of the generated table.
 /// `is_ext` indicates whether the grammar is for an extended instruction set.
-fn gen_instruction_table(grammar: &Vec<structs::Instruction>, name: &str, is_ext: bool) -> TokenStream {
+fn gen_instruction_table(
+    grammar: &Vec<structs::Instruction>,
+    name: &str,
+    is_ext: bool,
+) -> TokenStream {
     // Vector for strings for all instructions.
     let instructions = grammar.iter().map(|inst| {
         // Vector of strings for all operands.
@@ -44,7 +48,11 @@ fn gen_instruction_table(grammar: &Vec<structs::Instruction>, name: &str, is_ext
         }
     });
     let name = as_ident(name);
-    let inst_type = as_ident(if is_ext { "ExtendedInstruction" } else { "Instruction" });
+    let inst_type = as_ident(if is_ext {
+        "ExtendedInstruction"
+    } else {
+        "Instruction"
+    });
     quote! {
         static #name: &[#inst_type<'static>] = &[#(#instructions),*];
     }
@@ -53,9 +61,11 @@ fn gen_instruction_table(grammar: &Vec<structs::Instruction>, name: &str, is_ext
 /// Returns the generated grammar::INSTRUCTION_TABLE and grammar::OperandKind
 /// by walking the given SPIR-V `grammar`.
 pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar) -> TokenStream {
-
     // Enum for all operand kinds.
-    let elements = grammar.operand_kinds.iter().map(|kind| as_ident(&kind.kind));
+    let elements = grammar
+        .operand_kinds
+        .iter()
+        .map(|kind| as_ident(&kind.kind));
 
     // Instruction table.
     let table = gen_instruction_table(&grammar.instructions, "INSTRUCTION_TABLE", false);
@@ -75,12 +85,18 @@ pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar) -> Token
 /// set from `grammar` to the file with the given `filename`.
 pub fn gen_glsl_std_450_inst_table(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
     gen_instruction_table(
-        &grammar.instructions, "GLSL_STD_450_INSTRUCTION_TABLE", true)
+        &grammar.instructions,
+        "GLSL_STD_450_INSTRUCTION_TABLE",
+        true,
+    )
 }
 
 /// Writes the generated instruction table for OpenCLstd100 extended instruction
 /// set from `grammar` to the file with the given `filename`.
 pub fn gen_opencl_std_100_inst_table(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
     gen_instruction_table(
-        &grammar.instructions, "OPENCL_STD_100_INSTRUCTION_TABLE", true)
+        &grammar.instructions,
+        "OPENCL_STD_100_INSTRUCTION_TABLE",
+        true,
+    )
 }
