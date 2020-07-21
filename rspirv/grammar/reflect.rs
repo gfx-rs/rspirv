@@ -45,28 +45,28 @@ pub fn is_annotation(opcode: spirv::Op) -> bool {
 /// Returns true if the given opcode is for a type-declaring instruction.
 pub fn is_type(opcode: spirv::Op) -> bool {
     match opcode {
-        spirv::Op::TypeVoid |
-        spirv::Op::TypeBool |
-        spirv::Op::TypeInt |
-        spirv::Op::TypeFloat |
-        spirv::Op::TypeVector |
-        spirv::Op::TypeMatrix |
-        spirv::Op::TypeImage |
-        spirv::Op::TypeSampler |
-        spirv::Op::TypeSampledImage |
-        spirv::Op::TypeArray |
-        spirv::Op::TypeRuntimeArray |
-        spirv::Op::TypeStruct |
-        spirv::Op::TypeOpaque |
-        spirv::Op::TypePointer |
-        spirv::Op::TypeFunction |
-        spirv::Op::TypeEvent |
-        spirv::Op::TypeDeviceEvent |
-        spirv::Op::TypeReserveId |
-        spirv::Op::TypeQueue |
-        spirv::Op::TypePipe |
-        spirv::Op::TypeAccelerationStructureKHR |
-        spirv::Op::TypeForwardPointer => true,
+        spirv::Op::TypeVoid
+        | spirv::Op::TypeBool
+        | spirv::Op::TypeInt
+        | spirv::Op::TypeFloat
+        | spirv::Op::TypeVector
+        | spirv::Op::TypeMatrix
+        | spirv::Op::TypeImage
+        | spirv::Op::TypeSampler
+        | spirv::Op::TypeSampledImage
+        | spirv::Op::TypeArray
+        | spirv::Op::TypeRuntimeArray
+        | spirv::Op::TypeStruct
+        | spirv::Op::TypeOpaque
+        | spirv::Op::TypePointer
+        | spirv::Op::TypeFunction
+        | spirv::Op::TypeEvent
+        | spirv::Op::TypeDeviceEvent
+        | spirv::Op::TypeReserveId
+        | spirv::Op::TypeQueue
+        | spirv::Op::TypePipe
+        | spirv::Op::TypeAccelerationStructureKHR
+        | spirv::Op::TypeForwardPointer => true,
         _ => false,
     }
 }
