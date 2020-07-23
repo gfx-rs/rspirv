@@ -17,7 +17,7 @@ pub enum Error {
     NestedBlock,
     UnclosedBlock,
     MismatchedTerminator,
-    DetachedInstruction,
+    DetachedInstruction(Option<dr::Instruction>),
     EmptyInstructionList,
     WrongOpCapabilityOperand,
     WrongOpExtensionOperand,
@@ -32,26 +32,32 @@ impl Error {
     ///
     /// This method is intended to be used by fmt::Display and error::Error to
     /// avoid duplication in implementation. So it's private.
-    fn describe(&self) -> &str {
-        match *self {
-            Error::NestedFunction => "found nested function",
-            Error::UnclosedFunction => "found unclosed function",
-            Error::MismatchedFunctionEnd => "found mismatched OpFunctionEnd",
+    fn describe(&self) -> String {
+        match &*self {
+            Error::NestedFunction => "found nested function".to_string(),
+            Error::UnclosedFunction => "found unclosed function".to_string(),
+            Error::MismatchedFunctionEnd => "found mismatched OpFunctionEnd".to_string(),
             Error::DetachedFunctionParameter => {
-                "found function OpFunctionParameter not inside function"
+                "found function OpFunctionParameter not inside function".to_string()
             }
-            Error::DetachedBlock => "found block not inside function",
-            Error::NestedBlock => "found nested block",
-            Error::UnclosedBlock => "found block without terminator",
-            Error::MismatchedTerminator => "found mismatched terminator",
-            Error::DetachedInstruction => "found instruction not inside block",
-            Error::EmptyInstructionList => "list of instructions is empty",
-            Error::WrongOpCapabilityOperand => "wrong OpCapability operand",
-            Error::WrongOpExtensionOperand => "wrong OpExtension operand",
-            Error::WrongOpExtInstImportOperand => "wrong OpExtInstImport operand",
-            Error::WrongOpMemoryModelOperand => "wrong OpMemoryModel operand",
-            Error::WrongOpNameOperand => "wrong OpName operand",
-            Error::FunctionNotFound => "can't find the function",
+            Error::DetachedBlock => "found block not inside function".to_string(),
+            Error::NestedBlock => "found nested block".to_string(),
+            Error::UnclosedBlock => "found block without terminator".to_string(),
+            Error::MismatchedTerminator => "found mismatched terminator".to_string(),
+            Error::DetachedInstruction(Some(inst)) => format!(
+                "found instruction `{:?}` not inside block",
+                inst.class.opname
+            ),
+            Error::DetachedInstruction(None) => {
+                "found unknown instruction not inside block".to_string()
+            }
+            Error::EmptyInstructionList => "list of instructions is empty".to_string(),
+            Error::WrongOpCapabilityOperand => "wrong OpCapability operand".to_string(),
+            Error::WrongOpExtensionOperand => "wrong OpExtension operand".to_string(),
+            Error::WrongOpExtInstImportOperand => "wrong OpExtInstImport operand".to_string(),
+            Error::WrongOpMemoryModelOperand => "wrong OpMemoryModel operand".to_string(),
+            Error::WrongOpNameOperand => "wrong OpName operand".to_string(),
+            Error::FunctionNotFound => "can't find the function".to_string(),
         }
     }
 }
@@ -177,11 +183,13 @@ impl binary::Consumer for Loader {
                     .blocks
                     .push(self.block.take().unwrap())
             }
-            spirv::Op::ModuleProcessed => {
+            spirv::Op::ModuleProcessed | spirv::Op::Line => {
                 // Ignore
             }
             _ => {
-                if_ret_err!(self.block.is_none(), DetachedInstruction);
+                if self.block.is_none() {
+                    return ParseAction::Error(Box::new(Error::DetachedInstruction(Some(inst))));
+                }
                 self.block.as_mut().unwrap().instructions.push(inst)
             }
         }
