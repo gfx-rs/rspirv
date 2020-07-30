@@ -15,7 +15,7 @@ use derive_more::From;
 /// The order of its fields basically reveal the requirements in the
 /// [Logical Layout of a Module](https://goo.gl/2kVnfX) of the SPIR-V
 /// of the SPIR-V specification.
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Module {
     /// The module header.
     pub header: Option<ModuleHeader>,
@@ -58,7 +58,7 @@ pub struct ModuleHeader {
 }
 
 /// Data representation of a SPIR-V function.
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Function {
     /// First (defining) instruction in this function.
     pub def: Option<Instruction>,
@@ -71,7 +71,7 @@ pub struct Function {
 }
 
 /// Data representation of a SPIR-V block.
-#[derive(Debug, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Block {
     /// The label starting this block.
     pub label: Option<Instruction>,
@@ -80,7 +80,7 @@ pub struct Block {
 }
 
 /// Data representation of a SPIR-V instruction.
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Instruction {
     /// The class (grammar specification) of this instruction.
     pub class: &'static grammar::Instruction<'static>,
