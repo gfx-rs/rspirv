@@ -28,4 +28,4 @@ version = "~1.4.2"
 path = "../spirv"
 
 [dev-dependencies]
-assert_matches = "1.1"
+assert_matches = "1.3"
