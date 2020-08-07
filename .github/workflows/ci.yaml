@@ -3,12 +3,29 @@ on: [push, pull_request]
 name: Continuous integration
 
 jobs:
-  lint:
-    name: Lint and test
+  fmt:
+    name: Cargo fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+  test:
+    name: Cargo check and test
     strategy:
+      fail-fast: false
       matrix:
-        # os: [ubuntu-latest, windows-latest]
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        rust: [stable, nightly]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -16,17 +33,12 @@ jobs:
           submodules: true
       - uses: actions-rs/toolchain@v1
         with:
-          # TODO: Nightly
-          toolchain: stable
+          toolchain: ${{ matrix.rust }}
           override: true
       - uses: actions-rs/cargo@v1
         with:
           command: check
           args: --workspace --all-targets --verbose
-      - uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
       - uses: actions-rs/cargo@v1
         with:
           command: test
