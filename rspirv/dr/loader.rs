@@ -4,7 +4,7 @@ use crate::grammar;
 use crate::spirv;
 
 use crate::binary::{ParseAction, ParseResult};
-use std::{error, fmt};
+use std::{borrow::Cow, error, fmt};
 
 /// Data representation loading errors.
 #[derive(Debug)]
@@ -17,7 +17,7 @@ pub enum Error {
     NestedBlock,
     UnclosedBlock,
     MismatchedTerminator,
-    DetachedInstruction,
+    DetachedInstruction(Option<dr::Instruction>),
     EmptyInstructionList,
     WrongOpCapabilityOperand,
     WrongOpExtensionOperand,
@@ -32,26 +32,32 @@ impl Error {
     ///
     /// This method is intended to be used by fmt::Display and error::Error to
     /// avoid duplication in implementation. So it's private.
-    fn describe(&self) -> &str {
-        match *self {
-            Error::NestedFunction => "found nested function",
-            Error::UnclosedFunction => "found unclosed function",
-            Error::MismatchedFunctionEnd => "found mismatched OpFunctionEnd",
+    fn describe(&self) -> Cow<'static, str> {
+        match &*self {
+            Error::NestedFunction => Cow::Borrowed("found nested function"),
+            Error::UnclosedFunction => Cow::Borrowed("found unclosed function"),
+            Error::MismatchedFunctionEnd => Cow::Borrowed("found mismatched OpFunctionEnd"),
             Error::DetachedFunctionParameter => {
-                "found function OpFunctionParameter not inside function"
+                Cow::Borrowed("found function OpFunctionParameter not inside function")
             }
-            Error::DetachedBlock => "found block not inside function",
-            Error::NestedBlock => "found nested block",
-            Error::UnclosedBlock => "found block without terminator",
-            Error::MismatchedTerminator => "found mismatched terminator",
-            Error::DetachedInstruction => "found instruction not inside block",
-            Error::EmptyInstructionList => "list of instructions is empty",
-            Error::WrongOpCapabilityOperand => "wrong OpCapability operand",
-            Error::WrongOpExtensionOperand => "wrong OpExtension operand",
-            Error::WrongOpExtInstImportOperand => "wrong OpExtInstImport operand",
-            Error::WrongOpMemoryModelOperand => "wrong OpMemoryModel operand",
-            Error::WrongOpNameOperand => "wrong OpName operand",
-            Error::FunctionNotFound => "can't find the function",
+            Error::DetachedBlock => Cow::Borrowed("found block not inside function"),
+            Error::NestedBlock => Cow::Borrowed("found nested block"),
+            Error::UnclosedBlock => Cow::Borrowed("found block without terminator"),
+            Error::MismatchedTerminator => Cow::Borrowed("found mismatched terminator"),
+            Error::DetachedInstruction(Some(inst)) => Cow::Owned(format!(
+                "found instruction `{:?}` not inside block",
+                inst.class.opname
+            )),
+            Error::DetachedInstruction(None) => {
+                Cow::Borrowed("found unknown instruction not inside block")
+            }
+            Error::EmptyInstructionList => Cow::Borrowed("list of instructions is empty"),
+            Error::WrongOpCapabilityOperand => Cow::Borrowed("wrong OpCapability operand"),
+            Error::WrongOpExtensionOperand => Cow::Borrowed("wrong OpExtension operand"),
+            Error::WrongOpExtInstImportOperand => Cow::Borrowed("wrong OpExtInstImport operand"),
+            Error::WrongOpMemoryModelOperand => Cow::Borrowed("wrong OpMemoryModel operand"),
+            Error::WrongOpNameOperand => Cow::Borrowed("wrong OpName operand"),
+            Error::FunctionNotFound => Cow::Borrowed("can't find the function"),
         }
     }
 }
@@ -177,11 +183,13 @@ impl binary::Consumer for Loader {
                     .blocks
                     .push(self.block.take().unwrap())
             }
-            spirv::Op::ModuleProcessed => {
+            spirv::Op::ModuleProcessed | spirv::Op::Line => {
                 // Ignore
             }
             _ => {
-                if_ret_err!(self.block.is_none(), DetachedInstruction);
+                if self.block.is_none() {
+                    return ParseAction::Error(Box::new(Error::DetachedInstruction(Some(inst))));
+                }
                 self.block.as_mut().unwrap().instructions.push(inst)
             }
         }

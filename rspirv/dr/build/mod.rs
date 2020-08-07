@@ -147,7 +147,7 @@ impl Builder {
             || self.selected_function.is_some() && self.selected_block.is_some();
 
         if !allow {
-            return Err(Error::DetachedInstruction);
+            return Err(Error::DetachedInstruction(Some(inst)));
         }
 
         let ref mut block = if self.new_block.is_some() {
@@ -175,7 +175,7 @@ impl Builder {
             || self.selected_function.is_some() && self.selected_block.is_some();
 
         if !allow {
-            return Err(Error::DetachedInstruction);
+            return Err(Error::DetachedInstruction(None));
         }
 
         let ref mut block = if self.new_block.is_some() {
