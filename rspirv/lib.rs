@@ -80,7 +80,7 @@
 //! }
 //! ```
 
-extern crate spirv_headers as spirv;
+pub extern crate spirv_headers as spirv;
 
 pub mod binary;
 pub mod dr;
