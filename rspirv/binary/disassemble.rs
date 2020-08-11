@@ -53,6 +53,7 @@ fn disas_join<T: Disassemble>(insts: &[T], delimiter: &str) -> String {
 
 impl Disassemble for dr::Instruction {
     fn disassemble(&self) -> String {
+        let space = if !self.operands.is_empty() { " " } else { "" };
         format!(
             "{rid}{opcode}{rtype}{space}{operands}",
             rid = self
@@ -62,8 +63,8 @@ impl Disassemble for dr::Instruction {
             // extra space both before and after the reseult type
             rtype = self
                 .result_type
-                .map_or(String::new(), |w| format!("  %{} ", w)),
-            space = if !self.operands.is_empty() { " " } else { "" },
+                .map_or(String::new(), |w| format!("  %{}{}", w, space)),
+            space = space,
             operands = disas_join(&self.operands, " ")
         )
     }
