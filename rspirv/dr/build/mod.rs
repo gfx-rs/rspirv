@@ -1225,11 +1225,11 @@ mod tests {
                     %1 = OpTypeVoid\n\
                     %2 = OpTypeFloat 32\n\
                     %3 = OpTypeFunction %1 %1\n\
-                    %4 = OpUndef  %2 \n\
-                    %8 = OpUndef  %2 \n\
+                    %4 = OpUndef  %2\n\
+                    %8 = OpUndef  %2\n\
                     %5 = OpFunction  %1  None %3\n\
                     %6 = OpLabel\n\
-                    %7 = OpUndef  %2 \n\
+                    %7 = OpUndef  %2\n\
                     OpReturn\n\
                     OpFunctionEnd"
         );
