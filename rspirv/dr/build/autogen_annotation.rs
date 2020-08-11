@@ -58,9 +58,8 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(decoration_group)],
         );
-        for v in targets.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(targets.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpGroupMemberDecorate instruction."]
