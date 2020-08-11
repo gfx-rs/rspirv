@@ -181,9 +181,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -204,9 +203,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -226,9 +224,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -249,9 +246,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -272,9 +268,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -296,9 +291,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -401,9 +395,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -425,9 +418,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -536,9 +528,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        for v in components.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            components
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -560,9 +556,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        for v in components.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            components
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -581,9 +581,13 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        for v in constituents.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands.extend(
+            constituents
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::IdRef),
+        );
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -603,9 +607,13 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        for v in constituents.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands.extend(
+            constituents
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::IdRef),
+        );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -625,9 +633,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(composite)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            indexes
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -648,9 +660,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(composite)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            indexes
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -671,9 +687,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(object), dr::Operand::IdRef(composite)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            indexes
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -695,9 +715,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(object), dr::Operand::IdRef(composite)],
         );
-        for v in indexes.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            indexes
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -8389,9 +8413,8 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        for v in local_size.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(local_size.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -8432,9 +8455,8 @@ impl Builder {
                 dr::Operand::IdRef(param_align),
             ],
         );
-        for v in local_size.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands
+            .extend(local_size.as_ref().iter().cloned().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }

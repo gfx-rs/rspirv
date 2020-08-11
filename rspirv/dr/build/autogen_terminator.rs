@@ -146,9 +146,13 @@ impl Builder {
                 dr::Operand::IdRef(false_label),
             ],
         );
-        for v in branch_weights.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            branch_weights
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.end_block(inst)
     }
     #[doc = "Insert an OpBranchConditional instruction and ends the current block."]
@@ -171,9 +175,13 @@ impl Builder {
                 dr::Operand::IdRef(false_label),
             ],
         );
-        for v in branch_weights.as_ref() {
-            inst.operands.push(dr::Operand::LiteralInt32(*v));
-        }
+        inst.operands.extend(
+            branch_weights
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::LiteralInt32),
+        );
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpSwitch instruction and ends the current block."]

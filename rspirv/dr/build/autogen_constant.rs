@@ -39,9 +39,13 @@ impl Builder {
             Some(id),
             vec![],
         );
-        for v in constituents.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands.extend(
+            constituents
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::IdRef),
+        );
         self.module.types_global_values.push(inst);
         id
     }
@@ -117,9 +121,13 @@ impl Builder {
             Some(id),
             vec![],
         );
-        for v in constituents.as_ref() {
-            inst.operands.push(dr::Operand::IdRef(*v));
-        }
+        inst.operands.extend(
+            constituents
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::IdRef),
+        );
         self.module.types_global_values.push(inst);
         id
     }
