@@ -405,7 +405,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             inst.class == Some(Type) ||
             inst.class == Some(Constant) ||
             inst.class == Some(ExtensionDecl) ||
-            inst.class == Some(FunctionStruct) ||
+            (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall") ||
             inst.class == Some(Debug) ||
             inst.class == Some(Annotation) ||
             inst.class == Some(Terminator) ||

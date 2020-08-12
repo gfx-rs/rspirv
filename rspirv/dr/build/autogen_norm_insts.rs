@@ -18,6 +18,59 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
+    #[doc = "Appends an OpFunctionCall instruction to the current block."]
+    pub fn function_call<T: AsRef<[spirv::Word]>>(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        function: spirv::Word,
+        argument_0_argument_1: T,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FunctionCall,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(function)],
+        );
+        inst.operands.extend(
+            argument_0_argument_1
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::IdRef),
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFunctionCall instruction to the current block."]
+    pub fn insert_function_call<T: AsRef<[spirv::Word]>>(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        function: spirv::Word,
+        argument_0_argument_1: T,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FunctionCall,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(function)],
+        );
+        inst.operands.extend(
+            argument_0_argument_1
+                .as_ref()
+                .iter()
+                .cloned()
+                .map(dr::Operand::IdRef),
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpImageTexelPointer instruction to the current block."]
     pub fn image_texel_pointer(
         &mut self,
