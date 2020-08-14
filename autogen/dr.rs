@@ -182,7 +182,7 @@ fn get_push_extras(
 
 /// Returns the generated dr::Operand and its fmt::Display implementation by
 /// walking the given SPIR-V operand kinds `grammar`.
-pub fn gen_dr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> TokenStream {
+pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
     let kinds: Vec<_> = grammar
         .iter()
         .map(|element| element.kind.as_str())
@@ -265,7 +265,7 @@ pub fn gen_dr_operand_kinds(grammar: &Vec<structs::OperandKind>) -> TokenStream 
             .map(as_ident),
         );
         let cases = kinds.iter().map(|element| {
-            if &element.to_string() == &"Dim" {
+            if element.to_string() == "Dim" {
                 // Skip the "Dim" prefix, which is only used in the API to
                 // avoid having an enumerant name starting with a number
                 quote! {
