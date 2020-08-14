@@ -607,27 +607,36 @@ impl Builder {
         ));
     }
 
-    /// Appends an OpTypePointer instruction and returns the result id.
+    /// Appends an OpTypePointer instruction and returns the result id, or return the existing id if the instruction was already present.
     pub fn type_pointer(
         &mut self,
         result_id: Option<spirv::Word>,
         storage_class: spirv::StorageClass,
         pointee_type: spirv::Word,
     ) -> spirv::Word {
-        let id = match result_id {
-            Some(v) => v,
-            None => self.id(),
-        };
-        self.module.types_global_values.push(dr::Instruction::new(
+        let mut inst = dr::Instruction::new(
             spirv::Op::TypePointer,
             None,
-            Some(id),
+            result_id,
             vec![
                 dr::Operand::StorageClass(storage_class),
                 dr::Operand::IdRef(pointee_type),
             ],
-        ));
-        id
+        );
+        if let Some(result_id) = result_id {
+            // An explicit ID was provided, emit it no matter what.
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            // No ID was provided, and the type has already been declared.
+            id
+        } else {
+            // No ID was provided, it didn't already exist, so generate a new ID and emit it.
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
     }
 
     /// Appends an OpTypeOpaque instruction and returns the result id.
