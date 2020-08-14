@@ -26,7 +26,7 @@ impl Builder {
         id
     }
     #[doc = "Appends an OpConstantComposite instruction."]
-    pub fn constant_composite<T: AsRef<[spirv::Word]>>(
+    pub fn constant_composite<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         constituents: T,
@@ -39,13 +39,8 @@ impl Builder {
             Some(id),
             vec![],
         );
-        inst.operands.extend(
-            constituents
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(constituents.into_iter().map(dr::Operand::IdRef));
         self.module.types_global_values.push(inst);
         id
     }
@@ -108,7 +103,7 @@ impl Builder {
         id
     }
     #[doc = "Appends an OpSpecConstantComposite instruction."]
-    pub fn spec_constant_composite<T: AsRef<[spirv::Word]>>(
+    pub fn spec_constant_composite<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         constituents: T,
@@ -121,13 +116,8 @@ impl Builder {
             Some(id),
             vec![],
         );
-        inst.operands.extend(
-            constituents
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(constituents.into_iter().map(dr::Operand::IdRef));
         self.module.types_global_values.push(inst);
         id
     }

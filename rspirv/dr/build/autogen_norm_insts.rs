@@ -68,7 +68,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpLoad instruction to the current block."]
-    pub fn load<T: AsRef<[dr::Operand]>>(
+    pub fn load<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -88,12 +88,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpLoad instruction to the current block."]
-    pub fn insert_load<T: AsRef<[dr::Operand]>>(
+    pub fn insert_load<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -114,12 +114,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpStore instruction to the current block."]
-    pub fn store<T: AsRef<[dr::Operand]>>(
+    pub fn store<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         pointer: spirv::Word,
         object: spirv::Word,
@@ -137,12 +137,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpStore instruction to the current block."]
-    pub fn insert_store<T: AsRef<[dr::Operand]>>(
+    pub fn insert_store<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         pointer: spirv::Word,
@@ -161,12 +161,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpAccessChain instruction to the current block."]
-    pub fn access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -182,12 +182,12 @@ impl Builder {
             vec![dr::Operand::IdRef(base)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpAccessChain instruction to the current block."]
-    pub fn insert_access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn insert_access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -204,12 +204,12 @@ impl Builder {
             vec![dr::Operand::IdRef(base)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsAccessChain instruction to the current block."]
-    pub fn in_bounds_access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn in_bounds_access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -225,12 +225,12 @@ impl Builder {
             vec![dr::Operand::IdRef(base)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsAccessChain instruction to the current block."]
-    pub fn insert_in_bounds_access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn insert_in_bounds_access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -247,12 +247,12 @@ impl Builder {
             vec![dr::Operand::IdRef(base)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrAccessChain instruction to the current block."]
-    pub fn ptr_access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -269,12 +269,12 @@ impl Builder {
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpPtrAccessChain instruction to the current block."]
-    pub fn insert_ptr_access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn insert_ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -292,7 +292,7 @@ impl Builder {
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -379,7 +379,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsPtrAccessChain instruction to the current block."]
-    pub fn in_bounds_ptr_access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn in_bounds_ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -396,12 +396,12 @@ impl Builder {
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsPtrAccessChain instruction to the current block."]
-    pub fn insert_in_bounds_ptr_access_chain<T: AsRef<[spirv::Word]>>(
+    pub fn insert_in_bounds_ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -419,7 +419,7 @@ impl Builder {
             vec![dr::Operand::IdRef(base), dr::Operand::IdRef(element)],
         );
         inst.operands
-            .extend(indexes.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -512,7 +512,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpVectorShuffle instruction to the current block."]
-    pub fn vector_shuffle<T: AsRef<[u32]>>(
+    pub fn vector_shuffle<T: IntoIterator<Item = u32>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -528,18 +528,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        inst.operands.extend(
-            components
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(components.into_iter().map(dr::Operand::LiteralInt32));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpVectorShuffle instruction to the current block."]
-    pub fn insert_vector_shuffle<T: AsRef<[u32]>>(
+    pub fn insert_vector_shuffle<T: IntoIterator<Item = u32>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -556,18 +551,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
-        inst.operands.extend(
-            components
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(components.into_iter().map(dr::Operand::LiteralInt32));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeConstruct instruction to the current block."]
-    pub fn composite_construct<T: AsRef<[spirv::Word]>>(
+    pub fn composite_construct<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -581,18 +571,13 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        inst.operands.extend(
-            constituents
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(constituents.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeConstruct instruction to the current block."]
-    pub fn insert_composite_construct<T: AsRef<[spirv::Word]>>(
+    pub fn insert_composite_construct<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -607,18 +592,13 @@ impl Builder {
             Some(_id),
             vec![],
         );
-        inst.operands.extend(
-            constituents
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(constituents.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeExtract instruction to the current block."]
-    pub fn composite_extract<T: AsRef<[u32]>>(
+    pub fn composite_extract<T: IntoIterator<Item = u32>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -633,18 +613,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(composite)],
         );
-        inst.operands.extend(
-            indexes
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeExtract instruction to the current block."]
-    pub fn insert_composite_extract<T: AsRef<[u32]>>(
+    pub fn insert_composite_extract<T: IntoIterator<Item = u32>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -660,18 +635,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(composite)],
         );
-        inst.operands.extend(
-            indexes
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeInsert instruction to the current block."]
-    pub fn composite_insert<T: AsRef<[u32]>>(
+    pub fn composite_insert<T: IntoIterator<Item = u32>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -687,18 +657,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(object), dr::Operand::IdRef(composite)],
         );
-        inst.operands.extend(
-            indexes
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeInsert instruction to the current block."]
-    pub fn insert_composite_insert<T: AsRef<[u32]>>(
+    pub fn insert_composite_insert<T: IntoIterator<Item = u32>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -715,13 +680,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(object), dr::Operand::IdRef(composite)],
         );
-        inst.operands.extend(
-            indexes
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -839,7 +799,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleImplicitLod instruction to the current block."]
-    pub fn image_sample_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -863,12 +823,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -893,12 +853,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleExplicitLod instruction to the current block."]
-    pub fn image_sample_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -919,12 +879,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -946,12 +906,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefImplicitLod instruction to the current block."]
-    pub fn image_sample_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -977,12 +937,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1009,12 +969,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefExplicitLod instruction to the current block."]
-    pub fn image_sample_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1037,12 +997,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1066,12 +1026,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjImplicitLod instruction to the current block."]
-    pub fn image_sample_proj_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1095,12 +1055,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1125,12 +1085,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjExplicitLod instruction to the current block."]
-    pub fn image_sample_proj_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1151,12 +1111,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1178,12 +1138,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn image_sample_proj_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_proj_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1209,12 +1169,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_proj_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1241,12 +1201,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn image_sample_proj_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_proj_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1269,12 +1229,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_proj_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1298,12 +1258,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageFetch instruction to the current block."]
-    pub fn image_fetch<T: AsRef<[dr::Operand]>>(
+    pub fn image_fetch<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1324,12 +1284,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageFetch instruction to the current block."]
-    pub fn insert_image_fetch<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_fetch<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1351,12 +1311,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageGather instruction to the current block."]
-    pub fn image_gather<T: AsRef<[dr::Operand]>>(
+    pub fn image_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1382,12 +1342,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageGather instruction to the current block."]
-    pub fn insert_image_gather<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1414,12 +1374,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageDrefGather instruction to the current block."]
-    pub fn image_dref_gather<T: AsRef<[dr::Operand]>>(
+    pub fn image_dref_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1445,12 +1405,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageDrefGather instruction to the current block."]
-    pub fn insert_image_dref_gather<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_dref_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1477,12 +1437,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageRead instruction to the current block."]
-    pub fn image_read<T: AsRef<[dr::Operand]>>(
+    pub fn image_read<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1503,12 +1463,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageRead instruction to the current block."]
-    pub fn insert_image_read<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_read<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1530,12 +1490,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageWrite instruction to the current block."]
-    pub fn image_write<T: AsRef<[dr::Operand]>>(
+    pub fn image_write<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         image: spirv::Word,
         coordinate: spirv::Word,
@@ -1558,12 +1518,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpImageWrite instruction to the current block."]
-    pub fn insert_image_write<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_write<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         image: spirv::Word,
@@ -1587,7 +1547,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
@@ -6876,7 +6836,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpPhi instruction to the current block."]
-    pub fn phi<T: AsRef<[(spirv::Word, spirv::Word)]>>(
+    pub fn phi<T: IntoIterator<Item = (spirv::Word, spirv::Word)>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -6885,7 +6845,7 @@ impl Builder {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(_id), vec![]);
-        for v in variable_parent.as_ref() {
+        for v in variable_parent {
             inst.operands.push(dr::Operand::IdRef(v.0));
             inst.operands.push(dr::Operand::IdRef(v.1));
         }
@@ -6893,7 +6853,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpPhi instruction to the current block."]
-    pub fn insert_phi<T: AsRef<[(spirv::Word, spirv::Word)]>>(
+    pub fn insert_phi<T: IntoIterator<Item = (spirv::Word, spirv::Word)>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -6903,7 +6863,7 @@ impl Builder {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::Phi, Some(result_type), Some(_id), vec![]);
-        for v in variable_parent.as_ref() {
+        for v in variable_parent {
             inst.operands.push(dr::Operand::IdRef(v.0));
             inst.operands.push(dr::Operand::IdRef(v.1));
         }
@@ -8378,7 +8338,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpEnqueueKernel instruction to the current block."]
-    pub fn enqueue_kernel<T: AsRef<[spirv::Word]>>(
+    pub fn enqueue_kernel<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -8414,12 +8374,12 @@ impl Builder {
             ],
         );
         inst.operands
-            .extend(local_size.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(local_size.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpEnqueueKernel instruction to the current block."]
-    pub fn insert_enqueue_kernel<T: AsRef<[spirv::Word]>>(
+    pub fn insert_enqueue_kernel<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -8456,7 +8416,7 @@ impl Builder {
             ],
         );
         inst.operands
-            .extend(local_size.as_ref().iter().cloned().map(dr::Operand::IdRef));
+            .extend(local_size.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -8969,7 +8929,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -8993,12 +8953,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9023,12 +8983,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9049,12 +9009,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9076,12 +9036,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9107,12 +9067,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9139,12 +9099,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9167,12 +9127,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9196,12 +9156,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9225,12 +9185,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9255,12 +9215,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9281,12 +9241,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9308,12 +9268,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_proj_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9339,12 +9299,14 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_dref_implicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_proj_dref_implicit_lod<
+        T: IntoIterator<Item = dr::Operand>,
+    >(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9371,12 +9333,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_sample_proj_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9399,12 +9361,14 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_dref_explicit_lod<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_sample_proj_dref_explicit_lod<
+        T: IntoIterator<Item = dr::Operand>,
+    >(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9428,12 +9392,12 @@ impl Builder {
                 dr::Operand::ImageOperands(image_operands),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseFetch instruction to the current block."]
-    pub fn image_sparse_fetch<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_fetch<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9454,12 +9418,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseFetch instruction to the current block."]
-    pub fn insert_image_sparse_fetch<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_fetch<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9481,12 +9445,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseGather instruction to the current block."]
-    pub fn image_sparse_gather<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9512,12 +9476,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseGather instruction to the current block."]
-    pub fn insert_image_sparse_gather<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9544,12 +9508,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseDrefGather instruction to the current block."]
-    pub fn image_sparse_dref_gather<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_dref_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9575,12 +9539,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseDrefGather instruction to the current block."]
-    pub fn insert_image_sparse_dref_gather<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_dref_gather<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9607,7 +9571,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -9741,7 +9705,7 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpImageSparseRead instruction to the current block."]
-    pub fn image_sparse_read<T: AsRef<[dr::Operand]>>(
+    pub fn image_sparse_read<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9762,12 +9726,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseRead instruction to the current block."]
-    pub fn insert_image_sparse_read<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sparse_read<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9789,7 +9753,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -12991,7 +12955,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleFootprintNV instruction to the current block."]
-    pub fn image_sample_footprint_nv<T: AsRef<[dr::Operand]>>(
+    pub fn image_sample_footprint_nv<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -13019,12 +12983,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleFootprintNV instruction to the current block."]
-    pub fn insert_image_sample_footprint_nv<T: AsRef<[dr::Operand]>>(
+    pub fn insert_image_sample_footprint_nv<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -13053,7 +13017,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::ImageOperands(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -13496,7 +13460,7 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpCooperativeMatrixLoadNV instruction to the current block."]
-    pub fn cooperative_matrix_load_nv<T: AsRef<[dr::Operand]>>(
+    pub fn cooperative_matrix_load_nv<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -13522,12 +13486,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixLoadNV instruction to the current block."]
-    pub fn insert_cooperative_matrix_load_nv<T: AsRef<[dr::Operand]>>(
+    pub fn insert_cooperative_matrix_load_nv<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -13554,12 +13518,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixStoreNV instruction to the current block."]
-    pub fn cooperative_matrix_store_nv<T: AsRef<[dr::Operand]>>(
+    pub fn cooperative_matrix_store_nv<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         pointer: spirv::Word,
         object: spirv::Word,
@@ -13584,12 +13548,12 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
     #[doc = "Appends an OpCooperativeMatrixStoreNV instruction to the current block."]
-    pub fn insert_cooperative_matrix_store_nv<T: AsRef<[dr::Operand]>>(
+    pub fn insert_cooperative_matrix_store_nv<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         pointer: spirv::Word,
@@ -13615,7 +13579,7 @@ impl Builder {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }

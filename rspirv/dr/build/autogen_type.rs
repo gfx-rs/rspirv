@@ -211,16 +211,14 @@ impl Builder {
         }
     }
     #[doc = "Appends an OpTypeStruct instruction and returns the result id, or return the existing id if the instruction was already present."]
-    pub fn type_struct<T: AsRef<[spirv::Word]>>(
+    pub fn type_struct<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         member_0_type_member_1_type: T,
     ) -> spirv::Word {
         let mut inst = dr::Instruction::new(spirv::Op::TypeStruct, None, None, vec![]);
         inst.operands.extend(
             member_0_type_member_1_type
-                .as_ref()
-                .iter()
-                .cloned()
+                .into_iter()
                 .map(dr::Operand::IdRef),
         );
         if let Some(id) = self.dedup_insert_type(&inst) {
@@ -233,7 +231,7 @@ impl Builder {
         }
     }
     #[doc = "Appends an OpTypeFunction instruction and returns the result id, or return the existing id if the instruction was already present."]
-    pub fn type_function<T: AsRef<[spirv::Word]>>(
+    pub fn type_function<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         return_type: spirv::Word,
         parameter_0_type_parameter_1_type: T,
@@ -246,9 +244,7 @@ impl Builder {
         );
         inst.operands.extend(
             parameter_0_type_parameter_1_type
-                .as_ref()
-                .iter()
-                .cloned()
+                .into_iter()
                 .map(dr::Operand::IdRef),
         );
         if let Some(id) = self.dedup_insert_type(&inst) {

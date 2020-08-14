@@ -47,7 +47,7 @@ fn get_param_list(
                     structs::Quantifier::One => quote! { #name: #kind },
                     structs::Quantifier::ZeroOrOne => quote! { #name: Option<#kind> },
                     structs::Quantifier::ZeroOrMore => {
-                        type_generics = quote! { <T: AsRef<[#kind]>> };
+                        type_generics = quote! { <T: IntoIterator<Item = #kind>> };
                         quote! { #name: T }
                     }
                 })
@@ -57,7 +57,7 @@ fn get_param_list(
     // The last operand may require additional parameters.
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
-            type_generics = quote! { <T: AsRef<[dr::Operand]>> };
+            type_generics = quote! { <T: IntoIterator<Item = dr::Operand>> };
             list.push(quote! { additional_params: T });
         }
     }
@@ -140,21 +140,21 @@ fn get_push_extras(
                     // still doesn't solve 64-bit selectors in OpSwitch.
                     if param.kind == "PairLiteralIntegerIdRef" {
                         Some(quote! {
-                            for v in #name.as_ref() {
+                            for v in #name {
                                 #container.push(dr::Operand::LiteralInt32(v.0));
                                 #container.push(dr::Operand::IdRef(v.1));
                             }
                         })
                     } else if param.kind == "PairIdRefLiteralInteger" {
                         Some(quote! {
-                            for v in #name.as_ref() {
+                            for v in #name {
                                 #container.push(dr::Operand::IdRef(v.0));
                                 #container.push(dr::Operand::LiteralInt32(v.1));
                             }
                         })
                     } else if param.kind == "PairIdRefIdRef" {
                         Some(quote! {
-                            for v in #name.as_ref() {
+                            for v in #name {
                                 #container.push(dr::Operand::IdRef(v.0));
                                 #container.push(dr::Operand::IdRef(v.1));
                             }
@@ -162,7 +162,7 @@ fn get_push_extras(
                     } else {
                         let kind = get_dr_operand_kind(&param.kind);
                         Some(quote! {
-                            #container.extend(#name.as_ref().iter().cloned().map(dr::Operand::#kind));
+                            #container.extend(#name.into_iter().map(dr::Operand::#kind));
                         })
                     }
                 }
@@ -173,7 +173,7 @@ fn get_push_extras(
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
             list.push(quote! {
-                #container.extend_from_slice(additional_params.as_ref());
+                #container.extend(additional_params);
             });
         }
     }

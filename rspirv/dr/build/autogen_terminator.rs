@@ -4,7 +4,7 @@
 
 impl Builder {
     #[doc = "Appends an OpLoopMerge instruction and ends the current block."]
-    pub fn loop_merge<T: AsRef<[dr::Operand]>>(
+    pub fn loop_merge<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         merge_block: spirv::Word,
         continue_target: spirv::Word,
@@ -22,11 +22,11 @@ impl Builder {
                 dr::Operand::LoopControl(loop_control),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.end_block(inst)
     }
     #[doc = "Insert an OpLoopMerge instruction and ends the current block."]
-    pub fn insert_loop_merge<T: AsRef<[dr::Operand]>>(
+    pub fn insert_loop_merge<T: IntoIterator<Item = dr::Operand>>(
         &mut self,
         insert_point: InsertPoint,
         merge_block: spirv::Word,
@@ -45,7 +45,7 @@ impl Builder {
                 dr::Operand::LoopControl(loop_control),
             ],
         );
-        inst.operands.extend_from_slice(additional_params.as_ref());
+        inst.operands.extend(additional_params);
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpSelectionMerge instruction and ends the current block."]
@@ -128,7 +128,7 @@ impl Builder {
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpBranchConditional instruction and ends the current block."]
-    pub fn branch_conditional<T: AsRef<[u32]>>(
+    pub fn branch_conditional<T: IntoIterator<Item = u32>>(
         &mut self,
         condition: spirv::Word,
         true_label: spirv::Word,
@@ -146,17 +146,12 @@ impl Builder {
                 dr::Operand::IdRef(false_label),
             ],
         );
-        inst.operands.extend(
-            branch_weights
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(branch_weights.into_iter().map(dr::Operand::LiteralInt32));
         self.end_block(inst)
     }
     #[doc = "Insert an OpBranchConditional instruction and ends the current block."]
-    pub fn insert_branch_conditional<T: AsRef<[u32]>>(
+    pub fn insert_branch_conditional<T: IntoIterator<Item = u32>>(
         &mut self,
         insert_point: InsertPoint,
         condition: spirv::Word,
@@ -175,17 +170,12 @@ impl Builder {
                 dr::Operand::IdRef(false_label),
             ],
         );
-        inst.operands.extend(
-            branch_weights
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::LiteralInt32),
-        );
+        inst.operands
+            .extend(branch_weights.into_iter().map(dr::Operand::LiteralInt32));
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpSwitch instruction and ends the current block."]
-    pub fn switch<T: AsRef<[(u32, spirv::Word)]>>(
+    pub fn switch<T: IntoIterator<Item = (u32, spirv::Word)>>(
         &mut self,
         selector: spirv::Word,
         default: spirv::Word,
@@ -198,14 +188,14 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(selector), dr::Operand::IdRef(default)],
         );
-        for v in target.as_ref() {
+        for v in target {
             inst.operands.push(dr::Operand::LiteralInt32(v.0));
             inst.operands.push(dr::Operand::IdRef(v.1));
         }
         self.end_block(inst)
     }
     #[doc = "Insert an OpSwitch instruction and ends the current block."]
-    pub fn insert_switch<T: AsRef<[(u32, spirv::Word)]>>(
+    pub fn insert_switch<T: IntoIterator<Item = (u32, spirv::Word)>>(
         &mut self,
         insert_point: InsertPoint,
         selector: spirv::Word,
@@ -219,7 +209,7 @@ impl Builder {
             None,
             vec![dr::Operand::IdRef(selector), dr::Operand::IdRef(default)],
         );
-        for v in target.as_ref() {
+        for v in target {
             inst.operands.push(dr::Operand::LiteralInt32(v.0));
             inst.operands.push(dr::Operand::IdRef(v.1));
         }
