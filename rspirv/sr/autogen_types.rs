@@ -50,7 +50,7 @@ pub enum Type {
     },
     Pointer {
         storage_class: spirv::StorageClass,
-        ty: spirv::Word,
+        ty: Token<Type>,
     },
     Function {
         return_type: Token<Type>,

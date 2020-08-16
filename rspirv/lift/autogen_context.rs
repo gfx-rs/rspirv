@@ -235,7 +235,7 @@ impl LiftContext {
             }),
             6u32 => Ok(ops::Op::MemberName {
                 ty: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -5651,7 +5651,7 @@ impl LiftContext {
             }),
             5362u32 => Ok(ops::Op::CooperativeMatrixLengthNV {
                 ty: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -8149,7 +8149,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 ty: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
