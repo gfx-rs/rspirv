@@ -348,10 +348,11 @@ impl<'c, 'd> Parser<'c, 'd> {
         if let Some(g) = GInstTable::lookup_opcode(number as u16) {
             // TODO: check whether this opcode is allowed here.
             operands.push(dr::Operand::LiteralSpecConstantOpInteger(g.opcode));
-            // We need id parameters to this SpecConstantOp.
-            for operand in g.operands {
-                if operand.kind == GOpKind::IdRef {
-                    operands.push(dr::Operand::IdRef(self.decoder.id()?))
+
+            // We need all parameters to this SpecConstantOp.
+            for loperand in g.operands {
+                if loperand.kind != GOpKind::IdResultType && loperand.kind != GOpKind::IdResult {
+                    operands.append(&mut self.parse_operand(loperand.kind)?);
                 }
             }
             Ok(operands)
