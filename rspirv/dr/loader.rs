@@ -25,6 +25,7 @@ pub enum Error {
     WrongOpMemoryModelOperand,
     WrongOpNameOperand,
     FunctionNotFound,
+    BlockNotFound,
 }
 
 impl Error {
@@ -58,6 +59,7 @@ impl Error {
             Error::WrongOpMemoryModelOperand => Cow::Borrowed("wrong OpMemoryModel operand"),
             Error::WrongOpNameOperand => Cow::Borrowed("wrong OpName operand"),
             Error::FunctionNotFound => Cow::Borrowed("can't find the function"),
+            Error::BlockNotFound => Cow::Borrowed("can't find the block"),
         }
     }
 }
