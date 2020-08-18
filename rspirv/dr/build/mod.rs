@@ -90,8 +90,6 @@ type BuildResult<T> = result::Result<T, Error>;
 pub struct Builder {
     module: dr::Module,
     next_id: u32,
-    new_function: Option<dr::Function>,
-    new_block: Option<dr::Block>,
     selected_function: Option<usize>,
     selected_block: Option<usize>,
     version: Option<(u8, u8)>,
@@ -110,9 +108,7 @@ impl Builder {
         Builder {
             module: dr::Module::new(),
             next_id: 1,
-            new_function: None,
             selected_function: None,
-            new_block: None,
             selected_block: None,
             version: None,
         }
@@ -130,9 +126,7 @@ impl Builder {
         Builder {
             module,
             next_id,
-            new_function: None,
             selected_function: None,
-            new_block: None,
             selected_block: None,
             version,
         }
@@ -143,19 +137,13 @@ impl Builder {
         insert_point: InsertPoint,
         inst: dr::Instruction,
     ) -> BuildResult<()> {
-        let allow = self.new_block.is_some()
-            || self.selected_function.is_some() && self.selected_block.is_some();
+        let (selected_function, selected_block) =
+            match (self.selected_function, self.selected_block) {
+                (Some(f), Some(b)) => (f, b),
+                _ => return Err(Error::DetachedInstruction(Some(inst))),
+            };
 
-        if !allow {
-            return Err(Error::DetachedInstruction(Some(inst)));
-        }
-
-        let ref mut block = if self.new_block.is_some() {
-            self.new_block.as_mut().unwrap()
-        } else {
-            &mut self.module.functions[self.selected_function.unwrap()].blocks
-                [self.selected_block.unwrap()]
-        };
+        let block = &mut self.module.functions[selected_function].blocks[selected_block];
 
         match insert_point {
             InsertPoint::End => block.instructions.push(inst),
@@ -171,19 +159,13 @@ impl Builder {
     }
 
     pub fn pop_instruction(&mut self) -> BuildResult<dr::Instruction> {
-        let allow = self.new_block.is_some()
-            || self.selected_function.is_some() && self.selected_block.is_some();
+        let (selected_function, selected_block) =
+            match (self.selected_function, self.selected_block) {
+                (Some(f), Some(b)) => (f, b),
+                _ => return Err(Error::DetachedInstruction(None)),
+            };
 
-        if !allow {
-            return Err(Error::DetachedInstruction(None));
-        }
-
-        let ref mut block = if self.new_block.is_some() {
-            self.new_block.as_mut().unwrap()
-        } else {
-            &mut self.module.functions[self.selected_function.unwrap()].blocks
-                [self.selected_block.unwrap()]
-        };
+        let block = &mut self.module.functions[selected_function].blocks[selected_block];
 
         block
             .instructions
@@ -218,8 +200,16 @@ impl Builder {
     }
 
     /// Returns the `Module` as reference under construction.
-    pub fn module_ref<'a>(&'a self) -> &'a dr::Module {
+    pub fn module_ref(&self) -> &dr::Module {
         &self.module
+    }
+
+    pub fn selected_function(&self) -> Option<usize> {
+        self.selected_function
+    }
+
+    pub fn selected_block(&self) -> Option<usize> {
+        self.selected_block
     }
 
     /// Returns the next unused id.
@@ -276,7 +266,7 @@ impl Builder {
                         if found_name == name {
                             for (idx, func) in self.module.functions.iter().enumerate() {
                                 if func.def.as_ref().unwrap().result_id.unwrap() == target_id {
-                                    return self.select_function(idx);
+                                    return self.select_function(Some(idx));
                                 }
                             }
                         }
@@ -288,19 +278,46 @@ impl Builder {
         Err(Error::FunctionNotFound)
     }
 
-    /// Select a function to insert instructions into by index (indexed into self.module.functions)
-    pub fn select_function(&mut self, idx: usize) -> BuildResult<()> {
-        if idx < self.module.functions.len() {
-            self.selected_function = Some(idx);
-            Ok(())
-        } else {
-            Err(Error::FunctionNotFound)
+    /// Select a function to insert instructions into by index (indexed into self.module.functions), or unselect if None
+    pub fn select_function(&mut self, idx: Option<usize>) -> BuildResult<()> {
+        match idx {
+            Some(idx) => {
+                if idx < self.module.functions.len() {
+                    self.selected_function = Some(idx);
+                    Ok(())
+                } else {
+                    Err(Error::FunctionNotFound)
+                }
+            }
+            None => {
+                // make sure to unselect block too
+                self.selected_block = None;
+                self.selected_function = None;
+                Ok(())
+            }
         }
     }
 
-    /// Select a basic block (by index) to insert instructions into, indexed off of self.modules.functions[self.selected_function].blocks[idx]
-    pub fn select_block(&mut self, idx: usize) {
-        self.selected_block = Some(idx);
+    /// Select a basic block (by index) to insert instructions into, indexed off of self.modules.functions[self.selected_function].blocks[idx], or unselect if None
+    pub fn select_block(&mut self, idx: Option<usize>) -> BuildResult<()> {
+        match idx {
+            Some(idx) => {
+                let selected_function = match self.selected_function {
+                    Some(f) => f,
+                    None => return Err(Error::DetachedBlock),
+                };
+                if idx < self.module.functions[selected_function].blocks.len() {
+                    self.selected_block = Some(idx);
+                    Ok(())
+                } else {
+                    Err(Error::BlockNotFound)
+                }
+            }
+            None => {
+                self.selected_block = None;
+                Ok(())
+            }
+        }
     }
 
     /// Begins building of a new function.
@@ -315,7 +332,7 @@ impl Builder {
         control: spirv::FunctionControl,
         function_type: spirv::Word,
     ) -> BuildResult<spirv::Word> {
-        if self.new_function.is_some() {
+        if self.selected_function.is_some() {
             return Err(Error::NestedFunction);
         }
 
@@ -334,32 +351,34 @@ impl Builder {
                 dr::Operand::IdRef(function_type),
             ],
         ));
-        self.new_function = Some(f);
+        self.module.functions.push(f);
+        self.selected_function = Some(self.module.functions.len() - 1);
         Ok(id)
     }
 
     /// Ends building of the current function.
     pub fn end_function(&mut self) -> BuildResult<()> {
-        if self.new_function.is_none() {
-            return Err(Error::MismatchedFunctionEnd);
-        }
+        let selected_function = match self.selected_function {
+            Some(f) => f,
+            None => return Err(Error::MismatchedFunctionEnd),
+        };
 
-        let mut f = self.new_function.take().unwrap();
-        f.end = Some(dr::Instruction::new(
+        self.module.functions[selected_function].end = Some(dr::Instruction::new(
             spirv::Op::FunctionEnd,
             None,
             None,
             vec![],
         ));
-        self.module.functions.push(f);
+        self.selected_function = None;
         Ok(())
     }
 
     /// Declares a formal parameter for the current function.
     pub fn function_parameter(&mut self, result_type: spirv::Word) -> BuildResult<spirv::Word> {
-        if self.new_function.is_none() {
-            return Err(Error::DetachedFunctionParameter);
-        }
+        let selected_function = match self.selected_function {
+            Some(f) => f,
+            None => return Err(Error::DetachedFunctionParameter),
+        };
         let id = self.id();
         let inst = dr::Instruction::new(
             spirv::Op::FunctionParameter,
@@ -367,7 +386,9 @@ impl Builder {
             Some(id),
             vec![],
         );
-        self.new_function.as_mut().unwrap().parameters.push(inst);
+        self.module.functions[selected_function]
+            .parameters
+            .push(inst);
         Ok(id)
     }
 
@@ -377,10 +398,11 @@ impl Builder {
     /// id for the `OpLabel` instruction begining this block; otherwise,
     /// a unused result id will be automatically assigned.
     pub fn begin_block(&mut self, label_id: Option<spirv::Word>) -> BuildResult<spirv::Word> {
-        if !(self.new_function.is_some() || self.selected_function.is_some()) {
-            return Err(Error::DetachedBlock);
-        }
-        if self.new_block.is_some() || self.selected_block.is_some() {
+        let selected_function = match self.selected_function {
+            Some(f) => f,
+            None => return Err(Error::DetachedBlock),
+        };
+        if self.selected_block.is_some() {
             return Err(Error::NestedBlock);
         }
 
@@ -397,7 +419,9 @@ impl Builder {
             vec![],
         ));
 
-        self.new_block = Some(bb);
+        let blocks = &mut self.module.functions[selected_function].blocks;
+        blocks.push(bb);
+        self.selected_block = Some(blocks.len() - 1);
         Ok(id)
     }
 
@@ -409,10 +433,11 @@ impl Builder {
         &mut self,
         label_id: Option<spirv::Word>,
     ) -> BuildResult<spirv::Word> {
-        if !(self.new_function.is_some() || self.selected_function.is_some()) {
-            return Err(Error::DetachedBlock);
-        }
-        if self.new_block.is_some() || self.selected_block.is_some() {
+        let selected_function = match self.selected_function {
+            Some(f) => f,
+            None => return Err(Error::DetachedBlock),
+        };
+        if self.selected_block.is_some() {
             return Err(Error::NestedBlock);
         }
 
@@ -422,7 +447,9 @@ impl Builder {
         };
 
         let bb = dr::Block::new();
-        self.new_block = Some(bb);
+        let blocks = &mut self.module.functions[selected_function].blocks;
+        blocks.push(bb);
+        self.selected_block = Some(blocks.len() - 1);
         Ok(id)
     }
 
@@ -435,26 +462,6 @@ impl Builder {
         insert_point: InsertPoint,
         inst: dr::Instruction,
     ) -> BuildResult<()> {
-        if self.new_block.is_some() {
-            self.insert_into_block(insert_point, inst)?;
-
-            if self.new_function.is_some() {
-                self.new_function
-                    .as_mut()
-                    .unwrap()
-                    .blocks
-                    .push(self.new_block.take().unwrap());
-            }
-
-            if let Some(idx) = self.selected_function {
-                self.module.functions[idx]
-                    .blocks
-                    .push(self.new_block.take().unwrap());
-            }
-
-            return Ok(());
-        }
-
         if self.selected_block.is_some() {
             self.insert_into_block(insert_point, inst)?;
             self.selected_block = None;
@@ -778,9 +785,13 @@ impl Builder {
         }
         let inst = dr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
 
-        match self.new_block {
-            Some(ref mut bb) => bb.instructions.push(inst),
-            None => self.module.types_global_values.push(inst),
+        match (self.selected_function, self.selected_block) {
+            (Some(selected_function), Some(selected_block)) => {
+                self.module.functions[selected_function].blocks[selected_block]
+                    .instructions
+                    .push(inst)
+            }
+            _ => self.module.types_global_values.push(inst),
         }
         id
     }
@@ -798,9 +809,13 @@ impl Builder {
         };
         let inst = dr::Instruction::new(spirv::Op::Undef, Some(result_type), Some(id), vec![]);
 
-        match self.new_block {
-            Some(ref mut bb) => bb.instructions.push(inst),
-            None => self.module.types_global_values.push(inst),
+        match (self.selected_function, self.selected_block) {
+            (Some(selected_function), Some(selected_block)) => {
+                self.module.functions[selected_function].blocks[selected_block]
+                    .instructions
+                    .push(inst)
+            }
+            _ => self.module.types_global_values.push(inst),
         }
         id
     }
