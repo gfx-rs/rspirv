@@ -72,7 +72,7 @@ pub enum Op {
         name: String,
     },
     MemberName {
-        ty: spirv::Word,
+        ty: Token<Type>,
         member: u32,
         name: String,
     },
@@ -1494,7 +1494,7 @@ pub enum Op {
         c: spirv::Word,
     },
     CooperativeMatrixLengthNV {
-        ty: spirv::Word,
+        ty: Token<Type>,
     },
     BeginInvocationInterlockEXT,
     EndInvocationInterlockEXT,

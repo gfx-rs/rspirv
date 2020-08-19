@@ -35,7 +35,7 @@ impl OperandTokens {
                         quote! { StructMember },
                         quote! { StructMember::new(self.types.lookup_token(*value)) },
                     ),
-                    "Parameter Types" => (
+                    "Parameter Types" | "Type" => (
                         quote! { Token<Type> },
                         quote! { self.types.lookup_token(*value) },
                     ),
