@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/rspirv/0.6/")]
+#![doc(html_root_url = "https://docs.rs/rspirv/0.7/")]
 
 //! Library APIs for SPIR-V module processing functionalities.
 //!

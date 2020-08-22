@@ -1,6 +1,6 @@
 [package]
 name = "rspirv"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 edition = "2018"
 
@@ -24,7 +24,7 @@ fxhash = "0.2"
 num-traits = "0.2"
 
 [dependencies.spirv_headers]
-version = "~1.4.2"
+version = "~1.5.0"
 path = "../spirv"
 
 [dev-dependencies]
