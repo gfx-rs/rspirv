@@ -33,8 +33,9 @@ fn get_param_list(
     let mut type_generics = TokenStream::new();
     let mut list: Vec<_> = params
         .iter()
-        .filter_map(|param| {
-            let name = get_param_name(param);
+        .enumerate()
+        .filter_map(|(param_index, param)| {
+            let name = get_param_name(params, param_index);
             let kind = get_enum_underlying_type(&param.kind, true);
             if param.kind == "IdResult" {
                 if keep_result_id {
@@ -94,13 +95,14 @@ fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
 fn get_init_list(params: &[structs::Operand]) -> Vec<TokenStream> {
     params
         .iter()
-        .filter_map(|param| {
+        .enumerate()
+        .filter_map(|(param_index, param)| {
             if param.quantifier == structs::Quantifier::One {
                 if param.kind == "IdResult" || param.kind == "IdResultType" {
                     // These two operands are not stored in the operands field.
                     None
                 } else {
-                    let name = get_param_name(param);
+                    let name = get_param_name(params, param_index);
                     let kind = get_dr_operand_kind(&param.kind);
                     Some(if kind == "LiteralString" {
                         quote! { dr::Operand::LiteralString(#name.into()) }
@@ -122,8 +124,9 @@ fn get_push_extras(
 ) -> Vec<TokenStream> {
     let mut list: Vec<_> = params
         .iter()
-        .filter_map(|param| {
-            let name = get_param_name(param);
+        .enumerate()
+        .filter_map(|(param_index, param)| {
+            let name = get_param_name(params, param_index);
             match param.quantifier {
                 structs::Quantifier::One => None,
                 structs::Quantifier::ZeroOrOne => {
@@ -417,8 +420,6 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             inst.opname == "OpTypeOpaque" ||
             inst.opname == "OpUndef" ||
             inst.opname == "OpVariable" ||
-            inst.opname == "OpCopyMemory" ||
-            inst.opname == "OpCopyMemorySized" ||
             inst.opname.starts_with("OpType");
         !skip
     }).map(|inst| {

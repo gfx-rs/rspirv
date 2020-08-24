@@ -66,19 +66,38 @@ pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> TokenStream
 }
 
 /// Returns a suitable name for the given parameter.
-pub fn get_param_name(param: &structs::Operand) -> Ident {
-    let mut name = if param.name.len() == 0 {
-        if param.kind == "IdResultType" {
-            "result_type".to_string()
+pub fn get_param_name(params: &[structs::Operand], param_index: usize) -> Ident {
+    fn get_original_name(param: &structs::Operand) -> &str {
+        if param.name.is_empty() {
+            if param.kind == "IdResultType" {
+                "result_type"
+            } else {
+                &param.kind
+            }
         } else {
-            param.kind.to_snake_case()
+            &param.name
         }
-    } else {
-        param.name.to_snake_case()
-    };
+    }
+
+    let param = &params[param_index];
+
+    let raw_name = get_original_name(param);
+
+    // OpCopyMemory and OpCopyMemorySized have duplicate field names
+    let duplicate_count = params
+        .iter()
+        .take(param_index)
+        .filter(|p| get_original_name(p) == raw_name)
+        .count();
+
+    let mut name = raw_name.to_snake_case();
 
     if name == "type" {
         name = "ty".to_owned();
+    }
+
+    if duplicate_count > 0 {
+        name = format!("{}_{}", name, duplicate_count + 1);
     }
 
     as_ident(&name)

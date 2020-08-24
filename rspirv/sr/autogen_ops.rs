@@ -102,6 +102,19 @@ pub enum Op {
         object: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
     },
+    CopyMemory {
+        target: spirv::Word,
+        source: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        memory_access_2: Option<spirv::MemoryAccess>,
+    },
+    CopyMemorySized {
+        target: spirv::Word,
+        source: spirv::Word,
+        size: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        memory_access_2: Option<spirv::MemoryAccess>,
+    },
     AccessChain {
         base: spirv::Word,
         indexes: Vec<spirv::Word>,
