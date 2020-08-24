@@ -20,8 +20,13 @@ struct OperandTokens {
 }
 
 impl OperandTokens {
-    fn new(operand: &structs::Operand, inst: Option<&structs::Instruction>) -> Self {
-        let name = get_param_name(operand);
+    fn new(
+        operands: &[structs::Operand],
+        operand_index: usize,
+        inst: Option<&structs::Instruction>,
+    ) -> Self {
+        let operand = &operands[operand_index];
+        let name = get_param_name(operands, operand_index);
         let iter = Ident::new(OPERAND_ITER, Span::call_site());
 
         let (ty, lift_value, first_name, second_name) = match operand.kind.as_str() {
@@ -217,10 +222,8 @@ pub fn gen_sr_code_from_operand_kind_grammar(
         .iter()
         .map(|enumerant| {
             // Parameters for this enumerant
-            let types: Vec<_> = enumerant
-                .parameters
-                .iter()
-                .map(|p| OperandTokens::new(p, None).quantified_type)
+            let types: Vec<_> = (0..enumerant.parameters.len())
+                .map(|p| OperandTokens::new(&enumerant.parameters, p, None).quantified_type)
                 .collect();
             let params = if types.is_empty() {
                 quote! {}
@@ -287,10 +290,6 @@ pub fn gen_sr_code_from_instruction_grammar(
         // Get the token for its enumerant
         let inst_name = &inst.opname[2..];
 
-        // todo: these have parameters with duplicate names in the .json - just skip them for now
-        if inst_name == "CopyMemory" || inst_name == "CopyMemorySized" {
-            continue;
-        }
         let name_ident = Ident::new(inst_name, Span::call_site());
         let type_name = if inst.opname.len() > TYPE_PREFIX_LENGTH {
             &inst.opname[TYPE_PREFIX_LENGTH..]
@@ -298,7 +297,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             "_"
         };
 
-        let type_name = if type_name.chars().nth(0).unwrap().is_ascii_digit() {
+        let type_name = if type_name.chars().next().unwrap().is_ascii_digit() {
             format!("p_{}", type_name)
         } else {
             type_name.to_string()
@@ -313,11 +312,11 @@ pub fn gen_sr_code_from_instruction_grammar(
         field_lifts.clear();
 
         // Compose the token stream for all parameters
-        for operand in inst.operands.iter() {
+        for (index, operand) in inst.operands.iter().enumerate() {
             if operand.kind.starts_with("IdResult") {
                 continue;
             }
-            let tokens = OperandTokens::new(operand, Some(&inst));
+            let tokens = OperandTokens::new(&inst.operands, index, Some(&inst));
             field_names.push(tokens.name);
             field_types.push(tokens.quantified_type);
             field_lifts.push(tokens.lift_expression);

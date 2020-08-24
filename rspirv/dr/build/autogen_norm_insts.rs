@@ -19,7 +19,7 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpFunctionCall instruction to the current block."]
-    pub fn function_call<T: AsRef<[spirv::Word]>>(
+    pub fn function_call<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -34,18 +34,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(function)],
         );
-        inst.operands.extend(
-            argument_0_argument_1
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(argument_0_argument_1.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFunctionCall instruction to the current block."]
-    pub fn insert_function_call<T: AsRef<[spirv::Word]>>(
+    pub fn insert_function_call<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -61,13 +56,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(function)],
         );
-        inst.operands.extend(
-            argument_0_argument_1
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(argument_0_argument_1.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -211,6 +201,130 @@ impl Builder {
             vec![dr::Operand::IdRef(pointer), dr::Operand::IdRef(object)],
         );
         if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        inst.operands.extend(additional_params);
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpCopyMemory instruction to the current block."]
+    pub fn copy_memory<T: IntoIterator<Item = dr::Operand>>(
+        &mut self,
+        target: spirv::Word,
+        source: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        memory_access_2: Option<spirv::MemoryAccess>,
+        additional_params: T,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CopyMemory,
+            None,
+            None,
+            vec![dr::Operand::IdRef(target), dr::Operand::IdRef(source)],
+        );
+        if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        if let Some(v) = memory_access_2 {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        inst.operands.extend(additional_params);
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpCopyMemory instruction to the current block."]
+    pub fn insert_copy_memory<T: IntoIterator<Item = dr::Operand>>(
+        &mut self,
+        insert_point: InsertPoint,
+        target: spirv::Word,
+        source: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        memory_access_2: Option<spirv::MemoryAccess>,
+        additional_params: T,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CopyMemory,
+            None,
+            None,
+            vec![dr::Operand::IdRef(target), dr::Operand::IdRef(source)],
+        );
+        if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        if let Some(v) = memory_access_2 {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        inst.operands.extend(additional_params);
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpCopyMemorySized instruction to the current block."]
+    pub fn copy_memory_sized<T: IntoIterator<Item = dr::Operand>>(
+        &mut self,
+        target: spirv::Word,
+        source: spirv::Word,
+        size: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        memory_access_2: Option<spirv::MemoryAccess>,
+        additional_params: T,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CopyMemorySized,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(target),
+                dr::Operand::IdRef(source),
+                dr::Operand::IdRef(size),
+            ],
+        );
+        if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        if let Some(v) = memory_access_2 {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        inst.operands.extend(additional_params);
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpCopyMemorySized instruction to the current block."]
+    pub fn insert_copy_memory_sized<T: IntoIterator<Item = dr::Operand>>(
+        &mut self,
+        insert_point: InsertPoint,
+        target: spirv::Word,
+        source: spirv::Word,
+        size: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        memory_access_2: Option<spirv::MemoryAccess>,
+        additional_params: T,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CopyMemorySized,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(target),
+                dr::Operand::IdRef(source),
+                dr::Operand::IdRef(size),
+            ],
+        );
+        if let Some(v) = memory_access {
+            #[allow(clippy::identity_conversion)]
+            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+        }
+        if let Some(v) = memory_access_2 {
             #[allow(clippy::identity_conversion)]
             inst.operands.push(dr::Operand::MemoryAccess(v.into()));
         }
