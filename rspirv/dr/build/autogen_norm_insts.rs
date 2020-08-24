@@ -19,7 +19,7 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpFunctionCall instruction to the current block."]
-    pub fn function_call<T: AsRef<[spirv::Word]>>(
+    pub fn function_call<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -34,18 +34,13 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(function)],
         );
-        inst.operands.extend(
-            argument_0_argument_1
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(argument_0_argument_1.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
     #[doc = "Appends an OpFunctionCall instruction to the current block."]
-    pub fn insert_function_call<T: AsRef<[spirv::Word]>>(
+    pub fn insert_function_call<T: IntoIterator<Item = spirv::Word>>(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -61,13 +56,8 @@ impl Builder {
             Some(_id),
             vec![dr::Operand::IdRef(function)],
         );
-        inst.operands.extend(
-            argument_0_argument_1
-                .as_ref()
-                .iter()
-                .cloned()
-                .map(dr::Operand::IdRef),
-        );
+        inst.operands
+            .extend(argument_0_argument_1.into_iter().map(dr::Operand::IdRef));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
