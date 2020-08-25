@@ -658,6 +658,37 @@ impl Builder {
         id
     }
 
+    /// Appends an OpTypeStruct instruction and returns the result id, or return the existing id if the instruction was already present.
+    pub fn type_struct_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        member_0_type_member_1_type: impl IntoIterator<Item = spirv::Word>,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeStruct,
+            None,
+            None,
+            member_0_type_member_1_type
+                .into_iter()
+                .map(dr::Operand::IdRef)
+                .collect(),
+        );
+        if let Some(result_id) = result_id {
+            // An explicit ID was provided, emit it no matter what.
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            // No ID was provided, and the type has already been declared.
+            id
+        } else {
+            // No ID was provided, it didn't already exist, so generate a new ID and emit it.
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
+
     /// Appends an OpConstant instruction with the given 32-bit float `value`.
     /// or the module if no block is under construction.
     pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
