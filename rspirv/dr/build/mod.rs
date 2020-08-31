@@ -667,7 +667,7 @@ impl Builder {
         let mut inst = dr::Instruction::new(
             spirv::Op::TypeStruct,
             None,
-            None,
+            result_id,
             member_0_type_member_1_type
                 .into_iter()
                 .map(dr::Operand::IdRef)
