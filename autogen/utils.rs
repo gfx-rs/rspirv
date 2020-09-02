@@ -54,7 +54,7 @@ pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> TokenStream
             quote! { String }
         }
     } else if kind == "PairLiteralIntegerIdRef" {
-        quote! { (u32, spirv::Word) }
+        quote! { (dr::Operand, spirv::Word) }
     } else if kind == "PairIdRefLiteralInteger" {
         quote! { (spirv::Word, u32) }
     } else if kind == "PairIdRefIdRef" {

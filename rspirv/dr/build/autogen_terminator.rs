@@ -175,7 +175,7 @@ impl Builder {
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpSwitch instruction and ends the current block."]
-    pub fn switch<T: IntoIterator<Item = (u32, spirv::Word)>>(
+    pub fn switch<T: IntoIterator<Item = (dr::Operand, spirv::Word)>>(
         &mut self,
         selector: spirv::Word,
         default: spirv::Word,
@@ -189,13 +189,13 @@ impl Builder {
             vec![dr::Operand::IdRef(selector), dr::Operand::IdRef(default)],
         );
         for v in target {
-            inst.operands.push(dr::Operand::LiteralInt32(v.0));
+            inst.operands.push(v.0);
             inst.operands.push(dr::Operand::IdRef(v.1));
         }
         self.end_block(inst)
     }
     #[doc = "Insert an OpSwitch instruction and ends the current block."]
-    pub fn insert_switch<T: IntoIterator<Item = (u32, spirv::Word)>>(
+    pub fn insert_switch<T: IntoIterator<Item = (dr::Operand, spirv::Word)>>(
         &mut self,
         insert_point: InsertPoint,
         selector: spirv::Word,
@@ -210,7 +210,7 @@ impl Builder {
             vec![dr::Operand::IdRef(selector), dr::Operand::IdRef(default)],
         );
         for v in target {
-            inst.operands.push(dr::Operand::LiteralInt32(v.0));
+            inst.operands.push(v.0);
             inst.operands.push(dr::Operand::IdRef(v.1));
         }
         self.insert_end_block(insert_point, inst)
