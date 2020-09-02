@@ -92,7 +92,6 @@ pub struct Builder {
     next_id: u32,
     selected_function: Option<usize>,
     selected_block: Option<usize>,
-    version: Option<(u8, u8)>,
 }
 
 pub enum InsertPoint {
@@ -110,7 +109,6 @@ impl Builder {
             next_id: 1,
             selected_function: None,
             selected_block: None,
-            version: None,
         }
     }
 
@@ -121,14 +119,12 @@ impl Builder {
             .as_ref()
             .map(|h| h.bound)
             .expect("Expecting ModuleHeader with valid bound");
-        let version = module.header.as_ref().map(|h| h.version());
 
         Builder {
             module,
             next_id,
             selected_function: None,
             selected_block: None,
-            version,
         }
     }
 
@@ -178,30 +174,42 @@ impl Builder {
     /// If this method is not called, the generated SPIR-V will be set as the newest version
     /// supported.
     pub fn set_version(&mut self, major: u8, minor: u8) {
-        self.version = Some((major, minor));
+        if self.module.header.is_none() {
+            // The bound will be fixed up when module() is called.
+            self.module.header = Some(dr::ModuleHeader::new(0));
+        }
+        self.module
+            .header
+            .as_mut()
+            .unwrap()
+            .set_version(major, minor);
     }
 
     /// Get the SPIR-V version as a (major, minor) tuple
     pub fn version(&self) -> Option<(u8, u8)> {
-        self.version
+        self.module.header.as_ref().map(|h| h.version())
     }
 
     /// Returns the `Module` under construction.
     pub fn module(self) -> dr::Module {
         let mut module = self.module;
 
-        let mut header = dr::ModuleHeader::new(self.next_id);
-        if let Some((major, minor)) = self.version {
-            header.set_version(major, minor);
+        match &mut module.header {
+            Some(header) => header.bound = self.next_id,
+            None => module.header = Some(dr::ModuleHeader::new(self.next_id)),
         }
-        module.header = Some(header);
 
         module
     }
 
-    /// Returns the `Module` as reference under construction.
+    /// Returns the `Module` under construction as a reference. Note that header.bound will be inaccurate.
     pub fn module_ref(&self) -> &dr::Module {
         &self.module
+    }
+
+    /// Returns the `Module` under construction as a mutable reference. Note that header.bound will be inaccurate.
+    pub fn module_mut(&mut self) -> &mut dr::Module {
+        &mut self.module
     }
 
     pub fn selected_function(&self) -> Option<usize> {
