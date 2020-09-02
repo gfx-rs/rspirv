@@ -120,9 +120,6 @@ impl Module {
     }
 
     /// Returns an iterator over all global instructions.
-    ///
-    /// This method internally creates a vector of references to all global
-    /// instructions, therefore it has some overheads.
     pub fn global_inst_iter(&self) -> impl Iterator<Item = &Instruction> {
         self.capabilities
             .iter()
@@ -134,6 +131,70 @@ impl Module {
             .chain(&self.debugs)
             .chain(&self.annotations)
             .chain(&self.types_global_values)
+    }
+
+    /// Returns a mut iterator over all global instructions.
+    pub fn global_inst_iter_mut(&mut self) -> impl Iterator<Item = &mut Instruction> {
+        self.capabilities
+            .iter_mut()
+            .chain(&mut self.extensions)
+            .chain(&mut self.ext_inst_imports)
+            .chain(&mut self.memory_model)
+            .chain(&mut self.entry_points)
+            .chain(&mut self.execution_modes)
+            .chain(&mut self.debugs)
+            .chain(&mut self.annotations)
+            .chain(&mut self.types_global_values)
+    }
+
+    /// Returns a iterator over all instructions.
+    pub fn all_inst_iter(&self) -> impl Iterator<Item = &Instruction> {
+        self.capabilities
+            .iter()
+            .chain(&self.extensions)
+            .chain(&self.ext_inst_imports)
+            .chain(&self.memory_model)
+            .chain(&self.entry_points)
+            .chain(&self.execution_modes)
+            .chain(&self.debugs)
+            .chain(&self.annotations)
+            .chain(&self.types_global_values)
+            .chain(self.functions.iter().flat_map(|f| {
+                f.def
+                    .iter()
+                    .chain(f.parameters.iter())
+                    .chain(
+                        f.blocks
+                            .iter()
+                            .flat_map(|b| b.label.iter().chain(b.instructions.iter())),
+                    )
+                    .chain(f.end.iter())
+            }))
+    }
+
+    /// Returns a mut iterator over all instructions.
+    pub fn all_inst_iter_mut(&mut self) -> impl Iterator<Item = &mut Instruction> {
+        self.capabilities
+            .iter_mut()
+            .chain(&mut self.extensions)
+            .chain(&mut self.ext_inst_imports)
+            .chain(&mut self.memory_model)
+            .chain(&mut self.entry_points)
+            .chain(&mut self.execution_modes)
+            .chain(&mut self.debugs)
+            .chain(&mut self.annotations)
+            .chain(&mut self.types_global_values)
+            .chain(self.functions.iter_mut().flat_map(|f| {
+                f.def
+                    .iter_mut()
+                    .chain(f.parameters.iter_mut())
+                    .chain(
+                        f.blocks
+                            .iter_mut()
+                            .flat_map(|b| b.label.iter_mut().chain(b.instructions.iter_mut())),
+                    )
+                    .chain(f.end.iter_mut())
+            }))
     }
 }
 
