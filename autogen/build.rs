@@ -9,8 +9,7 @@ mod table;
 mod utils;
 
 use std::{
-    env,
-    fs,
+    env, fs,
     io::{Read, Write},
     path::PathBuf,
     process,
