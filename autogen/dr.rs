@@ -139,12 +139,10 @@ fn get_push_extras(
                     })
                 }
                 structs::Quantifier::ZeroOrMore => {
-                    // TODO: Ouch! Bad smell. This has special case treatment yet
-                    // still doesn't solve 64-bit selectors in OpSwitch.
                     if param.kind == "PairLiteralIntegerIdRef" {
                         Some(quote! {
                             for v in #name {
-                                #container.push(dr::Operand::LiteralInt32(v.0));
+                                #container.push(v.0);
                                 #container.push(dr::Operand::IdRef(v.1));
                             }
                         })

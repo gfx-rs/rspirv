@@ -391,6 +391,15 @@ impl<'c, 'd> Parser<'c, 'd> {
                         );
                         coperands.push(self.parse_literal(id)?)
                     }
+                    GOpKind::PairLiteralIntegerIdRef => {
+                        assert_eq!(grammar.opcode, spirv::Op::Switch);
+                        let selector = match coperands[0] {
+                            dr::Operand::IdRef(id) => id,
+                            _ => panic!("internal error: OpSwitch selector should be IdRef"),
+                        };
+                        coperands.push(self.parse_literal(selector)?);
+                        coperands.push(dr::Operand::IdRef(self.decoder.id()?));
+                    }
                     GOpKind::LiteralSpecConstantOpInteger => {
                         coperands.append(&mut self.parse_spec_constant_op()?)
                     }

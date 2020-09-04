@@ -86,10 +86,6 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::LiteralExtInstInteger => vec![dr::Operand::LiteralExtInstInteger(
                 self.decoder.ext_inst_integer()?,
             )],
-            GOpKind::PairLiteralIntegerIdRef => vec![
-                dr::Operand::LiteralInt32(self.decoder.int32()?),
-                dr::Operand::IdRef(self.decoder.id()?),
-            ],
             GOpKind::PairIdRefLiteralInteger => vec![
                 dr::Operand::IdRef(self.decoder.id()?),
                 dr::Operand::LiteralInt32(self.decoder.int32()?),
@@ -132,6 +128,7 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::IdResult => panic!(),
             GOpKind::LiteralContextDependentNumber => panic!(),
             GOpKind::LiteralSpecConstantOpInteger => panic!(),
+            GOpKind::PairLiteralIntegerIdRef => panic!(),
         })
     }
     fn parse_image_operands_arguments(
