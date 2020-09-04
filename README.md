@@ -64,8 +64,7 @@ I plan to implement several functionalities:
 
 The DR doesn't handle `OpLine` and `OpNoLine` well right now.
 
-The SPIR-V binary module parser is almost feature complete; the only feature
-(that I am aware of) missing is 64-bit selectors in `OpSwitch`.
+The SPIR-V binary module parser is feature complete.
 
 Usage
 -----
