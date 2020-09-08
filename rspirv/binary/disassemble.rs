@@ -322,17 +322,8 @@ mod tests {
             .is_ok());
         b.begin_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ExtInst,
-            Some(float32),
-            Some(b.id()),
-            vec![
-                dr::Operand::IdRef(glsl),
-                dr::Operand::LiteralExtInstInteger(6),
-            ],
-        );
-        inst.operands.push(dr::Operand::IdRef(var));
-        assert!(b.insert_into_block(dr::InsertPoint::End, inst).is_ok());
+        let args = std::iter::once(dr::Operand::IdRef(var));
+        b.ext_inst(float32, None, glsl, 6, args).unwrap();
         b.ret().unwrap();
         b.end_function().unwrap();
 
@@ -374,17 +365,8 @@ mod tests {
         b.begin_block(None).unwrap();
         let var = b.variable(float32, None, spirv::StorageClass::Function, None);
 
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ExtInst,
-            Some(float32),
-            Some(b.id()),
-            vec![
-                dr::Operand::IdRef(opencl),
-                dr::Operand::LiteralExtInstInteger(15),
-            ],
-        );
-        inst.operands.push(dr::Operand::IdRef(var));
-        assert!(b.insert_into_block(dr::InsertPoint::End, inst).is_ok());
+        let args = std::iter::once(dr::Operand::IdRef(var));
+        b.ext_inst(float32, None, opencl, 15, args).unwrap();
         b.ret().unwrap();
 
         b.end_function().unwrap();

@@ -571,6 +571,25 @@ impl Builder {
         let inst = dr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);
         self.module.execution_modes.push(inst);
     }
+
+    pub fn ext_inst(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        extension_set: spirv::Word,
+        instruction: spirv::Word,
+        operands: impl Iterator<Item = dr::Operand>,
+    ) -> BuildResult<spirv::Word> {
+        let mut ops = vec![
+            dr::Operand::IdRef(extension_set),
+            dr::Operand::LiteralExtInstInteger(instruction),
+        ];
+        ops.extend(operands);
+        let _id = result_id.unwrap_or_else(|| self.id());
+        let inst = dr::Instruction::new(spirv::Op::ExtInst, Some(result_type), Some(_id), ops);
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
 }
 
 include!("autogen_type.rs");
