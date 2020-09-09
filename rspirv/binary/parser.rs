@@ -293,7 +293,7 @@ impl<'c, 'd> Parser<'c, 'd> {
             }
             if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
                 self.decoder.set_limit((wc - 1) as usize);
-                let result = self.parse_operands(grammar);
+                let result = self.parse_operands(grammar)?;
                 if !self.decoder.limit_reached() {
                     return Err(State::OperandExceeded(
                         self.decoder.offset(),
@@ -301,7 +301,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                     ));
                 }
                 self.decoder.clear_limit();
-                result
+                Ok(result)
             } else {
                 Err(State::OpcodeUnknown(
                     self.decoder.offset() - WORD_NUM_BYTES,
