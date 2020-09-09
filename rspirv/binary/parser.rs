@@ -319,6 +319,9 @@ impl<'c, 'd> Parser<'c, 'd> {
         match tracked_type {
             Some(t) => match t {
                 Type::Integer(size, _) => match size {
+                    // "Value is the bit pattern for the constant. Types 32 bits wide or smaller take one word."
+                    8 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
+                    16 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
                     32 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
                     64 => Ok(dr::Operand::LiteralInt64(self.decoder.int64()?)),
                     _ => Err(State::TypeUnsupported(
