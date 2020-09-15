@@ -80,7 +80,7 @@ pub struct Block {
 }
 
 /// Data representation of a SPIR-V instruction.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Instruction {
     /// The class (grammar specification) of this instruction.
     pub class: &'static grammar::Instruction<'static>,

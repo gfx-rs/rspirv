@@ -3,146 +3,152 @@ use std::convert::TryInto;
 
 /// Trait for assembling functionalities.
 pub trait Assemble {
+    /// Assembles the current object into the `result` vector, reducing the need for lots of allocations
+    fn assemble_into(&self, result: &mut Vec<u32>);
+
     /// Assembles the current object and returns the binary code.
-    fn assemble(&self) -> Vec<u32>;
+    /// Helper method to remain backwards compatible, calls `assemble_into`
+    fn assemble(&self) -> Vec<u32> {
+        let mut v = vec![];
+        self.assemble_into(&mut v);
+        v
+    }
 }
 
 impl Assemble for dr::ModuleHeader {
-    fn assemble(&self) -> Vec<u32> {
-        vec![
+    fn assemble_into(&self, result: &mut Vec<u32>) {
+        result.extend(&[
             self.magic_number,
             self.version,
             self.generator,
             self.bound,
             self.reserved_word,
-        ]
+        ])
     }
 }
 
-fn assemble_str(s: &str) -> Vec<u32> {
+fn assemble_str(s: &str, result: &mut Vec<u32>) {
     let chunks = s.as_bytes().chunks_exact(4);
     let remainder = chunks.remainder();
     let mut last = [0; 4];
     last[..remainder.len()].copy_from_slice(remainder);
-    let mut words = Vec::with_capacity(chunks.len() + 1);
-    words.extend(chunks.map(|chunk| u32::from_le_bytes(chunk.try_into().unwrap())));
-    words.push(u32::from_le_bytes(last));
-    words
+    result.extend(chunks.map(|chunk| u32::from_le_bytes(chunk.try_into().unwrap())));
+    result.push(u32::from_le_bytes(last));
 }
 
 impl Assemble for dr::Operand {
-    fn assemble(&self) -> Vec<u32> {
+    fn assemble_into(&self, result: &mut Vec<u32>) {
         match *self {
-            dr::Operand::ImageOperands(v) => vec![v.bits()],
-            dr::Operand::FPFastMathMode(v) => vec![v.bits()],
-            dr::Operand::SelectionControl(v) => vec![v.bits()],
-            dr::Operand::LoopControl(v) => vec![v.bits()],
-            dr::Operand::FunctionControl(v) => vec![v.bits()],
-            dr::Operand::MemorySemantics(v) => vec![v.bits()],
-            dr::Operand::MemoryAccess(v) => vec![v.bits()],
-            dr::Operand::KernelProfilingInfo(v) => vec![v.bits()],
-            dr::Operand::SourceLanguage(v) => vec![v as u32],
-            dr::Operand::ExecutionModel(v) => vec![v as u32],
-            dr::Operand::AddressingModel(v) => vec![v as u32],
-            dr::Operand::MemoryModel(v) => vec![v as u32],
-            dr::Operand::ExecutionMode(v) => vec![v as u32],
-            dr::Operand::StorageClass(v) => vec![v as u32],
-            dr::Operand::Dim(v) => vec![v as u32],
-            dr::Operand::SamplerAddressingMode(v) => vec![v as u32],
-            dr::Operand::SamplerFilterMode(v) => vec![v as u32],
-            dr::Operand::ImageFormat(v) => vec![v as u32],
-            dr::Operand::ImageChannelOrder(v) => vec![v as u32],
-            dr::Operand::ImageChannelDataType(v) => vec![v as u32],
-            dr::Operand::FPRoundingMode(v) => vec![v as u32],
-            dr::Operand::LinkageType(v) => vec![v as u32],
-            dr::Operand::AccessQualifier(v) => vec![v as u32],
-            dr::Operand::FunctionParameterAttribute(v) => vec![v as u32],
-            dr::Operand::Decoration(v) => vec![v as u32],
-            dr::Operand::BuiltIn(v) => vec![v as u32],
-            dr::Operand::Scope(v) => vec![v as u32],
-            dr::Operand::GroupOperation(v) => vec![v as u32],
-            dr::Operand::KernelEnqueueFlags(v) => vec![v as u32],
-            dr::Operand::Capability(v) => vec![v as u32],
+            dr::Operand::ImageOperands(v) => result.push(v.bits()),
+            dr::Operand::FPFastMathMode(v) => result.push(v.bits()),
+            dr::Operand::SelectionControl(v) => result.push(v.bits()),
+            dr::Operand::LoopControl(v) => result.push(v.bits()),
+            dr::Operand::FunctionControl(v) => result.push(v.bits()),
+            dr::Operand::MemorySemantics(v) => result.push(v.bits()),
+            dr::Operand::MemoryAccess(v) => result.push(v.bits()),
+            dr::Operand::KernelProfilingInfo(v) => result.push(v.bits()),
+            dr::Operand::SourceLanguage(v) => result.push(v as u32),
+            dr::Operand::ExecutionModel(v) => result.push(v as u32),
+            dr::Operand::AddressingModel(v) => result.push(v as u32),
+            dr::Operand::MemoryModel(v) => result.push(v as u32),
+            dr::Operand::ExecutionMode(v) => result.push(v as u32),
+            dr::Operand::StorageClass(v) => result.push(v as u32),
+            dr::Operand::Dim(v) => result.push(v as u32),
+            dr::Operand::SamplerAddressingMode(v) => result.push(v as u32),
+            dr::Operand::SamplerFilterMode(v) => result.push(v as u32),
+            dr::Operand::ImageFormat(v) => result.push(v as u32),
+            dr::Operand::ImageChannelOrder(v) => result.push(v as u32),
+            dr::Operand::ImageChannelDataType(v) => result.push(v as u32),
+            dr::Operand::FPRoundingMode(v) => result.push(v as u32),
+            dr::Operand::LinkageType(v) => result.push(v as u32),
+            dr::Operand::AccessQualifier(v) => result.push(v as u32),
+            dr::Operand::FunctionParameterAttribute(v) => result.push(v as u32),
+            dr::Operand::Decoration(v) => result.push(v as u32),
+            dr::Operand::BuiltIn(v) => result.push(v as u32),
+            dr::Operand::Scope(v) => result.push(v as u32),
+            dr::Operand::GroupOperation(v) => result.push(v as u32),
+            dr::Operand::KernelEnqueueFlags(v) => result.push(v as u32),
+            dr::Operand::Capability(v) => result.push(v as u32),
             dr::Operand::IdMemorySemantics(v)
             | dr::Operand::IdScope(v)
             | dr::Operand::IdRef(v)
             | dr::Operand::LiteralInt32(v)
-            | dr::Operand::LiteralExtInstInteger(v) => vec![v],
-            dr::Operand::LiteralInt64(v) => vec![v as u32, (v >> 32) as u32],
-            dr::Operand::LiteralFloat32(v) => vec![v.to_bits()],
-            dr::Operand::LiteralFloat64(v) => vec![v.to_bits() as u32, (v.to_bits() >> 32) as u32],
-            dr::Operand::LiteralSpecConstantOpInteger(v) => vec![v as u32],
-            dr::Operand::LiteralString(ref v) => assemble_str(v),
-            dr::Operand::RayFlags(ref v) => vec![v.bits()],
-            dr::Operand::RayQueryIntersection(v) => vec![v as u32],
-            dr::Operand::RayQueryCommittedIntersectionType(v) => vec![v as u32],
-            dr::Operand::RayQueryCandidateIntersectionType(v) => vec![v as u32],
+            | dr::Operand::LiteralExtInstInteger(v) => result.push(v),
+            dr::Operand::LiteralInt64(v) => result.extend(&[v as u32, (v >> 32) as u32]),
+            dr::Operand::LiteralFloat32(v) => result.push(v.to_bits()),
+            dr::Operand::LiteralFloat64(v) => {
+                result.extend(&[v.to_bits() as u32, (v.to_bits() >> 32) as u32])
+            }
+            dr::Operand::LiteralSpecConstantOpInteger(v) => result.push(v as u32),
+            dr::Operand::LiteralString(ref v) => assemble_str(v, result),
+            dr::Operand::RayFlags(ref v) => result.push(v.bits()),
+            dr::Operand::RayQueryIntersection(v) => result.push(v as u32),
+            dr::Operand::RayQueryCommittedIntersectionType(v) => result.push(v as u32),
+            dr::Operand::RayQueryCandidateIntersectionType(v) => result.push(v as u32),
         }
     }
 }
 
 impl Assemble for dr::Instruction {
-    fn assemble(&self) -> Vec<u32> {
-        let mut code = vec![self.class.opcode as u32];
+    fn assemble_into(&self, result: &mut Vec<u32>) {
+        let start = result.len();
+        result.push(self.class.opcode as u32);
         if let Some(r) = self.result_type {
-            code.push(r);
+            result.push(r);
         }
         if let Some(r) = self.result_id {
-            code.push(r);
+            result.push(r);
         }
         for operand in &self.operands {
-            code.append(&mut operand.assemble());
+            operand.assemble_into(result);
         }
-        code[0] |= (code.len() as u32) << 16;
-        code
+        let end = result.len() - start;
+        result[start] |= (end as u32) << 16;
     }
 }
 
 impl Assemble for dr::Block {
-    fn assemble(&self) -> Vec<u32> {
-        let mut code = vec![];
+    fn assemble_into(&self, result: &mut Vec<u32>) {
         if let Some(ref l) = self.label {
-            code.append(&mut l.assemble());
+            l.assemble_into(result);
         }
         for inst in &self.instructions {
-            code.append(&mut inst.assemble());
+            inst.assemble_into(result);
         }
-        code
     }
 }
 
 impl Assemble for dr::Function {
-    fn assemble(&self) -> Vec<u32> {
-        let mut code = vec![];
+    fn assemble_into(&self, result: &mut Vec<u32>) {
         if let Some(ref d) = self.def {
-            code.append(&mut d.assemble());
+            d.assemble_into(result);
         }
         for param in &self.parameters {
-            code.append(&mut param.assemble());
+            param.assemble_into(result);
         }
         for bb in &self.blocks {
-            code.append(&mut bb.assemble());
+            bb.assemble_into(result);
         }
         if let Some(ref e) = self.end {
-            code.append(&mut e.assemble());
+            e.assemble_into(result);
         }
-        code
     }
 }
 
 impl Assemble for dr::Module {
-    fn assemble(&self) -> Vec<u32> {
-        let mut code = match self.header {
-            Some(ref h) => h.assemble(),
-            None => vec![],
+    fn assemble_into(&self, result: &mut Vec<u32>) {
+        match self.header {
+            Some(ref h) => h.assemble_into(result),
+            None => {}
         };
+
         for inst in self.global_inst_iter() {
-            code.append(&mut inst.assemble());
+            inst.assemble_into(result);
         }
+
         for f in &self.functions {
-            code.append(&mut f.assemble());
+            f.assemble_into(result);
         }
-        code
     }
 }
 
@@ -156,18 +162,26 @@ mod tests {
 
     #[test]
     fn test_assemble_str() {
-        assert_eq!(vec![0u32], assemble_str(""));
-        assert_eq!(vec![u32::from_le_bytes(*b"h\0\0\0")], assemble_str("h"));
+        fn assemble_str_helper(s: &str) -> Vec<u32> {
+            let mut v = vec![];
+            assemble_str(s, &mut v);
+            v
+        }
+        assert_eq!(vec![0u32], assemble_str_helper(""));
+        assert_eq!(
+            vec![u32::from_le_bytes(*b"h\0\0\0")],
+            assemble_str_helper("h")
+        );
         assert_eq!(
             vec![u32::from_le_bytes(*b"hell"), 0u32],
-            assemble_str("hell")
+            assemble_str_helper("hell")
         );
         assert_eq!(
             vec![
                 u32::from_le_bytes(*b"hell"),
                 u32::from_le_bytes(*b"o\0\0\0")
             ],
-            assemble_str("hello")
+            assemble_str_helper("hello")
         );
     }
 
