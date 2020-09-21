@@ -30,7 +30,7 @@ pub enum State {
     /// Consumer requested to stop parse
     ConsumerStopRequested,
     /// Consumer errored out with the given error
-    ConsumerError(Box<dyn error::Error>),
+    ConsumerError(Box<dyn error::Error + Send>),
     /// Incomplete module header
     HeaderIncomplete(DecodeError),
     /// Incorrect module header
@@ -117,7 +117,7 @@ pub enum Action {
     /// Normally stop the parsing
     Stop,
     /// Error out with the given error
-    Error(Box<dyn error::Error>),
+    Error(Box<dyn error::Error + Send>),
 }
 
 impl Action {
