@@ -4,7 +4,7 @@
 
 impl Builder {
     #[doc = "Appends an OpSourceContinued instruction."]
-    pub fn source_continued<T: Into<String>>(&mut self, continued_source: T) {
+    pub fn source_continued(&mut self, continued_source: impl Into<String>) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SourceContinued,
@@ -15,12 +15,12 @@ impl Builder {
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpSource instruction."]
-    pub fn source<T: Into<String>>(
+    pub fn source(
         &mut self,
         source_language: spirv::SourceLanguage,
         version: u32,
         file: Option<spirv::Word>,
-        source: Option<T>,
+        source: Option<impl Into<String>>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -43,7 +43,7 @@ impl Builder {
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpSourceExtension instruction."]
-    pub fn source_extension<T: Into<String>>(&mut self, extension: T) {
+    pub fn source_extension(&mut self, extension: impl Into<String>) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SourceExtension,
@@ -54,7 +54,7 @@ impl Builder {
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpName instruction."]
-    pub fn name<T: Into<String>>(&mut self, target: spirv::Word, name: T) {
+    pub fn name(&mut self, target: spirv::Word, name: impl Into<String>) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Name,
@@ -68,7 +68,7 @@ impl Builder {
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpMemberName instruction."]
-    pub fn member_name<T: Into<String>>(&mut self, ty: spirv::Word, member: u32, name: T) {
+    pub fn member_name(&mut self, ty: spirv::Word, member: u32, name: impl Into<String>) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MemberName,
@@ -83,7 +83,7 @@ impl Builder {
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpLine instruction."]
-    pub fn line<T: Into<String>>(&mut self, file: spirv::Word, line: u32, column: u32) {
+    pub fn line(&mut self, file: spirv::Word, line: u32, column: u32) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::Line,
@@ -98,13 +98,13 @@ impl Builder {
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpNoLine instruction."]
-    pub fn no_line<T: Into<String>>(&mut self) {
+    pub fn no_line(&mut self) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::NoLine, None, None, vec![]);
         self.module.debugs.push(inst);
     }
     #[doc = "Appends an OpModuleProcessed instruction."]
-    pub fn module_processed<T: Into<String>>(&mut self, process: T) {
+    pub fn module_processed(&mut self, process: impl Into<String>) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ModuleProcessed,

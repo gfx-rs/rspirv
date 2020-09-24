@@ -4,11 +4,11 @@
 
 impl Builder {
     #[doc = "Appends an OpDecorate instruction."]
-    pub fn decorate<T: IntoIterator<Item = dr::Operand>>(
+    pub fn decorate(
         &mut self,
         target: spirv::Word,
         decoration: spirv::Decoration,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -24,12 +24,12 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpMemberDecorate instruction."]
-    pub fn member_decorate<T: IntoIterator<Item = dr::Operand>>(
+    pub fn member_decorate(
         &mut self,
         structure_type: spirv::Word,
         member: u32,
         decoration: spirv::Decoration,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -46,10 +46,10 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpGroupDecorate instruction."]
-    pub fn group_decorate<T: IntoIterator<Item = spirv::Word>>(
+    pub fn group_decorate(
         &mut self,
         decoration_group: spirv::Word,
-        targets: T,
+        targets: impl IntoIterator<Item = spirv::Word>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -63,10 +63,10 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpGroupMemberDecorate instruction."]
-    pub fn group_member_decorate<T: IntoIterator<Item = (spirv::Word, u32)>>(
+    pub fn group_member_decorate(
         &mut self,
         decoration_group: spirv::Word,
-        targets: T,
+        targets: impl IntoIterator<Item = (spirv::Word, u32)>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -82,11 +82,11 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpDecorateId instruction."]
-    pub fn decorate_id<T: IntoIterator<Item = dr::Operand>>(
+    pub fn decorate_id(
         &mut self,
         target: spirv::Word,
         decoration: spirv::Decoration,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -102,11 +102,11 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpDecorateString instruction."]
-    pub fn decorate_string<T: IntoIterator<Item = dr::Operand>>(
+    pub fn decorate_string(
         &mut self,
         target: spirv::Word,
         decoration: spirv::Decoration,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -122,11 +122,11 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpDecorateStringGOOGLE instruction."]
-    pub fn decorate_string_google<T: IntoIterator<Item = dr::Operand>>(
+    pub fn decorate_string_google(
         &mut self,
         target: spirv::Word,
         decoration: spirv::Decoration,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -142,12 +142,12 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpMemberDecorateString instruction."]
-    pub fn member_decorate_string<T: IntoIterator<Item = dr::Operand>>(
+    pub fn member_decorate_string(
         &mut self,
         struct_type: spirv::Word,
         member: u32,
         decoration: spirv::Decoration,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -164,12 +164,12 @@ impl Builder {
         self.module.annotations.push(inst);
     }
     #[doc = "Appends an OpMemberDecorateStringGOOGLE instruction."]
-    pub fn member_decorate_string_google<T: IntoIterator<Item = dr::Operand>>(
+    pub fn member_decorate_string_google(
         &mut self,
         struct_type: spirv::Word,
         member: u32,
         decoration: spirv::Decoration,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(

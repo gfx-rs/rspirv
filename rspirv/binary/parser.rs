@@ -155,13 +155,13 @@ pub trait Consumer {
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse_bytes<T: AsRef<[u8]>>(binary: T, consumer: &mut dyn Consumer) -> Result<()> {
+pub fn parse_bytes(binary: impl AsRef<[u8]>, consumer: &mut dyn Consumer) -> Result<()> {
     Parser::new(binary.as_ref(), consumer).parse()
 }
 
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
-pub fn parse_words<T: AsRef<[u32]>>(binary: T, consumer: &mut dyn Consumer) -> Result<()> {
+pub fn parse_words(binary: impl AsRef<[u32]>, consumer: &mut dyn Consumer) -> Result<()> {
     let len = binary.as_ref().len() * 4;
     let buf = unsafe { slice::from_raw_parts(binary.as_ref().as_ptr() as *const u8, len) };
     Parser::new(buf, consumer).parse()

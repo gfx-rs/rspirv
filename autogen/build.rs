@@ -16,13 +16,13 @@ use std::{
 };
 use utils::write_autogen_comment;
 
-fn write<T: ToString>(path: &PathBuf, contents: T) {
+fn write(path: &PathBuf, contents: impl ToString) {
     let mut f = fs::File::create(path).expect(&format!("cannot open file: {:?}", path));
     write_autogen_comment(&mut f);
     write!(f, "{}", contents.to_string()).unwrap()
 }
 
-fn write_formatted<T: ToString>(path: &PathBuf, contents: T) {
+fn write_formatted(path: &PathBuf, contents: impl ToString) {
     write(path, contents);
     match process::Command::new("rustfmt").arg(path).status() {
         Ok(status) if !status.success() => {

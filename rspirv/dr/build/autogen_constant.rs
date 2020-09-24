@@ -26,10 +26,10 @@ impl Builder {
         id
     }
     #[doc = "Appends an OpConstantComposite instruction."]
-    pub fn constant_composite<T: IntoIterator<Item = spirv::Word>>(
+    pub fn constant_composite(
         &mut self,
         result_type: spirv::Word,
-        constituents: T,
+        constituents: impl IntoIterator<Item = spirv::Word>,
     ) -> spirv::Word {
         let id = self.id();
         #[allow(unused_mut)]
@@ -103,10 +103,10 @@ impl Builder {
         id
     }
     #[doc = "Appends an OpSpecConstantComposite instruction."]
-    pub fn spec_constant_composite<T: IntoIterator<Item = spirv::Word>>(
+    pub fn spec_constant_composite(
         &mut self,
         result_type: spirv::Word,
-        constituents: T,
+        constituents: impl IntoIterator<Item = spirv::Word>,
     ) -> spirv::Word {
         let id = self.id();
         #[allow(unused_mut)]

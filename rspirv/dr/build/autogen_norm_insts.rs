@@ -19,12 +19,12 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpFunctionCall instruction to the current block."]
-    pub fn function_call<T: IntoIterator<Item = spirv::Word>>(
+    pub fn function_call(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         function: spirv::Word,
-        argument_0_argument_1: T,
+        argument_0_argument_1: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -40,13 +40,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpFunctionCall instruction to the current block."]
-    pub fn insert_function_call<T: IntoIterator<Item = spirv::Word>>(
+    pub fn insert_function_call(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         function: spirv::Word,
-        argument_0_argument_1: T,
+        argument_0_argument_1: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -111,13 +111,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpLoad instruction to the current block."]
-    pub fn load<T: IntoIterator<Item = dr::Operand>>(
+    pub fn load(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -136,14 +136,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpLoad instruction to the current block."]
-    pub fn insert_load<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_load(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         pointer: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -162,12 +162,12 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpStore instruction to the current block."]
-    pub fn store<T: IntoIterator<Item = dr::Operand>>(
+    pub fn store(
         &mut self,
         pointer: spirv::Word,
         object: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -185,13 +185,13 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpStore instruction to the current block."]
-    pub fn insert_store<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_store(
         &mut self,
         insert_point: InsertPoint,
         pointer: spirv::Word,
         object: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -209,13 +209,13 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpCopyMemory instruction to the current block."]
-    pub fn copy_memory<T: IntoIterator<Item = dr::Operand>>(
+    pub fn copy_memory(
         &mut self,
         target: spirv::Word,
         source: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
         memory_access_2: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -237,14 +237,14 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpCopyMemory instruction to the current block."]
-    pub fn insert_copy_memory<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_copy_memory(
         &mut self,
         insert_point: InsertPoint,
         target: spirv::Word,
         source: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
         memory_access_2: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -266,14 +266,14 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpCopyMemorySized instruction to the current block."]
-    pub fn copy_memory_sized<T: IntoIterator<Item = dr::Operand>>(
+    pub fn copy_memory_sized(
         &mut self,
         target: spirv::Word,
         source: spirv::Word,
         size: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
         memory_access_2: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -299,7 +299,7 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpCopyMemorySized instruction to the current block."]
-    pub fn insert_copy_memory_sized<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_copy_memory_sized(
         &mut self,
         insert_point: InsertPoint,
         target: spirv::Word,
@@ -307,7 +307,7 @@ impl Builder {
         size: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
         memory_access_2: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -333,12 +333,12 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpAccessChain instruction to the current block."]
-    pub fn access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn access_chain(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -354,13 +354,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpAccessChain instruction to the current block."]
-    pub fn insert_access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn insert_access_chain(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -376,12 +376,12 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsAccessChain instruction to the current block."]
-    pub fn in_bounds_access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn in_bounds_access_chain(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -397,13 +397,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsAccessChain instruction to the current block."]
-    pub fn insert_in_bounds_access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn insert_in_bounds_access_chain(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -419,13 +419,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpPtrAccessChain instruction to the current block."]
-    pub fn ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn ptr_access_chain(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
         element: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -441,14 +441,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpPtrAccessChain instruction to the current block."]
-    pub fn insert_ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn insert_ptr_access_chain(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
         element: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -546,13 +546,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsPtrAccessChain instruction to the current block."]
-    pub fn in_bounds_ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn in_bounds_ptr_access_chain(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
         element: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -568,14 +568,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpInBoundsPtrAccessChain instruction to the current block."]
-    pub fn insert_in_bounds_ptr_access_chain<T: IntoIterator<Item = spirv::Word>>(
+    pub fn insert_in_bounds_ptr_access_chain(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         base: spirv::Word,
         element: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -679,13 +679,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpVectorShuffle instruction to the current block."]
-    pub fn vector_shuffle<T: IntoIterator<Item = u32>>(
+    pub fn vector_shuffle(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         vector_1: spirv::Word,
         vector_2: spirv::Word,
-        components: T,
+        components: impl IntoIterator<Item = u32>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -701,14 +701,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpVectorShuffle instruction to the current block."]
-    pub fn insert_vector_shuffle<T: IntoIterator<Item = u32>>(
+    pub fn insert_vector_shuffle(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         vector_1: spirv::Word,
         vector_2: spirv::Word,
-        components: T,
+        components: impl IntoIterator<Item = u32>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -724,11 +724,11 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeConstruct instruction to the current block."]
-    pub fn composite_construct<T: IntoIterator<Item = spirv::Word>>(
+    pub fn composite_construct(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
-        constituents: T,
+        constituents: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -744,12 +744,12 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeConstruct instruction to the current block."]
-    pub fn insert_composite_construct<T: IntoIterator<Item = spirv::Word>>(
+    pub fn insert_composite_construct(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
-        constituents: T,
+        constituents: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -765,12 +765,12 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeExtract instruction to the current block."]
-    pub fn composite_extract<T: IntoIterator<Item = u32>>(
+    pub fn composite_extract(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         composite: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = u32>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -786,13 +786,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeExtract instruction to the current block."]
-    pub fn insert_composite_extract<T: IntoIterator<Item = u32>>(
+    pub fn insert_composite_extract(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         composite: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = u32>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -808,13 +808,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeInsert instruction to the current block."]
-    pub fn composite_insert<T: IntoIterator<Item = u32>>(
+    pub fn composite_insert(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         object: spirv::Word,
         composite: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = u32>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -830,14 +830,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCompositeInsert instruction to the current block."]
-    pub fn insert_composite_insert<T: IntoIterator<Item = u32>>(
+    pub fn insert_composite_insert(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         object: spirv::Word,
         composite: spirv::Word,
-        indexes: T,
+        indexes: impl IntoIterator<Item = u32>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -966,14 +966,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleImplicitLod instruction to the current block."]
-    pub fn image_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -995,7 +995,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1003,7 +1003,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1025,14 +1025,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleExplicitLod instruction to the current block."]
-    pub fn image_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1051,7 +1051,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1059,7 +1059,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1078,7 +1078,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefImplicitLod instruction to the current block."]
-    pub fn image_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_dref_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1086,7 +1086,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1109,7 +1109,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_dref_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1118,7 +1118,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1141,7 +1141,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefExplicitLod instruction to the current block."]
-    pub fn image_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_dref_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1149,7 +1149,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1169,7 +1169,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_dref_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1178,7 +1178,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1198,14 +1198,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjImplicitLod instruction to the current block."]
-    pub fn image_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_proj_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1227,7 +1227,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_proj_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1235,7 +1235,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1257,14 +1257,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjExplicitLod instruction to the current block."]
-    pub fn image_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_proj_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1283,7 +1283,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_proj_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1291,7 +1291,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1310,7 +1310,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn image_sample_proj_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_proj_dref_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1318,7 +1318,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1341,7 +1341,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_proj_dref_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1350,7 +1350,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1373,7 +1373,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn image_sample_proj_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_proj_dref_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1381,7 +1381,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1401,7 +1401,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sample_proj_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_proj_dref_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1410,7 +1410,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1430,14 +1430,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageFetch instruction to the current block."]
-    pub fn image_fetch<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_fetch(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1456,7 +1456,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageFetch instruction to the current block."]
-    pub fn insert_image_fetch<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_fetch(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1464,7 +1464,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1483,7 +1483,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageGather instruction to the current block."]
-    pub fn image_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_gather(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1491,7 +1491,7 @@ impl Builder {
         coordinate: spirv::Word,
         component: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1514,7 +1514,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageGather instruction to the current block."]
-    pub fn insert_image_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_gather(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1523,7 +1523,7 @@ impl Builder {
         coordinate: spirv::Word,
         component: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1546,7 +1546,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageDrefGather instruction to the current block."]
-    pub fn image_dref_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_dref_gather(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -1554,7 +1554,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1577,7 +1577,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageDrefGather instruction to the current block."]
-    pub fn insert_image_dref_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_dref_gather(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1586,7 +1586,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1609,14 +1609,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageRead instruction to the current block."]
-    pub fn image_read<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_read(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1635,7 +1635,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageRead instruction to the current block."]
-    pub fn insert_image_read<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_read(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -1643,7 +1643,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -1662,13 +1662,13 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageWrite instruction to the current block."]
-    pub fn image_write<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_write(
         &mut self,
         image: spirv::Word,
         coordinate: spirv::Word,
         texel: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -1690,14 +1690,14 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpImageWrite instruction to the current block."]
-    pub fn insert_image_write<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_write(
         &mut self,
         insert_point: InsertPoint,
         image: spirv::Word,
         coordinate: spirv::Word,
         texel: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -7003,11 +7003,11 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpPhi instruction to the current block."]
-    pub fn phi<T: IntoIterator<Item = (spirv::Word, spirv::Word)>>(
+    pub fn phi(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
-        variable_parent: T,
+        variable_parent: impl IntoIterator<Item = (spirv::Word, spirv::Word)>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -7020,12 +7020,12 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpPhi instruction to the current block."]
-    pub fn insert_phi<T: IntoIterator<Item = (spirv::Word, spirv::Word)>>(
+    pub fn insert_phi(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
-        variable_parent: T,
+        variable_parent: impl IntoIterator<Item = (spirv::Word, spirv::Word)>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -8505,7 +8505,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpEnqueueKernel instruction to the current block."]
-    pub fn enqueue_kernel<T: IntoIterator<Item = spirv::Word>>(
+    pub fn enqueue_kernel(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -8519,7 +8519,7 @@ impl Builder {
         param: spirv::Word,
         param_size: spirv::Word,
         param_align: spirv::Word,
-        local_size: T,
+        local_size: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -8546,7 +8546,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpEnqueueKernel instruction to the current block."]
-    pub fn insert_enqueue_kernel<T: IntoIterator<Item = spirv::Word>>(
+    pub fn insert_enqueue_kernel(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -8561,7 +8561,7 @@ impl Builder {
         param: spirv::Word,
         param_size: spirv::Word,
         param_align: spirv::Word,
-        local_size: T,
+        local_size: impl IntoIterator<Item = spirv::Word>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9096,14 +9096,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9125,7 +9125,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_sample_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9133,7 +9133,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9155,14 +9155,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9181,7 +9181,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_sample_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9189,7 +9189,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9208,7 +9208,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_dref_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9216,7 +9216,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9239,7 +9239,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_sample_dref_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9248,7 +9248,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9271,7 +9271,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_dref_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9279,7 +9279,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9299,7 +9299,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_sample_dref_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9308,7 +9308,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9328,14 +9328,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_proj_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9357,7 +9357,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_sample_proj_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9365,7 +9365,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9387,14 +9387,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_proj_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9413,7 +9413,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_sample_proj_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9421,7 +9421,7 @@ impl Builder {
         sampled_image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9440,7 +9440,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_dref_implicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_proj_dref_implicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9448,7 +9448,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9471,9 +9471,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefImplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_dref_implicit_lod<
-        T: IntoIterator<Item = dr::Operand>,
-    >(
+    pub fn insert_image_sparse_sample_proj_dref_implicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9482,7 +9480,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9505,7 +9503,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn image_sparse_sample_proj_dref_explicit_lod<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_sample_proj_dref_explicit_lod(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9513,7 +9511,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9533,9 +9531,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseSampleProjDrefExplicitLod instruction to the current block."]
-    pub fn insert_image_sparse_sample_proj_dref_explicit_lod<
-        T: IntoIterator<Item = dr::Operand>,
-    >(
+    pub fn insert_image_sparse_sample_proj_dref_explicit_lod(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9544,7 +9540,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: spirv::ImageOperands,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9564,14 +9560,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseFetch instruction to the current block."]
-    pub fn image_sparse_fetch<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_fetch(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9590,7 +9586,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseFetch instruction to the current block."]
-    pub fn insert_image_sparse_fetch<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_fetch(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9598,7 +9594,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9617,7 +9613,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseGather instruction to the current block."]
-    pub fn image_sparse_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_gather(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9625,7 +9621,7 @@ impl Builder {
         coordinate: spirv::Word,
         component: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9648,7 +9644,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseGather instruction to the current block."]
-    pub fn insert_image_sparse_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_gather(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9657,7 +9653,7 @@ impl Builder {
         coordinate: spirv::Word,
         component: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9680,7 +9676,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseDrefGather instruction to the current block."]
-    pub fn image_sparse_dref_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_dref_gather(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -9688,7 +9684,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9711,7 +9707,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseDrefGather instruction to the current block."]
-    pub fn insert_image_sparse_dref_gather<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_dref_gather(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9720,7 +9716,7 @@ impl Builder {
         coordinate: spirv::Word,
         d_ref: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9872,14 +9868,14 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpImageSparseRead instruction to the current block."]
-    pub fn image_sparse_read<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sparse_read(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -9898,7 +9894,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSparseRead instruction to the current block."]
-    pub fn insert_image_sparse_read<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sparse_read(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -9906,7 +9902,7 @@ impl Builder {
         image: spirv::Word,
         coordinate: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -13122,7 +13118,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleFootprintNV instruction to the current block."]
-    pub fn image_sample_footprint_nv<T: IntoIterator<Item = dr::Operand>>(
+    pub fn image_sample_footprint_nv(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -13131,7 +13127,7 @@ impl Builder {
         granularity: spirv::Word,
         coarse: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -13155,7 +13151,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpImageSampleFootprintNV instruction to the current block."]
-    pub fn insert_image_sample_footprint_nv<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_image_sample_footprint_nv(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -13165,7 +13161,7 @@ impl Builder {
         granularity: spirv::Word,
         coarse: spirv::Word,
         image_operands: Option<spirv::ImageOperands>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -13627,7 +13623,7 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpCooperativeMatrixLoadNV instruction to the current block."]
-    pub fn cooperative_matrix_load_nv<T: IntoIterator<Item = dr::Operand>>(
+    pub fn cooperative_matrix_load_nv(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -13635,7 +13631,7 @@ impl Builder {
         stride: spirv::Word,
         column_major: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -13658,7 +13654,7 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixLoadNV instruction to the current block."]
-    pub fn insert_cooperative_matrix_load_nv<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_cooperative_matrix_load_nv(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -13667,7 +13663,7 @@ impl Builder {
         stride: spirv::Word,
         column_major: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
@@ -13690,14 +13686,14 @@ impl Builder {
         Ok(_id)
     }
     #[doc = "Appends an OpCooperativeMatrixStoreNV instruction to the current block."]
-    pub fn cooperative_matrix_store_nv<T: IntoIterator<Item = dr::Operand>>(
+    pub fn cooperative_matrix_store_nv(
         &mut self,
         pointer: spirv::Word,
         object: spirv::Word,
         stride: spirv::Word,
         column_major: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -13720,7 +13716,7 @@ impl Builder {
         Ok(())
     }
     #[doc = "Appends an OpCooperativeMatrixStoreNV instruction to the current block."]
-    pub fn insert_cooperative_matrix_store_nv<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_cooperative_matrix_store_nv(
         &mut self,
         insert_point: InsertPoint,
         pointer: spirv::Word,
@@ -13728,7 +13724,7 @@ impl Builder {
         stride: spirv::Word,
         column_major: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(

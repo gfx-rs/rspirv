@@ -491,7 +491,7 @@ impl Builder {
     }
 
     /// Appends an OpExtension instruction.
-    pub fn extension<T: Into<String>>(&mut self, extension: T) {
+    pub fn extension(&mut self, extension: impl Into<String>) {
         let inst = dr::Instruction::new(
             spirv::Op::Extension,
             None,
@@ -502,7 +502,7 @@ impl Builder {
     }
 
     /// Appends an OpExtInstImport instruction and returns the result id.
-    pub fn ext_inst_import<T: Into<String>>(&mut self, extended_inst_set: T) -> spirv::Word {
+    pub fn ext_inst_import(&mut self, extended_inst_set: impl Into<String>) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
             spirv::Op::ExtInstImport,
@@ -533,12 +533,12 @@ impl Builder {
     }
 
     /// Appends an OpEntryPoint instruction.
-    pub fn entry_point<T: Into<String>, U: AsRef<[spirv::Word]>>(
+    pub fn entry_point(
         &mut self,
         execution_model: spirv::ExecutionModel,
         entry_point: spirv::Word,
-        name: T,
-        interface: U,
+        name: impl Into<String>,
+        interface: impl AsRef<[spirv::Word]>,
     ) {
         let mut operands = vec![
             dr::Operand::ExecutionModel(execution_model),
@@ -554,11 +554,11 @@ impl Builder {
     }
 
     /// Appends an OpExecutionMode instruction.
-    pub fn execution_mode<T: AsRef<[u32]>>(
+    pub fn execution_mode(
         &mut self,
         entry_point: spirv::Word,
         execution_mode: spirv::ExecutionMode,
-        params: T,
+        params: impl AsRef<[u32]>,
     ) {
         let mut operands = vec![
             dr::Operand::IdRef(entry_point),
@@ -611,7 +611,7 @@ impl Builder {
         id
     }
 
-    pub fn string<T: Into<String>>(&mut self, s: T) -> spirv::Word {
+    pub fn string(&mut self, s: impl Into<String>) -> spirv::Word {
         let id = self.id();
         self.module.debugs.push(dr::Instruction::new(
             spirv::Op::String,
@@ -674,7 +674,7 @@ impl Builder {
     }
 
     /// Appends an OpTypeOpaque instruction and returns the result id.
-    pub fn type_opaque<T: Into<String>>(&mut self, type_name: T) -> spirv::Word {
+    pub fn type_opaque(&mut self, type_name: impl Into<String>) -> spirv::Word {
         let id = self.id();
         self.module.types_global_values.push(dr::Instruction::new(
             spirv::Op::TypeOpaque,
