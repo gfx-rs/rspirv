@@ -4,12 +4,12 @@
 
 impl Builder {
     #[doc = "Appends an OpLoopMerge instruction and ends the current block."]
-    pub fn loop_merge<T: IntoIterator<Item = dr::Operand>>(
+    pub fn loop_merge(
         &mut self,
         merge_block: spirv::Word,
         continue_target: spirv::Word,
         loop_control: spirv::LoopControl,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -26,13 +26,13 @@ impl Builder {
         self.end_block(inst)
     }
     #[doc = "Insert an OpLoopMerge instruction and ends the current block."]
-    pub fn insert_loop_merge<T: IntoIterator<Item = dr::Operand>>(
+    pub fn insert_loop_merge(
         &mut self,
         insert_point: InsertPoint,
         merge_block: spirv::Word,
         continue_target: spirv::Word,
         loop_control: spirv::LoopControl,
-        additional_params: T,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -128,12 +128,12 @@ impl Builder {
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpBranchConditional instruction and ends the current block."]
-    pub fn branch_conditional<T: IntoIterator<Item = u32>>(
+    pub fn branch_conditional(
         &mut self,
         condition: spirv::Word,
         true_label: spirv::Word,
         false_label: spirv::Word,
-        branch_weights: T,
+        branch_weights: impl IntoIterator<Item = u32>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -151,13 +151,13 @@ impl Builder {
         self.end_block(inst)
     }
     #[doc = "Insert an OpBranchConditional instruction and ends the current block."]
-    pub fn insert_branch_conditional<T: IntoIterator<Item = u32>>(
+    pub fn insert_branch_conditional(
         &mut self,
         insert_point: InsertPoint,
         condition: spirv::Word,
         true_label: spirv::Word,
         false_label: spirv::Word,
-        branch_weights: T,
+        branch_weights: impl IntoIterator<Item = u32>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -175,11 +175,11 @@ impl Builder {
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpSwitch instruction and ends the current block."]
-    pub fn switch<T: IntoIterator<Item = (dr::Operand, spirv::Word)>>(
+    pub fn switch(
         &mut self,
         selector: spirv::Word,
         default: spirv::Word,
-        target: T,
+        target: impl IntoIterator<Item = (dr::Operand, spirv::Word)>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
@@ -195,12 +195,12 @@ impl Builder {
         self.end_block(inst)
     }
     #[doc = "Insert an OpSwitch instruction and ends the current block."]
-    pub fn insert_switch<T: IntoIterator<Item = (dr::Operand, spirv::Word)>>(
+    pub fn insert_switch(
         &mut self,
         insert_point: InsertPoint,
         selector: spirv::Word,
         default: spirv::Word,
-        target: T,
+        target: impl IntoIterator<Item = (dr::Operand, spirv::Word)>,
     ) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(

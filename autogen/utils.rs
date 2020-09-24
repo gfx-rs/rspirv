@@ -49,7 +49,7 @@ pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> TokenStream
         panic!("this kind is not expected to be handled here")
     } else if kind == "LiteralString" {
         if generic_string {
-            quote! { T }
+            quote! { impl Into<String> }
         } else {
             quote! { String }
         }

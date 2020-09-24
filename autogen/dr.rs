@@ -29,8 +29,7 @@ fn get_param_list(
     params: &[structs::Operand],
     keep_result_id: bool,
     kinds: &[structs::OperandKind],
-) -> (Vec<TokenStream>, TokenStream) {
-    let mut type_generics = TokenStream::new();
+) -> Vec<TokenStream> {
     let mut list: Vec<_> = params
         .iter()
         .enumerate()
@@ -48,8 +47,7 @@ fn get_param_list(
                     structs::Quantifier::One => quote! { #name: #kind },
                     structs::Quantifier::ZeroOrOne => quote! { #name: Option<#kind> },
                     structs::Quantifier::ZeroOrMore => {
-                        type_generics = quote! { <T: IntoIterator<Item = #kind>> };
-                        quote! { #name: T }
+                        quote! { #name: impl IntoIterator<Item = #kind> }
                     }
                 })
             }
@@ -58,11 +56,10 @@ fn get_param_list(
     // The last operand may require additional parameters.
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
-            type_generics = quote! { <T: IntoIterator<Item = dr::Operand>> };
-            list.push(quote! { additional_params: T });
+            list.push(quote! { additional_params: impl IntoIterator<Item = dr::Operand> });
         }
     }
-    (list, type_generics)
+    list
 }
 
 /// Returns a suitable function name for the given `opname`.
@@ -305,7 +302,7 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
             inst.opname != "OpTypePointer" && inst.opname != "OpTypeOpaque"
     }).map(|inst| {
         // Parameter list for this build method.
-        let (param_list, generic) = get_param_list(&inst.operands, false, kinds);
+        let param_list = get_param_list(&inst.operands, false, kinds);
         // Initializer list for constructing the operands parameter
         // for Instruction.
         let init_list = get_init_list(&inst.operands[1..]);
@@ -319,7 +316,7 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
         let comment = format!("Appends an Op{} instruction and returns the result id, or return the existing id if the instruction was already present.", opcode);
         quote! {
             #[doc = #comment]
-            pub fn #name#generic(&mut self,#(#param_list),*) -> spirv::Word {
+            pub fn #name(&mut self,#(#param_list),*) -> spirv::Word {
                 let mut inst = dr::Instruction::new(spirv::Op::#opcode, None, None, vec![#(#init_list),*]);
                 #(#extras)*
                 if let Some(id) = self.dedup_insert_type(&inst) {
@@ -347,7 +344,7 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
         inst.class == Some(structs::Class::Terminator) ||
         (inst.class == Some(structs::Class::Branch) && inst.opname != "OpPhi")
     }).map(|inst| {
-        let (params, generic) = get_param_list(&inst.operands, inst.opname == "OpLabel", kinds);
+        let params = get_param_list(&inst.operands, inst.opname == "OpLabel", kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);
         let comment = format!("Appends an Op{} instruction and ends the current block.", opcode);
@@ -370,7 +367,7 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
 
         quote! {
             #[doc = #comment]
-            pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<()> {
+            pub fn #name(&mut self,#(#params),*) -> BuildResult<()> {
                 #[allow(unused_mut)]
                 let mut inst = dr::Instruction::new(
                     spirv::Op::#opcode, #result_type, #result_id, vec![#(#init),*]);
@@ -379,7 +376,7 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
             }
 
             #[doc = #insert_comment]
-            pub fn #insert_name#generic(&mut self, insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
+            pub fn #insert_name(&mut self, insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
                 #[allow(unused_mut)]
                 let mut inst = dr::Instruction::new(
                     spirv::Op::#opcode, #result_type, #result_id, vec![#(#init),*]);
@@ -421,7 +418,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             inst.opname.starts_with("OpType");
         !skip
     }).map(|inst| {
-        let (params, generic) = get_param_list(&inst.operands, true, kinds);
+        let params = get_param_list(&inst.operands, true, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);
         let comment = format!("Appends an Op{} instruction to the current block.", opcode);
@@ -435,7 +432,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             // result id or have none.
             quote! {
                 #[doc = #comment]
-                pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<spirv::Word> {
+                pub fn #name(&mut self,#(#params),*) -> BuildResult<spirv::Word> {
                     let _id = result_id.unwrap_or_else(|| self.id());
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
@@ -446,7 +443,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                 }
 
                 #[doc = #insert_comment]
-                pub fn #insert_name#generic(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<spirv::Word> {
+                pub fn #insert_name(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<spirv::Word> {
                     let _id = result_id.unwrap_or_else(|| self.id());
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
@@ -459,7 +456,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
         } else {
             quote! {
                 #[doc = #comment]
-                pub fn #name#generic(&mut self,#(#params),*) -> BuildResult<()> {
+                pub fn #name(&mut self,#(#params),*) -> BuildResult<()> {
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
@@ -469,7 +466,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                 }
 
                 #[doc = #comment]
-                pub fn #insert_name#generic(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
+                pub fn #insert_name(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
@@ -500,7 +497,7 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
                 && inst.opname != "OpSpecConstant"
         })
         .map(|inst| {
-            let (params, generic) = get_param_list(&inst.operands, false, kinds);
+            let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
             let opcode = as_ident(&inst.opname[2..]);
             let comment = format!("Appends an Op{} instruction.", opcode);
@@ -508,7 +505,7 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
             let init = get_init_list(&inst.operands);
             quote! {
                 #[doc = #comment]
-                pub fn #name#generic(&mut self,#(#params),*) -> spirv::Word {
+                pub fn #name(&mut self,#(#params),*) -> spirv::Word {
                     let id = self.id();
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
@@ -535,8 +532,7 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
         .iter()
         .filter(|inst| inst.class == Some(structs::Class::Debug) && inst.opname != "OpString")
         .map(|inst| {
-            let (params, generic) = get_param_list(&inst.operands, false, kinds);
-            assert!(generic.is_empty());
+            let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
             let opcode = as_ident(&inst.opname[2..]);
             let comment = format!("Appends an Op{} instruction.", opcode);
@@ -544,7 +540,7 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
             let init = get_init_list(&inst.operands);
             quote! {
                 #[doc = #comment]
-                pub fn #name<T: Into<String>>(&mut self,#(#params),*) {
+                pub fn #name(&mut self,#(#params),*) {
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
@@ -570,7 +566,7 @@ pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> TokenStream {
             inst.class == Some(structs::Class::Annotation) && inst.opname != "OpDecorationGroup"
         })
         .map(|inst| {
-            let (params, generic) = get_param_list(&inst.operands, false, kinds);
+            let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
             let opcode = as_ident(&inst.opname[2..]);
             let comment = format!("Appends an Op{} instruction.", opcode);
@@ -579,7 +575,7 @@ pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> TokenStream {
 
             quote! {
                 #[doc = #comment]
-                pub fn #name#generic(&mut self,#(#params),*) {
+                pub fn #name(&mut self,#(#params),*) {
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);

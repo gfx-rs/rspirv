@@ -231,7 +231,7 @@ impl binary::Consumer for Loader {
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
-pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<dr::Module> {
+pub fn load_bytes(binary: impl AsRef<[u8]>) -> ParseResult<dr::Module> {
     let mut loader = Loader::new();
     binary::parse_bytes(binary, &mut loader)?;
     Ok(loader.module())
@@ -268,7 +268,7 @@ pub fn load_bytes<T: AsRef<[u8]>>(binary: T) -> ParseResult<dr::Module> {
 ///             ; Bound: 0\n\
 ///             OpMemoryModel Logical GLSL450");
 /// ```
-pub fn load_words<T: AsRef<[u32]>>(binary: T) -> ParseResult<dr::Module> {
+pub fn load_words(binary: impl AsRef<[u32]>) -> ParseResult<dr::Module> {
     let mut loader = Loader::new();
     binary::parse_words(binary, &mut loader)?;
     Ok(loader.module())

@@ -43,7 +43,7 @@ impl Disassemble for dr::Operand {
 
 /// Disassembles each instruction in `insts` and joins them together
 /// with the given `delimiter`.
-fn disas_join<T: Disassemble>(insts: &[T], delimiter: &str) -> String {
+fn disas_join(insts: &[impl Disassemble], delimiter: &str) -> String {
     insts
         .iter()
         .map(|i| i.disassemble())
@@ -255,7 +255,7 @@ mod tests {
         b.extension("awesome-extension");
         b.ext_inst_import("GLSL.std.450");
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
-        b.source::<String>(spirv::SourceLanguage::GLSL, 450, None, None);
+        b.source(spirv::SourceLanguage::GLSL, 450, None, None::<String>);
 
         let void = b.type_void();
         let float32 = b.type_float(32);
