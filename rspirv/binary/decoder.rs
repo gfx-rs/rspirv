@@ -3,6 +3,7 @@ use crate::spirv;
 use super::DecodeError as Error;
 use std::convert::TryInto;
 use std::result;
+use std::str;
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -160,20 +161,31 @@ impl<'a> Decoder<'a> {
     /// null character (`\0`), or reaching the limit or end of the stream
     /// and erroring out.
     pub fn string(&mut self) -> Result<String> {
-        let start_offset = self.offset;
-        let mut bytes = vec![];
-        loop {
-            let word = self.word()?;
-            bytes.extend(&word.to_le_bytes());
-            if bytes.last() == Some(&0) {
-                break;
-            }
+        // If we have a limit, then don't search further than we need to.
+        let slice = match self.limit {
+            Some(limit) => &self.bytes[self.offset..(self.offset + limit * WORD_NUM_BYTES)],
+            None => &self.bytes[self.offset..],
+        };
+        // Find the null terminator.
+        let first_null_byte =
+            slice
+                .iter()
+                .position(|&c| c == 0)
+                .ok_or_else(|| match self.limit {
+                    Some(_) => Error::LimitReached(self.offset + slice.len()),
+                    None => Error::StreamExpected(self.offset),
+                })?;
+        // Validate the string is utf8.
+        let result = str::from_utf8(&slice[..first_null_byte])
+            .map_err(|e| Error::DecodeStringFailed(self.offset, format!("{}", e)))?;
+        // Round up consumed words to include null byte(s).
+        let consumed_words = (first_null_byte / WORD_NUM_BYTES) + 1;
+        self.offset += consumed_words * WORD_NUM_BYTES;
+        if let Some(ref mut limit) = self.limit {
+            // This is guaranteed to be enough due to the slice limit above.
+            *limit -= consumed_words;
         }
-        while !bytes.is_empty() && bytes.last() == Some(&0) {
-            bytes.pop();
-        }
-        String::from_utf8(bytes)
-            .map_err(|e| Error::DecodeStringFailed(start_offset, format!("{}", e)))
+        Ok(result.to_string())
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
