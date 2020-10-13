@@ -267,6 +267,10 @@ impl Block {
             instructions: vec![],
         }
     }
+
+    pub fn label_id(&self) -> Option<Word> {
+        self.label.as_ref().and_then(|inst| inst.result_id)
+    }
 }
 
 impl Instruction {
