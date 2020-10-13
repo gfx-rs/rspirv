@@ -242,6 +242,10 @@ impl Function {
         }
     }
 
+    pub fn def_id(&self) -> Option<Word> {
+        self.def.as_ref().and_then(|inst| inst.result_id)
+    }
+
     pub fn all_inst_iter(&self) -> impl Iterator<Item = &Instruction> {
         self.def
             .iter()
