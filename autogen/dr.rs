@@ -3,7 +3,7 @@ use crate::utils::*;
 
 use heck::SnakeCase;
 use proc_macro2::TokenStream;
-use quote::quote;
+use quote::{format_ident, quote};
 
 /// Returns true if the given operand kind can potentially have additional
 /// parameters.
@@ -198,30 +198,28 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         .map(as_ident)
         .collect();
 
-    let kind_enum = {
-        // Enum for all operand kinds in data representation.
+    let kind_and_ty = {
         let id_kinds = kinds
             .iter()
             .filter(|element| element.to_string().starts_with("Id"))
-            .map(|element| {
-                quote! { #element(spirv::Word) }
-            });
+            .map(|element| (element.clone(), quote! { spirv::Word }));
 
         let num_kinds = vec![
-            quote! { LiteralInt32(u32) },
-            quote! { LiteralInt64(u64) },
-            quote! { LiteralFloat32(f32) },
-            quote! { LiteralFloat64(f64) },
-            quote! { LiteralExtInstInteger(u32) },
-            quote! { LiteralSpecConstantOpInteger(spirv::Op) },
+            (format_ident!("LiteralInt32"), quote! {u32}),
+            (format_ident!("LiteralInt64"), quote! {u64}),
+            (format_ident!("LiteralFloat32"), quote! {f32}),
+            (format_ident!("LiteralFloat64"), quote! {f64}),
+            (format_ident!("LiteralExtInstInteger"), quote! {u32}),
+            (
+                format_ident!("LiteralSpecConstantOpInteger"),
+                quote! {spirv::Op},
+            ),
         ];
 
         let str_kinds = kinds
             .iter()
             .filter(|element| element.to_string().ends_with("String"))
-            .map(|element| {
-                quote! { #element(String) }
-            });
+            .map(|element| (element.clone(), quote! {String}));
 
         let enum_kinds = kinds
             .iter()
@@ -232,18 +230,22 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                     || element.ends_with("Integer")
                     || element.ends_with("Number"))
             })
-            .map(|element| {
-                quote! { #element(spirv::#element) }
-            });
+            .map(|element| (element.clone(), quote! {spirv::#element}));
 
+        enum_kinds
+            .chain(id_kinds)
+            .chain(num_kinds.into_iter())
+            .chain(str_kinds)
+            .collect::<Vec<_>>()
+    };
+
+    let kind_enum = {
+        let kinds = kind_and_ty.iter().map(|(kind, ty)| quote! {#kind(#ty)});
         quote! {
             #[doc = "Data representation of a SPIR-V operand."]
             #[derive(Clone, Debug, PartialEq, From)]
             pub enum Operand {
-                #(#enum_kinds,)*
-                #(#id_kinds,)*
-                #(#num_kinds,)*
-                #(#str_kinds,)*
+                #(#kinds,)*
             }
         }
     };
@@ -263,7 +265,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
             .map(as_ident),
         );
         let cases = kinds.iter().map(|element| {
-            if element.to_string() == "Dim" {
+            if element == "Dim" {
                 // Skip the "Dim" prefix, which is only used in the API to
                 // avoid having an enumerant name starting with a number
                 quote! {
@@ -275,11 +277,44 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 }
             }
         });
+        let unwraps = kind_and_ty.into_iter().map(|(kind, ty)| {
+            let unwrap_kind = format_ident!("unwrap_{}", kind.to_string().to_snake_case());
+            let (ret_ty, self_prefix) = if ty.to_string() == "String" {
+                (quote! {&str}, quote! {})
+            } else {
+                (ty, quote!(*))
+            };
+            let panic_arg = format!("Expected Operand::{}, got {{}} instead", kind);
+            quote! {
+                pub fn #unwrap_kind(&self) -> #ret_ty {
+                    match #self_prefix self {
+                        Self::#kind(v) => v,
+                        ref other => panic!(#panic_arg, other),
+                    }
+                }
+            }
+        });
         quote! {
             impl fmt::Display for Operand {
                 fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                     match *self {
                         #(#cases),*
+                    }
+                }
+            }
+
+            impl Operand {
+                #(#unwraps)*
+                pub fn id_ref_any(&self) -> Option<spirv::Word> {
+                    match *self {
+                        Self::IdRef(v) | Self::IdScope(v) | Self::IdMemorySemantics(v) => Some(v),
+                        _ => None,
+                    }
+                }
+                pub fn id_ref_any_mut(&mut self) -> Option<&mut spirv::Word> {
+                    match self {
+                        Self::IdRef(v) | Self::IdScope(v) | Self::IdMemorySemantics(v) => Some(v),
+                        _ => None,
                     }
                 }
             }

@@ -159,17 +159,7 @@ impl Module {
             .chain(&self.debugs)
             .chain(&self.annotations)
             .chain(&self.types_global_values)
-            .chain(self.functions.iter().flat_map(|f| {
-                f.def
-                    .iter()
-                    .chain(f.parameters.iter())
-                    .chain(
-                        f.blocks
-                            .iter()
-                            .flat_map(|b| b.label.iter().chain(b.instructions.iter())),
-                    )
-                    .chain(f.end.iter())
-            }))
+            .chain(self.functions.iter().flat_map(|f| f.all_inst_iter()))
     }
 
     /// Returns a mut iterator over all instructions.
@@ -184,17 +174,11 @@ impl Module {
             .chain(&mut self.debugs)
             .chain(&mut self.annotations)
             .chain(&mut self.types_global_values)
-            .chain(self.functions.iter_mut().flat_map(|f| {
-                f.def
+            .chain(
+                self.functions
                     .iter_mut()
-                    .chain(f.parameters.iter_mut())
-                    .chain(
-                        f.blocks
-                            .iter_mut()
-                            .flat_map(|b| b.label.iter_mut().chain(b.instructions.iter_mut())),
-                    )
-                    .chain(f.end.iter_mut())
-            }))
+                    .flat_map(|f| f.all_inst_iter_mut()),
+            )
     }
 }
 
@@ -257,6 +241,34 @@ impl Function {
             blocks: vec![],
         }
     }
+
+    pub fn def_id(&self) -> Option<Word> {
+        self.def.as_ref().and_then(|inst| inst.result_id)
+    }
+
+    pub fn all_inst_iter(&self) -> impl Iterator<Item = &Instruction> {
+        self.def
+            .iter()
+            .chain(self.parameters.iter())
+            .chain(
+                self.blocks
+                    .iter()
+                    .flat_map(|b| b.label.iter().chain(b.instructions.iter())),
+            )
+            .chain(self.end.iter())
+    }
+
+    pub fn all_inst_iter_mut(&mut self) -> impl Iterator<Item = &mut Instruction> {
+        self.def
+            .iter_mut()
+            .chain(self.parameters.iter_mut())
+            .chain(
+                self.blocks
+                    .iter_mut()
+                    .flat_map(|b| b.label.iter_mut().chain(b.instructions.iter_mut())),
+            )
+            .chain(self.end.iter_mut())
+    }
 }
 
 impl Block {
@@ -266,6 +278,10 @@ impl Block {
             label: None,
             instructions: vec![],
         }
+    }
+
+    pub fn label_id(&self) -> Option<Word> {
+        self.label.as_ref().and_then(|inst| inst.result_id)
     }
 }
 
