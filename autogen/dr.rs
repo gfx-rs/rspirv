@@ -377,9 +377,9 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
     // Generate build methods for all types.
     let elements = grammar.instructions.iter().filter(|inst| {
         inst.class == Some(structs::Class::Terminator) ||
-        (inst.class == Some(structs::Class::Branch) && inst.opname != "OpPhi")
+        (inst.class == Some(structs::Class::Branch) && inst.opname != "OpPhi" && inst.opname != "OpLabel")
     }).map(|inst| {
-        let params = get_param_list(&inst.operands, inst.opname == "OpLabel", kinds);
+        let params = get_param_list(&inst.operands, false, kinds);
         let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);
         let comment = format!("Appends an Op{} instruction and ends the current block.", opcode);
@@ -388,24 +388,12 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
         let init = get_init_list(&inst.operands);
         let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
 
-        let result_id = if inst.opname == "OpLabel" {
-            quote! { result_id }
-        } else {
-            quote! { None }
-        };
-
-        let result_type = if inst.opname == "OpPhi" {
-            quote! { Some(result_type) }
-        } else {
-            quote! { None }
-        };
-
         quote! {
             #[doc = #comment]
             pub fn #name(&mut self,#(#params),*) -> BuildResult<()> {
                 #[allow(unused_mut)]
                 let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, #result_type, #result_id, vec![#(#init),*]);
+                    spirv::Op::#opcode, None, None, vec![#(#init),*]);
                 #(#extras)*
                 self.end_block(inst)
             }
@@ -414,7 +402,7 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
             pub fn #insert_name(&mut self, insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
                 #[allow(unused_mut)]
                 let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, #result_type, #result_id, vec![#(#init),*]);
+                    spirv::Op::#opcode, None, None, vec![#(#init),*]);
                 #(#extras)*
                 self.insert_end_block(insert_point, inst)
             }
