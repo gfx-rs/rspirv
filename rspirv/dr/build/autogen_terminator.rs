@@ -85,22 +85,6 @@ impl Builder {
         );
         self.insert_end_block(insert_point, inst)
     }
-    #[doc = "Appends an OpLabel instruction and ends the current block."]
-    pub fn label(&mut self, result_id: Option<spirv::Word>) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::Label, None, result_id, vec![]);
-        self.end_block(inst)
-    }
-    #[doc = "Insert an OpLabel instruction and ends the current block."]
-    pub fn insert_label(
-        &mut self,
-        insert_point: InsertPoint,
-        result_id: Option<spirv::Word>,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::Label, None, result_id, vec![]);
-        self.insert_end_block(insert_point, inst)
-    }
     #[doc = "Appends an OpBranch instruction and ends the current block."]
     pub fn branch(&mut self, target_label: spirv::Word) -> BuildResult<()> {
         #[allow(unused_mut)]
