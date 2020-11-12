@@ -100,6 +100,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut from_prim_list = vec![];
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
+    let mut from_str_impl = vec![];
     for e in &grammar.enumerants {
         if let Some(discriminator) = seen_discriminator.get(&e.value) {
             let symbol = as_ident(&e.symbol);
@@ -109,18 +110,19 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         } else {
             // Special case for Dim. Its enumerants can start with a digit.
             // So prefix with the kind name here.
-            let name = if grammar.kind == "Dim" {
+            let name_str = if grammar.kind == "Dim" {
                 let mut name = "Dim".to_string();
                 name.push_str(&e.symbol);
                 name
             } else {
                 e.symbol.to_string()
             };
-            let name = as_ident(&name);
+            let name = as_ident(&name_str);
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
             enumerants.push(quote! { #name = #number });
             from_prim_list.push(quote! { #number => #kind::#name });
+            from_str_impl.push(quote! { #name_str => Ok(#kind::#name), });
 
             capability_clauses
                 .entry(&e.capabilities)
@@ -161,6 +163,17 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         }
 
         #from_prim_impl
+
+        impl std::str::FromStr for #kind {
+            type Err = ();
+
+            fn from_str(s: &str) -> Result<Self, Self::Err> {
+                match s {
+                    #(#from_str_impl)*
+                    _ => Err(()),
+                }
+            }
+        }
     }
 }
 

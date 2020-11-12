@@ -59,6 +59,20 @@ impl num_traits::FromPrimitive for SourceLanguage {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for SourceLanguage {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Unknown" => Ok(SourceLanguage::Unknown),
+            "ESSL" => Ok(SourceLanguage::ESSL),
+            "GLSL" => Ok(SourceLanguage::GLSL),
+            "OpenCL_C" => Ok(SourceLanguage::OpenCL_C),
+            "OpenCL_CPP" => Ok(SourceLanguage::OpenCL_CPP),
+            "HLSL" => Ok(SourceLanguage::HLSL),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ExecutionModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_model_a_execution_model)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -138,6 +152,29 @@ impl num_traits::FromPrimitive for ExecutionModel {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for ExecutionModel {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Vertex" => Ok(ExecutionModel::Vertex),
+            "TessellationControl" => Ok(ExecutionModel::TessellationControl),
+            "TessellationEvaluation" => Ok(ExecutionModel::TessellationEvaluation),
+            "Geometry" => Ok(ExecutionModel::Geometry),
+            "Fragment" => Ok(ExecutionModel::Fragment),
+            "GLCompute" => Ok(ExecutionModel::GLCompute),
+            "Kernel" => Ok(ExecutionModel::Kernel),
+            "TaskNV" => Ok(ExecutionModel::TaskNV),
+            "MeshNV" => Ok(ExecutionModel::MeshNV),
+            "RayGenerationNV" => Ok(ExecutionModel::RayGenerationNV),
+            "IntersectionNV" => Ok(ExecutionModel::IntersectionNV),
+            "AnyHitNV" => Ok(ExecutionModel::AnyHitNV),
+            "ClosestHitNV" => Ok(ExecutionModel::ClosestHitNV),
+            "MissNV" => Ok(ExecutionModel::MissNV),
+            "CallableNV" => Ok(ExecutionModel::CallableNV),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [AddressingModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_addressing_model_a_addressing_model)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -178,6 +215,18 @@ impl num_traits::FromPrimitive for AddressingModel {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for AddressingModel {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Logical" => Ok(AddressingModel::Logical),
+            "Physical32" => Ok(AddressingModel::Physical32),
+            "Physical64" => Ok(AddressingModel::Physical64),
+            "PhysicalStorageBuffer64" => Ok(AddressingModel::PhysicalStorageBuffer64),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [MemoryModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_model_a_memory_model)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -213,6 +262,18 @@ impl num_traits::FromPrimitive for MemoryModel {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for MemoryModel {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Simple" => Ok(MemoryModel::Simple),
+            "GLSL450" => Ok(MemoryModel::GLSL450),
+            "OpenCL" => Ok(MemoryModel::OpenCL),
+            "Vulkan" => Ok(MemoryModel::Vulkan),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [ExecutionMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_mode_a_execution_mode)"]
@@ -416,6 +477,72 @@ impl num_traits::FromPrimitive for ExecutionMode {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for ExecutionMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Invocations" => Ok(ExecutionMode::Invocations),
+            "SpacingEqual" => Ok(ExecutionMode::SpacingEqual),
+            "SpacingFractionalEven" => Ok(ExecutionMode::SpacingFractionalEven),
+            "SpacingFractionalOdd" => Ok(ExecutionMode::SpacingFractionalOdd),
+            "VertexOrderCw" => Ok(ExecutionMode::VertexOrderCw),
+            "VertexOrderCcw" => Ok(ExecutionMode::VertexOrderCcw),
+            "PixelCenterInteger" => Ok(ExecutionMode::PixelCenterInteger),
+            "OriginUpperLeft" => Ok(ExecutionMode::OriginUpperLeft),
+            "OriginLowerLeft" => Ok(ExecutionMode::OriginLowerLeft),
+            "EarlyFragmentTests" => Ok(ExecutionMode::EarlyFragmentTests),
+            "PointMode" => Ok(ExecutionMode::PointMode),
+            "Xfb" => Ok(ExecutionMode::Xfb),
+            "DepthReplacing" => Ok(ExecutionMode::DepthReplacing),
+            "DepthGreater" => Ok(ExecutionMode::DepthGreater),
+            "DepthLess" => Ok(ExecutionMode::DepthLess),
+            "DepthUnchanged" => Ok(ExecutionMode::DepthUnchanged),
+            "LocalSize" => Ok(ExecutionMode::LocalSize),
+            "LocalSizeHint" => Ok(ExecutionMode::LocalSizeHint),
+            "InputPoints" => Ok(ExecutionMode::InputPoints),
+            "InputLines" => Ok(ExecutionMode::InputLines),
+            "InputLinesAdjacency" => Ok(ExecutionMode::InputLinesAdjacency),
+            "Triangles" => Ok(ExecutionMode::Triangles),
+            "InputTrianglesAdjacency" => Ok(ExecutionMode::InputTrianglesAdjacency),
+            "Quads" => Ok(ExecutionMode::Quads),
+            "Isolines" => Ok(ExecutionMode::Isolines),
+            "OutputVertices" => Ok(ExecutionMode::OutputVertices),
+            "OutputPoints" => Ok(ExecutionMode::OutputPoints),
+            "OutputLineStrip" => Ok(ExecutionMode::OutputLineStrip),
+            "OutputTriangleStrip" => Ok(ExecutionMode::OutputTriangleStrip),
+            "VecTypeHint" => Ok(ExecutionMode::VecTypeHint),
+            "ContractionOff" => Ok(ExecutionMode::ContractionOff),
+            "Initializer" => Ok(ExecutionMode::Initializer),
+            "Finalizer" => Ok(ExecutionMode::Finalizer),
+            "SubgroupSize" => Ok(ExecutionMode::SubgroupSize),
+            "SubgroupsPerWorkgroup" => Ok(ExecutionMode::SubgroupsPerWorkgroup),
+            "SubgroupsPerWorkgroupId" => Ok(ExecutionMode::SubgroupsPerWorkgroupId),
+            "LocalSizeId" => Ok(ExecutionMode::LocalSizeId),
+            "LocalSizeHintId" => Ok(ExecutionMode::LocalSizeHintId),
+            "PostDepthCoverage" => Ok(ExecutionMode::PostDepthCoverage),
+            "DenormPreserve" => Ok(ExecutionMode::DenormPreserve),
+            "DenormFlushToZero" => Ok(ExecutionMode::DenormFlushToZero),
+            "SignedZeroInfNanPreserve" => Ok(ExecutionMode::SignedZeroInfNanPreserve),
+            "RoundingModeRTE" => Ok(ExecutionMode::RoundingModeRTE),
+            "RoundingModeRTZ" => Ok(ExecutionMode::RoundingModeRTZ),
+            "StencilRefReplacingEXT" => Ok(ExecutionMode::StencilRefReplacingEXT),
+            "OutputLinesNV" => Ok(ExecutionMode::OutputLinesNV),
+            "OutputPrimitivesNV" => Ok(ExecutionMode::OutputPrimitivesNV),
+            "DerivativeGroupQuadsNV" => Ok(ExecutionMode::DerivativeGroupQuadsNV),
+            "DerivativeGroupLinearNV" => Ok(ExecutionMode::DerivativeGroupLinearNV),
+            "OutputTrianglesNV" => Ok(ExecutionMode::OutputTrianglesNV),
+            "PixelInterlockOrderedEXT" => Ok(ExecutionMode::PixelInterlockOrderedEXT),
+            "PixelInterlockUnorderedEXT" => Ok(ExecutionMode::PixelInterlockUnorderedEXT),
+            "SampleInterlockOrderedEXT" => Ok(ExecutionMode::SampleInterlockOrderedEXT),
+            "SampleInterlockUnorderedEXT" => Ok(ExecutionMode::SampleInterlockUnorderedEXT),
+            "ShadingRateInterlockOrderedEXT" => Ok(ExecutionMode::ShadingRateInterlockOrderedEXT),
+            "ShadingRateInterlockUnorderedEXT" => {
+                Ok(ExecutionMode::ShadingRateInterlockUnorderedEXT)
+            }
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [StorageClass](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_storage_class_a_storage_class)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -511,6 +638,34 @@ impl num_traits::FromPrimitive for StorageClass {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for StorageClass {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "UniformConstant" => Ok(StorageClass::UniformConstant),
+            "Input" => Ok(StorageClass::Input),
+            "Uniform" => Ok(StorageClass::Uniform),
+            "Output" => Ok(StorageClass::Output),
+            "Workgroup" => Ok(StorageClass::Workgroup),
+            "CrossWorkgroup" => Ok(StorageClass::CrossWorkgroup),
+            "Private" => Ok(StorageClass::Private),
+            "Function" => Ok(StorageClass::Function),
+            "Generic" => Ok(StorageClass::Generic),
+            "PushConstant" => Ok(StorageClass::PushConstant),
+            "AtomicCounter" => Ok(StorageClass::AtomicCounter),
+            "Image" => Ok(StorageClass::Image),
+            "StorageBuffer" => Ok(StorageClass::StorageBuffer),
+            "CallableDataNV" => Ok(StorageClass::CallableDataNV),
+            "IncomingCallableDataNV" => Ok(StorageClass::IncomingCallableDataNV),
+            "RayPayloadNV" => Ok(StorageClass::RayPayloadNV),
+            "HitAttributeNV" => Ok(StorageClass::HitAttributeNV),
+            "IncomingRayPayloadNV" => Ok(StorageClass::IncomingRayPayloadNV),
+            "ShaderRecordBufferNV" => Ok(StorageClass::ShaderRecordBufferNV),
+            "PhysicalStorageBuffer" => Ok(StorageClass::PhysicalStorageBuffer),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [Dim](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_dim_a_dim)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -561,6 +716,21 @@ impl num_traits::FromPrimitive for Dim {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for Dim {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Dim1D" => Ok(Dim::Dim1D),
+            "Dim2D" => Ok(Dim::Dim2D),
+            "Dim3D" => Ok(Dim::Dim3D),
+            "DimCube" => Ok(Dim::DimCube),
+            "DimRect" => Ok(Dim::DimRect),
+            "DimBuffer" => Ok(Dim::DimBuffer),
+            "DimSubpassData" => Ok(Dim::DimSubpassData),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [SamplerAddressingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_addressing_mode_a_sampler_addressing_mode)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -601,6 +771,19 @@ impl num_traits::FromPrimitive for SamplerAddressingMode {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for SamplerAddressingMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "None" => Ok(SamplerAddressingMode::None),
+            "ClampToEdge" => Ok(SamplerAddressingMode::ClampToEdge),
+            "Clamp" => Ok(SamplerAddressingMode::Clamp),
+            "Repeat" => Ok(SamplerAddressingMode::Repeat),
+            "RepeatMirrored" => Ok(SamplerAddressingMode::RepeatMirrored),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [SamplerFilterMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_filter_mode_a_sampler_filter_mode)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -629,6 +812,16 @@ impl num_traits::FromPrimitive for SamplerFilterMode {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for SamplerFilterMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Nearest" => Ok(SamplerFilterMode::Nearest),
+            "Linear" => Ok(SamplerFilterMode::Linear),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [ImageFormat](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_format_a_image_format)"]
@@ -776,6 +969,54 @@ impl num_traits::FromPrimitive for ImageFormat {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for ImageFormat {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Unknown" => Ok(ImageFormat::Unknown),
+            "Rgba32f" => Ok(ImageFormat::Rgba32f),
+            "Rgba16f" => Ok(ImageFormat::Rgba16f),
+            "R32f" => Ok(ImageFormat::R32f),
+            "Rgba8" => Ok(ImageFormat::Rgba8),
+            "Rgba8Snorm" => Ok(ImageFormat::Rgba8Snorm),
+            "Rg32f" => Ok(ImageFormat::Rg32f),
+            "Rg16f" => Ok(ImageFormat::Rg16f),
+            "R11fG11fB10f" => Ok(ImageFormat::R11fG11fB10f),
+            "R16f" => Ok(ImageFormat::R16f),
+            "Rgba16" => Ok(ImageFormat::Rgba16),
+            "Rgb10A2" => Ok(ImageFormat::Rgb10A2),
+            "Rg16" => Ok(ImageFormat::Rg16),
+            "Rg8" => Ok(ImageFormat::Rg8),
+            "R16" => Ok(ImageFormat::R16),
+            "R8" => Ok(ImageFormat::R8),
+            "Rgba16Snorm" => Ok(ImageFormat::Rgba16Snorm),
+            "Rg16Snorm" => Ok(ImageFormat::Rg16Snorm),
+            "Rg8Snorm" => Ok(ImageFormat::Rg8Snorm),
+            "R16Snorm" => Ok(ImageFormat::R16Snorm),
+            "R8Snorm" => Ok(ImageFormat::R8Snorm),
+            "Rgba32i" => Ok(ImageFormat::Rgba32i),
+            "Rgba16i" => Ok(ImageFormat::Rgba16i),
+            "Rgba8i" => Ok(ImageFormat::Rgba8i),
+            "R32i" => Ok(ImageFormat::R32i),
+            "Rg32i" => Ok(ImageFormat::Rg32i),
+            "Rg16i" => Ok(ImageFormat::Rg16i),
+            "Rg8i" => Ok(ImageFormat::Rg8i),
+            "R16i" => Ok(ImageFormat::R16i),
+            "R8i" => Ok(ImageFormat::R8i),
+            "Rgba32ui" => Ok(ImageFormat::Rgba32ui),
+            "Rgba16ui" => Ok(ImageFormat::Rgba16ui),
+            "Rgba8ui" => Ok(ImageFormat::Rgba8ui),
+            "R32ui" => Ok(ImageFormat::R32ui),
+            "Rgb10a2ui" => Ok(ImageFormat::Rgb10a2ui),
+            "Rg32ui" => Ok(ImageFormat::Rg32ui),
+            "Rg16ui" => Ok(ImageFormat::Rg16ui),
+            "Rg8ui" => Ok(ImageFormat::Rg8ui),
+            "R16ui" => Ok(ImageFormat::R16ui),
+            "R8ui" => Ok(ImageFormat::R8ui),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ImageChannelOrder](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_order_a_image_channel_order)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -861,6 +1102,34 @@ impl num_traits::FromPrimitive for ImageChannelOrder {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for ImageChannelOrder {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "R" => Ok(ImageChannelOrder::R),
+            "A" => Ok(ImageChannelOrder::A),
+            "RG" => Ok(ImageChannelOrder::RG),
+            "RA" => Ok(ImageChannelOrder::RA),
+            "RGB" => Ok(ImageChannelOrder::RGB),
+            "RGBA" => Ok(ImageChannelOrder::RGBA),
+            "BGRA" => Ok(ImageChannelOrder::BGRA),
+            "ARGB" => Ok(ImageChannelOrder::ARGB),
+            "Intensity" => Ok(ImageChannelOrder::Intensity),
+            "Luminance" => Ok(ImageChannelOrder::Luminance),
+            "Rx" => Ok(ImageChannelOrder::Rx),
+            "RGx" => Ok(ImageChannelOrder::RGx),
+            "RGBx" => Ok(ImageChannelOrder::RGBx),
+            "Depth" => Ok(ImageChannelOrder::Depth),
+            "DepthStencil" => Ok(ImageChannelOrder::DepthStencil),
+            "sRGB" => Ok(ImageChannelOrder::sRGB),
+            "sRGBx" => Ok(ImageChannelOrder::sRGBx),
+            "sRGBA" => Ok(ImageChannelOrder::sRGBA),
+            "sBGRA" => Ok(ImageChannelOrder::sBGRA),
+            "ABGR" => Ok(ImageChannelOrder::ABGR),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [ImageChannelDataType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_data_type_a_image_channel_data_type)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -937,6 +1206,31 @@ impl num_traits::FromPrimitive for ImageChannelDataType {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for ImageChannelDataType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "SnormInt8" => Ok(ImageChannelDataType::SnormInt8),
+            "SnormInt16" => Ok(ImageChannelDataType::SnormInt16),
+            "UnormInt8" => Ok(ImageChannelDataType::UnormInt8),
+            "UnormInt16" => Ok(ImageChannelDataType::UnormInt16),
+            "UnormShort565" => Ok(ImageChannelDataType::UnormShort565),
+            "UnormShort555" => Ok(ImageChannelDataType::UnormShort555),
+            "UnormInt101010" => Ok(ImageChannelDataType::UnormInt101010),
+            "SignedInt8" => Ok(ImageChannelDataType::SignedInt8),
+            "SignedInt16" => Ok(ImageChannelDataType::SignedInt16),
+            "SignedInt32" => Ok(ImageChannelDataType::SignedInt32),
+            "UnsignedInt8" => Ok(ImageChannelDataType::UnsignedInt8),
+            "UnsignedInt16" => Ok(ImageChannelDataType::UnsignedInt16),
+            "UnsignedInt32" => Ok(ImageChannelDataType::UnsignedInt32),
+            "HalfFloat" => Ok(ImageChannelDataType::HalfFloat),
+            "Float" => Ok(ImageChannelDataType::Float),
+            "UnormInt24" => Ok(ImageChannelDataType::UnormInt24),
+            "UnormInt101010_2" => Ok(ImageChannelDataType::UnormInt101010_2),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [FPRoundingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_rounding_mode_a_fp_rounding_mode)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -974,6 +1268,18 @@ impl num_traits::FromPrimitive for FPRoundingMode {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for FPRoundingMode {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "RTE" => Ok(FPRoundingMode::RTE),
+            "RTZ" => Ok(FPRoundingMode::RTZ),
+            "RTP" => Ok(FPRoundingMode::RTP),
+            "RTN" => Ok(FPRoundingMode::RTN),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [LinkageType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_linkage_type_a_linkage_type)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -1002,6 +1308,16 @@ impl num_traits::FromPrimitive for LinkageType {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for LinkageType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Export" => Ok(LinkageType::Export),
+            "Import" => Ok(LinkageType::Import),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [AccessQualifier](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_access_qualifier_a_access_qualifier)"]
@@ -1036,6 +1352,17 @@ impl num_traits::FromPrimitive for AccessQualifier {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for AccessQualifier {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "ReadOnly" => Ok(AccessQualifier::ReadOnly),
+            "WriteOnly" => Ok(AccessQualifier::WriteOnly),
+            "ReadWrite" => Ok(AccessQualifier::ReadWrite),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [FunctionParameterAttribute](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_parameter_attribute_a_function_parameter_attribute)"]
@@ -1085,6 +1412,22 @@ impl num_traits::FromPrimitive for FunctionParameterAttribute {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for FunctionParameterAttribute {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Zext" => Ok(FunctionParameterAttribute::Zext),
+            "Sext" => Ok(FunctionParameterAttribute::Sext),
+            "ByVal" => Ok(FunctionParameterAttribute::ByVal),
+            "Sret" => Ok(FunctionParameterAttribute::Sret),
+            "NoAlias" => Ok(FunctionParameterAttribute::NoAlias),
+            "NoCapture" => Ok(FunctionParameterAttribute::NoCapture),
+            "NoWrite" => Ok(FunctionParameterAttribute::NoWrite),
+            "NoReadWrite" => Ok(FunctionParameterAttribute::NoReadWrite),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [Decoration](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_decoration_a_decoration)"]
@@ -1306,6 +1649,78 @@ impl num_traits::FromPrimitive for Decoration {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for Decoration {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "RelaxedPrecision" => Ok(Decoration::RelaxedPrecision),
+            "SpecId" => Ok(Decoration::SpecId),
+            "Block" => Ok(Decoration::Block),
+            "BufferBlock" => Ok(Decoration::BufferBlock),
+            "RowMajor" => Ok(Decoration::RowMajor),
+            "ColMajor" => Ok(Decoration::ColMajor),
+            "ArrayStride" => Ok(Decoration::ArrayStride),
+            "MatrixStride" => Ok(Decoration::MatrixStride),
+            "GLSLShared" => Ok(Decoration::GLSLShared),
+            "GLSLPacked" => Ok(Decoration::GLSLPacked),
+            "CPacked" => Ok(Decoration::CPacked),
+            "BuiltIn" => Ok(Decoration::BuiltIn),
+            "NoPerspective" => Ok(Decoration::NoPerspective),
+            "Flat" => Ok(Decoration::Flat),
+            "Patch" => Ok(Decoration::Patch),
+            "Centroid" => Ok(Decoration::Centroid),
+            "Sample" => Ok(Decoration::Sample),
+            "Invariant" => Ok(Decoration::Invariant),
+            "Restrict" => Ok(Decoration::Restrict),
+            "Aliased" => Ok(Decoration::Aliased),
+            "Volatile" => Ok(Decoration::Volatile),
+            "Constant" => Ok(Decoration::Constant),
+            "Coherent" => Ok(Decoration::Coherent),
+            "NonWritable" => Ok(Decoration::NonWritable),
+            "NonReadable" => Ok(Decoration::NonReadable),
+            "Uniform" => Ok(Decoration::Uniform),
+            "UniformId" => Ok(Decoration::UniformId),
+            "SaturatedConversion" => Ok(Decoration::SaturatedConversion),
+            "Stream" => Ok(Decoration::Stream),
+            "Location" => Ok(Decoration::Location),
+            "Component" => Ok(Decoration::Component),
+            "Index" => Ok(Decoration::Index),
+            "Binding" => Ok(Decoration::Binding),
+            "DescriptorSet" => Ok(Decoration::DescriptorSet),
+            "Offset" => Ok(Decoration::Offset),
+            "XfbBuffer" => Ok(Decoration::XfbBuffer),
+            "XfbStride" => Ok(Decoration::XfbStride),
+            "FuncParamAttr" => Ok(Decoration::FuncParamAttr),
+            "FPRoundingMode" => Ok(Decoration::FPRoundingMode),
+            "FPFastMathMode" => Ok(Decoration::FPFastMathMode),
+            "LinkageAttributes" => Ok(Decoration::LinkageAttributes),
+            "NoContraction" => Ok(Decoration::NoContraction),
+            "InputAttachmentIndex" => Ok(Decoration::InputAttachmentIndex),
+            "Alignment" => Ok(Decoration::Alignment),
+            "MaxByteOffset" => Ok(Decoration::MaxByteOffset),
+            "AlignmentId" => Ok(Decoration::AlignmentId),
+            "MaxByteOffsetId" => Ok(Decoration::MaxByteOffsetId),
+            "NoSignedWrap" => Ok(Decoration::NoSignedWrap),
+            "NoUnsignedWrap" => Ok(Decoration::NoUnsignedWrap),
+            "ExplicitInterpAMD" => Ok(Decoration::ExplicitInterpAMD),
+            "OverrideCoverageNV" => Ok(Decoration::OverrideCoverageNV),
+            "PassthroughNV" => Ok(Decoration::PassthroughNV),
+            "ViewportRelativeNV" => Ok(Decoration::ViewportRelativeNV),
+            "SecondaryViewportRelativeNV" => Ok(Decoration::SecondaryViewportRelativeNV),
+            "PerPrimitiveNV" => Ok(Decoration::PerPrimitiveNV),
+            "PerViewNV" => Ok(Decoration::PerViewNV),
+            "PerTaskNV" => Ok(Decoration::PerTaskNV),
+            "PerVertexNV" => Ok(Decoration::PerVertexNV),
+            "NonUniform" => Ok(Decoration::NonUniform),
+            "RestrictPointer" => Ok(Decoration::RestrictPointer),
+            "AliasedPointer" => Ok(Decoration::AliasedPointer),
+            "CounterBuffer" => Ok(Decoration::CounterBuffer),
+            "UserSemantic" => Ok(Decoration::UserSemantic),
+            "UserTypeGOOGLE" => Ok(Decoration::UserTypeGOOGLE),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [BuiltIn](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_built_in_a_built_in)"]
@@ -1668,6 +2083,110 @@ impl num_traits::FromPrimitive for BuiltIn {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for BuiltIn {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Position" => Ok(BuiltIn::Position),
+            "PointSize" => Ok(BuiltIn::PointSize),
+            "ClipDistance" => Ok(BuiltIn::ClipDistance),
+            "CullDistance" => Ok(BuiltIn::CullDistance),
+            "VertexId" => Ok(BuiltIn::VertexId),
+            "InstanceId" => Ok(BuiltIn::InstanceId),
+            "PrimitiveId" => Ok(BuiltIn::PrimitiveId),
+            "InvocationId" => Ok(BuiltIn::InvocationId),
+            "Layer" => Ok(BuiltIn::Layer),
+            "ViewportIndex" => Ok(BuiltIn::ViewportIndex),
+            "TessLevelOuter" => Ok(BuiltIn::TessLevelOuter),
+            "TessLevelInner" => Ok(BuiltIn::TessLevelInner),
+            "TessCoord" => Ok(BuiltIn::TessCoord),
+            "PatchVertices" => Ok(BuiltIn::PatchVertices),
+            "FragCoord" => Ok(BuiltIn::FragCoord),
+            "PointCoord" => Ok(BuiltIn::PointCoord),
+            "FrontFacing" => Ok(BuiltIn::FrontFacing),
+            "SampleId" => Ok(BuiltIn::SampleId),
+            "SamplePosition" => Ok(BuiltIn::SamplePosition),
+            "SampleMask" => Ok(BuiltIn::SampleMask),
+            "FragDepth" => Ok(BuiltIn::FragDepth),
+            "HelperInvocation" => Ok(BuiltIn::HelperInvocation),
+            "NumWorkgroups" => Ok(BuiltIn::NumWorkgroups),
+            "WorkgroupSize" => Ok(BuiltIn::WorkgroupSize),
+            "WorkgroupId" => Ok(BuiltIn::WorkgroupId),
+            "LocalInvocationId" => Ok(BuiltIn::LocalInvocationId),
+            "GlobalInvocationId" => Ok(BuiltIn::GlobalInvocationId),
+            "LocalInvocationIndex" => Ok(BuiltIn::LocalInvocationIndex),
+            "WorkDim" => Ok(BuiltIn::WorkDim),
+            "GlobalSize" => Ok(BuiltIn::GlobalSize),
+            "EnqueuedWorkgroupSize" => Ok(BuiltIn::EnqueuedWorkgroupSize),
+            "GlobalOffset" => Ok(BuiltIn::GlobalOffset),
+            "GlobalLinearId" => Ok(BuiltIn::GlobalLinearId),
+            "SubgroupSize" => Ok(BuiltIn::SubgroupSize),
+            "SubgroupMaxSize" => Ok(BuiltIn::SubgroupMaxSize),
+            "NumSubgroups" => Ok(BuiltIn::NumSubgroups),
+            "NumEnqueuedSubgroups" => Ok(BuiltIn::NumEnqueuedSubgroups),
+            "SubgroupId" => Ok(BuiltIn::SubgroupId),
+            "SubgroupLocalInvocationId" => Ok(BuiltIn::SubgroupLocalInvocationId),
+            "VertexIndex" => Ok(BuiltIn::VertexIndex),
+            "InstanceIndex" => Ok(BuiltIn::InstanceIndex),
+            "SubgroupEqMask" => Ok(BuiltIn::SubgroupEqMask),
+            "SubgroupGeMask" => Ok(BuiltIn::SubgroupGeMask),
+            "SubgroupGtMask" => Ok(BuiltIn::SubgroupGtMask),
+            "SubgroupLeMask" => Ok(BuiltIn::SubgroupLeMask),
+            "SubgroupLtMask" => Ok(BuiltIn::SubgroupLtMask),
+            "BaseVertex" => Ok(BuiltIn::BaseVertex),
+            "BaseInstance" => Ok(BuiltIn::BaseInstance),
+            "DrawIndex" => Ok(BuiltIn::DrawIndex),
+            "DeviceIndex" => Ok(BuiltIn::DeviceIndex),
+            "ViewIndex" => Ok(BuiltIn::ViewIndex),
+            "BaryCoordNoPerspAMD" => Ok(BuiltIn::BaryCoordNoPerspAMD),
+            "BaryCoordNoPerspCentroidAMD" => Ok(BuiltIn::BaryCoordNoPerspCentroidAMD),
+            "BaryCoordNoPerspSampleAMD" => Ok(BuiltIn::BaryCoordNoPerspSampleAMD),
+            "BaryCoordSmoothAMD" => Ok(BuiltIn::BaryCoordSmoothAMD),
+            "BaryCoordSmoothCentroidAMD" => Ok(BuiltIn::BaryCoordSmoothCentroidAMD),
+            "BaryCoordSmoothSampleAMD" => Ok(BuiltIn::BaryCoordSmoothSampleAMD),
+            "BaryCoordPullModelAMD" => Ok(BuiltIn::BaryCoordPullModelAMD),
+            "FragStencilRefEXT" => Ok(BuiltIn::FragStencilRefEXT),
+            "ViewportMaskNV" => Ok(BuiltIn::ViewportMaskNV),
+            "SecondaryPositionNV" => Ok(BuiltIn::SecondaryPositionNV),
+            "SecondaryViewportMaskNV" => Ok(BuiltIn::SecondaryViewportMaskNV),
+            "PositionPerViewNV" => Ok(BuiltIn::PositionPerViewNV),
+            "ViewportMaskPerViewNV" => Ok(BuiltIn::ViewportMaskPerViewNV),
+            "FullyCoveredEXT" => Ok(BuiltIn::FullyCoveredEXT),
+            "TaskCountNV" => Ok(BuiltIn::TaskCountNV),
+            "PrimitiveCountNV" => Ok(BuiltIn::PrimitiveCountNV),
+            "PrimitiveIndicesNV" => Ok(BuiltIn::PrimitiveIndicesNV),
+            "ClipDistancePerViewNV" => Ok(BuiltIn::ClipDistancePerViewNV),
+            "CullDistancePerViewNV" => Ok(BuiltIn::CullDistancePerViewNV),
+            "LayerPerViewNV" => Ok(BuiltIn::LayerPerViewNV),
+            "MeshViewCountNV" => Ok(BuiltIn::MeshViewCountNV),
+            "MeshViewIndicesNV" => Ok(BuiltIn::MeshViewIndicesNV),
+            "BaryCoordNV" => Ok(BuiltIn::BaryCoordNV),
+            "BaryCoordNoPerspNV" => Ok(BuiltIn::BaryCoordNoPerspNV),
+            "FragSizeEXT" => Ok(BuiltIn::FragSizeEXT),
+            "FragInvocationCountEXT" => Ok(BuiltIn::FragInvocationCountEXT),
+            "LaunchIdNV" => Ok(BuiltIn::LaunchIdNV),
+            "LaunchSizeNV" => Ok(BuiltIn::LaunchSizeNV),
+            "WorldRayOriginNV" => Ok(BuiltIn::WorldRayOriginNV),
+            "WorldRayDirectionNV" => Ok(BuiltIn::WorldRayDirectionNV),
+            "ObjectRayOriginNV" => Ok(BuiltIn::ObjectRayOriginNV),
+            "ObjectRayDirectionNV" => Ok(BuiltIn::ObjectRayDirectionNV),
+            "RayTminNV" => Ok(BuiltIn::RayTminNV),
+            "RayTmaxNV" => Ok(BuiltIn::RayTmaxNV),
+            "InstanceCustomIndexNV" => Ok(BuiltIn::InstanceCustomIndexNV),
+            "ObjectToWorldNV" => Ok(BuiltIn::ObjectToWorldNV),
+            "WorldToObjectNV" => Ok(BuiltIn::WorldToObjectNV),
+            "HitTNV" => Ok(BuiltIn::HitTNV),
+            "HitKindNV" => Ok(BuiltIn::HitKindNV),
+            "IncomingRayFlagsNV" => Ok(BuiltIn::IncomingRayFlagsNV),
+            "RayGeometryIndexKHR" => Ok(BuiltIn::RayGeometryIndexKHR),
+            "WarpsPerSMNV" => Ok(BuiltIn::WarpsPerSMNV),
+            "SMCountNV" => Ok(BuiltIn::SMCountNV),
+            "WarpIDNV" => Ok(BuiltIn::WarpIDNV),
+            "SMIDNV" => Ok(BuiltIn::SMIDNV),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [Scope](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_scope_a_scope)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -1713,6 +2232,21 @@ impl num_traits::FromPrimitive for Scope {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for Scope {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "CrossDevice" => Ok(Scope::CrossDevice),
+            "Device" => Ok(Scope::Device),
+            "Workgroup" => Ok(Scope::Workgroup),
+            "Subgroup" => Ok(Scope::Subgroup),
+            "Invocation" => Ok(Scope::Invocation),
+            "QueueFamily" => Ok(Scope::QueueFamily),
+            "ShaderCallKHR" => Ok(Scope::ShaderCallKHR),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [GroupOperation](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_group_operation_a_group_operation)"]
@@ -1767,6 +2301,21 @@ impl num_traits::FromPrimitive for GroupOperation {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for GroupOperation {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Reduce" => Ok(GroupOperation::Reduce),
+            "InclusiveScan" => Ok(GroupOperation::InclusiveScan),
+            "ExclusiveScan" => Ok(GroupOperation::ExclusiveScan),
+            "ClusteredReduce" => Ok(GroupOperation::ClusteredReduce),
+            "PartitionedReduceNV" => Ok(GroupOperation::PartitionedReduceNV),
+            "PartitionedInclusiveScanNV" => Ok(GroupOperation::PartitionedInclusiveScanNV),
+            "PartitionedExclusiveScanNV" => Ok(GroupOperation::PartitionedExclusiveScanNV),
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [KernelEnqueueFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_enqueue_flags_a_kernel_enqueue_flags)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -1799,6 +2348,17 @@ impl num_traits::FromPrimitive for KernelEnqueueFlags {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for KernelEnqueueFlags {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "NoWait" => Ok(KernelEnqueueFlags::NoWait),
+            "WaitKernel" => Ok(KernelEnqueueFlags::WaitKernel),
+            "WaitWorkGroup" => Ok(KernelEnqueueFlags::WaitWorkGroup),
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [Capability](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_capability_a_capability)"]
@@ -2298,6 +2858,193 @@ impl num_traits::FromPrimitive for Capability {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for Capability {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Matrix" => Ok(Capability::Matrix),
+            "Shader" => Ok(Capability::Shader),
+            "Geometry" => Ok(Capability::Geometry),
+            "Tessellation" => Ok(Capability::Tessellation),
+            "Addresses" => Ok(Capability::Addresses),
+            "Linkage" => Ok(Capability::Linkage),
+            "Kernel" => Ok(Capability::Kernel),
+            "Vector16" => Ok(Capability::Vector16),
+            "Float16Buffer" => Ok(Capability::Float16Buffer),
+            "Float16" => Ok(Capability::Float16),
+            "Float64" => Ok(Capability::Float64),
+            "Int64" => Ok(Capability::Int64),
+            "Int64Atomics" => Ok(Capability::Int64Atomics),
+            "ImageBasic" => Ok(Capability::ImageBasic),
+            "ImageReadWrite" => Ok(Capability::ImageReadWrite),
+            "ImageMipmap" => Ok(Capability::ImageMipmap),
+            "Pipes" => Ok(Capability::Pipes),
+            "Groups" => Ok(Capability::Groups),
+            "DeviceEnqueue" => Ok(Capability::DeviceEnqueue),
+            "LiteralSampler" => Ok(Capability::LiteralSampler),
+            "AtomicStorage" => Ok(Capability::AtomicStorage),
+            "Int16" => Ok(Capability::Int16),
+            "TessellationPointSize" => Ok(Capability::TessellationPointSize),
+            "GeometryPointSize" => Ok(Capability::GeometryPointSize),
+            "ImageGatherExtended" => Ok(Capability::ImageGatherExtended),
+            "StorageImageMultisample" => Ok(Capability::StorageImageMultisample),
+            "UniformBufferArrayDynamicIndexing" => {
+                Ok(Capability::UniformBufferArrayDynamicIndexing)
+            }
+            "SampledImageArrayDynamicIndexing" => Ok(Capability::SampledImageArrayDynamicIndexing),
+            "StorageBufferArrayDynamicIndexing" => {
+                Ok(Capability::StorageBufferArrayDynamicIndexing)
+            }
+            "StorageImageArrayDynamicIndexing" => Ok(Capability::StorageImageArrayDynamicIndexing),
+            "ClipDistance" => Ok(Capability::ClipDistance),
+            "CullDistance" => Ok(Capability::CullDistance),
+            "ImageCubeArray" => Ok(Capability::ImageCubeArray),
+            "SampleRateShading" => Ok(Capability::SampleRateShading),
+            "ImageRect" => Ok(Capability::ImageRect),
+            "SampledRect" => Ok(Capability::SampledRect),
+            "GenericPointer" => Ok(Capability::GenericPointer),
+            "Int8" => Ok(Capability::Int8),
+            "InputAttachment" => Ok(Capability::InputAttachment),
+            "SparseResidency" => Ok(Capability::SparseResidency),
+            "MinLod" => Ok(Capability::MinLod),
+            "Sampled1D" => Ok(Capability::Sampled1D),
+            "Image1D" => Ok(Capability::Image1D),
+            "SampledCubeArray" => Ok(Capability::SampledCubeArray),
+            "SampledBuffer" => Ok(Capability::SampledBuffer),
+            "ImageBuffer" => Ok(Capability::ImageBuffer),
+            "ImageMSArray" => Ok(Capability::ImageMSArray),
+            "StorageImageExtendedFormats" => Ok(Capability::StorageImageExtendedFormats),
+            "ImageQuery" => Ok(Capability::ImageQuery),
+            "DerivativeControl" => Ok(Capability::DerivativeControl),
+            "InterpolationFunction" => Ok(Capability::InterpolationFunction),
+            "TransformFeedback" => Ok(Capability::TransformFeedback),
+            "GeometryStreams" => Ok(Capability::GeometryStreams),
+            "StorageImageReadWithoutFormat" => Ok(Capability::StorageImageReadWithoutFormat),
+            "StorageImageWriteWithoutFormat" => Ok(Capability::StorageImageWriteWithoutFormat),
+            "MultiViewport" => Ok(Capability::MultiViewport),
+            "SubgroupDispatch" => Ok(Capability::SubgroupDispatch),
+            "NamedBarrier" => Ok(Capability::NamedBarrier),
+            "PipeStorage" => Ok(Capability::PipeStorage),
+            "GroupNonUniform" => Ok(Capability::GroupNonUniform),
+            "GroupNonUniformVote" => Ok(Capability::GroupNonUniformVote),
+            "GroupNonUniformArithmetic" => Ok(Capability::GroupNonUniformArithmetic),
+            "GroupNonUniformBallot" => Ok(Capability::GroupNonUniformBallot),
+            "GroupNonUniformShuffle" => Ok(Capability::GroupNonUniformShuffle),
+            "GroupNonUniformShuffleRelative" => Ok(Capability::GroupNonUniformShuffleRelative),
+            "GroupNonUniformClustered" => Ok(Capability::GroupNonUniformClustered),
+            "GroupNonUniformQuad" => Ok(Capability::GroupNonUniformQuad),
+            "ShaderLayer" => Ok(Capability::ShaderLayer),
+            "ShaderViewportIndex" => Ok(Capability::ShaderViewportIndex),
+            "SubgroupBallotKHR" => Ok(Capability::SubgroupBallotKHR),
+            "DrawParameters" => Ok(Capability::DrawParameters),
+            "SubgroupVoteKHR" => Ok(Capability::SubgroupVoteKHR),
+            "StorageBuffer16BitAccess" => Ok(Capability::StorageBuffer16BitAccess),
+            "UniformAndStorageBuffer16BitAccess" => {
+                Ok(Capability::UniformAndStorageBuffer16BitAccess)
+            }
+            "StoragePushConstant16" => Ok(Capability::StoragePushConstant16),
+            "StorageInputOutput16" => Ok(Capability::StorageInputOutput16),
+            "DeviceGroup" => Ok(Capability::DeviceGroup),
+            "MultiView" => Ok(Capability::MultiView),
+            "VariablePointersStorageBuffer" => Ok(Capability::VariablePointersStorageBuffer),
+            "VariablePointers" => Ok(Capability::VariablePointers),
+            "AtomicStorageOps" => Ok(Capability::AtomicStorageOps),
+            "SampleMaskPostDepthCoverage" => Ok(Capability::SampleMaskPostDepthCoverage),
+            "StorageBuffer8BitAccess" => Ok(Capability::StorageBuffer8BitAccess),
+            "UniformAndStorageBuffer8BitAccess" => {
+                Ok(Capability::UniformAndStorageBuffer8BitAccess)
+            }
+            "StoragePushConstant8" => Ok(Capability::StoragePushConstant8),
+            "DenormPreserve" => Ok(Capability::DenormPreserve),
+            "DenormFlushToZero" => Ok(Capability::DenormFlushToZero),
+            "SignedZeroInfNanPreserve" => Ok(Capability::SignedZeroInfNanPreserve),
+            "RoundingModeRTE" => Ok(Capability::RoundingModeRTE),
+            "RoundingModeRTZ" => Ok(Capability::RoundingModeRTZ),
+            "RayQueryProvisionalKHR" => Ok(Capability::RayQueryProvisionalKHR),
+            "RayTraversalPrimitiveCullingProvisionalKHR" => {
+                Ok(Capability::RayTraversalPrimitiveCullingProvisionalKHR)
+            }
+            "Float16ImageAMD" => Ok(Capability::Float16ImageAMD),
+            "ImageGatherBiasLodAMD" => Ok(Capability::ImageGatherBiasLodAMD),
+            "FragmentMaskAMD" => Ok(Capability::FragmentMaskAMD),
+            "StencilExportEXT" => Ok(Capability::StencilExportEXT),
+            "ImageReadWriteLodAMD" => Ok(Capability::ImageReadWriteLodAMD),
+            "ShaderClockKHR" => Ok(Capability::ShaderClockKHR),
+            "SampleMaskOverrideCoverageNV" => Ok(Capability::SampleMaskOverrideCoverageNV),
+            "GeometryShaderPassthroughNV" => Ok(Capability::GeometryShaderPassthroughNV),
+            "ShaderViewportIndexLayerEXT" => Ok(Capability::ShaderViewportIndexLayerEXT),
+            "ShaderViewportMaskNV" => Ok(Capability::ShaderViewportMaskNV),
+            "ShaderStereoViewNV" => Ok(Capability::ShaderStereoViewNV),
+            "PerViewAttributesNV" => Ok(Capability::PerViewAttributesNV),
+            "FragmentFullyCoveredEXT" => Ok(Capability::FragmentFullyCoveredEXT),
+            "MeshShadingNV" => Ok(Capability::MeshShadingNV),
+            "ImageFootprintNV" => Ok(Capability::ImageFootprintNV),
+            "FragmentBarycentricNV" => Ok(Capability::FragmentBarycentricNV),
+            "ComputeDerivativeGroupQuadsNV" => Ok(Capability::ComputeDerivativeGroupQuadsNV),
+            "FragmentDensityEXT" => Ok(Capability::FragmentDensityEXT),
+            "GroupNonUniformPartitionedNV" => Ok(Capability::GroupNonUniformPartitionedNV),
+            "ShaderNonUniform" => Ok(Capability::ShaderNonUniform),
+            "RuntimeDescriptorArray" => Ok(Capability::RuntimeDescriptorArray),
+            "InputAttachmentArrayDynamicIndexing" => {
+                Ok(Capability::InputAttachmentArrayDynamicIndexing)
+            }
+            "UniformTexelBufferArrayDynamicIndexing" => {
+                Ok(Capability::UniformTexelBufferArrayDynamicIndexing)
+            }
+            "StorageTexelBufferArrayDynamicIndexing" => {
+                Ok(Capability::StorageTexelBufferArrayDynamicIndexing)
+            }
+            "UniformBufferArrayNonUniformIndexing" => {
+                Ok(Capability::UniformBufferArrayNonUniformIndexing)
+            }
+            "SampledImageArrayNonUniformIndexing" => {
+                Ok(Capability::SampledImageArrayNonUniformIndexing)
+            }
+            "StorageBufferArrayNonUniformIndexing" => {
+                Ok(Capability::StorageBufferArrayNonUniformIndexing)
+            }
+            "StorageImageArrayNonUniformIndexing" => {
+                Ok(Capability::StorageImageArrayNonUniformIndexing)
+            }
+            "InputAttachmentArrayNonUniformIndexing" => {
+                Ok(Capability::InputAttachmentArrayNonUniformIndexing)
+            }
+            "UniformTexelBufferArrayNonUniformIndexing" => {
+                Ok(Capability::UniformTexelBufferArrayNonUniformIndexing)
+            }
+            "StorageTexelBufferArrayNonUniformIndexing" => {
+                Ok(Capability::StorageTexelBufferArrayNonUniformIndexing)
+            }
+            "RayTracingNV" => Ok(Capability::RayTracingNV),
+            "VulkanMemoryModel" => Ok(Capability::VulkanMemoryModel),
+            "VulkanMemoryModelDeviceScope" => Ok(Capability::VulkanMemoryModelDeviceScope),
+            "PhysicalStorageBufferAddresses" => Ok(Capability::PhysicalStorageBufferAddresses),
+            "ComputeDerivativeGroupLinearNV" => Ok(Capability::ComputeDerivativeGroupLinearNV),
+            "RayTracingProvisionalKHR" => Ok(Capability::RayTracingProvisionalKHR),
+            "CooperativeMatrixNV" => Ok(Capability::CooperativeMatrixNV),
+            "FragmentShaderSampleInterlockEXT" => Ok(Capability::FragmentShaderSampleInterlockEXT),
+            "FragmentShaderShadingRateInterlockEXT" => {
+                Ok(Capability::FragmentShaderShadingRateInterlockEXT)
+            }
+            "ShaderSMBuiltinsNV" => Ok(Capability::ShaderSMBuiltinsNV),
+            "FragmentShaderPixelInterlockEXT" => Ok(Capability::FragmentShaderPixelInterlockEXT),
+            "DemoteToHelperInvocationEXT" => Ok(Capability::DemoteToHelperInvocationEXT),
+            "SubgroupShuffleINTEL" => Ok(Capability::SubgroupShuffleINTEL),
+            "SubgroupBufferBlockIOINTEL" => Ok(Capability::SubgroupBufferBlockIOINTEL),
+            "SubgroupImageBlockIOINTEL" => Ok(Capability::SubgroupImageBlockIOINTEL),
+            "SubgroupImageMediaBlockIOINTEL" => Ok(Capability::SubgroupImageMediaBlockIOINTEL),
+            "IntegerFunctions2INTEL" => Ok(Capability::IntegerFunctions2INTEL),
+            "SubgroupAvcMotionEstimationINTEL" => Ok(Capability::SubgroupAvcMotionEstimationINTEL),
+            "SubgroupAvcMotionEstimationIntraINTEL" => {
+                Ok(Capability::SubgroupAvcMotionEstimationIntraINTEL)
+            }
+            "SubgroupAvcMotionEstimationChromaINTEL" => {
+                Ok(Capability::SubgroupAvcMotionEstimationChromaINTEL)
+            }
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [RayQueryIntersection](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_query_intersection_a_ray_query_intersection)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -2329,6 +3076,20 @@ impl num_traits::FromPrimitive for RayQueryIntersection {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for RayQueryIntersection {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "RayQueryCandidateIntersectionKHR" => {
+                Ok(RayQueryIntersection::RayQueryCandidateIntersectionKHR)
+            }
+            "RayQueryCommittedIntersectionKHR" => {
+                Ok(RayQueryIntersection::RayQueryCommittedIntersectionKHR)
+            }
+            _ => Err(()),
+        }
     }
 }
 #[doc = "/// SPIR-V operand kind: [RayQueryCommittedIntersectionType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_query_committed_intersection_type_a_ray_query_committed_intersection_type)"]
@@ -2367,6 +3128,23 @@ impl num_traits::FromPrimitive for RayQueryCommittedIntersectionType {
         Self::from_i64(n as i64)
     }
 }
+impl std::str::FromStr for RayQueryCommittedIntersectionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "RayQueryCommittedIntersectionNoneKHR" => {
+                Ok(RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionNoneKHR)
+            }
+            "RayQueryCommittedIntersectionTriangleKHR" => {
+                Ok(RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionTriangleKHR)
+            }
+            "RayQueryCommittedIntersectionGeneratedKHR" => {
+                Ok(RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR)
+            }
+            _ => Err(()),
+        }
+    }
+}
 #[doc = "/// SPIR-V operand kind: [RayQueryCandidateIntersectionType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_query_candidate_intersection_type_a_ray_query_candidate_intersection_type)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -2398,6 +3176,20 @@ impl num_traits::FromPrimitive for RayQueryCandidateIntersectionType {
     }
     fn from_u64(n: u64) -> Option<Self> {
         Self::from_i64(n as i64)
+    }
+}
+impl std::str::FromStr for RayQueryCandidateIntersectionType {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "RayQueryCandidateIntersectionTriangleKHR" => {
+                Ok(RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionTriangleKHR)
+            }
+            "RayQueryCandidateIntersectionAABBKHR" => {
+                Ok(RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR)
+            }
+            _ => Err(()),
+        }
     }
 }
 #[doc = "SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_instructions_a_instructions) opcodes"]
