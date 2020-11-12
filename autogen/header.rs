@@ -105,7 +105,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         if let Some(discriminator) = seen_discriminator.get(&e.value) {
             let symbol = as_ident(&e.symbol);
             aliases.push(quote! {
-                pub const #symbol: #kind = #kind::#discriminator;
+                pub const #symbol: Self = Self::#discriminator;
             });
         } else {
             // Special case for Dim. Its enumerants can start with a digit.
@@ -121,8 +121,8 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
             enumerants.push(quote! { #name = #number });
-            from_prim_list.push(quote! { #number => #kind::#name });
-            from_str_impl.push(quote! { #name_str => Ok(#kind::#name), });
+            from_prim_list.push(quote! { #number => Self::#name });
+            from_str_impl.push(quote! { #name_str => Ok(Self::#name), });
 
             capability_clauses
                 .entry(&e.capabilities)

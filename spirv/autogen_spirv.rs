@@ -46,12 +46,12 @@ impl num_traits::FromPrimitive for SourceLanguage {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => SourceLanguage::Unknown,
-            1u32 => SourceLanguage::ESSL,
-            2u32 => SourceLanguage::GLSL,
-            3u32 => SourceLanguage::OpenCL_C,
-            4u32 => SourceLanguage::OpenCL_CPP,
-            5u32 => SourceLanguage::HLSL,
+            0u32 => Self::Unknown,
+            1u32 => Self::ESSL,
+            2u32 => Self::GLSL,
+            3u32 => Self::OpenCL_C,
+            4u32 => Self::OpenCL_CPP,
+            5u32 => Self::HLSL,
             _ => return None,
         })
     }
@@ -63,12 +63,12 @@ impl std::str::FromStr for SourceLanguage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Unknown" => Ok(SourceLanguage::Unknown),
-            "ESSL" => Ok(SourceLanguage::ESSL),
-            "GLSL" => Ok(SourceLanguage::GLSL),
-            "OpenCL_C" => Ok(SourceLanguage::OpenCL_C),
-            "OpenCL_CPP" => Ok(SourceLanguage::OpenCL_CPP),
-            "HLSL" => Ok(SourceLanguage::HLSL),
+            "Unknown" => Ok(Self::Unknown),
+            "ESSL" => Ok(Self::ESSL),
+            "GLSL" => Ok(Self::GLSL),
+            "OpenCL_C" => Ok(Self::OpenCL_C),
+            "OpenCL_CPP" => Ok(Self::OpenCL_CPP),
+            "HLSL" => Ok(Self::HLSL),
             _ => Err(()),
         }
     }
@@ -97,12 +97,12 @@ pub enum ExecutionModel {
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionModel {
-    pub const RayGenerationKHR: ExecutionModel = ExecutionModel::RayGenerationNV;
-    pub const IntersectionKHR: ExecutionModel = ExecutionModel::IntersectionNV;
-    pub const AnyHitKHR: ExecutionModel = ExecutionModel::AnyHitNV;
-    pub const ClosestHitKHR: ExecutionModel = ExecutionModel::ClosestHitNV;
-    pub const MissKHR: ExecutionModel = ExecutionModel::MissNV;
-    pub const CallableKHR: ExecutionModel = ExecutionModel::CallableNV;
+    pub const RayGenerationKHR: Self = Self::RayGenerationNV;
+    pub const IntersectionKHR: Self = Self::IntersectionNV;
+    pub const AnyHitKHR: Self = Self::AnyHitNV;
+    pub const ClosestHitKHR: Self = Self::ClosestHitNV;
+    pub const MissKHR: Self = Self::MissNV;
+    pub const CallableKHR: Self = Self::CallableNV;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ExecutionModel::Geometry => &[Capability::Geometry],
@@ -130,21 +130,21 @@ impl num_traits::FromPrimitive for ExecutionModel {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => ExecutionModel::Vertex,
-            1u32 => ExecutionModel::TessellationControl,
-            2u32 => ExecutionModel::TessellationEvaluation,
-            3u32 => ExecutionModel::Geometry,
-            4u32 => ExecutionModel::Fragment,
-            5u32 => ExecutionModel::GLCompute,
-            6u32 => ExecutionModel::Kernel,
-            5267u32 => ExecutionModel::TaskNV,
-            5268u32 => ExecutionModel::MeshNV,
-            5313u32 => ExecutionModel::RayGenerationNV,
-            5314u32 => ExecutionModel::IntersectionNV,
-            5315u32 => ExecutionModel::AnyHitNV,
-            5316u32 => ExecutionModel::ClosestHitNV,
-            5317u32 => ExecutionModel::MissNV,
-            5318u32 => ExecutionModel::CallableNV,
+            0u32 => Self::Vertex,
+            1u32 => Self::TessellationControl,
+            2u32 => Self::TessellationEvaluation,
+            3u32 => Self::Geometry,
+            4u32 => Self::Fragment,
+            5u32 => Self::GLCompute,
+            6u32 => Self::Kernel,
+            5267u32 => Self::TaskNV,
+            5268u32 => Self::MeshNV,
+            5313u32 => Self::RayGenerationNV,
+            5314u32 => Self::IntersectionNV,
+            5315u32 => Self::AnyHitNV,
+            5316u32 => Self::ClosestHitNV,
+            5317u32 => Self::MissNV,
+            5318u32 => Self::CallableNV,
             _ => return None,
         })
     }
@@ -156,21 +156,21 @@ impl std::str::FromStr for ExecutionModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Vertex" => Ok(ExecutionModel::Vertex),
-            "TessellationControl" => Ok(ExecutionModel::TessellationControl),
-            "TessellationEvaluation" => Ok(ExecutionModel::TessellationEvaluation),
-            "Geometry" => Ok(ExecutionModel::Geometry),
-            "Fragment" => Ok(ExecutionModel::Fragment),
-            "GLCompute" => Ok(ExecutionModel::GLCompute),
-            "Kernel" => Ok(ExecutionModel::Kernel),
-            "TaskNV" => Ok(ExecutionModel::TaskNV),
-            "MeshNV" => Ok(ExecutionModel::MeshNV),
-            "RayGenerationNV" => Ok(ExecutionModel::RayGenerationNV),
-            "IntersectionNV" => Ok(ExecutionModel::IntersectionNV),
-            "AnyHitNV" => Ok(ExecutionModel::AnyHitNV),
-            "ClosestHitNV" => Ok(ExecutionModel::ClosestHitNV),
-            "MissNV" => Ok(ExecutionModel::MissNV),
-            "CallableNV" => Ok(ExecutionModel::CallableNV),
+            "Vertex" => Ok(Self::Vertex),
+            "TessellationControl" => Ok(Self::TessellationControl),
+            "TessellationEvaluation" => Ok(Self::TessellationEvaluation),
+            "Geometry" => Ok(Self::Geometry),
+            "Fragment" => Ok(Self::Fragment),
+            "GLCompute" => Ok(Self::GLCompute),
+            "Kernel" => Ok(Self::Kernel),
+            "TaskNV" => Ok(Self::TaskNV),
+            "MeshNV" => Ok(Self::MeshNV),
+            "RayGenerationNV" => Ok(Self::RayGenerationNV),
+            "IntersectionNV" => Ok(Self::IntersectionNV),
+            "AnyHitNV" => Ok(Self::AnyHitNV),
+            "ClosestHitNV" => Ok(Self::ClosestHitNV),
+            "MissNV" => Ok(Self::MissNV),
+            "CallableNV" => Ok(Self::CallableNV),
             _ => Err(()),
         }
     }
@@ -188,8 +188,7 @@ pub enum AddressingModel {
 }
 #[allow(non_upper_case_globals)]
 impl AddressingModel {
-    pub const PhysicalStorageBuffer64EXT: AddressingModel =
-        AddressingModel::PhysicalStorageBuffer64;
+    pub const PhysicalStorageBuffer64EXT: Self = Self::PhysicalStorageBuffer64;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             AddressingModel::Logical => &[],
@@ -204,10 +203,10 @@ impl num_traits::FromPrimitive for AddressingModel {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => AddressingModel::Logical,
-            1u32 => AddressingModel::Physical32,
-            2u32 => AddressingModel::Physical64,
-            5348u32 => AddressingModel::PhysicalStorageBuffer64,
+            0u32 => Self::Logical,
+            1u32 => Self::Physical32,
+            2u32 => Self::Physical64,
+            5348u32 => Self::PhysicalStorageBuffer64,
             _ => return None,
         })
     }
@@ -219,10 +218,10 @@ impl std::str::FromStr for AddressingModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Logical" => Ok(AddressingModel::Logical),
-            "Physical32" => Ok(AddressingModel::Physical32),
-            "Physical64" => Ok(AddressingModel::Physical64),
-            "PhysicalStorageBuffer64" => Ok(AddressingModel::PhysicalStorageBuffer64),
+            "Logical" => Ok(Self::Logical),
+            "Physical32" => Ok(Self::Physical32),
+            "Physical64" => Ok(Self::Physical64),
+            "PhysicalStorageBuffer64" => Ok(Self::PhysicalStorageBuffer64),
             _ => Err(()),
         }
     }
@@ -240,7 +239,7 @@ pub enum MemoryModel {
 }
 #[allow(non_upper_case_globals)]
 impl MemoryModel {
-    pub const VulkanKHR: MemoryModel = MemoryModel::Vulkan;
+    pub const VulkanKHR: Self = Self::Vulkan;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             MemoryModel::OpenCL => &[Capability::Kernel],
@@ -253,10 +252,10 @@ impl num_traits::FromPrimitive for MemoryModel {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => MemoryModel::Simple,
-            1u32 => MemoryModel::GLSL450,
-            2u32 => MemoryModel::OpenCL,
-            3u32 => MemoryModel::Vulkan,
+            0u32 => Self::Simple,
+            1u32 => Self::GLSL450,
+            2u32 => Self::OpenCL,
+            3u32 => Self::Vulkan,
             _ => return None,
         })
     }
@@ -268,10 +267,10 @@ impl std::str::FromStr for MemoryModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Simple" => Ok(MemoryModel::Simple),
-            "GLSL450" => Ok(MemoryModel::GLSL450),
-            "OpenCL" => Ok(MemoryModel::OpenCL),
-            "Vulkan" => Ok(MemoryModel::Vulkan),
+            "Simple" => Ok(Self::Simple),
+            "GLSL450" => Ok(Self::GLSL450),
+            "OpenCL" => Ok(Self::OpenCL),
+            "Vulkan" => Ok(Self::Vulkan),
             _ => Err(()),
         }
     }
@@ -414,62 +413,62 @@ impl num_traits::FromPrimitive for ExecutionMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => ExecutionMode::Invocations,
-            1u32 => ExecutionMode::SpacingEqual,
-            2u32 => ExecutionMode::SpacingFractionalEven,
-            3u32 => ExecutionMode::SpacingFractionalOdd,
-            4u32 => ExecutionMode::VertexOrderCw,
-            5u32 => ExecutionMode::VertexOrderCcw,
-            6u32 => ExecutionMode::PixelCenterInteger,
-            7u32 => ExecutionMode::OriginUpperLeft,
-            8u32 => ExecutionMode::OriginLowerLeft,
-            9u32 => ExecutionMode::EarlyFragmentTests,
-            10u32 => ExecutionMode::PointMode,
-            11u32 => ExecutionMode::Xfb,
-            12u32 => ExecutionMode::DepthReplacing,
-            14u32 => ExecutionMode::DepthGreater,
-            15u32 => ExecutionMode::DepthLess,
-            16u32 => ExecutionMode::DepthUnchanged,
-            17u32 => ExecutionMode::LocalSize,
-            18u32 => ExecutionMode::LocalSizeHint,
-            19u32 => ExecutionMode::InputPoints,
-            20u32 => ExecutionMode::InputLines,
-            21u32 => ExecutionMode::InputLinesAdjacency,
-            22u32 => ExecutionMode::Triangles,
-            23u32 => ExecutionMode::InputTrianglesAdjacency,
-            24u32 => ExecutionMode::Quads,
-            25u32 => ExecutionMode::Isolines,
-            26u32 => ExecutionMode::OutputVertices,
-            27u32 => ExecutionMode::OutputPoints,
-            28u32 => ExecutionMode::OutputLineStrip,
-            29u32 => ExecutionMode::OutputTriangleStrip,
-            30u32 => ExecutionMode::VecTypeHint,
-            31u32 => ExecutionMode::ContractionOff,
-            33u32 => ExecutionMode::Initializer,
-            34u32 => ExecutionMode::Finalizer,
-            35u32 => ExecutionMode::SubgroupSize,
-            36u32 => ExecutionMode::SubgroupsPerWorkgroup,
-            37u32 => ExecutionMode::SubgroupsPerWorkgroupId,
-            38u32 => ExecutionMode::LocalSizeId,
-            39u32 => ExecutionMode::LocalSizeHintId,
-            4446u32 => ExecutionMode::PostDepthCoverage,
-            4459u32 => ExecutionMode::DenormPreserve,
-            4460u32 => ExecutionMode::DenormFlushToZero,
-            4461u32 => ExecutionMode::SignedZeroInfNanPreserve,
-            4462u32 => ExecutionMode::RoundingModeRTE,
-            4463u32 => ExecutionMode::RoundingModeRTZ,
-            5027u32 => ExecutionMode::StencilRefReplacingEXT,
-            5269u32 => ExecutionMode::OutputLinesNV,
-            5270u32 => ExecutionMode::OutputPrimitivesNV,
-            5289u32 => ExecutionMode::DerivativeGroupQuadsNV,
-            5290u32 => ExecutionMode::DerivativeGroupLinearNV,
-            5298u32 => ExecutionMode::OutputTrianglesNV,
-            5366u32 => ExecutionMode::PixelInterlockOrderedEXT,
-            5367u32 => ExecutionMode::PixelInterlockUnorderedEXT,
-            5368u32 => ExecutionMode::SampleInterlockOrderedEXT,
-            5369u32 => ExecutionMode::SampleInterlockUnorderedEXT,
-            5370u32 => ExecutionMode::ShadingRateInterlockOrderedEXT,
-            5371u32 => ExecutionMode::ShadingRateInterlockUnorderedEXT,
+            0u32 => Self::Invocations,
+            1u32 => Self::SpacingEqual,
+            2u32 => Self::SpacingFractionalEven,
+            3u32 => Self::SpacingFractionalOdd,
+            4u32 => Self::VertexOrderCw,
+            5u32 => Self::VertexOrderCcw,
+            6u32 => Self::PixelCenterInteger,
+            7u32 => Self::OriginUpperLeft,
+            8u32 => Self::OriginLowerLeft,
+            9u32 => Self::EarlyFragmentTests,
+            10u32 => Self::PointMode,
+            11u32 => Self::Xfb,
+            12u32 => Self::DepthReplacing,
+            14u32 => Self::DepthGreater,
+            15u32 => Self::DepthLess,
+            16u32 => Self::DepthUnchanged,
+            17u32 => Self::LocalSize,
+            18u32 => Self::LocalSizeHint,
+            19u32 => Self::InputPoints,
+            20u32 => Self::InputLines,
+            21u32 => Self::InputLinesAdjacency,
+            22u32 => Self::Triangles,
+            23u32 => Self::InputTrianglesAdjacency,
+            24u32 => Self::Quads,
+            25u32 => Self::Isolines,
+            26u32 => Self::OutputVertices,
+            27u32 => Self::OutputPoints,
+            28u32 => Self::OutputLineStrip,
+            29u32 => Self::OutputTriangleStrip,
+            30u32 => Self::VecTypeHint,
+            31u32 => Self::ContractionOff,
+            33u32 => Self::Initializer,
+            34u32 => Self::Finalizer,
+            35u32 => Self::SubgroupSize,
+            36u32 => Self::SubgroupsPerWorkgroup,
+            37u32 => Self::SubgroupsPerWorkgroupId,
+            38u32 => Self::LocalSizeId,
+            39u32 => Self::LocalSizeHintId,
+            4446u32 => Self::PostDepthCoverage,
+            4459u32 => Self::DenormPreserve,
+            4460u32 => Self::DenormFlushToZero,
+            4461u32 => Self::SignedZeroInfNanPreserve,
+            4462u32 => Self::RoundingModeRTE,
+            4463u32 => Self::RoundingModeRTZ,
+            5027u32 => Self::StencilRefReplacingEXT,
+            5269u32 => Self::OutputLinesNV,
+            5270u32 => Self::OutputPrimitivesNV,
+            5289u32 => Self::DerivativeGroupQuadsNV,
+            5290u32 => Self::DerivativeGroupLinearNV,
+            5298u32 => Self::OutputTrianglesNV,
+            5366u32 => Self::PixelInterlockOrderedEXT,
+            5367u32 => Self::PixelInterlockUnorderedEXT,
+            5368u32 => Self::SampleInterlockOrderedEXT,
+            5369u32 => Self::SampleInterlockUnorderedEXT,
+            5370u32 => Self::ShadingRateInterlockOrderedEXT,
+            5371u32 => Self::ShadingRateInterlockUnorderedEXT,
             _ => return None,
         })
     }
@@ -481,64 +480,62 @@ impl std::str::FromStr for ExecutionMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Invocations" => Ok(ExecutionMode::Invocations),
-            "SpacingEqual" => Ok(ExecutionMode::SpacingEqual),
-            "SpacingFractionalEven" => Ok(ExecutionMode::SpacingFractionalEven),
-            "SpacingFractionalOdd" => Ok(ExecutionMode::SpacingFractionalOdd),
-            "VertexOrderCw" => Ok(ExecutionMode::VertexOrderCw),
-            "VertexOrderCcw" => Ok(ExecutionMode::VertexOrderCcw),
-            "PixelCenterInteger" => Ok(ExecutionMode::PixelCenterInteger),
-            "OriginUpperLeft" => Ok(ExecutionMode::OriginUpperLeft),
-            "OriginLowerLeft" => Ok(ExecutionMode::OriginLowerLeft),
-            "EarlyFragmentTests" => Ok(ExecutionMode::EarlyFragmentTests),
-            "PointMode" => Ok(ExecutionMode::PointMode),
-            "Xfb" => Ok(ExecutionMode::Xfb),
-            "DepthReplacing" => Ok(ExecutionMode::DepthReplacing),
-            "DepthGreater" => Ok(ExecutionMode::DepthGreater),
-            "DepthLess" => Ok(ExecutionMode::DepthLess),
-            "DepthUnchanged" => Ok(ExecutionMode::DepthUnchanged),
-            "LocalSize" => Ok(ExecutionMode::LocalSize),
-            "LocalSizeHint" => Ok(ExecutionMode::LocalSizeHint),
-            "InputPoints" => Ok(ExecutionMode::InputPoints),
-            "InputLines" => Ok(ExecutionMode::InputLines),
-            "InputLinesAdjacency" => Ok(ExecutionMode::InputLinesAdjacency),
-            "Triangles" => Ok(ExecutionMode::Triangles),
-            "InputTrianglesAdjacency" => Ok(ExecutionMode::InputTrianglesAdjacency),
-            "Quads" => Ok(ExecutionMode::Quads),
-            "Isolines" => Ok(ExecutionMode::Isolines),
-            "OutputVertices" => Ok(ExecutionMode::OutputVertices),
-            "OutputPoints" => Ok(ExecutionMode::OutputPoints),
-            "OutputLineStrip" => Ok(ExecutionMode::OutputLineStrip),
-            "OutputTriangleStrip" => Ok(ExecutionMode::OutputTriangleStrip),
-            "VecTypeHint" => Ok(ExecutionMode::VecTypeHint),
-            "ContractionOff" => Ok(ExecutionMode::ContractionOff),
-            "Initializer" => Ok(ExecutionMode::Initializer),
-            "Finalizer" => Ok(ExecutionMode::Finalizer),
-            "SubgroupSize" => Ok(ExecutionMode::SubgroupSize),
-            "SubgroupsPerWorkgroup" => Ok(ExecutionMode::SubgroupsPerWorkgroup),
-            "SubgroupsPerWorkgroupId" => Ok(ExecutionMode::SubgroupsPerWorkgroupId),
-            "LocalSizeId" => Ok(ExecutionMode::LocalSizeId),
-            "LocalSizeHintId" => Ok(ExecutionMode::LocalSizeHintId),
-            "PostDepthCoverage" => Ok(ExecutionMode::PostDepthCoverage),
-            "DenormPreserve" => Ok(ExecutionMode::DenormPreserve),
-            "DenormFlushToZero" => Ok(ExecutionMode::DenormFlushToZero),
-            "SignedZeroInfNanPreserve" => Ok(ExecutionMode::SignedZeroInfNanPreserve),
-            "RoundingModeRTE" => Ok(ExecutionMode::RoundingModeRTE),
-            "RoundingModeRTZ" => Ok(ExecutionMode::RoundingModeRTZ),
-            "StencilRefReplacingEXT" => Ok(ExecutionMode::StencilRefReplacingEXT),
-            "OutputLinesNV" => Ok(ExecutionMode::OutputLinesNV),
-            "OutputPrimitivesNV" => Ok(ExecutionMode::OutputPrimitivesNV),
-            "DerivativeGroupQuadsNV" => Ok(ExecutionMode::DerivativeGroupQuadsNV),
-            "DerivativeGroupLinearNV" => Ok(ExecutionMode::DerivativeGroupLinearNV),
-            "OutputTrianglesNV" => Ok(ExecutionMode::OutputTrianglesNV),
-            "PixelInterlockOrderedEXT" => Ok(ExecutionMode::PixelInterlockOrderedEXT),
-            "PixelInterlockUnorderedEXT" => Ok(ExecutionMode::PixelInterlockUnorderedEXT),
-            "SampleInterlockOrderedEXT" => Ok(ExecutionMode::SampleInterlockOrderedEXT),
-            "SampleInterlockUnorderedEXT" => Ok(ExecutionMode::SampleInterlockUnorderedEXT),
-            "ShadingRateInterlockOrderedEXT" => Ok(ExecutionMode::ShadingRateInterlockOrderedEXT),
-            "ShadingRateInterlockUnorderedEXT" => {
-                Ok(ExecutionMode::ShadingRateInterlockUnorderedEXT)
-            }
+            "Invocations" => Ok(Self::Invocations),
+            "SpacingEqual" => Ok(Self::SpacingEqual),
+            "SpacingFractionalEven" => Ok(Self::SpacingFractionalEven),
+            "SpacingFractionalOdd" => Ok(Self::SpacingFractionalOdd),
+            "VertexOrderCw" => Ok(Self::VertexOrderCw),
+            "VertexOrderCcw" => Ok(Self::VertexOrderCcw),
+            "PixelCenterInteger" => Ok(Self::PixelCenterInteger),
+            "OriginUpperLeft" => Ok(Self::OriginUpperLeft),
+            "OriginLowerLeft" => Ok(Self::OriginLowerLeft),
+            "EarlyFragmentTests" => Ok(Self::EarlyFragmentTests),
+            "PointMode" => Ok(Self::PointMode),
+            "Xfb" => Ok(Self::Xfb),
+            "DepthReplacing" => Ok(Self::DepthReplacing),
+            "DepthGreater" => Ok(Self::DepthGreater),
+            "DepthLess" => Ok(Self::DepthLess),
+            "DepthUnchanged" => Ok(Self::DepthUnchanged),
+            "LocalSize" => Ok(Self::LocalSize),
+            "LocalSizeHint" => Ok(Self::LocalSizeHint),
+            "InputPoints" => Ok(Self::InputPoints),
+            "InputLines" => Ok(Self::InputLines),
+            "InputLinesAdjacency" => Ok(Self::InputLinesAdjacency),
+            "Triangles" => Ok(Self::Triangles),
+            "InputTrianglesAdjacency" => Ok(Self::InputTrianglesAdjacency),
+            "Quads" => Ok(Self::Quads),
+            "Isolines" => Ok(Self::Isolines),
+            "OutputVertices" => Ok(Self::OutputVertices),
+            "OutputPoints" => Ok(Self::OutputPoints),
+            "OutputLineStrip" => Ok(Self::OutputLineStrip),
+            "OutputTriangleStrip" => Ok(Self::OutputTriangleStrip),
+            "VecTypeHint" => Ok(Self::VecTypeHint),
+            "ContractionOff" => Ok(Self::ContractionOff),
+            "Initializer" => Ok(Self::Initializer),
+            "Finalizer" => Ok(Self::Finalizer),
+            "SubgroupSize" => Ok(Self::SubgroupSize),
+            "SubgroupsPerWorkgroup" => Ok(Self::SubgroupsPerWorkgroup),
+            "SubgroupsPerWorkgroupId" => Ok(Self::SubgroupsPerWorkgroupId),
+            "LocalSizeId" => Ok(Self::LocalSizeId),
+            "LocalSizeHintId" => Ok(Self::LocalSizeHintId),
+            "PostDepthCoverage" => Ok(Self::PostDepthCoverage),
+            "DenormPreserve" => Ok(Self::DenormPreserve),
+            "DenormFlushToZero" => Ok(Self::DenormFlushToZero),
+            "SignedZeroInfNanPreserve" => Ok(Self::SignedZeroInfNanPreserve),
+            "RoundingModeRTE" => Ok(Self::RoundingModeRTE),
+            "RoundingModeRTZ" => Ok(Self::RoundingModeRTZ),
+            "StencilRefReplacingEXT" => Ok(Self::StencilRefReplacingEXT),
+            "OutputLinesNV" => Ok(Self::OutputLinesNV),
+            "OutputPrimitivesNV" => Ok(Self::OutputPrimitivesNV),
+            "DerivativeGroupQuadsNV" => Ok(Self::DerivativeGroupQuadsNV),
+            "DerivativeGroupLinearNV" => Ok(Self::DerivativeGroupLinearNV),
+            "OutputTrianglesNV" => Ok(Self::OutputTrianglesNV),
+            "PixelInterlockOrderedEXT" => Ok(Self::PixelInterlockOrderedEXT),
+            "PixelInterlockUnorderedEXT" => Ok(Self::PixelInterlockUnorderedEXT),
+            "SampleInterlockOrderedEXT" => Ok(Self::SampleInterlockOrderedEXT),
+            "SampleInterlockUnorderedEXT" => Ok(Self::SampleInterlockUnorderedEXT),
+            "ShadingRateInterlockOrderedEXT" => Ok(Self::ShadingRateInterlockOrderedEXT),
+            "ShadingRateInterlockUnorderedEXT" => Ok(Self::ShadingRateInterlockUnorderedEXT),
             _ => Err(()),
         }
     }
@@ -572,13 +569,13 @@ pub enum StorageClass {
 }
 #[allow(non_upper_case_globals)]
 impl StorageClass {
-    pub const CallableDataKHR: StorageClass = StorageClass::CallableDataNV;
-    pub const IncomingCallableDataKHR: StorageClass = StorageClass::IncomingCallableDataNV;
-    pub const RayPayloadKHR: StorageClass = StorageClass::RayPayloadNV;
-    pub const HitAttributeKHR: StorageClass = StorageClass::HitAttributeNV;
-    pub const IncomingRayPayloadKHR: StorageClass = StorageClass::IncomingRayPayloadNV;
-    pub const ShaderRecordBufferKHR: StorageClass = StorageClass::ShaderRecordBufferNV;
-    pub const PhysicalStorageBufferEXT: StorageClass = StorageClass::PhysicalStorageBuffer;
+    pub const CallableDataKHR: Self = Self::CallableDataNV;
+    pub const IncomingCallableDataKHR: Self = Self::IncomingCallableDataNV;
+    pub const RayPayloadKHR: Self = Self::RayPayloadNV;
+    pub const HitAttributeKHR: Self = Self::HitAttributeNV;
+    pub const IncomingRayPayloadKHR: Self = Self::IncomingRayPayloadNV;
+    pub const ShaderRecordBufferKHR: Self = Self::ShaderRecordBufferNV;
+    pub const PhysicalStorageBufferEXT: Self = Self::PhysicalStorageBuffer;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             StorageClass::UniformConstant
@@ -611,26 +608,26 @@ impl num_traits::FromPrimitive for StorageClass {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => StorageClass::UniformConstant,
-            1u32 => StorageClass::Input,
-            2u32 => StorageClass::Uniform,
-            3u32 => StorageClass::Output,
-            4u32 => StorageClass::Workgroup,
-            5u32 => StorageClass::CrossWorkgroup,
-            6u32 => StorageClass::Private,
-            7u32 => StorageClass::Function,
-            8u32 => StorageClass::Generic,
-            9u32 => StorageClass::PushConstant,
-            10u32 => StorageClass::AtomicCounter,
-            11u32 => StorageClass::Image,
-            12u32 => StorageClass::StorageBuffer,
-            5328u32 => StorageClass::CallableDataNV,
-            5329u32 => StorageClass::IncomingCallableDataNV,
-            5338u32 => StorageClass::RayPayloadNV,
-            5339u32 => StorageClass::HitAttributeNV,
-            5342u32 => StorageClass::IncomingRayPayloadNV,
-            5343u32 => StorageClass::ShaderRecordBufferNV,
-            5349u32 => StorageClass::PhysicalStorageBuffer,
+            0u32 => Self::UniformConstant,
+            1u32 => Self::Input,
+            2u32 => Self::Uniform,
+            3u32 => Self::Output,
+            4u32 => Self::Workgroup,
+            5u32 => Self::CrossWorkgroup,
+            6u32 => Self::Private,
+            7u32 => Self::Function,
+            8u32 => Self::Generic,
+            9u32 => Self::PushConstant,
+            10u32 => Self::AtomicCounter,
+            11u32 => Self::Image,
+            12u32 => Self::StorageBuffer,
+            5328u32 => Self::CallableDataNV,
+            5329u32 => Self::IncomingCallableDataNV,
+            5338u32 => Self::RayPayloadNV,
+            5339u32 => Self::HitAttributeNV,
+            5342u32 => Self::IncomingRayPayloadNV,
+            5343u32 => Self::ShaderRecordBufferNV,
+            5349u32 => Self::PhysicalStorageBuffer,
             _ => return None,
         })
     }
@@ -642,26 +639,26 @@ impl std::str::FromStr for StorageClass {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "UniformConstant" => Ok(StorageClass::UniformConstant),
-            "Input" => Ok(StorageClass::Input),
-            "Uniform" => Ok(StorageClass::Uniform),
-            "Output" => Ok(StorageClass::Output),
-            "Workgroup" => Ok(StorageClass::Workgroup),
-            "CrossWorkgroup" => Ok(StorageClass::CrossWorkgroup),
-            "Private" => Ok(StorageClass::Private),
-            "Function" => Ok(StorageClass::Function),
-            "Generic" => Ok(StorageClass::Generic),
-            "PushConstant" => Ok(StorageClass::PushConstant),
-            "AtomicCounter" => Ok(StorageClass::AtomicCounter),
-            "Image" => Ok(StorageClass::Image),
-            "StorageBuffer" => Ok(StorageClass::StorageBuffer),
-            "CallableDataNV" => Ok(StorageClass::CallableDataNV),
-            "IncomingCallableDataNV" => Ok(StorageClass::IncomingCallableDataNV),
-            "RayPayloadNV" => Ok(StorageClass::RayPayloadNV),
-            "HitAttributeNV" => Ok(StorageClass::HitAttributeNV),
-            "IncomingRayPayloadNV" => Ok(StorageClass::IncomingRayPayloadNV),
-            "ShaderRecordBufferNV" => Ok(StorageClass::ShaderRecordBufferNV),
-            "PhysicalStorageBuffer" => Ok(StorageClass::PhysicalStorageBuffer),
+            "UniformConstant" => Ok(Self::UniformConstant),
+            "Input" => Ok(Self::Input),
+            "Uniform" => Ok(Self::Uniform),
+            "Output" => Ok(Self::Output),
+            "Workgroup" => Ok(Self::Workgroup),
+            "CrossWorkgroup" => Ok(Self::CrossWorkgroup),
+            "Private" => Ok(Self::Private),
+            "Function" => Ok(Self::Function),
+            "Generic" => Ok(Self::Generic),
+            "PushConstant" => Ok(Self::PushConstant),
+            "AtomicCounter" => Ok(Self::AtomicCounter),
+            "Image" => Ok(Self::Image),
+            "StorageBuffer" => Ok(Self::StorageBuffer),
+            "CallableDataNV" => Ok(Self::CallableDataNV),
+            "IncomingCallableDataNV" => Ok(Self::IncomingCallableDataNV),
+            "RayPayloadNV" => Ok(Self::RayPayloadNV),
+            "HitAttributeNV" => Ok(Self::HitAttributeNV),
+            "IncomingRayPayloadNV" => Ok(Self::IncomingRayPayloadNV),
+            "ShaderRecordBufferNV" => Ok(Self::ShaderRecordBufferNV),
+            "PhysicalStorageBuffer" => Ok(Self::PhysicalStorageBuffer),
             _ => Err(()),
         }
     }
@@ -702,13 +699,13 @@ impl num_traits::FromPrimitive for Dim {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => Dim::Dim1D,
-            1u32 => Dim::Dim2D,
-            2u32 => Dim::Dim3D,
-            3u32 => Dim::DimCube,
-            4u32 => Dim::DimRect,
-            5u32 => Dim::DimBuffer,
-            6u32 => Dim::DimSubpassData,
+            0u32 => Self::Dim1D,
+            1u32 => Self::Dim2D,
+            2u32 => Self::Dim3D,
+            3u32 => Self::DimCube,
+            4u32 => Self::DimRect,
+            5u32 => Self::DimBuffer,
+            6u32 => Self::DimSubpassData,
             _ => return None,
         })
     }
@@ -720,13 +717,13 @@ impl std::str::FromStr for Dim {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Dim1D" => Ok(Dim::Dim1D),
-            "Dim2D" => Ok(Dim::Dim2D),
-            "Dim3D" => Ok(Dim::Dim3D),
-            "DimCube" => Ok(Dim::DimCube),
-            "DimRect" => Ok(Dim::DimRect),
-            "DimBuffer" => Ok(Dim::DimBuffer),
-            "DimSubpassData" => Ok(Dim::DimSubpassData),
+            "Dim1D" => Ok(Self::Dim1D),
+            "Dim2D" => Ok(Self::Dim2D),
+            "Dim3D" => Ok(Self::Dim3D),
+            "DimCube" => Ok(Self::DimCube),
+            "DimRect" => Ok(Self::DimRect),
+            "DimBuffer" => Ok(Self::DimBuffer),
+            "DimSubpassData" => Ok(Self::DimSubpassData),
             _ => Err(()),
         }
     }
@@ -759,11 +756,11 @@ impl num_traits::FromPrimitive for SamplerAddressingMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => SamplerAddressingMode::None,
-            1u32 => SamplerAddressingMode::ClampToEdge,
-            2u32 => SamplerAddressingMode::Clamp,
-            3u32 => SamplerAddressingMode::Repeat,
-            4u32 => SamplerAddressingMode::RepeatMirrored,
+            0u32 => Self::None,
+            1u32 => Self::ClampToEdge,
+            2u32 => Self::Clamp,
+            3u32 => Self::Repeat,
+            4u32 => Self::RepeatMirrored,
             _ => return None,
         })
     }
@@ -775,11 +772,11 @@ impl std::str::FromStr for SamplerAddressingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "None" => Ok(SamplerAddressingMode::None),
-            "ClampToEdge" => Ok(SamplerAddressingMode::ClampToEdge),
-            "Clamp" => Ok(SamplerAddressingMode::Clamp),
-            "Repeat" => Ok(SamplerAddressingMode::Repeat),
-            "RepeatMirrored" => Ok(SamplerAddressingMode::RepeatMirrored),
+            "None" => Ok(Self::None),
+            "ClampToEdge" => Ok(Self::ClampToEdge),
+            "Clamp" => Ok(Self::Clamp),
+            "Repeat" => Ok(Self::Repeat),
+            "RepeatMirrored" => Ok(Self::RepeatMirrored),
             _ => Err(()),
         }
     }
@@ -805,8 +802,8 @@ impl num_traits::FromPrimitive for SamplerFilterMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => SamplerFilterMode::Nearest,
-            1u32 => SamplerFilterMode::Linear,
+            0u32 => Self::Nearest,
+            1u32 => Self::Linear,
             _ => return None,
         })
     }
@@ -818,8 +815,8 @@ impl std::str::FromStr for SamplerFilterMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Nearest" => Ok(SamplerFilterMode::Nearest),
-            "Linear" => Ok(SamplerFilterMode::Linear),
+            "Nearest" => Ok(Self::Nearest),
+            "Linear" => Ok(Self::Linear),
             _ => Err(()),
         }
     }
@@ -922,46 +919,46 @@ impl num_traits::FromPrimitive for ImageFormat {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => ImageFormat::Unknown,
-            1u32 => ImageFormat::Rgba32f,
-            2u32 => ImageFormat::Rgba16f,
-            3u32 => ImageFormat::R32f,
-            4u32 => ImageFormat::Rgba8,
-            5u32 => ImageFormat::Rgba8Snorm,
-            6u32 => ImageFormat::Rg32f,
-            7u32 => ImageFormat::Rg16f,
-            8u32 => ImageFormat::R11fG11fB10f,
-            9u32 => ImageFormat::R16f,
-            10u32 => ImageFormat::Rgba16,
-            11u32 => ImageFormat::Rgb10A2,
-            12u32 => ImageFormat::Rg16,
-            13u32 => ImageFormat::Rg8,
-            14u32 => ImageFormat::R16,
-            15u32 => ImageFormat::R8,
-            16u32 => ImageFormat::Rgba16Snorm,
-            17u32 => ImageFormat::Rg16Snorm,
-            18u32 => ImageFormat::Rg8Snorm,
-            19u32 => ImageFormat::R16Snorm,
-            20u32 => ImageFormat::R8Snorm,
-            21u32 => ImageFormat::Rgba32i,
-            22u32 => ImageFormat::Rgba16i,
-            23u32 => ImageFormat::Rgba8i,
-            24u32 => ImageFormat::R32i,
-            25u32 => ImageFormat::Rg32i,
-            26u32 => ImageFormat::Rg16i,
-            27u32 => ImageFormat::Rg8i,
-            28u32 => ImageFormat::R16i,
-            29u32 => ImageFormat::R8i,
-            30u32 => ImageFormat::Rgba32ui,
-            31u32 => ImageFormat::Rgba16ui,
-            32u32 => ImageFormat::Rgba8ui,
-            33u32 => ImageFormat::R32ui,
-            34u32 => ImageFormat::Rgb10a2ui,
-            35u32 => ImageFormat::Rg32ui,
-            36u32 => ImageFormat::Rg16ui,
-            37u32 => ImageFormat::Rg8ui,
-            38u32 => ImageFormat::R16ui,
-            39u32 => ImageFormat::R8ui,
+            0u32 => Self::Unknown,
+            1u32 => Self::Rgba32f,
+            2u32 => Self::Rgba16f,
+            3u32 => Self::R32f,
+            4u32 => Self::Rgba8,
+            5u32 => Self::Rgba8Snorm,
+            6u32 => Self::Rg32f,
+            7u32 => Self::Rg16f,
+            8u32 => Self::R11fG11fB10f,
+            9u32 => Self::R16f,
+            10u32 => Self::Rgba16,
+            11u32 => Self::Rgb10A2,
+            12u32 => Self::Rg16,
+            13u32 => Self::Rg8,
+            14u32 => Self::R16,
+            15u32 => Self::R8,
+            16u32 => Self::Rgba16Snorm,
+            17u32 => Self::Rg16Snorm,
+            18u32 => Self::Rg8Snorm,
+            19u32 => Self::R16Snorm,
+            20u32 => Self::R8Snorm,
+            21u32 => Self::Rgba32i,
+            22u32 => Self::Rgba16i,
+            23u32 => Self::Rgba8i,
+            24u32 => Self::R32i,
+            25u32 => Self::Rg32i,
+            26u32 => Self::Rg16i,
+            27u32 => Self::Rg8i,
+            28u32 => Self::R16i,
+            29u32 => Self::R8i,
+            30u32 => Self::Rgba32ui,
+            31u32 => Self::Rgba16ui,
+            32u32 => Self::Rgba8ui,
+            33u32 => Self::R32ui,
+            34u32 => Self::Rgb10a2ui,
+            35u32 => Self::Rg32ui,
+            36u32 => Self::Rg16ui,
+            37u32 => Self::Rg8ui,
+            38u32 => Self::R16ui,
+            39u32 => Self::R8ui,
             _ => return None,
         })
     }
@@ -973,46 +970,46 @@ impl std::str::FromStr for ImageFormat {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Unknown" => Ok(ImageFormat::Unknown),
-            "Rgba32f" => Ok(ImageFormat::Rgba32f),
-            "Rgba16f" => Ok(ImageFormat::Rgba16f),
-            "R32f" => Ok(ImageFormat::R32f),
-            "Rgba8" => Ok(ImageFormat::Rgba8),
-            "Rgba8Snorm" => Ok(ImageFormat::Rgba8Snorm),
-            "Rg32f" => Ok(ImageFormat::Rg32f),
-            "Rg16f" => Ok(ImageFormat::Rg16f),
-            "R11fG11fB10f" => Ok(ImageFormat::R11fG11fB10f),
-            "R16f" => Ok(ImageFormat::R16f),
-            "Rgba16" => Ok(ImageFormat::Rgba16),
-            "Rgb10A2" => Ok(ImageFormat::Rgb10A2),
-            "Rg16" => Ok(ImageFormat::Rg16),
-            "Rg8" => Ok(ImageFormat::Rg8),
-            "R16" => Ok(ImageFormat::R16),
-            "R8" => Ok(ImageFormat::R8),
-            "Rgba16Snorm" => Ok(ImageFormat::Rgba16Snorm),
-            "Rg16Snorm" => Ok(ImageFormat::Rg16Snorm),
-            "Rg8Snorm" => Ok(ImageFormat::Rg8Snorm),
-            "R16Snorm" => Ok(ImageFormat::R16Snorm),
-            "R8Snorm" => Ok(ImageFormat::R8Snorm),
-            "Rgba32i" => Ok(ImageFormat::Rgba32i),
-            "Rgba16i" => Ok(ImageFormat::Rgba16i),
-            "Rgba8i" => Ok(ImageFormat::Rgba8i),
-            "R32i" => Ok(ImageFormat::R32i),
-            "Rg32i" => Ok(ImageFormat::Rg32i),
-            "Rg16i" => Ok(ImageFormat::Rg16i),
-            "Rg8i" => Ok(ImageFormat::Rg8i),
-            "R16i" => Ok(ImageFormat::R16i),
-            "R8i" => Ok(ImageFormat::R8i),
-            "Rgba32ui" => Ok(ImageFormat::Rgba32ui),
-            "Rgba16ui" => Ok(ImageFormat::Rgba16ui),
-            "Rgba8ui" => Ok(ImageFormat::Rgba8ui),
-            "R32ui" => Ok(ImageFormat::R32ui),
-            "Rgb10a2ui" => Ok(ImageFormat::Rgb10a2ui),
-            "Rg32ui" => Ok(ImageFormat::Rg32ui),
-            "Rg16ui" => Ok(ImageFormat::Rg16ui),
-            "Rg8ui" => Ok(ImageFormat::Rg8ui),
-            "R16ui" => Ok(ImageFormat::R16ui),
-            "R8ui" => Ok(ImageFormat::R8ui),
+            "Unknown" => Ok(Self::Unknown),
+            "Rgba32f" => Ok(Self::Rgba32f),
+            "Rgba16f" => Ok(Self::Rgba16f),
+            "R32f" => Ok(Self::R32f),
+            "Rgba8" => Ok(Self::Rgba8),
+            "Rgba8Snorm" => Ok(Self::Rgba8Snorm),
+            "Rg32f" => Ok(Self::Rg32f),
+            "Rg16f" => Ok(Self::Rg16f),
+            "R11fG11fB10f" => Ok(Self::R11fG11fB10f),
+            "R16f" => Ok(Self::R16f),
+            "Rgba16" => Ok(Self::Rgba16),
+            "Rgb10A2" => Ok(Self::Rgb10A2),
+            "Rg16" => Ok(Self::Rg16),
+            "Rg8" => Ok(Self::Rg8),
+            "R16" => Ok(Self::R16),
+            "R8" => Ok(Self::R8),
+            "Rgba16Snorm" => Ok(Self::Rgba16Snorm),
+            "Rg16Snorm" => Ok(Self::Rg16Snorm),
+            "Rg8Snorm" => Ok(Self::Rg8Snorm),
+            "R16Snorm" => Ok(Self::R16Snorm),
+            "R8Snorm" => Ok(Self::R8Snorm),
+            "Rgba32i" => Ok(Self::Rgba32i),
+            "Rgba16i" => Ok(Self::Rgba16i),
+            "Rgba8i" => Ok(Self::Rgba8i),
+            "R32i" => Ok(Self::R32i),
+            "Rg32i" => Ok(Self::Rg32i),
+            "Rg16i" => Ok(Self::Rg16i),
+            "Rg8i" => Ok(Self::Rg8i),
+            "R16i" => Ok(Self::R16i),
+            "R8i" => Ok(Self::R8i),
+            "Rgba32ui" => Ok(Self::Rgba32ui),
+            "Rgba16ui" => Ok(Self::Rgba16ui),
+            "Rgba8ui" => Ok(Self::Rgba8ui),
+            "R32ui" => Ok(Self::R32ui),
+            "Rgb10a2ui" => Ok(Self::Rgb10a2ui),
+            "Rg32ui" => Ok(Self::Rg32ui),
+            "Rg16ui" => Ok(Self::Rg16ui),
+            "Rg8ui" => Ok(Self::Rg8ui),
+            "R16ui" => Ok(Self::R16ui),
+            "R8ui" => Ok(Self::R8ui),
             _ => Err(()),
         }
     }
@@ -1075,26 +1072,26 @@ impl num_traits::FromPrimitive for ImageChannelOrder {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => ImageChannelOrder::R,
-            1u32 => ImageChannelOrder::A,
-            2u32 => ImageChannelOrder::RG,
-            3u32 => ImageChannelOrder::RA,
-            4u32 => ImageChannelOrder::RGB,
-            5u32 => ImageChannelOrder::RGBA,
-            6u32 => ImageChannelOrder::BGRA,
-            7u32 => ImageChannelOrder::ARGB,
-            8u32 => ImageChannelOrder::Intensity,
-            9u32 => ImageChannelOrder::Luminance,
-            10u32 => ImageChannelOrder::Rx,
-            11u32 => ImageChannelOrder::RGx,
-            12u32 => ImageChannelOrder::RGBx,
-            13u32 => ImageChannelOrder::Depth,
-            14u32 => ImageChannelOrder::DepthStencil,
-            15u32 => ImageChannelOrder::sRGB,
-            16u32 => ImageChannelOrder::sRGBx,
-            17u32 => ImageChannelOrder::sRGBA,
-            18u32 => ImageChannelOrder::sBGRA,
-            19u32 => ImageChannelOrder::ABGR,
+            0u32 => Self::R,
+            1u32 => Self::A,
+            2u32 => Self::RG,
+            3u32 => Self::RA,
+            4u32 => Self::RGB,
+            5u32 => Self::RGBA,
+            6u32 => Self::BGRA,
+            7u32 => Self::ARGB,
+            8u32 => Self::Intensity,
+            9u32 => Self::Luminance,
+            10u32 => Self::Rx,
+            11u32 => Self::RGx,
+            12u32 => Self::RGBx,
+            13u32 => Self::Depth,
+            14u32 => Self::DepthStencil,
+            15u32 => Self::sRGB,
+            16u32 => Self::sRGBx,
+            17u32 => Self::sRGBA,
+            18u32 => Self::sBGRA,
+            19u32 => Self::ABGR,
             _ => return None,
         })
     }
@@ -1106,26 +1103,26 @@ impl std::str::FromStr for ImageChannelOrder {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "R" => Ok(ImageChannelOrder::R),
-            "A" => Ok(ImageChannelOrder::A),
-            "RG" => Ok(ImageChannelOrder::RG),
-            "RA" => Ok(ImageChannelOrder::RA),
-            "RGB" => Ok(ImageChannelOrder::RGB),
-            "RGBA" => Ok(ImageChannelOrder::RGBA),
-            "BGRA" => Ok(ImageChannelOrder::BGRA),
-            "ARGB" => Ok(ImageChannelOrder::ARGB),
-            "Intensity" => Ok(ImageChannelOrder::Intensity),
-            "Luminance" => Ok(ImageChannelOrder::Luminance),
-            "Rx" => Ok(ImageChannelOrder::Rx),
-            "RGx" => Ok(ImageChannelOrder::RGx),
-            "RGBx" => Ok(ImageChannelOrder::RGBx),
-            "Depth" => Ok(ImageChannelOrder::Depth),
-            "DepthStencil" => Ok(ImageChannelOrder::DepthStencil),
-            "sRGB" => Ok(ImageChannelOrder::sRGB),
-            "sRGBx" => Ok(ImageChannelOrder::sRGBx),
-            "sRGBA" => Ok(ImageChannelOrder::sRGBA),
-            "sBGRA" => Ok(ImageChannelOrder::sBGRA),
-            "ABGR" => Ok(ImageChannelOrder::ABGR),
+            "R" => Ok(Self::R),
+            "A" => Ok(Self::A),
+            "RG" => Ok(Self::RG),
+            "RA" => Ok(Self::RA),
+            "RGB" => Ok(Self::RGB),
+            "RGBA" => Ok(Self::RGBA),
+            "BGRA" => Ok(Self::BGRA),
+            "ARGB" => Ok(Self::ARGB),
+            "Intensity" => Ok(Self::Intensity),
+            "Luminance" => Ok(Self::Luminance),
+            "Rx" => Ok(Self::Rx),
+            "RGx" => Ok(Self::RGx),
+            "RGBx" => Ok(Self::RGBx),
+            "Depth" => Ok(Self::Depth),
+            "DepthStencil" => Ok(Self::DepthStencil),
+            "sRGB" => Ok(Self::sRGB),
+            "sRGBx" => Ok(Self::sRGBx),
+            "sRGBA" => Ok(Self::sRGBA),
+            "sBGRA" => Ok(Self::sBGRA),
+            "ABGR" => Ok(Self::ABGR),
             _ => Err(()),
         }
     }
@@ -1182,23 +1179,23 @@ impl num_traits::FromPrimitive for ImageChannelDataType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => ImageChannelDataType::SnormInt8,
-            1u32 => ImageChannelDataType::SnormInt16,
-            2u32 => ImageChannelDataType::UnormInt8,
-            3u32 => ImageChannelDataType::UnormInt16,
-            4u32 => ImageChannelDataType::UnormShort565,
-            5u32 => ImageChannelDataType::UnormShort555,
-            6u32 => ImageChannelDataType::UnormInt101010,
-            7u32 => ImageChannelDataType::SignedInt8,
-            8u32 => ImageChannelDataType::SignedInt16,
-            9u32 => ImageChannelDataType::SignedInt32,
-            10u32 => ImageChannelDataType::UnsignedInt8,
-            11u32 => ImageChannelDataType::UnsignedInt16,
-            12u32 => ImageChannelDataType::UnsignedInt32,
-            13u32 => ImageChannelDataType::HalfFloat,
-            14u32 => ImageChannelDataType::Float,
-            15u32 => ImageChannelDataType::UnormInt24,
-            16u32 => ImageChannelDataType::UnormInt101010_2,
+            0u32 => Self::SnormInt8,
+            1u32 => Self::SnormInt16,
+            2u32 => Self::UnormInt8,
+            3u32 => Self::UnormInt16,
+            4u32 => Self::UnormShort565,
+            5u32 => Self::UnormShort555,
+            6u32 => Self::UnormInt101010,
+            7u32 => Self::SignedInt8,
+            8u32 => Self::SignedInt16,
+            9u32 => Self::SignedInt32,
+            10u32 => Self::UnsignedInt8,
+            11u32 => Self::UnsignedInt16,
+            12u32 => Self::UnsignedInt32,
+            13u32 => Self::HalfFloat,
+            14u32 => Self::Float,
+            15u32 => Self::UnormInt24,
+            16u32 => Self::UnormInt101010_2,
             _ => return None,
         })
     }
@@ -1210,23 +1207,23 @@ impl std::str::FromStr for ImageChannelDataType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "SnormInt8" => Ok(ImageChannelDataType::SnormInt8),
-            "SnormInt16" => Ok(ImageChannelDataType::SnormInt16),
-            "UnormInt8" => Ok(ImageChannelDataType::UnormInt8),
-            "UnormInt16" => Ok(ImageChannelDataType::UnormInt16),
-            "UnormShort565" => Ok(ImageChannelDataType::UnormShort565),
-            "UnormShort555" => Ok(ImageChannelDataType::UnormShort555),
-            "UnormInt101010" => Ok(ImageChannelDataType::UnormInt101010),
-            "SignedInt8" => Ok(ImageChannelDataType::SignedInt8),
-            "SignedInt16" => Ok(ImageChannelDataType::SignedInt16),
-            "SignedInt32" => Ok(ImageChannelDataType::SignedInt32),
-            "UnsignedInt8" => Ok(ImageChannelDataType::UnsignedInt8),
-            "UnsignedInt16" => Ok(ImageChannelDataType::UnsignedInt16),
-            "UnsignedInt32" => Ok(ImageChannelDataType::UnsignedInt32),
-            "HalfFloat" => Ok(ImageChannelDataType::HalfFloat),
-            "Float" => Ok(ImageChannelDataType::Float),
-            "UnormInt24" => Ok(ImageChannelDataType::UnormInt24),
-            "UnormInt101010_2" => Ok(ImageChannelDataType::UnormInt101010_2),
+            "SnormInt8" => Ok(Self::SnormInt8),
+            "SnormInt16" => Ok(Self::SnormInt16),
+            "UnormInt8" => Ok(Self::UnormInt8),
+            "UnormInt16" => Ok(Self::UnormInt16),
+            "UnormShort565" => Ok(Self::UnormShort565),
+            "UnormShort555" => Ok(Self::UnormShort555),
+            "UnormInt101010" => Ok(Self::UnormInt101010),
+            "SignedInt8" => Ok(Self::SignedInt8),
+            "SignedInt16" => Ok(Self::SignedInt16),
+            "SignedInt32" => Ok(Self::SignedInt32),
+            "UnsignedInt8" => Ok(Self::UnsignedInt8),
+            "UnsignedInt16" => Ok(Self::UnsignedInt16),
+            "UnsignedInt32" => Ok(Self::UnsignedInt32),
+            "HalfFloat" => Ok(Self::HalfFloat),
+            "Float" => Ok(Self::Float),
+            "UnormInt24" => Ok(Self::UnormInt24),
+            "UnormInt101010_2" => Ok(Self::UnormInt101010_2),
             _ => Err(()),
         }
     }
@@ -1257,10 +1254,10 @@ impl num_traits::FromPrimitive for FPRoundingMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => FPRoundingMode::RTE,
-            1u32 => FPRoundingMode::RTZ,
-            2u32 => FPRoundingMode::RTP,
-            3u32 => FPRoundingMode::RTN,
+            0u32 => Self::RTE,
+            1u32 => Self::RTZ,
+            2u32 => Self::RTP,
+            3u32 => Self::RTN,
             _ => return None,
         })
     }
@@ -1272,10 +1269,10 @@ impl std::str::FromStr for FPRoundingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "RTE" => Ok(FPRoundingMode::RTE),
-            "RTZ" => Ok(FPRoundingMode::RTZ),
-            "RTP" => Ok(FPRoundingMode::RTP),
-            "RTN" => Ok(FPRoundingMode::RTN),
+            "RTE" => Ok(Self::RTE),
+            "RTZ" => Ok(Self::RTZ),
+            "RTP" => Ok(Self::RTP),
+            "RTN" => Ok(Self::RTN),
             _ => Err(()),
         }
     }
@@ -1301,8 +1298,8 @@ impl num_traits::FromPrimitive for LinkageType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => LinkageType::Export,
-            1u32 => LinkageType::Import,
+            0u32 => Self::Export,
+            1u32 => Self::Import,
             _ => return None,
         })
     }
@@ -1314,8 +1311,8 @@ impl std::str::FromStr for LinkageType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Export" => Ok(LinkageType::Export),
-            "Import" => Ok(LinkageType::Import),
+            "Export" => Ok(Self::Export),
+            "Import" => Ok(Self::Import),
             _ => Err(()),
         }
     }
@@ -1344,9 +1341,9 @@ impl num_traits::FromPrimitive for AccessQualifier {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => AccessQualifier::ReadOnly,
-            1u32 => AccessQualifier::WriteOnly,
-            2u32 => AccessQualifier::ReadWrite,
+            0u32 => Self::ReadOnly,
+            1u32 => Self::WriteOnly,
+            2u32 => Self::ReadWrite,
             _ => return None,
         })
     }
@@ -1358,9 +1355,9 @@ impl std::str::FromStr for AccessQualifier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "ReadOnly" => Ok(AccessQualifier::ReadOnly),
-            "WriteOnly" => Ok(AccessQualifier::WriteOnly),
-            "ReadWrite" => Ok(AccessQualifier::ReadWrite),
+            "ReadOnly" => Ok(Self::ReadOnly),
+            "WriteOnly" => Ok(Self::WriteOnly),
+            "ReadWrite" => Ok(Self::ReadWrite),
             _ => Err(()),
         }
     }
@@ -1399,14 +1396,14 @@ impl num_traits::FromPrimitive for FunctionParameterAttribute {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => FunctionParameterAttribute::Zext,
-            1u32 => FunctionParameterAttribute::Sext,
-            2u32 => FunctionParameterAttribute::ByVal,
-            3u32 => FunctionParameterAttribute::Sret,
-            4u32 => FunctionParameterAttribute::NoAlias,
-            5u32 => FunctionParameterAttribute::NoCapture,
-            6u32 => FunctionParameterAttribute::NoWrite,
-            7u32 => FunctionParameterAttribute::NoReadWrite,
+            0u32 => Self::Zext,
+            1u32 => Self::Sext,
+            2u32 => Self::ByVal,
+            3u32 => Self::Sret,
+            4u32 => Self::NoAlias,
+            5u32 => Self::NoCapture,
+            6u32 => Self::NoWrite,
+            7u32 => Self::NoReadWrite,
             _ => return None,
         })
     }
@@ -1418,14 +1415,14 @@ impl std::str::FromStr for FunctionParameterAttribute {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Zext" => Ok(FunctionParameterAttribute::Zext),
-            "Sext" => Ok(FunctionParameterAttribute::Sext),
-            "ByVal" => Ok(FunctionParameterAttribute::ByVal),
-            "Sret" => Ok(FunctionParameterAttribute::Sret),
-            "NoAlias" => Ok(FunctionParameterAttribute::NoAlias),
-            "NoCapture" => Ok(FunctionParameterAttribute::NoCapture),
-            "NoWrite" => Ok(FunctionParameterAttribute::NoWrite),
-            "NoReadWrite" => Ok(FunctionParameterAttribute::NoReadWrite),
+            "Zext" => Ok(Self::Zext),
+            "Sext" => Ok(Self::Sext),
+            "ByVal" => Ok(Self::ByVal),
+            "Sret" => Ok(Self::Sret),
+            "NoAlias" => Ok(Self::NoAlias),
+            "NoCapture" => Ok(Self::NoCapture),
+            "NoWrite" => Ok(Self::NoWrite),
+            "NoReadWrite" => Ok(Self::NoReadWrite),
             _ => Err(()),
         }
     }
@@ -1503,11 +1500,11 @@ pub enum Decoration {
 }
 #[allow(non_upper_case_globals)]
 impl Decoration {
-    pub const NonUniformEXT: Decoration = Decoration::NonUniform;
-    pub const RestrictPointerEXT: Decoration = Decoration::RestrictPointer;
-    pub const AliasedPointerEXT: Decoration = Decoration::AliasedPointer;
-    pub const HlslCounterBufferGOOGLE: Decoration = Decoration::CounterBuffer;
-    pub const HlslSemanticGOOGLE: Decoration = Decoration::UserSemantic;
+    pub const NonUniformEXT: Self = Self::NonUniform;
+    pub const RestrictPointerEXT: Self = Self::RestrictPointer;
+    pub const AliasedPointerEXT: Self = Self::AliasedPointer;
+    pub const HlslCounterBufferGOOGLE: Self = Self::CounterBuffer;
+    pub const HlslSemanticGOOGLE: Self = Self::UserSemantic;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Decoration::BuiltIn
@@ -1580,70 +1577,70 @@ impl num_traits::FromPrimitive for Decoration {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => Decoration::RelaxedPrecision,
-            1u32 => Decoration::SpecId,
-            2u32 => Decoration::Block,
-            3u32 => Decoration::BufferBlock,
-            4u32 => Decoration::RowMajor,
-            5u32 => Decoration::ColMajor,
-            6u32 => Decoration::ArrayStride,
-            7u32 => Decoration::MatrixStride,
-            8u32 => Decoration::GLSLShared,
-            9u32 => Decoration::GLSLPacked,
-            10u32 => Decoration::CPacked,
-            11u32 => Decoration::BuiltIn,
-            13u32 => Decoration::NoPerspective,
-            14u32 => Decoration::Flat,
-            15u32 => Decoration::Patch,
-            16u32 => Decoration::Centroid,
-            17u32 => Decoration::Sample,
-            18u32 => Decoration::Invariant,
-            19u32 => Decoration::Restrict,
-            20u32 => Decoration::Aliased,
-            21u32 => Decoration::Volatile,
-            22u32 => Decoration::Constant,
-            23u32 => Decoration::Coherent,
-            24u32 => Decoration::NonWritable,
-            25u32 => Decoration::NonReadable,
-            26u32 => Decoration::Uniform,
-            27u32 => Decoration::UniformId,
-            28u32 => Decoration::SaturatedConversion,
-            29u32 => Decoration::Stream,
-            30u32 => Decoration::Location,
-            31u32 => Decoration::Component,
-            32u32 => Decoration::Index,
-            33u32 => Decoration::Binding,
-            34u32 => Decoration::DescriptorSet,
-            35u32 => Decoration::Offset,
-            36u32 => Decoration::XfbBuffer,
-            37u32 => Decoration::XfbStride,
-            38u32 => Decoration::FuncParamAttr,
-            39u32 => Decoration::FPRoundingMode,
-            40u32 => Decoration::FPFastMathMode,
-            41u32 => Decoration::LinkageAttributes,
-            42u32 => Decoration::NoContraction,
-            43u32 => Decoration::InputAttachmentIndex,
-            44u32 => Decoration::Alignment,
-            45u32 => Decoration::MaxByteOffset,
-            46u32 => Decoration::AlignmentId,
-            47u32 => Decoration::MaxByteOffsetId,
-            4469u32 => Decoration::NoSignedWrap,
-            4470u32 => Decoration::NoUnsignedWrap,
-            4999u32 => Decoration::ExplicitInterpAMD,
-            5248u32 => Decoration::OverrideCoverageNV,
-            5250u32 => Decoration::PassthroughNV,
-            5252u32 => Decoration::ViewportRelativeNV,
-            5256u32 => Decoration::SecondaryViewportRelativeNV,
-            5271u32 => Decoration::PerPrimitiveNV,
-            5272u32 => Decoration::PerViewNV,
-            5273u32 => Decoration::PerTaskNV,
-            5285u32 => Decoration::PerVertexNV,
-            5300u32 => Decoration::NonUniform,
-            5355u32 => Decoration::RestrictPointer,
-            5356u32 => Decoration::AliasedPointer,
-            5634u32 => Decoration::CounterBuffer,
-            5635u32 => Decoration::UserSemantic,
-            5636u32 => Decoration::UserTypeGOOGLE,
+            0u32 => Self::RelaxedPrecision,
+            1u32 => Self::SpecId,
+            2u32 => Self::Block,
+            3u32 => Self::BufferBlock,
+            4u32 => Self::RowMajor,
+            5u32 => Self::ColMajor,
+            6u32 => Self::ArrayStride,
+            7u32 => Self::MatrixStride,
+            8u32 => Self::GLSLShared,
+            9u32 => Self::GLSLPacked,
+            10u32 => Self::CPacked,
+            11u32 => Self::BuiltIn,
+            13u32 => Self::NoPerspective,
+            14u32 => Self::Flat,
+            15u32 => Self::Patch,
+            16u32 => Self::Centroid,
+            17u32 => Self::Sample,
+            18u32 => Self::Invariant,
+            19u32 => Self::Restrict,
+            20u32 => Self::Aliased,
+            21u32 => Self::Volatile,
+            22u32 => Self::Constant,
+            23u32 => Self::Coherent,
+            24u32 => Self::NonWritable,
+            25u32 => Self::NonReadable,
+            26u32 => Self::Uniform,
+            27u32 => Self::UniformId,
+            28u32 => Self::SaturatedConversion,
+            29u32 => Self::Stream,
+            30u32 => Self::Location,
+            31u32 => Self::Component,
+            32u32 => Self::Index,
+            33u32 => Self::Binding,
+            34u32 => Self::DescriptorSet,
+            35u32 => Self::Offset,
+            36u32 => Self::XfbBuffer,
+            37u32 => Self::XfbStride,
+            38u32 => Self::FuncParamAttr,
+            39u32 => Self::FPRoundingMode,
+            40u32 => Self::FPFastMathMode,
+            41u32 => Self::LinkageAttributes,
+            42u32 => Self::NoContraction,
+            43u32 => Self::InputAttachmentIndex,
+            44u32 => Self::Alignment,
+            45u32 => Self::MaxByteOffset,
+            46u32 => Self::AlignmentId,
+            47u32 => Self::MaxByteOffsetId,
+            4469u32 => Self::NoSignedWrap,
+            4470u32 => Self::NoUnsignedWrap,
+            4999u32 => Self::ExplicitInterpAMD,
+            5248u32 => Self::OverrideCoverageNV,
+            5250u32 => Self::PassthroughNV,
+            5252u32 => Self::ViewportRelativeNV,
+            5256u32 => Self::SecondaryViewportRelativeNV,
+            5271u32 => Self::PerPrimitiveNV,
+            5272u32 => Self::PerViewNV,
+            5273u32 => Self::PerTaskNV,
+            5285u32 => Self::PerVertexNV,
+            5300u32 => Self::NonUniform,
+            5355u32 => Self::RestrictPointer,
+            5356u32 => Self::AliasedPointer,
+            5634u32 => Self::CounterBuffer,
+            5635u32 => Self::UserSemantic,
+            5636u32 => Self::UserTypeGOOGLE,
             _ => return None,
         })
     }
@@ -1655,70 +1652,70 @@ impl std::str::FromStr for Decoration {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "RelaxedPrecision" => Ok(Decoration::RelaxedPrecision),
-            "SpecId" => Ok(Decoration::SpecId),
-            "Block" => Ok(Decoration::Block),
-            "BufferBlock" => Ok(Decoration::BufferBlock),
-            "RowMajor" => Ok(Decoration::RowMajor),
-            "ColMajor" => Ok(Decoration::ColMajor),
-            "ArrayStride" => Ok(Decoration::ArrayStride),
-            "MatrixStride" => Ok(Decoration::MatrixStride),
-            "GLSLShared" => Ok(Decoration::GLSLShared),
-            "GLSLPacked" => Ok(Decoration::GLSLPacked),
-            "CPacked" => Ok(Decoration::CPacked),
-            "BuiltIn" => Ok(Decoration::BuiltIn),
-            "NoPerspective" => Ok(Decoration::NoPerspective),
-            "Flat" => Ok(Decoration::Flat),
-            "Patch" => Ok(Decoration::Patch),
-            "Centroid" => Ok(Decoration::Centroid),
-            "Sample" => Ok(Decoration::Sample),
-            "Invariant" => Ok(Decoration::Invariant),
-            "Restrict" => Ok(Decoration::Restrict),
-            "Aliased" => Ok(Decoration::Aliased),
-            "Volatile" => Ok(Decoration::Volatile),
-            "Constant" => Ok(Decoration::Constant),
-            "Coherent" => Ok(Decoration::Coherent),
-            "NonWritable" => Ok(Decoration::NonWritable),
-            "NonReadable" => Ok(Decoration::NonReadable),
-            "Uniform" => Ok(Decoration::Uniform),
-            "UniformId" => Ok(Decoration::UniformId),
-            "SaturatedConversion" => Ok(Decoration::SaturatedConversion),
-            "Stream" => Ok(Decoration::Stream),
-            "Location" => Ok(Decoration::Location),
-            "Component" => Ok(Decoration::Component),
-            "Index" => Ok(Decoration::Index),
-            "Binding" => Ok(Decoration::Binding),
-            "DescriptorSet" => Ok(Decoration::DescriptorSet),
-            "Offset" => Ok(Decoration::Offset),
-            "XfbBuffer" => Ok(Decoration::XfbBuffer),
-            "XfbStride" => Ok(Decoration::XfbStride),
-            "FuncParamAttr" => Ok(Decoration::FuncParamAttr),
-            "FPRoundingMode" => Ok(Decoration::FPRoundingMode),
-            "FPFastMathMode" => Ok(Decoration::FPFastMathMode),
-            "LinkageAttributes" => Ok(Decoration::LinkageAttributes),
-            "NoContraction" => Ok(Decoration::NoContraction),
-            "InputAttachmentIndex" => Ok(Decoration::InputAttachmentIndex),
-            "Alignment" => Ok(Decoration::Alignment),
-            "MaxByteOffset" => Ok(Decoration::MaxByteOffset),
-            "AlignmentId" => Ok(Decoration::AlignmentId),
-            "MaxByteOffsetId" => Ok(Decoration::MaxByteOffsetId),
-            "NoSignedWrap" => Ok(Decoration::NoSignedWrap),
-            "NoUnsignedWrap" => Ok(Decoration::NoUnsignedWrap),
-            "ExplicitInterpAMD" => Ok(Decoration::ExplicitInterpAMD),
-            "OverrideCoverageNV" => Ok(Decoration::OverrideCoverageNV),
-            "PassthroughNV" => Ok(Decoration::PassthroughNV),
-            "ViewportRelativeNV" => Ok(Decoration::ViewportRelativeNV),
-            "SecondaryViewportRelativeNV" => Ok(Decoration::SecondaryViewportRelativeNV),
-            "PerPrimitiveNV" => Ok(Decoration::PerPrimitiveNV),
-            "PerViewNV" => Ok(Decoration::PerViewNV),
-            "PerTaskNV" => Ok(Decoration::PerTaskNV),
-            "PerVertexNV" => Ok(Decoration::PerVertexNV),
-            "NonUniform" => Ok(Decoration::NonUniform),
-            "RestrictPointer" => Ok(Decoration::RestrictPointer),
-            "AliasedPointer" => Ok(Decoration::AliasedPointer),
-            "CounterBuffer" => Ok(Decoration::CounterBuffer),
-            "UserSemantic" => Ok(Decoration::UserSemantic),
-            "UserTypeGOOGLE" => Ok(Decoration::UserTypeGOOGLE),
+            "RelaxedPrecision" => Ok(Self::RelaxedPrecision),
+            "SpecId" => Ok(Self::SpecId),
+            "Block" => Ok(Self::Block),
+            "BufferBlock" => Ok(Self::BufferBlock),
+            "RowMajor" => Ok(Self::RowMajor),
+            "ColMajor" => Ok(Self::ColMajor),
+            "ArrayStride" => Ok(Self::ArrayStride),
+            "MatrixStride" => Ok(Self::MatrixStride),
+            "GLSLShared" => Ok(Self::GLSLShared),
+            "GLSLPacked" => Ok(Self::GLSLPacked),
+            "CPacked" => Ok(Self::CPacked),
+            "BuiltIn" => Ok(Self::BuiltIn),
+            "NoPerspective" => Ok(Self::NoPerspective),
+            "Flat" => Ok(Self::Flat),
+            "Patch" => Ok(Self::Patch),
+            "Centroid" => Ok(Self::Centroid),
+            "Sample" => Ok(Self::Sample),
+            "Invariant" => Ok(Self::Invariant),
+            "Restrict" => Ok(Self::Restrict),
+            "Aliased" => Ok(Self::Aliased),
+            "Volatile" => Ok(Self::Volatile),
+            "Constant" => Ok(Self::Constant),
+            "Coherent" => Ok(Self::Coherent),
+            "NonWritable" => Ok(Self::NonWritable),
+            "NonReadable" => Ok(Self::NonReadable),
+            "Uniform" => Ok(Self::Uniform),
+            "UniformId" => Ok(Self::UniformId),
+            "SaturatedConversion" => Ok(Self::SaturatedConversion),
+            "Stream" => Ok(Self::Stream),
+            "Location" => Ok(Self::Location),
+            "Component" => Ok(Self::Component),
+            "Index" => Ok(Self::Index),
+            "Binding" => Ok(Self::Binding),
+            "DescriptorSet" => Ok(Self::DescriptorSet),
+            "Offset" => Ok(Self::Offset),
+            "XfbBuffer" => Ok(Self::XfbBuffer),
+            "XfbStride" => Ok(Self::XfbStride),
+            "FuncParamAttr" => Ok(Self::FuncParamAttr),
+            "FPRoundingMode" => Ok(Self::FPRoundingMode),
+            "FPFastMathMode" => Ok(Self::FPFastMathMode),
+            "LinkageAttributes" => Ok(Self::LinkageAttributes),
+            "NoContraction" => Ok(Self::NoContraction),
+            "InputAttachmentIndex" => Ok(Self::InputAttachmentIndex),
+            "Alignment" => Ok(Self::Alignment),
+            "MaxByteOffset" => Ok(Self::MaxByteOffset),
+            "AlignmentId" => Ok(Self::AlignmentId),
+            "MaxByteOffsetId" => Ok(Self::MaxByteOffsetId),
+            "NoSignedWrap" => Ok(Self::NoSignedWrap),
+            "NoUnsignedWrap" => Ok(Self::NoUnsignedWrap),
+            "ExplicitInterpAMD" => Ok(Self::ExplicitInterpAMD),
+            "OverrideCoverageNV" => Ok(Self::OverrideCoverageNV),
+            "PassthroughNV" => Ok(Self::PassthroughNV),
+            "ViewportRelativeNV" => Ok(Self::ViewportRelativeNV),
+            "SecondaryViewportRelativeNV" => Ok(Self::SecondaryViewportRelativeNV),
+            "PerPrimitiveNV" => Ok(Self::PerPrimitiveNV),
+            "PerViewNV" => Ok(Self::PerViewNV),
+            "PerTaskNV" => Ok(Self::PerTaskNV),
+            "PerVertexNV" => Ok(Self::PerVertexNV),
+            "NonUniform" => Ok(Self::NonUniform),
+            "RestrictPointer" => Ok(Self::RestrictPointer),
+            "AliasedPointer" => Ok(Self::AliasedPointer),
+            "CounterBuffer" => Ok(Self::CounterBuffer),
+            "UserSemantic" => Ok(Self::UserSemantic),
+            "UserTypeGOOGLE" => Ok(Self::UserTypeGOOGLE),
             _ => Err(()),
         }
     }
@@ -1828,27 +1825,27 @@ pub enum BuiltIn {
 }
 #[allow(non_upper_case_globals)]
 impl BuiltIn {
-    pub const SubgroupEqMaskKHR: BuiltIn = BuiltIn::SubgroupEqMask;
-    pub const SubgroupGeMaskKHR: BuiltIn = BuiltIn::SubgroupGeMask;
-    pub const SubgroupGtMaskKHR: BuiltIn = BuiltIn::SubgroupGtMask;
-    pub const SubgroupLeMaskKHR: BuiltIn = BuiltIn::SubgroupLeMask;
-    pub const SubgroupLtMaskKHR: BuiltIn = BuiltIn::SubgroupLtMask;
-    pub const FragmentSizeNV: BuiltIn = BuiltIn::FragSizeEXT;
-    pub const InvocationsPerPixelNV: BuiltIn = BuiltIn::FragInvocationCountEXT;
-    pub const LaunchIdKHR: BuiltIn = BuiltIn::LaunchIdNV;
-    pub const LaunchSizeKHR: BuiltIn = BuiltIn::LaunchSizeNV;
-    pub const WorldRayOriginKHR: BuiltIn = BuiltIn::WorldRayOriginNV;
-    pub const WorldRayDirectionKHR: BuiltIn = BuiltIn::WorldRayDirectionNV;
-    pub const ObjectRayOriginKHR: BuiltIn = BuiltIn::ObjectRayOriginNV;
-    pub const ObjectRayDirectionKHR: BuiltIn = BuiltIn::ObjectRayDirectionNV;
-    pub const RayTminKHR: BuiltIn = BuiltIn::RayTminNV;
-    pub const RayTmaxKHR: BuiltIn = BuiltIn::RayTmaxNV;
-    pub const InstanceCustomIndexKHR: BuiltIn = BuiltIn::InstanceCustomIndexNV;
-    pub const ObjectToWorldKHR: BuiltIn = BuiltIn::ObjectToWorldNV;
-    pub const WorldToObjectKHR: BuiltIn = BuiltIn::WorldToObjectNV;
-    pub const HitTKHR: BuiltIn = BuiltIn::HitTNV;
-    pub const HitKindKHR: BuiltIn = BuiltIn::HitKindNV;
-    pub const IncomingRayFlagsKHR: BuiltIn = BuiltIn::IncomingRayFlagsNV;
+    pub const SubgroupEqMaskKHR: Self = Self::SubgroupEqMask;
+    pub const SubgroupGeMaskKHR: Self = Self::SubgroupGeMask;
+    pub const SubgroupGtMaskKHR: Self = Self::SubgroupGtMask;
+    pub const SubgroupLeMaskKHR: Self = Self::SubgroupLeMask;
+    pub const SubgroupLtMaskKHR: Self = Self::SubgroupLtMask;
+    pub const FragmentSizeNV: Self = Self::FragSizeEXT;
+    pub const InvocationsPerPixelNV: Self = Self::FragInvocationCountEXT;
+    pub const LaunchIdKHR: Self = Self::LaunchIdNV;
+    pub const LaunchSizeKHR: Self = Self::LaunchSizeNV;
+    pub const WorldRayOriginKHR: Self = Self::WorldRayOriginNV;
+    pub const WorldRayDirectionKHR: Self = Self::WorldRayDirectionNV;
+    pub const ObjectRayOriginKHR: Self = Self::ObjectRayOriginNV;
+    pub const ObjectRayDirectionKHR: Self = Self::ObjectRayDirectionNV;
+    pub const RayTminKHR: Self = Self::RayTminNV;
+    pub const RayTmaxKHR: Self = Self::RayTmaxNV;
+    pub const InstanceCustomIndexKHR: Self = Self::InstanceCustomIndexNV;
+    pub const ObjectToWorldKHR: Self = Self::ObjectToWorldNV;
+    pub const WorldToObjectKHR: Self = Self::WorldToObjectNV;
+    pub const HitTKHR: Self = Self::HitTNV;
+    pub const HitKindKHR: Self = Self::HitKindNV;
+    pub const IncomingRayFlagsKHR: Self = Self::IncomingRayFlagsNV;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             BuiltIn::NumWorkgroups
@@ -1980,102 +1977,102 @@ impl num_traits::FromPrimitive for BuiltIn {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => BuiltIn::Position,
-            1u32 => BuiltIn::PointSize,
-            3u32 => BuiltIn::ClipDistance,
-            4u32 => BuiltIn::CullDistance,
-            5u32 => BuiltIn::VertexId,
-            6u32 => BuiltIn::InstanceId,
-            7u32 => BuiltIn::PrimitiveId,
-            8u32 => BuiltIn::InvocationId,
-            9u32 => BuiltIn::Layer,
-            10u32 => BuiltIn::ViewportIndex,
-            11u32 => BuiltIn::TessLevelOuter,
-            12u32 => BuiltIn::TessLevelInner,
-            13u32 => BuiltIn::TessCoord,
-            14u32 => BuiltIn::PatchVertices,
-            15u32 => BuiltIn::FragCoord,
-            16u32 => BuiltIn::PointCoord,
-            17u32 => BuiltIn::FrontFacing,
-            18u32 => BuiltIn::SampleId,
-            19u32 => BuiltIn::SamplePosition,
-            20u32 => BuiltIn::SampleMask,
-            22u32 => BuiltIn::FragDepth,
-            23u32 => BuiltIn::HelperInvocation,
-            24u32 => BuiltIn::NumWorkgroups,
-            25u32 => BuiltIn::WorkgroupSize,
-            26u32 => BuiltIn::WorkgroupId,
-            27u32 => BuiltIn::LocalInvocationId,
-            28u32 => BuiltIn::GlobalInvocationId,
-            29u32 => BuiltIn::LocalInvocationIndex,
-            30u32 => BuiltIn::WorkDim,
-            31u32 => BuiltIn::GlobalSize,
-            32u32 => BuiltIn::EnqueuedWorkgroupSize,
-            33u32 => BuiltIn::GlobalOffset,
-            34u32 => BuiltIn::GlobalLinearId,
-            36u32 => BuiltIn::SubgroupSize,
-            37u32 => BuiltIn::SubgroupMaxSize,
-            38u32 => BuiltIn::NumSubgroups,
-            39u32 => BuiltIn::NumEnqueuedSubgroups,
-            40u32 => BuiltIn::SubgroupId,
-            41u32 => BuiltIn::SubgroupLocalInvocationId,
-            42u32 => BuiltIn::VertexIndex,
-            43u32 => BuiltIn::InstanceIndex,
-            4416u32 => BuiltIn::SubgroupEqMask,
-            4417u32 => BuiltIn::SubgroupGeMask,
-            4418u32 => BuiltIn::SubgroupGtMask,
-            4419u32 => BuiltIn::SubgroupLeMask,
-            4420u32 => BuiltIn::SubgroupLtMask,
-            4424u32 => BuiltIn::BaseVertex,
-            4425u32 => BuiltIn::BaseInstance,
-            4426u32 => BuiltIn::DrawIndex,
-            4438u32 => BuiltIn::DeviceIndex,
-            4440u32 => BuiltIn::ViewIndex,
-            4992u32 => BuiltIn::BaryCoordNoPerspAMD,
-            4993u32 => BuiltIn::BaryCoordNoPerspCentroidAMD,
-            4994u32 => BuiltIn::BaryCoordNoPerspSampleAMD,
-            4995u32 => BuiltIn::BaryCoordSmoothAMD,
-            4996u32 => BuiltIn::BaryCoordSmoothCentroidAMD,
-            4997u32 => BuiltIn::BaryCoordSmoothSampleAMD,
-            4998u32 => BuiltIn::BaryCoordPullModelAMD,
-            5014u32 => BuiltIn::FragStencilRefEXT,
-            5253u32 => BuiltIn::ViewportMaskNV,
-            5257u32 => BuiltIn::SecondaryPositionNV,
-            5258u32 => BuiltIn::SecondaryViewportMaskNV,
-            5261u32 => BuiltIn::PositionPerViewNV,
-            5262u32 => BuiltIn::ViewportMaskPerViewNV,
-            5264u32 => BuiltIn::FullyCoveredEXT,
-            5274u32 => BuiltIn::TaskCountNV,
-            5275u32 => BuiltIn::PrimitiveCountNV,
-            5276u32 => BuiltIn::PrimitiveIndicesNV,
-            5277u32 => BuiltIn::ClipDistancePerViewNV,
-            5278u32 => BuiltIn::CullDistancePerViewNV,
-            5279u32 => BuiltIn::LayerPerViewNV,
-            5280u32 => BuiltIn::MeshViewCountNV,
-            5281u32 => BuiltIn::MeshViewIndicesNV,
-            5286u32 => BuiltIn::BaryCoordNV,
-            5287u32 => BuiltIn::BaryCoordNoPerspNV,
-            5292u32 => BuiltIn::FragSizeEXT,
-            5293u32 => BuiltIn::FragInvocationCountEXT,
-            5319u32 => BuiltIn::LaunchIdNV,
-            5320u32 => BuiltIn::LaunchSizeNV,
-            5321u32 => BuiltIn::WorldRayOriginNV,
-            5322u32 => BuiltIn::WorldRayDirectionNV,
-            5323u32 => BuiltIn::ObjectRayOriginNV,
-            5324u32 => BuiltIn::ObjectRayDirectionNV,
-            5325u32 => BuiltIn::RayTminNV,
-            5326u32 => BuiltIn::RayTmaxNV,
-            5327u32 => BuiltIn::InstanceCustomIndexNV,
-            5330u32 => BuiltIn::ObjectToWorldNV,
-            5331u32 => BuiltIn::WorldToObjectNV,
-            5332u32 => BuiltIn::HitTNV,
-            5333u32 => BuiltIn::HitKindNV,
-            5351u32 => BuiltIn::IncomingRayFlagsNV,
-            5352u32 => BuiltIn::RayGeometryIndexKHR,
-            5374u32 => BuiltIn::WarpsPerSMNV,
-            5375u32 => BuiltIn::SMCountNV,
-            5376u32 => BuiltIn::WarpIDNV,
-            5377u32 => BuiltIn::SMIDNV,
+            0u32 => Self::Position,
+            1u32 => Self::PointSize,
+            3u32 => Self::ClipDistance,
+            4u32 => Self::CullDistance,
+            5u32 => Self::VertexId,
+            6u32 => Self::InstanceId,
+            7u32 => Self::PrimitiveId,
+            8u32 => Self::InvocationId,
+            9u32 => Self::Layer,
+            10u32 => Self::ViewportIndex,
+            11u32 => Self::TessLevelOuter,
+            12u32 => Self::TessLevelInner,
+            13u32 => Self::TessCoord,
+            14u32 => Self::PatchVertices,
+            15u32 => Self::FragCoord,
+            16u32 => Self::PointCoord,
+            17u32 => Self::FrontFacing,
+            18u32 => Self::SampleId,
+            19u32 => Self::SamplePosition,
+            20u32 => Self::SampleMask,
+            22u32 => Self::FragDepth,
+            23u32 => Self::HelperInvocation,
+            24u32 => Self::NumWorkgroups,
+            25u32 => Self::WorkgroupSize,
+            26u32 => Self::WorkgroupId,
+            27u32 => Self::LocalInvocationId,
+            28u32 => Self::GlobalInvocationId,
+            29u32 => Self::LocalInvocationIndex,
+            30u32 => Self::WorkDim,
+            31u32 => Self::GlobalSize,
+            32u32 => Self::EnqueuedWorkgroupSize,
+            33u32 => Self::GlobalOffset,
+            34u32 => Self::GlobalLinearId,
+            36u32 => Self::SubgroupSize,
+            37u32 => Self::SubgroupMaxSize,
+            38u32 => Self::NumSubgroups,
+            39u32 => Self::NumEnqueuedSubgroups,
+            40u32 => Self::SubgroupId,
+            41u32 => Self::SubgroupLocalInvocationId,
+            42u32 => Self::VertexIndex,
+            43u32 => Self::InstanceIndex,
+            4416u32 => Self::SubgroupEqMask,
+            4417u32 => Self::SubgroupGeMask,
+            4418u32 => Self::SubgroupGtMask,
+            4419u32 => Self::SubgroupLeMask,
+            4420u32 => Self::SubgroupLtMask,
+            4424u32 => Self::BaseVertex,
+            4425u32 => Self::BaseInstance,
+            4426u32 => Self::DrawIndex,
+            4438u32 => Self::DeviceIndex,
+            4440u32 => Self::ViewIndex,
+            4992u32 => Self::BaryCoordNoPerspAMD,
+            4993u32 => Self::BaryCoordNoPerspCentroidAMD,
+            4994u32 => Self::BaryCoordNoPerspSampleAMD,
+            4995u32 => Self::BaryCoordSmoothAMD,
+            4996u32 => Self::BaryCoordSmoothCentroidAMD,
+            4997u32 => Self::BaryCoordSmoothSampleAMD,
+            4998u32 => Self::BaryCoordPullModelAMD,
+            5014u32 => Self::FragStencilRefEXT,
+            5253u32 => Self::ViewportMaskNV,
+            5257u32 => Self::SecondaryPositionNV,
+            5258u32 => Self::SecondaryViewportMaskNV,
+            5261u32 => Self::PositionPerViewNV,
+            5262u32 => Self::ViewportMaskPerViewNV,
+            5264u32 => Self::FullyCoveredEXT,
+            5274u32 => Self::TaskCountNV,
+            5275u32 => Self::PrimitiveCountNV,
+            5276u32 => Self::PrimitiveIndicesNV,
+            5277u32 => Self::ClipDistancePerViewNV,
+            5278u32 => Self::CullDistancePerViewNV,
+            5279u32 => Self::LayerPerViewNV,
+            5280u32 => Self::MeshViewCountNV,
+            5281u32 => Self::MeshViewIndicesNV,
+            5286u32 => Self::BaryCoordNV,
+            5287u32 => Self::BaryCoordNoPerspNV,
+            5292u32 => Self::FragSizeEXT,
+            5293u32 => Self::FragInvocationCountEXT,
+            5319u32 => Self::LaunchIdNV,
+            5320u32 => Self::LaunchSizeNV,
+            5321u32 => Self::WorldRayOriginNV,
+            5322u32 => Self::WorldRayDirectionNV,
+            5323u32 => Self::ObjectRayOriginNV,
+            5324u32 => Self::ObjectRayDirectionNV,
+            5325u32 => Self::RayTminNV,
+            5326u32 => Self::RayTmaxNV,
+            5327u32 => Self::InstanceCustomIndexNV,
+            5330u32 => Self::ObjectToWorldNV,
+            5331u32 => Self::WorldToObjectNV,
+            5332u32 => Self::HitTNV,
+            5333u32 => Self::HitKindNV,
+            5351u32 => Self::IncomingRayFlagsNV,
+            5352u32 => Self::RayGeometryIndexKHR,
+            5374u32 => Self::WarpsPerSMNV,
+            5375u32 => Self::SMCountNV,
+            5376u32 => Self::WarpIDNV,
+            5377u32 => Self::SMIDNV,
             _ => return None,
         })
     }
@@ -2087,102 +2084,102 @@ impl std::str::FromStr for BuiltIn {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Position" => Ok(BuiltIn::Position),
-            "PointSize" => Ok(BuiltIn::PointSize),
-            "ClipDistance" => Ok(BuiltIn::ClipDistance),
-            "CullDistance" => Ok(BuiltIn::CullDistance),
-            "VertexId" => Ok(BuiltIn::VertexId),
-            "InstanceId" => Ok(BuiltIn::InstanceId),
-            "PrimitiveId" => Ok(BuiltIn::PrimitiveId),
-            "InvocationId" => Ok(BuiltIn::InvocationId),
-            "Layer" => Ok(BuiltIn::Layer),
-            "ViewportIndex" => Ok(BuiltIn::ViewportIndex),
-            "TessLevelOuter" => Ok(BuiltIn::TessLevelOuter),
-            "TessLevelInner" => Ok(BuiltIn::TessLevelInner),
-            "TessCoord" => Ok(BuiltIn::TessCoord),
-            "PatchVertices" => Ok(BuiltIn::PatchVertices),
-            "FragCoord" => Ok(BuiltIn::FragCoord),
-            "PointCoord" => Ok(BuiltIn::PointCoord),
-            "FrontFacing" => Ok(BuiltIn::FrontFacing),
-            "SampleId" => Ok(BuiltIn::SampleId),
-            "SamplePosition" => Ok(BuiltIn::SamplePosition),
-            "SampleMask" => Ok(BuiltIn::SampleMask),
-            "FragDepth" => Ok(BuiltIn::FragDepth),
-            "HelperInvocation" => Ok(BuiltIn::HelperInvocation),
-            "NumWorkgroups" => Ok(BuiltIn::NumWorkgroups),
-            "WorkgroupSize" => Ok(BuiltIn::WorkgroupSize),
-            "WorkgroupId" => Ok(BuiltIn::WorkgroupId),
-            "LocalInvocationId" => Ok(BuiltIn::LocalInvocationId),
-            "GlobalInvocationId" => Ok(BuiltIn::GlobalInvocationId),
-            "LocalInvocationIndex" => Ok(BuiltIn::LocalInvocationIndex),
-            "WorkDim" => Ok(BuiltIn::WorkDim),
-            "GlobalSize" => Ok(BuiltIn::GlobalSize),
-            "EnqueuedWorkgroupSize" => Ok(BuiltIn::EnqueuedWorkgroupSize),
-            "GlobalOffset" => Ok(BuiltIn::GlobalOffset),
-            "GlobalLinearId" => Ok(BuiltIn::GlobalLinearId),
-            "SubgroupSize" => Ok(BuiltIn::SubgroupSize),
-            "SubgroupMaxSize" => Ok(BuiltIn::SubgroupMaxSize),
-            "NumSubgroups" => Ok(BuiltIn::NumSubgroups),
-            "NumEnqueuedSubgroups" => Ok(BuiltIn::NumEnqueuedSubgroups),
-            "SubgroupId" => Ok(BuiltIn::SubgroupId),
-            "SubgroupLocalInvocationId" => Ok(BuiltIn::SubgroupLocalInvocationId),
-            "VertexIndex" => Ok(BuiltIn::VertexIndex),
-            "InstanceIndex" => Ok(BuiltIn::InstanceIndex),
-            "SubgroupEqMask" => Ok(BuiltIn::SubgroupEqMask),
-            "SubgroupGeMask" => Ok(BuiltIn::SubgroupGeMask),
-            "SubgroupGtMask" => Ok(BuiltIn::SubgroupGtMask),
-            "SubgroupLeMask" => Ok(BuiltIn::SubgroupLeMask),
-            "SubgroupLtMask" => Ok(BuiltIn::SubgroupLtMask),
-            "BaseVertex" => Ok(BuiltIn::BaseVertex),
-            "BaseInstance" => Ok(BuiltIn::BaseInstance),
-            "DrawIndex" => Ok(BuiltIn::DrawIndex),
-            "DeviceIndex" => Ok(BuiltIn::DeviceIndex),
-            "ViewIndex" => Ok(BuiltIn::ViewIndex),
-            "BaryCoordNoPerspAMD" => Ok(BuiltIn::BaryCoordNoPerspAMD),
-            "BaryCoordNoPerspCentroidAMD" => Ok(BuiltIn::BaryCoordNoPerspCentroidAMD),
-            "BaryCoordNoPerspSampleAMD" => Ok(BuiltIn::BaryCoordNoPerspSampleAMD),
-            "BaryCoordSmoothAMD" => Ok(BuiltIn::BaryCoordSmoothAMD),
-            "BaryCoordSmoothCentroidAMD" => Ok(BuiltIn::BaryCoordSmoothCentroidAMD),
-            "BaryCoordSmoothSampleAMD" => Ok(BuiltIn::BaryCoordSmoothSampleAMD),
-            "BaryCoordPullModelAMD" => Ok(BuiltIn::BaryCoordPullModelAMD),
-            "FragStencilRefEXT" => Ok(BuiltIn::FragStencilRefEXT),
-            "ViewportMaskNV" => Ok(BuiltIn::ViewportMaskNV),
-            "SecondaryPositionNV" => Ok(BuiltIn::SecondaryPositionNV),
-            "SecondaryViewportMaskNV" => Ok(BuiltIn::SecondaryViewportMaskNV),
-            "PositionPerViewNV" => Ok(BuiltIn::PositionPerViewNV),
-            "ViewportMaskPerViewNV" => Ok(BuiltIn::ViewportMaskPerViewNV),
-            "FullyCoveredEXT" => Ok(BuiltIn::FullyCoveredEXT),
-            "TaskCountNV" => Ok(BuiltIn::TaskCountNV),
-            "PrimitiveCountNV" => Ok(BuiltIn::PrimitiveCountNV),
-            "PrimitiveIndicesNV" => Ok(BuiltIn::PrimitiveIndicesNV),
-            "ClipDistancePerViewNV" => Ok(BuiltIn::ClipDistancePerViewNV),
-            "CullDistancePerViewNV" => Ok(BuiltIn::CullDistancePerViewNV),
-            "LayerPerViewNV" => Ok(BuiltIn::LayerPerViewNV),
-            "MeshViewCountNV" => Ok(BuiltIn::MeshViewCountNV),
-            "MeshViewIndicesNV" => Ok(BuiltIn::MeshViewIndicesNV),
-            "BaryCoordNV" => Ok(BuiltIn::BaryCoordNV),
-            "BaryCoordNoPerspNV" => Ok(BuiltIn::BaryCoordNoPerspNV),
-            "FragSizeEXT" => Ok(BuiltIn::FragSizeEXT),
-            "FragInvocationCountEXT" => Ok(BuiltIn::FragInvocationCountEXT),
-            "LaunchIdNV" => Ok(BuiltIn::LaunchIdNV),
-            "LaunchSizeNV" => Ok(BuiltIn::LaunchSizeNV),
-            "WorldRayOriginNV" => Ok(BuiltIn::WorldRayOriginNV),
-            "WorldRayDirectionNV" => Ok(BuiltIn::WorldRayDirectionNV),
-            "ObjectRayOriginNV" => Ok(BuiltIn::ObjectRayOriginNV),
-            "ObjectRayDirectionNV" => Ok(BuiltIn::ObjectRayDirectionNV),
-            "RayTminNV" => Ok(BuiltIn::RayTminNV),
-            "RayTmaxNV" => Ok(BuiltIn::RayTmaxNV),
-            "InstanceCustomIndexNV" => Ok(BuiltIn::InstanceCustomIndexNV),
-            "ObjectToWorldNV" => Ok(BuiltIn::ObjectToWorldNV),
-            "WorldToObjectNV" => Ok(BuiltIn::WorldToObjectNV),
-            "HitTNV" => Ok(BuiltIn::HitTNV),
-            "HitKindNV" => Ok(BuiltIn::HitKindNV),
-            "IncomingRayFlagsNV" => Ok(BuiltIn::IncomingRayFlagsNV),
-            "RayGeometryIndexKHR" => Ok(BuiltIn::RayGeometryIndexKHR),
-            "WarpsPerSMNV" => Ok(BuiltIn::WarpsPerSMNV),
-            "SMCountNV" => Ok(BuiltIn::SMCountNV),
-            "WarpIDNV" => Ok(BuiltIn::WarpIDNV),
-            "SMIDNV" => Ok(BuiltIn::SMIDNV),
+            "Position" => Ok(Self::Position),
+            "PointSize" => Ok(Self::PointSize),
+            "ClipDistance" => Ok(Self::ClipDistance),
+            "CullDistance" => Ok(Self::CullDistance),
+            "VertexId" => Ok(Self::VertexId),
+            "InstanceId" => Ok(Self::InstanceId),
+            "PrimitiveId" => Ok(Self::PrimitiveId),
+            "InvocationId" => Ok(Self::InvocationId),
+            "Layer" => Ok(Self::Layer),
+            "ViewportIndex" => Ok(Self::ViewportIndex),
+            "TessLevelOuter" => Ok(Self::TessLevelOuter),
+            "TessLevelInner" => Ok(Self::TessLevelInner),
+            "TessCoord" => Ok(Self::TessCoord),
+            "PatchVertices" => Ok(Self::PatchVertices),
+            "FragCoord" => Ok(Self::FragCoord),
+            "PointCoord" => Ok(Self::PointCoord),
+            "FrontFacing" => Ok(Self::FrontFacing),
+            "SampleId" => Ok(Self::SampleId),
+            "SamplePosition" => Ok(Self::SamplePosition),
+            "SampleMask" => Ok(Self::SampleMask),
+            "FragDepth" => Ok(Self::FragDepth),
+            "HelperInvocation" => Ok(Self::HelperInvocation),
+            "NumWorkgroups" => Ok(Self::NumWorkgroups),
+            "WorkgroupSize" => Ok(Self::WorkgroupSize),
+            "WorkgroupId" => Ok(Self::WorkgroupId),
+            "LocalInvocationId" => Ok(Self::LocalInvocationId),
+            "GlobalInvocationId" => Ok(Self::GlobalInvocationId),
+            "LocalInvocationIndex" => Ok(Self::LocalInvocationIndex),
+            "WorkDim" => Ok(Self::WorkDim),
+            "GlobalSize" => Ok(Self::GlobalSize),
+            "EnqueuedWorkgroupSize" => Ok(Self::EnqueuedWorkgroupSize),
+            "GlobalOffset" => Ok(Self::GlobalOffset),
+            "GlobalLinearId" => Ok(Self::GlobalLinearId),
+            "SubgroupSize" => Ok(Self::SubgroupSize),
+            "SubgroupMaxSize" => Ok(Self::SubgroupMaxSize),
+            "NumSubgroups" => Ok(Self::NumSubgroups),
+            "NumEnqueuedSubgroups" => Ok(Self::NumEnqueuedSubgroups),
+            "SubgroupId" => Ok(Self::SubgroupId),
+            "SubgroupLocalInvocationId" => Ok(Self::SubgroupLocalInvocationId),
+            "VertexIndex" => Ok(Self::VertexIndex),
+            "InstanceIndex" => Ok(Self::InstanceIndex),
+            "SubgroupEqMask" => Ok(Self::SubgroupEqMask),
+            "SubgroupGeMask" => Ok(Self::SubgroupGeMask),
+            "SubgroupGtMask" => Ok(Self::SubgroupGtMask),
+            "SubgroupLeMask" => Ok(Self::SubgroupLeMask),
+            "SubgroupLtMask" => Ok(Self::SubgroupLtMask),
+            "BaseVertex" => Ok(Self::BaseVertex),
+            "BaseInstance" => Ok(Self::BaseInstance),
+            "DrawIndex" => Ok(Self::DrawIndex),
+            "DeviceIndex" => Ok(Self::DeviceIndex),
+            "ViewIndex" => Ok(Self::ViewIndex),
+            "BaryCoordNoPerspAMD" => Ok(Self::BaryCoordNoPerspAMD),
+            "BaryCoordNoPerspCentroidAMD" => Ok(Self::BaryCoordNoPerspCentroidAMD),
+            "BaryCoordNoPerspSampleAMD" => Ok(Self::BaryCoordNoPerspSampleAMD),
+            "BaryCoordSmoothAMD" => Ok(Self::BaryCoordSmoothAMD),
+            "BaryCoordSmoothCentroidAMD" => Ok(Self::BaryCoordSmoothCentroidAMD),
+            "BaryCoordSmoothSampleAMD" => Ok(Self::BaryCoordSmoothSampleAMD),
+            "BaryCoordPullModelAMD" => Ok(Self::BaryCoordPullModelAMD),
+            "FragStencilRefEXT" => Ok(Self::FragStencilRefEXT),
+            "ViewportMaskNV" => Ok(Self::ViewportMaskNV),
+            "SecondaryPositionNV" => Ok(Self::SecondaryPositionNV),
+            "SecondaryViewportMaskNV" => Ok(Self::SecondaryViewportMaskNV),
+            "PositionPerViewNV" => Ok(Self::PositionPerViewNV),
+            "ViewportMaskPerViewNV" => Ok(Self::ViewportMaskPerViewNV),
+            "FullyCoveredEXT" => Ok(Self::FullyCoveredEXT),
+            "TaskCountNV" => Ok(Self::TaskCountNV),
+            "PrimitiveCountNV" => Ok(Self::PrimitiveCountNV),
+            "PrimitiveIndicesNV" => Ok(Self::PrimitiveIndicesNV),
+            "ClipDistancePerViewNV" => Ok(Self::ClipDistancePerViewNV),
+            "CullDistancePerViewNV" => Ok(Self::CullDistancePerViewNV),
+            "LayerPerViewNV" => Ok(Self::LayerPerViewNV),
+            "MeshViewCountNV" => Ok(Self::MeshViewCountNV),
+            "MeshViewIndicesNV" => Ok(Self::MeshViewIndicesNV),
+            "BaryCoordNV" => Ok(Self::BaryCoordNV),
+            "BaryCoordNoPerspNV" => Ok(Self::BaryCoordNoPerspNV),
+            "FragSizeEXT" => Ok(Self::FragSizeEXT),
+            "FragInvocationCountEXT" => Ok(Self::FragInvocationCountEXT),
+            "LaunchIdNV" => Ok(Self::LaunchIdNV),
+            "LaunchSizeNV" => Ok(Self::LaunchSizeNV),
+            "WorldRayOriginNV" => Ok(Self::WorldRayOriginNV),
+            "WorldRayDirectionNV" => Ok(Self::WorldRayDirectionNV),
+            "ObjectRayOriginNV" => Ok(Self::ObjectRayOriginNV),
+            "ObjectRayDirectionNV" => Ok(Self::ObjectRayDirectionNV),
+            "RayTminNV" => Ok(Self::RayTminNV),
+            "RayTmaxNV" => Ok(Self::RayTmaxNV),
+            "InstanceCustomIndexNV" => Ok(Self::InstanceCustomIndexNV),
+            "ObjectToWorldNV" => Ok(Self::ObjectToWorldNV),
+            "WorldToObjectNV" => Ok(Self::WorldToObjectNV),
+            "HitTNV" => Ok(Self::HitTNV),
+            "HitKindNV" => Ok(Self::HitKindNV),
+            "IncomingRayFlagsNV" => Ok(Self::IncomingRayFlagsNV),
+            "RayGeometryIndexKHR" => Ok(Self::RayGeometryIndexKHR),
+            "WarpsPerSMNV" => Ok(Self::WarpsPerSMNV),
+            "SMCountNV" => Ok(Self::SMCountNV),
+            "WarpIDNV" => Ok(Self::WarpIDNV),
+            "SMIDNV" => Ok(Self::SMIDNV),
             _ => Err(()),
         }
     }
@@ -2203,7 +2200,7 @@ pub enum Scope {
 }
 #[allow(non_upper_case_globals)]
 impl Scope {
-    pub const QueueFamilyKHR: Scope = Scope::QueueFamily;
+    pub const QueueFamilyKHR: Self = Self::QueueFamily;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Scope::CrossDevice
@@ -2220,13 +2217,13 @@ impl num_traits::FromPrimitive for Scope {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => Scope::CrossDevice,
-            1u32 => Scope::Device,
-            2u32 => Scope::Workgroup,
-            3u32 => Scope::Subgroup,
-            4u32 => Scope::Invocation,
-            5u32 => Scope::QueueFamily,
-            6u32 => Scope::ShaderCallKHR,
+            0u32 => Self::CrossDevice,
+            1u32 => Self::Device,
+            2u32 => Self::Workgroup,
+            3u32 => Self::Subgroup,
+            4u32 => Self::Invocation,
+            5u32 => Self::QueueFamily,
+            6u32 => Self::ShaderCallKHR,
             _ => return None,
         })
     }
@@ -2238,13 +2235,13 @@ impl std::str::FromStr for Scope {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "CrossDevice" => Ok(Scope::CrossDevice),
-            "Device" => Ok(Scope::Device),
-            "Workgroup" => Ok(Scope::Workgroup),
-            "Subgroup" => Ok(Scope::Subgroup),
-            "Invocation" => Ok(Scope::Invocation),
-            "QueueFamily" => Ok(Scope::QueueFamily),
-            "ShaderCallKHR" => Ok(Scope::ShaderCallKHR),
+            "CrossDevice" => Ok(Self::CrossDevice),
+            "Device" => Ok(Self::Device),
+            "Workgroup" => Ok(Self::Workgroup),
+            "Subgroup" => Ok(Self::Subgroup),
+            "Invocation" => Ok(Self::Invocation),
+            "QueueFamily" => Ok(Self::QueueFamily),
+            "ShaderCallKHR" => Ok(Self::ShaderCallKHR),
             _ => Err(()),
         }
     }
@@ -2287,13 +2284,13 @@ impl num_traits::FromPrimitive for GroupOperation {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => GroupOperation::Reduce,
-            1u32 => GroupOperation::InclusiveScan,
-            2u32 => GroupOperation::ExclusiveScan,
-            3u32 => GroupOperation::ClusteredReduce,
-            6u32 => GroupOperation::PartitionedReduceNV,
-            7u32 => GroupOperation::PartitionedInclusiveScanNV,
-            8u32 => GroupOperation::PartitionedExclusiveScanNV,
+            0u32 => Self::Reduce,
+            1u32 => Self::InclusiveScan,
+            2u32 => Self::ExclusiveScan,
+            3u32 => Self::ClusteredReduce,
+            6u32 => Self::PartitionedReduceNV,
+            7u32 => Self::PartitionedInclusiveScanNV,
+            8u32 => Self::PartitionedExclusiveScanNV,
             _ => return None,
         })
     }
@@ -2305,13 +2302,13 @@ impl std::str::FromStr for GroupOperation {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Reduce" => Ok(GroupOperation::Reduce),
-            "InclusiveScan" => Ok(GroupOperation::InclusiveScan),
-            "ExclusiveScan" => Ok(GroupOperation::ExclusiveScan),
-            "ClusteredReduce" => Ok(GroupOperation::ClusteredReduce),
-            "PartitionedReduceNV" => Ok(GroupOperation::PartitionedReduceNV),
-            "PartitionedInclusiveScanNV" => Ok(GroupOperation::PartitionedInclusiveScanNV),
-            "PartitionedExclusiveScanNV" => Ok(GroupOperation::PartitionedExclusiveScanNV),
+            "Reduce" => Ok(Self::Reduce),
+            "InclusiveScan" => Ok(Self::InclusiveScan),
+            "ExclusiveScan" => Ok(Self::ExclusiveScan),
+            "ClusteredReduce" => Ok(Self::ClusteredReduce),
+            "PartitionedReduceNV" => Ok(Self::PartitionedReduceNV),
+            "PartitionedInclusiveScanNV" => Ok(Self::PartitionedInclusiveScanNV),
+            "PartitionedExclusiveScanNV" => Ok(Self::PartitionedExclusiveScanNV),
             _ => Err(()),
         }
     }
@@ -2340,9 +2337,9 @@ impl num_traits::FromPrimitive for KernelEnqueueFlags {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => KernelEnqueueFlags::NoWait,
-            1u32 => KernelEnqueueFlags::WaitKernel,
-            2u32 => KernelEnqueueFlags::WaitWorkGroup,
+            0u32 => Self::NoWait,
+            1u32 => Self::WaitKernel,
+            2u32 => Self::WaitWorkGroup,
             _ => return None,
         })
     }
@@ -2354,9 +2351,9 @@ impl std::str::FromStr for KernelEnqueueFlags {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "NoWait" => Ok(KernelEnqueueFlags::NoWait),
-            "WaitKernel" => Ok(KernelEnqueueFlags::WaitKernel),
-            "WaitWorkGroup" => Ok(KernelEnqueueFlags::WaitWorkGroup),
+            "NoWait" => Ok(Self::NoWait),
+            "WaitKernel" => Ok(Self::WaitKernel),
+            "WaitWorkGroup" => Ok(Self::WaitWorkGroup),
             _ => Err(()),
         }
     }
@@ -2513,37 +2510,35 @@ pub enum Capability {
 }
 #[allow(non_upper_case_globals)]
 impl Capability {
-    pub const StorageUniformBufferBlock16: Capability = Capability::StorageBuffer16BitAccess;
-    pub const StorageUniform16: Capability = Capability::UniformAndStorageBuffer16BitAccess;
-    pub const ShaderViewportIndexLayerNV: Capability = Capability::ShaderViewportIndexLayerEXT;
-    pub const ShadingRateNV: Capability = Capability::FragmentDensityEXT;
-    pub const ShaderNonUniformEXT: Capability = Capability::ShaderNonUniform;
-    pub const RuntimeDescriptorArrayEXT: Capability = Capability::RuntimeDescriptorArray;
-    pub const InputAttachmentArrayDynamicIndexingEXT: Capability =
-        Capability::InputAttachmentArrayDynamicIndexing;
-    pub const UniformTexelBufferArrayDynamicIndexingEXT: Capability =
-        Capability::UniformTexelBufferArrayDynamicIndexing;
-    pub const StorageTexelBufferArrayDynamicIndexingEXT: Capability =
-        Capability::StorageTexelBufferArrayDynamicIndexing;
-    pub const UniformBufferArrayNonUniformIndexingEXT: Capability =
-        Capability::UniformBufferArrayNonUniformIndexing;
-    pub const SampledImageArrayNonUniformIndexingEXT: Capability =
-        Capability::SampledImageArrayNonUniformIndexing;
-    pub const StorageBufferArrayNonUniformIndexingEXT: Capability =
-        Capability::StorageBufferArrayNonUniformIndexing;
-    pub const StorageImageArrayNonUniformIndexingEXT: Capability =
-        Capability::StorageImageArrayNonUniformIndexing;
-    pub const InputAttachmentArrayNonUniformIndexingEXT: Capability =
-        Capability::InputAttachmentArrayNonUniformIndexing;
-    pub const UniformTexelBufferArrayNonUniformIndexingEXT: Capability =
-        Capability::UniformTexelBufferArrayNonUniformIndexing;
-    pub const StorageTexelBufferArrayNonUniformIndexingEXT: Capability =
-        Capability::StorageTexelBufferArrayNonUniformIndexing;
-    pub const VulkanMemoryModelKHR: Capability = Capability::VulkanMemoryModel;
-    pub const VulkanMemoryModelDeviceScopeKHR: Capability =
-        Capability::VulkanMemoryModelDeviceScope;
-    pub const PhysicalStorageBufferAddressesEXT: Capability =
-        Capability::PhysicalStorageBufferAddresses;
+    pub const StorageUniformBufferBlock16: Self = Self::StorageBuffer16BitAccess;
+    pub const StorageUniform16: Self = Self::UniformAndStorageBuffer16BitAccess;
+    pub const ShaderViewportIndexLayerNV: Self = Self::ShaderViewportIndexLayerEXT;
+    pub const ShadingRateNV: Self = Self::FragmentDensityEXT;
+    pub const ShaderNonUniformEXT: Self = Self::ShaderNonUniform;
+    pub const RuntimeDescriptorArrayEXT: Self = Self::RuntimeDescriptorArray;
+    pub const InputAttachmentArrayDynamicIndexingEXT: Self =
+        Self::InputAttachmentArrayDynamicIndexing;
+    pub const UniformTexelBufferArrayDynamicIndexingEXT: Self =
+        Self::UniformTexelBufferArrayDynamicIndexing;
+    pub const StorageTexelBufferArrayDynamicIndexingEXT: Self =
+        Self::StorageTexelBufferArrayDynamicIndexing;
+    pub const UniformBufferArrayNonUniformIndexingEXT: Self =
+        Self::UniformBufferArrayNonUniformIndexing;
+    pub const SampledImageArrayNonUniformIndexingEXT: Self =
+        Self::SampledImageArrayNonUniformIndexing;
+    pub const StorageBufferArrayNonUniformIndexingEXT: Self =
+        Self::StorageBufferArrayNonUniformIndexing;
+    pub const StorageImageArrayNonUniformIndexingEXT: Self =
+        Self::StorageImageArrayNonUniformIndexing;
+    pub const InputAttachmentArrayNonUniformIndexingEXT: Self =
+        Self::InputAttachmentArrayNonUniformIndexing;
+    pub const UniformTexelBufferArrayNonUniformIndexingEXT: Self =
+        Self::UniformTexelBufferArrayNonUniformIndexing;
+    pub const StorageTexelBufferArrayNonUniformIndexingEXT: Self =
+        Self::StorageTexelBufferArrayNonUniformIndexing;
+    pub const VulkanMemoryModelKHR: Self = Self::VulkanMemoryModel;
+    pub const VulkanMemoryModelDeviceScopeKHR: Self = Self::VulkanMemoryModelDeviceScope;
+    pub const PhysicalStorageBufferAddressesEXT: Self = Self::PhysicalStorageBufferAddresses;
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             Capability::Matrix
@@ -2708,149 +2703,149 @@ impl num_traits::FromPrimitive for Capability {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => Capability::Matrix,
-            1u32 => Capability::Shader,
-            2u32 => Capability::Geometry,
-            3u32 => Capability::Tessellation,
-            4u32 => Capability::Addresses,
-            5u32 => Capability::Linkage,
-            6u32 => Capability::Kernel,
-            7u32 => Capability::Vector16,
-            8u32 => Capability::Float16Buffer,
-            9u32 => Capability::Float16,
-            10u32 => Capability::Float64,
-            11u32 => Capability::Int64,
-            12u32 => Capability::Int64Atomics,
-            13u32 => Capability::ImageBasic,
-            14u32 => Capability::ImageReadWrite,
-            15u32 => Capability::ImageMipmap,
-            17u32 => Capability::Pipes,
-            18u32 => Capability::Groups,
-            19u32 => Capability::DeviceEnqueue,
-            20u32 => Capability::LiteralSampler,
-            21u32 => Capability::AtomicStorage,
-            22u32 => Capability::Int16,
-            23u32 => Capability::TessellationPointSize,
-            24u32 => Capability::GeometryPointSize,
-            25u32 => Capability::ImageGatherExtended,
-            27u32 => Capability::StorageImageMultisample,
-            28u32 => Capability::UniformBufferArrayDynamicIndexing,
-            29u32 => Capability::SampledImageArrayDynamicIndexing,
-            30u32 => Capability::StorageBufferArrayDynamicIndexing,
-            31u32 => Capability::StorageImageArrayDynamicIndexing,
-            32u32 => Capability::ClipDistance,
-            33u32 => Capability::CullDistance,
-            34u32 => Capability::ImageCubeArray,
-            35u32 => Capability::SampleRateShading,
-            36u32 => Capability::ImageRect,
-            37u32 => Capability::SampledRect,
-            38u32 => Capability::GenericPointer,
-            39u32 => Capability::Int8,
-            40u32 => Capability::InputAttachment,
-            41u32 => Capability::SparseResidency,
-            42u32 => Capability::MinLod,
-            43u32 => Capability::Sampled1D,
-            44u32 => Capability::Image1D,
-            45u32 => Capability::SampledCubeArray,
-            46u32 => Capability::SampledBuffer,
-            47u32 => Capability::ImageBuffer,
-            48u32 => Capability::ImageMSArray,
-            49u32 => Capability::StorageImageExtendedFormats,
-            50u32 => Capability::ImageQuery,
-            51u32 => Capability::DerivativeControl,
-            52u32 => Capability::InterpolationFunction,
-            53u32 => Capability::TransformFeedback,
-            54u32 => Capability::GeometryStreams,
-            55u32 => Capability::StorageImageReadWithoutFormat,
-            56u32 => Capability::StorageImageWriteWithoutFormat,
-            57u32 => Capability::MultiViewport,
-            58u32 => Capability::SubgroupDispatch,
-            59u32 => Capability::NamedBarrier,
-            60u32 => Capability::PipeStorage,
-            61u32 => Capability::GroupNonUniform,
-            62u32 => Capability::GroupNonUniformVote,
-            63u32 => Capability::GroupNonUniformArithmetic,
-            64u32 => Capability::GroupNonUniformBallot,
-            65u32 => Capability::GroupNonUniformShuffle,
-            66u32 => Capability::GroupNonUniformShuffleRelative,
-            67u32 => Capability::GroupNonUniformClustered,
-            68u32 => Capability::GroupNonUniformQuad,
-            69u32 => Capability::ShaderLayer,
-            70u32 => Capability::ShaderViewportIndex,
-            4423u32 => Capability::SubgroupBallotKHR,
-            4427u32 => Capability::DrawParameters,
-            4431u32 => Capability::SubgroupVoteKHR,
-            4433u32 => Capability::StorageBuffer16BitAccess,
-            4434u32 => Capability::UniformAndStorageBuffer16BitAccess,
-            4435u32 => Capability::StoragePushConstant16,
-            4436u32 => Capability::StorageInputOutput16,
-            4437u32 => Capability::DeviceGroup,
-            4439u32 => Capability::MultiView,
-            4441u32 => Capability::VariablePointersStorageBuffer,
-            4442u32 => Capability::VariablePointers,
-            4445u32 => Capability::AtomicStorageOps,
-            4447u32 => Capability::SampleMaskPostDepthCoverage,
-            4448u32 => Capability::StorageBuffer8BitAccess,
-            4449u32 => Capability::UniformAndStorageBuffer8BitAccess,
-            4450u32 => Capability::StoragePushConstant8,
-            4464u32 => Capability::DenormPreserve,
-            4465u32 => Capability::DenormFlushToZero,
-            4466u32 => Capability::SignedZeroInfNanPreserve,
-            4467u32 => Capability::RoundingModeRTE,
-            4468u32 => Capability::RoundingModeRTZ,
-            4471u32 => Capability::RayQueryProvisionalKHR,
-            4478u32 => Capability::RayTraversalPrimitiveCullingProvisionalKHR,
-            5008u32 => Capability::Float16ImageAMD,
-            5009u32 => Capability::ImageGatherBiasLodAMD,
-            5010u32 => Capability::FragmentMaskAMD,
-            5013u32 => Capability::StencilExportEXT,
-            5015u32 => Capability::ImageReadWriteLodAMD,
-            5055u32 => Capability::ShaderClockKHR,
-            5249u32 => Capability::SampleMaskOverrideCoverageNV,
-            5251u32 => Capability::GeometryShaderPassthroughNV,
-            5254u32 => Capability::ShaderViewportIndexLayerEXT,
-            5255u32 => Capability::ShaderViewportMaskNV,
-            5259u32 => Capability::ShaderStereoViewNV,
-            5260u32 => Capability::PerViewAttributesNV,
-            5265u32 => Capability::FragmentFullyCoveredEXT,
-            5266u32 => Capability::MeshShadingNV,
-            5282u32 => Capability::ImageFootprintNV,
-            5284u32 => Capability::FragmentBarycentricNV,
-            5288u32 => Capability::ComputeDerivativeGroupQuadsNV,
-            5291u32 => Capability::FragmentDensityEXT,
-            5297u32 => Capability::GroupNonUniformPartitionedNV,
-            5301u32 => Capability::ShaderNonUniform,
-            5302u32 => Capability::RuntimeDescriptorArray,
-            5303u32 => Capability::InputAttachmentArrayDynamicIndexing,
-            5304u32 => Capability::UniformTexelBufferArrayDynamicIndexing,
-            5305u32 => Capability::StorageTexelBufferArrayDynamicIndexing,
-            5306u32 => Capability::UniformBufferArrayNonUniformIndexing,
-            5307u32 => Capability::SampledImageArrayNonUniformIndexing,
-            5308u32 => Capability::StorageBufferArrayNonUniformIndexing,
-            5309u32 => Capability::StorageImageArrayNonUniformIndexing,
-            5310u32 => Capability::InputAttachmentArrayNonUniformIndexing,
-            5311u32 => Capability::UniformTexelBufferArrayNonUniformIndexing,
-            5312u32 => Capability::StorageTexelBufferArrayNonUniformIndexing,
-            5340u32 => Capability::RayTracingNV,
-            5345u32 => Capability::VulkanMemoryModel,
-            5346u32 => Capability::VulkanMemoryModelDeviceScope,
-            5347u32 => Capability::PhysicalStorageBufferAddresses,
-            5350u32 => Capability::ComputeDerivativeGroupLinearNV,
-            5353u32 => Capability::RayTracingProvisionalKHR,
-            5357u32 => Capability::CooperativeMatrixNV,
-            5363u32 => Capability::FragmentShaderSampleInterlockEXT,
-            5372u32 => Capability::FragmentShaderShadingRateInterlockEXT,
-            5373u32 => Capability::ShaderSMBuiltinsNV,
-            5378u32 => Capability::FragmentShaderPixelInterlockEXT,
-            5379u32 => Capability::DemoteToHelperInvocationEXT,
-            5568u32 => Capability::SubgroupShuffleINTEL,
-            5569u32 => Capability::SubgroupBufferBlockIOINTEL,
-            5570u32 => Capability::SubgroupImageBlockIOINTEL,
-            5579u32 => Capability::SubgroupImageMediaBlockIOINTEL,
-            5584u32 => Capability::IntegerFunctions2INTEL,
-            5696u32 => Capability::SubgroupAvcMotionEstimationINTEL,
-            5697u32 => Capability::SubgroupAvcMotionEstimationIntraINTEL,
-            5698u32 => Capability::SubgroupAvcMotionEstimationChromaINTEL,
+            0u32 => Self::Matrix,
+            1u32 => Self::Shader,
+            2u32 => Self::Geometry,
+            3u32 => Self::Tessellation,
+            4u32 => Self::Addresses,
+            5u32 => Self::Linkage,
+            6u32 => Self::Kernel,
+            7u32 => Self::Vector16,
+            8u32 => Self::Float16Buffer,
+            9u32 => Self::Float16,
+            10u32 => Self::Float64,
+            11u32 => Self::Int64,
+            12u32 => Self::Int64Atomics,
+            13u32 => Self::ImageBasic,
+            14u32 => Self::ImageReadWrite,
+            15u32 => Self::ImageMipmap,
+            17u32 => Self::Pipes,
+            18u32 => Self::Groups,
+            19u32 => Self::DeviceEnqueue,
+            20u32 => Self::LiteralSampler,
+            21u32 => Self::AtomicStorage,
+            22u32 => Self::Int16,
+            23u32 => Self::TessellationPointSize,
+            24u32 => Self::GeometryPointSize,
+            25u32 => Self::ImageGatherExtended,
+            27u32 => Self::StorageImageMultisample,
+            28u32 => Self::UniformBufferArrayDynamicIndexing,
+            29u32 => Self::SampledImageArrayDynamicIndexing,
+            30u32 => Self::StorageBufferArrayDynamicIndexing,
+            31u32 => Self::StorageImageArrayDynamicIndexing,
+            32u32 => Self::ClipDistance,
+            33u32 => Self::CullDistance,
+            34u32 => Self::ImageCubeArray,
+            35u32 => Self::SampleRateShading,
+            36u32 => Self::ImageRect,
+            37u32 => Self::SampledRect,
+            38u32 => Self::GenericPointer,
+            39u32 => Self::Int8,
+            40u32 => Self::InputAttachment,
+            41u32 => Self::SparseResidency,
+            42u32 => Self::MinLod,
+            43u32 => Self::Sampled1D,
+            44u32 => Self::Image1D,
+            45u32 => Self::SampledCubeArray,
+            46u32 => Self::SampledBuffer,
+            47u32 => Self::ImageBuffer,
+            48u32 => Self::ImageMSArray,
+            49u32 => Self::StorageImageExtendedFormats,
+            50u32 => Self::ImageQuery,
+            51u32 => Self::DerivativeControl,
+            52u32 => Self::InterpolationFunction,
+            53u32 => Self::TransformFeedback,
+            54u32 => Self::GeometryStreams,
+            55u32 => Self::StorageImageReadWithoutFormat,
+            56u32 => Self::StorageImageWriteWithoutFormat,
+            57u32 => Self::MultiViewport,
+            58u32 => Self::SubgroupDispatch,
+            59u32 => Self::NamedBarrier,
+            60u32 => Self::PipeStorage,
+            61u32 => Self::GroupNonUniform,
+            62u32 => Self::GroupNonUniformVote,
+            63u32 => Self::GroupNonUniformArithmetic,
+            64u32 => Self::GroupNonUniformBallot,
+            65u32 => Self::GroupNonUniformShuffle,
+            66u32 => Self::GroupNonUniformShuffleRelative,
+            67u32 => Self::GroupNonUniformClustered,
+            68u32 => Self::GroupNonUniformQuad,
+            69u32 => Self::ShaderLayer,
+            70u32 => Self::ShaderViewportIndex,
+            4423u32 => Self::SubgroupBallotKHR,
+            4427u32 => Self::DrawParameters,
+            4431u32 => Self::SubgroupVoteKHR,
+            4433u32 => Self::StorageBuffer16BitAccess,
+            4434u32 => Self::UniformAndStorageBuffer16BitAccess,
+            4435u32 => Self::StoragePushConstant16,
+            4436u32 => Self::StorageInputOutput16,
+            4437u32 => Self::DeviceGroup,
+            4439u32 => Self::MultiView,
+            4441u32 => Self::VariablePointersStorageBuffer,
+            4442u32 => Self::VariablePointers,
+            4445u32 => Self::AtomicStorageOps,
+            4447u32 => Self::SampleMaskPostDepthCoverage,
+            4448u32 => Self::StorageBuffer8BitAccess,
+            4449u32 => Self::UniformAndStorageBuffer8BitAccess,
+            4450u32 => Self::StoragePushConstant8,
+            4464u32 => Self::DenormPreserve,
+            4465u32 => Self::DenormFlushToZero,
+            4466u32 => Self::SignedZeroInfNanPreserve,
+            4467u32 => Self::RoundingModeRTE,
+            4468u32 => Self::RoundingModeRTZ,
+            4471u32 => Self::RayQueryProvisionalKHR,
+            4478u32 => Self::RayTraversalPrimitiveCullingProvisionalKHR,
+            5008u32 => Self::Float16ImageAMD,
+            5009u32 => Self::ImageGatherBiasLodAMD,
+            5010u32 => Self::FragmentMaskAMD,
+            5013u32 => Self::StencilExportEXT,
+            5015u32 => Self::ImageReadWriteLodAMD,
+            5055u32 => Self::ShaderClockKHR,
+            5249u32 => Self::SampleMaskOverrideCoverageNV,
+            5251u32 => Self::GeometryShaderPassthroughNV,
+            5254u32 => Self::ShaderViewportIndexLayerEXT,
+            5255u32 => Self::ShaderViewportMaskNV,
+            5259u32 => Self::ShaderStereoViewNV,
+            5260u32 => Self::PerViewAttributesNV,
+            5265u32 => Self::FragmentFullyCoveredEXT,
+            5266u32 => Self::MeshShadingNV,
+            5282u32 => Self::ImageFootprintNV,
+            5284u32 => Self::FragmentBarycentricNV,
+            5288u32 => Self::ComputeDerivativeGroupQuadsNV,
+            5291u32 => Self::FragmentDensityEXT,
+            5297u32 => Self::GroupNonUniformPartitionedNV,
+            5301u32 => Self::ShaderNonUniform,
+            5302u32 => Self::RuntimeDescriptorArray,
+            5303u32 => Self::InputAttachmentArrayDynamicIndexing,
+            5304u32 => Self::UniformTexelBufferArrayDynamicIndexing,
+            5305u32 => Self::StorageTexelBufferArrayDynamicIndexing,
+            5306u32 => Self::UniformBufferArrayNonUniformIndexing,
+            5307u32 => Self::SampledImageArrayNonUniformIndexing,
+            5308u32 => Self::StorageBufferArrayNonUniformIndexing,
+            5309u32 => Self::StorageImageArrayNonUniformIndexing,
+            5310u32 => Self::InputAttachmentArrayNonUniformIndexing,
+            5311u32 => Self::UniformTexelBufferArrayNonUniformIndexing,
+            5312u32 => Self::StorageTexelBufferArrayNonUniformIndexing,
+            5340u32 => Self::RayTracingNV,
+            5345u32 => Self::VulkanMemoryModel,
+            5346u32 => Self::VulkanMemoryModelDeviceScope,
+            5347u32 => Self::PhysicalStorageBufferAddresses,
+            5350u32 => Self::ComputeDerivativeGroupLinearNV,
+            5353u32 => Self::RayTracingProvisionalKHR,
+            5357u32 => Self::CooperativeMatrixNV,
+            5363u32 => Self::FragmentShaderSampleInterlockEXT,
+            5372u32 => Self::FragmentShaderShadingRateInterlockEXT,
+            5373u32 => Self::ShaderSMBuiltinsNV,
+            5378u32 => Self::FragmentShaderPixelInterlockEXT,
+            5379u32 => Self::DemoteToHelperInvocationEXT,
+            5568u32 => Self::SubgroupShuffleINTEL,
+            5569u32 => Self::SubgroupBufferBlockIOINTEL,
+            5570u32 => Self::SubgroupImageBlockIOINTEL,
+            5579u32 => Self::SubgroupImageMediaBlockIOINTEL,
+            5584u32 => Self::IntegerFunctions2INTEL,
+            5696u32 => Self::SubgroupAvcMotionEstimationINTEL,
+            5697u32 => Self::SubgroupAvcMotionEstimationIntraINTEL,
+            5698u32 => Self::SubgroupAvcMotionEstimationChromaINTEL,
             _ => return None,
         })
     }
@@ -2862,184 +2857,170 @@ impl std::str::FromStr for Capability {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "Matrix" => Ok(Capability::Matrix),
-            "Shader" => Ok(Capability::Shader),
-            "Geometry" => Ok(Capability::Geometry),
-            "Tessellation" => Ok(Capability::Tessellation),
-            "Addresses" => Ok(Capability::Addresses),
-            "Linkage" => Ok(Capability::Linkage),
-            "Kernel" => Ok(Capability::Kernel),
-            "Vector16" => Ok(Capability::Vector16),
-            "Float16Buffer" => Ok(Capability::Float16Buffer),
-            "Float16" => Ok(Capability::Float16),
-            "Float64" => Ok(Capability::Float64),
-            "Int64" => Ok(Capability::Int64),
-            "Int64Atomics" => Ok(Capability::Int64Atomics),
-            "ImageBasic" => Ok(Capability::ImageBasic),
-            "ImageReadWrite" => Ok(Capability::ImageReadWrite),
-            "ImageMipmap" => Ok(Capability::ImageMipmap),
-            "Pipes" => Ok(Capability::Pipes),
-            "Groups" => Ok(Capability::Groups),
-            "DeviceEnqueue" => Ok(Capability::DeviceEnqueue),
-            "LiteralSampler" => Ok(Capability::LiteralSampler),
-            "AtomicStorage" => Ok(Capability::AtomicStorage),
-            "Int16" => Ok(Capability::Int16),
-            "TessellationPointSize" => Ok(Capability::TessellationPointSize),
-            "GeometryPointSize" => Ok(Capability::GeometryPointSize),
-            "ImageGatherExtended" => Ok(Capability::ImageGatherExtended),
-            "StorageImageMultisample" => Ok(Capability::StorageImageMultisample),
-            "UniformBufferArrayDynamicIndexing" => {
-                Ok(Capability::UniformBufferArrayDynamicIndexing)
-            }
-            "SampledImageArrayDynamicIndexing" => Ok(Capability::SampledImageArrayDynamicIndexing),
-            "StorageBufferArrayDynamicIndexing" => {
-                Ok(Capability::StorageBufferArrayDynamicIndexing)
-            }
-            "StorageImageArrayDynamicIndexing" => Ok(Capability::StorageImageArrayDynamicIndexing),
-            "ClipDistance" => Ok(Capability::ClipDistance),
-            "CullDistance" => Ok(Capability::CullDistance),
-            "ImageCubeArray" => Ok(Capability::ImageCubeArray),
-            "SampleRateShading" => Ok(Capability::SampleRateShading),
-            "ImageRect" => Ok(Capability::ImageRect),
-            "SampledRect" => Ok(Capability::SampledRect),
-            "GenericPointer" => Ok(Capability::GenericPointer),
-            "Int8" => Ok(Capability::Int8),
-            "InputAttachment" => Ok(Capability::InputAttachment),
-            "SparseResidency" => Ok(Capability::SparseResidency),
-            "MinLod" => Ok(Capability::MinLod),
-            "Sampled1D" => Ok(Capability::Sampled1D),
-            "Image1D" => Ok(Capability::Image1D),
-            "SampledCubeArray" => Ok(Capability::SampledCubeArray),
-            "SampledBuffer" => Ok(Capability::SampledBuffer),
-            "ImageBuffer" => Ok(Capability::ImageBuffer),
-            "ImageMSArray" => Ok(Capability::ImageMSArray),
-            "StorageImageExtendedFormats" => Ok(Capability::StorageImageExtendedFormats),
-            "ImageQuery" => Ok(Capability::ImageQuery),
-            "DerivativeControl" => Ok(Capability::DerivativeControl),
-            "InterpolationFunction" => Ok(Capability::InterpolationFunction),
-            "TransformFeedback" => Ok(Capability::TransformFeedback),
-            "GeometryStreams" => Ok(Capability::GeometryStreams),
-            "StorageImageReadWithoutFormat" => Ok(Capability::StorageImageReadWithoutFormat),
-            "StorageImageWriteWithoutFormat" => Ok(Capability::StorageImageWriteWithoutFormat),
-            "MultiViewport" => Ok(Capability::MultiViewport),
-            "SubgroupDispatch" => Ok(Capability::SubgroupDispatch),
-            "NamedBarrier" => Ok(Capability::NamedBarrier),
-            "PipeStorage" => Ok(Capability::PipeStorage),
-            "GroupNonUniform" => Ok(Capability::GroupNonUniform),
-            "GroupNonUniformVote" => Ok(Capability::GroupNonUniformVote),
-            "GroupNonUniformArithmetic" => Ok(Capability::GroupNonUniformArithmetic),
-            "GroupNonUniformBallot" => Ok(Capability::GroupNonUniformBallot),
-            "GroupNonUniformShuffle" => Ok(Capability::GroupNonUniformShuffle),
-            "GroupNonUniformShuffleRelative" => Ok(Capability::GroupNonUniformShuffleRelative),
-            "GroupNonUniformClustered" => Ok(Capability::GroupNonUniformClustered),
-            "GroupNonUniformQuad" => Ok(Capability::GroupNonUniformQuad),
-            "ShaderLayer" => Ok(Capability::ShaderLayer),
-            "ShaderViewportIndex" => Ok(Capability::ShaderViewportIndex),
-            "SubgroupBallotKHR" => Ok(Capability::SubgroupBallotKHR),
-            "DrawParameters" => Ok(Capability::DrawParameters),
-            "SubgroupVoteKHR" => Ok(Capability::SubgroupVoteKHR),
-            "StorageBuffer16BitAccess" => Ok(Capability::StorageBuffer16BitAccess),
-            "UniformAndStorageBuffer16BitAccess" => {
-                Ok(Capability::UniformAndStorageBuffer16BitAccess)
-            }
-            "StoragePushConstant16" => Ok(Capability::StoragePushConstant16),
-            "StorageInputOutput16" => Ok(Capability::StorageInputOutput16),
-            "DeviceGroup" => Ok(Capability::DeviceGroup),
-            "MultiView" => Ok(Capability::MultiView),
-            "VariablePointersStorageBuffer" => Ok(Capability::VariablePointersStorageBuffer),
-            "VariablePointers" => Ok(Capability::VariablePointers),
-            "AtomicStorageOps" => Ok(Capability::AtomicStorageOps),
-            "SampleMaskPostDepthCoverage" => Ok(Capability::SampleMaskPostDepthCoverage),
-            "StorageBuffer8BitAccess" => Ok(Capability::StorageBuffer8BitAccess),
-            "UniformAndStorageBuffer8BitAccess" => {
-                Ok(Capability::UniformAndStorageBuffer8BitAccess)
-            }
-            "StoragePushConstant8" => Ok(Capability::StoragePushConstant8),
-            "DenormPreserve" => Ok(Capability::DenormPreserve),
-            "DenormFlushToZero" => Ok(Capability::DenormFlushToZero),
-            "SignedZeroInfNanPreserve" => Ok(Capability::SignedZeroInfNanPreserve),
-            "RoundingModeRTE" => Ok(Capability::RoundingModeRTE),
-            "RoundingModeRTZ" => Ok(Capability::RoundingModeRTZ),
-            "RayQueryProvisionalKHR" => Ok(Capability::RayQueryProvisionalKHR),
+            "Matrix" => Ok(Self::Matrix),
+            "Shader" => Ok(Self::Shader),
+            "Geometry" => Ok(Self::Geometry),
+            "Tessellation" => Ok(Self::Tessellation),
+            "Addresses" => Ok(Self::Addresses),
+            "Linkage" => Ok(Self::Linkage),
+            "Kernel" => Ok(Self::Kernel),
+            "Vector16" => Ok(Self::Vector16),
+            "Float16Buffer" => Ok(Self::Float16Buffer),
+            "Float16" => Ok(Self::Float16),
+            "Float64" => Ok(Self::Float64),
+            "Int64" => Ok(Self::Int64),
+            "Int64Atomics" => Ok(Self::Int64Atomics),
+            "ImageBasic" => Ok(Self::ImageBasic),
+            "ImageReadWrite" => Ok(Self::ImageReadWrite),
+            "ImageMipmap" => Ok(Self::ImageMipmap),
+            "Pipes" => Ok(Self::Pipes),
+            "Groups" => Ok(Self::Groups),
+            "DeviceEnqueue" => Ok(Self::DeviceEnqueue),
+            "LiteralSampler" => Ok(Self::LiteralSampler),
+            "AtomicStorage" => Ok(Self::AtomicStorage),
+            "Int16" => Ok(Self::Int16),
+            "TessellationPointSize" => Ok(Self::TessellationPointSize),
+            "GeometryPointSize" => Ok(Self::GeometryPointSize),
+            "ImageGatherExtended" => Ok(Self::ImageGatherExtended),
+            "StorageImageMultisample" => Ok(Self::StorageImageMultisample),
+            "UniformBufferArrayDynamicIndexing" => Ok(Self::UniformBufferArrayDynamicIndexing),
+            "SampledImageArrayDynamicIndexing" => Ok(Self::SampledImageArrayDynamicIndexing),
+            "StorageBufferArrayDynamicIndexing" => Ok(Self::StorageBufferArrayDynamicIndexing),
+            "StorageImageArrayDynamicIndexing" => Ok(Self::StorageImageArrayDynamicIndexing),
+            "ClipDistance" => Ok(Self::ClipDistance),
+            "CullDistance" => Ok(Self::CullDistance),
+            "ImageCubeArray" => Ok(Self::ImageCubeArray),
+            "SampleRateShading" => Ok(Self::SampleRateShading),
+            "ImageRect" => Ok(Self::ImageRect),
+            "SampledRect" => Ok(Self::SampledRect),
+            "GenericPointer" => Ok(Self::GenericPointer),
+            "Int8" => Ok(Self::Int8),
+            "InputAttachment" => Ok(Self::InputAttachment),
+            "SparseResidency" => Ok(Self::SparseResidency),
+            "MinLod" => Ok(Self::MinLod),
+            "Sampled1D" => Ok(Self::Sampled1D),
+            "Image1D" => Ok(Self::Image1D),
+            "SampledCubeArray" => Ok(Self::SampledCubeArray),
+            "SampledBuffer" => Ok(Self::SampledBuffer),
+            "ImageBuffer" => Ok(Self::ImageBuffer),
+            "ImageMSArray" => Ok(Self::ImageMSArray),
+            "StorageImageExtendedFormats" => Ok(Self::StorageImageExtendedFormats),
+            "ImageQuery" => Ok(Self::ImageQuery),
+            "DerivativeControl" => Ok(Self::DerivativeControl),
+            "InterpolationFunction" => Ok(Self::InterpolationFunction),
+            "TransformFeedback" => Ok(Self::TransformFeedback),
+            "GeometryStreams" => Ok(Self::GeometryStreams),
+            "StorageImageReadWithoutFormat" => Ok(Self::StorageImageReadWithoutFormat),
+            "StorageImageWriteWithoutFormat" => Ok(Self::StorageImageWriteWithoutFormat),
+            "MultiViewport" => Ok(Self::MultiViewport),
+            "SubgroupDispatch" => Ok(Self::SubgroupDispatch),
+            "NamedBarrier" => Ok(Self::NamedBarrier),
+            "PipeStorage" => Ok(Self::PipeStorage),
+            "GroupNonUniform" => Ok(Self::GroupNonUniform),
+            "GroupNonUniformVote" => Ok(Self::GroupNonUniformVote),
+            "GroupNonUniformArithmetic" => Ok(Self::GroupNonUniformArithmetic),
+            "GroupNonUniformBallot" => Ok(Self::GroupNonUniformBallot),
+            "GroupNonUniformShuffle" => Ok(Self::GroupNonUniformShuffle),
+            "GroupNonUniformShuffleRelative" => Ok(Self::GroupNonUniformShuffleRelative),
+            "GroupNonUniformClustered" => Ok(Self::GroupNonUniformClustered),
+            "GroupNonUniformQuad" => Ok(Self::GroupNonUniformQuad),
+            "ShaderLayer" => Ok(Self::ShaderLayer),
+            "ShaderViewportIndex" => Ok(Self::ShaderViewportIndex),
+            "SubgroupBallotKHR" => Ok(Self::SubgroupBallotKHR),
+            "DrawParameters" => Ok(Self::DrawParameters),
+            "SubgroupVoteKHR" => Ok(Self::SubgroupVoteKHR),
+            "StorageBuffer16BitAccess" => Ok(Self::StorageBuffer16BitAccess),
+            "UniformAndStorageBuffer16BitAccess" => Ok(Self::UniformAndStorageBuffer16BitAccess),
+            "StoragePushConstant16" => Ok(Self::StoragePushConstant16),
+            "StorageInputOutput16" => Ok(Self::StorageInputOutput16),
+            "DeviceGroup" => Ok(Self::DeviceGroup),
+            "MultiView" => Ok(Self::MultiView),
+            "VariablePointersStorageBuffer" => Ok(Self::VariablePointersStorageBuffer),
+            "VariablePointers" => Ok(Self::VariablePointers),
+            "AtomicStorageOps" => Ok(Self::AtomicStorageOps),
+            "SampleMaskPostDepthCoverage" => Ok(Self::SampleMaskPostDepthCoverage),
+            "StorageBuffer8BitAccess" => Ok(Self::StorageBuffer8BitAccess),
+            "UniformAndStorageBuffer8BitAccess" => Ok(Self::UniformAndStorageBuffer8BitAccess),
+            "StoragePushConstant8" => Ok(Self::StoragePushConstant8),
+            "DenormPreserve" => Ok(Self::DenormPreserve),
+            "DenormFlushToZero" => Ok(Self::DenormFlushToZero),
+            "SignedZeroInfNanPreserve" => Ok(Self::SignedZeroInfNanPreserve),
+            "RoundingModeRTE" => Ok(Self::RoundingModeRTE),
+            "RoundingModeRTZ" => Ok(Self::RoundingModeRTZ),
+            "RayQueryProvisionalKHR" => Ok(Self::RayQueryProvisionalKHR),
             "RayTraversalPrimitiveCullingProvisionalKHR" => {
-                Ok(Capability::RayTraversalPrimitiveCullingProvisionalKHR)
+                Ok(Self::RayTraversalPrimitiveCullingProvisionalKHR)
             }
-            "Float16ImageAMD" => Ok(Capability::Float16ImageAMD),
-            "ImageGatherBiasLodAMD" => Ok(Capability::ImageGatherBiasLodAMD),
-            "FragmentMaskAMD" => Ok(Capability::FragmentMaskAMD),
-            "StencilExportEXT" => Ok(Capability::StencilExportEXT),
-            "ImageReadWriteLodAMD" => Ok(Capability::ImageReadWriteLodAMD),
-            "ShaderClockKHR" => Ok(Capability::ShaderClockKHR),
-            "SampleMaskOverrideCoverageNV" => Ok(Capability::SampleMaskOverrideCoverageNV),
-            "GeometryShaderPassthroughNV" => Ok(Capability::GeometryShaderPassthroughNV),
-            "ShaderViewportIndexLayerEXT" => Ok(Capability::ShaderViewportIndexLayerEXT),
-            "ShaderViewportMaskNV" => Ok(Capability::ShaderViewportMaskNV),
-            "ShaderStereoViewNV" => Ok(Capability::ShaderStereoViewNV),
-            "PerViewAttributesNV" => Ok(Capability::PerViewAttributesNV),
-            "FragmentFullyCoveredEXT" => Ok(Capability::FragmentFullyCoveredEXT),
-            "MeshShadingNV" => Ok(Capability::MeshShadingNV),
-            "ImageFootprintNV" => Ok(Capability::ImageFootprintNV),
-            "FragmentBarycentricNV" => Ok(Capability::FragmentBarycentricNV),
-            "ComputeDerivativeGroupQuadsNV" => Ok(Capability::ComputeDerivativeGroupQuadsNV),
-            "FragmentDensityEXT" => Ok(Capability::FragmentDensityEXT),
-            "GroupNonUniformPartitionedNV" => Ok(Capability::GroupNonUniformPartitionedNV),
-            "ShaderNonUniform" => Ok(Capability::ShaderNonUniform),
-            "RuntimeDescriptorArray" => Ok(Capability::RuntimeDescriptorArray),
-            "InputAttachmentArrayDynamicIndexing" => {
-                Ok(Capability::InputAttachmentArrayDynamicIndexing)
-            }
+            "Float16ImageAMD" => Ok(Self::Float16ImageAMD),
+            "ImageGatherBiasLodAMD" => Ok(Self::ImageGatherBiasLodAMD),
+            "FragmentMaskAMD" => Ok(Self::FragmentMaskAMD),
+            "StencilExportEXT" => Ok(Self::StencilExportEXT),
+            "ImageReadWriteLodAMD" => Ok(Self::ImageReadWriteLodAMD),
+            "ShaderClockKHR" => Ok(Self::ShaderClockKHR),
+            "SampleMaskOverrideCoverageNV" => Ok(Self::SampleMaskOverrideCoverageNV),
+            "GeometryShaderPassthroughNV" => Ok(Self::GeometryShaderPassthroughNV),
+            "ShaderViewportIndexLayerEXT" => Ok(Self::ShaderViewportIndexLayerEXT),
+            "ShaderViewportMaskNV" => Ok(Self::ShaderViewportMaskNV),
+            "ShaderStereoViewNV" => Ok(Self::ShaderStereoViewNV),
+            "PerViewAttributesNV" => Ok(Self::PerViewAttributesNV),
+            "FragmentFullyCoveredEXT" => Ok(Self::FragmentFullyCoveredEXT),
+            "MeshShadingNV" => Ok(Self::MeshShadingNV),
+            "ImageFootprintNV" => Ok(Self::ImageFootprintNV),
+            "FragmentBarycentricNV" => Ok(Self::FragmentBarycentricNV),
+            "ComputeDerivativeGroupQuadsNV" => Ok(Self::ComputeDerivativeGroupQuadsNV),
+            "FragmentDensityEXT" => Ok(Self::FragmentDensityEXT),
+            "GroupNonUniformPartitionedNV" => Ok(Self::GroupNonUniformPartitionedNV),
+            "ShaderNonUniform" => Ok(Self::ShaderNonUniform),
+            "RuntimeDescriptorArray" => Ok(Self::RuntimeDescriptorArray),
+            "InputAttachmentArrayDynamicIndexing" => Ok(Self::InputAttachmentArrayDynamicIndexing),
             "UniformTexelBufferArrayDynamicIndexing" => {
-                Ok(Capability::UniformTexelBufferArrayDynamicIndexing)
+                Ok(Self::UniformTexelBufferArrayDynamicIndexing)
             }
             "StorageTexelBufferArrayDynamicIndexing" => {
-                Ok(Capability::StorageTexelBufferArrayDynamicIndexing)
+                Ok(Self::StorageTexelBufferArrayDynamicIndexing)
             }
             "UniformBufferArrayNonUniformIndexing" => {
-                Ok(Capability::UniformBufferArrayNonUniformIndexing)
+                Ok(Self::UniformBufferArrayNonUniformIndexing)
             }
-            "SampledImageArrayNonUniformIndexing" => {
-                Ok(Capability::SampledImageArrayNonUniformIndexing)
-            }
+            "SampledImageArrayNonUniformIndexing" => Ok(Self::SampledImageArrayNonUniformIndexing),
             "StorageBufferArrayNonUniformIndexing" => {
-                Ok(Capability::StorageBufferArrayNonUniformIndexing)
+                Ok(Self::StorageBufferArrayNonUniformIndexing)
             }
-            "StorageImageArrayNonUniformIndexing" => {
-                Ok(Capability::StorageImageArrayNonUniformIndexing)
-            }
+            "StorageImageArrayNonUniformIndexing" => Ok(Self::StorageImageArrayNonUniformIndexing),
             "InputAttachmentArrayNonUniformIndexing" => {
-                Ok(Capability::InputAttachmentArrayNonUniformIndexing)
+                Ok(Self::InputAttachmentArrayNonUniformIndexing)
             }
             "UniformTexelBufferArrayNonUniformIndexing" => {
-                Ok(Capability::UniformTexelBufferArrayNonUniformIndexing)
+                Ok(Self::UniformTexelBufferArrayNonUniformIndexing)
             }
             "StorageTexelBufferArrayNonUniformIndexing" => {
-                Ok(Capability::StorageTexelBufferArrayNonUniformIndexing)
+                Ok(Self::StorageTexelBufferArrayNonUniformIndexing)
             }
-            "RayTracingNV" => Ok(Capability::RayTracingNV),
-            "VulkanMemoryModel" => Ok(Capability::VulkanMemoryModel),
-            "VulkanMemoryModelDeviceScope" => Ok(Capability::VulkanMemoryModelDeviceScope),
-            "PhysicalStorageBufferAddresses" => Ok(Capability::PhysicalStorageBufferAddresses),
-            "ComputeDerivativeGroupLinearNV" => Ok(Capability::ComputeDerivativeGroupLinearNV),
-            "RayTracingProvisionalKHR" => Ok(Capability::RayTracingProvisionalKHR),
-            "CooperativeMatrixNV" => Ok(Capability::CooperativeMatrixNV),
-            "FragmentShaderSampleInterlockEXT" => Ok(Capability::FragmentShaderSampleInterlockEXT),
+            "RayTracingNV" => Ok(Self::RayTracingNV),
+            "VulkanMemoryModel" => Ok(Self::VulkanMemoryModel),
+            "VulkanMemoryModelDeviceScope" => Ok(Self::VulkanMemoryModelDeviceScope),
+            "PhysicalStorageBufferAddresses" => Ok(Self::PhysicalStorageBufferAddresses),
+            "ComputeDerivativeGroupLinearNV" => Ok(Self::ComputeDerivativeGroupLinearNV),
+            "RayTracingProvisionalKHR" => Ok(Self::RayTracingProvisionalKHR),
+            "CooperativeMatrixNV" => Ok(Self::CooperativeMatrixNV),
+            "FragmentShaderSampleInterlockEXT" => Ok(Self::FragmentShaderSampleInterlockEXT),
             "FragmentShaderShadingRateInterlockEXT" => {
-                Ok(Capability::FragmentShaderShadingRateInterlockEXT)
+                Ok(Self::FragmentShaderShadingRateInterlockEXT)
             }
-            "ShaderSMBuiltinsNV" => Ok(Capability::ShaderSMBuiltinsNV),
-            "FragmentShaderPixelInterlockEXT" => Ok(Capability::FragmentShaderPixelInterlockEXT),
-            "DemoteToHelperInvocationEXT" => Ok(Capability::DemoteToHelperInvocationEXT),
-            "SubgroupShuffleINTEL" => Ok(Capability::SubgroupShuffleINTEL),
-            "SubgroupBufferBlockIOINTEL" => Ok(Capability::SubgroupBufferBlockIOINTEL),
-            "SubgroupImageBlockIOINTEL" => Ok(Capability::SubgroupImageBlockIOINTEL),
-            "SubgroupImageMediaBlockIOINTEL" => Ok(Capability::SubgroupImageMediaBlockIOINTEL),
-            "IntegerFunctions2INTEL" => Ok(Capability::IntegerFunctions2INTEL),
-            "SubgroupAvcMotionEstimationINTEL" => Ok(Capability::SubgroupAvcMotionEstimationINTEL),
+            "ShaderSMBuiltinsNV" => Ok(Self::ShaderSMBuiltinsNV),
+            "FragmentShaderPixelInterlockEXT" => Ok(Self::FragmentShaderPixelInterlockEXT),
+            "DemoteToHelperInvocationEXT" => Ok(Self::DemoteToHelperInvocationEXT),
+            "SubgroupShuffleINTEL" => Ok(Self::SubgroupShuffleINTEL),
+            "SubgroupBufferBlockIOINTEL" => Ok(Self::SubgroupBufferBlockIOINTEL),
+            "SubgroupImageBlockIOINTEL" => Ok(Self::SubgroupImageBlockIOINTEL),
+            "SubgroupImageMediaBlockIOINTEL" => Ok(Self::SubgroupImageMediaBlockIOINTEL),
+            "IntegerFunctions2INTEL" => Ok(Self::IntegerFunctions2INTEL),
+            "SubgroupAvcMotionEstimationINTEL" => Ok(Self::SubgroupAvcMotionEstimationINTEL),
             "SubgroupAvcMotionEstimationIntraINTEL" => {
-                Ok(Capability::SubgroupAvcMotionEstimationIntraINTEL)
+                Ok(Self::SubgroupAvcMotionEstimationIntraINTEL)
             }
             "SubgroupAvcMotionEstimationChromaINTEL" => {
-                Ok(Capability::SubgroupAvcMotionEstimationChromaINTEL)
+                Ok(Self::SubgroupAvcMotionEstimationChromaINTEL)
             }
             _ => Err(()),
         }
@@ -3069,8 +3050,8 @@ impl num_traits::FromPrimitive for RayQueryIntersection {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => RayQueryIntersection::RayQueryCandidateIntersectionKHR,
-            1u32 => RayQueryIntersection::RayQueryCommittedIntersectionKHR,
+            0u32 => Self::RayQueryCandidateIntersectionKHR,
+            1u32 => Self::RayQueryCommittedIntersectionKHR,
             _ => return None,
         })
     }
@@ -3082,12 +3063,8 @@ impl std::str::FromStr for RayQueryIntersection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "RayQueryCandidateIntersectionKHR" => {
-                Ok(RayQueryIntersection::RayQueryCandidateIntersectionKHR)
-            }
-            "RayQueryCommittedIntersectionKHR" => {
-                Ok(RayQueryIntersection::RayQueryCommittedIntersectionKHR)
-            }
+            "RayQueryCandidateIntersectionKHR" => Ok(Self::RayQueryCandidateIntersectionKHR),
+            "RayQueryCommittedIntersectionKHR" => Ok(Self::RayQueryCommittedIntersectionKHR),
             _ => Err(()),
         }
     }
@@ -3118,9 +3095,9 @@ impl num_traits::FromPrimitive for RayQueryCommittedIntersectionType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionNoneKHR,
-            1u32 => RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionTriangleKHR,
-            2u32 => RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR,
+            0u32 => Self::RayQueryCommittedIntersectionNoneKHR,
+            1u32 => Self::RayQueryCommittedIntersectionTriangleKHR,
+            2u32 => Self::RayQueryCommittedIntersectionGeneratedKHR,
             _ => return None,
         })
     }
@@ -3133,13 +3110,13 @@ impl std::str::FromStr for RayQueryCommittedIntersectionType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "RayQueryCommittedIntersectionNoneKHR" => {
-                Ok(RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionNoneKHR)
+                Ok(Self::RayQueryCommittedIntersectionNoneKHR)
             }
             "RayQueryCommittedIntersectionTriangleKHR" => {
-                Ok(RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionTriangleKHR)
+                Ok(Self::RayQueryCommittedIntersectionTriangleKHR)
             }
             "RayQueryCommittedIntersectionGeneratedKHR" => {
-                Ok(RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR)
+                Ok(Self::RayQueryCommittedIntersectionGeneratedKHR)
             }
             _ => Err(()),
         }
@@ -3169,8 +3146,8 @@ impl num_traits::FromPrimitive for RayQueryCandidateIntersectionType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
         Some(match n as u32 {
-            0u32 => RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionTriangleKHR,
-            1u32 => RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR,
+            0u32 => Self::RayQueryCandidateIntersectionTriangleKHR,
+            1u32 => Self::RayQueryCandidateIntersectionAABBKHR,
             _ => return None,
         })
     }
@@ -3183,10 +3160,10 @@ impl std::str::FromStr for RayQueryCandidateIntersectionType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
             "RayQueryCandidateIntersectionTriangleKHR" => {
-                Ok(RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionTriangleKHR)
+                Ok(Self::RayQueryCandidateIntersectionTriangleKHR)
             }
             "RayQueryCandidateIntersectionAABBKHR" => {
-                Ok(RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR)
+                Ok(Self::RayQueryCandidateIntersectionAABBKHR)
             }
             _ => Err(()),
         }
