@@ -166,11 +166,17 @@ impl std::str::FromStr for ExecutionModel {
             "TaskNV" => Ok(Self::TaskNV),
             "MeshNV" => Ok(Self::MeshNV),
             "RayGenerationNV" => Ok(Self::RayGenerationNV),
+            "RayGenerationKHR" => Ok(Self::RayGenerationNV),
             "IntersectionNV" => Ok(Self::IntersectionNV),
+            "IntersectionKHR" => Ok(Self::IntersectionNV),
             "AnyHitNV" => Ok(Self::AnyHitNV),
+            "AnyHitKHR" => Ok(Self::AnyHitNV),
             "ClosestHitNV" => Ok(Self::ClosestHitNV),
+            "ClosestHitKHR" => Ok(Self::ClosestHitNV),
             "MissNV" => Ok(Self::MissNV),
+            "MissKHR" => Ok(Self::MissNV),
             "CallableNV" => Ok(Self::CallableNV),
+            "CallableKHR" => Ok(Self::CallableNV),
             _ => Err(()),
         }
     }
@@ -222,6 +228,7 @@ impl std::str::FromStr for AddressingModel {
             "Physical32" => Ok(Self::Physical32),
             "Physical64" => Ok(Self::Physical64),
             "PhysicalStorageBuffer64" => Ok(Self::PhysicalStorageBuffer64),
+            "PhysicalStorageBuffer64EXT" => Ok(Self::PhysicalStorageBuffer64),
             _ => Err(()),
         }
     }
@@ -271,6 +278,7 @@ impl std::str::FromStr for MemoryModel {
             "GLSL450" => Ok(Self::GLSL450),
             "OpenCL" => Ok(Self::OpenCL),
             "Vulkan" => Ok(Self::Vulkan),
+            "VulkanKHR" => Ok(Self::Vulkan),
             _ => Err(()),
         }
     }
@@ -653,12 +661,19 @@ impl std::str::FromStr for StorageClass {
             "Image" => Ok(Self::Image),
             "StorageBuffer" => Ok(Self::StorageBuffer),
             "CallableDataNV" => Ok(Self::CallableDataNV),
+            "CallableDataKHR" => Ok(Self::CallableDataNV),
             "IncomingCallableDataNV" => Ok(Self::IncomingCallableDataNV),
+            "IncomingCallableDataKHR" => Ok(Self::IncomingCallableDataNV),
             "RayPayloadNV" => Ok(Self::RayPayloadNV),
+            "RayPayloadKHR" => Ok(Self::RayPayloadNV),
             "HitAttributeNV" => Ok(Self::HitAttributeNV),
+            "HitAttributeKHR" => Ok(Self::HitAttributeNV),
             "IncomingRayPayloadNV" => Ok(Self::IncomingRayPayloadNV),
+            "IncomingRayPayloadKHR" => Ok(Self::IncomingRayPayloadNV),
             "ShaderRecordBufferNV" => Ok(Self::ShaderRecordBufferNV),
+            "ShaderRecordBufferKHR" => Ok(Self::ShaderRecordBufferNV),
             "PhysicalStorageBuffer" => Ok(Self::PhysicalStorageBuffer),
+            "PhysicalStorageBufferEXT" => Ok(Self::PhysicalStorageBuffer),
             _ => Err(()),
         }
     }
@@ -1711,10 +1726,15 @@ impl std::str::FromStr for Decoration {
             "PerTaskNV" => Ok(Self::PerTaskNV),
             "PerVertexNV" => Ok(Self::PerVertexNV),
             "NonUniform" => Ok(Self::NonUniform),
+            "NonUniformEXT" => Ok(Self::NonUniform),
             "RestrictPointer" => Ok(Self::RestrictPointer),
+            "RestrictPointerEXT" => Ok(Self::RestrictPointer),
             "AliasedPointer" => Ok(Self::AliasedPointer),
+            "AliasedPointerEXT" => Ok(Self::AliasedPointer),
             "CounterBuffer" => Ok(Self::CounterBuffer),
+            "HlslCounterBufferGOOGLE" => Ok(Self::CounterBuffer),
             "UserSemantic" => Ok(Self::UserSemantic),
+            "HlslSemanticGOOGLE" => Ok(Self::UserSemantic),
             "UserTypeGOOGLE" => Ok(Self::UserTypeGOOGLE),
             _ => Err(()),
         }
@@ -2130,6 +2150,11 @@ impl std::str::FromStr for BuiltIn {
             "SubgroupGtMask" => Ok(Self::SubgroupGtMask),
             "SubgroupLeMask" => Ok(Self::SubgroupLeMask),
             "SubgroupLtMask" => Ok(Self::SubgroupLtMask),
+            "SubgroupEqMaskKHR" => Ok(Self::SubgroupEqMask),
+            "SubgroupGeMaskKHR" => Ok(Self::SubgroupGeMask),
+            "SubgroupGtMaskKHR" => Ok(Self::SubgroupGtMask),
+            "SubgroupLeMaskKHR" => Ok(Self::SubgroupLeMask),
+            "SubgroupLtMaskKHR" => Ok(Self::SubgroupLtMask),
             "BaseVertex" => Ok(Self::BaseVertex),
             "BaseInstance" => Ok(Self::BaseInstance),
             "DrawIndex" => Ok(Self::DrawIndex),
@@ -2160,21 +2185,37 @@ impl std::str::FromStr for BuiltIn {
             "BaryCoordNV" => Ok(Self::BaryCoordNV),
             "BaryCoordNoPerspNV" => Ok(Self::BaryCoordNoPerspNV),
             "FragSizeEXT" => Ok(Self::FragSizeEXT),
+            "FragmentSizeNV" => Ok(Self::FragSizeEXT),
             "FragInvocationCountEXT" => Ok(Self::FragInvocationCountEXT),
+            "InvocationsPerPixelNV" => Ok(Self::FragInvocationCountEXT),
             "LaunchIdNV" => Ok(Self::LaunchIdNV),
+            "LaunchIdKHR" => Ok(Self::LaunchIdNV),
             "LaunchSizeNV" => Ok(Self::LaunchSizeNV),
+            "LaunchSizeKHR" => Ok(Self::LaunchSizeNV),
             "WorldRayOriginNV" => Ok(Self::WorldRayOriginNV),
+            "WorldRayOriginKHR" => Ok(Self::WorldRayOriginNV),
             "WorldRayDirectionNV" => Ok(Self::WorldRayDirectionNV),
+            "WorldRayDirectionKHR" => Ok(Self::WorldRayDirectionNV),
             "ObjectRayOriginNV" => Ok(Self::ObjectRayOriginNV),
+            "ObjectRayOriginKHR" => Ok(Self::ObjectRayOriginNV),
             "ObjectRayDirectionNV" => Ok(Self::ObjectRayDirectionNV),
+            "ObjectRayDirectionKHR" => Ok(Self::ObjectRayDirectionNV),
             "RayTminNV" => Ok(Self::RayTminNV),
+            "RayTminKHR" => Ok(Self::RayTminNV),
             "RayTmaxNV" => Ok(Self::RayTmaxNV),
+            "RayTmaxKHR" => Ok(Self::RayTmaxNV),
             "InstanceCustomIndexNV" => Ok(Self::InstanceCustomIndexNV),
+            "InstanceCustomIndexKHR" => Ok(Self::InstanceCustomIndexNV),
             "ObjectToWorldNV" => Ok(Self::ObjectToWorldNV),
+            "ObjectToWorldKHR" => Ok(Self::ObjectToWorldNV),
             "WorldToObjectNV" => Ok(Self::WorldToObjectNV),
+            "WorldToObjectKHR" => Ok(Self::WorldToObjectNV),
             "HitTNV" => Ok(Self::HitTNV),
+            "HitTKHR" => Ok(Self::HitTNV),
             "HitKindNV" => Ok(Self::HitKindNV),
+            "HitKindKHR" => Ok(Self::HitKindNV),
             "IncomingRayFlagsNV" => Ok(Self::IncomingRayFlagsNV),
+            "IncomingRayFlagsKHR" => Ok(Self::IncomingRayFlagsNV),
             "RayGeometryIndexKHR" => Ok(Self::RayGeometryIndexKHR),
             "WarpsPerSMNV" => Ok(Self::WarpsPerSMNV),
             "SMCountNV" => Ok(Self::SMCountNV),
@@ -2241,6 +2282,7 @@ impl std::str::FromStr for Scope {
             "Subgroup" => Ok(Self::Subgroup),
             "Invocation" => Ok(Self::Invocation),
             "QueueFamily" => Ok(Self::QueueFamily),
+            "QueueFamilyKHR" => Ok(Self::QueueFamily),
             "ShaderCallKHR" => Ok(Self::ShaderCallKHR),
             _ => Err(()),
         }
@@ -2930,7 +2972,9 @@ impl std::str::FromStr for Capability {
             "DrawParameters" => Ok(Self::DrawParameters),
             "SubgroupVoteKHR" => Ok(Self::SubgroupVoteKHR),
             "StorageBuffer16BitAccess" => Ok(Self::StorageBuffer16BitAccess),
+            "StorageUniformBufferBlock16" => Ok(Self::StorageBuffer16BitAccess),
             "UniformAndStorageBuffer16BitAccess" => Ok(Self::UniformAndStorageBuffer16BitAccess),
+            "StorageUniform16" => Ok(Self::UniformAndStorageBuffer16BitAccess),
             "StoragePushConstant16" => Ok(Self::StoragePushConstant16),
             "StorageInputOutput16" => Ok(Self::StorageInputOutput16),
             "DeviceGroup" => Ok(Self::DeviceGroup),
@@ -2960,6 +3004,7 @@ impl std::str::FromStr for Capability {
             "SampleMaskOverrideCoverageNV" => Ok(Self::SampleMaskOverrideCoverageNV),
             "GeometryShaderPassthroughNV" => Ok(Self::GeometryShaderPassthroughNV),
             "ShaderViewportIndexLayerEXT" => Ok(Self::ShaderViewportIndexLayerEXT),
+            "ShaderViewportIndexLayerNV" => Ok(Self::ShaderViewportIndexLayerEXT),
             "ShaderViewportMaskNV" => Ok(Self::ShaderViewportMaskNV),
             "ShaderStereoViewNV" => Ok(Self::ShaderStereoViewNV),
             "PerViewAttributesNV" => Ok(Self::PerViewAttributesNV),
@@ -2969,37 +3014,73 @@ impl std::str::FromStr for Capability {
             "FragmentBarycentricNV" => Ok(Self::FragmentBarycentricNV),
             "ComputeDerivativeGroupQuadsNV" => Ok(Self::ComputeDerivativeGroupQuadsNV),
             "FragmentDensityEXT" => Ok(Self::FragmentDensityEXT),
+            "ShadingRateNV" => Ok(Self::FragmentDensityEXT),
             "GroupNonUniformPartitionedNV" => Ok(Self::GroupNonUniformPartitionedNV),
             "ShaderNonUniform" => Ok(Self::ShaderNonUniform),
+            "ShaderNonUniformEXT" => Ok(Self::ShaderNonUniform),
             "RuntimeDescriptorArray" => Ok(Self::RuntimeDescriptorArray),
+            "RuntimeDescriptorArrayEXT" => Ok(Self::RuntimeDescriptorArray),
             "InputAttachmentArrayDynamicIndexing" => Ok(Self::InputAttachmentArrayDynamicIndexing),
+            "InputAttachmentArrayDynamicIndexingEXT" => {
+                Ok(Self::InputAttachmentArrayDynamicIndexing)
+            }
             "UniformTexelBufferArrayDynamicIndexing" => {
+                Ok(Self::UniformTexelBufferArrayDynamicIndexing)
+            }
+            "UniformTexelBufferArrayDynamicIndexingEXT" => {
                 Ok(Self::UniformTexelBufferArrayDynamicIndexing)
             }
             "StorageTexelBufferArrayDynamicIndexing" => {
                 Ok(Self::StorageTexelBufferArrayDynamicIndexing)
             }
+            "StorageTexelBufferArrayDynamicIndexingEXT" => {
+                Ok(Self::StorageTexelBufferArrayDynamicIndexing)
+            }
             "UniformBufferArrayNonUniformIndexing" => {
                 Ok(Self::UniformBufferArrayNonUniformIndexing)
             }
+            "UniformBufferArrayNonUniformIndexingEXT" => {
+                Ok(Self::UniformBufferArrayNonUniformIndexing)
+            }
             "SampledImageArrayNonUniformIndexing" => Ok(Self::SampledImageArrayNonUniformIndexing),
+            "SampledImageArrayNonUniformIndexingEXT" => {
+                Ok(Self::SampledImageArrayNonUniformIndexing)
+            }
             "StorageBufferArrayNonUniformIndexing" => {
                 Ok(Self::StorageBufferArrayNonUniformIndexing)
             }
+            "StorageBufferArrayNonUniformIndexingEXT" => {
+                Ok(Self::StorageBufferArrayNonUniformIndexing)
+            }
             "StorageImageArrayNonUniformIndexing" => Ok(Self::StorageImageArrayNonUniformIndexing),
+            "StorageImageArrayNonUniformIndexingEXT" => {
+                Ok(Self::StorageImageArrayNonUniformIndexing)
+            }
             "InputAttachmentArrayNonUniformIndexing" => {
+                Ok(Self::InputAttachmentArrayNonUniformIndexing)
+            }
+            "InputAttachmentArrayNonUniformIndexingEXT" => {
                 Ok(Self::InputAttachmentArrayNonUniformIndexing)
             }
             "UniformTexelBufferArrayNonUniformIndexing" => {
                 Ok(Self::UniformTexelBufferArrayNonUniformIndexing)
             }
+            "UniformTexelBufferArrayNonUniformIndexingEXT" => {
+                Ok(Self::UniformTexelBufferArrayNonUniformIndexing)
+            }
             "StorageTexelBufferArrayNonUniformIndexing" => {
+                Ok(Self::StorageTexelBufferArrayNonUniformIndexing)
+            }
+            "StorageTexelBufferArrayNonUniformIndexingEXT" => {
                 Ok(Self::StorageTexelBufferArrayNonUniformIndexing)
             }
             "RayTracingNV" => Ok(Self::RayTracingNV),
             "VulkanMemoryModel" => Ok(Self::VulkanMemoryModel),
+            "VulkanMemoryModelKHR" => Ok(Self::VulkanMemoryModel),
             "VulkanMemoryModelDeviceScope" => Ok(Self::VulkanMemoryModelDeviceScope),
+            "VulkanMemoryModelDeviceScopeKHR" => Ok(Self::VulkanMemoryModelDeviceScope),
             "PhysicalStorageBufferAddresses" => Ok(Self::PhysicalStorageBufferAddresses),
+            "PhysicalStorageBufferAddressesEXT" => Ok(Self::PhysicalStorageBufferAddresses),
             "ComputeDerivativeGroupLinearNV" => Ok(Self::ComputeDerivativeGroupLinearNV),
             "RayTracingProvisionalKHR" => Ok(Self::RayTracingProvisionalKHR),
             "CooperativeMatrixNV" => Ok(Self::CooperativeMatrixNV),

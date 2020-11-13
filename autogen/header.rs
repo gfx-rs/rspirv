@@ -103,10 +103,12 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut from_str_impl = vec![];
     for e in &grammar.enumerants {
         if let Some(discriminator) = seen_discriminator.get(&e.value) {
+            let name_str = &e.symbol;
             let symbol = as_ident(&e.symbol);
             aliases.push(quote! {
                 pub const #symbol: Self = Self::#discriminator;
             });
+            from_str_impl.push(quote! { #name_str => Ok(Self::#discriminator), });
         } else {
             // Special case for Dim. Its enumerants can start with a digit.
             // So prefix with the kind name here.
