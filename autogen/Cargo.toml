@@ -7,7 +7,6 @@ authors = [
 ]
 edition = "2018"
 
-build = "build.rs"
 publish = false
 
 description = "Automatic code generation module for rspirv"
@@ -17,10 +16,7 @@ readme = "README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "grammar", "codegen"]
 
-[lib]
-path = "lib.rs"
-
-[build-dependencies]
+[dependencies]
 heck = "0.3"
 proc-macro2 = "1.0"
 quote = "1.0"

@@ -45,7 +45,7 @@ In total rspirv APIs contains:
 * SPIR-V [binary][doc-binary] module decoding and parsing functionalities
 
 The Khronos SPIR-V [JSON grammar][json-grammar] is leveraged to generate parts
-of the source code using Cargo [build scripts](autogen).
+of the source code using [`rspirv-autogen`][autogen].
 
 Please see the links to docs.rs for detailed documentation.
 
@@ -172,13 +172,13 @@ cargo build
 ```
 
 If you want to refresh the `spirv_headers` or `rspirv` crate with new code
-snippets generated from SPIR-V's JSON grammar,
+snippets generated from SPIR-V's JSON grammar:
 
 ```sh
-cd /path/to/rspirv/autogen
+cd /path/to/rspirv
 # Clone the SPIRV-Headers repo
 git submodule update --init
-cargo build
+cargo run -p rspirv-autogen
 ```
 
 Test
@@ -193,7 +193,7 @@ Contributions
 -------------
 
 This project is licensed under the Apache License, Version 2.0
-([LICENSE](LICENSE) or http://www.apache.org/licenses/LICENSE-2.0). 
+([LICENSE](LICENSE) or http://www.apache.org/licenses/LICENSE-2.0).
 Please see [CONTRIBUTING](CONTRIBUTING.md) before contributing.
 
 ### Authors
@@ -201,6 +201,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) before contributing.
 This project is initialized Lei Zhang ([@antiagainst][me]) and currently
 developed by the gfx-rs [Translators][github-translators] team.
 
+[autogen]: ./autogen/README.md
 [img-crate-rspirv]: https://img.shields.io/crates/v/rspirv.svg
 [img-doc-rspirv]: https://docs.rs/rspirv/badge.svg
 [crate-rspirv]: https://crates.io/crates/rspirv
