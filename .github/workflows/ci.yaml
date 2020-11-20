@@ -3,13 +3,27 @@ on: [push, pull_request]
 name: Continuous integration
 
 jobs:
-  fmt:
-    name: Cargo fmt
+  autogen:
+    name: Run autogen
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: -p rspirv-autogen
+      - name: Diff autogen result
+        run: git diff --quiet || (echo "::error::Generated files are different, please regenerate with cargo run -p rspirv-autogen!"; git diff; false)
+  fmt:
+    name: Cargo fmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -29,8 +43,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
