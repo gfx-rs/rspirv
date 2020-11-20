@@ -40,13 +40,17 @@ pub enum Operand {
     RayQueryIntersection(spirv::RayQueryIntersection),
     RayQueryCommittedIntersectionType(spirv::RayQueryCommittedIntersectionType),
     RayQueryCandidateIntersectionType(spirv::RayQueryCandidateIntersectionType),
+    #[from(ignore)]
     IdMemorySemantics(spirv::Word),
+    #[from(ignore)]
     IdScope(spirv::Word),
+    #[from(ignore)]
     IdRef(spirv::Word),
     LiteralInt32(u32),
     LiteralInt64(u64),
     LiteralFloat32(f32),
     LiteralFloat64(f64),
+    #[from(ignore)]
     LiteralExtInstInteger(u32),
     LiteralSpecConstantOpInteger(spirv::Op),
     LiteralString(String),

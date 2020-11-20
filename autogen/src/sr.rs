@@ -235,11 +235,10 @@ pub fn gen_sr_code_from_operand_kind_grammar(
         })
         .collect();
     let tokens = quote! {
-        use derive_more::From;
         use spirv;
 
         /// SPIR-V decorations.
-        #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord, From)]
+        #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
         pub enum Decoration {
             #( #enumerants ),*
         }
