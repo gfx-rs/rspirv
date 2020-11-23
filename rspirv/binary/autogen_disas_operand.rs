@@ -137,6 +137,27 @@ impl Disassemble for spirv::LoopControl {
         if self.contains(spirv::LoopControl::PARTIAL_COUNT) {
             bits.push("PartialCount")
         }
+        if self.contains(spirv::LoopControl::INITIATION_INTERVAL_INTEL) {
+            bits.push("InitiationIntervalINTEL")
+        }
+        if self.contains(spirv::LoopControl::MAX_CONCURRENCY_INTEL) {
+            bits.push("MaxConcurrencyINTEL")
+        }
+        if self.contains(spirv::LoopControl::DEPENDENCY_ARRAY_INTEL) {
+            bits.push("DependencyArrayINTEL")
+        }
+        if self.contains(spirv::LoopControl::PIPELINE_ENABLE_INTEL) {
+            bits.push("PipelineEnableINTEL")
+        }
+        if self.contains(spirv::LoopControl::LOOP_COALESCE_INTEL) {
+            bits.push("LoopCoalesceINTEL")
+        }
+        if self.contains(spirv::LoopControl::MAX_INTERLEAVING_INTEL) {
+            bits.push("MaxInterleavingINTEL")
+        }
+        if self.contains(spirv::LoopControl::SPECULATED_ITERATIONS_INTEL) {
+            bits.push("SpeculatedIterationsINTEL")
+        }
         bits.join("|")
     }
 }
@@ -304,6 +325,27 @@ impl Disassemble for spirv::RayFlags {
         }
         if self.contains(spirv::RayFlags::SKIP_AAB_BS_KHR) {
             bits.push("SkipAABBsKHR")
+        }
+        bits.join("|")
+    }
+}
+impl Disassemble for spirv::FragmentShadingRate {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::FragmentShadingRate::VERTICAL2_PIXELS) {
+            bits.push("Vertical2Pixels")
+        }
+        if self.contains(spirv::FragmentShadingRate::VERTICAL4_PIXELS) {
+            bits.push("Vertical4Pixels")
+        }
+        if self.contains(spirv::FragmentShadingRate::HORIZONTAL2_PIXELS) {
+            bits.push("Horizontal2Pixels")
+        }
+        if self.contains(spirv::FragmentShadingRate::HORIZONTAL4_PIXELS) {
+            bits.push("Horizontal4Pixels")
         }
         bits.join("|")
     }

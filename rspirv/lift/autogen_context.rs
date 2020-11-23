@@ -162,6 +162,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            4416u32 => Ok(ops::Branch::TerminateInvocation),
             _ => Err(InstructionError::WrongOpcode),
         }
     }
@@ -170,6 +171,8 @@ impl LiftContext {
         raw: &dr::Instruction,
     ) -> Result<ops::Terminator, InstructionError> {
         match raw.class.opcode as u32 {
+            4448u32 => Ok(ops::Terminator::IgnoreIntersectionKHR),
+            4449u32 => Ok(ops::Terminator::TerminateRayKHR),
             _ => self.lift_branch(raw).map(ops::Terminator::Branch),
         }
     }
@@ -5045,7 +5048,97 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            4472u32 => Ok(ops::Op::TypeRayQueryProvisionalKHR),
+            4445u32 => Ok(ops::Op::TraceRayKHR {
+                accel: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_flags: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                cull_mask: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sbt_offset: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sbt_stride: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                miss_index: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_origin: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_tmin: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_direction: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_tmax: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            4446u32 => Ok(ops::Op::ExecuteCallableKHR {
+                sbt_index: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                callable_data: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            4447u32 => Ok(ops::Op::ConvertUToAccelerationStructureKHR {
+                accel: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            4472u32 => Ok(ops::Op::TypeRayQueryKHR),
             4473u32 => Ok(ops::Op::RayQueryInitializeKHR {
                 ray_query: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -5432,78 +5525,8 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             5335u32 => Ok(ops::Op::IgnoreIntersectionNV),
-            5335u32 => Ok(ops::Op::IgnoreIntersectionKHR),
             5336u32 => Ok(ops::Op::TerminateRayNV),
-            5336u32 => Ok(ops::Op::TerminateRayKHR),
             5337u32 => Ok(ops::Op::TraceNV {
-                accel: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                ray_flags: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                cull_mask: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                sbt_offset: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                sbt_stride: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                miss_index: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                ray_origin: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                ray_tmin: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                ray_direction: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                ray_tmax: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                payload_id: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
-            5337u32 => Ok(ops::Op::TraceRayKHR {
                 accel: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
@@ -5574,20 +5597,6 @@ impl LiftContext {
             5341u32 => Ok(ops::Op::TypeAccelerationStructureNV),
             5341u32 => Ok(ops::Op::TypeAccelerationStructureKHR),
             5344u32 => Ok(ops::Op::ExecuteCallableNV {
-                sbt_index: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                callable_data_id: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
-            5344u32 => Ok(ops::Op::ExecuteCallableKHR {
                 sbt_index: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
@@ -6080,6 +6089,27 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
+            }),
+            5600u32 => Ok(ops::Op::FunctionPointerINTEL {
+                function: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5601u32 => Ok(ops::Op::FunctionPointerCallINTEL {
+                operand_1: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
             }),
             5632u32 => Ok(ops::Op::DecorateString {
                 target: (match operands.next() {
@@ -7822,6 +7852,61 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5887u32 => Ok(ops::Op::LoopControlINTEL {
+                loop_control_parameters: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
+            5946u32 => Ok(ops::Op::ReadPipeBlockingINTEL {
+                packet_size: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packet_alignment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5947u32 => Ok(ops::Op::WritePipeBlockingINTEL {
+                packet_size: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packet_alignment: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5949u32 => Ok(ops::Op::FPGARegINTEL {
+                result: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             6016u32 => Ok(ops::Op::RayQueryGetRayTMinKHR {
                 ray_query: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -8026,6 +8111,32 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 intersection: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6035u32 => Ok(ops::Op::AtomicFAddEXT {
+                pointer: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                memory: (match operands.next() {
+                    Some(&dr::Operand::IdScope(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                semantics: (match operands.next() {
+                    Some(&dr::Operand::IdMemorySemantics(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                value: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
