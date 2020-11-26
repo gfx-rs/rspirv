@@ -1363,7 +1363,6 @@ pub enum Op {
     ConvertUToAccelerationStructureKHR {
         accel: spirv::Word,
     },
-    TypeRayQueryKHR,
     RayQueryInitializeKHR {
         ray_query: spirv::Word,
         accel: spirv::Word,
@@ -1481,16 +1480,9 @@ pub enum Op {
         payload_id: spirv::Word,
     },
     TypeAccelerationStructureNV,
-    TypeAccelerationStructureKHR,
     ExecuteCallableNV {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
-    },
-    TypeCooperativeMatrixNV {
-        component_type: Token<Type>,
-        execution: spirv::Word,
-        rows: spirv::Word,
-        columns: spirv::Word,
     },
     CooperativeMatrixLoadNV {
         pointer: spirv::Word,
