@@ -104,6 +104,8 @@ pub fn is_terminator(opcode: spirv::Op) -> bool {
         | spirv::Op::Kill
         | spirv::Op::Return
         | spirv::Op::ReturnValue
+        | spirv::Op::TerminateRayKHR
+        | spirv::Op::IgnoreIntersectionKHR
         | spirv::Op::Unreachable => true,
         _ => false,
     }
