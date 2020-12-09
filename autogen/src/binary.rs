@@ -127,7 +127,7 @@ pub fn gen_operand_decode_methods(grammar: &[structs::OperandKind]) -> TokenStre
 fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&str, TokenStream)> {
     grammar.iter().filter(|element| {
         // Filter out all the operand kinds without any enumerants.
-        element.enumerants.len() != 0
+        !element.enumerants.is_empty()
     }).filter_map(|element| {
         // Get the symbol and all the parameters for each enumerant.
         let pairs: Vec<(&str, Vec<&str>)> =
