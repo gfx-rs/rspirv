@@ -374,7 +374,6 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
 
 fn is_terminator_instruction(inst: &structs::Instruction) -> bool {
     match inst.class {
-        Some(structs::Class::Terminator) => true,
         Some(structs::Class::Reserved) => matches!(
             inst.opname.as_str(),
             "OpTerminateRayKHR" | "OpIgnoreIntersectionKHR"

@@ -120,7 +120,6 @@ pub enum Class {
     FunctionStruct,
     #[serde(rename = "Mode-Setting")]
     ModeSetting,
-    Terminator,
     #[serde(rename = "Type-Declaration")]
     Type,
     Variable,
