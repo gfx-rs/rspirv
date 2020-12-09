@@ -17,7 +17,7 @@ use std::{
 use utils::write_autogen_comment;
 
 fn write(path: &PathBuf, contents: impl ToString) {
-    let mut f = fs::File::create(path).expect(&format!("cannot open file: {:?}", path));
+    let mut f = fs::File::create(path).unwrap_or_else(|_| panic!("cannot open file: {:?}", path));
     write_autogen_comment(&mut f);
     write!(f, "{}", contents.to_string()).unwrap()
 }
