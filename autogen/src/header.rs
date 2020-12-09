@@ -135,7 +135,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 
     let capabilities = capability_clauses.into_iter().map(|(k, v)| {
         let kinds = std::iter::repeat(&kind);
-        let capabilities = k.into_iter().map(|cap| as_ident(cap));
+        let capabilities = k.iter().map(|cap| as_ident(cap));
         quote! {
             #( #kinds::#v )|* => &[#( Capability::#capabilities ),*]
         }
