@@ -8,7 +8,7 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
 #[rustfmt::skip]
-static AUTOGEN_COMMENT : &'static str = "\
+static AUTOGEN_COMMENT : &str = "\
 // AUTOMATICALLY GENERATED from the SPIR-V JSON grammar:
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!";
