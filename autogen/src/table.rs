@@ -20,7 +20,7 @@ fn convert_quantifier(quantifier: structs::Quantifier) -> Ident {
 /// `name` is the name of the generated table.
 /// `is_ext` indicates whether the grammar is for an extended instruction set.
 fn gen_instruction_table(
-    grammar: &Vec<structs::Instruction>,
+    grammar: &[structs::Instruction],
     name: &str,
     is_ext: bool,
 ) -> TokenStream {
