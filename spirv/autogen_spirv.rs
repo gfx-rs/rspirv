@@ -60,7 +60,7 @@ impl num_traits::FromPrimitive for SourceLanguage {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for SourceLanguage {
+impl core::str::FromStr for SourceLanguage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -150,7 +150,7 @@ impl num_traits::FromPrimitive for ExecutionModel {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for ExecutionModel {
+impl core::str::FromStr for ExecutionModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -218,7 +218,7 @@ impl num_traits::FromPrimitive for AddressingModel {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for AddressingModel {
+impl core::str::FromStr for AddressingModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -268,7 +268,7 @@ impl num_traits::FromPrimitive for MemoryModel {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for MemoryModel {
+impl core::str::FromStr for MemoryModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -494,7 +494,7 @@ impl num_traits::FromPrimitive for ExecutionMode {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for ExecutionMode {
+impl core::str::FromStr for ExecutionMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -659,7 +659,7 @@ impl num_traits::FromPrimitive for StorageClass {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for StorageClass {
+impl core::str::FromStr for StorageClass {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -745,7 +745,7 @@ impl num_traits::FromPrimitive for Dim {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for Dim {
+impl core::str::FromStr for Dim {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -800,7 +800,7 @@ impl num_traits::FromPrimitive for SamplerAddressingMode {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for SamplerAddressingMode {
+impl core::str::FromStr for SamplerAddressingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -843,7 +843,7 @@ impl num_traits::FromPrimitive for SamplerFilterMode {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for SamplerFilterMode {
+impl core::str::FromStr for SamplerFilterMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1003,7 +1003,7 @@ impl num_traits::FromPrimitive for ImageFormat {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for ImageFormat {
+impl core::str::FromStr for ImageFormat {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1138,7 +1138,7 @@ impl num_traits::FromPrimitive for ImageChannelOrder {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for ImageChannelOrder {
+impl core::str::FromStr for ImageChannelOrder {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1242,7 +1242,7 @@ impl num_traits::FromPrimitive for ImageChannelDataType {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for ImageChannelDataType {
+impl core::str::FromStr for ImageChannelDataType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1304,7 +1304,7 @@ impl num_traits::FromPrimitive for FPRoundingMode {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for FPRoundingMode {
+impl core::str::FromStr for FPRoundingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1346,7 +1346,7 @@ impl num_traits::FromPrimitive for LinkageType {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for LinkageType {
+impl core::str::FromStr for LinkageType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1390,7 +1390,7 @@ impl num_traits::FromPrimitive for AccessQualifier {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for AccessQualifier {
+impl core::str::FromStr for AccessQualifier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1450,7 +1450,7 @@ impl num_traits::FromPrimitive for FunctionParameterAttribute {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for FunctionParameterAttribute {
+impl core::str::FromStr for FunctionParameterAttribute {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -1726,7 +1726,7 @@ impl num_traits::FromPrimitive for Decoration {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for Decoration {
+impl core::str::FromStr for Decoration {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -2182,7 +2182,7 @@ impl num_traits::FromPrimitive for BuiltIn {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for BuiltIn {
+impl core::str::FromStr for BuiltIn {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -2355,7 +2355,7 @@ impl num_traits::FromPrimitive for Scope {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for Scope {
+impl core::str::FromStr for Scope {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -2423,7 +2423,7 @@ impl num_traits::FromPrimitive for GroupOperation {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for GroupOperation {
+impl core::str::FromStr for GroupOperation {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -2472,7 +2472,7 @@ impl num_traits::FromPrimitive for KernelEnqueueFlags {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for KernelEnqueueFlags {
+impl core::str::FromStr for KernelEnqueueFlags {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -3022,7 +3022,7 @@ impl num_traits::FromPrimitive for Capability {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for Capability {
+impl core::str::FromStr for Capability {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -3278,7 +3278,7 @@ impl num_traits::FromPrimitive for RayQueryIntersection {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for RayQueryIntersection {
+impl core::str::FromStr for RayQueryIntersection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -3324,7 +3324,7 @@ impl num_traits::FromPrimitive for RayQueryCommittedIntersectionType {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for RayQueryCommittedIntersectionType {
+impl core::str::FromStr for RayQueryCommittedIntersectionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
@@ -3374,7 +3374,7 @@ impl num_traits::FromPrimitive for RayQueryCandidateIntersectionType {
         Self::from_i64(n as i64)
     }
 }
-impl std::str::FromStr for RayQueryCandidateIntersectionType {
+impl core::str::FromStr for RayQueryCandidateIntersectionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {

@@ -166,7 +166,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 
         #from_prim_impl
 
-        impl std::str::FromStr for #kind {
+        impl core::str::FromStr for #kind {
             type Err = ();
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {

@@ -7,6 +7,7 @@
 //!
 //! The version of this crate is the version of SPIR-V it contains.
 
+#![no_std]
 #![allow(non_camel_case_types)]
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
