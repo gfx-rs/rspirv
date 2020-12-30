@@ -14,6 +14,7 @@ pub enum OperandKind {
     MemoryAccess,
     KernelProfilingInfo,
     RayFlags,
+    FragmentShadingRate,
     SourceLanguage,
     ExecutionModel,
     AddressingModel,
@@ -2877,6 +2878,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One)
         ]
     ),
+    inst!(TerminateInvocation, [Shader], []),
     inst!(
         SubgroupBallotKHR,
         [SubgroupBallotKHR],
@@ -2913,14 +2915,12 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        TypeRayQueryProvisionalKHR,
-        [RayQueryProvisionalKHR],
-        [(IdResult, One)]
-    ),
-    inst!(
-        RayQueryInitializeKHR,
-        [RayQueryProvisionalKHR],
+        TraceRayKHR,
+        [RayTracingKHR],
         [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
             (IdRef, One),
             (IdRef, One),
             (IdRef, One),
@@ -2932,28 +2932,51 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        RayQueryTerminateKHR,
-        [RayQueryProvisionalKHR],
-        [(IdRef, One)]
+        ExecuteCallableKHR,
+        [RayTracingKHR],
+        [(IdRef, One), (IdRef, One)]
     ),
     inst!(
+        ConvertUToAccelerationStructureKHR,
+        [RayTracingKHR, RayQueryKHR],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(IgnoreIntersectionKHR, [RayTracingKHR], []),
+    inst!(TerminateRayKHR, [RayTracingKHR], []),
+    inst!(TypeRayQueryKHR, [RayQueryKHR], [(IdResult, One)]),
+    inst!(
+        RayQueryInitializeKHR,
+        [RayQueryKHR],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(RayQueryTerminateKHR, [RayQueryKHR], [(IdRef, One)]),
+    inst!(
         RayQueryGenerateIntersectionKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdRef, One), (IdRef, One)]
     ),
     inst!(
         RayQueryConfirmIntersectionKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdRef, One)]
     ),
     inst!(
         RayQueryProceedKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         RayQueryGetIntersectionTypeKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -3100,7 +3123,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         ReportIntersectionNV,
-        [RayTracingNV, RayTracingProvisionalKHR],
+        [RayTracingNV, RayTracingKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -3110,7 +3133,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         ReportIntersectionKHR,
-        [RayTracingNV, RayTracingProvisionalKHR],
+        [RayTracingNV, RayTracingKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -3118,42 +3141,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One)
         ]
     ),
-    inst!(
-        IgnoreIntersectionNV,
-        [RayTracingNV, RayTracingProvisionalKHR],
-        []
-    ),
-    inst!(
-        IgnoreIntersectionKHR,
-        [RayTracingNV, RayTracingProvisionalKHR],
-        []
-    ),
-    inst!(TerminateRayNV, [RayTracingNV, RayTracingProvisionalKHR], []),
-    inst!(
-        TerminateRayKHR,
-        [RayTracingNV, RayTracingProvisionalKHR],
-        []
-    ),
+    inst!(IgnoreIntersectionNV, [RayTracingNV], []),
+    inst!(TerminateRayNV, [RayTracingNV], []),
     inst!(
         TraceNV,
-        [RayTracingNV, RayTracingProvisionalKHR],
-        [
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One)
-        ]
-    ),
-    inst!(
-        TraceRayKHR,
-        [RayTracingNV, RayTracingProvisionalKHR],
+        [RayTracingNV],
         [
             (IdRef, One),
             (IdRef, One),
@@ -3170,30 +3162,17 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         TypeAccelerationStructureNV,
-        [
-            RayTracingNV,
-            RayTracingProvisionalKHR,
-            RayQueryProvisionalKHR
-        ],
+        [RayTracingNV, RayTracingKHR, RayQueryKHR],
         [(IdResult, One)]
     ),
     inst!(
         TypeAccelerationStructureKHR,
-        [
-            RayTracingNV,
-            RayTracingProvisionalKHR,
-            RayQueryProvisionalKHR
-        ],
+        [RayTracingNV, RayTracingKHR, RayQueryKHR],
         [(IdResult, One)]
     ),
     inst!(
         ExecuteCallableNV,
-        [RayTracingNV, RayTracingProvisionalKHR],
-        [(IdRef, One), (IdRef, One)]
-    ),
-    inst!(
-        ExecuteCallableKHR,
-        [RayTracingNV, RayTracingProvisionalKHR],
+        [RayTracingNV],
         [(IdRef, One), (IdRef, One)]
     ),
     inst!(
@@ -3493,6 +3472,16 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One),
             (IdRef, One)
         ]
+    ),
+    inst!(
+        FunctionPointerINTEL,
+        [FunctionPointersINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        FunctionPointerCallINTEL,
+        [FunctionPointersINTEL],
+        [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrMore)]
     ),
     inst!(DecorateString, [], [(IdRef, One), (Decoration, One)]),
     inst!(DecorateStringGOOGLE, [], [(IdRef, One), (Decoration, One)]),
@@ -4505,18 +4494,53 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        LoopControlINTEL,
+        [UnstructuredLoopControlsINTEL],
+        [(LiteralInteger, ZeroOrMore)]
+    ),
+    inst!(
+        ReadPipeBlockingINTEL,
+        [BlockingPipesINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        WritePipeBlockingINTEL,
+        [BlockingPipesINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        FPGARegINTEL,
+        [FPGARegINTEL],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         RayQueryGetRayTMinKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         RayQueryGetRayFlagsKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         RayQueryGetIntersectionTKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4526,7 +4550,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionInstanceCustomIndexKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4536,7 +4560,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionInstanceIdKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4546,7 +4570,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4556,7 +4580,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionGeometryIndexKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4566,7 +4590,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionPrimitiveIndexKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4576,7 +4600,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionBarycentricsKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4586,7 +4610,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionFrontFaceKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4596,12 +4620,12 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionCandidateAABBOpaqueKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         RayQueryGetIntersectionObjectRayDirectionKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4611,7 +4635,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionObjectRayOriginKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4621,17 +4645,17 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetWorldRayDirectionKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         RayQueryGetWorldRayOriginKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         RayQueryGetIntersectionObjectToWorldKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -4641,11 +4665,23 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         RayQueryGetIntersectionWorldToObjectKHR,
-        [RayQueryProvisionalKHR],
+        [RayQueryKHR],
         [
             (IdResultType, One),
             (IdResult, One),
             (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        AtomicFAddEXT,
+        [AtomicFloat32AddEXT, AtomicFloat64AddEXT],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdScope, One),
+            (IdMemorySemantics, One),
             (IdRef, One)
         ]
     ),

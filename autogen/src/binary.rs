@@ -24,7 +24,7 @@ fn get_decode_method(kind: &str) -> Ident {
 
 /// Returns the generated operand decoding errors for binary::Decoder by
 /// walking the given SPIR-V operand kinds `grammar`.
-pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>) -> TokenStream {
+pub fn gen_operand_decode_errors(grammar: &[structs::OperandKind]) -> TokenStream {
     let kinds: Vec<&str> = grammar
         .iter()
         .filter(|element| {
@@ -83,7 +83,7 @@ pub fn gen_operand_decode_errors(grammar: &Vec<structs::OperandKind>) -> TokenSt
 
 /// Returns the generated operand decoding methods for binary::Decoder by
 /// walking the given SPIR-V operand kinds `grammar.
-pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>) -> TokenStream {
+pub fn gen_operand_decode_methods(grammar: &[structs::OperandKind]) -> TokenStream {
     let methods = grammar.iter().filter(|element| {
         // For kinds whose values may occupy more than one word, we need to
         // implement manually.
@@ -124,12 +124,10 @@ pub fn gen_operand_decode_methods(grammar: &Vec<structs::OperandKind>) -> TokenS
 /// Returns a vector of tuples, with the first element being the enumerant
 /// symbol, and the second element being a list of parameter kinds to that
 /// enumerant.
-fn gen_operand_param_parse_methods(
-    grammar: &Vec<structs::OperandKind>,
-) -> Vec<(&str, TokenStream)> {
+fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&str, TokenStream)> {
     grammar.iter().filter(|element| {
         // Filter out all the operand kinds without any enumerants.
-        element.enumerants.len() != 0
+        !element.enumerants.is_empty()
     }).filter_map(|element| {
         // Get the symbol and all the parameters for each enumerant.
         let pairs: Vec<(&str, Vec<&str>)> =
@@ -216,7 +214,7 @@ fn gen_operand_param_parse_methods(
 
 /// Returns the generated operand parsing methods for binary::Parser by
 /// walking the given SPIR-V operand kinds `grammar`.
-pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenStream {
+pub fn gen_operand_parse_methods(grammar: &[structs::OperandKind]) -> TokenStream {
     // Operand kinds whose enumerants have parameters. For these kinds, we need
     // to decode more than just the enumerants themselves.
     let (further_parse_kinds, further_parse_methods): (Vec<_>, Vec<_>) =
@@ -306,7 +304,7 @@ pub fn gen_operand_parse_methods(grammar: &Vec<structs::OperandKind>) -> TokenSt
     }
 }
 
-pub fn gen_disas_bit_enum_operands(grammar: &Vec<structs::OperandKind>) -> TokenStream {
+pub fn gen_disas_bit_enum_operands(grammar: &[structs::OperandKind]) -> TokenStream {
     let elements = grammar
         .iter()
         .filter(|op_kind| op_kind.category == structs::Category::BitEnum)

@@ -174,7 +174,7 @@ impl binary::Consumer for Loader {
                 block.label = Some(inst);
                 self.block = Some(block)
             }
-            opcode if grammar::reflect::is_terminator(opcode) => {
+            opcode if grammar::reflect::is_block_terminator(opcode) => {
                 // Make sure the block exists here. Once the block exists,
                 // we are certain the function exists because the above checks.
                 if_ret_err!(self.block.is_none(), MismatchedTerminator);

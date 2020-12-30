@@ -6,10 +6,10 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use std::collections::BTreeMap;
 
-static GLSL_STD_450_SPEC_LINK: &'static str = "\
+static GLSL_STD_450_SPEC_LINK: &str = "\
 https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html";
 
-static OPENCL_STD_SPEC_LINK: &'static str = "\
+static OPENCL_STD_SPEC_LINK: &str = "\
 https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html";
 
 /// Returns the markdown string containing a link to the spec for the given
@@ -135,7 +135,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 
     let capabilities = capability_clauses.into_iter().map(|(k, v)| {
         let kinds = std::iter::repeat(&kind);
-        let capabilities = k.into_iter().map(|cap| as_ident(cap));
+        let capabilities = k.iter().map(|cap| as_ident(cap));
         quote! {
             #( #kinds::#v )|* => &[#( Capability::#capabilities ),*]
         }

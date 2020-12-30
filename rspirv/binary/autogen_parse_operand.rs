@@ -21,6 +21,9 @@ impl<'c, 'd> Parser<'c, 'd> {
                 self.decoder.kernel_profiling_info()?,
             )],
             GOpKind::RayFlags => vec![dr::Operand::RayFlags(self.decoder.ray_flags()?)],
+            GOpKind::FragmentShadingRate => vec![dr::Operand::FragmentShadingRate(
+                self.decoder.fragment_shading_rate()?,
+            )],
             GOpKind::SourceLanguage => {
                 vec![dr::Operand::SourceLanguage(self.decoder.source_language()?)]
             }
@@ -200,6 +203,27 @@ impl<'c, 'd> Parser<'c, 'd> {
         if loop_control.contains(spirv::LoopControl::PARTIAL_COUNT) {
             params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
         }
+        if loop_control.contains(spirv::LoopControl::INITIATION_INTERVAL_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::MAX_CONCURRENCY_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::DEPENDENCY_ARRAY_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::PIPELINE_ENABLE_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::LOOP_COALESCE_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::MAX_INTERLEAVING_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::SPECULATED_ITERATIONS_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
         Ok(params)
     }
     fn parse_memory_access_arguments(
@@ -282,6 +306,17 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::ExecutionMode::OutputPrimitivesNV => {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
+            spirv::ExecutionMode::MaxWorkgroupSizeINTEL => vec![
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+            ],
+            spirv::ExecutionMode::MaxWorkDimINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::NumSIMDWorkitemsINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             _ => vec![],
         })
     }
@@ -348,6 +383,31 @@ impl<'c, 'd> Parser<'c, 'd> {
             }
             spirv::Decoration::UserTypeGOOGLE => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            }
+            spirv::Decoration::MemoryINTEL => {
+                vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            }
+            spirv::Decoration::NumbanksINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::BankwidthINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::MaxPrivateCopiesINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::MaxReplicatesINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::MergeINTEL => vec![
+                dr::Operand::LiteralString(self.decoder.string()?),
+                dr::Operand::LiteralString(self.decoder.string()?),
+            ],
+            spirv::Decoration::BankBitsINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::ForcePow2DepthINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
             _ => vec![],
         })

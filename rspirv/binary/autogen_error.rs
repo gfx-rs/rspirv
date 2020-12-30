@@ -18,6 +18,7 @@ pub enum Error {
     MemoryAccessUnknown(usize, spirv::Word),
     KernelProfilingInfoUnknown(usize, spirv::Word),
     RayFlagsUnknown(usize, spirv::Word),
+    FragmentShadingRateUnknown(usize, spirv::Word),
     SourceLanguageUnknown(usize, spirv::Word),
     ExecutionModelUnknown(usize, spirv::Word),
     AddressingModelUnknown(usize, spirv::Word),
@@ -100,6 +101,11 @@ impl fmt::Display for Error {
             Error::RayFlagsUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind RayFlags at index {}",
+                word, index
+            ),
+            Error::FragmentShadingRateUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind FragmentShadingRate at index {}",
                 word, index
             ),
             Error::SourceLanguageUnknown(index, word) => write!(

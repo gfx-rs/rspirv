@@ -12363,6 +12363,157 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpTraceRayKHR instruction to the current block."]
+    pub fn trace_ray_khr(
+        &mut self,
+        accel: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TraceRayKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(accel),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpTraceRayKHR instruction to the current block."]
+    pub fn insert_trace_ray_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        accel: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TraceRayKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(accel),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpExecuteCallableKHR instruction to the current block."]
+    pub fn execute_callable_khr(
+        &mut self,
+        sbt_index: spirv::Word,
+        callable_data: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ExecuteCallableKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(sbt_index),
+                dr::Operand::IdRef(callable_data),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpExecuteCallableKHR instruction to the current block."]
+    pub fn insert_execute_callable_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        sbt_index: spirv::Word,
+        callable_data: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ExecuteCallableKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(sbt_index),
+                dr::Operand::IdRef(callable_data),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpConvertUToAccelerationStructureKHR instruction to the current block."]
+    pub fn convert_u_to_acceleration_structure_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        accel: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ConvertUToAccelerationStructureKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(accel)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpConvertUToAccelerationStructureKHR instruction to the current block."]
+    pub fn insert_convert_u_to_acceleration_structure_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        accel: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ConvertUToAccelerationStructureKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(accel)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpRayQueryInitializeKHR instruction to the current block."]
     pub fn ray_query_initialize_khr(
         &mut self,
@@ -13352,20 +13503,6 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
-    #[doc = "Appends an OpIgnoreIntersectionKHR instruction to the current block."]
-    pub fn ignore_intersection_khr(&mut self) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionKHR, None, None, vec![]);
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpIgnoreIntersectionKHR instruction to the current block."]
-    pub fn insert_ignore_intersection_khr(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionKHR, None, None, vec![]);
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
-    }
     #[doc = "Appends an OpTerminateRayNV instruction to the current block."]
     pub fn terminate_ray_nv(&mut self) -> BuildResult<()> {
         #[allow(unused_mut)]
@@ -13377,20 +13514,6 @@ impl Builder {
     pub fn insert_terminate_ray_nv(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(spirv::Op::TerminateRayNV, None, None, vec![]);
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpTerminateRayKHR instruction to the current block."]
-    pub fn terminate_ray_khr(&mut self) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpTerminateRayKHR instruction to the current block."]
-    pub fn insert_terminate_ray_khr(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
@@ -13469,81 +13592,6 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
-    #[doc = "Appends an OpTraceRayKHR instruction to the current block."]
-    pub fn trace_ray_khr(
-        &mut self,
-        accel: spirv::Word,
-        ray_flags: spirv::Word,
-        cull_mask: spirv::Word,
-        sbt_offset: spirv::Word,
-        sbt_stride: spirv::Word,
-        miss_index: spirv::Word,
-        ray_origin: spirv::Word,
-        ray_tmin: spirv::Word,
-        ray_direction: spirv::Word,
-        ray_tmax: spirv::Word,
-        payload_id: spirv::Word,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TraceRayKHR,
-            None,
-            None,
-            vec![
-                dr::Operand::IdRef(accel),
-                dr::Operand::IdRef(ray_flags),
-                dr::Operand::IdRef(cull_mask),
-                dr::Operand::IdRef(sbt_offset),
-                dr::Operand::IdRef(sbt_stride),
-                dr::Operand::IdRef(miss_index),
-                dr::Operand::IdRef(ray_origin),
-                dr::Operand::IdRef(ray_tmin),
-                dr::Operand::IdRef(ray_direction),
-                dr::Operand::IdRef(ray_tmax),
-                dr::Operand::IdRef(payload_id),
-            ],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpTraceRayKHR instruction to the current block."]
-    pub fn insert_trace_ray_khr(
-        &mut self,
-        insert_point: InsertPoint,
-        accel: spirv::Word,
-        ray_flags: spirv::Word,
-        cull_mask: spirv::Word,
-        sbt_offset: spirv::Word,
-        sbt_stride: spirv::Word,
-        miss_index: spirv::Word,
-        ray_origin: spirv::Word,
-        ray_tmin: spirv::Word,
-        ray_direction: spirv::Word,
-        ray_tmax: spirv::Word,
-        payload_id: spirv::Word,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TraceRayKHR,
-            None,
-            None,
-            vec![
-                dr::Operand::IdRef(accel),
-                dr::Operand::IdRef(ray_flags),
-                dr::Operand::IdRef(cull_mask),
-                dr::Operand::IdRef(sbt_offset),
-                dr::Operand::IdRef(sbt_stride),
-                dr::Operand::IdRef(miss_index),
-                dr::Operand::IdRef(ray_origin),
-                dr::Operand::IdRef(ray_tmin),
-                dr::Operand::IdRef(ray_direction),
-                dr::Operand::IdRef(ray_tmax),
-                dr::Operand::IdRef(payload_id),
-            ],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
-    }
     #[doc = "Appends an OpExecuteCallableNV instruction to the current block."]
     pub fn execute_callable_nv(
         &mut self,
@@ -13573,45 +13621,6 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ExecuteCallableNV,
-            None,
-            None,
-            vec![
-                dr::Operand::IdRef(sbt_index),
-                dr::Operand::IdRef(callable_data_id),
-            ],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpExecuteCallableKHR instruction to the current block."]
-    pub fn execute_callable_khr(
-        &mut self,
-        sbt_index: spirv::Word,
-        callable_data_id: spirv::Word,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ExecuteCallableKHR,
-            None,
-            None,
-            vec![
-                dr::Operand::IdRef(sbt_index),
-                dr::Operand::IdRef(callable_data_id),
-            ],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpExecuteCallableKHR instruction to the current block."]
-    pub fn insert_execute_callable_khr(
-        &mut self,
-        insert_point: InsertPoint,
-        sbt_index: spirv::Word,
-        callable_data_id: spirv::Word,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ExecuteCallableKHR,
             None,
             None,
             vec![
@@ -14898,6 +14907,166 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpLoopControlINTEL instruction to the current block."]
+    pub fn loop_control_intel(
+        &mut self,
+        loop_control_parameters: impl IntoIterator<Item = u32>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::LoopControlINTEL, None, None, vec![]);
+        inst.operands.extend(
+            loop_control_parameters
+                .into_iter()
+                .map(dr::Operand::LiteralInt32),
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpLoopControlINTEL instruction to the current block."]
+    pub fn insert_loop_control_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        loop_control_parameters: impl IntoIterator<Item = u32>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::LoopControlINTEL, None, None, vec![]);
+        inst.operands.extend(
+            loop_control_parameters
+                .into_iter()
+                .map(dr::Operand::LiteralInt32),
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpReadPipeBlockingINTEL instruction to the current block."]
+    pub fn read_pipe_blocking_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packet_size: spirv::Word,
+        packet_alignment: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReadPipeBlockingINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packet_size),
+                dr::Operand::IdRef(packet_alignment),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpReadPipeBlockingINTEL instruction to the current block."]
+    pub fn insert_read_pipe_blocking_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packet_size: spirv::Word,
+        packet_alignment: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReadPipeBlockingINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packet_size),
+                dr::Operand::IdRef(packet_alignment),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpWritePipeBlockingINTEL instruction to the current block."]
+    pub fn write_pipe_blocking_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packet_size: spirv::Word,
+        packet_alignment: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::WritePipeBlockingINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packet_size),
+                dr::Operand::IdRef(packet_alignment),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpWritePipeBlockingINTEL instruction to the current block."]
+    pub fn insert_write_pipe_blocking_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        packet_size: spirv::Word,
+        packet_alignment: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::WritePipeBlockingINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(packet_size),
+                dr::Operand::IdRef(packet_alignment),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFPGARegINTEL instruction to the current block."]
+    pub fn fpga_reg_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        result: spirv::Word,
+        input: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FPGARegINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(result), dr::Operand::IdRef(input)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFPGARegINTEL instruction to the current block."]
+    pub fn insert_fpga_reg_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        result: spirv::Word,
+        input: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FPGARegINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(result), dr::Operand::IdRef(input)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpRayQueryGetRayTMinKHR instruction to the current block."]
     pub fn ray_query_get_ray_t_min_khr(
         &mut self,
@@ -15618,6 +15787,59 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(ray_query),
                 dr::Operand::IdRef(intersection),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpAtomicFAddEXT instruction to the current block."]
+    pub fn atomic_f_add_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        pointer: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+        value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::AtomicFAddEXT,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(pointer),
+                dr::Operand::IdScope(memory),
+                dr::Operand::IdMemorySemantics(semantics),
+                dr::Operand::IdRef(value),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpAtomicFAddEXT instruction to the current block."]
+    pub fn insert_atomic_f_add_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        pointer: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+        value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::AtomicFAddEXT,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(pointer),
+                dr::Operand::IdScope(memory),
+                dr::Operand::IdMemorySemantics(semantics),
+                dr::Operand::IdRef(value),
             ],
         );
         self.insert_into_block(insert_point, inst)?;

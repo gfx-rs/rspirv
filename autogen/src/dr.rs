@@ -372,42 +372,60 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
     }
 }
 
+fn is_terminator_instruction(inst: &structs::Instruction) -> bool {
+    match inst.class {
+        Some(structs::Class::Reserved) => matches!(
+            inst.opname.as_str(),
+            "OpTerminateRayKHR" | "OpIgnoreIntersectionKHR"
+        ),
+        Some(structs::Class::Branch) => !matches!(inst.opname.as_str(), "OpPhi" | "OpLabel"),
+        _ => false,
+    }
+}
+
 pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
-    let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == Some(structs::Class::Terminator) ||
-        (inst.class == Some(structs::Class::Branch) && inst.opname != "OpPhi" && inst.opname != "OpLabel")
-    }).map(|inst| {
-        let params = get_param_list(&inst.operands, false, kinds);
-        let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-        let opcode = as_ident(&inst.opname[2..]);
-        let comment = format!("Appends an Op{} instruction and ends the current block.", opcode);
-        let insert_comment = format!("Insert an Op{} instruction and ends the current block.", opcode);
-        let name = get_function_name(&inst.opname);
-        let init = get_init_list(&inst.operands);
-        let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
+    let elements = grammar
+        .instructions
+        .iter()
+        .filter(|inst| is_terminator_instruction(inst))
+        .map(|inst| {
+            let params = get_param_list(&inst.operands, false, kinds);
+            let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
+            let opcode = as_ident(&inst.opname[2..]);
+            let comment = format!(
+                "Appends an Op{} instruction and ends the current block.",
+                opcode
+            );
+            let insert_comment = format!(
+                "Insert an Op{} instruction and ends the current block.",
+                opcode
+            );
+            let name = get_function_name(&inst.opname);
+            let init = get_init_list(&inst.operands);
+            let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
 
-        quote! {
-            #[doc = #comment]
-            pub fn #name(&mut self,#(#params),*) -> BuildResult<()> {
-                #[allow(unused_mut)]
-                let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, None, None, vec![#(#init),*]);
-                #(#extras)*
-                self.end_block(inst)
-            }
+            quote! {
+                #[doc = #comment]
+                pub fn #name(&mut self,#(#params),*) -> BuildResult<()> {
+                    #[allow(unused_mut)]
+                    let mut inst = dr::Instruction::new(
+                        spirv::Op::#opcode, None, None, vec![#(#init),*]);
+                    #(#extras)*
+                    self.end_block(inst)
+                }
 
-            #[doc = #insert_comment]
-            pub fn #insert_name(&mut self, insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
-                #[allow(unused_mut)]
-                let mut inst = dr::Instruction::new(
-                    spirv::Op::#opcode, None, None, vec![#(#init),*]);
-                #(#extras)*
-                self.insert_end_block(insert_point, inst)
+                #[doc = #insert_comment]
+                pub fn #insert_name(&mut self, insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
+                    #[allow(unused_mut)]
+                    let mut inst = dr::Instruction::new(
+                        spirv::Op::#opcode, None, None, vec![#(#init),*]);
+                    #(#extras)*
+                    self.insert_end_block(insert_point, inst)
+                }
             }
-        }
-    });
+        });
     quote! {
         impl Builder {
             #(#elements)*
@@ -429,8 +447,9 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
             (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall") ||
             inst.class == Some(Debug) ||
             inst.class == Some(Annotation) ||
-            inst.class == Some(Terminator) ||
-            (inst.class == Some(Branch) && inst.opname != "OpPhi") ||
+            is_terminator_instruction(inst) ||
+            // Labels should not be inserted but attached instead.
+            inst.opname == "OpLabel" ||
             inst.class == Some(ModeSetting) ||
             inst.class == Some(Exclude) ||
             inst.opname == "OpTypeForwardPointer" ||

@@ -6,16 +6,17 @@ pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u8 = 1u8;
 pub const MINOR_VERSION: u8 = 5u8;
-pub const REVISION: u8 = 3u8;
-bitflags! { # [ doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE = 256u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE = 512u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL = 1024u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL = 2048u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; const SIGN_EXTEND = 4096u32 ; const ZERO_EXTEND = 8192u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_control_a_function_control)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct FunctionControl : u32 { const NONE = 0u32 ; const INLINE = 1u32 ; const DONT_INLINE = 2u32 ; const PURE = 4u32 ; const CONST = 8u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct MemorySemantics : u32 { const RELAXED = 0u32 ; const NONE = 0u32 ; const ACQUIRE = 2u32 ; const RELEASE = 4u32 ; const ACQUIRE_RELEASE = 8u32 ; const SEQUENTIALLY_CONSISTENT = 16u32 ; const UNIFORM_MEMORY = 64u32 ; const SUBGROUP_MEMORY = 128u32 ; const WORKGROUP_MEMORY = 256u32 ; const CROSS_WORKGROUP_MEMORY = 512u32 ; const ATOMIC_COUNTER_MEMORY = 1024u32 ; const IMAGE_MEMORY = 2048u32 ; const OUTPUT_MEMORY = 4096u32 ; const OUTPUT_MEMORY_KHR = 4096u32 ; const MAKE_AVAILABLE = 8192u32 ; const MAKE_AVAILABLE_KHR = 8192u32 ; const MAKE_VISIBLE = 16384u32 ; const MAKE_VISIBLE_KHR = 16384u32 ; const VOLATILE = 32768u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_access_a_memory_access)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct MemoryAccess : u32 { const NONE = 0u32 ; const VOLATILE = 1u32 ; const ALIGNED = 2u32 ; const NONTEMPORAL = 4u32 ; const MAKE_POINTER_AVAILABLE = 8u32 ; const MAKE_POINTER_AVAILABLE_KHR = 8u32 ; const MAKE_POINTER_VISIBLE = 16u32 ; const MAKE_POINTER_VISIBLE_KHR = 16u32 ; const NON_PRIVATE_POINTER = 32u32 ; const NON_PRIVATE_POINTER_KHR = 32u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct KernelProfilingInfo : u32 { const NONE = 0u32 ; const CMD_EXEC_TIME = 1u32 ; } }
-bitflags! { # [ doc = "SPIR-V operand kind: [RayFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_flags_a_ray_flags)" ] # [ cfg_attr ( feature = "serialize" , derive ( serde :: Serialize ) ) ] # [ cfg_attr ( feature = "deserialize" , derive ( serde :: Deserialize ) ) ] pub struct RayFlags : u32 { const NONE_KHR = 0u32 ; const OPAQUE_KHR = 1u32 ; const NO_OPAQUE_KHR = 2u32 ; const TERMINATE_ON_FIRST_HIT_KHR = 4u32 ; const SKIP_CLOSEST_HIT_SHADER_KHR = 8u32 ; const CULL_BACK_FACING_TRIANGLES_KHR = 16u32 ; const CULL_FRONT_FACING_TRIANGLES_KHR = 32u32 ; const CULL_OPAQUE_KHR = 64u32 ; const CULL_NO_OPAQUE_KHR = 128u32 ; const SKIP_TRIANGLES_KHR = 256u32 ; const SKIP_AAB_BS_KHR = 512u32 ; } }
+pub const REVISION: u8 = 4u8;
+bitflags! { # [doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE = 256u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE = 512u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL = 1024u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL = 2048u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; const SIGN_EXTEND = 4096u32 ; const ZERO_EXTEND = 8192u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; const INITIATION_INTERVAL_INTEL = 65536u32 ; const MAX_CONCURRENCY_INTEL = 131072u32 ; const DEPENDENCY_ARRAY_INTEL = 262144u32 ; const PIPELINE_ENABLE_INTEL = 524288u32 ; const LOOP_COALESCE_INTEL = 1048576u32 ; const MAX_INTERLEAVING_INTEL = 2097152u32 ; const SPECULATED_ITERATIONS_INTEL = 4194304u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_control_a_function_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FunctionControl : u32 { const NONE = 0u32 ; const INLINE = 1u32 ; const DONT_INLINE = 2u32 ; const PURE = 4u32 ; const CONST = 8u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemorySemantics : u32 { const RELAXED = 0u32 ; const NONE = 0u32 ; const ACQUIRE = 2u32 ; const RELEASE = 4u32 ; const ACQUIRE_RELEASE = 8u32 ; const SEQUENTIALLY_CONSISTENT = 16u32 ; const UNIFORM_MEMORY = 64u32 ; const SUBGROUP_MEMORY = 128u32 ; const WORKGROUP_MEMORY = 256u32 ; const CROSS_WORKGROUP_MEMORY = 512u32 ; const ATOMIC_COUNTER_MEMORY = 1024u32 ; const IMAGE_MEMORY = 2048u32 ; const OUTPUT_MEMORY = 4096u32 ; const OUTPUT_MEMORY_KHR = 4096u32 ; const MAKE_AVAILABLE = 8192u32 ; const MAKE_AVAILABLE_KHR = 8192u32 ; const MAKE_VISIBLE = 16384u32 ; const MAKE_VISIBLE_KHR = 16384u32 ; const VOLATILE = 32768u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_access_a_memory_access)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemoryAccess : u32 { const NONE = 0u32 ; const VOLATILE = 1u32 ; const ALIGNED = 2u32 ; const NONTEMPORAL = 4u32 ; const MAKE_POINTER_AVAILABLE = 8u32 ; const MAKE_POINTER_AVAILABLE_KHR = 8u32 ; const MAKE_POINTER_VISIBLE = 16u32 ; const MAKE_POINTER_VISIBLE_KHR = 16u32 ; const NON_PRIVATE_POINTER = 32u32 ; const NON_PRIVATE_POINTER_KHR = 32u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct KernelProfilingInfo : u32 { const NONE = 0u32 ; const CMD_EXEC_TIME = 1u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [RayFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_flags_a_ray_flags)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct RayFlags : u32 { const NONE_KHR = 0u32 ; const OPAQUE_KHR = 1u32 ; const NO_OPAQUE_KHR = 2u32 ; const TERMINATE_ON_FIRST_HIT_KHR = 4u32 ; const SKIP_CLOSEST_HIT_SHADER_KHR = 8u32 ; const CULL_BACK_FACING_TRIANGLES_KHR = 16u32 ; const CULL_FRONT_FACING_TRIANGLES_KHR = 32u32 ; const CULL_OPAQUE_KHR = 64u32 ; const CULL_NO_OPAQUE_KHR = 128u32 ; const SKIP_TRIANGLES_KHR = 256u32 ; const SKIP_AAB_BS_KHR = 512u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [FragmentShadingRate](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fragment_shading_rate_a_fragment_shading_rate)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FragmentShadingRate : u32 { const VERTICAL2_PIXELS = 1u32 ; const VERTICAL4_PIXELS = 2u32 ; const HORIZONTAL2_PIXELS = 4u32 ; const HORIZONTAL4_PIXELS = 8u32 ; } }
 #[doc = "/// SPIR-V operand kind: [SourceLanguage](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_source_language_a_source_language)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -113,10 +114,7 @@ impl ExecutionModel {
             | ExecutionModel::AnyHitNV
             | ExecutionModel::ClosestHitNV
             | ExecutionModel::MissNV
-            | ExecutionModel::CallableNV => &[
-                Capability::RayTracingNV,
-                Capability::RayTracingProvisionalKHR,
-            ],
+            | ExecutionModel::CallableNV => &[Capability::RayTracingNV, Capability::RayTracingKHR],
             ExecutionModel::Vertex | ExecutionModel::Fragment | ExecutionModel::GLCompute => {
                 &[Capability::Shader]
             }
@@ -345,6 +343,10 @@ pub enum ExecutionMode {
     SampleInterlockUnorderedEXT = 5369u32,
     ShadingRateInterlockOrderedEXT = 5370u32,
     ShadingRateInterlockUnorderedEXT = 5371u32,
+    MaxWorkgroupSizeINTEL = 5893u32,
+    MaxWorkDimINTEL = 5894u32,
+    NoGlobalOffsetINTEL = 5895u32,
+    NumSIMDWorkitemsINTEL = 5896u32,
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionMode {
@@ -355,6 +357,7 @@ impl ExecutionMode {
             ExecutionMode::DerivativeGroupQuadsNV => &[Capability::ComputeDerivativeGroupQuadsNV],
             ExecutionMode::DenormFlushToZero => &[Capability::DenormFlushToZero],
             ExecutionMode::DenormPreserve => &[Capability::DenormPreserve],
+            ExecutionMode::NumSIMDWorkitemsINTEL => &[Capability::FPGAKernelAttributesINTEL],
             ExecutionMode::PixelInterlockOrderedEXT | ExecutionMode::PixelInterlockUnorderedEXT => {
                 &[Capability::FragmentShaderPixelInterlockEXT]
             }
@@ -386,6 +389,9 @@ impl ExecutionMode {
             | ExecutionMode::Initializer
             | ExecutionMode::Finalizer
             | ExecutionMode::LocalSizeHintId => &[Capability::Kernel],
+            ExecutionMode::MaxWorkgroupSizeINTEL
+            | ExecutionMode::MaxWorkDimINTEL
+            | ExecutionMode::NoGlobalOffsetINTEL => &[Capability::KernelAttributesINTEL],
             ExecutionMode::OutputLinesNV
             | ExecutionMode::OutputPrimitivesNV
             | ExecutionMode::OutputTrianglesNV => &[Capability::MeshShadingNV],
@@ -477,6 +483,10 @@ impl num_traits::FromPrimitive for ExecutionMode {
             5369u32 => Self::SampleInterlockUnorderedEXT,
             5370u32 => Self::ShadingRateInterlockOrderedEXT,
             5371u32 => Self::ShadingRateInterlockUnorderedEXT,
+            5893u32 => Self::MaxWorkgroupSizeINTEL,
+            5894u32 => Self::MaxWorkDimINTEL,
+            5895u32 => Self::NoGlobalOffsetINTEL,
+            5896u32 => Self::NumSIMDWorkitemsINTEL,
             _ => return None,
         })
     }
@@ -544,6 +554,10 @@ impl std::str::FromStr for ExecutionMode {
             "SampleInterlockUnorderedEXT" => Ok(Self::SampleInterlockUnorderedEXT),
             "ShadingRateInterlockOrderedEXT" => Ok(Self::ShadingRateInterlockOrderedEXT),
             "ShadingRateInterlockUnorderedEXT" => Ok(Self::ShadingRateInterlockUnorderedEXT),
+            "MaxWorkgroupSizeINTEL" => Ok(Self::MaxWorkgroupSizeINTEL),
+            "MaxWorkDimINTEL" => Ok(Self::MaxWorkDimINTEL),
+            "NoGlobalOffsetINTEL" => Ok(Self::NoGlobalOffsetINTEL),
+            "NumSIMDWorkitemsINTEL" => Ok(Self::NumSIMDWorkitemsINTEL),
             _ => Err(()),
         }
     }
@@ -574,6 +588,7 @@ pub enum StorageClass {
     IncomingRayPayloadNV = 5342u32,
     ShaderRecordBufferNV = 5343u32,
     PhysicalStorageBuffer = 5349u32,
+    CodeSectionINTEL = 5605u32,
 }
 #[allow(non_upper_case_globals)]
 impl StorageClass {
@@ -593,6 +608,7 @@ impl StorageClass {
             | StorageClass::Function
             | StorageClass::Image => &[],
             StorageClass::AtomicCounter => &[Capability::AtomicStorage],
+            StorageClass::CodeSectionINTEL => &[Capability::FunctionPointersINTEL],
             StorageClass::Generic => &[Capability::GenericPointer],
             StorageClass::PhysicalStorageBuffer => &[Capability::PhysicalStorageBufferAddresses],
             StorageClass::CallableDataNV
@@ -600,10 +616,9 @@ impl StorageClass {
             | StorageClass::RayPayloadNV
             | StorageClass::HitAttributeNV
             | StorageClass::IncomingRayPayloadNV
-            | StorageClass::ShaderRecordBufferNV => &[
-                Capability::RayTracingNV,
-                Capability::RayTracingProvisionalKHR,
-            ],
+            | StorageClass::ShaderRecordBufferNV => {
+                &[Capability::RayTracingNV, Capability::RayTracingKHR]
+            }
             StorageClass::Uniform
             | StorageClass::Output
             | StorageClass::Private
@@ -636,6 +651,7 @@ impl num_traits::FromPrimitive for StorageClass {
             5342u32 => Self::IncomingRayPayloadNV,
             5343u32 => Self::ShaderRecordBufferNV,
             5349u32 => Self::PhysicalStorageBuffer,
+            5605u32 => Self::CodeSectionINTEL,
             _ => return None,
         })
     }
@@ -674,6 +690,7 @@ impl std::str::FromStr for StorageClass {
             "ShaderRecordBufferKHR" => Ok(Self::ShaderRecordBufferNV),
             "PhysicalStorageBuffer" => Ok(Self::PhysicalStorageBuffer),
             "PhysicalStorageBufferEXT" => Ok(Self::PhysicalStorageBuffer),
+            "CodeSectionINTEL" => Ok(Self::CodeSectionINTEL),
             _ => Err(()),
         }
     }
@@ -882,12 +899,15 @@ pub enum ImageFormat {
     Rg8ui = 37u32,
     R16ui = 38u32,
     R8ui = 39u32,
+    R64ui = 40u32,
+    R64i = 41u32,
 }
 #[allow(non_upper_case_globals)]
 impl ImageFormat {
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             ImageFormat::Unknown => &[],
+            ImageFormat::R64ui | ImageFormat::R64i => &[Capability::Int64ImageEXT],
             ImageFormat::Rgba32f
             | ImageFormat::Rgba16f
             | ImageFormat::R32f
@@ -974,6 +994,8 @@ impl num_traits::FromPrimitive for ImageFormat {
             37u32 => Self::Rg8ui,
             38u32 => Self::R16ui,
             39u32 => Self::R8ui,
+            40u32 => Self::R64ui,
+            41u32 => Self::R64i,
             _ => return None,
         })
     }
@@ -1025,6 +1047,8 @@ impl std::str::FromStr for ImageFormat {
             "Rg8ui" => Ok(Self::Rg8ui),
             "R16ui" => Ok(Self::R16ui),
             "R8ui" => Ok(Self::R8ui),
+            "R64ui" => Ok(Self::R64ui),
+            "R64i" => Ok(Self::R64i),
             _ => Err(()),
         }
     }
@@ -1509,9 +1533,22 @@ pub enum Decoration {
     NonUniform = 5300u32,
     RestrictPointer = 5355u32,
     AliasedPointer = 5356u32,
+    ReferencedIndirectlyINTEL = 5602u32,
     CounterBuffer = 5634u32,
     UserSemantic = 5635u32,
     UserTypeGOOGLE = 5636u32,
+    RegisterINTEL = 5825u32,
+    MemoryINTEL = 5826u32,
+    NumbanksINTEL = 5827u32,
+    BankwidthINTEL = 5828u32,
+    MaxPrivateCopiesINTEL = 5829u32,
+    SinglepumpINTEL = 5830u32,
+    DoublepumpINTEL = 5831u32,
+    MaxReplicatesINTEL = 5832u32,
+    SimpleDualPortINTEL = 5833u32,
+    MergeINTEL = 5834u32,
+    BankBitsINTEL = 5835u32,
+    ForcePow2DepthINTEL = 5836u32,
 }
 #[allow(non_upper_case_globals)]
 impl Decoration {
@@ -1537,9 +1574,22 @@ impl Decoration {
             | Decoration::UserSemantic
             | Decoration::UserTypeGOOGLE => &[],
             Decoration::MaxByteOffset | Decoration::MaxByteOffsetId => &[Capability::Addresses],
+            Decoration::RegisterINTEL
+            | Decoration::MemoryINTEL
+            | Decoration::NumbanksINTEL
+            | Decoration::BankwidthINTEL
+            | Decoration::MaxPrivateCopiesINTEL
+            | Decoration::SinglepumpINTEL
+            | Decoration::DoublepumpINTEL
+            | Decoration::MaxReplicatesINTEL
+            | Decoration::SimpleDualPortINTEL
+            | Decoration::MergeINTEL
+            | Decoration::BankBitsINTEL
+            | Decoration::ForcePow2DepthINTEL => &[Capability::FPGAMemoryAttributesINTEL],
             Decoration::PerVertexNV => &[Capability::FragmentBarycentricNV],
             Decoration::PassthroughNV => &[Capability::GeometryShaderPassthroughNV],
             Decoration::Stream => &[Capability::GeometryStreams],
+            Decoration::ReferencedIndirectlyINTEL => &[Capability::IndirectReferencesINTEL],
             Decoration::InputAttachmentIndex => &[Capability::InputAttachment],
             Decoration::CPacked
             | Decoration::Constant
@@ -1653,9 +1703,22 @@ impl num_traits::FromPrimitive for Decoration {
             5300u32 => Self::NonUniform,
             5355u32 => Self::RestrictPointer,
             5356u32 => Self::AliasedPointer,
+            5602u32 => Self::ReferencedIndirectlyINTEL,
             5634u32 => Self::CounterBuffer,
             5635u32 => Self::UserSemantic,
             5636u32 => Self::UserTypeGOOGLE,
+            5825u32 => Self::RegisterINTEL,
+            5826u32 => Self::MemoryINTEL,
+            5827u32 => Self::NumbanksINTEL,
+            5828u32 => Self::BankwidthINTEL,
+            5829u32 => Self::MaxPrivateCopiesINTEL,
+            5830u32 => Self::SinglepumpINTEL,
+            5831u32 => Self::DoublepumpINTEL,
+            5832u32 => Self::MaxReplicatesINTEL,
+            5833u32 => Self::SimpleDualPortINTEL,
+            5834u32 => Self::MergeINTEL,
+            5835u32 => Self::BankBitsINTEL,
+            5836u32 => Self::ForcePow2DepthINTEL,
             _ => return None,
         })
     }
@@ -1731,11 +1794,24 @@ impl std::str::FromStr for Decoration {
             "RestrictPointerEXT" => Ok(Self::RestrictPointer),
             "AliasedPointer" => Ok(Self::AliasedPointer),
             "AliasedPointerEXT" => Ok(Self::AliasedPointer),
+            "ReferencedIndirectlyINTEL" => Ok(Self::ReferencedIndirectlyINTEL),
             "CounterBuffer" => Ok(Self::CounterBuffer),
             "HlslCounterBufferGOOGLE" => Ok(Self::CounterBuffer),
             "UserSemantic" => Ok(Self::UserSemantic),
             "HlslSemanticGOOGLE" => Ok(Self::UserSemantic),
             "UserTypeGOOGLE" => Ok(Self::UserTypeGOOGLE),
+            "RegisterINTEL" => Ok(Self::RegisterINTEL),
+            "MemoryINTEL" => Ok(Self::MemoryINTEL),
+            "NumbanksINTEL" => Ok(Self::NumbanksINTEL),
+            "BankwidthINTEL" => Ok(Self::BankwidthINTEL),
+            "MaxPrivateCopiesINTEL" => Ok(Self::MaxPrivateCopiesINTEL),
+            "SinglepumpINTEL" => Ok(Self::SinglepumpINTEL),
+            "DoublepumpINTEL" => Ok(Self::DoublepumpINTEL),
+            "MaxReplicatesINTEL" => Ok(Self::MaxReplicatesINTEL),
+            "SimpleDualPortINTEL" => Ok(Self::SimpleDualPortINTEL),
+            "MergeINTEL" => Ok(Self::MergeINTEL),
+            "BankBitsINTEL" => Ok(Self::BankBitsINTEL),
+            "ForcePow2DepthINTEL" => Ok(Self::ForcePow2DepthINTEL),
             _ => Err(()),
         }
     }
@@ -1795,8 +1871,10 @@ pub enum BuiltIn {
     BaseVertex = 4424u32,
     BaseInstance = 4425u32,
     DrawIndex = 4426u32,
+    PrimitiveShadingRateKHR = 4432u32,
     DeviceIndex = 4438u32,
     ViewIndex = 4440u32,
+    ShadingRateKHR = 4444u32,
     BaryCoordNoPerspAMD = 4992u32,
     BaryCoordNoPerspCentroidAMD = 4993u32,
     BaryCoordNoPerspSampleAMD = 4994u32,
@@ -1863,7 +1941,6 @@ impl BuiltIn {
     pub const InstanceCustomIndexKHR: Self = Self::InstanceCustomIndexNV;
     pub const ObjectToWorldKHR: Self = Self::ObjectToWorldNV;
     pub const WorldToObjectKHR: Self = Self::WorldToObjectNV;
-    pub const HitTKHR: Self = Self::HitTNV;
     pub const HitKindKHR: Self = Self::HitKindNV;
     pub const IncomingRayFlagsKHR: Self = Self::IncomingRayFlagsNV;
     pub fn required_capabilities(self) -> &'static [Capability] {
@@ -1893,17 +1970,22 @@ impl BuiltIn {
                 &[Capability::FragmentDensityEXT, Capability::ShadingRateNV]
             }
             BuiltIn::FullyCoveredEXT => &[Capability::FragmentFullyCoveredEXT],
+            BuiltIn::PrimitiveShadingRateKHR | BuiltIn::ShadingRateKHR => {
+                &[Capability::FragmentShadingRateKHR]
+            }
             BuiltIn::Layer => &[
                 Capability::Geometry,
                 Capability::ShaderLayer,
                 Capability::ShaderViewportIndexLayerEXT,
+                Capability::MeshShadingNV,
             ],
             BuiltIn::InvocationId => &[Capability::Geometry, Capability::Tessellation],
             BuiltIn::PrimitiveId => &[
                 Capability::Geometry,
                 Capability::Tessellation,
                 Capability::RayTracingNV,
-                Capability::RayTracingProvisionalKHR,
+                Capability::RayTracingKHR,
+                Capability::MeshShadingNV,
             ],
             BuiltIn::WorkDim
             | BuiltIn::GlobalSize
@@ -1933,10 +2015,13 @@ impl BuiltIn {
                 Capability::MultiViewport,
                 Capability::ShaderViewportIndex,
                 Capability::ShaderViewportIndexLayerEXT,
+                Capability::MeshShadingNV,
             ],
             BuiltIn::PositionPerViewNV | BuiltIn::ViewportMaskPerViewNV => {
                 &[Capability::PerViewAttributesNV, Capability::MeshShadingNV]
             }
+            BuiltIn::RayGeometryIndexKHR => &[Capability::RayTracingKHR],
+            BuiltIn::HitTNV => &[Capability::RayTracingNV],
             BuiltIn::LaunchIdNV
             | BuiltIn::LaunchSizeNV
             | BuiltIn::WorldRayOriginNV
@@ -1948,13 +2033,8 @@ impl BuiltIn {
             | BuiltIn::InstanceCustomIndexNV
             | BuiltIn::ObjectToWorldNV
             | BuiltIn::WorldToObjectNV
-            | BuiltIn::HitTNV
             | BuiltIn::HitKindNV
-            | BuiltIn::IncomingRayFlagsNV => &[
-                Capability::RayTracingNV,
-                Capability::RayTracingProvisionalKHR,
-            ],
-            BuiltIn::RayGeometryIndexKHR => &[Capability::RayTracingProvisionalKHR],
+            | BuiltIn::IncomingRayFlagsNV => &[Capability::RayTracingNV, Capability::RayTracingKHR],
             BuiltIn::SampleId | BuiltIn::SamplePosition => &[Capability::SampleRateShading],
             BuiltIn::Position
             | BuiltIn::PointSize
@@ -2046,8 +2126,10 @@ impl num_traits::FromPrimitive for BuiltIn {
             4424u32 => Self::BaseVertex,
             4425u32 => Self::BaseInstance,
             4426u32 => Self::DrawIndex,
+            4432u32 => Self::PrimitiveShadingRateKHR,
             4438u32 => Self::DeviceIndex,
             4440u32 => Self::ViewIndex,
+            4444u32 => Self::ShadingRateKHR,
             4992u32 => Self::BaryCoordNoPerspAMD,
             4993u32 => Self::BaryCoordNoPerspCentroidAMD,
             4994u32 => Self::BaryCoordNoPerspSampleAMD,
@@ -2158,8 +2240,10 @@ impl std::str::FromStr for BuiltIn {
             "BaseVertex" => Ok(Self::BaseVertex),
             "BaseInstance" => Ok(Self::BaseInstance),
             "DrawIndex" => Ok(Self::DrawIndex),
+            "PrimitiveShadingRateKHR" => Ok(Self::PrimitiveShadingRateKHR),
             "DeviceIndex" => Ok(Self::DeviceIndex),
             "ViewIndex" => Ok(Self::ViewIndex),
+            "ShadingRateKHR" => Ok(Self::ShadingRateKHR),
             "BaryCoordNoPerspAMD" => Ok(Self::BaryCoordNoPerspAMD),
             "BaryCoordNoPerspCentroidAMD" => Ok(Self::BaryCoordNoPerspCentroidAMD),
             "BaryCoordNoPerspSampleAMD" => Ok(Self::BaryCoordNoPerspSampleAMD),
@@ -2211,7 +2295,6 @@ impl std::str::FromStr for BuiltIn {
             "WorldToObjectNV" => Ok(Self::WorldToObjectNV),
             "WorldToObjectKHR" => Ok(Self::WorldToObjectNV),
             "HitTNV" => Ok(Self::HitTNV),
-            "HitTKHR" => Ok(Self::HitTNV),
             "HitKindNV" => Ok(Self::HitKindNV),
             "HitKindKHR" => Ok(Self::HitKindNV),
             "IncomingRayFlagsNV" => Ok(Self::IncomingRayFlagsNV),
@@ -2249,7 +2332,7 @@ impl Scope {
             | Scope::Workgroup
             | Scope::Subgroup
             | Scope::Invocation => &[],
-            Scope::ShaderCallKHR => &[Capability::RayTracingProvisionalKHR],
+            Scope::ShaderCallKHR => &[Capability::RayTracingKHR],
             Scope::QueueFamily => &[Capability::VulkanMemoryModel],
         }
     }
@@ -2475,6 +2558,7 @@ pub enum Capability {
     GroupNonUniformQuad = 68u32,
     ShaderLayer = 69u32,
     ShaderViewportIndex = 70u32,
+    FragmentShadingRateKHR = 4422u32,
     SubgroupBallotKHR = 4423u32,
     DrawParameters = 4427u32,
     SubgroupVoteKHR = 4431u32,
@@ -2497,12 +2581,15 @@ pub enum Capability {
     RoundingModeRTE = 4467u32,
     RoundingModeRTZ = 4468u32,
     RayQueryProvisionalKHR = 4471u32,
-    RayTraversalPrimitiveCullingProvisionalKHR = 4478u32,
+    RayQueryKHR = 4472u32,
+    RayTraversalPrimitiveCullingKHR = 4478u32,
+    RayTracingKHR = 4479u32,
     Float16ImageAMD = 5008u32,
     ImageGatherBiasLodAMD = 5009u32,
     FragmentMaskAMD = 5010u32,
     StencilExportEXT = 5013u32,
     ImageReadWriteLodAMD = 5015u32,
+    Int64ImageEXT = 5016u32,
     ShaderClockKHR = 5055u32,
     SampleMaskOverrideCoverageNV = 5249u32,
     GeometryShaderPassthroughNV = 5251u32,
@@ -2546,9 +2633,20 @@ pub enum Capability {
     SubgroupImageBlockIOINTEL = 5570u32,
     SubgroupImageMediaBlockIOINTEL = 5579u32,
     IntegerFunctions2INTEL = 5584u32,
+    FunctionPointersINTEL = 5603u32,
+    IndirectReferencesINTEL = 5604u32,
     SubgroupAvcMotionEstimationINTEL = 5696u32,
     SubgroupAvcMotionEstimationIntraINTEL = 5697u32,
     SubgroupAvcMotionEstimationChromaINTEL = 5698u32,
+    FPGAMemoryAttributesINTEL = 5824u32,
+    UnstructuredLoopControlsINTEL = 5886u32,
+    FPGALoopControlsINTEL = 5888u32,
+    KernelAttributesINTEL = 5892u32,
+    FPGAKernelAttributesINTEL = 5897u32,
+    BlockingPipesINTEL = 5945u32,
+    FPGARegINTEL = 5948u32,
+    AtomicFloat32AddEXT = 6033u32,
+    AtomicFloat64AddEXT = 6034u32,
 }
 #[allow(non_upper_case_globals)]
 impl Capability {
@@ -2624,9 +2722,18 @@ impl Capability {
             | Capability::SubgroupBufferBlockIOINTEL
             | Capability::SubgroupImageBlockIOINTEL
             | Capability::SubgroupImageMediaBlockIOINTEL
+            | Capability::FunctionPointersINTEL
+            | Capability::IndirectReferencesINTEL
             | Capability::SubgroupAvcMotionEstimationINTEL
             | Capability::SubgroupAvcMotionEstimationIntraINTEL
-            | Capability::SubgroupAvcMotionEstimationChromaINTEL => &[],
+            | Capability::SubgroupAvcMotionEstimationChromaINTEL
+            | Capability::FPGAMemoryAttributesINTEL
+            | Capability::UnstructuredLoopControlsINTEL
+            | Capability::FPGALoopControlsINTEL
+            | Capability::KernelAttributesINTEL
+            | Capability::FPGAKernelAttributesINTEL
+            | Capability::BlockingPipesINTEL
+            | Capability::FPGARegINTEL => &[],
             Capability::GenericPointer => &[Capability::Addresses],
             Capability::SubgroupDispatch => &[Capability::DeviceEnqueue],
             Capability::GeometryPointSize
@@ -2661,10 +2768,9 @@ impl Capability {
             Capability::PerViewAttributesNV => &[Capability::MultiView],
             Capability::ShaderViewportIndexLayerEXT => &[Capability::MultiViewport],
             Capability::PipeStorage => &[Capability::Pipes],
-            Capability::RayTraversalPrimitiveCullingProvisionalKHR => &[
-                Capability::RayQueryProvisionalKHR,
-                Capability::RayTracingProvisionalKHR,
-            ],
+            Capability::RayTraversalPrimitiveCullingKHR => {
+                &[Capability::RayQueryKHR, Capability::RayTracingKHR]
+            }
             Capability::SampleMaskOverrideCoverageNV => &[Capability::SampleRateShading],
             Capability::Image1D => &[Capability::Sampled1D],
             Capability::ImageBuffer | Capability::UniformTexelBufferArrayDynamicIndexing => {
@@ -2700,15 +2806,19 @@ impl Capability {
             | Capability::TransformFeedback
             | Capability::StorageImageReadWithoutFormat
             | Capability::StorageImageWriteWithoutFormat
+            | Capability::FragmentShadingRateKHR
             | Capability::DrawParameters
             | Capability::MultiView
             | Capability::VariablePointersStorageBuffer
             | Capability::RayQueryProvisionalKHR
+            | Capability::RayQueryKHR
+            | Capability::RayTracingKHR
             | Capability::Float16ImageAMD
             | Capability::ImageGatherBiasLodAMD
             | Capability::FragmentMaskAMD
             | Capability::StencilExportEXT
             | Capability::ImageReadWriteLodAMD
+            | Capability::Int64ImageEXT
             | Capability::ShaderClockKHR
             | Capability::FragmentFullyCoveredEXT
             | Capability::MeshShadingNV
@@ -2724,7 +2834,9 @@ impl Capability {
             | Capability::ShaderSMBuiltinsNV
             | Capability::FragmentShaderPixelInterlockEXT
             | Capability::DemoteToHelperInvocationEXT
-            | Capability::IntegerFunctions2INTEL => &[Capability::Shader],
+            | Capability::IntegerFunctions2INTEL
+            | Capability::AtomicFloat32AddEXT
+            | Capability::AtomicFloat64AddEXT => &[Capability::Shader],
             Capability::UniformBufferArrayNonUniformIndexing
             | Capability::SampledImageArrayNonUniformIndexing
             | Capability::StorageBufferArrayNonUniformIndexing
@@ -2814,6 +2926,7 @@ impl num_traits::FromPrimitive for Capability {
             68u32 => Self::GroupNonUniformQuad,
             69u32 => Self::ShaderLayer,
             70u32 => Self::ShaderViewportIndex,
+            4422u32 => Self::FragmentShadingRateKHR,
             4423u32 => Self::SubgroupBallotKHR,
             4427u32 => Self::DrawParameters,
             4431u32 => Self::SubgroupVoteKHR,
@@ -2836,12 +2949,15 @@ impl num_traits::FromPrimitive for Capability {
             4467u32 => Self::RoundingModeRTE,
             4468u32 => Self::RoundingModeRTZ,
             4471u32 => Self::RayQueryProvisionalKHR,
-            4478u32 => Self::RayTraversalPrimitiveCullingProvisionalKHR,
+            4472u32 => Self::RayQueryKHR,
+            4478u32 => Self::RayTraversalPrimitiveCullingKHR,
+            4479u32 => Self::RayTracingKHR,
             5008u32 => Self::Float16ImageAMD,
             5009u32 => Self::ImageGatherBiasLodAMD,
             5010u32 => Self::FragmentMaskAMD,
             5013u32 => Self::StencilExportEXT,
             5015u32 => Self::ImageReadWriteLodAMD,
+            5016u32 => Self::Int64ImageEXT,
             5055u32 => Self::ShaderClockKHR,
             5249u32 => Self::SampleMaskOverrideCoverageNV,
             5251u32 => Self::GeometryShaderPassthroughNV,
@@ -2885,9 +3001,20 @@ impl num_traits::FromPrimitive for Capability {
             5570u32 => Self::SubgroupImageBlockIOINTEL,
             5579u32 => Self::SubgroupImageMediaBlockIOINTEL,
             5584u32 => Self::IntegerFunctions2INTEL,
+            5603u32 => Self::FunctionPointersINTEL,
+            5604u32 => Self::IndirectReferencesINTEL,
             5696u32 => Self::SubgroupAvcMotionEstimationINTEL,
             5697u32 => Self::SubgroupAvcMotionEstimationIntraINTEL,
             5698u32 => Self::SubgroupAvcMotionEstimationChromaINTEL,
+            5824u32 => Self::FPGAMemoryAttributesINTEL,
+            5886u32 => Self::UnstructuredLoopControlsINTEL,
+            5888u32 => Self::FPGALoopControlsINTEL,
+            5892u32 => Self::KernelAttributesINTEL,
+            5897u32 => Self::FPGAKernelAttributesINTEL,
+            5945u32 => Self::BlockingPipesINTEL,
+            5948u32 => Self::FPGARegINTEL,
+            6033u32 => Self::AtomicFloat32AddEXT,
+            6034u32 => Self::AtomicFloat64AddEXT,
             _ => return None,
         })
     }
@@ -2968,6 +3095,7 @@ impl std::str::FromStr for Capability {
             "GroupNonUniformQuad" => Ok(Self::GroupNonUniformQuad),
             "ShaderLayer" => Ok(Self::ShaderLayer),
             "ShaderViewportIndex" => Ok(Self::ShaderViewportIndex),
+            "FragmentShadingRateKHR" => Ok(Self::FragmentShadingRateKHR),
             "SubgroupBallotKHR" => Ok(Self::SubgroupBallotKHR),
             "DrawParameters" => Ok(Self::DrawParameters),
             "SubgroupVoteKHR" => Ok(Self::SubgroupVoteKHR),
@@ -2992,14 +3120,15 @@ impl std::str::FromStr for Capability {
             "RoundingModeRTE" => Ok(Self::RoundingModeRTE),
             "RoundingModeRTZ" => Ok(Self::RoundingModeRTZ),
             "RayQueryProvisionalKHR" => Ok(Self::RayQueryProvisionalKHR),
-            "RayTraversalPrimitiveCullingProvisionalKHR" => {
-                Ok(Self::RayTraversalPrimitiveCullingProvisionalKHR)
-            }
+            "RayQueryKHR" => Ok(Self::RayQueryKHR),
+            "RayTraversalPrimitiveCullingKHR" => Ok(Self::RayTraversalPrimitiveCullingKHR),
+            "RayTracingKHR" => Ok(Self::RayTracingKHR),
             "Float16ImageAMD" => Ok(Self::Float16ImageAMD),
             "ImageGatherBiasLodAMD" => Ok(Self::ImageGatherBiasLodAMD),
             "FragmentMaskAMD" => Ok(Self::FragmentMaskAMD),
             "StencilExportEXT" => Ok(Self::StencilExportEXT),
             "ImageReadWriteLodAMD" => Ok(Self::ImageReadWriteLodAMD),
+            "Int64ImageEXT" => Ok(Self::Int64ImageEXT),
             "ShaderClockKHR" => Ok(Self::ShaderClockKHR),
             "SampleMaskOverrideCoverageNV" => Ok(Self::SampleMaskOverrideCoverageNV),
             "GeometryShaderPassthroughNV" => Ok(Self::GeometryShaderPassthroughNV),
@@ -3096,6 +3225,8 @@ impl std::str::FromStr for Capability {
             "SubgroupImageBlockIOINTEL" => Ok(Self::SubgroupImageBlockIOINTEL),
             "SubgroupImageMediaBlockIOINTEL" => Ok(Self::SubgroupImageMediaBlockIOINTEL),
             "IntegerFunctions2INTEL" => Ok(Self::IntegerFunctions2INTEL),
+            "FunctionPointersINTEL" => Ok(Self::FunctionPointersINTEL),
+            "IndirectReferencesINTEL" => Ok(Self::IndirectReferencesINTEL),
             "SubgroupAvcMotionEstimationINTEL" => Ok(Self::SubgroupAvcMotionEstimationINTEL),
             "SubgroupAvcMotionEstimationIntraINTEL" => {
                 Ok(Self::SubgroupAvcMotionEstimationIntraINTEL)
@@ -3103,6 +3234,15 @@ impl std::str::FromStr for Capability {
             "SubgroupAvcMotionEstimationChromaINTEL" => {
                 Ok(Self::SubgroupAvcMotionEstimationChromaINTEL)
             }
+            "FPGAMemoryAttributesINTEL" => Ok(Self::FPGAMemoryAttributesINTEL),
+            "UnstructuredLoopControlsINTEL" => Ok(Self::UnstructuredLoopControlsINTEL),
+            "FPGALoopControlsINTEL" => Ok(Self::FPGALoopControlsINTEL),
+            "KernelAttributesINTEL" => Ok(Self::KernelAttributesINTEL),
+            "FPGAKernelAttributesINTEL" => Ok(Self::FPGAKernelAttributesINTEL),
+            "BlockingPipesINTEL" => Ok(Self::BlockingPipesINTEL),
+            "FPGARegINTEL" => Ok(Self::FPGARegINTEL),
+            "AtomicFloat32AddEXT" => Ok(Self::AtomicFloat32AddEXT),
+            "AtomicFloat64AddEXT" => Ok(Self::AtomicFloat64AddEXT),
             _ => Err(()),
         }
     }
@@ -3121,9 +3261,7 @@ impl RayQueryIntersection {
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             RayQueryIntersection::RayQueryCandidateIntersectionKHR
-            | RayQueryIntersection::RayQueryCommittedIntersectionKHR => {
-                &[Capability::RayQueryProvisionalKHR]
-            }
+            | RayQueryIntersection::RayQueryCommittedIntersectionKHR => &[Capability::RayQueryKHR],
         }
     }
 }
@@ -3167,7 +3305,7 @@ impl RayQueryCommittedIntersectionType {
             RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionNoneKHR
             | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionTriangleKHR
             | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR => {
-                &[Capability::RayQueryProvisionalKHR]
+                &[Capability::RayQueryKHR]
             }
         }
     }
@@ -3218,7 +3356,7 @@ impl RayQueryCandidateIntersectionType {
         match self {
             RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionTriangleKHR
             | RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR => {
-                &[Capability::RayQueryProvisionalKHR]
+                &[Capability::RayQueryKHR]
             }
         }
     }
@@ -3600,13 +3738,19 @@ pub enum Op {
     PtrEqual = 401u32,
     PtrNotEqual = 402u32,
     PtrDiff = 403u32,
+    TerminateInvocation = 4416u32,
     SubgroupBallotKHR = 4421u32,
     SubgroupFirstInvocationKHR = 4422u32,
     SubgroupAllKHR = 4428u32,
     SubgroupAnyKHR = 4429u32,
     SubgroupAllEqualKHR = 4430u32,
     SubgroupReadInvocationKHR = 4432u32,
-    TypeRayQueryProvisionalKHR = 4472u32,
+    TraceRayKHR = 4445u32,
+    ExecuteCallableKHR = 4446u32,
+    ConvertUToAccelerationStructureKHR = 4447u32,
+    IgnoreIntersectionKHR = 4448u32,
+    TerminateRayKHR = 4449u32,
+    TypeRayQueryKHR = 4472u32,
     RayQueryInitializeKHR = 4473u32,
     RayQueryTerminateKHR = 4474u32,
     RayQueryGenerateIntersectionKHR = 4475u32,
@@ -3666,6 +3810,8 @@ pub enum Op {
     USubSatINTEL = 5596u32,
     IMul32x16INTEL = 5597u32,
     UMul32x16INTEL = 5598u32,
+    FunctionPointerINTEL = 5600u32,
+    FunctionPointerCallINTEL = 5601u32,
     DecorateString = 5632u32,
     MemberDecorateString = 5633u32,
     VmeImageINTEL = 5699u32,
@@ -3786,6 +3932,10 @@ pub enum Op {
     SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL = 5814u32,
     SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL = 5815u32,
     SubgroupAvcSicGetInterRawSadsINTEL = 5816u32,
+    LoopControlINTEL = 5887u32,
+    ReadPipeBlockingINTEL = 5946u32,
+    WritePipeBlockingINTEL = 5947u32,
+    FPGARegINTEL = 5949u32,
     RayQueryGetRayTMinKHR = 6016u32,
     RayQueryGetRayFlagsKHR = 6017u32,
     RayQueryGetIntersectionTKHR = 6018u32,
@@ -3803,15 +3953,12 @@ pub enum Op {
     RayQueryGetWorldRayOriginKHR = 6030u32,
     RayQueryGetIntersectionObjectToWorldKHR = 6031u32,
     RayQueryGetIntersectionWorldToObjectKHR = 6032u32,
+    AtomicFAddEXT = 6035u32,
 }
 #[allow(non_upper_case_globals)]
 impl Op {
     pub const ReportIntersectionKHR: Op = Op::ReportIntersectionNV;
-    pub const IgnoreIntersectionKHR: Op = Op::IgnoreIntersectionNV;
-    pub const TerminateRayKHR: Op = Op::TerminateRayNV;
-    pub const TraceRayKHR: Op = Op::TraceNV;
     pub const TypeAccelerationStructureKHR: Op = Op::TypeAccelerationStructureNV;
-    pub const ExecuteCallableKHR: Op = Op::ExecuteCallableNV;
     pub const DecorateStringGOOGLE: Op = Op::DecorateString;
     pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
 }
@@ -4163,13 +4310,19 @@ impl num_traits::FromPrimitive for Op {
             401u32 => Op::PtrEqual,
             402u32 => Op::PtrNotEqual,
             403u32 => Op::PtrDiff,
+            4416u32 => Op::TerminateInvocation,
             4421u32 => Op::SubgroupBallotKHR,
             4422u32 => Op::SubgroupFirstInvocationKHR,
             4428u32 => Op::SubgroupAllKHR,
             4429u32 => Op::SubgroupAnyKHR,
             4430u32 => Op::SubgroupAllEqualKHR,
             4432u32 => Op::SubgroupReadInvocationKHR,
-            4472u32 => Op::TypeRayQueryProvisionalKHR,
+            4445u32 => Op::TraceRayKHR,
+            4446u32 => Op::ExecuteCallableKHR,
+            4447u32 => Op::ConvertUToAccelerationStructureKHR,
+            4448u32 => Op::IgnoreIntersectionKHR,
+            4449u32 => Op::TerminateRayKHR,
+            4472u32 => Op::TypeRayQueryKHR,
             4473u32 => Op::RayQueryInitializeKHR,
             4474u32 => Op::RayQueryTerminateKHR,
             4475u32 => Op::RayQueryGenerateIntersectionKHR,
@@ -4229,6 +4382,8 @@ impl num_traits::FromPrimitive for Op {
             5596u32 => Op::USubSatINTEL,
             5597u32 => Op::IMul32x16INTEL,
             5598u32 => Op::UMul32x16INTEL,
+            5600u32 => Op::FunctionPointerINTEL,
+            5601u32 => Op::FunctionPointerCallINTEL,
             5632u32 => Op::DecorateString,
             5633u32 => Op::MemberDecorateString,
             5699u32 => Op::VmeImageINTEL,
@@ -4349,6 +4504,10 @@ impl num_traits::FromPrimitive for Op {
             5814u32 => Op::SubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL,
             5815u32 => Op::SubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL,
             5816u32 => Op::SubgroupAvcSicGetInterRawSadsINTEL,
+            5887u32 => Op::LoopControlINTEL,
+            5946u32 => Op::ReadPipeBlockingINTEL,
+            5947u32 => Op::WritePipeBlockingINTEL,
+            5949u32 => Op::FPGARegINTEL,
             6016u32 => Op::RayQueryGetRayTMinKHR,
             6017u32 => Op::RayQueryGetRayFlagsKHR,
             6018u32 => Op::RayQueryGetIntersectionTKHR,
@@ -4366,6 +4525,7 @@ impl num_traits::FromPrimitive for Op {
             6030u32 => Op::RayQueryGetWorldRayOriginKHR,
             6031u32 => Op::RayQueryGetIntersectionObjectToWorldKHR,
             6032u32 => Op::RayQueryGetIntersectionWorldToObjectKHR,
+            6035u32 => Op::AtomicFAddEXT,
             _ => return None,
         })
     }

@@ -101,6 +101,17 @@ impl<'a> Decoder<'a> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V FragmentShadingRate value."]
+    pub fn fragment_shading_rate(&mut self) -> Result<spirv::FragmentShadingRate> {
+        if let Ok(word) = self.word() {
+            spirv::FragmentShadingRate::from_bits(word).ok_or(Error::FragmentShadingRateUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V SourceLanguage value."]
     pub fn source_language(&mut self) -> Result<spirv::SourceLanguage> {
         if let Ok(word) = self.word() {

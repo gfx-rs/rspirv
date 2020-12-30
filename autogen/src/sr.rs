@@ -401,7 +401,7 @@ pub fn gen_sr_code_from_instruction_grammar(
                     });
                 }
             }
-            Some(Terminator) => {
+            Some(Reserved) if matches!(inst_name, "TerminateRayKHR" | "IgnoreIntersectionKHR") => {
                 if field_names.is_empty() {
                     terminator_variants.push(quote! { #name_ident });
                     terminator_lifts.push(quote! {

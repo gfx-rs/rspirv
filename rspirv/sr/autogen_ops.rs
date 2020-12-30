@@ -46,10 +46,13 @@ pub enum Branch {
         pointer: spirv::Word,
         size: u32,
     },
+    TerminateInvocation,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Terminator {
     Branch(Branch),
+    IgnoreIntersectionKHR,
+    TerminateRayKHR,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Op {
@@ -1340,7 +1343,27 @@ pub enum Op {
         value: spirv::Word,
         index: spirv::Word,
     },
-    TypeRayQueryProvisionalKHR,
+    TraceRayKHR {
+        accel: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+    },
+    ExecuteCallableKHR {
+        sbt_index: spirv::Word,
+        callable_data: spirv::Word,
+    },
+    ConvertUToAccelerationStructureKHR {
+        accel: spirv::Word,
+    },
+    TypeRayQueryKHR,
     RayQueryInitializeKHR {
         ray_query: spirv::Word,
         accel: spirv::Word,
@@ -1443,23 +1466,8 @@ pub enum Op {
         hit_kind: spirv::Word,
     },
     IgnoreIntersectionNV,
-    IgnoreIntersectionKHR,
     TerminateRayNV,
-    TerminateRayKHR,
     TraceNV {
-        accel: spirv::Word,
-        ray_flags: spirv::Word,
-        cull_mask: spirv::Word,
-        sbt_offset: spirv::Word,
-        sbt_stride: spirv::Word,
-        miss_index: spirv::Word,
-        ray_origin: spirv::Word,
-        ray_tmin: spirv::Word,
-        ray_direction: spirv::Word,
-        ray_tmax: spirv::Word,
-        payload_id: spirv::Word,
-    },
-    TraceRayKHR {
         accel: spirv::Word,
         ray_flags: spirv::Word,
         cull_mask: spirv::Word,
@@ -1475,10 +1483,6 @@ pub enum Op {
     TypeAccelerationStructureNV,
     TypeAccelerationStructureKHR,
     ExecuteCallableNV {
-        sbt_index: spirv::Word,
-        callable_data_id: spirv::Word,
-    },
-    ExecuteCallableKHR {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
     },
@@ -1613,6 +1617,12 @@ pub enum Op {
     UMul32x16INTEL {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
+    },
+    FunctionPointerINTEL {
+        function: spirv::Word,
+    },
+    FunctionPointerCallINTEL {
+        operand_1: Vec<spirv::Word>,
     },
     DecorateString {
         target: spirv::Word,
@@ -2083,6 +2093,21 @@ pub enum Op {
     SubgroupAvcSicGetInterRawSadsINTEL {
         payload: spirv::Word,
     },
+    LoopControlINTEL {
+        loop_control_parameters: Vec<u32>,
+    },
+    ReadPipeBlockingINTEL {
+        packet_size: spirv::Word,
+        packet_alignment: spirv::Word,
+    },
+    WritePipeBlockingINTEL {
+        packet_size: spirv::Word,
+        packet_alignment: spirv::Word,
+    },
+    FPGARegINTEL {
+        result: spirv::Word,
+        input: spirv::Word,
+    },
     RayQueryGetRayTMinKHR {
         ray_query: spirv::Word,
     },
@@ -2145,5 +2170,11 @@ pub enum Op {
     RayQueryGetIntersectionWorldToObjectKHR {
         ray_query: spirv::Word,
         intersection: spirv::Word,
+    },
+    AtomicFAddEXT {
+        pointer: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+        value: spirv::Word,
     },
 }

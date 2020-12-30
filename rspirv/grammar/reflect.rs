@@ -66,7 +66,7 @@ pub fn is_type(opcode: spirv::Op) -> bool {
         | spirv::Op::TypeQueue
         | spirv::Op::TypePipe
         | spirv::Op::TypeAccelerationStructureKHR
-        | spirv::Op::TypeRayQueryProvisionalKHR
+        | spirv::Op::TypeRayQueryKHR
         | spirv::Op::TypeForwardPointer => true,
         _ => false,
     }
@@ -95,16 +95,38 @@ pub fn is_variable(opcode: spirv::Op) -> bool {
     opcode == spirv::Op::Variable
 }
 
+/// Returns true if the given opcode is a return instruction.
+pub fn is_return(opcode: spirv::Op) -> bool {
+    matches!(opcode, spirv::Op::Return | spirv::Op::ReturnValue)
+}
+
+/// Returns true if the given opcode aborts execution.
+pub fn is_abort(opcode: spirv::Op) -> bool {
+    matches!(
+        opcode,
+        spirv::Op::Kill
+            | spirv::Op::TerminateInvocation
+            | spirv::Op::TerminateRayKHR
+            | spirv::Op::IgnoreIntersectionKHR
+            | spirv::Op::Unreachable
+    )
+}
+
+/// Returns true if the given opcode is a return instruction or it aborts
+/// execution.
+pub fn is_return_or_abort(opcode: spirv::Op) -> bool {
+    is_return(opcode) || is_abort(opcode)
+}
+
+/// Returns true if the given opcode is a branch instruction.
+pub fn is_branch(opcode: spirv::Op) -> bool {
+    matches!(
+        opcode,
+        spirv::Op::Branch | spirv::Op::BranchConditional | spirv::Op::Switch
+    )
+}
+
 /// Returns true if the given opcode is for a terminator instruction.
-pub fn is_terminator(opcode: spirv::Op) -> bool {
-    match opcode {
-        spirv::Op::Branch
-        | spirv::Op::BranchConditional
-        | spirv::Op::Switch
-        | spirv::Op::Kill
-        | spirv::Op::Return
-        | spirv::Op::ReturnValue
-        | spirv::Op::Unreachable => true,
-        _ => false,
-    }
+pub fn is_block_terminator(opcode: spirv::Op) -> bool {
+    is_branch(opcode) || is_return_or_abort(opcode)
 }

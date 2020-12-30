@@ -315,4 +315,40 @@ impl Builder {
         );
         self.insert_end_block(insert_point, inst)
     }
+    #[doc = "Appends an OpTerminateInvocation instruction and ends the current block."]
+    pub fn terminate_invocation(&mut self) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::TerminateInvocation, None, None, vec![]);
+        self.end_block(inst)
+    }
+    #[doc = "Insert an OpTerminateInvocation instruction and ends the current block."]
+    pub fn insert_terminate_invocation(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::TerminateInvocation, None, None, vec![]);
+        self.insert_end_block(insert_point, inst)
+    }
+    #[doc = "Appends an OpIgnoreIntersectionKHR instruction and ends the current block."]
+    pub fn ignore_intersection_khr(&mut self) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionKHR, None, None, vec![]);
+        self.end_block(inst)
+    }
+    #[doc = "Insert an OpIgnoreIntersectionKHR instruction and ends the current block."]
+    pub fn insert_ignore_intersection_khr(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::IgnoreIntersectionKHR, None, None, vec![]);
+        self.insert_end_block(insert_point, inst)
+    }
+    #[doc = "Appends an OpTerminateRayKHR instruction and ends the current block."]
+    pub fn terminate_ray_khr(&mut self) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
+        self.end_block(inst)
+    }
+    #[doc = "Insert an OpTerminateRayKHR instruction and ends the current block."]
+    pub fn insert_terminate_ray_khr(&mut self, insert_point: InsertPoint) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
+        self.insert_end_block(insert_point, inst)
+    }
 }

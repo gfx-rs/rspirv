@@ -14,6 +14,7 @@ pub enum Operand {
     MemoryAccess(spirv::MemoryAccess),
     KernelProfilingInfo(spirv::KernelProfilingInfo),
     RayFlags(spirv::RayFlags),
+    FragmentShadingRate(spirv::FragmentShadingRate),
     SourceLanguage(spirv::SourceLanguage),
     ExecutionModel(spirv::ExecutionModel),
     AddressingModel(spirv::AddressingModel),
@@ -62,6 +63,7 @@ impl fmt::Display for Operand {
             Operand::MemoryAccess(ref v) => write!(f, "{:?}", v),
             Operand::KernelProfilingInfo(ref v) => write!(f, "{:?}", v),
             Operand::RayFlags(ref v) => write!(f, "{:?}", v),
+            Operand::FragmentShadingRate(ref v) => write!(f, "{:?}", v),
             Operand::SourceLanguage(ref v) => write!(f, "{:?}", v),
             Operand::ExecutionModel(ref v) => write!(f, "{:?}", v),
             Operand::AddressingModel(ref v) => write!(f, "{:?}", v),
@@ -156,6 +158,15 @@ impl Operand {
         match *self {
             Self::RayFlags(v) => v,
             ref other => panic!("Expected Operand::RayFlags, got {} instead", other),
+        }
+    }
+    pub fn unwrap_fragment_shading_rate(&self) -> spirv::FragmentShadingRate {
+        match *self {
+            Self::FragmentShadingRate(v) => v,
+            ref other => panic!(
+                "Expected Operand::FragmentShadingRate, got {} instead",
+                other
+            ),
         }
     }
     pub fn unwrap_source_language(&self) -> spirv::SourceLanguage {
