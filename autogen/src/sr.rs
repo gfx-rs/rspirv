@@ -21,10 +21,7 @@ struct OperandTokens {
 
 enum OperandTy<'a> {
     Single(&'a str),
-    Pair {
-        first: &'a str,
-        second: &'a str,
-    },
+    Pair { first: &'a str, second: &'a str },
     // Image operands consist of a bitmask followed by a list of id refs
     // These refs are not included in the json grammar.
     ImageOperands,
@@ -108,7 +105,11 @@ impl OperandTokens {
                 quote! { *value },
                 OperandTy::Single(operand.kind.as_str()),
             ),
-            "LiteralInteger" => (quote! { u32 }, quote! { *value }, OperandTy::Single("LiteralInt32")),
+            "LiteralInteger" => (
+                quote! { u32 },
+                quote! { *value },
+                OperandTy::Single("LiteralInt32"),
+            ),
             "LiteralExtInstInteger" => (
                 quote! { u32 },
                 quote! { *value },
@@ -132,18 +133,27 @@ impl OperandTokens {
             "PairLiteralIntegerIdRef" => (
                 quote! { (u32, Jump) },
                 quote! { (first, self.lookup_jump(second)) },
-                OperandTy::Pair { first: "LiteralInt32", second: "IdRef" },
+                OperandTy::Pair {
+                    first: "LiteralInt32",
+                    second: "IdRef",
+                },
             ),
             "PairIdRefLiteralInteger" => (
                 quote! { (Jump, u32) },
                 quote! { (self.lookup_jump(first), second) },
-                OperandTy::Pair { first: "IdRef", second: "LiteralInt32" },
+                OperandTy::Pair {
+                    first: "IdRef",
+                    second: "LiteralInt32",
+                },
             ),
             "PairIdRefIdRef" => (
                 //TODO: proper `Token<>`
                 quote! { (spirv::Word, spirv::Word) },
                 quote! { (first, second) },
-                OperandTy::Pair { first: "IdRef", second: "IdRef" },
+                OperandTy::Pair {
+                    first: "IdRef",
+                    second: "IdRef",
+                },
             ),
             "ImageOperands" => (
                 quote! { (spirv::ImageOperands, Vec<spirv::Word>) },
