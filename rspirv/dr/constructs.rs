@@ -5,8 +5,6 @@ use crate::spirv::Word;
 use crate::utils::version;
 use std::{convert, fmt};
 
-use derive_more::From;
-
 /// Data representation of a SPIR-V module.
 ///
 /// Most of the fields are just vectors of `Instruction`s, but some fields
@@ -306,13 +304,6 @@ impl Instruction {
 impl<'a> convert::From<&'a str> for Operand {
     fn from(val: &'a str) -> Self {
         Operand::LiteralString(val.to_owned())
-    }
-}
-
-impl convert::From<u32> for Operand {
-    /// Converts the given `u32` `val` into an `Operand::LiteralInt32`.
-    fn from(val: u32) -> Self {
-        Operand::LiteralInt32(val)
     }
 }
 

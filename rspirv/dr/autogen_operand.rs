@@ -3,7 +3,7 @@
 // DO NOT MODIFY!
 
 #[doc = "Data representation of a SPIR-V operand."]
-#[derive(Clone, Debug, PartialEq, From)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
     FPFastMathMode(spirv::FPFastMathMode),

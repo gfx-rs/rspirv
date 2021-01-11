@@ -243,7 +243,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         let kinds = kind_and_ty.iter().map(|(kind, ty)| quote! {#kind(#ty)});
         quote! {
             #[doc = "Data representation of a SPIR-V operand."]
-            #[derive(Clone, Debug, PartialEq, From)]
+            #[derive(Clone, Debug, PartialEq)]
             pub enum Operand {
                 #(#kinds,)*
             }

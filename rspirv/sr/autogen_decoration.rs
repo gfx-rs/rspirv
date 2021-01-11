@@ -2,10 +2,9 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use derive_more::From;
 use spirv;
 #[doc = r" SPIR-V decorations."]
-#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord, From)]
+#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub enum Decoration {
     RelaxedPrecision,
     SpecId(u32),
