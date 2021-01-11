@@ -240,7 +240,13 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
     };
 
     let kind_enum = {
-        let kinds = kind_and_ty.iter().map(|(kind, ty)| quote! {#kind(#ty)});
+        let kinds = kind_and_ty.iter().map(|(kind, ty)| match kind.to_string().as_ref() {
+        "LiteralExtInstInteger" | "IdRef" | "IdScope" | "IdMemorySemantics" => {
+            quote! {#[from(ignore)] #kind(#ty)}
+        },
+        _ => {
+            quote! {#kind(#ty)}
+        }});
         quote! {
             #[doc = "Data representation of a SPIR-V operand."]
             #[derive(Clone, Debug, PartialEq, From)]
