@@ -749,7 +749,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -768,7 +778,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -794,7 +814,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -819,7 +849,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -839,7 +879,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -858,7 +908,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -884,7 +944,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -909,7 +979,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -929,7 +1009,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -954,7 +1044,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -979,7 +1079,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -998,7 +1108,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -1023,7 +1143,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -3797,7 +3927,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -3816,7 +3956,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -3842,7 +3992,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -3867,7 +4027,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -3887,7 +4057,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -3906,7 +4086,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -3932,7 +4122,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -3957,7 +4157,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: (match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 })
@@ -3977,7 +4187,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -4002,7 +4222,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -4027,7 +4257,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -4095,7 +4335,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },
@@ -5469,7 +5719,17 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 image_operands: match operands.next() {
-                    Some(&dr::Operand::ImageOperands(ref value)) => Some(*value),
+                    Some(&dr::Operand::ImageOperands(ref value)) => {
+                        let num_operands = value.bits().count_ones();
+                        let operands = (0..num_operands)
+                            .map(|_| match operands.next() {
+                                Some(&dr::Operand::IdRef(second)) => Ok(second),
+                                Some(_) => Err(OperandError::WrongType),
+                                None => Err(OperandError::Missing),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
                 },

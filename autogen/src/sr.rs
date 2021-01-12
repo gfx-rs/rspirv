@@ -19,6 +19,14 @@ struct OperandTokens {
     lift_expression: TokenStream,
 }
 
+enum OperandTy<'a> {
+    Single(&'a str),
+    Pair { first: &'a str, second: &'a str },
+    // Image operands consist of a bitmask followed by a list of id refs
+    // These refs are not included in the json grammar.
+    ImageOperands,
+}
+
 impl OperandTokens {
     fn new(
         operands: &[structs::Operand],
@@ -29,7 +37,7 @@ impl OperandTokens {
         let name = get_param_name(operands, operand_index);
         let iter = Ident::new(OPERAND_ITER, Span::call_site());
 
-        let (ty, lift_value, first_name, second_name) = match operand.kind.as_str() {
+        let (ty, lift_value, op_ty) = match operand.kind.as_str() {
             "IdRef" => {
                 let (ty, value) = match operand.name.trim_matches('\'') {
                     "Length" => (
@@ -89,88 +97,122 @@ impl OperandTokens {
                         }
                     }
                 };
-                (ty, value, operand.kind.as_str(), None)
+                (ty, value, OperandTy::Single(operand.kind.as_str()))
             }
             "IdMemorySemantics" | "IdScope" | "IdResult" => (
                 //TODO: proper `Token<>`
                 quote! { spirv::Word },
                 quote! { *value },
-                operand.kind.as_str(),
-                None,
+                OperandTy::Single(operand.kind.as_str()),
             ),
-            "LiteralInteger" => (quote! { u32 }, quote! { *value }, "LiteralInt32", None),
+            "LiteralInteger" => (
+                quote! { u32 },
+                quote! { *value },
+                OperandTy::Single("LiteralInt32"),
+            ),
             "LiteralExtInstInteger" => (
                 quote! { u32 },
                 quote! { *value },
-                operand.kind.as_str(),
-                None,
+                OperandTy::Single(operand.kind.as_str()),
             ),
             "LiteralSpecConstantOpInteger" => (
                 quote! { spirv::Op },
                 quote! { *value },
-                operand.kind.as_str(),
-                None,
+                OperandTy::Single(operand.kind.as_str()),
             ),
             "LiteralContextDependentNumber" => (
                 quote! { u32 },
                 quote! { *value },
-                operand.kind.as_str(),
-                None,
+                OperandTy::Single(operand.kind.as_str()),
             ),
             "LiteralString" => (
                 quote! { String },
                 quote! { value.clone() },
-                operand.kind.as_str(),
-                None,
+                OperandTy::Single(operand.kind.as_str()),
             ),
             "PairLiteralIntegerIdRef" => (
                 quote! { (u32, Jump) },
                 quote! { (first, self.lookup_jump(second)) },
-                "LiteralInt32",
-                Some("IdRef"),
+                OperandTy::Pair {
+                    first: "LiteralInt32",
+                    second: "IdRef",
+                },
             ),
             "PairIdRefLiteralInteger" => (
                 quote! { (Jump, u32) },
                 quote! { (self.lookup_jump(first), second) },
-                "IdRef",
-                Some("LiteralInt32"),
+                OperandTy::Pair {
+                    first: "IdRef",
+                    second: "LiteralInt32",
+                },
             ),
             "PairIdRefIdRef" => (
                 //TODO: proper `Token<>`
                 quote! { (spirv::Word, spirv::Word) },
                 quote! { (first, second) },
-                "IdRef",
-                Some("IdRef"),
+                OperandTy::Pair {
+                    first: "IdRef",
+                    second: "IdRef",
+                },
+            ),
+            "ImageOperands" => (
+                quote! { (spirv::ImageOperands, Vec<spirv::Word>) },
+                quote! { (first, second) },
+                OperandTy::ImageOperands,
             ),
             kind => {
                 let kind = Ident::new(kind, Span::call_site());
                 (
                     quote! { spirv::#kind },
                     quote! { *value },
-                    operand.kind.as_str(),
-                    None,
+                    OperandTy::Single(operand.kind.as_str()),
                 )
             }
         };
 
-        let first_key = Ident::new(first_name, Span::call_site());
-        let lift = match second_name {
-            None => {
+        let lift = match op_ty {
+            OperandTy::Single(name) => {
+                let key = Ident::new(name, Span::call_site());
                 quote! {
                     match #iter.next() {
-                        Some(&dr::Operand::#first_key(ref value)) => Some(#lift_value),
+                        Some(&dr::Operand::#key(ref value)) => Some(#lift_value),
                         Some(_) => Err(OperandError::WrongType)?,
                         None => None,
                     }
                 }
             }
-            Some(name) => {
-                let second_key = Ident::new(name, Span::call_site());
+            OperandTy::Pair { first, second } => {
+                let first_key = Ident::new(first, Span::call_site());
+                let second_key = Ident::new(second, Span::call_site());
+
                 quote! {
                     match (#iter.next(), #iter.next()) {
                         (Some(&dr::Operand::#first_key(first)), Some(&dr::Operand::#second_key(second))) => Some(#lift_value),
                         (None, None) => None,
                         _ => Err(OperandError::WrongType)?,
+                    }
+                }
+            }
+            OperandTy::ImageOperands => {
+                // Generate code will split the image operand mask and consume trailig id refs
+                // for each operand bit.
+                let first_key = Ident::new("ImageOperands", Span::call_site());
+                let second_key = Ident::new("IdRef", Span::call_site());
+                quote! {
+                    match #iter.next() {
+                        Some(&dr::Operand::#first_key(ref value)) => {
+                            let num_operands = value.bits().count_ones();
+                            let operands = (0..num_operands).map(|_|
+                                match #iter.next() {
+                                    Some(&dr::Operand::#second_key(second)) => Ok(second),
+                                    Some(_) => Err(OperandError::WrongType),
+                                    None => Err(OperandError::Missing),
+                                }
+                            ).collect::<Result<Vec<_>, _>>()?;
+                            Some((*value, operands))
+                        },
+                        Some(_) => Err(OperandError::WrongType)?,
+                        None => None,
                     }
                 }
             }
