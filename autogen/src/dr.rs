@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::structs;
 use crate::utils::*;
 
@@ -240,7 +242,19 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
     };
 
     let kind_enum = {
-        let kinds = kind_and_ty.iter().map(|(kind, ty)| quote! {#kind(#ty)});
+        let mut types_seen = HashSet::new();
+
+        // To prevent ambiguity we don't want to generate an implementation for `Word` at all:
+        types_seen.insert(quote!(spirv::Word).to_string());
+
+        let kinds = kind_and_ty.iter().map(|(kind, ty)| {
+            let v = quote!(#kind(#ty));
+            if types_seen.insert(ty.to_string()) {
+                v
+            } else {
+                quote!(#[from(ignore)] #v)
+            }
+        });
         quote! {
             #[doc = "Data representation of a SPIR-V operand."]
             #[derive(Clone, Debug, PartialEq, From)]

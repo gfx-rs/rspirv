@@ -309,13 +309,6 @@ impl<'a> convert::From<&'a str> for Operand {
     }
 }
 
-impl convert::From<u32> for Operand {
-    /// Converts the given `u32` `val` into an `Operand::LiteralInt32`.
-    fn from(val: u32) -> Self {
-        Operand::LiteralInt32(val)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use crate::dr;
