@@ -194,21 +194,18 @@ impl OperandTokens {
                 }
             }
             OperandTy::ImageOperands => {
-                // Generate code will split the image operand mask and consume trailig id refs
-                // for each operand bit.
+                // Generated code will consume trailing id refs.
                 let first_key = Ident::new("ImageOperands", Span::call_site());
                 let second_key = Ident::new("IdRef", Span::call_site());
                 quote! {
                     match #iter.next() {
                         Some(&dr::Operand::#first_key(ref value)) => {
-                            let num_operands = value.bits().count_ones();
-                            let operands = (0..num_operands).map(|_|
-                                match #iter.next() {
-                                    Some(&dr::Operand::#second_key(second)) => Ok(second),
-                                    Some(_) => Err(OperandError::WrongType),
-                                    None => Err(OperandError::Missing),
+                            let operands = #iter.map(|op| {
+                                match op {
+                                    &dr::Operand::#second_key(second) => Ok(second),
+                                    _ => Err(OperandError::WrongType),
                                 }
-                            ).collect::<Result<Vec<_>, _>>()?;
+                            }).collect::<Result<Vec<_>, _>>()?;
                             Some((*value, operands))
                         },
                         Some(_) => Err(OperandError::WrongType)?,
