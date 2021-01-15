@@ -42,6 +42,16 @@ impl SourceLanguage {
             | SourceLanguage::HLSL => &[],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            SourceLanguage::Unknown
+            | SourceLanguage::ESSL
+            | SourceLanguage::GLSL
+            | SourceLanguage::OpenCL_C
+            | SourceLanguage::OpenCL_CPP
+            | SourceLanguage::HLSL => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for SourceLanguage {
     #[allow(trivial_numeric_casts)]
@@ -123,6 +133,25 @@ impl ExecutionModel {
             }
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            ExecutionModel::Vertex
+            | ExecutionModel::TessellationControl
+            | ExecutionModel::TessellationEvaluation
+            | ExecutionModel::Geometry
+            | ExecutionModel::Fragment
+            | ExecutionModel::GLCompute
+            | ExecutionModel::Kernel
+            | ExecutionModel::TaskNV
+            | ExecutionModel::MeshNV
+            | ExecutionModel::RayGenerationNV
+            | ExecutionModel::IntersectionNV
+            | ExecutionModel::AnyHitNV
+            | ExecutionModel::ClosestHitNV
+            | ExecutionModel::MissNV
+            | ExecutionModel::CallableNV => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for ExecutionModel {
     #[allow(trivial_numeric_casts)]
@@ -202,6 +231,17 @@ impl AddressingModel {
             }
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            AddressingModel::Logical
+            | AddressingModel::Physical32
+            | AddressingModel::Physical64 => &[],
+            AddressingModel::PhysicalStorageBuffer64 => &[
+                "SPV_EXT_physical_storage_buffer",
+                "SPV_KHR_physical_storage_buffer",
+            ],
+        }
+    }
 }
 impl num_traits::FromPrimitive for AddressingModel {
     #[allow(trivial_numeric_casts)]
@@ -250,6 +290,14 @@ impl MemoryModel {
             MemoryModel::OpenCL => &[Capability::Kernel],
             MemoryModel::Simple | MemoryModel::GLSL450 => &[Capability::Shader],
             MemoryModel::Vulkan => &[Capability::VulkanMemoryModel],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            MemoryModel::Simple
+            | MemoryModel::GLSL450
+            | MemoryModel::OpenCL
+            | MemoryModel::Vulkan => &[],
         }
     }
 }
@@ -420,6 +468,73 @@ impl ExecutionMode {
             | ExecutionMode::Quads
             | ExecutionMode::Isolines => &[Capability::Tessellation],
             ExecutionMode::Xfb => &[Capability::TransformFeedback],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            ExecutionMode::Invocations
+            | ExecutionMode::SpacingEqual
+            | ExecutionMode::SpacingFractionalEven
+            | ExecutionMode::SpacingFractionalOdd
+            | ExecutionMode::VertexOrderCw
+            | ExecutionMode::VertexOrderCcw
+            | ExecutionMode::PixelCenterInteger
+            | ExecutionMode::OriginUpperLeft
+            | ExecutionMode::OriginLowerLeft
+            | ExecutionMode::EarlyFragmentTests
+            | ExecutionMode::PointMode
+            | ExecutionMode::Xfb
+            | ExecutionMode::DepthReplacing
+            | ExecutionMode::DepthGreater
+            | ExecutionMode::DepthLess
+            | ExecutionMode::DepthUnchanged
+            | ExecutionMode::LocalSize
+            | ExecutionMode::LocalSizeHint
+            | ExecutionMode::InputPoints
+            | ExecutionMode::InputLines
+            | ExecutionMode::InputLinesAdjacency
+            | ExecutionMode::Triangles
+            | ExecutionMode::InputTrianglesAdjacency
+            | ExecutionMode::Quads
+            | ExecutionMode::Isolines
+            | ExecutionMode::OutputVertices
+            | ExecutionMode::OutputPoints
+            | ExecutionMode::OutputLineStrip
+            | ExecutionMode::OutputTriangleStrip
+            | ExecutionMode::VecTypeHint
+            | ExecutionMode::ContractionOff
+            | ExecutionMode::Initializer
+            | ExecutionMode::Finalizer
+            | ExecutionMode::SubgroupSize
+            | ExecutionMode::SubgroupsPerWorkgroup
+            | ExecutionMode::SubgroupsPerWorkgroupId
+            | ExecutionMode::LocalSizeId
+            | ExecutionMode::LocalSizeHintId => &[],
+            ExecutionMode::PixelInterlockOrderedEXT
+            | ExecutionMode::PixelInterlockUnorderedEXT
+            | ExecutionMode::SampleInterlockOrderedEXT
+            | ExecutionMode::SampleInterlockUnorderedEXT
+            | ExecutionMode::ShadingRateInterlockOrderedEXT
+            | ExecutionMode::ShadingRateInterlockUnorderedEXT => {
+                &["SPV_EXT_fragment_shader_interlock"]
+            }
+            ExecutionMode::StencilRefReplacingEXT => &["SPV_EXT_shader_stencil_export"],
+            ExecutionMode::MaxWorkgroupSizeINTEL
+            | ExecutionMode::MaxWorkDimINTEL
+            | ExecutionMode::NoGlobalOffsetINTEL
+            | ExecutionMode::NumSIMDWorkitemsINTEL => &["SPV_INTEL_kernel_attributes"],
+            ExecutionMode::DenormPreserve
+            | ExecutionMode::DenormFlushToZero
+            | ExecutionMode::SignedZeroInfNanPreserve
+            | ExecutionMode::RoundingModeRTE
+            | ExecutionMode::RoundingModeRTZ => &["SPV_KHR_float_controls"],
+            ExecutionMode::PostDepthCoverage => &["SPV_KHR_post_depth_coverage"],
+            ExecutionMode::DerivativeGroupQuadsNV | ExecutionMode::DerivativeGroupLinearNV => {
+                &["SPV_NV_compute_shader_derivatives"]
+            }
+            ExecutionMode::OutputLinesNV
+            | ExecutionMode::OutputPrimitivesNV
+            | ExecutionMode::OutputTrianglesNV => &["SPV_NV_mesh_shader"],
         }
     }
 }
@@ -626,6 +741,37 @@ impl StorageClass {
             | StorageClass::StorageBuffer => &[Capability::Shader],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            StorageClass::UniformConstant
+            | StorageClass::Input
+            | StorageClass::Uniform
+            | StorageClass::Output
+            | StorageClass::Workgroup
+            | StorageClass::CrossWorkgroup
+            | StorageClass::Private
+            | StorageClass::Function
+            | StorageClass::Generic
+            | StorageClass::PushConstant
+            | StorageClass::AtomicCounter
+            | StorageClass::Image => &[],
+            StorageClass::PhysicalStorageBuffer => &[
+                "SPV_EXT_physical_storage_buffer",
+                "SPV_KHR_physical_storage_buffer",
+            ],
+            StorageClass::CodeSectionINTEL => &["SPV_INTEL_function_pointers"],
+            StorageClass::StorageBuffer => &[
+                "SPV_KHR_storage_buffer_storage_class",
+                "SPV_KHR_variable_pointers",
+            ],
+            StorageClass::CallableDataNV
+            | StorageClass::IncomingCallableDataNV
+            | StorageClass::RayPayloadNV
+            | StorageClass::HitAttributeNV
+            | StorageClass::IncomingRayPayloadNV
+            | StorageClass::ShaderRecordBufferNV => &["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
+        }
+    }
 }
 impl num_traits::FromPrimitive for StorageClass {
     #[allow(trivial_numeric_casts)]
@@ -726,6 +872,17 @@ impl Dim {
             ],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            Dim::Dim1D
+            | Dim::Dim2D
+            | Dim::Dim3D
+            | Dim::DimCube
+            | Dim::DimRect
+            | Dim::DimBuffer
+            | Dim::DimSubpassData => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for Dim {
     #[allow(trivial_numeric_casts)]
@@ -783,6 +940,15 @@ impl SamplerAddressingMode {
             | SamplerAddressingMode::RepeatMirrored => &[Capability::Kernel],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            SamplerAddressingMode::None
+            | SamplerAddressingMode::ClampToEdge
+            | SamplerAddressingMode::Clamp
+            | SamplerAddressingMode::Repeat
+            | SamplerAddressingMode::RepeatMirrored => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for SamplerAddressingMode {
     #[allow(trivial_numeric_casts)]
@@ -827,6 +993,11 @@ impl SamplerFilterMode {
     pub fn required_capabilities(self) -> &'static [Capability] {
         match self {
             SamplerFilterMode::Nearest | SamplerFilterMode::Linear => &[Capability::Kernel],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            SamplerFilterMode::Nearest | SamplerFilterMode::Linear => &[],
         }
     }
 }
@@ -947,6 +1118,52 @@ impl ImageFormat {
             | ImageFormat::Rg8ui
             | ImageFormat::R16ui
             | ImageFormat::R8ui => &[Capability::StorageImageExtendedFormats],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            ImageFormat::Unknown
+            | ImageFormat::Rgba32f
+            | ImageFormat::Rgba16f
+            | ImageFormat::R32f
+            | ImageFormat::Rgba8
+            | ImageFormat::Rgba8Snorm
+            | ImageFormat::Rg32f
+            | ImageFormat::Rg16f
+            | ImageFormat::R11fG11fB10f
+            | ImageFormat::R16f
+            | ImageFormat::Rgba16
+            | ImageFormat::Rgb10A2
+            | ImageFormat::Rg16
+            | ImageFormat::Rg8
+            | ImageFormat::R16
+            | ImageFormat::R8
+            | ImageFormat::Rgba16Snorm
+            | ImageFormat::Rg16Snorm
+            | ImageFormat::Rg8Snorm
+            | ImageFormat::R16Snorm
+            | ImageFormat::R8Snorm
+            | ImageFormat::Rgba32i
+            | ImageFormat::Rgba16i
+            | ImageFormat::Rgba8i
+            | ImageFormat::R32i
+            | ImageFormat::Rg32i
+            | ImageFormat::Rg16i
+            | ImageFormat::Rg8i
+            | ImageFormat::R16i
+            | ImageFormat::R8i
+            | ImageFormat::Rgba32ui
+            | ImageFormat::Rgba16ui
+            | ImageFormat::Rgba8ui
+            | ImageFormat::R32ui
+            | ImageFormat::Rgb10a2ui
+            | ImageFormat::Rg32ui
+            | ImageFormat::Rg16ui
+            | ImageFormat::Rg8ui
+            | ImageFormat::R16ui
+            | ImageFormat::R8ui
+            | ImageFormat::R64ui
+            | ImageFormat::R64i => &[],
         }
     }
 }
@@ -1106,6 +1323,30 @@ impl ImageChannelOrder {
             | ImageChannelOrder::ABGR => &[Capability::Kernel],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            ImageChannelOrder::R
+            | ImageChannelOrder::A
+            | ImageChannelOrder::RG
+            | ImageChannelOrder::RA
+            | ImageChannelOrder::RGB
+            | ImageChannelOrder::RGBA
+            | ImageChannelOrder::BGRA
+            | ImageChannelOrder::ARGB
+            | ImageChannelOrder::Intensity
+            | ImageChannelOrder::Luminance
+            | ImageChannelOrder::Rx
+            | ImageChannelOrder::RGx
+            | ImageChannelOrder::RGBx
+            | ImageChannelOrder::Depth
+            | ImageChannelOrder::DepthStencil
+            | ImageChannelOrder::sRGB
+            | ImageChannelOrder::sRGBx
+            | ImageChannelOrder::sRGBA
+            | ImageChannelOrder::sBGRA
+            | ImageChannelOrder::ABGR => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for ImageChannelOrder {
     #[allow(trivial_numeric_casts)]
@@ -1213,6 +1454,27 @@ impl ImageChannelDataType {
             | ImageChannelDataType::UnormInt101010_2 => &[Capability::Kernel],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            ImageChannelDataType::SnormInt8
+            | ImageChannelDataType::SnormInt16
+            | ImageChannelDataType::UnormInt8
+            | ImageChannelDataType::UnormInt16
+            | ImageChannelDataType::UnormShort565
+            | ImageChannelDataType::UnormShort555
+            | ImageChannelDataType::UnormInt101010
+            | ImageChannelDataType::SignedInt8
+            | ImageChannelDataType::SignedInt16
+            | ImageChannelDataType::SignedInt32
+            | ImageChannelDataType::UnsignedInt8
+            | ImageChannelDataType::UnsignedInt16
+            | ImageChannelDataType::UnsignedInt32
+            | ImageChannelDataType::HalfFloat
+            | ImageChannelDataType::Float
+            | ImageChannelDataType::UnormInt24
+            | ImageChannelDataType::UnormInt101010_2 => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for ImageChannelDataType {
     #[allow(trivial_numeric_casts)]
@@ -1288,6 +1550,14 @@ impl FPRoundingMode {
             | FPRoundingMode::RTN => &[],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            FPRoundingMode::RTE
+            | FPRoundingMode::RTZ
+            | FPRoundingMode::RTP
+            | FPRoundingMode::RTN => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for FPRoundingMode {
     #[allow(trivial_numeric_casts)]
@@ -1332,6 +1602,11 @@ impl LinkageType {
             LinkageType::Export | LinkageType::Import => &[Capability::Linkage],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            LinkageType::Export | LinkageType::Import => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for LinkageType {
     #[allow(trivial_numeric_casts)]
@@ -1372,6 +1647,13 @@ impl AccessQualifier {
         match self {
             AccessQualifier::ReadOnly | AccessQualifier::WriteOnly | AccessQualifier::ReadWrite => {
                 &[Capability::Kernel]
+            }
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            AccessQualifier::ReadOnly | AccessQualifier::WriteOnly | AccessQualifier::ReadWrite => {
+                &[]
             }
         }
     }
@@ -1428,6 +1710,18 @@ impl FunctionParameterAttribute {
             | FunctionParameterAttribute::NoCapture
             | FunctionParameterAttribute::NoWrite
             | FunctionParameterAttribute::NoReadWrite => &[Capability::Kernel],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            FunctionParameterAttribute::Zext
+            | FunctionParameterAttribute::Sext
+            | FunctionParameterAttribute::ByVal
+            | FunctionParameterAttribute::Sret
+            | FunctionParameterAttribute::NoAlias
+            | FunctionParameterAttribute::NoCapture
+            | FunctionParameterAttribute::NoWrite
+            | FunctionParameterAttribute::NoReadWrite => &[],
         }
     }
 }
@@ -1635,6 +1929,90 @@ impl Decoration {
             Decoration::ViewportRelativeNV => &[Capability::ShaderViewportMaskNV],
             Decoration::Patch => &[Capability::Tessellation],
             Decoration::XfbBuffer | Decoration::XfbStride => &[Capability::TransformFeedback],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            Decoration::RelaxedPrecision
+            | Decoration::SpecId
+            | Decoration::Block
+            | Decoration::BufferBlock
+            | Decoration::RowMajor
+            | Decoration::ColMajor
+            | Decoration::ArrayStride
+            | Decoration::MatrixStride
+            | Decoration::GLSLShared
+            | Decoration::GLSLPacked
+            | Decoration::CPacked
+            | Decoration::BuiltIn
+            | Decoration::NoPerspective
+            | Decoration::Flat
+            | Decoration::Patch
+            | Decoration::Centroid
+            | Decoration::Sample
+            | Decoration::Invariant
+            | Decoration::Restrict
+            | Decoration::Aliased
+            | Decoration::Volatile
+            | Decoration::Constant
+            | Decoration::Coherent
+            | Decoration::NonWritable
+            | Decoration::NonReadable
+            | Decoration::Uniform
+            | Decoration::UniformId
+            | Decoration::SaturatedConversion
+            | Decoration::Stream
+            | Decoration::Location
+            | Decoration::Component
+            | Decoration::Index
+            | Decoration::Binding
+            | Decoration::DescriptorSet
+            | Decoration::Offset
+            | Decoration::XfbBuffer
+            | Decoration::XfbStride
+            | Decoration::FuncParamAttr
+            | Decoration::FPRoundingMode
+            | Decoration::FPFastMathMode
+            | Decoration::LinkageAttributes
+            | Decoration::NoContraction
+            | Decoration::InputAttachmentIndex
+            | Decoration::Alignment
+            | Decoration::MaxByteOffset
+            | Decoration::AlignmentId
+            | Decoration::MaxByteOffsetId
+            | Decoration::ViewportRelativeNV
+            | Decoration::NonUniform
+            | Decoration::CounterBuffer
+            | Decoration::UserSemantic => &[],
+            Decoration::ExplicitInterpAMD => &["SPV_AMD_shader_explicit_vertex_parameter"],
+            Decoration::RestrictPointer | Decoration::AliasedPointer => &[
+                "SPV_EXT_physical_storage_buffer",
+                "SPV_KHR_physical_storage_buffer",
+            ],
+            Decoration::UserTypeGOOGLE => &["SPV_GOOGLE_user_type"],
+            Decoration::RegisterINTEL
+            | Decoration::MemoryINTEL
+            | Decoration::NumbanksINTEL
+            | Decoration::BankwidthINTEL
+            | Decoration::MaxPrivateCopiesINTEL
+            | Decoration::SinglepumpINTEL
+            | Decoration::DoublepumpINTEL
+            | Decoration::MaxReplicatesINTEL
+            | Decoration::SimpleDualPortINTEL
+            | Decoration::MergeINTEL
+            | Decoration::BankBitsINTEL
+            | Decoration::ForcePow2DepthINTEL => &["SPV_INTEL_fpga_memory_attributes"],
+            Decoration::ReferencedIndirectlyINTEL => &["SPV_INTEL_function_pointers"],
+            Decoration::NoSignedWrap | Decoration::NoUnsignedWrap => {
+                &["SPV_KHR_no_integer_wrap_decoration"]
+            }
+            Decoration::PerVertexNV => &["SPV_NV_fragment_shader_barycentric"],
+            Decoration::PassthroughNV => &["SPV_NV_geometry_shader_passthrough"],
+            Decoration::PerPrimitiveNV | Decoration::PerViewNV | Decoration::PerTaskNV => {
+                &["SPV_NV_mesh_shader"]
+            }
+            Decoration::OverrideCoverageNV => &["SPV_NV_sample_mask_override_coverage"],
+            Decoration::SecondaryViewportRelativeNV => &["SPV_NV_stereo_view_rendering"],
         }
     }
 }
@@ -2072,6 +2450,112 @@ impl BuiltIn {
             | BuiltIn::PatchVertices => &[Capability::Tessellation],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            BuiltIn::Position
+            | BuiltIn::PointSize
+            | BuiltIn::ClipDistance
+            | BuiltIn::CullDistance
+            | BuiltIn::VertexId
+            | BuiltIn::InstanceId
+            | BuiltIn::PrimitiveId
+            | BuiltIn::InvocationId
+            | BuiltIn::Layer
+            | BuiltIn::ViewportIndex
+            | BuiltIn::TessLevelOuter
+            | BuiltIn::TessLevelInner
+            | BuiltIn::TessCoord
+            | BuiltIn::PatchVertices
+            | BuiltIn::FragCoord
+            | BuiltIn::PointCoord
+            | BuiltIn::FrontFacing
+            | BuiltIn::SampleId
+            | BuiltIn::SamplePosition
+            | BuiltIn::SampleMask
+            | BuiltIn::FragDepth
+            | BuiltIn::HelperInvocation
+            | BuiltIn::NumWorkgroups
+            | BuiltIn::WorkgroupSize
+            | BuiltIn::WorkgroupId
+            | BuiltIn::LocalInvocationId
+            | BuiltIn::GlobalInvocationId
+            | BuiltIn::LocalInvocationIndex
+            | BuiltIn::WorkDim
+            | BuiltIn::GlobalSize
+            | BuiltIn::EnqueuedWorkgroupSize
+            | BuiltIn::GlobalOffset
+            | BuiltIn::GlobalLinearId
+            | BuiltIn::SubgroupSize
+            | BuiltIn::SubgroupMaxSize
+            | BuiltIn::NumSubgroups
+            | BuiltIn::NumEnqueuedSubgroups
+            | BuiltIn::SubgroupId
+            | BuiltIn::SubgroupLocalInvocationId
+            | BuiltIn::VertexIndex
+            | BuiltIn::InstanceIndex
+            | BuiltIn::SubgroupEqMask
+            | BuiltIn::SubgroupGeMask
+            | BuiltIn::SubgroupGtMask
+            | BuiltIn::SubgroupLeMask
+            | BuiltIn::SubgroupLtMask => &[],
+            BuiltIn::BaryCoordNoPerspAMD
+            | BuiltIn::BaryCoordNoPerspCentroidAMD
+            | BuiltIn::BaryCoordNoPerspSampleAMD
+            | BuiltIn::BaryCoordSmoothAMD
+            | BuiltIn::BaryCoordSmoothCentroidAMD
+            | BuiltIn::BaryCoordSmoothSampleAMD
+            | BuiltIn::BaryCoordPullModelAMD => &["SPV_AMD_shader_explicit_vertex_parameter"],
+            BuiltIn::FullyCoveredEXT => &["SPV_EXT_fragment_fully_covered"],
+            BuiltIn::FragSizeEXT | BuiltIn::FragInvocationCountEXT => {
+                &["SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate"]
+            }
+            BuiltIn::FragStencilRefEXT => &["SPV_EXT_shader_stencil_export"],
+            BuiltIn::DeviceIndex => &["SPV_KHR_device_group"],
+            BuiltIn::PrimitiveShadingRateKHR | BuiltIn::ShadingRateKHR => {
+                &["SPV_KHR_fragment_shading_rate"]
+            }
+            BuiltIn::ViewIndex => &["SPV_KHR_multiview"],
+            BuiltIn::RayGeometryIndexKHR => &["SPV_KHR_ray_tracing"],
+            BuiltIn::BaseVertex | BuiltIn::BaseInstance => &["SPV_KHR_shader_draw_parameters"],
+            BuiltIn::DrawIndex => &["SPV_KHR_shader_draw_parameters", "SPV_NV_mesh_shader"],
+            BuiltIn::PositionPerViewNV | BuiltIn::ViewportMaskPerViewNV => &[
+                "SPV_NVX_multiview_per_view_attributes",
+                "SPV_NV_mesh_shader",
+            ],
+            BuiltIn::BaryCoordNV | BuiltIn::BaryCoordNoPerspNV => {
+                &["SPV_NV_fragment_shader_barycentric"]
+            }
+            BuiltIn::TaskCountNV
+            | BuiltIn::PrimitiveCountNV
+            | BuiltIn::PrimitiveIndicesNV
+            | BuiltIn::ClipDistancePerViewNV
+            | BuiltIn::CullDistancePerViewNV
+            | BuiltIn::LayerPerViewNV
+            | BuiltIn::MeshViewCountNV
+            | BuiltIn::MeshViewIndicesNV => &["SPV_NV_mesh_shader"],
+            BuiltIn::HitTNV => &["SPV_NV_ray_tracing"],
+            BuiltIn::LaunchIdNV
+            | BuiltIn::LaunchSizeNV
+            | BuiltIn::WorldRayOriginNV
+            | BuiltIn::WorldRayDirectionNV
+            | BuiltIn::ObjectRayOriginNV
+            | BuiltIn::ObjectRayDirectionNV
+            | BuiltIn::RayTminNV
+            | BuiltIn::RayTmaxNV
+            | BuiltIn::InstanceCustomIndexNV
+            | BuiltIn::ObjectToWorldNV
+            | BuiltIn::WorldToObjectNV
+            | BuiltIn::HitKindNV
+            | BuiltIn::IncomingRayFlagsNV => &["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
+            BuiltIn::WarpsPerSMNV | BuiltIn::SMCountNV | BuiltIn::WarpIDNV | BuiltIn::SMIDNV => {
+                &["SPV_NV_shader_sm_builtins"]
+            }
+            BuiltIn::SecondaryPositionNV | BuiltIn::SecondaryViewportMaskNV => {
+                &["SPV_NV_stereo_view_rendering"]
+            }
+            BuiltIn::ViewportMaskNV => &["SPV_NV_viewport_array2", "SPV_NV_mesh_shader"],
+        }
+    }
 }
 impl num_traits::FromPrimitive for BuiltIn {
     #[allow(trivial_numeric_casts)]
@@ -2336,6 +2820,17 @@ impl Scope {
             Scope::QueueFamily => &[Capability::VulkanMemoryModel],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            Scope::CrossDevice
+            | Scope::Device
+            | Scope::Workgroup
+            | Scope::Subgroup
+            | Scope::Invocation
+            | Scope::QueueFamily
+            | Scope::ShaderCallKHR => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for Scope {
     #[allow(trivial_numeric_casts)]
@@ -2404,6 +2899,17 @@ impl GroupOperation {
             ],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            GroupOperation::Reduce
+            | GroupOperation::InclusiveScan
+            | GroupOperation::ExclusiveScan
+            | GroupOperation::ClusteredReduce => &[],
+            GroupOperation::PartitionedReduceNV
+            | GroupOperation::PartitionedInclusiveScanNV
+            | GroupOperation::PartitionedExclusiveScanNV => &["SPV_NV_shader_subgroup_partitioned"],
+        }
+    }
 }
 impl num_traits::FromPrimitive for GroupOperation {
     #[allow(trivial_numeric_casts)]
@@ -2455,6 +2961,13 @@ impl KernelEnqueueFlags {
             KernelEnqueueFlags::NoWait
             | KernelEnqueueFlags::WaitKernel
             | KernelEnqueueFlags::WaitWorkGroup => &[Capability::Kernel],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            KernelEnqueueFlags::NoWait
+            | KernelEnqueueFlags::WaitKernel
+            | KernelEnqueueFlags::WaitWorkGroup => &[],
         }
     }
 }
@@ -2850,6 +3363,181 @@ impl Capability {
             Capability::UniformAndStorageBuffer8BitAccess => &[Capability::StorageBuffer8BitAccess],
             Capability::TessellationPointSize => &[Capability::Tessellation],
             Capability::VariablePointers => &[Capability::VariablePointersStorageBuffer],
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            Capability::Matrix
+            | Capability::Shader
+            | Capability::Geometry
+            | Capability::Tessellation
+            | Capability::Addresses
+            | Capability::Linkage
+            | Capability::Kernel
+            | Capability::Vector16
+            | Capability::Float16Buffer
+            | Capability::Float16
+            | Capability::Float64
+            | Capability::Int64
+            | Capability::Int64Atomics
+            | Capability::ImageBasic
+            | Capability::ImageReadWrite
+            | Capability::ImageMipmap
+            | Capability::Pipes
+            | Capability::DeviceEnqueue
+            | Capability::LiteralSampler
+            | Capability::AtomicStorage
+            | Capability::Int16
+            | Capability::TessellationPointSize
+            | Capability::GeometryPointSize
+            | Capability::ImageGatherExtended
+            | Capability::StorageImageMultisample
+            | Capability::UniformBufferArrayDynamicIndexing
+            | Capability::SampledImageArrayDynamicIndexing
+            | Capability::StorageBufferArrayDynamicIndexing
+            | Capability::StorageImageArrayDynamicIndexing
+            | Capability::ClipDistance
+            | Capability::CullDistance
+            | Capability::ImageCubeArray
+            | Capability::SampleRateShading
+            | Capability::ImageRect
+            | Capability::SampledRect
+            | Capability::GenericPointer
+            | Capability::Int8
+            | Capability::InputAttachment
+            | Capability::SparseResidency
+            | Capability::MinLod
+            | Capability::Sampled1D
+            | Capability::Image1D
+            | Capability::SampledCubeArray
+            | Capability::SampledBuffer
+            | Capability::ImageBuffer
+            | Capability::ImageMSArray
+            | Capability::StorageImageExtendedFormats
+            | Capability::ImageQuery
+            | Capability::DerivativeControl
+            | Capability::InterpolationFunction
+            | Capability::TransformFeedback
+            | Capability::GeometryStreams
+            | Capability::StorageImageReadWithoutFormat
+            | Capability::StorageImageWriteWithoutFormat
+            | Capability::MultiViewport
+            | Capability::SubgroupDispatch
+            | Capability::NamedBarrier
+            | Capability::PipeStorage
+            | Capability::GroupNonUniform
+            | Capability::GroupNonUniformVote
+            | Capability::GroupNonUniformArithmetic
+            | Capability::GroupNonUniformBallot
+            | Capability::GroupNonUniformShuffle
+            | Capability::GroupNonUniformShuffleRelative
+            | Capability::GroupNonUniformClustered
+            | Capability::GroupNonUniformQuad
+            | Capability::ShaderLayer
+            | Capability::ShaderViewportIndex
+            | Capability::ShaderNonUniform
+            | Capability::RuntimeDescriptorArray
+            | Capability::InputAttachmentArrayDynamicIndexing
+            | Capability::UniformTexelBufferArrayDynamicIndexing
+            | Capability::StorageTexelBufferArrayDynamicIndexing
+            | Capability::UniformBufferArrayNonUniformIndexing
+            | Capability::SampledImageArrayNonUniformIndexing
+            | Capability::StorageBufferArrayNonUniformIndexing
+            | Capability::StorageImageArrayNonUniformIndexing
+            | Capability::InputAttachmentArrayNonUniformIndexing
+            | Capability::UniformTexelBufferArrayNonUniformIndexing
+            | Capability::StorageTexelBufferArrayNonUniformIndexing
+            | Capability::VulkanMemoryModel
+            | Capability::VulkanMemoryModelDeviceScope => &[],
+            Capability::Float16ImageAMD => &["SPV_AMD_gpu_shader_half_float_fetch"],
+            Capability::Groups => &["SPV_AMD_shader_ballot"],
+            Capability::FragmentMaskAMD => &["SPV_AMD_shader_fragment_mask"],
+            Capability::ImageReadWriteLodAMD => &["SPV_AMD_shader_image_load_store_lod"],
+            Capability::ImageGatherBiasLodAMD => &["SPV_AMD_texture_gather_bias_lod"],
+            Capability::DemoteToHelperInvocationEXT => &["SPV_EXT_demote_to_helper_invocation"],
+            Capability::FragmentFullyCoveredEXT => &["SPV_EXT_fragment_fully_covered"],
+            Capability::FragmentDensityEXT => {
+                &["SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate"]
+            }
+            Capability::FragmentShaderSampleInterlockEXT
+            | Capability::FragmentShaderShadingRateInterlockEXT
+            | Capability::FragmentShaderPixelInterlockEXT => &["SPV_EXT_fragment_shader_interlock"],
+            Capability::PhysicalStorageBufferAddresses => &[
+                "SPV_EXT_physical_storage_buffer",
+                "SPV_KHR_physical_storage_buffer",
+            ],
+            Capability::AtomicFloat32AddEXT | Capability::AtomicFloat64AddEXT => {
+                &["SPV_EXT_shader_atomic_float_add"]
+            }
+            Capability::Int64ImageEXT => &["SPV_EXT_shader_image_int64"],
+            Capability::StencilExportEXT => &["SPV_EXT_shader_stencil_export"],
+            Capability::ShaderViewportIndexLayerEXT => &["SPV_EXT_shader_viewport_index_layer"],
+            Capability::BlockingPipesINTEL => &["SPV_INTEL_blocking_pipes"],
+            Capability::SubgroupAvcMotionEstimationINTEL
+            | Capability::SubgroupAvcMotionEstimationIntraINTEL
+            | Capability::SubgroupAvcMotionEstimationChromaINTEL => {
+                &["SPV_INTEL_device_side_avc_motion_estimation"]
+            }
+            Capability::FPGALoopControlsINTEL => &["SPV_INTEL_fpga_loop_controls"],
+            Capability::FPGAMemoryAttributesINTEL => &["SPV_INTEL_fpga_memory_attributes"],
+            Capability::FPGARegINTEL => &["SPV_INTEL_fpga_reg"],
+            Capability::FunctionPointersINTEL | Capability::IndirectReferencesINTEL => {
+                &["SPV_INTEL_function_pointers"]
+            }
+            Capability::KernelAttributesINTEL | Capability::FPGAKernelAttributesINTEL => {
+                &["SPV_INTEL_kernel_attributes"]
+            }
+            Capability::SubgroupImageMediaBlockIOINTEL => &["SPV_INTEL_media_block_io"],
+            Capability::IntegerFunctions2INTEL => &["SPV_INTEL_shader_integer_functions2"],
+            Capability::SubgroupShuffleINTEL
+            | Capability::SubgroupBufferBlockIOINTEL
+            | Capability::SubgroupImageBlockIOINTEL => &["SPV_INTEL_subgroups"],
+            Capability::UnstructuredLoopControlsINTEL => &["SPV_INTEL_unstructured_loop_controls"],
+            Capability::StorageBuffer16BitAccess
+            | Capability::UniformAndStorageBuffer16BitAccess
+            | Capability::StoragePushConstant16
+            | Capability::StorageInputOutput16 => &["SPV_KHR_16bit_storage"],
+            Capability::StorageBuffer8BitAccess
+            | Capability::UniformAndStorageBuffer8BitAccess
+            | Capability::StoragePushConstant8 => &["SPV_KHR_8bit_storage"],
+            Capability::DeviceGroup => &["SPV_KHR_device_group"],
+            Capability::DenormPreserve
+            | Capability::DenormFlushToZero
+            | Capability::SignedZeroInfNanPreserve
+            | Capability::RoundingModeRTE
+            | Capability::RoundingModeRTZ => &["SPV_KHR_float_controls"],
+            Capability::FragmentShadingRateKHR => &["SPV_KHR_fragment_shading_rate"],
+            Capability::MultiView => &["SPV_KHR_multiview"],
+            Capability::SampleMaskPostDepthCoverage => &["SPV_KHR_post_depth_coverage"],
+            Capability::RayQueryProvisionalKHR | Capability::RayQueryKHR => &["SPV_KHR_ray_query"],
+            Capability::RayTraversalPrimitiveCullingKHR => {
+                &["SPV_KHR_ray_query", "SPV_KHR_ray_tracing"]
+            }
+            Capability::RayTracingKHR | Capability::RayTracingProvisionalKHR => {
+                &["SPV_KHR_ray_tracing"]
+            }
+            Capability::AtomicStorageOps => &["SPV_KHR_shader_atomic_counter_ops"],
+            Capability::SubgroupBallotKHR => &["SPV_KHR_shader_ballot"],
+            Capability::ShaderClockKHR => &["SPV_KHR_shader_clock"],
+            Capability::DrawParameters => &["SPV_KHR_shader_draw_parameters"],
+            Capability::SubgroupVoteKHR => &["SPV_KHR_subgroup_vote"],
+            Capability::VariablePointersStorageBuffer | Capability::VariablePointers => {
+                &["SPV_KHR_variable_pointers"]
+            }
+            Capability::PerViewAttributesNV => &["SPV_NVX_multiview_per_view_attributes"],
+            Capability::ComputeDerivativeGroupQuadsNV
+            | Capability::ComputeDerivativeGroupLinearNV => &["SPV_NV_compute_shader_derivatives"],
+            Capability::CooperativeMatrixNV => &["SPV_NV_cooperative_matrix"],
+            Capability::FragmentBarycentricNV => &["SPV_NV_fragment_shader_barycentric"],
+            Capability::GeometryShaderPassthroughNV => &["SPV_NV_geometry_shader_passthrough"],
+            Capability::MeshShadingNV => &["SPV_NV_mesh_shader"],
+            Capability::RayTracingNV => &["SPV_NV_ray_tracing"],
+            Capability::SampleMaskOverrideCoverageNV => &["SPV_NV_sample_mask_override_coverage"],
+            Capability::ImageFootprintNV => &["SPV_NV_shader_image_footprint"],
+            Capability::ShaderSMBuiltinsNV => &["SPV_NV_shader_sm_builtins"],
+            Capability::GroupNonUniformPartitionedNV => &["SPV_NV_shader_subgroup_partitioned"],
+            Capability::ShaderStereoViewNV => &["SPV_NV_stereo_view_rendering"],
+            Capability::ShaderViewportMaskNV => &["SPV_NV_viewport_array2"],
         }
     }
 }
@@ -3264,6 +3952,12 @@ impl RayQueryIntersection {
             | RayQueryIntersection::RayQueryCommittedIntersectionKHR => &[Capability::RayQueryKHR],
         }
     }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            RayQueryIntersection::RayQueryCandidateIntersectionKHR
+            | RayQueryIntersection::RayQueryCommittedIntersectionKHR => &[],
+        }
+    }
 }
 impl num_traits::FromPrimitive for RayQueryIntersection {
     #[allow(trivial_numeric_casts)]
@@ -3307,6 +4001,13 @@ impl RayQueryCommittedIntersectionType {
             | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR => {
                 &[Capability::RayQueryKHR]
             }
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionNoneKHR
+            | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionTriangleKHR
+            | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR => &[],
         }
     }
 }
@@ -3358,6 +4059,12 @@ impl RayQueryCandidateIntersectionType {
             | RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR => {
                 &[Capability::RayQueryKHR]
             }
+        }
+    }
+    pub fn required_extensions(self) -> &'static [&'static str] {
+        match self {
+            RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionTriangleKHR
+            | RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR => &[],
         }
     }
 }
