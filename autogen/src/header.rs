@@ -100,6 +100,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut from_prim_list = vec![];
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
+    let mut extension_clauses = BTreeMap::new();
     let mut from_str_impl = vec![];
     for e in &grammar.enumerants {
         if let Some(discriminator) = seen_discriminator.get(&e.value) {
@@ -129,6 +130,11 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             capability_clauses
                 .entry(&e.capabilities)
                 .or_insert_with(Vec::new)
+                .push(name.clone());
+
+            extension_clauses
+                .entry(&e.extensions)
+                .or_insert_with(Vec::new)
                 .push(name);
         }
     }
@@ -138,6 +144,13 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         let capabilities = k.iter().map(|cap| as_ident(cap));
         quote! {
             #( #kinds::#v )|* => &[#( Capability::#capabilities ),*]
+        }
+    });
+
+    let extensions = extension_clauses.into_iter().map(|(k, v)| {
+        let kinds = std::iter::repeat(&kind);
+        quote! {
+            #( #kinds::#v )|* => &[#( #k ),*]
         }
     });
 
@@ -160,6 +173,12 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             pub fn required_capabilities(self) -> &'static [Capability] {
                 match self {
                     #(#capabilities),*
+                }
+            }
+
+            pub fn required_extensions(self) -> &'static [&'static str] {
+                match self {
+                    #(#extensions),*
                 }
             }
         }

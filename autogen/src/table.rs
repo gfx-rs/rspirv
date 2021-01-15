@@ -33,17 +33,18 @@ fn gen_instruction_table(
             quote! { (#kind, #quantifier) }
         });
         let caps = inst.capabilities.iter().map(|cap| as_ident(cap));
+        let exts = &inst.extensions;
         if is_ext {
             let opname = as_ident(&inst.opname);
             let opcode = inst.opcode;
             quote! {
-                ext_inst!(#opname, #opcode, [#(#caps),*], [#(#operands),*])
+                ext_inst!(#opname, #opcode, [#(#caps),*], [#(#exts),*], [#(#operands),*])
             }
         } else {
             // Omit the "Op" prefix.
             let opname = as_ident(&inst.opname[2..]);
             quote! {
-                inst!(#opname, [#(#caps),*], [#(#operands),*])
+                inst!(#opname, [#(#caps),*], [#(#exts),*], [#(#operands),*])
             }
         }
     });

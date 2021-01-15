@@ -9,6 +9,8 @@ pub struct Instruction<'a> {
     pub opcode: spirv::Op,
     /// Capabilities required for this instruction.
     pub capabilities: &'a [spirv::Capability],
+    /// Extensions required for this instruction.
+    pub extensions: &'a [&'a str],
     /// Logical operands for this instruction.
     ///
     /// This includes result type id and result id.
@@ -23,6 +25,8 @@ pub struct ExtendedInstruction<'a> {
     pub opcode: spirv::Word,
     /// Capabilities required for this instruction.
     pub capabilities: &'a [spirv::Capability],
+    /// Extensions required for this instruction.
+    pub extensions: &'a [&'a str],
     /// Logical operands for this instruction.
     pub operands: &'a [LogicalOperand],
 }
@@ -49,12 +53,15 @@ pub enum OperandQuantifier {
 
 /// Declares the grammar for an SPIR-V instruction.
 macro_rules! inst {
-    ($op:ident, [$( $cap:ident ),*], [$( ($kind:ident, $quant:ident) ),*]) => {
+    ($op:ident, [$( $cap:ident ),*], [$( $ext:expr ),*], [$( ($kind:ident, $quant:ident) ),*]) => {
         Instruction {
             opname: stringify!($op),
             opcode: spirv::Op::$op,
             capabilities: &[
                 $( spirv::Capability::$cap ),*
+            ],
+            extensions: &[
+                $( $ext ),*
             ],
             operands: &[
                 $( LogicalOperand {
@@ -68,13 +75,16 @@ macro_rules! inst {
 
 /// Declares the grammar for an extended instruction instruction.
 macro_rules! ext_inst {
-    ($opname:ident, $opcode: expr, [$( $cap:ident ),*],
+    ($opname:ident, $opcode: expr, [$( $cap:ident ),*], [$( $ext:expr ),*],
      [$( ($kind:ident, $quant:ident) ),*]) => {
         ExtendedInstruction {
             opname: stringify!($opname),
             opcode: $opcode,
             capabilities: &[
                 $( spirv::Capability::$cap ),*
+            ],
+            extensions: &[
+                $( $ext ),*
             ],
             operands: &[
                 $( LogicalOperand {

@@ -21,6 +21,8 @@ pub struct Instruction {
     pub operands: Vec<Operand>,
     #[serde(default)]
     pub capabilities: Vec<String>,
+    #[serde(default)]
+    pub extensions: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -33,6 +35,8 @@ pub struct Enumerant {
     pub parameters: Vec<Operand>,
     #[serde(default)]
     pub capabilities: Vec<String>,
+    #[serde(default)]
+    pub extensions: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
