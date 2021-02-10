@@ -374,4 +374,17 @@ mod tests {
             dr::Operand::from(spirv::Op::IAdd)
         );
     }
+
+    #[test]
+    fn test_operand_display() {
+        assert_eq!(
+            format!(
+                "{}",
+                dr::Operand::FunctionControl(spirv::FunctionControl::INLINE)
+            ),
+            "INLINE",
+        );
+        assert_eq!(format!("{}", dr::Operand::IdRef(3)), "%3");
+        assert_eq!(format!("{}", dr::Operand::LiteralInt32(3)), "3");
+    }
 }
