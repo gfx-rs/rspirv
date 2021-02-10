@@ -285,6 +285,11 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 quote! {
                     Operand::#element(ref v) => write!(f, "{}", &format!("{:?}", v)[3..])
                 }
+            } else if element == "IdRef" || element == "IdScope" || element == "IdMemorySemantics" {
+                // Prefix operands with a % so they're distinguishable from e.g. integer arguments.
+                quote! {
+                    Operand::#element(ref v) => write!(f, "%{}", v)
+                }
             } else {
                 quote! {
                     Operand::#element(ref v) => write!(f, "{:?}", v)
