@@ -8,15 +8,25 @@ pub const MAJOR_VERSION: u8 = 1u8;
 pub const MINOR_VERSION: u8 = 5u8;
 pub const REVISION: u8 = 4u8;
 bitflags! { # [doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE = 256u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE = 512u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL = 1024u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL = 2048u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; const SIGN_EXTEND = 4096u32 ; const ZERO_EXTEND = 8192u32 ; } }
+impl ImageOperands {}
 bitflags! { # [doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; } }
+impl FPFastMathMode {}
 bitflags! { # [doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
+impl SelectionControl {}
 bitflags! { # [doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; const INITIATION_INTERVAL_INTEL = 65536u32 ; const MAX_CONCURRENCY_INTEL = 131072u32 ; const DEPENDENCY_ARRAY_INTEL = 262144u32 ; const PIPELINE_ENABLE_INTEL = 524288u32 ; const LOOP_COALESCE_INTEL = 1048576u32 ; const MAX_INTERLEAVING_INTEL = 2097152u32 ; const SPECULATED_ITERATIONS_INTEL = 4194304u32 ; } }
+impl LoopControl {}
 bitflags! { # [doc = "SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_control_a_function_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FunctionControl : u32 { const NONE = 0u32 ; const INLINE = 1u32 ; const DONT_INLINE = 2u32 ; const PURE = 4u32 ; const CONST = 8u32 ; } }
+impl FunctionControl {}
 bitflags! { # [doc = "SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemorySemantics : u32 { const RELAXED = 0u32 ; const NONE = 0u32 ; const ACQUIRE = 2u32 ; const RELEASE = 4u32 ; const ACQUIRE_RELEASE = 8u32 ; const SEQUENTIALLY_CONSISTENT = 16u32 ; const UNIFORM_MEMORY = 64u32 ; const SUBGROUP_MEMORY = 128u32 ; const WORKGROUP_MEMORY = 256u32 ; const CROSS_WORKGROUP_MEMORY = 512u32 ; const ATOMIC_COUNTER_MEMORY = 1024u32 ; const IMAGE_MEMORY = 2048u32 ; const OUTPUT_MEMORY = 4096u32 ; const OUTPUT_MEMORY_KHR = 4096u32 ; const MAKE_AVAILABLE = 8192u32 ; const MAKE_AVAILABLE_KHR = 8192u32 ; const MAKE_VISIBLE = 16384u32 ; const MAKE_VISIBLE_KHR = 16384u32 ; const VOLATILE = 32768u32 ; } }
+impl MemorySemantics {}
 bitflags! { # [doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_access_a_memory_access)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemoryAccess : u32 { const NONE = 0u32 ; const VOLATILE = 1u32 ; const ALIGNED = 2u32 ; const NONTEMPORAL = 4u32 ; const MAKE_POINTER_AVAILABLE = 8u32 ; const MAKE_POINTER_AVAILABLE_KHR = 8u32 ; const MAKE_POINTER_VISIBLE = 16u32 ; const MAKE_POINTER_VISIBLE_KHR = 16u32 ; const NON_PRIVATE_POINTER = 32u32 ; const NON_PRIVATE_POINTER_KHR = 32u32 ; } }
+impl MemoryAccess {}
 bitflags! { # [doc = "SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct KernelProfilingInfo : u32 { const NONE = 0u32 ; const CMD_EXEC_TIME = 1u32 ; } }
+impl KernelProfilingInfo {}
 bitflags! { # [doc = "SPIR-V operand kind: [RayFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_flags_a_ray_flags)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct RayFlags : u32 { const NONE_KHR = 0u32 ; const OPAQUE_KHR = 1u32 ; const NO_OPAQUE_KHR = 2u32 ; const TERMINATE_ON_FIRST_HIT_KHR = 4u32 ; const SKIP_CLOSEST_HIT_SHADER_KHR = 8u32 ; const CULL_BACK_FACING_TRIANGLES_KHR = 16u32 ; const CULL_FRONT_FACING_TRIANGLES_KHR = 32u32 ; const CULL_OPAQUE_KHR = 64u32 ; const CULL_NO_OPAQUE_KHR = 128u32 ; const SKIP_TRIANGLES_KHR = 256u32 ; const SKIP_AAB_BS_KHR = 512u32 ; } }
+impl RayFlags {}
 bitflags! { # [doc = "SPIR-V operand kind: [FragmentShadingRate](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fragment_shading_rate_a_fragment_shading_rate)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FragmentShadingRate : u32 { const VERTICAL2_PIXELS = 1u32 ; const VERTICAL4_PIXELS = 2u32 ; const HORIZONTAL2_PIXELS = 4u32 ; const HORIZONTAL4_PIXELS = 8u32 ; } }
+impl FragmentShadingRate {}
 #[doc = "/// SPIR-V operand kind: [SourceLanguage](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_source_language_a_source_language)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -31,28 +41,7 @@ pub enum SourceLanguage {
     HLSL = 5u32,
 }
 #[allow(non_upper_case_globals)]
-impl SourceLanguage {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            SourceLanguage::Unknown
-            | SourceLanguage::ESSL
-            | SourceLanguage::GLSL
-            | SourceLanguage::OpenCL_C
-            | SourceLanguage::OpenCL_CPP
-            | SourceLanguage::HLSL => &[],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            SourceLanguage::Unknown
-            | SourceLanguage::ESSL
-            | SourceLanguage::GLSL
-            | SourceLanguage::OpenCL_C
-            | SourceLanguage::OpenCL_CPP
-            | SourceLanguage::HLSL => &[],
-        }
-    }
-}
+impl SourceLanguage {}
 impl num_traits::FromPrimitive for SourceLanguage {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -114,44 +103,6 @@ impl ExecutionModel {
     pub const ClosestHitKHR: Self = Self::ClosestHitNV;
     pub const MissKHR: Self = Self::MissNV;
     pub const CallableKHR: Self = Self::CallableNV;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            ExecutionModel::Geometry => &[Capability::Geometry],
-            ExecutionModel::Kernel => &[Capability::Kernel],
-            ExecutionModel::TaskNV | ExecutionModel::MeshNV => &[Capability::MeshShadingNV],
-            ExecutionModel::RayGenerationNV
-            | ExecutionModel::IntersectionNV
-            | ExecutionModel::AnyHitNV
-            | ExecutionModel::ClosestHitNV
-            | ExecutionModel::MissNV
-            | ExecutionModel::CallableNV => &[Capability::RayTracingNV, Capability::RayTracingKHR],
-            ExecutionModel::Vertex | ExecutionModel::Fragment | ExecutionModel::GLCompute => {
-                &[Capability::Shader]
-            }
-            ExecutionModel::TessellationControl | ExecutionModel::TessellationEvaluation => {
-                &[Capability::Tessellation]
-            }
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            ExecutionModel::Vertex
-            | ExecutionModel::TessellationControl
-            | ExecutionModel::TessellationEvaluation
-            | ExecutionModel::Geometry
-            | ExecutionModel::Fragment
-            | ExecutionModel::GLCompute
-            | ExecutionModel::Kernel
-            | ExecutionModel::TaskNV
-            | ExecutionModel::MeshNV
-            | ExecutionModel::RayGenerationNV
-            | ExecutionModel::IntersectionNV
-            | ExecutionModel::AnyHitNV
-            | ExecutionModel::ClosestHitNV
-            | ExecutionModel::MissNV
-            | ExecutionModel::CallableNV => &[],
-        }
-    }
 }
 impl num_traits::FromPrimitive for ExecutionModel {
     #[allow(trivial_numeric_casts)]
@@ -222,26 +173,6 @@ pub enum AddressingModel {
 #[allow(non_upper_case_globals)]
 impl AddressingModel {
     pub const PhysicalStorageBuffer64EXT: Self = Self::PhysicalStorageBuffer64;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            AddressingModel::Logical => &[],
-            AddressingModel::Physical32 | AddressingModel::Physical64 => &[Capability::Addresses],
-            AddressingModel::PhysicalStorageBuffer64 => {
-                &[Capability::PhysicalStorageBufferAddresses]
-            }
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            AddressingModel::Logical
-            | AddressingModel::Physical32
-            | AddressingModel::Physical64 => &[],
-            AddressingModel::PhysicalStorageBuffer64 => &[
-                "SPV_EXT_physical_storage_buffer",
-                "SPV_KHR_physical_storage_buffer",
-            ],
-        }
-    }
 }
 impl num_traits::FromPrimitive for AddressingModel {
     #[allow(trivial_numeric_casts)]
@@ -285,21 +216,6 @@ pub enum MemoryModel {
 #[allow(non_upper_case_globals)]
 impl MemoryModel {
     pub const VulkanKHR: Self = Self::Vulkan;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            MemoryModel::OpenCL => &[Capability::Kernel],
-            MemoryModel::Simple | MemoryModel::GLSL450 => &[Capability::Shader],
-            MemoryModel::Vulkan => &[Capability::VulkanMemoryModel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            MemoryModel::Simple
-            | MemoryModel::GLSL450
-            | MemoryModel::OpenCL
-            | MemoryModel::Vulkan => &[],
-        }
-    }
 }
 impl num_traits::FromPrimitive for MemoryModel {
     #[allow(trivial_numeric_casts)]
@@ -397,147 +313,7 @@ pub enum ExecutionMode {
     NumSIMDWorkitemsINTEL = 5896u32,
 }
 #[allow(non_upper_case_globals)]
-impl ExecutionMode {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            ExecutionMode::LocalSize | ExecutionMode::LocalSizeId => &[],
-            ExecutionMode::DerivativeGroupLinearNV => &[Capability::ComputeDerivativeGroupLinearNV],
-            ExecutionMode::DerivativeGroupQuadsNV => &[Capability::ComputeDerivativeGroupQuadsNV],
-            ExecutionMode::DenormFlushToZero => &[Capability::DenormFlushToZero],
-            ExecutionMode::DenormPreserve => &[Capability::DenormPreserve],
-            ExecutionMode::NumSIMDWorkitemsINTEL => &[Capability::FPGAKernelAttributesINTEL],
-            ExecutionMode::PixelInterlockOrderedEXT | ExecutionMode::PixelInterlockUnorderedEXT => {
-                &[Capability::FragmentShaderPixelInterlockEXT]
-            }
-            ExecutionMode::SampleInterlockOrderedEXT
-            | ExecutionMode::SampleInterlockUnorderedEXT => {
-                &[Capability::FragmentShaderSampleInterlockEXT]
-            }
-            ExecutionMode::ShadingRateInterlockOrderedEXT
-            | ExecutionMode::ShadingRateInterlockUnorderedEXT => {
-                &[Capability::FragmentShaderShadingRateInterlockEXT]
-            }
-            ExecutionMode::Invocations
-            | ExecutionMode::InputPoints
-            | ExecutionMode::InputLines
-            | ExecutionMode::InputLinesAdjacency
-            | ExecutionMode::InputTrianglesAdjacency
-            | ExecutionMode::OutputLineStrip
-            | ExecutionMode::OutputTriangleStrip => &[Capability::Geometry],
-            ExecutionMode::OutputPoints => &[Capability::Geometry, Capability::MeshShadingNV],
-            ExecutionMode::Triangles => &[Capability::Geometry, Capability::Tessellation],
-            ExecutionMode::OutputVertices => &[
-                Capability::Geometry,
-                Capability::Tessellation,
-                Capability::MeshShadingNV,
-            ],
-            ExecutionMode::LocalSizeHint
-            | ExecutionMode::VecTypeHint
-            | ExecutionMode::ContractionOff
-            | ExecutionMode::Initializer
-            | ExecutionMode::Finalizer
-            | ExecutionMode::LocalSizeHintId => &[Capability::Kernel],
-            ExecutionMode::MaxWorkgroupSizeINTEL
-            | ExecutionMode::MaxWorkDimINTEL
-            | ExecutionMode::NoGlobalOffsetINTEL => &[Capability::KernelAttributesINTEL],
-            ExecutionMode::OutputLinesNV
-            | ExecutionMode::OutputPrimitivesNV
-            | ExecutionMode::OutputTrianglesNV => &[Capability::MeshShadingNV],
-            ExecutionMode::RoundingModeRTE => &[Capability::RoundingModeRTE],
-            ExecutionMode::RoundingModeRTZ => &[Capability::RoundingModeRTZ],
-            ExecutionMode::PostDepthCoverage => &[Capability::SampleMaskPostDepthCoverage],
-            ExecutionMode::PixelCenterInteger
-            | ExecutionMode::OriginUpperLeft
-            | ExecutionMode::OriginLowerLeft
-            | ExecutionMode::EarlyFragmentTests
-            | ExecutionMode::DepthReplacing
-            | ExecutionMode::DepthGreater
-            | ExecutionMode::DepthLess
-            | ExecutionMode::DepthUnchanged => &[Capability::Shader],
-            ExecutionMode::SignedZeroInfNanPreserve => &[Capability::SignedZeroInfNanPreserve],
-            ExecutionMode::StencilRefReplacingEXT => &[Capability::StencilExportEXT],
-            ExecutionMode::SubgroupSize
-            | ExecutionMode::SubgroupsPerWorkgroup
-            | ExecutionMode::SubgroupsPerWorkgroupId => &[Capability::SubgroupDispatch],
-            ExecutionMode::SpacingEqual
-            | ExecutionMode::SpacingFractionalEven
-            | ExecutionMode::SpacingFractionalOdd
-            | ExecutionMode::VertexOrderCw
-            | ExecutionMode::VertexOrderCcw
-            | ExecutionMode::PointMode
-            | ExecutionMode::Quads
-            | ExecutionMode::Isolines => &[Capability::Tessellation],
-            ExecutionMode::Xfb => &[Capability::TransformFeedback],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            ExecutionMode::Invocations
-            | ExecutionMode::SpacingEqual
-            | ExecutionMode::SpacingFractionalEven
-            | ExecutionMode::SpacingFractionalOdd
-            | ExecutionMode::VertexOrderCw
-            | ExecutionMode::VertexOrderCcw
-            | ExecutionMode::PixelCenterInteger
-            | ExecutionMode::OriginUpperLeft
-            | ExecutionMode::OriginLowerLeft
-            | ExecutionMode::EarlyFragmentTests
-            | ExecutionMode::PointMode
-            | ExecutionMode::Xfb
-            | ExecutionMode::DepthReplacing
-            | ExecutionMode::DepthGreater
-            | ExecutionMode::DepthLess
-            | ExecutionMode::DepthUnchanged
-            | ExecutionMode::LocalSize
-            | ExecutionMode::LocalSizeHint
-            | ExecutionMode::InputPoints
-            | ExecutionMode::InputLines
-            | ExecutionMode::InputLinesAdjacency
-            | ExecutionMode::Triangles
-            | ExecutionMode::InputTrianglesAdjacency
-            | ExecutionMode::Quads
-            | ExecutionMode::Isolines
-            | ExecutionMode::OutputVertices
-            | ExecutionMode::OutputPoints
-            | ExecutionMode::OutputLineStrip
-            | ExecutionMode::OutputTriangleStrip
-            | ExecutionMode::VecTypeHint
-            | ExecutionMode::ContractionOff
-            | ExecutionMode::Initializer
-            | ExecutionMode::Finalizer
-            | ExecutionMode::SubgroupSize
-            | ExecutionMode::SubgroupsPerWorkgroup
-            | ExecutionMode::SubgroupsPerWorkgroupId
-            | ExecutionMode::LocalSizeId
-            | ExecutionMode::LocalSizeHintId => &[],
-            ExecutionMode::PixelInterlockOrderedEXT
-            | ExecutionMode::PixelInterlockUnorderedEXT
-            | ExecutionMode::SampleInterlockOrderedEXT
-            | ExecutionMode::SampleInterlockUnorderedEXT
-            | ExecutionMode::ShadingRateInterlockOrderedEXT
-            | ExecutionMode::ShadingRateInterlockUnorderedEXT => {
-                &["SPV_EXT_fragment_shader_interlock"]
-            }
-            ExecutionMode::StencilRefReplacingEXT => &["SPV_EXT_shader_stencil_export"],
-            ExecutionMode::MaxWorkgroupSizeINTEL
-            | ExecutionMode::MaxWorkDimINTEL
-            | ExecutionMode::NoGlobalOffsetINTEL
-            | ExecutionMode::NumSIMDWorkitemsINTEL => &["SPV_INTEL_kernel_attributes"],
-            ExecutionMode::DenormPreserve
-            | ExecutionMode::DenormFlushToZero
-            | ExecutionMode::SignedZeroInfNanPreserve
-            | ExecutionMode::RoundingModeRTE
-            | ExecutionMode::RoundingModeRTZ => &["SPV_KHR_float_controls"],
-            ExecutionMode::PostDepthCoverage => &["SPV_KHR_post_depth_coverage"],
-            ExecutionMode::DerivativeGroupQuadsNV | ExecutionMode::DerivativeGroupLinearNV => {
-                &["SPV_NV_compute_shader_derivatives"]
-            }
-            ExecutionMode::OutputLinesNV
-            | ExecutionMode::OutputPrimitivesNV
-            | ExecutionMode::OutputTrianglesNV => &["SPV_NV_mesh_shader"],
-        }
-    }
-}
+impl ExecutionMode {}
 impl num_traits::FromPrimitive for ExecutionMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -714,64 +490,6 @@ impl StorageClass {
     pub const IncomingRayPayloadKHR: Self = Self::IncomingRayPayloadNV;
     pub const ShaderRecordBufferKHR: Self = Self::ShaderRecordBufferNV;
     pub const PhysicalStorageBufferEXT: Self = Self::PhysicalStorageBuffer;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            StorageClass::UniformConstant
-            | StorageClass::Input
-            | StorageClass::Workgroup
-            | StorageClass::CrossWorkgroup
-            | StorageClass::Function
-            | StorageClass::Image => &[],
-            StorageClass::AtomicCounter => &[Capability::AtomicStorage],
-            StorageClass::CodeSectionINTEL => &[Capability::FunctionPointersINTEL],
-            StorageClass::Generic => &[Capability::GenericPointer],
-            StorageClass::PhysicalStorageBuffer => &[Capability::PhysicalStorageBufferAddresses],
-            StorageClass::CallableDataNV
-            | StorageClass::IncomingCallableDataNV
-            | StorageClass::RayPayloadNV
-            | StorageClass::HitAttributeNV
-            | StorageClass::IncomingRayPayloadNV
-            | StorageClass::ShaderRecordBufferNV => {
-                &[Capability::RayTracingNV, Capability::RayTracingKHR]
-            }
-            StorageClass::Uniform
-            | StorageClass::Output
-            | StorageClass::Private
-            | StorageClass::PushConstant
-            | StorageClass::StorageBuffer => &[Capability::Shader],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            StorageClass::UniformConstant
-            | StorageClass::Input
-            | StorageClass::Uniform
-            | StorageClass::Output
-            | StorageClass::Workgroup
-            | StorageClass::CrossWorkgroup
-            | StorageClass::Private
-            | StorageClass::Function
-            | StorageClass::Generic
-            | StorageClass::PushConstant
-            | StorageClass::AtomicCounter
-            | StorageClass::Image => &[],
-            StorageClass::PhysicalStorageBuffer => &[
-                "SPV_EXT_physical_storage_buffer",
-                "SPV_KHR_physical_storage_buffer",
-            ],
-            StorageClass::CodeSectionINTEL => &["SPV_INTEL_function_pointers"],
-            StorageClass::StorageBuffer => &[
-                "SPV_KHR_storage_buffer_storage_class",
-                "SPV_KHR_variable_pointers",
-            ],
-            StorageClass::CallableDataNV
-            | StorageClass::IncomingCallableDataNV
-            | StorageClass::RayPayloadNV
-            | StorageClass::HitAttributeNV
-            | StorageClass::IncomingRayPayloadNV
-            | StorageClass::ShaderRecordBufferNV => &["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
-        }
-    }
 }
 impl num_traits::FromPrimitive for StorageClass {
     #[allow(trivial_numeric_casts)]
@@ -856,34 +574,7 @@ pub enum Dim {
     DimSubpassData = 6u32,
 }
 #[allow(non_upper_case_globals)]
-impl Dim {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            Dim::Dim3D => &[],
-            Dim::DimSubpassData => &[Capability::InputAttachment],
-            Dim::Dim1D => &[Capability::Sampled1D, Capability::Image1D],
-            Dim::DimBuffer => &[Capability::SampledBuffer, Capability::ImageBuffer],
-            Dim::DimRect => &[Capability::SampledRect, Capability::ImageRect],
-            Dim::DimCube => &[Capability::Shader, Capability::ImageCubeArray],
-            Dim::Dim2D => &[
-                Capability::Shader,
-                Capability::Kernel,
-                Capability::ImageMSArray,
-            ],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            Dim::Dim1D
-            | Dim::Dim2D
-            | Dim::Dim3D
-            | Dim::DimCube
-            | Dim::DimRect
-            | Dim::DimBuffer
-            | Dim::DimSubpassData => &[],
-        }
-    }
-}
+impl Dim {}
 impl num_traits::FromPrimitive for Dim {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -930,26 +621,7 @@ pub enum SamplerAddressingMode {
     RepeatMirrored = 4u32,
 }
 #[allow(non_upper_case_globals)]
-impl SamplerAddressingMode {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            SamplerAddressingMode::None
-            | SamplerAddressingMode::ClampToEdge
-            | SamplerAddressingMode::Clamp
-            | SamplerAddressingMode::Repeat
-            | SamplerAddressingMode::RepeatMirrored => &[Capability::Kernel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            SamplerAddressingMode::None
-            | SamplerAddressingMode::ClampToEdge
-            | SamplerAddressingMode::Clamp
-            | SamplerAddressingMode::Repeat
-            | SamplerAddressingMode::RepeatMirrored => &[],
-        }
-    }
-}
+impl SamplerAddressingMode {}
 impl num_traits::FromPrimitive for SamplerAddressingMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -989,18 +661,7 @@ pub enum SamplerFilterMode {
     Linear = 1u32,
 }
 #[allow(non_upper_case_globals)]
-impl SamplerFilterMode {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            SamplerFilterMode::Nearest | SamplerFilterMode::Linear => &[Capability::Kernel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            SamplerFilterMode::Nearest | SamplerFilterMode::Linear => &[],
-        }
-    }
-}
+impl SamplerFilterMode {}
 impl num_traits::FromPrimitive for SamplerFilterMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1074,99 +735,7 @@ pub enum ImageFormat {
     R64i = 41u32,
 }
 #[allow(non_upper_case_globals)]
-impl ImageFormat {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            ImageFormat::Unknown => &[],
-            ImageFormat::R64ui | ImageFormat::R64i => &[Capability::Int64ImageEXT],
-            ImageFormat::Rgba32f
-            | ImageFormat::Rgba16f
-            | ImageFormat::R32f
-            | ImageFormat::Rgba8
-            | ImageFormat::Rgba8Snorm
-            | ImageFormat::Rgba32i
-            | ImageFormat::Rgba16i
-            | ImageFormat::Rgba8i
-            | ImageFormat::R32i
-            | ImageFormat::Rgba32ui
-            | ImageFormat::Rgba16ui
-            | ImageFormat::Rgba8ui
-            | ImageFormat::R32ui => &[Capability::Shader],
-            ImageFormat::Rg32f
-            | ImageFormat::Rg16f
-            | ImageFormat::R11fG11fB10f
-            | ImageFormat::R16f
-            | ImageFormat::Rgba16
-            | ImageFormat::Rgb10A2
-            | ImageFormat::Rg16
-            | ImageFormat::Rg8
-            | ImageFormat::R16
-            | ImageFormat::R8
-            | ImageFormat::Rgba16Snorm
-            | ImageFormat::Rg16Snorm
-            | ImageFormat::Rg8Snorm
-            | ImageFormat::R16Snorm
-            | ImageFormat::R8Snorm
-            | ImageFormat::Rg32i
-            | ImageFormat::Rg16i
-            | ImageFormat::Rg8i
-            | ImageFormat::R16i
-            | ImageFormat::R8i
-            | ImageFormat::Rgb10a2ui
-            | ImageFormat::Rg32ui
-            | ImageFormat::Rg16ui
-            | ImageFormat::Rg8ui
-            | ImageFormat::R16ui
-            | ImageFormat::R8ui => &[Capability::StorageImageExtendedFormats],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            ImageFormat::Unknown
-            | ImageFormat::Rgba32f
-            | ImageFormat::Rgba16f
-            | ImageFormat::R32f
-            | ImageFormat::Rgba8
-            | ImageFormat::Rgba8Snorm
-            | ImageFormat::Rg32f
-            | ImageFormat::Rg16f
-            | ImageFormat::R11fG11fB10f
-            | ImageFormat::R16f
-            | ImageFormat::Rgba16
-            | ImageFormat::Rgb10A2
-            | ImageFormat::Rg16
-            | ImageFormat::Rg8
-            | ImageFormat::R16
-            | ImageFormat::R8
-            | ImageFormat::Rgba16Snorm
-            | ImageFormat::Rg16Snorm
-            | ImageFormat::Rg8Snorm
-            | ImageFormat::R16Snorm
-            | ImageFormat::R8Snorm
-            | ImageFormat::Rgba32i
-            | ImageFormat::Rgba16i
-            | ImageFormat::Rgba8i
-            | ImageFormat::R32i
-            | ImageFormat::Rg32i
-            | ImageFormat::Rg16i
-            | ImageFormat::Rg8i
-            | ImageFormat::R16i
-            | ImageFormat::R8i
-            | ImageFormat::Rgba32ui
-            | ImageFormat::Rgba16ui
-            | ImageFormat::Rgba8ui
-            | ImageFormat::R32ui
-            | ImageFormat::Rgb10a2ui
-            | ImageFormat::Rg32ui
-            | ImageFormat::Rg16ui
-            | ImageFormat::Rg8ui
-            | ImageFormat::R16ui
-            | ImageFormat::R8ui
-            | ImageFormat::R64ui
-            | ImageFormat::R64i => &[],
-        }
-    }
-}
+impl ImageFormat {}
 impl num_traits::FromPrimitive for ImageFormat {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1298,56 +867,7 @@ pub enum ImageChannelOrder {
     ABGR = 19u32,
 }
 #[allow(non_upper_case_globals)]
-impl ImageChannelOrder {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            ImageChannelOrder::R
-            | ImageChannelOrder::A
-            | ImageChannelOrder::RG
-            | ImageChannelOrder::RA
-            | ImageChannelOrder::RGB
-            | ImageChannelOrder::RGBA
-            | ImageChannelOrder::BGRA
-            | ImageChannelOrder::ARGB
-            | ImageChannelOrder::Intensity
-            | ImageChannelOrder::Luminance
-            | ImageChannelOrder::Rx
-            | ImageChannelOrder::RGx
-            | ImageChannelOrder::RGBx
-            | ImageChannelOrder::Depth
-            | ImageChannelOrder::DepthStencil
-            | ImageChannelOrder::sRGB
-            | ImageChannelOrder::sRGBx
-            | ImageChannelOrder::sRGBA
-            | ImageChannelOrder::sBGRA
-            | ImageChannelOrder::ABGR => &[Capability::Kernel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            ImageChannelOrder::R
-            | ImageChannelOrder::A
-            | ImageChannelOrder::RG
-            | ImageChannelOrder::RA
-            | ImageChannelOrder::RGB
-            | ImageChannelOrder::RGBA
-            | ImageChannelOrder::BGRA
-            | ImageChannelOrder::ARGB
-            | ImageChannelOrder::Intensity
-            | ImageChannelOrder::Luminance
-            | ImageChannelOrder::Rx
-            | ImageChannelOrder::RGx
-            | ImageChannelOrder::RGBx
-            | ImageChannelOrder::Depth
-            | ImageChannelOrder::DepthStencil
-            | ImageChannelOrder::sRGB
-            | ImageChannelOrder::sRGBx
-            | ImageChannelOrder::sRGBA
-            | ImageChannelOrder::sBGRA
-            | ImageChannelOrder::ABGR => &[],
-        }
-    }
-}
+impl ImageChannelOrder {}
 impl num_traits::FromPrimitive for ImageChannelOrder {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1432,50 +952,7 @@ pub enum ImageChannelDataType {
     UnormInt101010_2 = 16u32,
 }
 #[allow(non_upper_case_globals)]
-impl ImageChannelDataType {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            ImageChannelDataType::SnormInt8
-            | ImageChannelDataType::SnormInt16
-            | ImageChannelDataType::UnormInt8
-            | ImageChannelDataType::UnormInt16
-            | ImageChannelDataType::UnormShort565
-            | ImageChannelDataType::UnormShort555
-            | ImageChannelDataType::UnormInt101010
-            | ImageChannelDataType::SignedInt8
-            | ImageChannelDataType::SignedInt16
-            | ImageChannelDataType::SignedInt32
-            | ImageChannelDataType::UnsignedInt8
-            | ImageChannelDataType::UnsignedInt16
-            | ImageChannelDataType::UnsignedInt32
-            | ImageChannelDataType::HalfFloat
-            | ImageChannelDataType::Float
-            | ImageChannelDataType::UnormInt24
-            | ImageChannelDataType::UnormInt101010_2 => &[Capability::Kernel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            ImageChannelDataType::SnormInt8
-            | ImageChannelDataType::SnormInt16
-            | ImageChannelDataType::UnormInt8
-            | ImageChannelDataType::UnormInt16
-            | ImageChannelDataType::UnormShort565
-            | ImageChannelDataType::UnormShort555
-            | ImageChannelDataType::UnormInt101010
-            | ImageChannelDataType::SignedInt8
-            | ImageChannelDataType::SignedInt16
-            | ImageChannelDataType::SignedInt32
-            | ImageChannelDataType::UnsignedInt8
-            | ImageChannelDataType::UnsignedInt16
-            | ImageChannelDataType::UnsignedInt32
-            | ImageChannelDataType::HalfFloat
-            | ImageChannelDataType::Float
-            | ImageChannelDataType::UnormInt24
-            | ImageChannelDataType::UnormInt101010_2 => &[],
-        }
-    }
-}
+impl ImageChannelDataType {}
 impl num_traits::FromPrimitive for ImageChannelDataType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1541,24 +1018,7 @@ pub enum FPRoundingMode {
     RTN = 3u32,
 }
 #[allow(non_upper_case_globals)]
-impl FPRoundingMode {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            FPRoundingMode::RTE
-            | FPRoundingMode::RTZ
-            | FPRoundingMode::RTP
-            | FPRoundingMode::RTN => &[],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            FPRoundingMode::RTE
-            | FPRoundingMode::RTZ
-            | FPRoundingMode::RTP
-            | FPRoundingMode::RTN => &[],
-        }
-    }
-}
+impl FPRoundingMode {}
 impl num_traits::FromPrimitive for FPRoundingMode {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1596,18 +1056,7 @@ pub enum LinkageType {
     Import = 1u32,
 }
 #[allow(non_upper_case_globals)]
-impl LinkageType {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            LinkageType::Export | LinkageType::Import => &[Capability::Linkage],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            LinkageType::Export | LinkageType::Import => &[],
-        }
-    }
-}
+impl LinkageType {}
 impl num_traits::FromPrimitive for LinkageType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1642,22 +1091,7 @@ pub enum AccessQualifier {
     ReadWrite = 2u32,
 }
 #[allow(non_upper_case_globals)]
-impl AccessQualifier {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            AccessQualifier::ReadOnly | AccessQualifier::WriteOnly | AccessQualifier::ReadWrite => {
-                &[Capability::Kernel]
-            }
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            AccessQualifier::ReadOnly | AccessQualifier::WriteOnly | AccessQualifier::ReadWrite => {
-                &[]
-            }
-        }
-    }
-}
+impl AccessQualifier {}
 impl num_traits::FromPrimitive for AccessQualifier {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1699,32 +1133,7 @@ pub enum FunctionParameterAttribute {
     NoReadWrite = 7u32,
 }
 #[allow(non_upper_case_globals)]
-impl FunctionParameterAttribute {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            FunctionParameterAttribute::Zext
-            | FunctionParameterAttribute::Sext
-            | FunctionParameterAttribute::ByVal
-            | FunctionParameterAttribute::Sret
-            | FunctionParameterAttribute::NoAlias
-            | FunctionParameterAttribute::NoCapture
-            | FunctionParameterAttribute::NoWrite
-            | FunctionParameterAttribute::NoReadWrite => &[Capability::Kernel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            FunctionParameterAttribute::Zext
-            | FunctionParameterAttribute::Sext
-            | FunctionParameterAttribute::ByVal
-            | FunctionParameterAttribute::Sret
-            | FunctionParameterAttribute::NoAlias
-            | FunctionParameterAttribute::NoCapture
-            | FunctionParameterAttribute::NoWrite
-            | FunctionParameterAttribute::NoReadWrite => &[],
-        }
-    }
-}
+impl FunctionParameterAttribute {}
 impl num_traits::FromPrimitive for FunctionParameterAttribute {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -1851,170 +1260,6 @@ impl Decoration {
     pub const AliasedPointerEXT: Self = Self::AliasedPointer;
     pub const HlslCounterBufferGOOGLE: Self = Self::CounterBuffer;
     pub const HlslSemanticGOOGLE: Self = Self::UserSemantic;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            Decoration::BuiltIn
-            | Decoration::Restrict
-            | Decoration::Aliased
-            | Decoration::Volatile
-            | Decoration::Coherent
-            | Decoration::NonWritable
-            | Decoration::NonReadable
-            | Decoration::FPRoundingMode
-            | Decoration::NoSignedWrap
-            | Decoration::NoUnsignedWrap
-            | Decoration::ExplicitInterpAMD
-            | Decoration::CounterBuffer
-            | Decoration::UserSemantic
-            | Decoration::UserTypeGOOGLE => &[],
-            Decoration::MaxByteOffset | Decoration::MaxByteOffsetId => &[Capability::Addresses],
-            Decoration::RegisterINTEL
-            | Decoration::MemoryINTEL
-            | Decoration::NumbanksINTEL
-            | Decoration::BankwidthINTEL
-            | Decoration::MaxPrivateCopiesINTEL
-            | Decoration::SinglepumpINTEL
-            | Decoration::DoublepumpINTEL
-            | Decoration::MaxReplicatesINTEL
-            | Decoration::SimpleDualPortINTEL
-            | Decoration::MergeINTEL
-            | Decoration::BankBitsINTEL
-            | Decoration::ForcePow2DepthINTEL => &[Capability::FPGAMemoryAttributesINTEL],
-            Decoration::PerVertexNV => &[Capability::FragmentBarycentricNV],
-            Decoration::PassthroughNV => &[Capability::GeometryShaderPassthroughNV],
-            Decoration::Stream => &[Capability::GeometryStreams],
-            Decoration::ReferencedIndirectlyINTEL => &[Capability::IndirectReferencesINTEL],
-            Decoration::InputAttachmentIndex => &[Capability::InputAttachment],
-            Decoration::CPacked
-            | Decoration::Constant
-            | Decoration::SaturatedConversion
-            | Decoration::FuncParamAttr
-            | Decoration::FPFastMathMode
-            | Decoration::Alignment
-            | Decoration::AlignmentId => &[Capability::Kernel],
-            Decoration::LinkageAttributes => &[Capability::Linkage],
-            Decoration::RowMajor | Decoration::ColMajor | Decoration::MatrixStride => {
-                &[Capability::Matrix]
-            }
-            Decoration::PerPrimitiveNV | Decoration::PerViewNV | Decoration::PerTaskNV => {
-                &[Capability::MeshShadingNV]
-            }
-            Decoration::RestrictPointer | Decoration::AliasedPointer => {
-                &[Capability::PhysicalStorageBufferAddresses]
-            }
-            Decoration::OverrideCoverageNV => &[Capability::SampleMaskOverrideCoverageNV],
-            Decoration::Sample => &[Capability::SampleRateShading],
-            Decoration::RelaxedPrecision
-            | Decoration::Block
-            | Decoration::BufferBlock
-            | Decoration::ArrayStride
-            | Decoration::GLSLShared
-            | Decoration::GLSLPacked
-            | Decoration::NoPerspective
-            | Decoration::Flat
-            | Decoration::Centroid
-            | Decoration::Invariant
-            | Decoration::Uniform
-            | Decoration::UniformId
-            | Decoration::Location
-            | Decoration::Component
-            | Decoration::Index
-            | Decoration::Binding
-            | Decoration::DescriptorSet
-            | Decoration::Offset
-            | Decoration::NoContraction => &[Capability::Shader],
-            Decoration::SpecId => &[Capability::Shader, Capability::Kernel],
-            Decoration::NonUniform => &[Capability::ShaderNonUniform],
-            Decoration::SecondaryViewportRelativeNV => &[Capability::ShaderStereoViewNV],
-            Decoration::ViewportRelativeNV => &[Capability::ShaderViewportMaskNV],
-            Decoration::Patch => &[Capability::Tessellation],
-            Decoration::XfbBuffer | Decoration::XfbStride => &[Capability::TransformFeedback],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            Decoration::RelaxedPrecision
-            | Decoration::SpecId
-            | Decoration::Block
-            | Decoration::BufferBlock
-            | Decoration::RowMajor
-            | Decoration::ColMajor
-            | Decoration::ArrayStride
-            | Decoration::MatrixStride
-            | Decoration::GLSLShared
-            | Decoration::GLSLPacked
-            | Decoration::CPacked
-            | Decoration::BuiltIn
-            | Decoration::NoPerspective
-            | Decoration::Flat
-            | Decoration::Patch
-            | Decoration::Centroid
-            | Decoration::Sample
-            | Decoration::Invariant
-            | Decoration::Restrict
-            | Decoration::Aliased
-            | Decoration::Volatile
-            | Decoration::Constant
-            | Decoration::Coherent
-            | Decoration::NonWritable
-            | Decoration::NonReadable
-            | Decoration::Uniform
-            | Decoration::UniformId
-            | Decoration::SaturatedConversion
-            | Decoration::Stream
-            | Decoration::Location
-            | Decoration::Component
-            | Decoration::Index
-            | Decoration::Binding
-            | Decoration::DescriptorSet
-            | Decoration::Offset
-            | Decoration::XfbBuffer
-            | Decoration::XfbStride
-            | Decoration::FuncParamAttr
-            | Decoration::FPRoundingMode
-            | Decoration::FPFastMathMode
-            | Decoration::LinkageAttributes
-            | Decoration::NoContraction
-            | Decoration::InputAttachmentIndex
-            | Decoration::Alignment
-            | Decoration::MaxByteOffset
-            | Decoration::AlignmentId
-            | Decoration::MaxByteOffsetId
-            | Decoration::ViewportRelativeNV
-            | Decoration::NonUniform
-            | Decoration::CounterBuffer
-            | Decoration::UserSemantic => &[],
-            Decoration::ExplicitInterpAMD => &["SPV_AMD_shader_explicit_vertex_parameter"],
-            Decoration::RestrictPointer | Decoration::AliasedPointer => &[
-                "SPV_EXT_physical_storage_buffer",
-                "SPV_KHR_physical_storage_buffer",
-            ],
-            Decoration::UserTypeGOOGLE => &["SPV_GOOGLE_user_type"],
-            Decoration::RegisterINTEL
-            | Decoration::MemoryINTEL
-            | Decoration::NumbanksINTEL
-            | Decoration::BankwidthINTEL
-            | Decoration::MaxPrivateCopiesINTEL
-            | Decoration::SinglepumpINTEL
-            | Decoration::DoublepumpINTEL
-            | Decoration::MaxReplicatesINTEL
-            | Decoration::SimpleDualPortINTEL
-            | Decoration::MergeINTEL
-            | Decoration::BankBitsINTEL
-            | Decoration::ForcePow2DepthINTEL => &["SPV_INTEL_fpga_memory_attributes"],
-            Decoration::ReferencedIndirectlyINTEL => &["SPV_INTEL_function_pointers"],
-            Decoration::NoSignedWrap | Decoration::NoUnsignedWrap => {
-                &["SPV_KHR_no_integer_wrap_decoration"]
-            }
-            Decoration::PerVertexNV => &["SPV_NV_fragment_shader_barycentric"],
-            Decoration::PassthroughNV => &["SPV_NV_geometry_shader_passthrough"],
-            Decoration::PerPrimitiveNV | Decoration::PerViewNV | Decoration::PerTaskNV => {
-                &["SPV_NV_mesh_shader"]
-            }
-            Decoration::OverrideCoverageNV => &["SPV_NV_sample_mask_override_coverage"],
-            Decoration::SecondaryViewportRelativeNV => &["SPV_NV_stereo_view_rendering"],
-        }
-    }
 }
 impl num_traits::FromPrimitive for Decoration {
     #[allow(trivial_numeric_casts)]
@@ -2321,241 +1566,6 @@ impl BuiltIn {
     pub const WorldToObjectKHR: Self = Self::WorldToObjectNV;
     pub const HitKindKHR: Self = Self::HitKindNV;
     pub const IncomingRayFlagsKHR: Self = Self::IncomingRayFlagsNV;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            BuiltIn::NumWorkgroups
-            | BuiltIn::WorkgroupSize
-            | BuiltIn::WorkgroupId
-            | BuiltIn::LocalInvocationId
-            | BuiltIn::GlobalInvocationId
-            | BuiltIn::LocalInvocationIndex
-            | BuiltIn::BaryCoordNoPerspAMD
-            | BuiltIn::BaryCoordNoPerspCentroidAMD
-            | BuiltIn::BaryCoordNoPerspSampleAMD
-            | BuiltIn::BaryCoordSmoothAMD
-            | BuiltIn::BaryCoordSmoothCentroidAMD
-            | BuiltIn::BaryCoordSmoothSampleAMD
-            | BuiltIn::BaryCoordPullModelAMD => &[],
-            BuiltIn::ClipDistance => &[Capability::ClipDistance],
-            BuiltIn::CullDistance => &[Capability::CullDistance],
-            BuiltIn::DeviceIndex => &[Capability::DeviceGroup],
-            BuiltIn::BaseVertex | BuiltIn::BaseInstance => &[Capability::DrawParameters],
-            BuiltIn::DrawIndex => &[Capability::DrawParameters, Capability::MeshShadingNV],
-            BuiltIn::BaryCoordNV | BuiltIn::BaryCoordNoPerspNV => {
-                &[Capability::FragmentBarycentricNV]
-            }
-            BuiltIn::FragSizeEXT | BuiltIn::FragInvocationCountEXT => {
-                &[Capability::FragmentDensityEXT, Capability::ShadingRateNV]
-            }
-            BuiltIn::FullyCoveredEXT => &[Capability::FragmentFullyCoveredEXT],
-            BuiltIn::PrimitiveShadingRateKHR | BuiltIn::ShadingRateKHR => {
-                &[Capability::FragmentShadingRateKHR]
-            }
-            BuiltIn::Layer => &[
-                Capability::Geometry,
-                Capability::ShaderLayer,
-                Capability::ShaderViewportIndexLayerEXT,
-                Capability::MeshShadingNV,
-            ],
-            BuiltIn::InvocationId => &[Capability::Geometry, Capability::Tessellation],
-            BuiltIn::PrimitiveId => &[
-                Capability::Geometry,
-                Capability::Tessellation,
-                Capability::RayTracingNV,
-                Capability::RayTracingKHR,
-                Capability::MeshShadingNV,
-            ],
-            BuiltIn::WorkDim
-            | BuiltIn::GlobalSize
-            | BuiltIn::EnqueuedWorkgroupSize
-            | BuiltIn::GlobalOffset
-            | BuiltIn::GlobalLinearId
-            | BuiltIn::SubgroupMaxSize
-            | BuiltIn::NumEnqueuedSubgroups => &[Capability::Kernel],
-            BuiltIn::NumSubgroups | BuiltIn::SubgroupId => {
-                &[Capability::Kernel, Capability::GroupNonUniform]
-            }
-            BuiltIn::SubgroupSize | BuiltIn::SubgroupLocalInvocationId => &[
-                Capability::Kernel,
-                Capability::GroupNonUniform,
-                Capability::SubgroupBallotKHR,
-            ],
-            BuiltIn::TaskCountNV
-            | BuiltIn::PrimitiveCountNV
-            | BuiltIn::PrimitiveIndicesNV
-            | BuiltIn::ClipDistancePerViewNV
-            | BuiltIn::CullDistancePerViewNV
-            | BuiltIn::LayerPerViewNV
-            | BuiltIn::MeshViewCountNV
-            | BuiltIn::MeshViewIndicesNV => &[Capability::MeshShadingNV],
-            BuiltIn::ViewIndex => &[Capability::MultiView],
-            BuiltIn::ViewportIndex => &[
-                Capability::MultiViewport,
-                Capability::ShaderViewportIndex,
-                Capability::ShaderViewportIndexLayerEXT,
-                Capability::MeshShadingNV,
-            ],
-            BuiltIn::PositionPerViewNV | BuiltIn::ViewportMaskPerViewNV => {
-                &[Capability::PerViewAttributesNV, Capability::MeshShadingNV]
-            }
-            BuiltIn::RayGeometryIndexKHR => &[Capability::RayTracingKHR],
-            BuiltIn::HitTNV => &[Capability::RayTracingNV],
-            BuiltIn::LaunchIdNV
-            | BuiltIn::LaunchSizeNV
-            | BuiltIn::WorldRayOriginNV
-            | BuiltIn::WorldRayDirectionNV
-            | BuiltIn::ObjectRayOriginNV
-            | BuiltIn::ObjectRayDirectionNV
-            | BuiltIn::RayTminNV
-            | BuiltIn::RayTmaxNV
-            | BuiltIn::InstanceCustomIndexNV
-            | BuiltIn::ObjectToWorldNV
-            | BuiltIn::WorldToObjectNV
-            | BuiltIn::HitKindNV
-            | BuiltIn::IncomingRayFlagsNV => &[Capability::RayTracingNV, Capability::RayTracingKHR],
-            BuiltIn::SampleId | BuiltIn::SamplePosition => &[Capability::SampleRateShading],
-            BuiltIn::Position
-            | BuiltIn::PointSize
-            | BuiltIn::VertexId
-            | BuiltIn::InstanceId
-            | BuiltIn::FragCoord
-            | BuiltIn::PointCoord
-            | BuiltIn::FrontFacing
-            | BuiltIn::SampleMask
-            | BuiltIn::FragDepth
-            | BuiltIn::HelperInvocation
-            | BuiltIn::VertexIndex
-            | BuiltIn::InstanceIndex => &[Capability::Shader],
-            BuiltIn::WarpsPerSMNV | BuiltIn::SMCountNV | BuiltIn::WarpIDNV | BuiltIn::SMIDNV => {
-                &[Capability::ShaderSMBuiltinsNV]
-            }
-            BuiltIn::SecondaryPositionNV | BuiltIn::SecondaryViewportMaskNV => {
-                &[Capability::ShaderStereoViewNV]
-            }
-            BuiltIn::ViewportMaskNV => {
-                &[Capability::ShaderViewportMaskNV, Capability::MeshShadingNV]
-            }
-            BuiltIn::FragStencilRefEXT => &[Capability::StencilExportEXT],
-            BuiltIn::SubgroupEqMask
-            | BuiltIn::SubgroupGeMask
-            | BuiltIn::SubgroupGtMask
-            | BuiltIn::SubgroupLeMask
-            | BuiltIn::SubgroupLtMask => &[
-                Capability::SubgroupBallotKHR,
-                Capability::GroupNonUniformBallot,
-            ],
-            BuiltIn::TessLevelOuter
-            | BuiltIn::TessLevelInner
-            | BuiltIn::TessCoord
-            | BuiltIn::PatchVertices => &[Capability::Tessellation],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            BuiltIn::Position
-            | BuiltIn::PointSize
-            | BuiltIn::ClipDistance
-            | BuiltIn::CullDistance
-            | BuiltIn::VertexId
-            | BuiltIn::InstanceId
-            | BuiltIn::PrimitiveId
-            | BuiltIn::InvocationId
-            | BuiltIn::Layer
-            | BuiltIn::ViewportIndex
-            | BuiltIn::TessLevelOuter
-            | BuiltIn::TessLevelInner
-            | BuiltIn::TessCoord
-            | BuiltIn::PatchVertices
-            | BuiltIn::FragCoord
-            | BuiltIn::PointCoord
-            | BuiltIn::FrontFacing
-            | BuiltIn::SampleId
-            | BuiltIn::SamplePosition
-            | BuiltIn::SampleMask
-            | BuiltIn::FragDepth
-            | BuiltIn::HelperInvocation
-            | BuiltIn::NumWorkgroups
-            | BuiltIn::WorkgroupSize
-            | BuiltIn::WorkgroupId
-            | BuiltIn::LocalInvocationId
-            | BuiltIn::GlobalInvocationId
-            | BuiltIn::LocalInvocationIndex
-            | BuiltIn::WorkDim
-            | BuiltIn::GlobalSize
-            | BuiltIn::EnqueuedWorkgroupSize
-            | BuiltIn::GlobalOffset
-            | BuiltIn::GlobalLinearId
-            | BuiltIn::SubgroupSize
-            | BuiltIn::SubgroupMaxSize
-            | BuiltIn::NumSubgroups
-            | BuiltIn::NumEnqueuedSubgroups
-            | BuiltIn::SubgroupId
-            | BuiltIn::SubgroupLocalInvocationId
-            | BuiltIn::VertexIndex
-            | BuiltIn::InstanceIndex
-            | BuiltIn::SubgroupEqMask
-            | BuiltIn::SubgroupGeMask
-            | BuiltIn::SubgroupGtMask
-            | BuiltIn::SubgroupLeMask
-            | BuiltIn::SubgroupLtMask => &[],
-            BuiltIn::BaryCoordNoPerspAMD
-            | BuiltIn::BaryCoordNoPerspCentroidAMD
-            | BuiltIn::BaryCoordNoPerspSampleAMD
-            | BuiltIn::BaryCoordSmoothAMD
-            | BuiltIn::BaryCoordSmoothCentroidAMD
-            | BuiltIn::BaryCoordSmoothSampleAMD
-            | BuiltIn::BaryCoordPullModelAMD => &["SPV_AMD_shader_explicit_vertex_parameter"],
-            BuiltIn::FullyCoveredEXT => &["SPV_EXT_fragment_fully_covered"],
-            BuiltIn::FragSizeEXT | BuiltIn::FragInvocationCountEXT => {
-                &["SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate"]
-            }
-            BuiltIn::FragStencilRefEXT => &["SPV_EXT_shader_stencil_export"],
-            BuiltIn::DeviceIndex => &["SPV_KHR_device_group"],
-            BuiltIn::PrimitiveShadingRateKHR | BuiltIn::ShadingRateKHR => {
-                &["SPV_KHR_fragment_shading_rate"]
-            }
-            BuiltIn::ViewIndex => &["SPV_KHR_multiview"],
-            BuiltIn::RayGeometryIndexKHR => &["SPV_KHR_ray_tracing"],
-            BuiltIn::BaseVertex | BuiltIn::BaseInstance => &["SPV_KHR_shader_draw_parameters"],
-            BuiltIn::DrawIndex => &["SPV_KHR_shader_draw_parameters", "SPV_NV_mesh_shader"],
-            BuiltIn::PositionPerViewNV | BuiltIn::ViewportMaskPerViewNV => &[
-                "SPV_NVX_multiview_per_view_attributes",
-                "SPV_NV_mesh_shader",
-            ],
-            BuiltIn::BaryCoordNV | BuiltIn::BaryCoordNoPerspNV => {
-                &["SPV_NV_fragment_shader_barycentric"]
-            }
-            BuiltIn::TaskCountNV
-            | BuiltIn::PrimitiveCountNV
-            | BuiltIn::PrimitiveIndicesNV
-            | BuiltIn::ClipDistancePerViewNV
-            | BuiltIn::CullDistancePerViewNV
-            | BuiltIn::LayerPerViewNV
-            | BuiltIn::MeshViewCountNV
-            | BuiltIn::MeshViewIndicesNV => &["SPV_NV_mesh_shader"],
-            BuiltIn::HitTNV => &["SPV_NV_ray_tracing"],
-            BuiltIn::LaunchIdNV
-            | BuiltIn::LaunchSizeNV
-            | BuiltIn::WorldRayOriginNV
-            | BuiltIn::WorldRayDirectionNV
-            | BuiltIn::ObjectRayOriginNV
-            | BuiltIn::ObjectRayDirectionNV
-            | BuiltIn::RayTminNV
-            | BuiltIn::RayTmaxNV
-            | BuiltIn::InstanceCustomIndexNV
-            | BuiltIn::ObjectToWorldNV
-            | BuiltIn::WorldToObjectNV
-            | BuiltIn::HitKindNV
-            | BuiltIn::IncomingRayFlagsNV => &["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
-            BuiltIn::WarpsPerSMNV | BuiltIn::SMCountNV | BuiltIn::WarpIDNV | BuiltIn::SMIDNV => {
-                &["SPV_NV_shader_sm_builtins"]
-            }
-            BuiltIn::SecondaryPositionNV | BuiltIn::SecondaryViewportMaskNV => {
-                &["SPV_NV_stereo_view_rendering"]
-            }
-            BuiltIn::ViewportMaskNV => &["SPV_NV_viewport_array2", "SPV_NV_mesh_shader"],
-        }
-    }
 }
 impl num_traits::FromPrimitive for BuiltIn {
     #[allow(trivial_numeric_casts)]
@@ -2809,28 +1819,6 @@ pub enum Scope {
 #[allow(non_upper_case_globals)]
 impl Scope {
     pub const QueueFamilyKHR: Self = Self::QueueFamily;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            Scope::CrossDevice
-            | Scope::Device
-            | Scope::Workgroup
-            | Scope::Subgroup
-            | Scope::Invocation => &[],
-            Scope::ShaderCallKHR => &[Capability::RayTracingKHR],
-            Scope::QueueFamily => &[Capability::VulkanMemoryModel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            Scope::CrossDevice
-            | Scope::Device
-            | Scope::Workgroup
-            | Scope::Subgroup
-            | Scope::Invocation
-            | Scope::QueueFamily
-            | Scope::ShaderCallKHR => &[],
-        }
-    }
 }
 impl num_traits::FromPrimitive for Scope {
     #[allow(trivial_numeric_casts)]
@@ -2881,36 +1869,7 @@ pub enum GroupOperation {
     PartitionedExclusiveScanNV = 8u32,
 }
 #[allow(non_upper_case_globals)]
-impl GroupOperation {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            GroupOperation::ClusteredReduce => &[Capability::GroupNonUniformClustered],
-            GroupOperation::PartitionedReduceNV
-            | GroupOperation::PartitionedInclusiveScanNV
-            | GroupOperation::PartitionedExclusiveScanNV => {
-                &[Capability::GroupNonUniformPartitionedNV]
-            }
-            GroupOperation::Reduce
-            | GroupOperation::InclusiveScan
-            | GroupOperation::ExclusiveScan => &[
-                Capability::Kernel,
-                Capability::GroupNonUniformArithmetic,
-                Capability::GroupNonUniformBallot,
-            ],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            GroupOperation::Reduce
-            | GroupOperation::InclusiveScan
-            | GroupOperation::ExclusiveScan
-            | GroupOperation::ClusteredReduce => &[],
-            GroupOperation::PartitionedReduceNV
-            | GroupOperation::PartitionedInclusiveScanNV
-            | GroupOperation::PartitionedExclusiveScanNV => &["SPV_NV_shader_subgroup_partitioned"],
-        }
-    }
-}
+impl GroupOperation {}
 impl num_traits::FromPrimitive for GroupOperation {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -2955,22 +1914,7 @@ pub enum KernelEnqueueFlags {
     WaitWorkGroup = 2u32,
 }
 #[allow(non_upper_case_globals)]
-impl KernelEnqueueFlags {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            KernelEnqueueFlags::NoWait
-            | KernelEnqueueFlags::WaitKernel
-            | KernelEnqueueFlags::WaitWorkGroup => &[Capability::Kernel],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            KernelEnqueueFlags::NoWait
-            | KernelEnqueueFlags::WaitKernel
-            | KernelEnqueueFlags::WaitWorkGroup => &[],
-        }
-    }
-}
+impl KernelEnqueueFlags {}
 impl num_traits::FromPrimitive for KernelEnqueueFlags {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -3192,354 +2136,6 @@ impl Capability {
     pub const VulkanMemoryModelKHR: Self = Self::VulkanMemoryModel;
     pub const VulkanMemoryModelDeviceScopeKHR: Self = Self::VulkanMemoryModelDeviceScope;
     pub const PhysicalStorageBufferAddressesEXT: Self = Self::PhysicalStorageBufferAddresses;
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            Capability::Matrix
-            | Capability::Addresses
-            | Capability::Linkage
-            | Capability::Kernel
-            | Capability::Float16
-            | Capability::Float64
-            | Capability::Int64
-            | Capability::Groups
-            | Capability::Int16
-            | Capability::Int8
-            | Capability::Sampled1D
-            | Capability::SampledBuffer
-            | Capability::GroupNonUniform
-            | Capability::ShaderLayer
-            | Capability::ShaderViewportIndex
-            | Capability::SubgroupBallotKHR
-            | Capability::SubgroupVoteKHR
-            | Capability::StorageBuffer16BitAccess
-            | Capability::StoragePushConstant16
-            | Capability::StorageInputOutput16
-            | Capability::DeviceGroup
-            | Capability::AtomicStorageOps
-            | Capability::SampleMaskPostDepthCoverage
-            | Capability::StorageBuffer8BitAccess
-            | Capability::StoragePushConstant8
-            | Capability::DenormPreserve
-            | Capability::DenormFlushToZero
-            | Capability::SignedZeroInfNanPreserve
-            | Capability::RoundingModeRTE
-            | Capability::RoundingModeRTZ
-            | Capability::ImageFootprintNV
-            | Capability::FragmentBarycentricNV
-            | Capability::ComputeDerivativeGroupQuadsNV
-            | Capability::GroupNonUniformPartitionedNV
-            | Capability::VulkanMemoryModel
-            | Capability::VulkanMemoryModelDeviceScope
-            | Capability::ComputeDerivativeGroupLinearNV
-            | Capability::SubgroupShuffleINTEL
-            | Capability::SubgroupBufferBlockIOINTEL
-            | Capability::SubgroupImageBlockIOINTEL
-            | Capability::SubgroupImageMediaBlockIOINTEL
-            | Capability::FunctionPointersINTEL
-            | Capability::IndirectReferencesINTEL
-            | Capability::SubgroupAvcMotionEstimationINTEL
-            | Capability::SubgroupAvcMotionEstimationIntraINTEL
-            | Capability::SubgroupAvcMotionEstimationChromaINTEL
-            | Capability::FPGAMemoryAttributesINTEL
-            | Capability::UnstructuredLoopControlsINTEL
-            | Capability::FPGALoopControlsINTEL
-            | Capability::KernelAttributesINTEL
-            | Capability::FPGAKernelAttributesINTEL
-            | Capability::BlockingPipesINTEL
-            | Capability::FPGARegINTEL => &[],
-            Capability::GenericPointer => &[Capability::Addresses],
-            Capability::SubgroupDispatch => &[Capability::DeviceEnqueue],
-            Capability::GeometryPointSize
-            | Capability::GeometryStreams
-            | Capability::MultiViewport
-            | Capability::GeometryShaderPassthroughNV => &[Capability::Geometry],
-            Capability::GroupNonUniformVote
-            | Capability::GroupNonUniformArithmetic
-            | Capability::GroupNonUniformBallot
-            | Capability::GroupNonUniformShuffle
-            | Capability::GroupNonUniformShuffleRelative
-            | Capability::GroupNonUniformClustered
-            | Capability::GroupNonUniformQuad => &[Capability::GroupNonUniform],
-            Capability::ImageReadWrite | Capability::ImageMipmap => &[Capability::ImageBasic],
-            Capability::StorageTexelBufferArrayDynamicIndexing => &[Capability::ImageBuffer],
-            Capability::StorageTexelBufferArrayNonUniformIndexing => {
-                &[Capability::ImageBuffer, Capability::ShaderNonUniform]
-            }
-            Capability::InputAttachmentArrayDynamicIndexing => &[Capability::InputAttachment],
-            Capability::InputAttachmentArrayNonUniformIndexing => {
-                &[Capability::InputAttachment, Capability::ShaderNonUniform]
-            }
-            Capability::Int64Atomics => &[Capability::Int64],
-            Capability::Vector16
-            | Capability::Float16Buffer
-            | Capability::ImageBasic
-            | Capability::Pipes
-            | Capability::DeviceEnqueue
-            | Capability::LiteralSampler
-            | Capability::NamedBarrier => &[Capability::Kernel],
-            Capability::Shader => &[Capability::Matrix],
-            Capability::PerViewAttributesNV => &[Capability::MultiView],
-            Capability::ShaderViewportIndexLayerEXT => &[Capability::MultiViewport],
-            Capability::PipeStorage => &[Capability::Pipes],
-            Capability::RayTraversalPrimitiveCullingKHR => {
-                &[Capability::RayQueryKHR, Capability::RayTracingKHR]
-            }
-            Capability::SampleMaskOverrideCoverageNV => &[Capability::SampleRateShading],
-            Capability::Image1D => &[Capability::Sampled1D],
-            Capability::ImageBuffer | Capability::UniformTexelBufferArrayDynamicIndexing => {
-                &[Capability::SampledBuffer]
-            }
-            Capability::UniformTexelBufferArrayNonUniformIndexing => {
-                &[Capability::SampledBuffer, Capability::ShaderNonUniform]
-            }
-            Capability::ImageCubeArray => &[Capability::SampledCubeArray],
-            Capability::ImageRect => &[Capability::SampledRect],
-            Capability::Geometry
-            | Capability::Tessellation
-            | Capability::AtomicStorage
-            | Capability::ImageGatherExtended
-            | Capability::StorageImageMultisample
-            | Capability::UniformBufferArrayDynamicIndexing
-            | Capability::SampledImageArrayDynamicIndexing
-            | Capability::StorageBufferArrayDynamicIndexing
-            | Capability::StorageImageArrayDynamicIndexing
-            | Capability::ClipDistance
-            | Capability::CullDistance
-            | Capability::SampleRateShading
-            | Capability::SampledRect
-            | Capability::InputAttachment
-            | Capability::SparseResidency
-            | Capability::MinLod
-            | Capability::SampledCubeArray
-            | Capability::ImageMSArray
-            | Capability::StorageImageExtendedFormats
-            | Capability::ImageQuery
-            | Capability::DerivativeControl
-            | Capability::InterpolationFunction
-            | Capability::TransformFeedback
-            | Capability::StorageImageReadWithoutFormat
-            | Capability::StorageImageWriteWithoutFormat
-            | Capability::FragmentShadingRateKHR
-            | Capability::DrawParameters
-            | Capability::MultiView
-            | Capability::VariablePointersStorageBuffer
-            | Capability::RayQueryProvisionalKHR
-            | Capability::RayQueryKHR
-            | Capability::RayTracingKHR
-            | Capability::Float16ImageAMD
-            | Capability::ImageGatherBiasLodAMD
-            | Capability::FragmentMaskAMD
-            | Capability::StencilExportEXT
-            | Capability::ImageReadWriteLodAMD
-            | Capability::Int64ImageEXT
-            | Capability::ShaderClockKHR
-            | Capability::FragmentFullyCoveredEXT
-            | Capability::MeshShadingNV
-            | Capability::FragmentDensityEXT
-            | Capability::ShaderNonUniform
-            | Capability::RuntimeDescriptorArray
-            | Capability::RayTracingNV
-            | Capability::PhysicalStorageBufferAddresses
-            | Capability::RayTracingProvisionalKHR
-            | Capability::CooperativeMatrixNV
-            | Capability::FragmentShaderSampleInterlockEXT
-            | Capability::FragmentShaderShadingRateInterlockEXT
-            | Capability::ShaderSMBuiltinsNV
-            | Capability::FragmentShaderPixelInterlockEXT
-            | Capability::DemoteToHelperInvocationEXT
-            | Capability::IntegerFunctions2INTEL
-            | Capability::AtomicFloat32AddEXT
-            | Capability::AtomicFloat64AddEXT => &[Capability::Shader],
-            Capability::UniformBufferArrayNonUniformIndexing
-            | Capability::SampledImageArrayNonUniformIndexing
-            | Capability::StorageBufferArrayNonUniformIndexing
-            | Capability::StorageImageArrayNonUniformIndexing => &[Capability::ShaderNonUniform],
-            Capability::ShaderViewportMaskNV => &[Capability::ShaderViewportIndexLayerNV],
-            Capability::ShaderStereoViewNV => &[Capability::ShaderViewportMaskNV],
-            Capability::UniformAndStorageBuffer16BitAccess => &[
-                Capability::StorageBuffer16BitAccess,
-                Capability::StorageUniformBufferBlock16,
-            ],
-            Capability::UniformAndStorageBuffer8BitAccess => &[Capability::StorageBuffer8BitAccess],
-            Capability::TessellationPointSize => &[Capability::Tessellation],
-            Capability::VariablePointers => &[Capability::VariablePointersStorageBuffer],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            Capability::Matrix
-            | Capability::Shader
-            | Capability::Geometry
-            | Capability::Tessellation
-            | Capability::Addresses
-            | Capability::Linkage
-            | Capability::Kernel
-            | Capability::Vector16
-            | Capability::Float16Buffer
-            | Capability::Float16
-            | Capability::Float64
-            | Capability::Int64
-            | Capability::Int64Atomics
-            | Capability::ImageBasic
-            | Capability::ImageReadWrite
-            | Capability::ImageMipmap
-            | Capability::Pipes
-            | Capability::DeviceEnqueue
-            | Capability::LiteralSampler
-            | Capability::AtomicStorage
-            | Capability::Int16
-            | Capability::TessellationPointSize
-            | Capability::GeometryPointSize
-            | Capability::ImageGatherExtended
-            | Capability::StorageImageMultisample
-            | Capability::UniformBufferArrayDynamicIndexing
-            | Capability::SampledImageArrayDynamicIndexing
-            | Capability::StorageBufferArrayDynamicIndexing
-            | Capability::StorageImageArrayDynamicIndexing
-            | Capability::ClipDistance
-            | Capability::CullDistance
-            | Capability::ImageCubeArray
-            | Capability::SampleRateShading
-            | Capability::ImageRect
-            | Capability::SampledRect
-            | Capability::GenericPointer
-            | Capability::Int8
-            | Capability::InputAttachment
-            | Capability::SparseResidency
-            | Capability::MinLod
-            | Capability::Sampled1D
-            | Capability::Image1D
-            | Capability::SampledCubeArray
-            | Capability::SampledBuffer
-            | Capability::ImageBuffer
-            | Capability::ImageMSArray
-            | Capability::StorageImageExtendedFormats
-            | Capability::ImageQuery
-            | Capability::DerivativeControl
-            | Capability::InterpolationFunction
-            | Capability::TransformFeedback
-            | Capability::GeometryStreams
-            | Capability::StorageImageReadWithoutFormat
-            | Capability::StorageImageWriteWithoutFormat
-            | Capability::MultiViewport
-            | Capability::SubgroupDispatch
-            | Capability::NamedBarrier
-            | Capability::PipeStorage
-            | Capability::GroupNonUniform
-            | Capability::GroupNonUniformVote
-            | Capability::GroupNonUniformArithmetic
-            | Capability::GroupNonUniformBallot
-            | Capability::GroupNonUniformShuffle
-            | Capability::GroupNonUniformShuffleRelative
-            | Capability::GroupNonUniformClustered
-            | Capability::GroupNonUniformQuad
-            | Capability::ShaderLayer
-            | Capability::ShaderViewportIndex
-            | Capability::ShaderNonUniform
-            | Capability::RuntimeDescriptorArray
-            | Capability::InputAttachmentArrayDynamicIndexing
-            | Capability::UniformTexelBufferArrayDynamicIndexing
-            | Capability::StorageTexelBufferArrayDynamicIndexing
-            | Capability::UniformBufferArrayNonUniformIndexing
-            | Capability::SampledImageArrayNonUniformIndexing
-            | Capability::StorageBufferArrayNonUniformIndexing
-            | Capability::StorageImageArrayNonUniformIndexing
-            | Capability::InputAttachmentArrayNonUniformIndexing
-            | Capability::UniformTexelBufferArrayNonUniformIndexing
-            | Capability::StorageTexelBufferArrayNonUniformIndexing
-            | Capability::VulkanMemoryModel
-            | Capability::VulkanMemoryModelDeviceScope => &[],
-            Capability::Float16ImageAMD => &["SPV_AMD_gpu_shader_half_float_fetch"],
-            Capability::Groups => &["SPV_AMD_shader_ballot"],
-            Capability::FragmentMaskAMD => &["SPV_AMD_shader_fragment_mask"],
-            Capability::ImageReadWriteLodAMD => &["SPV_AMD_shader_image_load_store_lod"],
-            Capability::ImageGatherBiasLodAMD => &["SPV_AMD_texture_gather_bias_lod"],
-            Capability::DemoteToHelperInvocationEXT => &["SPV_EXT_demote_to_helper_invocation"],
-            Capability::FragmentFullyCoveredEXT => &["SPV_EXT_fragment_fully_covered"],
-            Capability::FragmentDensityEXT => {
-                &["SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate"]
-            }
-            Capability::FragmentShaderSampleInterlockEXT
-            | Capability::FragmentShaderShadingRateInterlockEXT
-            | Capability::FragmentShaderPixelInterlockEXT => &["SPV_EXT_fragment_shader_interlock"],
-            Capability::PhysicalStorageBufferAddresses => &[
-                "SPV_EXT_physical_storage_buffer",
-                "SPV_KHR_physical_storage_buffer",
-            ],
-            Capability::AtomicFloat32AddEXT | Capability::AtomicFloat64AddEXT => {
-                &["SPV_EXT_shader_atomic_float_add"]
-            }
-            Capability::Int64ImageEXT => &["SPV_EXT_shader_image_int64"],
-            Capability::StencilExportEXT => &["SPV_EXT_shader_stencil_export"],
-            Capability::ShaderViewportIndexLayerEXT => &["SPV_EXT_shader_viewport_index_layer"],
-            Capability::BlockingPipesINTEL => &["SPV_INTEL_blocking_pipes"],
-            Capability::SubgroupAvcMotionEstimationINTEL
-            | Capability::SubgroupAvcMotionEstimationIntraINTEL
-            | Capability::SubgroupAvcMotionEstimationChromaINTEL => {
-                &["SPV_INTEL_device_side_avc_motion_estimation"]
-            }
-            Capability::FPGALoopControlsINTEL => &["SPV_INTEL_fpga_loop_controls"],
-            Capability::FPGAMemoryAttributesINTEL => &["SPV_INTEL_fpga_memory_attributes"],
-            Capability::FPGARegINTEL => &["SPV_INTEL_fpga_reg"],
-            Capability::FunctionPointersINTEL | Capability::IndirectReferencesINTEL => {
-                &["SPV_INTEL_function_pointers"]
-            }
-            Capability::KernelAttributesINTEL | Capability::FPGAKernelAttributesINTEL => {
-                &["SPV_INTEL_kernel_attributes"]
-            }
-            Capability::SubgroupImageMediaBlockIOINTEL => &["SPV_INTEL_media_block_io"],
-            Capability::IntegerFunctions2INTEL => &["SPV_INTEL_shader_integer_functions2"],
-            Capability::SubgroupShuffleINTEL
-            | Capability::SubgroupBufferBlockIOINTEL
-            | Capability::SubgroupImageBlockIOINTEL => &["SPV_INTEL_subgroups"],
-            Capability::UnstructuredLoopControlsINTEL => &["SPV_INTEL_unstructured_loop_controls"],
-            Capability::StorageBuffer16BitAccess
-            | Capability::UniformAndStorageBuffer16BitAccess
-            | Capability::StoragePushConstant16
-            | Capability::StorageInputOutput16 => &["SPV_KHR_16bit_storage"],
-            Capability::StorageBuffer8BitAccess
-            | Capability::UniformAndStorageBuffer8BitAccess
-            | Capability::StoragePushConstant8 => &["SPV_KHR_8bit_storage"],
-            Capability::DeviceGroup => &["SPV_KHR_device_group"],
-            Capability::DenormPreserve
-            | Capability::DenormFlushToZero
-            | Capability::SignedZeroInfNanPreserve
-            | Capability::RoundingModeRTE
-            | Capability::RoundingModeRTZ => &["SPV_KHR_float_controls"],
-            Capability::FragmentShadingRateKHR => &["SPV_KHR_fragment_shading_rate"],
-            Capability::MultiView => &["SPV_KHR_multiview"],
-            Capability::SampleMaskPostDepthCoverage => &["SPV_KHR_post_depth_coverage"],
-            Capability::RayQueryProvisionalKHR | Capability::RayQueryKHR => &["SPV_KHR_ray_query"],
-            Capability::RayTraversalPrimitiveCullingKHR => {
-                &["SPV_KHR_ray_query", "SPV_KHR_ray_tracing"]
-            }
-            Capability::RayTracingKHR | Capability::RayTracingProvisionalKHR => {
-                &["SPV_KHR_ray_tracing"]
-            }
-            Capability::AtomicStorageOps => &["SPV_KHR_shader_atomic_counter_ops"],
-            Capability::SubgroupBallotKHR => &["SPV_KHR_shader_ballot"],
-            Capability::ShaderClockKHR => &["SPV_KHR_shader_clock"],
-            Capability::DrawParameters => &["SPV_KHR_shader_draw_parameters"],
-            Capability::SubgroupVoteKHR => &["SPV_KHR_subgroup_vote"],
-            Capability::VariablePointersStorageBuffer | Capability::VariablePointers => {
-                &["SPV_KHR_variable_pointers"]
-            }
-            Capability::PerViewAttributesNV => &["SPV_NVX_multiview_per_view_attributes"],
-            Capability::ComputeDerivativeGroupQuadsNV
-            | Capability::ComputeDerivativeGroupLinearNV => &["SPV_NV_compute_shader_derivatives"],
-            Capability::CooperativeMatrixNV => &["SPV_NV_cooperative_matrix"],
-            Capability::FragmentBarycentricNV => &["SPV_NV_fragment_shader_barycentric"],
-            Capability::GeometryShaderPassthroughNV => &["SPV_NV_geometry_shader_passthrough"],
-            Capability::MeshShadingNV => &["SPV_NV_mesh_shader"],
-            Capability::RayTracingNV => &["SPV_NV_ray_tracing"],
-            Capability::SampleMaskOverrideCoverageNV => &["SPV_NV_sample_mask_override_coverage"],
-            Capability::ImageFootprintNV => &["SPV_NV_shader_image_footprint"],
-            Capability::ShaderSMBuiltinsNV => &["SPV_NV_shader_sm_builtins"],
-            Capability::GroupNonUniformPartitionedNV => &["SPV_NV_shader_subgroup_partitioned"],
-            Capability::ShaderStereoViewNV => &["SPV_NV_stereo_view_rendering"],
-            Capability::ShaderViewportMaskNV => &["SPV_NV_viewport_array2"],
-        }
-    }
 }
 impl num_traits::FromPrimitive for Capability {
     #[allow(trivial_numeric_casts)]
@@ -3945,20 +2541,7 @@ pub enum RayQueryIntersection {
     RayQueryCommittedIntersectionKHR = 1u32,
 }
 #[allow(non_upper_case_globals)]
-impl RayQueryIntersection {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            RayQueryIntersection::RayQueryCandidateIntersectionKHR
-            | RayQueryIntersection::RayQueryCommittedIntersectionKHR => &[Capability::RayQueryKHR],
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            RayQueryIntersection::RayQueryCandidateIntersectionKHR
-            | RayQueryIntersection::RayQueryCommittedIntersectionKHR => &[],
-        }
-    }
-}
+impl RayQueryIntersection {}
 impl num_traits::FromPrimitive for RayQueryIntersection {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -3993,24 +2576,7 @@ pub enum RayQueryCommittedIntersectionType {
     RayQueryCommittedIntersectionGeneratedKHR = 2u32,
 }
 #[allow(non_upper_case_globals)]
-impl RayQueryCommittedIntersectionType {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionNoneKHR
-            | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionTriangleKHR
-            | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR => {
-                &[Capability::RayQueryKHR]
-            }
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionNoneKHR
-            | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionTriangleKHR
-            | RayQueryCommittedIntersectionType::RayQueryCommittedIntersectionGeneratedKHR => &[],
-        }
-    }
-}
+impl RayQueryCommittedIntersectionType {}
 impl num_traits::FromPrimitive for RayQueryCommittedIntersectionType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {
@@ -4052,22 +2618,7 @@ pub enum RayQueryCandidateIntersectionType {
     RayQueryCandidateIntersectionAABBKHR = 1u32,
 }
 #[allow(non_upper_case_globals)]
-impl RayQueryCandidateIntersectionType {
-    pub fn required_capabilities(self) -> &'static [Capability] {
-        match self {
-            RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionTriangleKHR
-            | RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR => {
-                &[Capability::RayQueryKHR]
-            }
-        }
-    }
-    pub fn required_extensions(self) -> &'static [&'static str] {
-        match self {
-            RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionTriangleKHR
-            | RayQueryCandidateIntersectionType::RayQueryCandidateIntersectionAABBKHR => &[],
-        }
-    }
-}
+impl RayQueryCandidateIntersectionType {}
 impl num_traits::FromPrimitive for RayQueryCandidateIntersectionType {
     #[allow(trivial_numeric_casts)]
     fn from_i64(n: i64) -> Option<Self> {

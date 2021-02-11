@@ -1,6 +1,7 @@
 use rspirv::{
     binary::{Assemble as _, Disassemble as _},
-    dr, lift,
+    dr,
+    lift,
 };
 
 use std::path::PathBuf;
