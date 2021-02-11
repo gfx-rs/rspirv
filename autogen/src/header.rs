@@ -112,21 +112,6 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let kind = as_ident(&grammar.kind);
     let attribute = bit_enum_attribute();
 
-    let operands_matches = if additional_operands_list.is_empty() {
-        quote! {
-            core::iter::empty::<&'static &'static LogicalOperand>()
-        }
-    } else {
-        quote! {
-            [#(#additional_operands_list,)*].iter().flat_map(|v| {
-                match self {
-                    #(#operands)*
-                    _ => &[].iter()
-                }
-            })
-        }
-    };
-
     quote! {
         bitflags! {
             #[doc = #comment]
@@ -134,24 +119,6 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             pub struct #kind: u32 {
                 #(#elements)*
             }
-        }
-
-        impl #kind {
-            // pub fn required_capabilities(self) -> &'static [Capability] {
-            //     match self {
-            //         #(#capabilities),*
-            //     }
-            // }
-
-            // pub fn required_extensions(self) -> &'static [&'static str] {
-            //     match self {
-            //         #(#extensions),*
-            //     }
-            // }
-
-            // pub fn additional_operands(self) -> impl Iterator<Item = &'static &'static LogicalOperand> {
-            //     #operands_matches
-            // }
         }
     }
 }
@@ -226,28 +193,6 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         }
     }
 
-    let capabilities = capability_clauses.into_iter().map(|(k, v)| {
-        let kinds = std::iter::repeat(&kind);
-        let capabilities = k.iter().map(|cap| as_ident(cap));
-        quote! {
-            #( #kinds::#v )|* => &[#( Capability::#capabilities ),*]
-        }
-    });
-
-    let extensions = extension_clauses.into_iter().map(|(k, v)| {
-        let kinds = std::iter::repeat(&kind);
-        quote! {
-            #( #kinds::#v )|* => &[#( #k ),*]
-        }
-    });
-
-    let operands = operand_clauses.into_iter().map(|(k, v)| {
-        let kinds = std::iter::repeat(&kind);
-        quote! {
-            #kind::#k => &[#( #v ),*]
-        }
-    });
-
     let comment = format!("/// SPIR-V operand kind: {}", get_spec_link(&grammar.kind));
     let attribute = value_enum_attribute();
 
@@ -263,24 +208,6 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         #[allow(non_upper_case_globals)]
         impl #kind {
             #(#aliases)*
-
-            // pub fn required_capabilities(self) -> &'static [Capability] {
-            //     match self {
-            //         #(#capabilities),*
-            //     }
-            // }
-
-            // pub fn required_extensions(self) -> &'static [&'static str] {
-            //     match self {
-            //         #(#extensions),*
-            //     }
-            // }
-
-            // pub fn additional_operands(self) -> &'static [&'static LogicalOperand] {
-            //     match self {
-            //        #(#operands),*
-            //     }
-            // }
         }
 
         #from_prim_impl

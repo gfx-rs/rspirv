@@ -276,17 +276,15 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         }
     };
 
-    let translate_quant = |quant: crate::structs::Quantifier| {
-        match quant {
-            structs::Quantifier::One => {
-                quote! { crate::grammar::OperandQuantifier::One }
-            }
-            structs::Quantifier::ZeroOrOne => {
-                quote! { crate::grammar::OperandQuantifier::ZeroOrOne }
-            }
-            structs::Quantifier::ZeroOrMore => {
-                quote! { crate::grammar::OperandQuantifier::ZeroOrMore }
-            }
+    let translate_quant = |quant: crate::structs::Quantifier| match quant {
+        structs::Quantifier::One => {
+            quote! { crate::grammar::OperandQuantifier::One }
+        }
+        structs::Quantifier::ZeroOrOne => {
+            quote! { crate::grammar::OperandQuantifier::ZeroOrOne }
+        }
+        structs::Quantifier::ZeroOrMore => {
+            quote! { crate::grammar::OperandQuantifier::ZeroOrMore }
         }
     };
 
@@ -393,12 +391,35 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 }
 
                 let extensions = if category == &structs::Category::BitEnum {
-                    quote! {}
+                    let extensions = extension_clauses
+                            .into_iter()
+                            .filter(|(k, _)| !k.is_empty())
+                            .map(|(k, v)| {
+                                let kinds = std::iter::repeat(quote! { s::#kind });
+
+                                quote! {
+                                    if v.intersects(#(#kinds::#v)|*) {
+                                        result.extend_from_slice(&[#( #k ),*])
+                                    }
+                                }
+                            }).collect::<Vec<_>>();
+
+                        if extensions.is_empty() {
+                            quote! {}
+                        } else {
+                            quote! {
+                                Self::#kind(v) => {
+                                    let mut result = vec![];
+                                    #( #extensions );*;
+                                    result
+                                }
+                            }
+                        }
                 } else {
                     let extensions = extension_clauses.into_iter().map(|(k, v)| {
                         let kinds = std::iter::repeat(quote! { s::#kind });
                         quote! {
-                            #( #kinds::#v )|* => &[#( #k ),*]
+                            #( #kinds::#v )|* => vec![#( #k ),*]
                         }
                     });
 
@@ -410,13 +431,37 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 };
 
                 let capabilities = if category == &structs::Category::BitEnum {
-                    quote! {}
+                    let capabilities = capability_clauses
+                            .into_iter()
+                            .filter(|(k, _)| !k.is_empty())
+                            .map(|(k, v)| {
+                                let kinds = std::iter::repeat(quote! { s::#kind });
+                                let capabilities = k.iter().map(|cap| as_ident(cap));
+
+                                quote! {
+                                    if v.intersects(#(#kinds::#v)|*) {
+                                        result.extend_from_slice(&[#( spirv::Capability::#capabilities ),*])
+                                    }
+                                }
+                            }).collect::<Vec<_>>();
+
+                        if capabilities.is_empty() {
+                            quote! {}
+                        } else {
+                            quote! {
+                                Self::#kind(v) => {
+                                    let mut result = vec![];
+                                    #( #capabilities );*;
+                                    result
+                                }
+                            }
+                        }
                 } else {
                     let capabilities = capability_clauses.into_iter().map(|(k, v)| {
                         let kinds = std::iter::repeat(quote! { s::#kind });
                         let capabilities = k.iter().map(|cap| as_ident(cap));
                         quote! {
-                            #( #kinds::#v )|* => &[#( spirv::Capability::#capabilities ),*]
+                            #( #kinds::#v )|* => vec![#( spirv::Capability::#capabilities ),*]
                         }
                     });
 
@@ -449,7 +494,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                                 let kinds = std::iter::repeat(quote! { s::#kind });
 
                                 quote! {
-                                    result.extend([#(#kinds::#v,)*].iter().filter(|arg| { 
+                                    result.extend([#(#kinds::#v,)*].iter().filter(|arg| {
                                         v.contains(**arg)
                                     }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
                                 }
@@ -526,19 +571,19 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                     }
                 }
 
-                pub fn required_capabilities(&self) -> &'static [spirv::Capability] {
+                pub fn required_capabilities(&self) -> Vec<spirv::Capability> {
                     use spirv as s;
                     match self {
                         #(#required_capabilities)*
-                        _ => &[]
+                        _ => vec![]
                     }
                 }
 
-                pub fn required_extensions(&self) -> &'static [&'static str] {
+                pub fn required_extensions(&self) -> Vec<&'static str> {
                     use spirv as s;
                     match self {
                         #(#required_extensions)*
-                        _ => &[]
+                        _ => vec![]
                     }
                 }
 
