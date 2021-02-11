@@ -32,7 +32,7 @@ pub struct ExtendedInstruction<'a> {
 }
 
 /// Grammar for a SPIR-V logical operand.
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct LogicalOperand {
     /// The kind of this logical operand.
     pub kind: OperandKind,

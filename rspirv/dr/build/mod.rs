@@ -154,6 +154,18 @@ impl Builder {
         Ok(())
     }
 
+    pub fn insert_types_global_values(&mut self, insert_point: InsertPoint, inst: dr::Instruction) {
+        match insert_point {
+            InsertPoint::End => self.module.types_global_values.push(inst),
+            InsertPoint::Begin => self.module.types_global_values.insert(0, inst),
+            InsertPoint::FromEnd(offset) => {
+                let end = self.module.types_global_values.len();
+                self.module.types_global_values.insert(end - offset, inst)
+            }
+            InsertPoint::FromBegin(offset) => self.module.types_global_values.insert(offset, inst),
+        }
+    }
+
     pub fn pop_instruction(&mut self) -> BuildResult<dr::Instruction> {
         let (selected_function, selected_block) =
             match (self.selected_function, self.selected_block) {

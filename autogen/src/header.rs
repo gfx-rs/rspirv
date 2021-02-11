@@ -62,7 +62,11 @@ fn from_primitive_impl(from_prim: &[TokenStream], kind: &proc_macro2::Ident) -> 
 }
 
 fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
-    let elements = grammar.enumerants.iter().map(|enumerant| {
+    let mut elements = vec![];
+    let mut operands = vec![];
+    let mut additional_operands_list = vec![];
+
+    for enumerant in grammar.enumerants.iter() {
         // Special treatment for "NaN"
         let symbol = as_ident(
             &enumerant
@@ -71,10 +75,39 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
                 .replace("NA_N", "NAN"),
         );
         let value = enumerant.value;
-        quote! {
+
+        elements.push(quote! {
             const #symbol = #value;
+        });
+
+        let parameters = enumerant.parameters.iter().map(|op| {
+            let kind = as_ident(&op.kind);
+
+            let quant = match op.quantifier {
+                structs::Quantifier::One => quote! { OperandQuantifier::One },
+                structs::Quantifier::ZeroOrOne => quote! { OperandQuantifier::ZeroOrOne },
+                structs::Quantifier::ZeroOrMore => quote! { OperandQuantifier::ZeroOrMore },
+            };
+
+            quote! {
+                LogicalOperand {
+                    kind: OperandKind::#kind,
+                    quantifier: #quant
+                }
+            }
+        });
+
+        if !enumerant.parameters.is_empty() {
+            additional_operands_list.push(quote! { Self::#symbol });
+
+            operands.push(quote! {
+                Self::#symbol if self.contains(*v) => {
+                    [#( #parameters ),*].iter()
+                }
+            });
         }
-    });
+    }
+
     let comment = format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind));
     let kind = as_ident(&grammar.kind);
     let attribute = bit_enum_attribute();
@@ -101,6 +134,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
     let mut extension_clauses = BTreeMap::new();
+    let mut operand_clauses = BTreeMap::new();
     let mut from_str_impl = vec![];
     for e in &grammar.enumerants {
         if let Some(discriminator) = seen_discriminator.get(&e.value) {
@@ -135,24 +169,29 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             extension_clauses
                 .entry(&e.extensions)
                 .or_insert_with(Vec::new)
-                .push(name);
+                .push(name.clone());
+
+            operand_clauses
+                .entry(name.clone())
+                .or_insert_with(Vec::new)
+                .extend(e.parameters.iter().map(|op| {
+                    let kind = as_ident(&op.kind);
+
+                    let quant = match op.quantifier {
+                        structs::Quantifier::One => quote! { OperandQuantifier::One },
+                        structs::Quantifier::ZeroOrOne => quote! { OperandQuantifier::ZeroOrOne },
+                        structs::Quantifier::ZeroOrMore => quote! { OperandQuantifier::ZeroOrMore },
+                    };
+
+                    quote! {
+                        LogicalOperand {
+                            kind: OperandKind::#kind,
+                            quantifier: #quant
+                        }
+                    }
+                }));
         }
     }
-
-    let capabilities = capability_clauses.into_iter().map(|(k, v)| {
-        let kinds = std::iter::repeat(&kind);
-        let capabilities = k.iter().map(|cap| as_ident(cap));
-        quote! {
-            #( #kinds::#v )|* => &[#( Capability::#capabilities ),*]
-        }
-    });
-
-    let extensions = extension_clauses.into_iter().map(|(k, v)| {
-        let kinds = std::iter::repeat(&kind);
-        quote! {
-            #( #kinds::#v )|* => &[#( #k ),*]
-        }
-    });
 
     let comment = format!("/// SPIR-V operand kind: {}", get_spec_link(&grammar.kind));
     let attribute = value_enum_attribute();
@@ -169,18 +208,6 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         #[allow(non_upper_case_globals)]
         impl #kind {
             #(#aliases)*
-
-            pub fn required_capabilities(self) -> &'static [Capability] {
-                match self {
-                    #(#capabilities),*
-                }
-            }
-
-            pub fn required_extensions(self) -> &'static [&'static str] {
-                match self {
-                    #(#extensions),*
-                }
-            }
         }
 
         #from_prim_impl
@@ -250,6 +277,7 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("Op"));
 
     quote! {
+        //pub use crate::grammar::{OperandKind, OperandQuantifier, LogicalOperand};
         pub type Word = u32;
         pub const MAGIC_NUMBER: u32 = #magic_number;
         pub const MAJOR_VERSION: u8 = #major_version;

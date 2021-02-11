@@ -3,7 +3,7 @@ use serde::de;
 use serde_derive::*;
 use std::{convert::TryInto, fmt, result, str};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct Operand {
     pub kind: String,
     #[serde(default)]
@@ -12,7 +12,7 @@ pub struct Operand {
     pub quantifier: Quantifier,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Instruction {
     pub class: Option<Class>,
     pub opname: String,
@@ -25,7 +25,7 @@ pub struct Instruction {
     pub extensions: Vec<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Enumerant {
     #[serde(rename = "enumerant")]
     pub symbol: String,
@@ -39,7 +39,7 @@ pub struct Enumerant {
     pub extensions: Vec<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct OperandKind {
     pub category: Category,
     pub kind: String,
@@ -93,7 +93,7 @@ fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Err
     d.deserialize_any(NumOrStr)
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Ord, PartialOrd)]
 pub enum Quantifier {
     #[serde(rename = "")]
     One,

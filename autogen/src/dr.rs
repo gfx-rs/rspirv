@@ -6,6 +6,7 @@ use crate::utils::*;
 use heck::SnakeCase;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
+use std::collections::BTreeMap;
 
 /// Returns true if the given operand kind can potentially have additional
 /// parameters.
@@ -200,6 +201,17 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         .map(as_ident)
         .collect();
 
+    let kind_to_enum: Vec<_> = grammar
+        .iter()
+        .map(|element| {
+            (
+                element.kind.as_str(),
+                element.category,
+                element.enumerants.clone(),
+            )
+        })
+        .collect();
+
     let kind_and_ty = {
         let id_kinds = kinds
             .iter()
@@ -264,6 +276,18 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         }
     };
 
+    let translate_quant = |quant: crate::structs::Quantifier| match quant {
+        structs::Quantifier::One => {
+            quote! { crate::grammar::OperandQuantifier::One }
+        }
+        structs::Quantifier::ZeroOrOne => {
+            quote! { crate::grammar::OperandQuantifier::ZeroOrOne }
+        }
+        structs::Quantifier::ZeroOrMore => {
+            quote! { crate::grammar::OperandQuantifier::ZeroOrMore }
+        }
+    };
+
     let impl_code = {
         // impl fmt::Display for dr::Operand.
         let mut kinds = kinds;
@@ -296,12 +320,12 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 }
             }
         });
-        let unwraps = kind_and_ty.into_iter().map(|(kind, ty)| {
+        let unwraps = kind_and_ty.iter().map(|(kind, ty)| {
             let unwrap_kind = format_ident!("unwrap_{}", kind.to_string().to_snake_case());
             let (ret_ty, self_prefix) = if ty.to_string() == "String" {
                 (quote! {&str}, quote! {})
             } else {
-                (ty, quote!(*))
+                (ty.clone(), quote!(*))
             };
             let panic_arg = format!("Expected Operand::{}, got {{}} instead", kind);
             quote! {
@@ -313,6 +337,221 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 }
             }
         });
+
+        let operand_metadata = kind_to_enum
+            .iter()
+            .filter_map(|(kind, category, enumerators)| {
+                if enumerators.is_empty() {
+                    return None;
+                }
+
+                let mut capability_clauses = BTreeMap::new();
+                let mut extension_clauses = BTreeMap::new();
+                let mut operand_clauses = BTreeMap::new();
+
+                let kind = as_ident(kind);
+                let mut seen_discriminator = BTreeMap::new();
+
+                for e in enumerators {
+                    if seen_discriminator.get(&e.value).is_none() {
+                        let name = match category {
+                            structs::Category::BitEnum => {
+                                use heck::ShoutySnakeCase;
+
+                                as_ident(&e.symbol.to_shouty_snake_case().replace("NA_N", "NAN"))
+                            }
+                            structs::Category::ValueEnum => {
+                                let name_str = if kind == "Dim" {
+                                    let mut name = "Dim".to_string();
+                                    name.push_str(&e.symbol);
+                                    name
+                                } else {
+                                    e.symbol.to_string()
+                                };
+
+                                as_ident(&name_str)
+                            }
+                            _ => panic!("Unexpected operand type"),
+                        };
+
+                        seen_discriminator.insert(e.value, name.clone());
+
+                        capability_clauses
+                            .entry(&e.capabilities)
+                            .or_insert_with(Vec::new)
+                            .push(name.clone());
+
+                        extension_clauses
+                            .entry(&e.extensions)
+                            .or_insert_with(Vec::new)
+                            .push(name.clone());
+
+                        if !e.parameters.is_empty() {
+                            operand_clauses
+                                .entry(&e.parameters)
+                                .or_insert_with(Vec::new)
+                                .push(name.clone())
+                        }
+                    }
+                }
+
+                let extensions = if category == &structs::Category::BitEnum {
+                    let extensions = extension_clauses
+                            .into_iter()
+                            .filter(|(k, _)| !k.is_empty())
+                            .map(|(k, v)| {
+                                let kinds = std::iter::repeat(quote! { s::#kind });
+
+                                quote! {
+                                    if v.intersects(#(#kinds::#v)|*) {
+                                        result.extend_from_slice(&[#( #k ),*])
+                                    }
+                                }
+                            }).collect::<Vec<_>>();
+
+                        if extensions.is_empty() {
+                            quote! {}
+                        } else {
+                            quote! {
+                                Self::#kind(v) => {
+                                    let mut result = vec![];
+                                    #( #extensions );*;
+                                    result
+                                }
+                            }
+                        }
+                } else {
+                    let extensions = extension_clauses.into_iter().map(|(k, v)| {
+                        let kinds = std::iter::repeat(quote! { s::#kind });
+                        quote! {
+                            #( #kinds::#v )|* => vec![#( #k ),*]
+                        }
+                    });
+
+                    quote! {
+                        Self::#kind(v) => match v {
+                            #( #extensions ),*
+                        },
+                    }
+                };
+
+                let capabilities = if category == &structs::Category::BitEnum {
+                    let capabilities = capability_clauses
+                            .into_iter()
+                            .filter(|(k, _)| !k.is_empty())
+                            .map(|(k, v)| {
+                                let kinds = std::iter::repeat(quote! { s::#kind });
+                                let capabilities = k.iter().map(|cap| as_ident(cap));
+
+                                quote! {
+                                    if v.intersects(#(#kinds::#v)|*) {
+                                        result.extend_from_slice(&[#( spirv::Capability::#capabilities ),*])
+                                    }
+                                }
+                            }).collect::<Vec<_>>();
+
+                        if capabilities.is_empty() {
+                            quote! {}
+                        } else {
+                            quote! {
+                                Self::#kind(v) => {
+                                    let mut result = vec![];
+                                    #( #capabilities );*;
+                                    result
+                                }
+                            }
+                        }
+                } else {
+                    let capabilities = capability_clauses.into_iter().map(|(k, v)| {
+                        let kinds = std::iter::repeat(quote! { s::#kind });
+                        let capabilities = k.iter().map(|cap| as_ident(cap));
+                        quote! {
+                            #( #kinds::#v )|* => vec![#( spirv::Capability::#capabilities ),*]
+                        }
+                    });
+
+                    quote! {
+                        Self::#kind(v) => match v {
+                            #( #capabilities ),*
+                        },
+                    }
+                };
+
+                let operands = if operand_clauses.is_empty() {
+                    quote! {}
+                }else {
+                    if category == &structs::Category::BitEnum {
+                        let operands = operand_clauses
+                            .into_iter()
+                            .map(|(k, v)| {
+                                let operands = k.iter().map(|op| {
+                                    let kind = as_ident(&op.kind);
+                                    let quant = translate_quant(op.quantifier);
+
+                                    quote! {
+                                        crate::grammar::LogicalOperand {
+                                            kind: crate::grammar::OperandKind::#kind,
+                                            quantifier: #quant
+                                        }
+                                    }
+                                });
+
+                                let kinds = std::iter::repeat(quote! { s::#kind });
+
+                                quote! {
+                                    result.extend([#(#kinds::#v,)*].iter().filter(|arg| {
+                                        v.contains(**arg)
+                                    }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
+                                }
+                            });
+
+                        quote! {
+                            Self::#kind(v) => {
+                                let mut result = vec![];
+                                #( #operands );*;
+                                result
+                            }
+                        }
+                    } else {
+                        let operands = operand_clauses
+                            .into_iter()
+                            .map(|(k, v)| {
+                                let operands = k.iter().map(|op| {
+                                    let kind = as_ident(&op.kind);
+                                    let quant = translate_quant(op.quantifier);
+
+                                    quote! {
+                                        crate::grammar::LogicalOperand {
+                                            kind: crate::grammar::OperandKind::#kind,
+                                            quantifier: #quant
+                                        }
+                                    }
+                                });
+
+                                let kinds = std::iter::repeat(quote! { s::#kind });
+
+                                quote! {
+                                    #( #kinds::#v )|* => vec![#( #operands ),*]
+                                }
+                            });
+
+                        quote! {
+                            Self::#kind(v) => match v {
+                                #( #operands ),*,
+                                _ => vec![]
+                            },
+                        }
+                    }
+                };
+
+                Some((extensions, capabilities, operands))
+            })
+            .collect::<Vec<_>>();
+
+        let required_extensions = operand_metadata.iter().map(|e| &e.0);
+        let required_capabilities = operand_metadata.iter().map(|e| &e.1);
+        let additional_params = operand_metadata.iter().map(|e| &e.2);
+
         quote! {
             impl fmt::Display for Operand {
                 fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -334,6 +573,30 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                     match self {
                         Self::IdRef(v) | Self::IdScope(v) | Self::IdMemorySemantics(v) => Some(v),
                         _ => None,
+                    }
+                }
+
+                pub fn required_capabilities(&self) -> Vec<spirv::Capability> {
+                    use spirv as s;
+                    match self {
+                        #(#required_capabilities)*
+                        _ => vec![]
+                    }
+                }
+
+                pub fn required_extensions(&self) -> Vec<&'static str> {
+                    use spirv as s;
+                    match self {
+                        #(#required_extensions)*
+                        _ => vec![]
+                    }
+                }
+
+                pub fn additional_operands(&self) -> Vec<crate::grammar::LogicalOperand> {
+                    use spirv as s;
+                    match self {
+                       #(#additional_params)*
+                       _ => vec![]
                     }
                 }
             }
