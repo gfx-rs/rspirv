@@ -149,7 +149,7 @@ impl GlslStd450InstructionTable {
             .expect("internal error")
     }
 
-    pub fn iter() -> impl Iterator<Item = &'static Instruction<'static>> {
+    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
         GLSL_STD_450_INSTRUCTION_TABLE.iter()
     }
 }
@@ -179,7 +179,7 @@ impl OpenCLStd100InstructionTable {
             .expect("internal error")
     }
 
-    pub fn iter() -> impl Iterator<Item = &'static Instruction<'static>> {
+    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
         OPENCL_STD_100_INSTRUCTION_TABLE.iter()
     }
 }
