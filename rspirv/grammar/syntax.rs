@@ -118,6 +118,10 @@ impl CoreInstructionTable {
             .find(|inst| (inst.opcode == opcode))
             .expect("internal error")
     }
+
+    pub fn iter() -> impl Iterator<Item = &'static Instruction<'static>> {
+        INSTRUCTION_TABLE.iter()
+    }
 }
 
 include!("autogen_table.rs");
@@ -144,6 +148,10 @@ impl GlslStd450InstructionTable {
             .find(|inst| (inst.opcode == opcode as spirv::Word))
             .expect("internal error")
     }
+
+    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
+        GLSL_STD_450_INSTRUCTION_TABLE.iter()
+    }
 }
 
 include!("autogen_glsl_std_450.rs");
@@ -169,6 +177,10 @@ impl OpenCLStd100InstructionTable {
             .iter()
             .find(|inst| (inst.opcode == opcode as spirv::Word))
             .expect("internal error")
+    }
+
+    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
+        OPENCL_STD_100_INSTRUCTION_TABLE.iter()
     }
 }
 
