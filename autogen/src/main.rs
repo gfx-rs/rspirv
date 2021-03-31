@@ -44,7 +44,9 @@ fn map_reserved_instructions(grammar: &mut structs::Grammar) {
         .filter(|i| i.class == Some(structs::Class::Reserved))
     {
         match &*instruction.opname {
-            "OpTypeAccelerationStructureKHR" => instruction.class = Some(structs::Class::Type),
+            | "OpTypeAccelerationStructureKHR"
+            | "OpTypeRayQueryKHR"
+                => instruction.class = Some(structs::Class::Type),
             _ => {}
         }
     }

@@ -1363,7 +1363,6 @@ pub enum Op {
     ConvertUToAccelerationStructureKHR {
         accel: spirv::Word,
     },
-    TypeRayQueryKHR,
     RayQueryInitializeKHR {
         ray_query: spirv::Word,
         accel: spirv::Word,

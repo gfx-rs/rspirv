@@ -5338,7 +5338,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            4472u32 => Ok(ops::Op::TypeRayQueryKHR),
             4473u32 => Ok(ops::Op::RayQueryInitializeKHR {
                 ray_query: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -8576,6 +8575,7 @@ impl LiftContext {
             }),
             322u32 => Ok(Type::PipeStorage),
             327u32 => Ok(Type::NamedBarrier),
+            4472u32 => Ok(Type::RayQueryKHR),
             5341u32 => Ok(Type::AccelerationStructureKHR),
             _ => Err(InstructionError::WrongOpcode),
         }
