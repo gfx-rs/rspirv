@@ -5803,7 +5803,6 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             5341u32 => Ok(ops::Op::TypeAccelerationStructureNV),
-            5341u32 => Ok(ops::Op::TypeAccelerationStructureKHR),
             5344u32 => Ok(ops::Op::ExecuteCallableNV {
                 sbt_index: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -8577,6 +8576,7 @@ impl LiftContext {
             }),
             322u32 => Ok(Type::PipeStorage),
             327u32 => Ok(Type::NamedBarrier),
+            5341u32 => Ok(Type::AccelerationStructureKHR),
             _ => Err(InstructionError::WrongOpcode),
         }
     }

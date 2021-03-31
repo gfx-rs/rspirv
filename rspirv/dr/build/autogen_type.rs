@@ -345,4 +345,17 @@ impl Builder {
             new_id
         }
     }
+    #[doc = "Appends an OpTypeAccelerationStructureKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_acceleration_structure_khr(&mut self) -> spirv::Word {
+        let mut inst =
+            dr::Instruction::new(spirv::Op::TypeAccelerationStructureKHR, None, None, vec![]);
+        if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
 }

@@ -1481,7 +1481,6 @@ pub enum Op {
         payload_id: spirv::Word,
     },
     TypeAccelerationStructureNV,
-    TypeAccelerationStructureKHR,
     ExecuteCallableNV {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,

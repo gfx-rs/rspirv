@@ -69,4 +69,5 @@ pub enum Type {
     },
     PipeStorage,
     NamedBarrier,
+    AccelerationStructureKHR,
 }

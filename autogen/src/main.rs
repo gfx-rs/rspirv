@@ -35,6 +35,21 @@ fn write_formatted(path: &PathBuf, contents: impl ToString) {
     };
 }
 
+/// Maps some reserved instructions in the spec into their expected class in
+/// order to generate the proper methods for those instructions.
+fn map_reserved_instructions(grammar: &mut structs::Grammar) {
+    for instruction in grammar
+        .instructions
+        .iter_mut()
+        .filter(|i| i.class == Some(structs::Class::Reserved))
+    {
+        match &*instruction.opname {
+            "OpTypeAccelerationStructureKHR" => instruction.class = Some(structs::Class::Type),
+            _ => {}
+        }
+    }
+}
+
 fn main() {
     // Path to the SPIR-V core grammar file.
     let env_var = env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -52,7 +67,12 @@ fn main() {
         let mut file = fs::File::open(path).unwrap();
         file.read_to_string(&mut contents).unwrap();
     }
-    let grammar: structs::Grammar = serde_json::from_str(&contents).unwrap();
+
+    let grammar: structs::Grammar = {
+        let mut original = serde_json::from_str(&contents).unwrap();
+        map_reserved_instructions(&mut original);
+        original
+    };
 
     // For GLSLstd450 extended instruction set.
     {
