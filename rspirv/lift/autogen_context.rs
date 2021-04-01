@@ -5338,7 +5338,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            4472u32 => Ok(ops::Op::TypeRayQueryKHR),
             4473u32 => Ok(ops::Op::RayQueryInitializeKHR {
                 ray_query: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -5803,7 +5802,6 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             5341u32 => Ok(ops::Op::TypeAccelerationStructureNV),
-            5341u32 => Ok(ops::Op::TypeAccelerationStructureKHR),
             5344u32 => Ok(ops::Op::ExecuteCallableNV {
                 sbt_index: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -5812,32 +5810,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 callable_data_id: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
-            5358u32 => Ok(ops::Op::TypeCooperativeMatrixNV {
-                component_type: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                execution: (match operands.next() {
-                    Some(&dr::Operand::IdScope(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                rows: (match operands.next() {
-                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
-                    Some(_) => Err(OperandError::WrongType)?,
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                columns: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => Err(OperandError::WrongType)?,
                     None => None,
@@ -8577,6 +8549,34 @@ impl LiftContext {
             }),
             322u32 => Ok(Type::PipeStorage),
             327u32 => Ok(Type::NamedBarrier),
+            4472u32 => Ok(Type::RayQueryKHR),
+            5341u32 => Ok(Type::AccelerationStructureKHR),
+            5358u32 => Ok(Type::CooperativeMatrixNV {
+                component_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                execution: (match operands.next() {
+                    Some(&dr::Operand::IdScope(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rows: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                columns: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => Err(OperandError::WrongType)?,
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             _ => Err(InstructionError::WrongOpcode),
         }
     }

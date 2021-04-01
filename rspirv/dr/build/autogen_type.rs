@@ -345,4 +345,57 @@ impl Builder {
             new_id
         }
     }
+    #[doc = "Appends an OpTypeRayQueryKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_ray_query_khr(&mut self) -> spirv::Word {
+        let mut inst = dr::Instruction::new(spirv::Op::TypeRayQueryKHR, None, None, vec![]);
+        if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
+    #[doc = "Appends an OpTypeAccelerationStructureKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_acceleration_structure_khr(&mut self) -> spirv::Word {
+        let mut inst =
+            dr::Instruction::new(spirv::Op::TypeAccelerationStructureKHR, None, None, vec![]);
+        if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
+    #[doc = "Appends an OpTypeCooperativeMatrixNV instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_cooperative_matrix_nv(
+        &mut self,
+        component_type: spirv::Word,
+        execution: spirv::Word,
+        rows: spirv::Word,
+        columns: spirv::Word,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeCooperativeMatrixNV,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(component_type),
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdRef(rows),
+                dr::Operand::IdRef(columns),
+            ],
+        );
+        if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
 }
