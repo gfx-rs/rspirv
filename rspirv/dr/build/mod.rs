@@ -954,7 +954,9 @@ mod tests {
             + module.entry_points.len()
             + module.types_global_values.len()
             + module.execution_modes.len()
-            + module.debugs.len()
+            + module.debug_string_source.len()
+            + module.debug_names.len()
+            + module.debug_module_processed.len()
             + module.annotations.len())
             + (if module.memory_model.is_some() { 1 } else { 0 })
             == 1
