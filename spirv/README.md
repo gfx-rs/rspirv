@@ -18,7 +18,7 @@ First add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-spirv_headers = "1.5"
+spirv_headers = "1.5.1"
 ```
 
 Version
