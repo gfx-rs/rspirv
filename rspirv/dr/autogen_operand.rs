@@ -4,6 +4,7 @@
 
 #[doc = "Data representation of a SPIR-V operand."]
 #[derive(Clone, Debug, PartialEq, From)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
     FPFastMathMode(spirv::FPFastMathMode),

@@ -26,14 +26,14 @@ pub fn as_ident(ident: &str) -> Ident {
 /// Returns the corresponding operand kind in data representation for the
 /// given operand `kind` in the grammar.
 pub fn get_dr_operand_kind(kind: &str) -> Ident {
-    as_ident(if kind == "LiteralInteger" {
-        "LiteralInt32"
-    } else if kind == "LiteralContextDependentNumber" {
-        // TODO: should use the correct type to decode
-        "LiteralInt32"
-    } else {
-        kind
-    })
+    as_ident(
+        if matches!(kind, "LiteralInteger" | "LiteralContextDependentNumber") {
+            // TODO: LiteralContextDependentNumber should use the correct type to decode
+            "LiteralInt32"
+        } else {
+            kind
+        },
+    )
 }
 
 /// Returns the underlying type used in operand kind enums for the operand

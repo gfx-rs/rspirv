@@ -138,10 +138,9 @@ impl Assemble for dr::Function {
 
 impl Assemble for dr::Module {
     fn assemble_into(&self, result: &mut Vec<u32>) {
-        match self.header {
-            Some(ref h) => h.assemble_into(result),
-            None => {}
-        };
+        if let Some(ref h) = self.header {
+            h.assemble_into(result);
+        }
 
         for inst in self.global_inst_iter() {
             inst.assemble_into(result);

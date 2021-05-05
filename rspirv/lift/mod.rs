@@ -9,8 +9,6 @@ use crate::{
     sr::{instructions, module, ops, storage::Token, Constant, StructMember, Type},
 };
 
-use spirv;
-
 use std::{borrow::Borrow, mem};
 
 /// A structure that we associate an <id> with, containing
@@ -258,7 +256,7 @@ impl LiftContext {
                         }
                         Ok(value)
                     }
-                    _ => return Err(InstructionError::MissingResult),
+                    _ => Err(InstructionError::MissingResult),
                 }
             }
             spirv::Op::ConstantComposite => {

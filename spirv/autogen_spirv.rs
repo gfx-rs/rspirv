@@ -22,6 +22,7 @@ bitflags! { # [doc = "SPIR-V operand kind: [FragmentShadingRate](https://www.khr
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum SourceLanguage {
     Unknown = 0u32,
     ESSL = 1u32,
@@ -68,6 +69,7 @@ impl core::str::FromStr for SourceLanguage {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum ExecutionModel {
     Vertex = 0u32,
     TessellationControl = 1u32,
@@ -154,6 +156,7 @@ impl core::str::FromStr for ExecutionModel {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum AddressingModel {
     Logical = 0u32,
     Physical32 = 1u32,
@@ -197,6 +200,7 @@ impl core::str::FromStr for AddressingModel {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum MemoryModel {
     Simple = 0u32,
     GLSL450 = 1u32,
@@ -240,6 +244,7 @@ impl core::str::FromStr for MemoryModel {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum ExecutionMode {
     Invocations = 0u32,
     SpacingEqual = 1u32,
@@ -448,6 +453,7 @@ impl core::str::FromStr for ExecutionMode {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum StorageClass {
     UniformConstant = 0u32,
     Input = 1u32,
@@ -554,6 +560,7 @@ impl core::str::FromStr for StorageClass {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Dim {
     Dim1D = 0u32,
     Dim2D = 1u32,
@@ -603,6 +610,7 @@ impl core::str::FromStr for Dim {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum SamplerAddressingMode {
     None = 0u32,
     ClampToEdge = 1u32,
@@ -646,6 +654,7 @@ impl core::str::FromStr for SamplerAddressingMode {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum SamplerFilterMode {
     Nearest = 0u32,
     Linear = 1u32,
@@ -680,6 +689,7 @@ impl core::str::FromStr for SamplerFilterMode {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum ImageFormat {
     Unknown = 0u32,
     Rgba32f = 1u32,
@@ -834,6 +844,7 @@ impl core::str::FromStr for ImageFormat {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum ImageChannelOrder {
     R = 0u32,
     A = 1u32,
@@ -922,6 +933,7 @@ impl core::str::FromStr for ImageChannelOrder {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum ImageChannelDataType {
     SnormInt8 = 0u32,
     SnormInt16 = 1u32,
@@ -1001,6 +1013,7 @@ impl core::str::FromStr for ImageChannelDataType {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum FPRoundingMode {
     RTE = 0u32,
     RTZ = 1u32,
@@ -1041,6 +1054,7 @@ impl core::str::FromStr for FPRoundingMode {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum LinkageType {
     Export = 0u32,
     Import = 1u32,
@@ -1075,6 +1089,7 @@ impl core::str::FromStr for LinkageType {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum AccessQualifier {
     ReadOnly = 0u32,
     WriteOnly = 1u32,
@@ -1112,6 +1127,7 @@ impl core::str::FromStr for AccessQualifier {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum FunctionParameterAttribute {
     Zext = 0u32,
     Sext = 1u32,
@@ -1164,6 +1180,7 @@ impl core::str::FromStr for FunctionParameterAttribute {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Decoration {
     RelaxedPrecision = 0u32,
     SpecId = 1u32,
@@ -1434,6 +1451,7 @@ impl core::str::FromStr for Decoration {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum BuiltIn {
     Position = 0u32,
     PointSize = 1u32,
@@ -1797,6 +1815,7 @@ impl core::str::FromStr for BuiltIn {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Scope {
     CrossDevice = 0u32,
     Device = 1u32,
@@ -1849,6 +1868,7 @@ impl core::str::FromStr for Scope {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum GroupOperation {
     Reduce = 0u32,
     InclusiveScan = 1u32,
@@ -1898,6 +1918,7 @@ impl core::str::FromStr for GroupOperation {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum KernelEnqueueFlags {
     NoWait = 0u32,
     WaitKernel = 1u32,
@@ -1935,6 +1956,7 @@ impl core::str::FromStr for KernelEnqueueFlags {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Capability {
     Matrix = 0u32,
     Shader = 1u32,
@@ -2526,6 +2548,7 @@ impl core::str::FromStr for Capability {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum RayQueryIntersection {
     RayQueryCandidateIntersectionKHR = 0u32,
     RayQueryCommittedIntersectionKHR = 1u32,
@@ -2560,6 +2583,7 @@ impl core::str::FromStr for RayQueryIntersection {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum RayQueryCommittedIntersectionType {
     RayQueryCommittedIntersectionNoneKHR = 0u32,
     RayQueryCommittedIntersectionTriangleKHR = 1u32,
@@ -2603,6 +2627,7 @@ impl core::str::FromStr for RayQueryCommittedIntersectionType {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum RayQueryCandidateIntersectionType {
     RayQueryCandidateIntersectionTriangleKHR = 0u32,
     RayQueryCandidateIntersectionAABBKHR = 1u32,
@@ -2641,6 +2666,7 @@ impl core::str::FromStr for RayQueryCandidateIntersectionType {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Op {
     Nop = 0u32,
     Undef = 1u32,
@@ -3203,6 +3229,7 @@ pub enum Op {
     RayQueryGetIntersectionWorldToObjectKHR = 6032u32,
     AtomicFAddEXT = 6035u32,
 }
+#[allow(clippy::upper_case_acronyms)]
 #[allow(non_upper_case_globals)]
 impl Op {
     pub const ReportIntersectionKHR: Op = Op::ReportIntersectionNV;
@@ -3786,6 +3813,7 @@ impl num_traits::FromPrimitive for Op {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum GLOp {
     Round = 1u32,
     RoundEven = 2u32,
@@ -3966,6 +3994,7 @@ impl num_traits::FromPrimitive for GLOp {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
 pub enum CLOp {
     acos = 0u32,
     acosh = 1u32,

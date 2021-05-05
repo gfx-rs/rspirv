@@ -4,6 +4,7 @@
 
 #[doc = "All operand kinds in the SPIR-V grammar."]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum OperandKind {
     ImageOperands,
     FPFastMathMode,

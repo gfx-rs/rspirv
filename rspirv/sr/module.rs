@@ -6,8 +6,6 @@ use crate::{
     sr::types::Type,
 };
 
-use spirv;
-
 #[derive(Debug)]
 pub struct EntryPoint {
     pub execution_model: spirv::ExecutionModel,

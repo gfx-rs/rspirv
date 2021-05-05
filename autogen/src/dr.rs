@@ -104,11 +104,12 @@ fn get_init_list(params: &[structs::Operand]) -> Vec<TokenStream> {
                 } else {
                     let name = get_param_name(params, param_index);
                     let kind = get_dr_operand_kind(&param.kind);
-                    Some(if kind == "LiteralString" {
-                        quote! { dr::Operand::LiteralString(#name.into()) }
+                    let value = if kind == "LiteralString" {
+                        quote! { #name.into() }
                     } else {
-                        quote! { dr::Operand::#kind(#name) }
-                    })
+                        quote! { #name }
+                    };
+                    Some(quote! { dr::Operand::#kind(#value) })
                 }
             } else {
                 None
@@ -131,10 +132,14 @@ fn get_push_extras(
                 structs::Quantifier::One => None,
                 structs::Quantifier::ZeroOrOne => {
                     let kind = get_dr_operand_kind(&param.kind);
+                    let value = if kind == "LiteralString" {
+                        quote! { v.into() }
+                    } else {
+                        quote! { v }
+                    };
                     Some(quote! {
                         if let Some(v) = #name {
-                            #[allow(clippy::identity_conversion)]
-                            #container.push(dr::Operand::#kind(v.into()));
+                            #container.push(dr::Operand::#kind(#value));
                         }
                     })
                 }
@@ -270,6 +275,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         quote! {
             #[doc = "Data representation of a SPIR-V operand."]
             #[derive(Clone, Debug, PartialEq, From)]
+            #[allow(clippy::upper_case_acronyms)]
             pub enum Operand {
                 #(#kinds,)*
             }
@@ -479,68 +485,66 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
 
                 let operands = if operand_clauses.is_empty() {
                     quote! {}
-                }else {
-                    if category == &structs::Category::BitEnum {
-                        let operands = operand_clauses
-                            .into_iter()
-                            .map(|(k, v)| {
-                                let operands = k.iter().map(|op| {
-                                    let kind = as_ident(&op.kind);
-                                    let quant = translate_quant(op.quantifier);
-
-                                    quote! {
-                                        crate::grammar::LogicalOperand {
-                                            kind: crate::grammar::OperandKind::#kind,
-                                            quantifier: #quant
-                                        }
-                                    }
-                                });
-
-                                let kinds = std::iter::repeat(quote! { s::#kind });
+                } else if category == &structs::Category::BitEnum {
+                    let operands = operand_clauses
+                        .into_iter()
+                        .map(|(k, v)| {
+                            let operands = k.iter().map(|op| {
+                                let kind = as_ident(&op.kind);
+                                let quant = translate_quant(op.quantifier);
 
                                 quote! {
-                                    result.extend([#(#kinds::#v,)*].iter().filter(|arg| {
-                                        v.contains(**arg)
-                                    }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
+                                    crate::grammar::LogicalOperand {
+                                        kind: crate::grammar::OperandKind::#kind,
+                                        quantifier: #quant
+                                    }
                                 }
                             });
 
-                        quote! {
-                            Self::#kind(v) => {
-                                let mut result = vec![];
-                                #( #operands );*;
-                                result
+                            let kinds = std::iter::repeat(quote! { s::#kind });
+
+                            quote! {
+                                result.extend([#(#kinds::#v,)*].iter().filter(|arg| {
+                                    v.contains(**arg)
+                                }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
                             }
+                        });
+
+                    quote! {
+                        Self::#kind(v) => {
+                            let mut result = vec![];
+                            #( #operands );*;
+                            result
                         }
-                    } else {
-                        let operands = operand_clauses
-                            .into_iter()
-                            .map(|(k, v)| {
-                                let operands = k.iter().map(|op| {
-                                    let kind = as_ident(&op.kind);
-                                    let quant = translate_quant(op.quantifier);
-
-                                    quote! {
-                                        crate::grammar::LogicalOperand {
-                                            kind: crate::grammar::OperandKind::#kind,
-                                            quantifier: #quant
-                                        }
-                                    }
-                                });
-
-                                let kinds = std::iter::repeat(quote! { s::#kind });
+                    }
+                } else {
+                    let operands = operand_clauses
+                        .into_iter()
+                        .map(|(k, v)| {
+                            let operands = k.iter().map(|op| {
+                                let kind = as_ident(&op.kind);
+                                let quant = translate_quant(op.quantifier);
 
                                 quote! {
-                                    #( #kinds::#v )|* => vec![#( #operands ),*]
+                                    crate::grammar::LogicalOperand {
+                                        kind: crate::grammar::OperandKind::#kind,
+                                        quantifier: #quant
+                                    }
                                 }
                             });
 
-                        quote! {
-                            Self::#kind(v) => match v {
-                                #( #operands ),*,
-                                _ => vec![]
-                            },
-                        }
+                            let kinds = std::iter::repeat(quote! { s::#kind });
+
+                            quote! {
+                                #( #kinds::#v )|* => vec![#( #operands ),*]
+                            }
+                        });
+
+                    quote! {
+                        Self::#kind(v) => match v {
+                            #( #operands ),*,
+                            _ => vec![]
+                        },
                     }
                 };
 

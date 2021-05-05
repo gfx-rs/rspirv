@@ -128,8 +128,7 @@ impl Builder {
             vec![dr::Operand::IdRef(pointer)],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -154,8 +153,7 @@ impl Builder {
             vec![dr::Operand::IdRef(pointer)],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -177,8 +175,7 @@ impl Builder {
             vec![dr::Operand::IdRef(pointer), dr::Operand::IdRef(object)],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -201,8 +198,7 @@ impl Builder {
             vec![dr::Operand::IdRef(pointer), dr::Operand::IdRef(object)],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -225,12 +221,10 @@ impl Builder {
             vec![dr::Operand::IdRef(target), dr::Operand::IdRef(source)],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         if let Some(v) = memory_access_2 {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -254,12 +248,10 @@ impl Builder {
             vec![dr::Operand::IdRef(target), dr::Operand::IdRef(source)],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         if let Some(v) = memory_access_2 {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -287,12 +279,10 @@ impl Builder {
             ],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         if let Some(v) = memory_access_2 {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -321,12 +311,10 @@ impl Builder {
             ],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         if let Some(v) = memory_access_2 {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -987,8 +975,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1017,8 +1004,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1101,8 +1087,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1133,8 +1118,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1219,8 +1203,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1249,8 +1232,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1333,8 +1315,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1365,8 +1346,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1448,8 +1428,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1475,8 +1454,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1506,8 +1484,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1538,8 +1515,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1569,8 +1545,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1601,8 +1576,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1627,8 +1601,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1654,8 +1627,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -1682,8 +1654,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -1711,8 +1682,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9117,8 +9087,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9147,8 +9116,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9231,8 +9199,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9263,8 +9230,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9349,8 +9315,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9379,8 +9344,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9463,8 +9427,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9495,8 +9458,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9578,8 +9540,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9605,8 +9566,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9636,8 +9596,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9668,8 +9627,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9699,8 +9657,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9731,8 +9688,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -9886,8 +9842,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -9913,8 +9868,7 @@ impl Builder {
             vec![dr::Operand::IdRef(image), dr::Operand::IdRef(coordinate)],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -10966,8 +10920,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -10996,8 +10949,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11025,8 +10977,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11055,8 +11006,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11084,8 +11034,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11114,8 +11063,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11143,8 +11091,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11173,8 +11120,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11202,8 +11148,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11232,8 +11177,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11261,8 +11205,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11291,8 +11234,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11320,8 +11262,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11350,8 +11291,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11379,8 +11319,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11409,8 +11348,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11438,8 +11376,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11468,8 +11405,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11497,8 +11433,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11527,8 +11462,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11556,8 +11490,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11586,8 +11519,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11615,8 +11547,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11645,8 +11576,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11674,8 +11604,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11704,8 +11633,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11733,8 +11661,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11763,8 +11690,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11792,8 +11718,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11822,8 +11747,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -11851,8 +11775,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -11881,8 +11804,7 @@ impl Builder {
             ],
         );
         if let Some(v) = cluster_size {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::IdRef(v.into()));
+            inst.operands.push(dr::Operand::IdRef(v));
         }
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -13294,8 +13216,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -13328,8 +13249,7 @@ impl Builder {
             ],
         );
         if let Some(v) = image_operands {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::ImageOperands(v.into()));
+            inst.operands.push(dr::Operand::ImageOperands(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -13655,8 +13575,7 @@ impl Builder {
             ],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -13687,8 +13606,7 @@ impl Builder {
             ],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;
@@ -13717,8 +13635,7 @@ impl Builder {
             ],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -13748,8 +13665,7 @@ impl Builder {
             ],
         );
         if let Some(v) = memory_access {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::MemoryAccess(v.into()));
+            inst.operands.push(dr::Operand::MemoryAccess(v));
         }
         inst.operands.extend(additional_params);
         self.insert_into_block(insert_point, inst)?;

@@ -135,8 +135,7 @@ impl Builder {
             ],
         );
         if let Some(v) = access_qualifier {
-            #[allow(clippy::identity_conversion)]
-            inst.operands.push(dr::Operand::AccessQualifier(v.into()));
+            inst.operands.push(dr::Operand::AccessQualifier(v));
         }
         if let Some(id) = self.dedup_insert_type(&inst) {
             id

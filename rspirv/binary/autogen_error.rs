@@ -2,10 +2,10 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use spirv;
 use std::{error, fmt};
 #[doc = "Decoder Error"]
 #[derive(Debug, PartialEq)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Error {
     StreamExpected(usize),
     LimitReached(usize),

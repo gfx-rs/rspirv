@@ -187,9 +187,7 @@ fn disas_ext_inst(
             return inst.disassemble();
         }
         if let Some(grammar) = ext_inst_set_tracker.resolve(id, opcode) {
-            let mut operands = vec![];
-            operands.push(inst.operands[0].disassemble());
-            operands.push(grammar.opname.to_string());
+            let mut operands = vec![inst.operands[0].disassemble(), grammar.opname.to_string()];
             for operand in &inst.operands[2..] {
                 operands.push(operand.disassemble())
             }

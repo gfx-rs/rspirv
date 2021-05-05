@@ -445,7 +445,7 @@ mod tests {
     // TODO: It's unfortunate that we have these numbers directly coded here
     // and repeat them in the following tests. Should have a better way.
     #[rustfmt::skip]
-    static ZERO_BOUND_HEADER: &'static [u8] = &[
+    static ZERO_BOUND_HEADER: &[u8] = &[
         // Magic number.           Version number: 1.0.
         0x03, 0x02, 0x23, 0x07,    0x00, 0x00, 0x01, 0x00,
         // Generator number: 0.    Bound: 0.

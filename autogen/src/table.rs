@@ -74,6 +74,7 @@ pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar) -> Token
     quote! {
         #[doc = "All operand kinds in the SPIR-V grammar."]
         #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+        #[allow(clippy::upper_case_acronyms)]
         pub enum OperandKind {
             #(#elements),*
         }

@@ -49,11 +49,11 @@ pub fn gen_operand_decode_errors(grammar: &[structs::OperandKind]) -> TokenStrea
     });
 
     quote! {
-        use spirv;
         use std::{error, fmt};
 
         #[doc = "Decoder Error"]
         #[derive(Debug, PartialEq)]
+        #[allow(clippy::upper_case_acronyms)]
         pub enum Error {
             StreamExpected(usize),
             LimitReached(usize),
