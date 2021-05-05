@@ -11,18 +11,18 @@ mod utils;
 use std::{
     env, fs,
     io::{Read, Write},
-    path::PathBuf,
+    path::{Path, PathBuf},
     process,
 };
 use utils::write_autogen_comment;
 
-fn write(path: &PathBuf, contents: impl ToString) {
+fn write(path: &Path, contents: impl ToString) {
     let mut f = fs::File::create(path).unwrap_or_else(|_| panic!("cannot open file: {:?}", path));
     write_autogen_comment(&mut f);
     write!(f, "{}", contents.to_string()).unwrap()
 }
 
-fn write_formatted(path: &PathBuf, contents: impl ToString) {
+fn write_formatted(path: &Path, contents: impl ToString) {
     write(path, contents);
     match process::Command::new("rustfmt").arg(path).status() {
         Ok(status) if !status.success() => {

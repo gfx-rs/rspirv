@@ -159,6 +159,7 @@ include!("autogen_glsl_std_450.rs");
 /// The table for all `OpenCLstd100` extended instructions.
 ///
 /// This table is staic data stored in the library.
+#[allow(clippy::upper_case_acronyms)]
 pub struct OpenCLStd100InstructionTable;
 
 impl OpenCLStd100InstructionTable {

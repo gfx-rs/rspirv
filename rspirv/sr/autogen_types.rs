@@ -2,6 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
+#[allow(clippy::upper_case_acronyms)]
 #[derive(Clone, Debug)]
 pub enum Type {
     Void,

@@ -70,6 +70,7 @@ impl TypeTracker {
     }
 }
 
+#[allow(clippy::upper_case_acronyms)]
 enum ExtInstSet {
     GlslStd450,
     OpenCLStd100,

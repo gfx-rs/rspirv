@@ -27,70 +27,49 @@ pub enum Constant {
 
 impl Constant {
     pub fn is_bool_constant(&self) -> bool {
-        match self {
-            Constant::Bool { .. } | Constant::SpecBool { .. } => true,
-            _ => false,
-        }
+        matches!(self, Constant::Bool { .. } | Constant::SpecBool { .. })
     }
 
     pub fn is_int_constant(&self) -> bool {
-        match self {
-            Constant::Int { .. } | Constant::SpecInt { .. } => true,
-            _ => false,
-        }
+        matches!(self, Constant::Int { .. } | Constant::SpecInt { .. })
     }
 
     pub fn is_uint_constant(&self) -> bool {
-        match self {
-            Constant::UInt { .. } | Constant::SpecUInt { .. } => true,
-            _ => false,
-        }
+        matches!(self, Constant::UInt { .. } | Constant::SpecUInt { .. })
     }
 
     pub fn is_float_constant(&self) -> bool {
-        match self {
-            Constant::Float { .. } | Constant::SpecFloat { .. } => true,
-            _ => false,
-        }
+        matches!(self, Constant::Float { .. } | Constant::SpecFloat { .. })
     }
 
     pub fn is_composite_constant(&self) -> bool {
-        match self {
-            Constant::Composite { .. } | Constant::SpecComposite { .. } => true,
-            _ => false,
-        }
+        matches!(
+            self,
+            Constant::Composite { .. } | Constant::SpecComposite { .. }
+        )
     }
 
     pub fn is_null_constant(&self) -> bool {
-        match self {
-            Constant::Null { .. } => true,
-            _ => false,
-        }
+        matches!(self, Constant::Null { .. })
     }
 
     pub fn is_sampler_constant(&self) -> bool {
-        match self {
-            Constant::Sampler { .. } => true,
-            _ => false,
-        }
+        matches!(self, Constant::Sampler { .. })
     }
 
     pub fn is_spec_constant(&self) -> bool {
-        match self {
+        matches!(
+            self,
             Constant::SpecBool { .. }
-            | Constant::SpecInt { .. }
-            | Constant::SpecUInt { .. }
-            | Constant::SpecFloat { .. }
-            | Constant::SpecComposite { .. }
-            | Constant::SpecOp { .. } => true,
-            _ => false,
-        }
+                | Constant::SpecInt { .. }
+                | Constant::SpecUInt { .. }
+                | Constant::SpecFloat { .. }
+                | Constant::SpecComposite { .. }
+                | Constant::SpecOp { .. }
+        )
     }
 
     pub fn is_spec_op_constant(&self) -> bool {
-        match self {
-            Constant::SpecOp { .. } => true,
-            _ => false,
-        }
+        matches!(self, Constant::SpecOp { .. })
     }
 }

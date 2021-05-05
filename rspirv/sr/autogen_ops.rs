@@ -49,12 +49,14 @@ pub enum Branch {
     TerminateInvocation,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Terminator {
     Branch(Branch),
     IgnoreIntersectionKHR,
     TerminateRayKHR,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
+#[allow(clippy::upper_case_acronyms)]
 pub enum Op {
     Nop,
     Undef,

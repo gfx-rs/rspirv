@@ -56,7 +56,7 @@ impl<T> Token<T> {
 
 /// A structure holding some kind of SPIR-V entity (e.g., type, constant,
 /// instruction, etc.) that can be referenced.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Storage<T> {
     /// Values of this storage.
     data: Vec<T>,

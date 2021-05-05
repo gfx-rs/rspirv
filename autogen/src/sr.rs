@@ -176,7 +176,7 @@ impl OperandTokens {
                 quote! {
                     match #iter.next() {
                         Some(&dr::Operand::#key(ref value)) => Some(#lift_value),
-                        Some(_) => Err(OperandError::WrongType)?,
+                        Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     }
                 }
@@ -189,7 +189,7 @@ impl OperandTokens {
                     match (#iter.next(), #iter.next()) {
                         (Some(&dr::Operand::#first_key(first)), Some(&dr::Operand::#second_key(second))) => Some(#lift_value),
                         (None, None) => None,
-                        _ => Err(OperandError::WrongType)?,
+                        _ => return Err(OperandError::WrongType.into()),
                     }
                 }
             }
@@ -201,14 +201,14 @@ impl OperandTokens {
                     match #iter.next() {
                         Some(&dr::Operand::#first_key(ref value)) => {
                             let operands = #iter.map(|op| {
-                                match op {
-                                    &dr::Operand::#second_key(second) => Ok(second),
+                                match *op {
+                                    dr::Operand::#second_key(second) => Ok(second),
                                     _ => Err(OperandError::WrongType),
                                 }
                             }).collect::<Result<Vec<_>, _>>()?;
                             Some((*value, operands))
                         },
-                        Some(_) => Err(OperandError::WrongType)?,
+                        Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     }
                 }
@@ -274,7 +274,7 @@ pub fn gen_sr_code_from_operand_kind_grammar(
         })
         .collect();
     let tokens = quote! {
-        use spirv;
+        #![allow(clippy::upper_case_acronyms)]
 
         /// SPIR-V decorations.
         #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -481,6 +481,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     }
 
     let types = quote! {
+        #[allow(clippy::upper_case_acronyms)]
         #[derive(Clone, Debug)]
         pub enum Type {
             #( #type_variants ),*
@@ -500,12 +501,14 @@ pub fn gen_sr_code_from_instruction_grammar(
         }
 
         #[derive(Clone, Debug, Eq, PartialEq)]
+        #[allow(clippy::upper_case_acronyms)]
         pub enum Terminator {
             Branch(Branch),
             #( #terminator_variants ),*
         }
 
         #[derive(Clone, Debug, Eq, PartialEq)]
+        #[allow(clippy::upper_case_acronyms)]
         pub enum Op {
             #( #op_variants ),*
         }

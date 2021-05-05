@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use spirv;
+#![allow(clippy::upper_case_acronyms)]
 #[doc = r" SPIR-V decorations."]
 #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub enum Decoration {

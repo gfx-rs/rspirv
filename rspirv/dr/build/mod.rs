@@ -175,10 +175,7 @@ impl Builder {
 
         let block = &mut self.module.functions[selected_function].blocks[selected_block];
 
-        block
-            .instructions
-            .pop()
-            .ok_or_else(|| Error::EmptyInstructionList)
+        block.instructions.pop().ok_or(Error::EmptyInstructionList)
     }
 
     /// Sets the SPIR-V version to the given major.minor version.

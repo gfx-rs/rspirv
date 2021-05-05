@@ -62,10 +62,7 @@ impl PartialEq for Type {
 
 impl Type {
     pub fn is_numerical_type(&self) -> bool {
-        match self {
-            Type::Int { .. } | Type::Float { .. } => true,
-            _ => false,
-        }
+        matches!(self, Type::Int { .. } | Type::Float { .. })
     }
 
     pub fn is_scalar_type(&self) -> bool {
@@ -76,10 +73,10 @@ impl Type {
     }
 
     pub fn is_aggregate_type(&self) -> bool {
-        match self {
-            Type::Struct { .. } | Type::Array { .. } | Type::RuntimeArray { .. } => true,
-            _ => false,
-        }
+        matches!(
+            self,
+            Type::Struct { .. } | Type::Array { .. } | Type::RuntimeArray { .. }
+        )
     }
 
     pub fn is_composite_type(&self) -> bool {
