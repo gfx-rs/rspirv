@@ -136,8 +136,19 @@ impl binary::Consumer for Loader {
             spirv::Op::MemoryModel => self.module.memory_model = Some(inst),
             spirv::Op::EntryPoint => self.module.entry_points.push(inst),
             spirv::Op::ExecutionMode => self.module.execution_modes.push(inst),
-            opcode if grammar::reflect::is_nonlocation_debug(opcode) => {
-                self.module.debugs.push(inst)
+            spirv::Op::String
+            | spirv::Op::SourceExtension
+            | spirv::Op::Source
+            | spirv::Op::SourceContinued => self.module.debug_string_source.push(inst),
+            spirv::Op::Name | spirv::Op::MemberName => self.module.debug_names.push(inst),
+            spirv::Op::ModuleProcessed => self.module.debug_module_processed.push(inst),
+            opcode if grammar::reflect::is_location_debug(opcode) => {
+                match &mut self.block {
+                    Some(block) => block.instructions.push(inst),
+                    // types_global_values is the only valid section (other than functions) that
+                    // OpLine/OpNoLine can be placed in, so put it there.
+                    None => self.module.types_global_values.push(inst),
+                }
             }
             opcode if grammar::reflect::is_annotation(opcode) => self.module.annotations.push(inst),
             opcode
@@ -184,9 +195,6 @@ impl binary::Consumer for Loader {
                     .unwrap()
                     .blocks
                     .push(self.block.take().unwrap())
-            }
-            spirv::Op::ModuleProcessed | spirv::Op::Line => {
-                // Ignore
             }
             _ => {
                 if self.block.is_none() {
