@@ -1,7 +1,7 @@
-pre-release-commit-message = "Release {{version}}"
+pre-release-commit-message = "Release {{crate_name}} {{version}}"
 no-dev-version = true
-tag-message = "Release {{version}}"
-tag-name = "{{version}}"
+tag-message = "Release {{crate_name}} {{version}}"
+tag-name = "{{crate_name}}-{{version}}"
 sign-commit = true
 sign-tag = true
 
