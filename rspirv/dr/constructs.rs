@@ -34,8 +34,12 @@ pub struct Module {
     pub entry_points: Vec<Instruction>,
     /// All execution mode declarations, using OpExecutionMode.
     pub execution_modes: Vec<Instruction>,
-    /// All non-location debug instructions.
-    pub debugs: Vec<Instruction>,
+    /// Debug subsection: All OpString, OpSourceExtension, OpSource, and OpSourceContinued.
+    pub debug_string_source: Vec<Instruction>,
+    /// Debug subsection: All OpName and all OpMemberName.
+    pub debug_names: Vec<Instruction>,
+    /// Debug subsection: All OpModuleProcessed instructions.
+    pub debug_module_processed: Vec<Instruction>,
     /// All annotation instructions.
     pub annotations: Vec<Instruction>,
     /// All types, constants, and global variables.
@@ -112,7 +116,9 @@ impl Module {
             memory_model: None,
             entry_points: vec![],
             execution_modes: vec![],
-            debugs: vec![],
+            debug_string_source: vec![],
+            debug_names: vec![],
+            debug_module_processed: vec![],
             annotations: vec![],
             types_global_values: vec![],
             functions: vec![],
@@ -128,7 +134,9 @@ impl Module {
             .chain(&self.memory_model)
             .chain(&self.entry_points)
             .chain(&self.execution_modes)
-            .chain(&self.debugs)
+            .chain(&self.debug_string_source)
+            .chain(&self.debug_names)
+            .chain(&self.debug_module_processed)
             .chain(&self.annotations)
             .chain(&self.types_global_values)
     }
@@ -142,7 +150,9 @@ impl Module {
             .chain(&mut self.memory_model)
             .chain(&mut self.entry_points)
             .chain(&mut self.execution_modes)
-            .chain(&mut self.debugs)
+            .chain(&mut self.debug_string_source)
+            .chain(&mut self.debug_names)
+            .chain(&mut self.debug_module_processed)
             .chain(&mut self.annotations)
             .chain(&mut self.types_global_values)
     }
@@ -156,7 +166,9 @@ impl Module {
             .chain(&self.memory_model)
             .chain(&self.entry_points)
             .chain(&self.execution_modes)
-            .chain(&self.debugs)
+            .chain(&self.debug_string_source)
+            .chain(&self.debug_names)
+            .chain(&self.debug_module_processed)
             .chain(&self.annotations)
             .chain(&self.types_global_values)
             .chain(self.functions.iter().flat_map(|f| f.all_inst_iter()))
@@ -171,7 +183,9 @@ impl Module {
             .chain(&mut self.memory_model)
             .chain(&mut self.entry_points)
             .chain(&mut self.execution_modes)
-            .chain(&mut self.debugs)
+            .chain(&mut self.debug_string_source)
+            .chain(&mut self.debug_names)
+            .chain(&mut self.debug_module_processed)
             .chain(&mut self.annotations)
             .chain(&mut self.types_global_values)
             .chain(

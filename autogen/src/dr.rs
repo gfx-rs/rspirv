@@ -854,7 +854,10 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
     let elements = grammar
         .instructions
         .iter()
-        .filter(|inst| inst.class == Some(structs::Class::Debug) && inst.opname != "OpString")
+        .filter(|inst| {
+            inst.class == Some(structs::Class::Debug)
+                && !matches!(inst.opname.as_str(), "OpString" | "OpLine" | "OpNoLine")
+        })
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
@@ -862,6 +865,15 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
             let comment = format!("Appends an Op{} instruction.", opcode);
             let name = get_function_name(&inst.opname);
             let init = get_init_list(&inst.operands);
+            // The debug section is split into three subsections
+            let section = match inst.opname.as_str() {
+                "OpSourceExtension" | "OpSource" | "OpSourceContinued" => {
+                    quote! { debug_string_source }
+                }
+                "OpName" | "OpMemberName" => quote! { debug_names },
+                "OpModuleProcessed" => quote! { debug_module_processed },
+                other => panic!("Debug section instruction {} not handled", other),
+            };
             quote! {
                 #[doc = #comment]
                 pub fn #name(&mut self,#(#params),*) {
@@ -869,7 +881,7 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
                     let mut inst = dr::Instruction::new(
                         spirv::Op::#opcode, None, None, vec![#(#init),*]);
                     #(#extras)*
-                    self.module.debugs.push(inst);
+                    self.module.#section.push(inst);
                 }
             }
         });

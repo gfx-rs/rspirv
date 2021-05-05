@@ -279,7 +279,7 @@ impl Builder {
 
     /// Select a function to insert instructions into by name
     pub fn select_function_by_name(&mut self, name: &str) -> BuildResult<()> {
-        for dbg in &self.module.debugs {
+        for dbg in &self.module.debug_names {
             if dbg.class.opcode == spirv::Op::Name {
                 if let dr::Operand::IdRef(target_id) = dbg.operands[0] {
                     if let dr::Operand::LiteralString(found_name) = &dbg.operands[1] {
@@ -602,6 +602,47 @@ impl Builder {
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
+
+    /// Appends an OpLine instruction.
+    ///
+    /// If a block is currently selected, the OpLine is inserted into that block. If no block is
+    /// currently selected, the OpLine is inserted into types_global_values.
+    pub fn line(&mut self, file: spirv::Word, line: u32, column: u32) {
+        let inst = dr::Instruction::new(
+            spirv::Op::Line,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(file),
+                dr::Operand::LiteralInt32(line),
+                dr::Operand::LiteralInt32(column),
+            ],
+        );
+        if self.selected_block.is_some() {
+            self.insert_into_block(InsertPoint::End, inst)
+                .expect("Internal error: insert_into_block failed when selected_block was Some");
+        } else {
+            // types_global_values is the only valid section (other than functions) that
+            // OpLine/OpNoLine can be placed in, so put it there.
+            self.module.types_global_values.push(inst);
+        }
+    }
+
+    /// Appends an OpNoLine instruction.
+    ///
+    /// If a block is currently selected, the OpLine is inserted into that block. If no block is
+    /// currently selected, the OpLine is inserted into types_global_values.
+    pub fn no_line(&mut self) {
+        let inst = dr::Instruction::new(spirv::Op::NoLine, None, None, vec![]);
+        if self.selected_block.is_some() {
+            self.insert_into_block(InsertPoint::End, inst)
+                .expect("Internal error: insert_into_block failed when selected_block was Some");
+        } else {
+            // types_global_values is the only valid section (other than functions) that
+            // OpLine/OpNoLine can be placed in, so put it there.
+            self.module.types_global_values.push(inst);
+        }
+    }
 }
 
 include!("autogen_type.rs");
@@ -625,7 +666,7 @@ impl Builder {
 
     pub fn string(&mut self, s: impl Into<String>) -> spirv::Word {
         let id = self.id();
-        self.module.debugs.push(dr::Instruction::new(
+        self.module.debug_string_source.push(dr::Instruction::new(
             spirv::Op::String,
             None,
             Some(id),
