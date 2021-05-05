@@ -603,10 +603,10 @@ impl Builder {
         Ok(_id)
     }
 
-    /// Appends an OpLine instruction.
+    /// Appends an `OpLine` instruction.
     ///
-    /// If a block is currently selected, the OpLine is inserted into that block. If no block is
-    /// currently selected, the OpLine is inserted into types_global_values.
+    /// If a block is currently selected, the `OpLine` is inserted into that block. If no block is
+    /// currently selected, the `OpLine` is inserted into `types_global_values`.
     pub fn line(&mut self, file: spirv::Word, line: u32, column: u32) {
         let inst = dr::Instruction::new(
             spirv::Op::Line,
@@ -628,10 +628,10 @@ impl Builder {
         }
     }
 
-    /// Appends an OpNoLine instruction.
+    /// Appends an `OpNoLine` instruction.
     ///
-    /// If a block is currently selected, the OpLine is inserted into that block. If no block is
-    /// currently selected, the OpLine is inserted into types_global_values.
+    /// If a block is currently selected, the `OpNoLine` is inserted into that block. If no block
+    /// is currently selected, the `OpNoLine` is inserted into `types_global_values`.
     pub fn no_line(&mut self) {
         let inst = dr::Instruction::new(spirv::Op::NoLine, None, None, vec![]);
         if self.selected_block.is_some() {
