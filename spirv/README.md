@@ -21,12 +21,6 @@ First add to your `Cargo.toml`:
 spirv_headers = "1.5"
 ```
 
-Then add to your crate root:
-
-```rust
-extern crate spirv_headers;
-```
-
 Version
 -------
 

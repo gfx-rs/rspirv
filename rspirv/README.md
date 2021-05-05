@@ -37,12 +37,6 @@ First add to your `Cargo.toml`:
 rspirv = "0.7"
 ```
 
-Then add to your crate root:
-
-```rust
-extern crate rspirv;
-```
-
 Examples
 --------
 
