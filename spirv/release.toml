@@ -1,0 +1,10 @@
+pre-release-commit-message = "Release {{crate_name}} {{version}}"
+no-dev-version = true
+tag-message = "Release {{crate_name}} {{version}}"
+tag-name = "{{crate_name}}-{{version}}"
+sign-commit = true
+sign-tag = true
+
+pre-release-replacements = [
+  {file="README.md", search="spirv_headers = .*", replace="{{crate_name}} = \"{{version}}\""},
+]
