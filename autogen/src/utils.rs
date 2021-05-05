@@ -27,7 +27,7 @@ pub fn as_ident(ident: &str) -> Ident {
 /// given operand `kind` in the grammar.
 pub fn get_dr_operand_kind(kind: &str) -> Ident {
     as_ident(
-        if kind == "LiteralInteger" || kind == "LiteralContextDependentNumber" {
+        if matches!(kind, "LiteralInteger" | "LiteralContextDependentNumber") {
             // TODO: LiteralContextDependentNumber should use the correct type to decode
             "LiteralInt32"
         } else {

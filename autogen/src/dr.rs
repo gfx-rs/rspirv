@@ -104,11 +104,12 @@ fn get_init_list(params: &[structs::Operand]) -> Vec<TokenStream> {
                 } else {
                     let name = get_param_name(params, param_index);
                     let kind = get_dr_operand_kind(&param.kind);
-                    Some(if kind == "LiteralString" {
-                        quote! { dr::Operand::LiteralString(#name.into()) }
+                    let value = if kind == "LiteralString" {
+                        quote! { #name.into() }
                     } else {
-                        quote! { dr::Operand::#kind(#name) }
-                    })
+                        quote! { #name }
+                    };
+                    Some(quote! { dr::Operand::#kind(#value) })
                 }
             } else {
                 None
@@ -131,17 +132,14 @@ fn get_push_extras(
                 structs::Quantifier::One => None,
                 structs::Quantifier::ZeroOrOne => {
                     let kind = get_dr_operand_kind(&param.kind);
-                    Some(if kind == "LiteralString" {
-                        quote! {
-                            if let Some(v) = #name {
-                                #container.push(dr::Operand::LiteralString(v.into()));
-                            }
-                        }
+                    let value = if kind == "LiteralString" {
+                        quote! { v.into() }
                     } else {
-                        quote! {
-                            if let Some(v) = #name {
-                                #container.push(dr::Operand::#kind(v));
-                            }
+                        quote! { v }
+                    };
+                    Some(quote! {
+                        if let Some(v) = #name {
+                            #container.push(dr::Operand::#kind(#value));
                         }
                     })
                 }
