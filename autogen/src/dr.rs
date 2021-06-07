@@ -27,11 +27,11 @@ pub fn operand_has_additional_params(
         .map_or(false, |kind| has_additional_params(kind))
 }
 
-/// Returns the parameter list excluding result id.
-fn get_param_list(
+fn get_param_or_arg_list(
     params: &[structs::Operand],
     keep_result_id: bool,
     kinds: &[structs::OperandKind],
+    is_params: bool,
 ) -> Vec<TokenStream> {
     let mut list: Vec<_> = params
         .iter()
@@ -41,11 +41,15 @@ fn get_param_list(
             let kind = get_enum_underlying_type(&param.kind, true);
             if param.kind == "IdResult" {
                 if keep_result_id {
-                    Some(quote! { result_id: Option<spirv::Word> })
+                    if is_params {
+                        Some(quote! { result_id: Option<spirv::Word> })
+                    } else {
+                        Some(quote! { result_id })
+                    }
                 } else {
                     None
                 }
-            } else {
+            } else if is_params {
                 Some(match param.quantifier {
                     structs::Quantifier::One => quote! { #name: #kind },
                     structs::Quantifier::ZeroOrOne => quote! { #name: Option<#kind> },
@@ -53,16 +57,39 @@ fn get_param_list(
                         quote! { #name: impl IntoIterator<Item = #kind> }
                     }
                 })
+            } else {
+                Some(quote! { #name })
             }
         })
         .collect();
     // The last operand may require additional parameters.
     if let Some(o) = params.last() {
         if operand_has_additional_params(o, kinds) {
-            list.push(quote! { additional_params: impl IntoIterator<Item = dr::Operand> });
+            if is_params {
+                list.push(quote! { additional_params: impl IntoIterator<Item = dr::Operand> });
+            } else {
+                list.push(quote! { additional_params });
+            }
         }
     }
     list
+}
+
+/// Returns the parameter list excluding result id.
+fn get_param_list(
+    params: &[structs::Operand],
+    keep_result_id: bool,
+    kinds: &[structs::OperandKind],
+) -> Vec<TokenStream> {
+    get_param_or_arg_list(params, keep_result_id, kinds, true)
+}
+
+fn get_arg_list(
+    params: &[structs::Operand],
+    keep_result_id: bool,
+    kinds: &[structs::OperandKind],
+) -> Vec<TokenStream> {
+    get_param_or_arg_list(params, keep_result_id, kinds, false)
 }
 
 /// Returns a suitable function name for the given `opname`.
@@ -624,6 +651,7 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
     }).map(|inst| {
         // Parameter list for this build method.
         let param_list = get_param_list(&inst.operands, false, kinds);
+        let arg_list = get_arg_list(&inst.operands, false, kinds);
         // Initializer list for constructing the operands parameter
         // for Instruction.
         let init_list = get_init_list(&inst.operands[1..]);
@@ -639,16 +667,7 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
         quote! {
             #[doc = #comment]
             pub fn #name(&mut self,#(#param_list),*) -> spirv::Word {
-                let mut inst = dr::Instruction::new(spirv::Op::#opcode, None, None, vec![#(#init_list),*]);
-                #(#extras)*
-                if let Some(id) = self.dedup_insert_type(&inst) {
-                    id
-                } else {
-                    let new_id = self.id();
-                    inst.result_id = Some(new_id);
-                    self.module.types_global_values.push(inst);
-                    new_id
-                }
+                self.#name_id(None, #(#arg_list),*)
             }
 
             #[doc = #comment]
