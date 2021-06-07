@@ -635,12 +635,30 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
         let name = as_ident(&inst.opname[2..].to_snake_case());
 
         let comment = format!("Appends an Op{} instruction and returns the result id, or return the existing id if the instruction was already present.", opcode);
+        let name_id = format_ident!("{}_id", name);
         quote! {
             #[doc = #comment]
             pub fn #name(&mut self,#(#param_list),*) -> spirv::Word {
                 let mut inst = dr::Instruction::new(spirv::Op::#opcode, None, None, vec![#(#init_list),*]);
                 #(#extras)*
                 if let Some(id) = self.dedup_insert_type(&inst) {
+                    id
+                } else {
+                    let new_id = self.id();
+                    inst.result_id = Some(new_id);
+                    self.module.types_global_values.push(inst);
+                    new_id
+                }
+            }
+
+            #[doc = #comment]
+            pub fn #name_id(&mut self, result_id: Option<spirv::Word>,#(#param_list),*) -> spirv::Word {
+                let mut inst = dr::Instruction::new(spirv::Op::#opcode, None, result_id, vec![#(#init_list),*]);
+                #(#extras)*
+                if let Some(result_id) = result_id {
+                    self.module.types_global_values.push(inst);
+                    result_id
+                } else if let Some(id) = self.dedup_insert_type(&inst) {
                     id
                 } else {
                     let new_id = self.id();
