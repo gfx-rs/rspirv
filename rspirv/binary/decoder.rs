@@ -44,9 +44,6 @@ const WORD_NUM_BYTES: usize = 4;
 /// # Examples
 ///
 /// ```
-/// extern crate rspirv;
-/// extern crate spirv_headers as spirv;
-///
 /// use rspirv::binary::{Decoder, DecodeError};
 /// use spirv::SourceLanguage;
 ///
