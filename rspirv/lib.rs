@@ -1,5 +1,3 @@
-#![doc(html_root_url = "https://docs.rs/rspirv/0.7/")]
-
 //! Library APIs for SPIR-V module processing functionalities.
 //!
 //! This library provides:
@@ -31,9 +29,6 @@
 //! disassembling it:
 //!
 //! ```
-//! extern crate rspirv;
-//! extern crate spirv_headers as spirv;
-//!
 //! use rspirv::binary::Assemble;
 //! use rspirv::binary::Disassemble;
 //!
@@ -80,7 +75,7 @@
 //! }
 //! ```
 
-pub extern crate spirv_headers as spirv;
+pub use spirv;
 
 pub mod binary;
 pub mod dr;

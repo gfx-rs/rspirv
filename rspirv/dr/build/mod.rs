@@ -51,9 +51,6 @@ type BuildResult<T> = result::Result<T, Error>;
 /// # Examples
 ///
 /// ```
-/// extern crate rspirv;
-/// extern crate spirv_headers as spirv;
-///
 /// use rspirv::binary::Disassemble;
 ///
 /// fn main() {
