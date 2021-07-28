@@ -84,6 +84,8 @@ pub fn is_constant(opcode: spirv::Op) -> bool {
             | spirv::Op::SpecConstant
             | spirv::Op::SpecConstantComposite
             | spirv::Op::SpecConstantOp
+            | spirv::Op::ConstantCompositeContinuedINTEL
+            | spirv::Op::SpecConstantCompositeContinuedINTEL
     )
 }
 

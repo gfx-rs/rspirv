@@ -52,6 +52,18 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::FPRoundingMode => vec![dr::Operand::FPRoundingMode(
                 self.decoder.fp_rounding_mode()?,
             )],
+            GOpKind::FPDenormMode => {
+                vec![dr::Operand::FPDenormMode(self.decoder.fp_denorm_mode()?)]
+            }
+            GOpKind::QuantizationModes => vec![dr::Operand::QuantizationModes(
+                self.decoder.quantization_modes()?,
+            )],
+            GOpKind::FPOperationMode => vec![dr::Operand::FPOperationMode(
+                self.decoder.fp_operation_mode()?,
+            )],
+            GOpKind::OverflowModes => {
+                vec![dr::Operand::OverflowModes(self.decoder.overflow_modes()?)]
+            }
             GOpKind::LinkageType => vec![dr::Operand::LinkageType(self.decoder.linkage_type()?)],
             GOpKind::AccessQualifier => vec![dr::Operand::AccessQualifier(
                 self.decoder.access_qualifier()?,
@@ -81,6 +93,9 @@ impl<'c, 'd> Parser<'c, 'd> {
                     self.decoder.ray_query_candidate_intersection_type()?,
                 )]
             }
+            GOpKind::PackedVectorFormat => vec![dr::Operand::PackedVectorFormat(
+                self.decoder.packed_vector_format()?,
+            )],
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
@@ -172,6 +187,9 @@ impl<'c, 'd> Parser<'c, 'd> {
         if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
+        if image_operands.contains(spirv::ImageOperands::OFFSETS) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
         Ok(params)
     }
     fn parse_loop_control_arguments(
@@ -216,6 +234,9 @@ impl<'c, 'd> Parser<'c, 'd> {
             params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
         }
         if loop_control.contains(spirv::LoopControl::SPECULATED_ITERATIONS_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::NO_FUSION_INTEL) {
             params.append(&mut vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]);
         }
         Ok(params)
@@ -275,7 +296,11 @@ impl<'c, 'd> Parser<'c, 'd> {
                 dr::Operand::IdRef(self.decoder.id()?),
                 dr::Operand::IdRef(self.decoder.id()?),
             ],
-            spirv::ExecutionMode::LocalSizeHintId => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::ExecutionMode::LocalSizeHintId => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
             spirv::ExecutionMode::DenormPreserve => {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
@@ -294,6 +319,21 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::ExecutionMode::OutputPrimitivesNV => {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
+            spirv::ExecutionMode::SharedLocalMemorySizeINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::RoundingModeRTPINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::RoundingModeRTNINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::FloatingPointModeALTINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::FloatingPointModeIEEEINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             spirv::ExecutionMode::MaxWorkgroupSizeINTEL => vec![
                 dr::Operand::LiteralInt32(self.decoder.int32()?),
                 dr::Operand::LiteralInt32(self.decoder.int32()?),
@@ -303,6 +343,9 @@ impl<'c, 'd> Parser<'c, 'd> {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
             spirv::ExecutionMode::NumSIMDWorkitemsINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::ExecutionMode::SchedulerTargetFmaxMhzINTEL => {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
             _ => vec![],
@@ -359,6 +402,18 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::SecondaryViewportRelativeNV => {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
+            spirv::Decoration::SIMTCallINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::ClobberINTEL => {
+                vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            }
+            spirv::Decoration::FuncParamIOKindINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::GlobalVariableOffsetINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
             spirv::Decoration::CounterBuffer => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::UserSemantic => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
@@ -366,6 +421,14 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::UserTypeGOOGLE => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
             }
+            spirv::Decoration::FunctionRoundingModeINTEL => vec![
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::FPRoundingMode(self.decoder.fp_rounding_mode()?),
+            ],
+            spirv::Decoration::FunctionDenormModeINTEL => vec![
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::FPDenormMode(self.decoder.fp_denorm_mode()?),
+            ],
             spirv::Decoration::MemoryINTEL => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
             }
@@ -391,6 +454,22 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::ForcePow2DepthINTEL => {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
+            spirv::Decoration::CacheSizeINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::PrefetchINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::BufferLocationINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::IOPipeStorageINTEL => {
+                vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
+            }
+            spirv::Decoration::FunctionFloatingPointModeINTEL => vec![
+                dr::Operand::LiteralInt32(self.decoder.int32()?),
+                dr::Operand::FPOperationMode(self.decoder.fp_operation_mode()?),
+            ],
             _ => vec![],
         })
     }

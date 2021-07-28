@@ -228,7 +228,7 @@ mod tests {
         );
         assert_eq!("Inline|Pure", o.disassemble());
         let o = dr::Operand::FunctionControl(spirv::FunctionControl::all());
-        assert_eq!("Inline|DontInline|Pure|Const", o.disassemble());
+        assert_eq!("Inline|DontInline|Pure|Const|OptNoneINTEL", o.disassemble());
     }
 
     #[test]

@@ -304,6 +304,8 @@ impl LiftContext {
                 })
             }
             spirv::Op::ConstantNull => Ok(Constant::Null),
+            spirv::Op::ConstantCompositeContinuedINTEL
+            | spirv::Op::SpecConstantCompositeContinuedINTEL => todo!(),
             _ => Err(InstructionError::WrongOpcode),
         }
     }

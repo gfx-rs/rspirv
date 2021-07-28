@@ -866,8 +866,13 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
         .iter()
         .filter(|inst| {
             inst.class == Some(structs::Class::Constant)
-                && inst.opname != "OpConstant"
-                && inst.opname != "OpSpecConstant"
+                && !matches!(
+                    inst.opname.as_str(),
+                    "OpConstant"
+                        | "OpSpecConstant"
+                        | "OpConstantCompositeContinuedINTEL"
+                        | "OpSpecConstantCompositeContinuedINTEL"
+                )
         })
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);

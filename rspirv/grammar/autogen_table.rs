@@ -29,6 +29,10 @@ pub enum OperandKind {
     ImageChannelOrder,
     ImageChannelDataType,
     FPRoundingMode,
+    FPDenormMode,
+    QuantizationModes,
+    FPOperationMode,
+    OverflowModes,
     LinkageType,
     AccessQualifier,
     FunctionParameterAttribute,
@@ -41,6 +45,7 @@ pub enum OperandKind {
     RayQueryIntersection,
     RayQueryCommittedIntersectionType,
     RayQueryCandidateIntersectionType,
+    PackedVectorFormat,
     IdResultType,
     IdResult,
     IdMemorySemantics,
@@ -1609,7 +1614,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         BitFieldInsert,
-        [Shader],
+        [Shader, BitInstructions],
         [],
         [
             (IdResultType, One),
@@ -1622,7 +1627,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         BitFieldSExtract,
-        [Shader],
+        [Shader, BitInstructions],
         [],
         [
             (IdResultType, One),
@@ -1634,7 +1639,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         BitFieldUExtract,
-        [Shader],
+        [Shader, BitInstructions],
         [],
         [
             (IdResultType, One),
@@ -1646,7 +1651,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         BitReverse,
-        [Shader],
+        [Shader, BitInstructions],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
@@ -3308,6 +3313,81 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         []
     ),
     inst!(
+        SDotKHR,
+        [DotProductKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        UDotKHR,
+        [DotProductKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        SUDotKHR,
+        [DotProductKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        SDotAccSatKHR,
+        [DotProductKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        UDotAccSatKHR,
+        [DotProductKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        SUDotAccSatKHR,
+        [DotProductKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
         TypeRayQueryKHR,
         [RayQueryKHR],
         ["SPV_KHR_ray_query"],
@@ -3562,6 +3642,44 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        TraceMotionNV,
+        [RayTracingMotionBlurNV],
+        ["SPV_NV_ray_tracing_motion_blur"],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        TraceRayMotionNV,
+        [RayTracingMotionBlurNV],
+        ["SPV_NV_ray_tracing_motion_blur"],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         TypeAccelerationStructureNV,
         [RayTracingNV, RayTracingKHR, RayQueryKHR],
         [
@@ -3673,6 +3791,48 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [DemoteToHelperInvocationEXT],
         ["SPV_EXT_demote_to_helper_invocation"],
         [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        ConvertUToImageNV,
+        [BindlessTextureNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertUToSamplerNV,
+        [BindlessTextureNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertImageToUNV,
+        [BindlessTextureNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertSamplerToUNV,
+        [BindlessTextureNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertUToSampledImageNV,
+        [BindlessTextureNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertSampledImageToUNV,
+        [BindlessTextureNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SamplerImageAddressingModeNV,
+        [BindlessTextureNV],
+        [],
+        [(LiteralInteger, One)]
     ),
     inst!(
         SubgroupShuffleINTEL,
@@ -3919,7 +4079,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        FunctionPointerINTEL,
+        ConstantFunctionPointerINTEL,
         [FunctionPointersINTEL],
         ["SPV_INTEL_function_pointers"],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
@@ -3929,6 +4089,87 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [FunctionPointersINTEL],
         ["SPV_INTEL_function_pointers"],
         [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrMore)]
+    ),
+    inst!(
+        AsmTargetINTEL,
+        [AsmINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (LiteralString, One)]
+    ),
+    inst!(
+        AsmINTEL,
+        [AsmINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralString, One),
+            (LiteralString, One)
+        ]
+    ),
+    inst!(
+        AsmCallINTEL,
+        [AsmINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        AtomicFMinEXT,
+        [
+            AtomicFloat16MinMaxEXT,
+            AtomicFloat32MinMaxEXT,
+            AtomicFloat64MinMaxEXT
+        ],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdScope, One),
+            (IdMemorySemantics, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        AtomicFMaxEXT,
+        [
+            AtomicFloat16MinMaxEXT,
+            AtomicFloat32MinMaxEXT,
+            AtomicFloat64MinMaxEXT
+        ],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdScope, One),
+            (IdMemorySemantics, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        AssumeTrueKHR,
+        [ExpectAssumeKHR],
+        ["SPV_KHR_expect_assume"],
+        [(IdRef, One)]
+    ),
+    inst!(
+        ExpectKHR,
+        [ExpectAssumeKHR],
+        ["SPV_KHR_expect_assume"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
     ),
     inst!(
         DecorateString,
@@ -5083,10 +5324,838 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        VariableLengthArrayINTEL,
+        [VariableLengthArrayINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SaveMemoryINTEL,
+        [VariableLengthArrayINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        RestoreMemoryINTEL,
+        [VariableLengthArrayINTEL],
+        [],
+        [(IdRef, One)]
+    ),
+    inst!(
+        ArbitraryFloatSinCosPiINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatCastINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatCastFromIntINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatCastToIntINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatAddINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatSubINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatMulINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatDivINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatGTINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatGEINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatLTINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatLEINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatEQINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatRecipINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatRSqrtINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatCbrtINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatHypotINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatSqrtINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatLogINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatLog2INTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatLog10INTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatLog1pINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatExpINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatExp2INTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatExp10INTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatExpm1INTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatSinINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatCosINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatSinCosINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatSinPiINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatCosPiINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatASinINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatASinPiINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatACosINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatACosPiINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatATanINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatATanPiINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatATan2INTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatPowINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatPowRINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        ArbitraryFloatPowNINTEL,
+        [ArbitraryPrecisionFloatingPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
         LoopControlINTEL,
         [UnstructuredLoopControlsINTEL],
         ["SPV_INTEL_unstructured_loop_controls"],
         [(LiteralInteger, ZeroOrMore)]
+    ),
+    inst!(
+        FixedSqrtINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedRecipINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedRsqrtINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedSinINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedCosINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedSinCosINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedSinPiINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedCosPiINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedSinCosPiINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedLogINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        FixedExpINTEL,
+        [ArbitraryPrecisionFixedPointINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        PtrCastToCrossWorkgroupINTEL,
+        [USMStorageClassesINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        CrossWorkgroupCastToPtrINTEL,
+        [USMStorageClassesINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         ReadPipeBlockingINTEL,
@@ -5285,7 +6354,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         AtomicFAddEXT,
-        [AtomicFloat32AddEXT, AtomicFloat64AddEXT],
+        [
+            AtomicFloat16AddEXT,
+            AtomicFloat32AddEXT,
+            AtomicFloat64AddEXT
+        ],
         ["SPV_EXT_shader_atomic_float_add"],
         [
             (IdResultType, One),
@@ -5295,5 +6368,29 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdMemorySemantics, One),
             (IdRef, One)
         ]
+    ),
+    inst!(
+        TypeBufferSurfaceINTEL,
+        [VectorComputeINTEL],
+        [],
+        [(IdResult, One), (AccessQualifier, One)]
+    ),
+    inst!(
+        TypeStructContinuedINTEL,
+        [LongConstantCompositeINTEL],
+        [],
+        [(IdRef, ZeroOrMore)]
+    ),
+    inst!(
+        ConstantCompositeContinuedINTEL,
+        [LongConstantCompositeINTEL],
+        [],
+        [(IdRef, ZeroOrMore)]
+    ),
+    inst!(
+        SpecConstantCompositeContinuedINTEL,
+        [LongConstantCompositeINTEL],
+        [],
+        [(IdRef, ZeroOrMore)]
     ),
 ];

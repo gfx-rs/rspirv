@@ -634,4 +634,62 @@ impl Builder {
             new_id
         }
     }
+    #[doc = "Appends an OpTypeBufferSurfaceINTEL instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_buffer_surface_intel(
+        &mut self,
+        access_qualifier: spirv::AccessQualifier,
+    ) -> spirv::Word {
+        self.type_buffer_surface_intel_id(None, access_qualifier)
+    }
+    #[doc = "Appends an OpTypeBufferSurfaceINTEL instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_buffer_surface_intel_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        access_qualifier: spirv::AccessQualifier,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeBufferSurfaceINTEL,
+            None,
+            result_id,
+            vec![dr::Operand::AccessQualifier(access_qualifier)],
+        );
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
+    #[doc = "Appends an OpTypeStructContinuedINTEL instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_struct_continued_intel(
+        &mut self,
+        member_0_type_member_1_type: impl IntoIterator<Item = spirv::Word>,
+    ) -> spirv::Word {
+        self.type_struct_continued_intel_id(None, member_0_type_member_1_type)
+    }
+    #[doc = "Appends an OpTypeStructContinuedINTEL instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_struct_continued_intel_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        member_0_type_member_1_type: impl IntoIterator<Item = spirv::Word>,
+    ) -> spirv::Word {
+        let mut inst =
+            dr::Instruction::new(spirv::Op::TypeStructContinuedINTEL, None, result_id, vec![]);
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
 }
