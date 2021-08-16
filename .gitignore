@@ -1,5 +1,7 @@
-target
 *.swp
 *.pyc
 *.bk
 .DS_Store
+
+/target
+/Cargo.lock
