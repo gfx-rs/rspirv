@@ -578,6 +578,25 @@ impl Builder {
         self.module.execution_modes.push(inst);
     }
 
+    /// Appends an OpExecutionModeId instruction.
+    pub fn execution_mode_id(
+        &mut self,
+        entry_point: spirv::Word,
+        execution_mode: spirv::ExecutionMode,
+        params: impl AsRef<[u32]>,
+    ) {
+        let mut operands = vec![
+            dr::Operand::IdRef(entry_point),
+            dr::Operand::ExecutionMode(execution_mode),
+        ];
+        for v in params.as_ref() {
+            operands.push(dr::Operand::LiteralInt32(*v));
+        }
+
+        let inst = dr::Instruction::new(spirv::Op::ExecutionModeId, None, None, operands);
+        self.module.execution_modes.push(inst);
+    }
+
     pub fn ext_inst(
         &mut self,
         result_type: spirv::Word,
