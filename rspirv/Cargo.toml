@@ -22,7 +22,7 @@ clippy = { version = "0.0", optional = true }
 derive_more = "0.99"
 fxhash = "0.2"
 num-traits = "0.2"
-spirv = { version = "=0.1.0+1.5.4", path = "../spirv" }
+spirv = { version = "0.1.0", path = "../spirv" }
 
 [dev-dependencies]
 assert_matches = "1.1"
