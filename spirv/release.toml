@@ -6,8 +6,8 @@ sign-commit = true
 sign-tag = true
 
 pre-release-replacements = [
-  {file="README.md", search="spirv = .*", replace="{{crate_name}} = \"{{version}}\""},
-  {file="../rspirv/Cargo.toml", search="spirv = \\{ version = \".*\", path = \"../spirv\" \\}", replace="{{crate_name}} = { version = \"{{version}}\", path = \"../spirv\" }" },
+  {file="README.md", search="spirv = .*", replace="{{crate_name}} = \"{{version_without_metadata}}\""},
+  {file="../rspirv/Cargo.toml", search="spirv = \\{ version = \".*\", path = \"../spirv\" \\}", replace="{{crate_name}} = { version = \"{{version_without_metadata}}\", path = \"../spirv\" }" },
 ]
 
 
