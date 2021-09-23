@@ -67,7 +67,9 @@ pub struct Grammar {
 
 #[derive(Debug, Deserialize)]
 pub struct ExtInstSetGrammar {
+		#[serde(default)]
     pub copyright: Vec<String>,
+    #[serde(default)]
     pub version: u32,
     pub revision: u32,
     pub instructions: Vec<Instruction>,

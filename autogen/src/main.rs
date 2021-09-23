@@ -9,8 +9,9 @@ mod table;
 mod utils;
 
 use std::{
-    env, fs,
-    io::{Read, Write},
+    env,
+    fs,
+    io::Write,
     path::{Path, PathBuf},
     process,
 };
@@ -114,66 +115,83 @@ fn main() {
         panic!("SPIRV-Headers missing - please checkout using git submodule");
     }
 
-    let mut contents = String::new();
-
-    {
-        let path = autogen_src_dir
-            .join("external/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json");
-        let mut file = fs::File::open(path).unwrap();
-        file.read_to_string(&mut contents).unwrap();
-    }
-
     let grammar: structs::Grammar = {
-        let mut original = serde_json::from_str(&contents).unwrap();
+        let mut original =
+            serde_json::from_str(
+                &std::str::from_utf8(
+                    &fs::read(autogen_src_dir.join(
+                        "external/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json",
+                    ))
+                    .unwrap(),
+                )
+                .unwrap(),
+            )
+            .unwrap();
         map_reserved_instructions(&mut original);
         sort_instructions(&mut original);
         original
     };
 
-    // For GLSLstd450 extended instruction set.
-    {
-        let path = autogen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/unified1/extinst.glsl.std.450.grammar.json",
-        );
-        let mut file = fs::File::open(path).unwrap();
-        contents.clear();
-        file.read_to_string(&mut contents).unwrap();
-    }
-    let gl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
-
-    // For OpenCL extended instruction set.
-    {
-        let path = autogen_src_dir.join(
-            "external/SPIRV-Headers/include/spirv/unified1/extinst.opencl.std.100.grammar.json",
-        );
-        let mut file = fs::File::open(path).unwrap();
-        contents.clear();
-        file.read_to_string(&mut contents).unwrap();
-    }
-    let cl_grammar: structs::ExtInstSetGrammar = serde_json::from_str(&contents).unwrap();
-
-    // Path to the generated SPIR-V header file.
-    write_formatted(&autogen_src_dir.join("../spirv/autogen_spirv.rs"), {
-        let core = header::gen_spirv_header(&grammar);
-        let gl = header::gen_glsl_std_450_opcodes(&gl_grammar);
-        let cl = header::gen_opencl_std_opcodes(&cl_grammar);
-        format!("{}\n{}\n{}", core, gl, cl)
+    let extended_instruction_sets = [
+			("GLSL.std.450", "GLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html"),
+			("OpenCL.std.100", "CLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
+			("NonSemantic.DebugPrintF", "DebugPrintFOp", "https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md"),
+    ];
+    let extended_instruction_sets = extended_instruction_sets.map(|(ext, op, url)| {
+        let grammar: structs::ExtInstSetGrammar = serde_json::from_str(
+            &std::str::from_utf8(
+                &fs::read(autogen_src_dir.join(format!(
+                    "external/SPIRV-Headers/include/spirv/unified1/extinst.{}.grammar.json",
+                    ext.to_lowercase()
+                )))
+                .unwrap(),
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        (ext, op, url, grammar)
     });
 
-    // Path to the generated instruction table.
+    // SPIR-V header
+    write_formatted(&autogen_src_dir.join("../spirv/autogen_spirv.rs"), {
+        let core = header::gen_spirv_header(&grammar);
+        let extended_instruction_sets =
+            extended_instruction_sets
+                .iter()
+                .map(|(ext, op, url, grammar)| {
+                    header::gen_opcodes(
+                        op,
+                        &grammar,
+                        &format!("[{}]({}) extended instruction opcode", ext, url),
+                    )
+                    .to_string()
+                });
+        format!(
+            "{}\n{}",
+            core,
+            extended_instruction_sets.collect::<Box<_>>().join("\n")
+        )
+    });
+
+    // Instruction table
     write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_table.rs"),
         table::gen_grammar_inst_table_operand_kinds(&grammar),
     );
-    // Path to the generated GLSLstd450 extended instruction set header.
-    write_formatted(
-        &autogen_src_dir.join("../rspirv/grammar/autogen_glsl_std_450.rs"),
-        table::gen_glsl_std_450_inst_table(&gl_grammar),
-    );
-    write_formatted(
-        &autogen_src_dir.join("../rspirv/grammar/autogen_opencl_std_100.rs"),
-        table::gen_opencl_std_100_inst_table(&cl_grammar),
-    );
+    // Extended instruction sets
+    for (ext, _, _, grammar) in extended_instruction_sets {
+        write_formatted(
+            &autogen_src_dir.join(format!(
+                "../rspirv/grammar/autogen_{}.rs",
+                ext.replace(".", "_").to_lowercase()
+            )),
+            table::gen_instruction_table(
+                &grammar.instructions,
+                &format!("{}_INSTRUCTION_TABLE", ext.replace(".", "_").to_uppercase()),
+                true,
+            ),
+        );
+    }
 
     // Path to the generated operands kind in data representation.
     write_formatted(

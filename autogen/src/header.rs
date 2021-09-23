@@ -7,12 +7,6 @@ use quote::quote;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
 
-static GLSL_STD_450_SPEC_LINK: &str = "\
-https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html";
-
-static OPENCL_STD_SPEC_LINK: &str = "\
-https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html";
-
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
@@ -43,7 +37,7 @@ fn bit_enum_attribute() -> TokenStream {
 fn generate_enum(
     enum_name: &proc_macro2::Ident,
     variants: &[(u32, proc_macro2::Ident)],
-    comment: String,
+    comment: &str,
 ) -> TokenStream {
     let mut variants = variants.to_vec();
     variants.sort_by_key(|&(number, _)| number);
@@ -229,7 +223,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let the_enum = generate_enum(
         &kind,
         &variants,
-        format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
+        &format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
     );
 
     quote! {
@@ -301,7 +295,7 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     let the_enum = generate_enum(
         &as_ident("Op"),
         &variants,
-        format!("SPIR-V {} opcodes", get_spec_link("instructions")),
+        &format!("SPIR-V {} opcodes", get_spec_link("instructions")),
     );
 
     quote! {
@@ -324,8 +318,9 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     }
 }
 
-/// Returns the GLSL.std.450 extended instruction opcodes.
-pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
+/// Returns extended instruction opcodes
+pub fn gen_opcodes(op: &str, grammar: &structs::ExtInstSetGrammar, comment: &str) -> TokenStream {
+    let op = as_ident(op);
     // Get the instruction table.
     let variants = grammar
         .instructions
@@ -337,35 +332,5 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         })
         .collect::<Vec<_>>();
 
-    generate_enum(
-        &as_ident("GLOp"),
-        &variants,
-        format!(
-            "[GLSL.std.450]({}) extended instruction opcode",
-            GLSL_STD_450_SPEC_LINK
-        ),
-    )
-}
-
-/// Returns the OpenCL.std extended instruction opcodes.
-pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
-    // Get the instruction table.
-    let variants = grammar
-        .instructions
-        .iter()
-        .map(|inst| {
-            let opname = as_ident(&inst.opname);
-            let opcode = inst.opcode;
-            (opcode, opname)
-        })
-        .collect::<Vec<_>>();
-
-    generate_enum(
-        &as_ident("CLOp"),
-        &variants,
-        format!(
-            "[OpenCL.std]({}) extended instruction opcode",
-            OPENCL_STD_SPEC_LINK
-        ),
-    )
+    generate_enum(&op, &variants, comment)
 }
