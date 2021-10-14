@@ -169,13 +169,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
-        if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE_KHR) {
-            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
-        }
         if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE) {
-            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
-        }
-        if image_operands.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE_KHR) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
         Ok(params)
@@ -237,13 +231,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
-        if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE_KHR) {
-            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
-        }
         if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE) {
-            params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
-        }
-        if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE_KHR) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
         Ok(params)
@@ -372,13 +360,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                 vec![dr::Operand::LiteralInt32(self.decoder.int32()?)]
             }
             spirv::Decoration::CounterBuffer => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            spirv::Decoration::HlslCounterBufferGOOGLE => {
-                vec![dr::Operand::IdRef(self.decoder.id()?)]
-            }
             spirv::Decoration::UserSemantic => {
-                vec![dr::Operand::LiteralString(self.decoder.string()?)]
-            }
-            spirv::Decoration::HlslSemanticGOOGLE => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
             }
             spirv::Decoration::UserTypeGOOGLE => {
