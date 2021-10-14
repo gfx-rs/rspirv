@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::structs;
 use crate::utils::*;
 
@@ -130,8 +132,9 @@ fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&st
         !element.enumerants.is_empty()
     }).filter_map(|element| {
         // Get the symbol and all the parameters for each enumerant.
-        let pairs: Vec<(&str, Vec<&str>)> =
-            element.enumerants.iter().filter_map(|e| {
+        let pairs: Vec<(&str, Vec<&str>)> = element.enumerants.iter()
+            .scan(HashSet::new(), |seen_values, e| Some(if seen_values.insert(e.value) { Some(e) } else { None })).flatten()
+            .filter_map(|e| {
                 let params: Vec<&str> = e.parameters.iter().map(
                     |p| { p.kind.as_str() }
                 ).collect();
