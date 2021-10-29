@@ -291,21 +291,29 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         // To prevent ambiguity we don't want to generate an implementation for `Word` at all:
         types_seen.insert(quote!(spirv::Word).to_string());
 
+        let mut from_impls = Vec::new();
+
         let kinds = kind_and_ty.iter().map(|(kind, ty)| {
-            let v = quote!(#kind(#ty));
             if types_seen.insert(ty.to_string()) {
-                v
-            } else {
-                quote!(#[from(ignore)] #v)
+                from_impls.push(quote! {
+                    impl From<#ty> for Operand {
+                        fn from(o: #ty) -> Self {
+                            Self::#kind(o)
+                        }
+                    }
+                });
             }
+            quote!(#kind(#ty))
         });
         quote! {
             #[doc = "Data representation of a SPIR-V operand."]
-            #[derive(Clone, Debug, PartialEq, From)]
+            #[derive(Clone, Debug, PartialEq)]
             #[allow(clippy::upper_case_acronyms)]
             pub enum Operand {
                 #(#kinds,)*
             }
+
+            #(#from_impls)*
         }
     };
 
