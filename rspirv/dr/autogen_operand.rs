@@ -3,7 +3,7 @@
 // DO NOT MODIFY!
 
 #[doc = "Data representation of a SPIR-V operand."]
-#[derive(Clone, Debug, PartialEq, From)]
+#[derive(Clone, Debug, PartialEq)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
@@ -41,20 +41,221 @@ pub enum Operand {
     RayQueryIntersection(spirv::RayQueryIntersection),
     RayQueryCommittedIntersectionType(spirv::RayQueryCommittedIntersectionType),
     RayQueryCandidateIntersectionType(spirv::RayQueryCandidateIntersectionType),
-    #[from(ignore)]
     IdMemorySemantics(spirv::Word),
-    #[from(ignore)]
     IdScope(spirv::Word),
-    #[from(ignore)]
     IdRef(spirv::Word),
     LiteralInt32(u32),
     LiteralInt64(u64),
     LiteralFloat32(f32),
     LiteralFloat64(f64),
-    #[from(ignore)]
     LiteralExtInstInteger(u32),
     LiteralSpecConstantOpInteger(spirv::Op),
     LiteralString(String),
+}
+impl From<spirv::ImageOperands> for Operand {
+    fn from(o: spirv::ImageOperands) -> Self {
+        Self::ImageOperands(o)
+    }
+}
+impl From<spirv::FPFastMathMode> for Operand {
+    fn from(o: spirv::FPFastMathMode) -> Self {
+        Self::FPFastMathMode(o)
+    }
+}
+impl From<spirv::SelectionControl> for Operand {
+    fn from(o: spirv::SelectionControl) -> Self {
+        Self::SelectionControl(o)
+    }
+}
+impl From<spirv::LoopControl> for Operand {
+    fn from(o: spirv::LoopControl) -> Self {
+        Self::LoopControl(o)
+    }
+}
+impl From<spirv::FunctionControl> for Operand {
+    fn from(o: spirv::FunctionControl) -> Self {
+        Self::FunctionControl(o)
+    }
+}
+impl From<spirv::MemorySemantics> for Operand {
+    fn from(o: spirv::MemorySemantics) -> Self {
+        Self::MemorySemantics(o)
+    }
+}
+impl From<spirv::MemoryAccess> for Operand {
+    fn from(o: spirv::MemoryAccess) -> Self {
+        Self::MemoryAccess(o)
+    }
+}
+impl From<spirv::KernelProfilingInfo> for Operand {
+    fn from(o: spirv::KernelProfilingInfo) -> Self {
+        Self::KernelProfilingInfo(o)
+    }
+}
+impl From<spirv::RayFlags> for Operand {
+    fn from(o: spirv::RayFlags) -> Self {
+        Self::RayFlags(o)
+    }
+}
+impl From<spirv::FragmentShadingRate> for Operand {
+    fn from(o: spirv::FragmentShadingRate) -> Self {
+        Self::FragmentShadingRate(o)
+    }
+}
+impl From<spirv::SourceLanguage> for Operand {
+    fn from(o: spirv::SourceLanguage) -> Self {
+        Self::SourceLanguage(o)
+    }
+}
+impl From<spirv::ExecutionModel> for Operand {
+    fn from(o: spirv::ExecutionModel) -> Self {
+        Self::ExecutionModel(o)
+    }
+}
+impl From<spirv::AddressingModel> for Operand {
+    fn from(o: spirv::AddressingModel) -> Self {
+        Self::AddressingModel(o)
+    }
+}
+impl From<spirv::MemoryModel> for Operand {
+    fn from(o: spirv::MemoryModel) -> Self {
+        Self::MemoryModel(o)
+    }
+}
+impl From<spirv::ExecutionMode> for Operand {
+    fn from(o: spirv::ExecutionMode) -> Self {
+        Self::ExecutionMode(o)
+    }
+}
+impl From<spirv::StorageClass> for Operand {
+    fn from(o: spirv::StorageClass) -> Self {
+        Self::StorageClass(o)
+    }
+}
+impl From<spirv::Dim> for Operand {
+    fn from(o: spirv::Dim) -> Self {
+        Self::Dim(o)
+    }
+}
+impl From<spirv::SamplerAddressingMode> for Operand {
+    fn from(o: spirv::SamplerAddressingMode) -> Self {
+        Self::SamplerAddressingMode(o)
+    }
+}
+impl From<spirv::SamplerFilterMode> for Operand {
+    fn from(o: spirv::SamplerFilterMode) -> Self {
+        Self::SamplerFilterMode(o)
+    }
+}
+impl From<spirv::ImageFormat> for Operand {
+    fn from(o: spirv::ImageFormat) -> Self {
+        Self::ImageFormat(o)
+    }
+}
+impl From<spirv::ImageChannelOrder> for Operand {
+    fn from(o: spirv::ImageChannelOrder) -> Self {
+        Self::ImageChannelOrder(o)
+    }
+}
+impl From<spirv::ImageChannelDataType> for Operand {
+    fn from(o: spirv::ImageChannelDataType) -> Self {
+        Self::ImageChannelDataType(o)
+    }
+}
+impl From<spirv::FPRoundingMode> for Operand {
+    fn from(o: spirv::FPRoundingMode) -> Self {
+        Self::FPRoundingMode(o)
+    }
+}
+impl From<spirv::LinkageType> for Operand {
+    fn from(o: spirv::LinkageType) -> Self {
+        Self::LinkageType(o)
+    }
+}
+impl From<spirv::AccessQualifier> for Operand {
+    fn from(o: spirv::AccessQualifier) -> Self {
+        Self::AccessQualifier(o)
+    }
+}
+impl From<spirv::FunctionParameterAttribute> for Operand {
+    fn from(o: spirv::FunctionParameterAttribute) -> Self {
+        Self::FunctionParameterAttribute(o)
+    }
+}
+impl From<spirv::Decoration> for Operand {
+    fn from(o: spirv::Decoration) -> Self {
+        Self::Decoration(o)
+    }
+}
+impl From<spirv::BuiltIn> for Operand {
+    fn from(o: spirv::BuiltIn) -> Self {
+        Self::BuiltIn(o)
+    }
+}
+impl From<spirv::Scope> for Operand {
+    fn from(o: spirv::Scope) -> Self {
+        Self::Scope(o)
+    }
+}
+impl From<spirv::GroupOperation> for Operand {
+    fn from(o: spirv::GroupOperation) -> Self {
+        Self::GroupOperation(o)
+    }
+}
+impl From<spirv::KernelEnqueueFlags> for Operand {
+    fn from(o: spirv::KernelEnqueueFlags) -> Self {
+        Self::KernelEnqueueFlags(o)
+    }
+}
+impl From<spirv::Capability> for Operand {
+    fn from(o: spirv::Capability) -> Self {
+        Self::Capability(o)
+    }
+}
+impl From<spirv::RayQueryIntersection> for Operand {
+    fn from(o: spirv::RayQueryIntersection) -> Self {
+        Self::RayQueryIntersection(o)
+    }
+}
+impl From<spirv::RayQueryCommittedIntersectionType> for Operand {
+    fn from(o: spirv::RayQueryCommittedIntersectionType) -> Self {
+        Self::RayQueryCommittedIntersectionType(o)
+    }
+}
+impl From<spirv::RayQueryCandidateIntersectionType> for Operand {
+    fn from(o: spirv::RayQueryCandidateIntersectionType) -> Self {
+        Self::RayQueryCandidateIntersectionType(o)
+    }
+}
+impl From<u32> for Operand {
+    fn from(o: u32) -> Self {
+        Self::LiteralInt32(o)
+    }
+}
+impl From<u64> for Operand {
+    fn from(o: u64) -> Self {
+        Self::LiteralInt64(o)
+    }
+}
+impl From<f32> for Operand {
+    fn from(o: f32) -> Self {
+        Self::LiteralFloat32(o)
+    }
+}
+impl From<f64> for Operand {
+    fn from(o: f64) -> Self {
+        Self::LiteralFloat64(o)
+    }
+}
+impl From<spirv::Op> for Operand {
+    fn from(o: spirv::Op) -> Self {
+        Self::LiteralSpecConstantOpInteger(o)
+    }
+}
+impl From<String> for Operand {
+    fn from(o: String) -> Self {
+        Self::LiteralString(o)
+    }
 }
 impl fmt::Display for Operand {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
