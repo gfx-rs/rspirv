@@ -6,12 +6,6 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use std::collections::BTreeMap;
 
-static GLSL_STD_450_SPEC_LINK: &str = "\
-https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html";
-
-static OPENCL_STD_SPEC_LINK: &str = "\
-https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html";
-
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
@@ -304,9 +298,10 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     }
 }
 
-/// Returns the GLSL.std.450 extended instruction opcodes.
-pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
-    // Get the instruction table.
+/// Returns extended instruction opcodes
+pub fn gen_opcodes(op: &str, grammar: &structs::ExtInstSetGrammar, comment: &str) -> TokenStream {
+		let op = as_ident(op);
+    // Get the instruction table
     let opcodes = grammar.instructions.iter().map(|inst| {
         // Omit the "Op" prefix.
         let opname = as_ident(&inst.opname);
@@ -320,61 +315,18 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         .map(|inst| {
             let opname = as_ident(&inst.opname);
             let opcode = inst.opcode;
-            quote! { #opcode => GLOp::#opname }
+            quote! { #opcode => #op::#opname }
         })
         .collect::<Vec<_>>();
 
-    let comment = format!(
-        "[GLSL.std.450]({}) extended instruction opcode",
-        GLSL_STD_450_SPEC_LINK
-    );
     let attribute = value_enum_attribute();
-    let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("GLOp"));
+    let from_prim_impl = from_primitive_impl(&from_prim_list, &op);
 
     quote! {
         #[doc = #comment]
         #attribute
         #[allow(clippy::upper_case_acronyms)]
-        pub enum GLOp {
-            #(#opcodes),*
-        }
-
-        #from_prim_impl
-    }
-}
-
-/// Returns the OpenCL.std extended instruction opcodes.
-pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
-    // Get the instruction table.
-    let opcodes = grammar.instructions.iter().map(|inst| {
-        // Omit the "Op" prefix.
-        let opname = as_ident(&inst.opname);
-        let opcode = inst.opcode;
-        quote! { #opname = #opcode }
-    });
-
-    let from_prim_list = grammar
-        .instructions
-        .iter()
-        .map(|inst| {
-            let opname = as_ident(&inst.opname);
-            let opcode = inst.opcode;
-            quote! { #opcode => CLOp::#opname }
-        })
-        .collect::<Vec<_>>();
-
-    let comment = format!(
-        "[OpenCL.std]({}) extended instruction opcode",
-        OPENCL_STD_SPEC_LINK
-    );
-    let attribute = value_enum_attribute();
-    let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("CLOp"));
-
-    quote! {
-        #[doc = #comment]
-        #attribute
-        #[allow(clippy::upper_case_acronyms)]
-        pub enum CLOp {
+        pub enum #op {
             #(#opcodes),*
         }
 

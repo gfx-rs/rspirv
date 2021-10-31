@@ -3989,7 +3989,7 @@ impl num_traits::FromPrimitive for GLOp {
         Self::from_i64(n as i64)
     }
 }
-#[doc = "[OpenCL.std](https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
+#[doc = "[OpenCL.std.100](https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -4325,6 +4325,27 @@ impl num_traits::FromPrimitive for CLOp {
             183u32 => CLOp::shuffle2,
             184u32 => CLOp::printf,
             185u32 => CLOp::prefetch,
+            _ => return None,
+        })
+    }
+    fn from_u64(n: u64) -> Option<Self> {
+        Self::from_i64(n as i64)
+    }
+}
+#[doc = "[NonSemantic.DebugPrintF](https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum DebugPrintFOp {
+    DebugPrintf = 1u32,
+}
+impl num_traits::FromPrimitive for DebugPrintFOp {
+    #[allow(trivial_numeric_casts)]
+    fn from_i64(n: i64) -> Option<Self> {
+        Some(match n as u32 {
+            1u32 => DebugPrintFOp::DebugPrintf,
             _ => return None,
         })
     }
