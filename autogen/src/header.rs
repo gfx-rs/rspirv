@@ -45,17 +45,12 @@ fn bit_enum_attribute() -> TokenStream {
 
 fn from_primitive_impl(from_prim: &[TokenStream], kind: &proc_macro2::Ident) -> TokenStream {
     quote! {
-        impl num_traits::FromPrimitive for #kind {
-            #[allow(trivial_numeric_casts)]
-            fn from_i64(n: i64) -> Option<Self> {
-                Some(match n as u32 {
+        impl #kind {
+            pub fn from_u32(n: u32) -> Option<Self> {
+                Some(match n {
                     #(#from_prim,)*
                     _ => return None
                 })
-            }
-
-            fn from_u64(n: u64) -> Option<Self> {
-                Self::from_i64(n as i64)
             }
         }
     }
