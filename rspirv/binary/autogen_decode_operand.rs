@@ -2,7 +2,6 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use num_traits::FromPrimitive;
 impl<'a> Decoder<'a> {
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V ImageOperands value."]
     pub fn image_operands(&mut self) -> Result<spirv::ImageOperands> {

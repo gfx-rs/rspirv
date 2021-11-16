@@ -114,8 +114,6 @@ pub fn gen_operand_decode_methods(grammar: &[structs::OperandKind]) -> TokenStre
     });
 
     quote! {
-        use num_traits::FromPrimitive;
-
         impl<'a> Decoder<'a> {
             #(#methods)*
         }

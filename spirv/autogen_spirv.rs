@@ -33,10 +33,9 @@ pub enum SourceLanguage {
 }
 #[allow(non_upper_case_globals)]
 impl SourceLanguage {}
-impl num_traits::FromPrimitive for SourceLanguage {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl SourceLanguage {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Unknown,
             1u32 => Self::ESSL,
             2u32 => Self::GLSL,
@@ -45,9 +44,6 @@ impl num_traits::FromPrimitive for SourceLanguage {
             5u32 => Self::HLSL,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for SourceLanguage {
@@ -96,10 +92,9 @@ impl ExecutionModel {
     pub const MissKHR: Self = Self::MissNV;
     pub const CallableKHR: Self = Self::CallableNV;
 }
-impl num_traits::FromPrimitive for ExecutionModel {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl ExecutionModel {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Vertex,
             1u32 => Self::TessellationControl,
             2u32 => Self::TessellationEvaluation,
@@ -117,9 +112,6 @@ impl num_traits::FromPrimitive for ExecutionModel {
             5318u32 => Self::CallableNV,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for ExecutionModel {
@@ -167,19 +159,15 @@ pub enum AddressingModel {
 impl AddressingModel {
     pub const PhysicalStorageBuffer64EXT: Self = Self::PhysicalStorageBuffer64;
 }
-impl num_traits::FromPrimitive for AddressingModel {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl AddressingModel {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Logical,
             1u32 => Self::Physical32,
             2u32 => Self::Physical64,
             5348u32 => Self::PhysicalStorageBuffer64,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for AddressingModel {
@@ -211,19 +199,15 @@ pub enum MemoryModel {
 impl MemoryModel {
     pub const VulkanKHR: Self = Self::Vulkan;
 }
-impl num_traits::FromPrimitive for MemoryModel {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl MemoryModel {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Simple,
             1u32 => Self::GLSL450,
             2u32 => Self::OpenCL,
             3u32 => Self::Vulkan,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for MemoryModel {
@@ -309,10 +293,9 @@ pub enum ExecutionMode {
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionMode {}
-impl num_traits::FromPrimitive for ExecutionMode {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl ExecutionMode {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Invocations,
             1u32 => Self::SpacingEqual,
             2u32 => Self::SpacingFractionalEven,
@@ -375,9 +358,6 @@ impl num_traits::FromPrimitive for ExecutionMode {
             5896u32 => Self::NumSIMDWorkitemsINTEL,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for ExecutionMode {
@@ -487,10 +467,9 @@ impl StorageClass {
     pub const ShaderRecordBufferKHR: Self = Self::ShaderRecordBufferNV;
     pub const PhysicalStorageBufferEXT: Self = Self::PhysicalStorageBuffer;
 }
-impl num_traits::FromPrimitive for StorageClass {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl StorageClass {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::UniformConstant,
             1u32 => Self::Input,
             2u32 => Self::Uniform,
@@ -514,9 +493,6 @@ impl num_traits::FromPrimitive for StorageClass {
             5605u32 => Self::CodeSectionINTEL,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for StorageClass {
@@ -572,10 +548,9 @@ pub enum Dim {
 }
 #[allow(non_upper_case_globals)]
 impl Dim {}
-impl num_traits::FromPrimitive for Dim {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl Dim {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Dim1D,
             1u32 => Self::Dim2D,
             2u32 => Self::Dim3D,
@@ -585,9 +560,6 @@ impl num_traits::FromPrimitive for Dim {
             6u32 => Self::DimSubpassData,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for Dim {
@@ -620,10 +592,9 @@ pub enum SamplerAddressingMode {
 }
 #[allow(non_upper_case_globals)]
 impl SamplerAddressingMode {}
-impl num_traits::FromPrimitive for SamplerAddressingMode {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl SamplerAddressingMode {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::None,
             1u32 => Self::ClampToEdge,
             2u32 => Self::Clamp,
@@ -631,9 +602,6 @@ impl num_traits::FromPrimitive for SamplerAddressingMode {
             4u32 => Self::RepeatMirrored,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for SamplerAddressingMode {
@@ -661,17 +629,13 @@ pub enum SamplerFilterMode {
 }
 #[allow(non_upper_case_globals)]
 impl SamplerFilterMode {}
-impl num_traits::FromPrimitive for SamplerFilterMode {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl SamplerFilterMode {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Nearest,
             1u32 => Self::Linear,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for SamplerFilterMode {
@@ -736,10 +700,9 @@ pub enum ImageFormat {
 }
 #[allow(non_upper_case_globals)]
 impl ImageFormat {}
-impl num_traits::FromPrimitive for ImageFormat {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl ImageFormat {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Unknown,
             1u32 => Self::Rgba32f,
             2u32 => Self::Rgba16f,
@@ -784,9 +747,6 @@ impl num_traits::FromPrimitive for ImageFormat {
             41u32 => Self::R64i,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for ImageFormat {
@@ -869,10 +829,9 @@ pub enum ImageChannelOrder {
 }
 #[allow(non_upper_case_globals)]
 impl ImageChannelOrder {}
-impl num_traits::FromPrimitive for ImageChannelOrder {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl ImageChannelOrder {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::R,
             1u32 => Self::A,
             2u32 => Self::RG,
@@ -895,9 +854,6 @@ impl num_traits::FromPrimitive for ImageChannelOrder {
             19u32 => Self::ABGR,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for ImageChannelOrder {
@@ -955,10 +911,9 @@ pub enum ImageChannelDataType {
 }
 #[allow(non_upper_case_globals)]
 impl ImageChannelDataType {}
-impl num_traits::FromPrimitive for ImageChannelDataType {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl ImageChannelDataType {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::SnormInt8,
             1u32 => Self::SnormInt16,
             2u32 => Self::UnormInt8,
@@ -978,9 +933,6 @@ impl num_traits::FromPrimitive for ImageChannelDataType {
             16u32 => Self::UnormInt101010_2,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for ImageChannelDataType {
@@ -1022,19 +974,15 @@ pub enum FPRoundingMode {
 }
 #[allow(non_upper_case_globals)]
 impl FPRoundingMode {}
-impl num_traits::FromPrimitive for FPRoundingMode {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl FPRoundingMode {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::RTE,
             1u32 => Self::RTZ,
             2u32 => Self::RTP,
             3u32 => Self::RTN,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for FPRoundingMode {
@@ -1061,17 +1009,13 @@ pub enum LinkageType {
 }
 #[allow(non_upper_case_globals)]
 impl LinkageType {}
-impl num_traits::FromPrimitive for LinkageType {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl LinkageType {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Export,
             1u32 => Self::Import,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for LinkageType {
@@ -1097,18 +1041,14 @@ pub enum AccessQualifier {
 }
 #[allow(non_upper_case_globals)]
 impl AccessQualifier {}
-impl num_traits::FromPrimitive for AccessQualifier {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl AccessQualifier {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::ReadOnly,
             1u32 => Self::WriteOnly,
             2u32 => Self::ReadWrite,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for AccessQualifier {
@@ -1140,10 +1080,9 @@ pub enum FunctionParameterAttribute {
 }
 #[allow(non_upper_case_globals)]
 impl FunctionParameterAttribute {}
-impl num_traits::FromPrimitive for FunctionParameterAttribute {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl FunctionParameterAttribute {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Zext,
             1u32 => Self::Sext,
             2u32 => Self::ByVal,
@@ -1154,9 +1093,6 @@ impl num_traits::FromPrimitive for FunctionParameterAttribute {
             7u32 => Self::NoReadWrite,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for FunctionParameterAttribute {
@@ -1268,10 +1204,9 @@ impl Decoration {
     pub const HlslCounterBufferGOOGLE: Self = Self::CounterBuffer;
     pub const HlslSemanticGOOGLE: Self = Self::UserSemantic;
 }
-impl num_traits::FromPrimitive for Decoration {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl Decoration {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::RelaxedPrecision,
             1u32 => Self::SpecId,
             2u32 => Self::Block,
@@ -1351,9 +1286,6 @@ impl num_traits::FromPrimitive for Decoration {
             5836u32 => Self::ForcePow2DepthINTEL,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for Decoration {
@@ -1575,10 +1507,9 @@ impl BuiltIn {
     pub const HitKindKHR: Self = Self::HitKindNV;
     pub const IncomingRayFlagsKHR: Self = Self::IncomingRayFlagsNV;
 }
-impl num_traits::FromPrimitive for BuiltIn {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl BuiltIn {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Position,
             1u32 => Self::PointSize,
             3u32 => Self::ClipDistance,
@@ -1679,9 +1610,6 @@ impl num_traits::FromPrimitive for BuiltIn {
             5377u32 => Self::SMIDNV,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for BuiltIn {
@@ -1829,10 +1757,9 @@ pub enum Scope {
 impl Scope {
     pub const QueueFamilyKHR: Self = Self::QueueFamily;
 }
-impl num_traits::FromPrimitive for Scope {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl Scope {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::CrossDevice,
             1u32 => Self::Device,
             2u32 => Self::Workgroup,
@@ -1842,9 +1769,6 @@ impl num_traits::FromPrimitive for Scope {
             6u32 => Self::ShaderCallKHR,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for Scope {
@@ -1880,10 +1804,9 @@ pub enum GroupOperation {
 }
 #[allow(non_upper_case_globals)]
 impl GroupOperation {}
-impl num_traits::FromPrimitive for GroupOperation {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl GroupOperation {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Reduce,
             1u32 => Self::InclusiveScan,
             2u32 => Self::ExclusiveScan,
@@ -1893,9 +1816,6 @@ impl num_traits::FromPrimitive for GroupOperation {
             8u32 => Self::PartitionedExclusiveScanNV,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for GroupOperation {
@@ -1926,18 +1846,14 @@ pub enum KernelEnqueueFlags {
 }
 #[allow(non_upper_case_globals)]
 impl KernelEnqueueFlags {}
-impl num_traits::FromPrimitive for KernelEnqueueFlags {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl KernelEnqueueFlags {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::NoWait,
             1u32 => Self::WaitKernel,
             2u32 => Self::WaitWorkGroup,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for KernelEnqueueFlags {
@@ -2149,10 +2065,9 @@ impl Capability {
     pub const VulkanMemoryModelDeviceScopeKHR: Self = Self::VulkanMemoryModelDeviceScope;
     pub const PhysicalStorageBufferAddressesEXT: Self = Self::PhysicalStorageBufferAddresses;
 }
-impl num_traits::FromPrimitive for Capability {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl Capability {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::Matrix,
             1u32 => Self::Shader,
             2u32 => Self::Geometry,
@@ -2313,9 +2228,6 @@ impl num_traits::FromPrimitive for Capability {
             6034u32 => Self::AtomicFloat64AddEXT,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for Capability {
@@ -2555,17 +2467,13 @@ pub enum RayQueryIntersection {
 }
 #[allow(non_upper_case_globals)]
 impl RayQueryIntersection {}
-impl num_traits::FromPrimitive for RayQueryIntersection {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl RayQueryIntersection {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::RayQueryCandidateIntersectionKHR,
             1u32 => Self::RayQueryCommittedIntersectionKHR,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for RayQueryIntersection {
@@ -2591,18 +2499,14 @@ pub enum RayQueryCommittedIntersectionType {
 }
 #[allow(non_upper_case_globals)]
 impl RayQueryCommittedIntersectionType {}
-impl num_traits::FromPrimitive for RayQueryCommittedIntersectionType {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl RayQueryCommittedIntersectionType {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::RayQueryCommittedIntersectionNoneKHR,
             1u32 => Self::RayQueryCommittedIntersectionTriangleKHR,
             2u32 => Self::RayQueryCommittedIntersectionGeneratedKHR,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for RayQueryCommittedIntersectionType {
@@ -2634,17 +2538,13 @@ pub enum RayQueryCandidateIntersectionType {
 }
 #[allow(non_upper_case_globals)]
 impl RayQueryCandidateIntersectionType {}
-impl num_traits::FromPrimitive for RayQueryCandidateIntersectionType {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl RayQueryCandidateIntersectionType {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Self::RayQueryCandidateIntersectionTriangleKHR,
             1u32 => Self::RayQueryCandidateIntersectionAABBKHR,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 impl core::str::FromStr for RayQueryCandidateIntersectionType {
@@ -3237,10 +3137,9 @@ impl Op {
     pub const DecorateStringGOOGLE: Op = Op::DecorateString;
     pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
 }
-impl num_traits::FromPrimitive for Op {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl Op {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => Op::Nop,
             1u32 => Op::Undef,
             2u32 => Op::SourceContinued,
@@ -3804,9 +3703,6 @@ impl num_traits::FromPrimitive for Op {
             _ => return None,
         })
     }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
-    }
 }
 #[doc = "[GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html) extended instruction opcode"]
 #[repr(u32)]
@@ -3897,10 +3793,9 @@ pub enum GLOp {
     NMax = 80u32,
     NClamp = 81u32,
 }
-impl num_traits::FromPrimitive for GLOp {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl GLOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             1u32 => GLOp::Round,
             2u32 => GLOp::RoundEven,
             3u32 => GLOp::Trunc,
@@ -3984,9 +3879,6 @@ impl num_traits::FromPrimitive for GLOp {
             81u32 => GLOp::NClamp,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
 #[doc = "[OpenCL.std](https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
@@ -4159,10 +4051,9 @@ pub enum CLOp {
     printf = 184u32,
     prefetch = 185u32,
 }
-impl num_traits::FromPrimitive for CLOp {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
+impl CLOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
             0u32 => CLOp::acos,
             1u32 => CLOp::acosh,
             2u32 => CLOp::acospi,
@@ -4327,8 +4218,5 @@ impl num_traits::FromPrimitive for CLOp {
             185u32 => CLOp::prefetch,
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }
