@@ -346,8 +346,8 @@ mod tests {
             dr::Operand::from(128934u64)
         );
         assert_eq!(
-            dr::Operand::LiteralFloat32(3.14f32),
-            dr::Operand::from(3.14f32)
+            dr::Operand::LiteralFloat32(std::f32::consts::PI),
+            dr::Operand::from(std::f32::consts::PI)
         );
         assert_eq!(
             dr::Operand::LiteralFloat64(10.4235f64),

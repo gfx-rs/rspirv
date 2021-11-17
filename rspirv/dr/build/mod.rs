@@ -53,35 +53,33 @@ type BuildResult<T> = result::Result<T, Error>;
 /// ```
 /// use rspirv::binary::Disassemble;
 ///
-/// fn main() {
-///     let mut b = rspirv::dr::Builder::new();
-///     b.set_version(1, 0);
-///     b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
-///     let void = b.type_void();
-///     let voidf = b.type_function(void, vec![void]);
-///     b.begin_function(void,
-///                      None,
-///                      (spirv::FunctionControl::DONT_INLINE |
-///                       spirv::FunctionControl::CONST),
-///                      voidf)
-///      .unwrap();
-///     b.begin_block(None).unwrap();
-///     b.ret().unwrap();
-///     b.end_function().unwrap();
+/// let mut b = rspirv::dr::Builder::new();
+/// b.set_version(1, 0);
+/// b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
+/// let void = b.type_void();
+/// let voidf = b.type_function(void, vec![void]);
+/// b.begin_function(void,
+///                  None,
+///                  (spirv::FunctionControl::DONT_INLINE |
+///                   spirv::FunctionControl::CONST),
+///                  voidf)
+///  .unwrap();
+/// b.begin_block(None).unwrap();
+/// b.ret().unwrap();
+/// b.end_function().unwrap();
 ///
-///     assert_eq!(b.module().disassemble(),
-///                "; SPIR-V\n\
-///                 ; Version: 1.0\n\
-///                 ; Generator: rspirv\n\
-///                 ; Bound: 5\n\
-///                 OpMemoryModel Logical Simple\n\
-///                 %1 = OpTypeVoid\n\
-///                 %2 = OpTypeFunction %1 %1\n\
-///                 %3 = OpFunction  %1  DontInline|Const %2\n\
-///                 %4 = OpLabel\n\
-///                 OpReturn\n\
-///                 OpFunctionEnd");
-/// }
+/// assert_eq!(b.module().disassemble(),
+///            "; SPIR-V\n\
+///             ; Version: 1.0\n\
+///             ; Generator: rspirv\n\
+///             ; Bound: 5\n\
+///             OpMemoryModel Logical Simple\n\
+///             %1 = OpTypeVoid\n\
+///             %2 = OpTypeFunction %1 %1\n\
+///             %3 = OpFunction  %1  DontInline|Const %2\n\
+///             %4 = OpLabel\n\
+///             OpReturn\n\
+///             OpFunctionEnd");
 /// ```
 #[derive(Default)]
 pub struct Builder {
@@ -238,7 +236,7 @@ impl Builder {
     /// the SPIR-V rule that non-aggregate types can't be duplicates.
     pub fn dedup_insert_type(&mut self, inst: &dr::Instruction) -> Option<spirv::Word> {
         for ty in &self.module.types_global_values {
-            if ty.is_type_identical(&inst) {
+            if ty.is_type_identical(inst) {
                 if let Some(id) = ty.result_id {
                     return Some(id);
                 }
@@ -1024,7 +1022,7 @@ mod tests {
         let mut b = Builder::new();
         let float = b.type_float(32);
         // Normal numbers
-        b.constant_f32(float, 3.14);
+        b.constant_f32(float, f32::consts::PI);
         b.constant_f32(float, 2e-10);
         // Zero
         b.constant_f32(float, 0.);
@@ -1041,7 +1039,7 @@ mod tests {
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(dr::Operand::from(3.14f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(f32::consts::PI), inst.operands[0]);
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
@@ -1074,7 +1072,7 @@ mod tests {
         // NaN != NaN
         match inst.operands[0] {
             dr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
-            _ => assert!(false),
+            _ => panic!(),
         }
     }
 
@@ -1126,7 +1124,7 @@ mod tests {
         // NaN != NaN
         match inst.operands[0] {
             dr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
-            _ => assert!(false),
+            _ => panic!(),
         }
     }
 

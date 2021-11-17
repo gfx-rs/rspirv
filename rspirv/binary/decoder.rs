@@ -47,18 +47,16 @@ const WORD_NUM_BYTES: usize = 4;
 /// use rspirv::binary::{Decoder, DecodeError};
 /// use spirv::SourceLanguage;
 ///
-/// fn main() {
-///     let v = vec![0x12, 0x34, 0x56, 0x78,
-///                  0x90, 0xab, 0xcd, 0xef,
-///                  0x02, 0x00, 0x00, 0x00];
-///     let mut d = Decoder::new(&v);
+/// let v = vec![0x12, 0x34, 0x56, 0x78,
+///              0x90, 0xab, 0xcd, 0xef,
+///              0x02, 0x00, 0x00, 0x00];
+/// let mut d = Decoder::new(&v);
 ///
-///     assert_eq!(Ok(0x78563412), d.word());
-///     assert_eq!(Ok(0xefcdab90), d.word());
-///     assert_eq!(Ok(SourceLanguage::GLSL), d.source_language());
+/// assert_eq!(Ok(0x78563412), d.word());
+/// assert_eq!(Ok(0xefcdab90), d.word());
+/// assert_eq!(Ok(SourceLanguage::GLSL), d.source_language());
 ///
-///     assert_eq!(Err(DecodeError::StreamExpected(12)), d.word());
-/// }
+/// assert_eq!(Err(DecodeError::StreamExpected(12)), d.word());
 /// ```
 pub struct Decoder<'a> {
     /// Raw bytes to decode
@@ -358,10 +356,7 @@ mod tests {
 
     #[test]
     fn test_limit() {
-        let mut v = vec![];
-        for _ in 0..12 {
-            v.push(0xff);
-        }
+        let v = vec![0xff; 12];
         let mut d = Decoder::new(&v);
 
         assert!(!d.has_limit());
