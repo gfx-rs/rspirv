@@ -99,6 +99,7 @@ impl<T> std::ops::Index<Token<T>> for Storage<T> {
 }
 
 #[cfg(test)]
+#[allow(clippy::float_cmp)]
 mod tests {
     use super::*;
 

@@ -354,7 +354,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             if operand.kind.starts_with("IdResult") {
                 continue;
             }
-            let tokens = OperandTokens::new(&inst.operands, index, Some(&inst));
+            let tokens = OperandTokens::new(&inst.operands, index, Some(inst));
             field_names.push(tokens.name);
             field_types.push(tokens.quantified_type);
             field_lifts.push(tokens.lift_expression);
