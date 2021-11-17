@@ -55,14 +55,16 @@ fn generate_enum(
         .iter()
         .map(|(number, name)| quote! { #name = #number });
 
+    // Each item is a tuple indicating an inclusive range as opposed to an exclusive range like is
+    // common.
     let mut number_runs = vec![];
-    number_runs.push(variants[0].0..=variants[0].0);
+    number_runs.push((variants[0].0, variants[0].0));
     for &(number, _) in variants.iter().skip(1) {
         let last_run = number_runs.last_mut().unwrap();
-        if number == *last_run.end() + 1 {
-            *last_run = *last_run.start()..=number;
-        } else if number > *last_run.end() + 1 {
-            number_runs.push(number..=number);
+        if number == last_run.1 + 1 {
+            last_run.1 = number;
+        } else if number > last_run.1 + 1 {
+            number_runs.push((number, number));
         } else {
             unreachable!("Variants not sorted by discriminant");
         }
@@ -73,8 +75,7 @@ fn generate_enum(
     let from_prim = number_runs
         .iter()
         .map(|range| {
-            let start = range.start();
-            let end = range.end();
+            let (start, end) = *range;
             if end == start {
                 // Fast path if a run only contains a single discriminant
                 quote! { #start => unsafe { core::mem::transmute::<u32, #enum_name>(#start) } }
