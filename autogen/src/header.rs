@@ -43,7 +43,13 @@ fn bit_enum_attribute() -> TokenStream {
     }
 }
 
-fn from_primitive_impl(from_prim: &[TokenStream], kind: &proc_macro2::Ident) -> TokenStream {
+fn from_primitive_impl(
+    from_prim: &[(u32, proc_macro2::Ident)],
+    kind: &proc_macro2::Ident,
+) -> TokenStream {
+    let from_prim = from_prim
+        .iter()
+        .map(|(number, name)| quote! { #number => Self::#name });
     quote! {
         impl #kind {
             pub fn from_u32(n: u32) -> Option<Self> {
@@ -153,7 +159,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
             enumerants.push(quote! { #name = #number });
-            from_prim_list.push(quote! { #number => Self::#name });
+            from_prim_list.push((number, name.clone()));
             from_str_impl.push(quote! { #name_str => Ok(Self::#name), });
 
             capability_clauses
@@ -263,7 +269,7 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
             aliases.push(quote! { pub const #opname : Op = Op::#discriminator; });
         } else {
             opcodes.push(quote! { #opname = #opcode });
-            from_prim_list.push(quote! { #opcode => Op::#opname });
+            from_prim_list.push((opcode, opname.clone()));
             seen_discriminator.insert(opcode, opname.clone());
         }
     }
@@ -315,7 +321,7 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         .map(|inst| {
             let opname = as_ident(&inst.opname);
             let opcode = inst.opcode;
-            quote! { #opcode => GLOp::#opname }
+            (opcode, opname)
         })
         .collect::<Vec<_>>();
 
@@ -354,7 +360,7 @@ pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStre
         .map(|inst| {
             let opname = as_ident(&inst.opname);
             let opcode = inst.opcode;
-            quote! { #opcode => CLOp::#opname }
+            (opcode, opname)
         })
         .collect::<Vec<_>>();
 
