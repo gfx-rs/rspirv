@@ -31,8 +31,6 @@ pub enum SourceLanguage {
     OpenCL_CPP = 4u32,
     HLSL = 5u32,
 }
-#[allow(non_upper_case_globals)]
-impl SourceLanguage {}
 impl SourceLanguage {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -46,6 +44,8 @@ impl SourceLanguage {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl SourceLanguage {}
 impl core::str::FromStr for SourceLanguage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -83,15 +83,6 @@ pub enum ExecutionModel {
     MissNV = 5317u32,
     CallableNV = 5318u32,
 }
-#[allow(non_upper_case_globals)]
-impl ExecutionModel {
-    pub const RayGenerationKHR: Self = Self::RayGenerationNV;
-    pub const IntersectionKHR: Self = Self::IntersectionNV;
-    pub const AnyHitKHR: Self = Self::AnyHitNV;
-    pub const ClosestHitKHR: Self = Self::ClosestHitNV;
-    pub const MissKHR: Self = Self::MissNV;
-    pub const CallableKHR: Self = Self::CallableNV;
-}
 impl ExecutionModel {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -113,6 +104,15 @@ impl ExecutionModel {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl ExecutionModel {
+    pub const RayGenerationKHR: Self = Self::RayGenerationNV;
+    pub const IntersectionKHR: Self = Self::IntersectionNV;
+    pub const AnyHitKHR: Self = Self::AnyHitNV;
+    pub const ClosestHitKHR: Self = Self::ClosestHitNV;
+    pub const MissKHR: Self = Self::MissNV;
+    pub const CallableKHR: Self = Self::CallableNV;
 }
 impl core::str::FromStr for ExecutionModel {
     type Err = ();
@@ -155,10 +155,6 @@ pub enum AddressingModel {
     Physical64 = 2u32,
     PhysicalStorageBuffer64 = 5348u32,
 }
-#[allow(non_upper_case_globals)]
-impl AddressingModel {
-    pub const PhysicalStorageBuffer64EXT: Self = Self::PhysicalStorageBuffer64;
-}
 impl AddressingModel {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -169,6 +165,10 @@ impl AddressingModel {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl AddressingModel {
+    pub const PhysicalStorageBuffer64EXT: Self = Self::PhysicalStorageBuffer64;
 }
 impl core::str::FromStr for AddressingModel {
     type Err = ();
@@ -195,10 +195,6 @@ pub enum MemoryModel {
     OpenCL = 2u32,
     Vulkan = 3u32,
 }
-#[allow(non_upper_case_globals)]
-impl MemoryModel {
-    pub const VulkanKHR: Self = Self::Vulkan;
-}
 impl MemoryModel {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -209,6 +205,10 @@ impl MemoryModel {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl MemoryModel {
+    pub const VulkanKHR: Self = Self::Vulkan;
 }
 impl core::str::FromStr for MemoryModel {
     type Err = ();
@@ -291,8 +291,6 @@ pub enum ExecutionMode {
     NoGlobalOffsetINTEL = 5895u32,
     NumSIMDWorkitemsINTEL = 5896u32,
 }
-#[allow(non_upper_case_globals)]
-impl ExecutionMode {}
 impl ExecutionMode {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -360,6 +358,8 @@ impl ExecutionMode {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl ExecutionMode {}
 impl core::str::FromStr for ExecutionMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -457,16 +457,6 @@ pub enum StorageClass {
     PhysicalStorageBuffer = 5349u32,
     CodeSectionINTEL = 5605u32,
 }
-#[allow(non_upper_case_globals)]
-impl StorageClass {
-    pub const CallableDataKHR: Self = Self::CallableDataNV;
-    pub const IncomingCallableDataKHR: Self = Self::IncomingCallableDataNV;
-    pub const RayPayloadKHR: Self = Self::RayPayloadNV;
-    pub const HitAttributeKHR: Self = Self::HitAttributeNV;
-    pub const IncomingRayPayloadKHR: Self = Self::IncomingRayPayloadNV;
-    pub const ShaderRecordBufferKHR: Self = Self::ShaderRecordBufferNV;
-    pub const PhysicalStorageBufferEXT: Self = Self::PhysicalStorageBuffer;
-}
 impl StorageClass {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -494,6 +484,16 @@ impl StorageClass {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl StorageClass {
+    pub const CallableDataKHR: Self = Self::CallableDataNV;
+    pub const IncomingCallableDataKHR: Self = Self::IncomingCallableDataNV;
+    pub const RayPayloadKHR: Self = Self::RayPayloadNV;
+    pub const HitAttributeKHR: Self = Self::HitAttributeNV;
+    pub const IncomingRayPayloadKHR: Self = Self::IncomingRayPayloadNV;
+    pub const ShaderRecordBufferKHR: Self = Self::ShaderRecordBufferNV;
+    pub const PhysicalStorageBufferEXT: Self = Self::PhysicalStorageBuffer;
 }
 impl core::str::FromStr for StorageClass {
     type Err = ();
@@ -546,8 +546,6 @@ pub enum Dim {
     DimBuffer = 5u32,
     DimSubpassData = 6u32,
 }
-#[allow(non_upper_case_globals)]
-impl Dim {}
 impl Dim {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -562,6 +560,8 @@ impl Dim {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl Dim {}
 impl core::str::FromStr for Dim {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -590,8 +590,6 @@ pub enum SamplerAddressingMode {
     Repeat = 3u32,
     RepeatMirrored = 4u32,
 }
-#[allow(non_upper_case_globals)]
-impl SamplerAddressingMode {}
 impl SamplerAddressingMode {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -604,6 +602,8 @@ impl SamplerAddressingMode {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl SamplerAddressingMode {}
 impl core::str::FromStr for SamplerAddressingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -627,8 +627,6 @@ pub enum SamplerFilterMode {
     Nearest = 0u32,
     Linear = 1u32,
 }
-#[allow(non_upper_case_globals)]
-impl SamplerFilterMode {}
 impl SamplerFilterMode {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -638,6 +636,8 @@ impl SamplerFilterMode {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl SamplerFilterMode {}
 impl core::str::FromStr for SamplerFilterMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -698,8 +698,6 @@ pub enum ImageFormat {
     R64ui = 40u32,
     R64i = 41u32,
 }
-#[allow(non_upper_case_globals)]
-impl ImageFormat {}
 impl ImageFormat {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -749,6 +747,8 @@ impl ImageFormat {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl ImageFormat {}
 impl core::str::FromStr for ImageFormat {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -827,8 +827,6 @@ pub enum ImageChannelOrder {
     sBGRA = 18u32,
     ABGR = 19u32,
 }
-#[allow(non_upper_case_globals)]
-impl ImageChannelOrder {}
 impl ImageChannelOrder {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -856,6 +854,8 @@ impl ImageChannelOrder {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl ImageChannelOrder {}
 impl core::str::FromStr for ImageChannelOrder {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -909,8 +909,6 @@ pub enum ImageChannelDataType {
     UnormInt24 = 15u32,
     UnormInt101010_2 = 16u32,
 }
-#[allow(non_upper_case_globals)]
-impl ImageChannelDataType {}
 impl ImageChannelDataType {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -935,6 +933,8 @@ impl ImageChannelDataType {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl ImageChannelDataType {}
 impl core::str::FromStr for ImageChannelDataType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -972,8 +972,6 @@ pub enum FPRoundingMode {
     RTP = 2u32,
     RTN = 3u32,
 }
-#[allow(non_upper_case_globals)]
-impl FPRoundingMode {}
 impl FPRoundingMode {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -985,6 +983,8 @@ impl FPRoundingMode {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl FPRoundingMode {}
 impl core::str::FromStr for FPRoundingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -1007,8 +1007,6 @@ pub enum LinkageType {
     Export = 0u32,
     Import = 1u32,
 }
-#[allow(non_upper_case_globals)]
-impl LinkageType {}
 impl LinkageType {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1018,6 +1016,8 @@ impl LinkageType {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl LinkageType {}
 impl core::str::FromStr for LinkageType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -1039,8 +1039,6 @@ pub enum AccessQualifier {
     WriteOnly = 1u32,
     ReadWrite = 2u32,
 }
-#[allow(non_upper_case_globals)]
-impl AccessQualifier {}
 impl AccessQualifier {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1051,6 +1049,8 @@ impl AccessQualifier {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl AccessQualifier {}
 impl core::str::FromStr for AccessQualifier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -1078,8 +1078,6 @@ pub enum FunctionParameterAttribute {
     NoWrite = 6u32,
     NoReadWrite = 7u32,
 }
-#[allow(non_upper_case_globals)]
-impl FunctionParameterAttribute {}
 impl FunctionParameterAttribute {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1095,6 +1093,8 @@ impl FunctionParameterAttribute {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl FunctionParameterAttribute {}
 impl core::str::FromStr for FunctionParameterAttribute {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -1196,14 +1196,6 @@ pub enum Decoration {
     BankBitsINTEL = 5835u32,
     ForcePow2DepthINTEL = 5836u32,
 }
-#[allow(non_upper_case_globals)]
-impl Decoration {
-    pub const NonUniformEXT: Self = Self::NonUniform;
-    pub const RestrictPointerEXT: Self = Self::RestrictPointer;
-    pub const AliasedPointerEXT: Self = Self::AliasedPointer;
-    pub const HlslCounterBufferGOOGLE: Self = Self::CounterBuffer;
-    pub const HlslSemanticGOOGLE: Self = Self::UserSemantic;
-}
 impl Decoration {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1287,6 +1279,14 @@ impl Decoration {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl Decoration {
+    pub const NonUniformEXT: Self = Self::NonUniform;
+    pub const RestrictPointerEXT: Self = Self::RestrictPointer;
+    pub const AliasedPointerEXT: Self = Self::AliasedPointer;
+    pub const HlslCounterBufferGOOGLE: Self = Self::CounterBuffer;
+    pub const HlslSemanticGOOGLE: Self = Self::UserSemantic;
 }
 impl core::str::FromStr for Decoration {
     type Err = ();
@@ -1484,29 +1484,6 @@ pub enum BuiltIn {
     WarpIDNV = 5376u32,
     SMIDNV = 5377u32,
 }
-#[allow(non_upper_case_globals)]
-impl BuiltIn {
-    pub const SubgroupEqMaskKHR: Self = Self::SubgroupEqMask;
-    pub const SubgroupGeMaskKHR: Self = Self::SubgroupGeMask;
-    pub const SubgroupGtMaskKHR: Self = Self::SubgroupGtMask;
-    pub const SubgroupLeMaskKHR: Self = Self::SubgroupLeMask;
-    pub const SubgroupLtMaskKHR: Self = Self::SubgroupLtMask;
-    pub const FragmentSizeNV: Self = Self::FragSizeEXT;
-    pub const InvocationsPerPixelNV: Self = Self::FragInvocationCountEXT;
-    pub const LaunchIdKHR: Self = Self::LaunchIdNV;
-    pub const LaunchSizeKHR: Self = Self::LaunchSizeNV;
-    pub const WorldRayOriginKHR: Self = Self::WorldRayOriginNV;
-    pub const WorldRayDirectionKHR: Self = Self::WorldRayDirectionNV;
-    pub const ObjectRayOriginKHR: Self = Self::ObjectRayOriginNV;
-    pub const ObjectRayDirectionKHR: Self = Self::ObjectRayDirectionNV;
-    pub const RayTminKHR: Self = Self::RayTminNV;
-    pub const RayTmaxKHR: Self = Self::RayTmaxNV;
-    pub const InstanceCustomIndexKHR: Self = Self::InstanceCustomIndexNV;
-    pub const ObjectToWorldKHR: Self = Self::ObjectToWorldNV;
-    pub const WorldToObjectKHR: Self = Self::WorldToObjectNV;
-    pub const HitKindKHR: Self = Self::HitKindNV;
-    pub const IncomingRayFlagsKHR: Self = Self::IncomingRayFlagsNV;
-}
 impl BuiltIn {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1611,6 +1588,29 @@ impl BuiltIn {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl BuiltIn {
+    pub const SubgroupEqMaskKHR: Self = Self::SubgroupEqMask;
+    pub const SubgroupGeMaskKHR: Self = Self::SubgroupGeMask;
+    pub const SubgroupGtMaskKHR: Self = Self::SubgroupGtMask;
+    pub const SubgroupLeMaskKHR: Self = Self::SubgroupLeMask;
+    pub const SubgroupLtMaskKHR: Self = Self::SubgroupLtMask;
+    pub const FragmentSizeNV: Self = Self::FragSizeEXT;
+    pub const InvocationsPerPixelNV: Self = Self::FragInvocationCountEXT;
+    pub const LaunchIdKHR: Self = Self::LaunchIdNV;
+    pub const LaunchSizeKHR: Self = Self::LaunchSizeNV;
+    pub const WorldRayOriginKHR: Self = Self::WorldRayOriginNV;
+    pub const WorldRayDirectionKHR: Self = Self::WorldRayDirectionNV;
+    pub const ObjectRayOriginKHR: Self = Self::ObjectRayOriginNV;
+    pub const ObjectRayDirectionKHR: Self = Self::ObjectRayDirectionNV;
+    pub const RayTminKHR: Self = Self::RayTminNV;
+    pub const RayTmaxKHR: Self = Self::RayTmaxNV;
+    pub const InstanceCustomIndexKHR: Self = Self::InstanceCustomIndexNV;
+    pub const ObjectToWorldKHR: Self = Self::ObjectToWorldNV;
+    pub const WorldToObjectKHR: Self = Self::WorldToObjectNV;
+    pub const HitKindKHR: Self = Self::HitKindNV;
+    pub const IncomingRayFlagsKHR: Self = Self::IncomingRayFlagsNV;
 }
 impl core::str::FromStr for BuiltIn {
     type Err = ();
@@ -1753,10 +1753,6 @@ pub enum Scope {
     QueueFamily = 5u32,
     ShaderCallKHR = 6u32,
 }
-#[allow(non_upper_case_globals)]
-impl Scope {
-    pub const QueueFamilyKHR: Self = Self::QueueFamily;
-}
 impl Scope {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1770,6 +1766,10 @@ impl Scope {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl Scope {
+    pub const QueueFamilyKHR: Self = Self::QueueFamily;
 }
 impl core::str::FromStr for Scope {
     type Err = ();
@@ -1802,8 +1802,6 @@ pub enum GroupOperation {
     PartitionedInclusiveScanNV = 7u32,
     PartitionedExclusiveScanNV = 8u32,
 }
-#[allow(non_upper_case_globals)]
-impl GroupOperation {}
 impl GroupOperation {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1818,6 +1816,8 @@ impl GroupOperation {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl GroupOperation {}
 impl core::str::FromStr for GroupOperation {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -1844,8 +1844,6 @@ pub enum KernelEnqueueFlags {
     WaitKernel = 1u32,
     WaitWorkGroup = 2u32,
 }
-#[allow(non_upper_case_globals)]
-impl KernelEnqueueFlags {}
 impl KernelEnqueueFlags {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -1856,6 +1854,8 @@ impl KernelEnqueueFlags {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl KernelEnqueueFlags {}
 impl core::str::FromStr for KernelEnqueueFlags {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -2033,38 +2033,6 @@ pub enum Capability {
     AtomicFloat32AddEXT = 6033u32,
     AtomicFloat64AddEXT = 6034u32,
 }
-#[allow(non_upper_case_globals)]
-impl Capability {
-    pub const StorageUniformBufferBlock16: Self = Self::StorageBuffer16BitAccess;
-    pub const StorageUniform16: Self = Self::UniformAndStorageBuffer16BitAccess;
-    pub const ShaderViewportIndexLayerNV: Self = Self::ShaderViewportIndexLayerEXT;
-    pub const ShadingRateNV: Self = Self::FragmentDensityEXT;
-    pub const ShaderNonUniformEXT: Self = Self::ShaderNonUniform;
-    pub const RuntimeDescriptorArrayEXT: Self = Self::RuntimeDescriptorArray;
-    pub const InputAttachmentArrayDynamicIndexingEXT: Self =
-        Self::InputAttachmentArrayDynamicIndexing;
-    pub const UniformTexelBufferArrayDynamicIndexingEXT: Self =
-        Self::UniformTexelBufferArrayDynamicIndexing;
-    pub const StorageTexelBufferArrayDynamicIndexingEXT: Self =
-        Self::StorageTexelBufferArrayDynamicIndexing;
-    pub const UniformBufferArrayNonUniformIndexingEXT: Self =
-        Self::UniformBufferArrayNonUniformIndexing;
-    pub const SampledImageArrayNonUniformIndexingEXT: Self =
-        Self::SampledImageArrayNonUniformIndexing;
-    pub const StorageBufferArrayNonUniformIndexingEXT: Self =
-        Self::StorageBufferArrayNonUniformIndexing;
-    pub const StorageImageArrayNonUniformIndexingEXT: Self =
-        Self::StorageImageArrayNonUniformIndexing;
-    pub const InputAttachmentArrayNonUniformIndexingEXT: Self =
-        Self::InputAttachmentArrayNonUniformIndexing;
-    pub const UniformTexelBufferArrayNonUniformIndexingEXT: Self =
-        Self::UniformTexelBufferArrayNonUniformIndexing;
-    pub const StorageTexelBufferArrayNonUniformIndexingEXT: Self =
-        Self::StorageTexelBufferArrayNonUniformIndexing;
-    pub const VulkanMemoryModelKHR: Self = Self::VulkanMemoryModel;
-    pub const VulkanMemoryModelDeviceScopeKHR: Self = Self::VulkanMemoryModelDeviceScope;
-    pub const PhysicalStorageBufferAddressesEXT: Self = Self::PhysicalStorageBufferAddresses;
-}
 impl Capability {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -2229,6 +2197,38 @@ impl Capability {
             _ => return None,
         })
     }
+}
+#[allow(non_upper_case_globals)]
+impl Capability {
+    pub const StorageUniformBufferBlock16: Self = Self::StorageBuffer16BitAccess;
+    pub const StorageUniform16: Self = Self::UniformAndStorageBuffer16BitAccess;
+    pub const ShaderViewportIndexLayerNV: Self = Self::ShaderViewportIndexLayerEXT;
+    pub const ShadingRateNV: Self = Self::FragmentDensityEXT;
+    pub const ShaderNonUniformEXT: Self = Self::ShaderNonUniform;
+    pub const RuntimeDescriptorArrayEXT: Self = Self::RuntimeDescriptorArray;
+    pub const InputAttachmentArrayDynamicIndexingEXT: Self =
+        Self::InputAttachmentArrayDynamicIndexing;
+    pub const UniformTexelBufferArrayDynamicIndexingEXT: Self =
+        Self::UniformTexelBufferArrayDynamicIndexing;
+    pub const StorageTexelBufferArrayDynamicIndexingEXT: Self =
+        Self::StorageTexelBufferArrayDynamicIndexing;
+    pub const UniformBufferArrayNonUniformIndexingEXT: Self =
+        Self::UniformBufferArrayNonUniformIndexing;
+    pub const SampledImageArrayNonUniformIndexingEXT: Self =
+        Self::SampledImageArrayNonUniformIndexing;
+    pub const StorageBufferArrayNonUniformIndexingEXT: Self =
+        Self::StorageBufferArrayNonUniformIndexing;
+    pub const StorageImageArrayNonUniformIndexingEXT: Self =
+        Self::StorageImageArrayNonUniformIndexing;
+    pub const InputAttachmentArrayNonUniformIndexingEXT: Self =
+        Self::InputAttachmentArrayNonUniformIndexing;
+    pub const UniformTexelBufferArrayNonUniformIndexingEXT: Self =
+        Self::UniformTexelBufferArrayNonUniformIndexing;
+    pub const StorageTexelBufferArrayNonUniformIndexingEXT: Self =
+        Self::StorageTexelBufferArrayNonUniformIndexing;
+    pub const VulkanMemoryModelKHR: Self = Self::VulkanMemoryModel;
+    pub const VulkanMemoryModelDeviceScopeKHR: Self = Self::VulkanMemoryModelDeviceScope;
+    pub const PhysicalStorageBufferAddressesEXT: Self = Self::PhysicalStorageBufferAddresses;
 }
 impl core::str::FromStr for Capability {
     type Err = ();
@@ -2465,8 +2465,6 @@ pub enum RayQueryIntersection {
     RayQueryCandidateIntersectionKHR = 0u32,
     RayQueryCommittedIntersectionKHR = 1u32,
 }
-#[allow(non_upper_case_globals)]
-impl RayQueryIntersection {}
 impl RayQueryIntersection {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -2476,6 +2474,8 @@ impl RayQueryIntersection {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl RayQueryIntersection {}
 impl core::str::FromStr for RayQueryIntersection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -2497,8 +2497,6 @@ pub enum RayQueryCommittedIntersectionType {
     RayQueryCommittedIntersectionTriangleKHR = 1u32,
     RayQueryCommittedIntersectionGeneratedKHR = 2u32,
 }
-#[allow(non_upper_case_globals)]
-impl RayQueryCommittedIntersectionType {}
 impl RayQueryCommittedIntersectionType {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -2509,6 +2507,8 @@ impl RayQueryCommittedIntersectionType {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl RayQueryCommittedIntersectionType {}
 impl core::str::FromStr for RayQueryCommittedIntersectionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -2536,8 +2536,6 @@ pub enum RayQueryCandidateIntersectionType {
     RayQueryCandidateIntersectionTriangleKHR = 0u32,
     RayQueryCandidateIntersectionAABBKHR = 1u32,
 }
-#[allow(non_upper_case_globals)]
-impl RayQueryCandidateIntersectionType {}
 impl RayQueryCandidateIntersectionType {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -2547,6 +2545,8 @@ impl RayQueryCandidateIntersectionType {
         })
     }
 }
+#[allow(non_upper_case_globals)]
+impl RayQueryCandidateIntersectionType {}
 impl core::str::FromStr for RayQueryCandidateIntersectionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -3129,14 +3129,6 @@ pub enum Op {
     RayQueryGetIntersectionWorldToObjectKHR = 6032u32,
     AtomicFAddEXT = 6035u32,
 }
-#[allow(clippy::upper_case_acronyms)]
-#[allow(non_upper_case_globals)]
-impl Op {
-    pub const ReportIntersectionKHR: Op = Op::ReportIntersectionNV;
-    pub const TypeAccelerationStructureKHR: Op = Op::TypeAccelerationStructureNV;
-    pub const DecorateStringGOOGLE: Op = Op::DecorateString;
-    pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
-}
 impl Op {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
@@ -3703,6 +3695,14 @@ impl Op {
             _ => return None,
         })
     }
+}
+#[allow(clippy::upper_case_acronyms)]
+#[allow(non_upper_case_globals)]
+impl Op {
+    pub const ReportIntersectionKHR: Op = Op::ReportIntersectionNV;
+    pub const TypeAccelerationStructureKHR: Op = Op::TypeAccelerationStructureNV;
+    pub const DecorateStringGOOGLE: Op = Op::DecorateString;
+    pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
 }
 #[doc = "[GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html) extended instruction opcode"]
 #[repr(u32)]
