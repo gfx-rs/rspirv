@@ -60,7 +60,7 @@ fn generate_enum(
     for &(number, _) in variants.iter().skip(1) {
         let last_run = number_runs.last_mut().unwrap();
         if number == *last_run.end() + 1 {
-            *last_run = *last_run.start()..=*last_run.end() + 1;
+            *last_run = *last_run.start()..=number;
         } else if number > *last_run.end() + 1 {
             number_runs.push(number..=number);
         } else {
