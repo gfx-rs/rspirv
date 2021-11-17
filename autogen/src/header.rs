@@ -4,6 +4,7 @@ use crate::utils::*;
 use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::TokenStream;
 use quote::quote;
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
 
 static GLSL_STD_450_SPEC_LINK: &str = "\
@@ -60,12 +61,10 @@ fn generate_enum(
     let mut number_runs = vec![(variants[0].0, variants[0].0)];
     for &(number, _) in variants.iter().skip(1) {
         let last_run = number_runs.last_mut().unwrap();
-        if number == last_run.1 + 1 {
-            last_run.1 = number;
-        } else if number > last_run.1 + 1 {
-            number_runs.push((number, number));
-        } else {
-            unreachable!("Variants not sorted by discriminant");
+        match number.cmp(&(last_run.1 + 1)) {
+            Ordering::Equal => last_run.1 = number,
+            Ordering::Greater => number_runs.push((number, number)),
+            Ordering::Less => unreachable!("Variants not sorted by discriminant"),
         }
     }
 
