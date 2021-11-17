@@ -33,6 +33,7 @@ fn value_enum_attribute() -> TokenStream {
         #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
         #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
         #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+        #[allow(clippy::upper_case_acronyms)]
     }
 }
 
@@ -202,7 +203,6 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     quote! {
         #[doc = #comment]
         #attribute
-        #[allow(clippy::upper_case_acronyms)]
         pub enum #kind {
             #(#enumerants),*
         }
@@ -290,7 +290,6 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
 
         #[doc = #comment]
         #attribute
-        #[allow(clippy::upper_case_acronyms)]
         pub enum Op {
             #(#opcodes),*
         }
@@ -335,7 +334,6 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
     quote! {
         #[doc = #comment]
         #attribute
-        #[allow(clippy::upper_case_acronyms)]
         pub enum GLOp {
             #(#opcodes),*
         }
@@ -374,7 +372,6 @@ pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStre
     quote! {
         #[doc = #comment]
         #attribute
-        #[allow(clippy::upper_case_acronyms)]
         pub enum CLOp {
             #(#opcodes),*
         }
