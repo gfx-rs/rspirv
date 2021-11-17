@@ -6,7 +6,7 @@ use std::{
     hash::BuildHasherDefault,
 };
 
-use fxhash::FxHasher;
+use rustc_hash::FxHasher;
 
 /// A wrapper around `Storage` that tracks associated SPIR-V <id>
 /// with the elements, allowing the lookup of `Token<T>` by <id>.
