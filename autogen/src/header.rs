@@ -49,12 +49,40 @@ fn generate_enum(
     variants: &[(u32, proc_macro2::Ident)],
     comment: String,
 ) -> TokenStream {
+    let mut variants = variants.to_vec();
+    variants.sort_by_key(|&(number, _)| number);
     let enumerants = variants
         .iter()
         .map(|(number, name)| quote! { #name = #number });
-    let from_prim = variants
+
+    let mut number_runs = vec![];
+    number_runs.push(variants[0].0..=variants[0].0);
+    for &(number, _) in variants.iter().skip(1) {
+        let last_run = number_runs.last_mut().unwrap();
+        if number == *last_run.end() + 1 {
+            *last_run = *last_run.start()..=*last_run.end() + 1;
+        } else if number > *last_run.end() + 1 {
+            number_runs.push(number..=number);
+        } else {
+            unreachable!("Variants not sorted by discriminant");
+        }
+    }
+
+    // We try to check if the given number is within a run of valid discriminants and if so
+    // transmute the number directly to the enum type.
+    let from_prim = number_runs
         .iter()
-        .map(|(number, name)| quote! { #number => Self::#name });
+        .map(|range| {
+            let start = range.start();
+            let end = range.end();
+            if end == start {
+                // Fast path if a run only contains a single discriminant
+                quote! { #start => unsafe { core::mem::transmute::<u32, #enum_name>(#start) } }
+            } else {
+                quote! { #start..=#end => unsafe { core::mem::transmute::<u32, #enum_name>(n) } }
+            }
+        })
+        .collect::<Vec<_>>();
 
     let attribute = value_enum_attribute();
     quote! {
