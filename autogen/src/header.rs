@@ -57,8 +57,7 @@ fn generate_enum(
 
     // Each item is a tuple indicating an inclusive range as opposed to an exclusive range like is
     // common.
-    let mut number_runs = vec![];
-    number_runs.push((variants[0].0, variants[0].0));
+    let mut number_runs = vec![(variants[0].0, variants[0].0)];
     for &(number, _) in variants.iter().skip(1) {
         let last_run = number_runs.last_mut().unwrap();
         if number == last_run.1 + 1 {
@@ -74,8 +73,7 @@ fn generate_enum(
     // transmute the number directly to the enum type.
     let from_prim = number_runs
         .iter()
-        .map(|range| {
-            let (start, end) = *range;
+        .map(|&(start, end)| {
             if end == start {
                 // Fast path if a run only contains a single discriminant
                 quote! { #start => unsafe { core::mem::transmute::<u32, #enum_name>(#start) } }
