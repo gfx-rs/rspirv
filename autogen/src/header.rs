@@ -171,7 +171,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     // We can have more than one enumerants mapping to the same discriminator.
     // Use associated constants for these aliases.
     let mut seen_discriminator = BTreeMap::new();
-    let mut from_prim_list = vec![];
+    let mut variants = vec![];
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
     let mut extension_clauses = BTreeMap::new();
@@ -198,7 +198,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             let name = as_ident(&name_str);
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
-            from_prim_list.push((number, name.clone()));
+            variants.push((number, name.clone()));
             from_str_impl.push(quote! { #name_str => Ok(Self::#name), });
 
             capability_clauses
@@ -235,7 +235,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 
     let the_enum = generate_enum(
         &kind,
-        &from_prim_list,
+        &variants,
         format!("/// SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
     );
 
@@ -290,7 +290,7 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     // Use associated constants for these aliases.
     let mut seen_discriminator = BTreeMap::new();
     let mut aliases = vec![];
-    let mut from_prim_list = vec![];
+    let mut variants = vec![];
 
     // Get the instruction table.
     for inst in &grammar.instructions {
@@ -300,14 +300,14 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         if let Some(discriminator) = seen_discriminator.get(&opcode) {
             aliases.push(quote! { pub const #opname : Op = Op::#discriminator; });
         } else {
-            from_prim_list.push((opcode, opname.clone()));
+            variants.push((opcode, opname.clone()));
             seen_discriminator.insert(opcode, opname.clone());
         }
     }
 
     let the_enum = generate_enum(
         &as_ident("Op"),
-        &from_prim_list,
+        &variants,
         format!("SPIR-V {} opcodes", get_spec_link("instructions")),
     );
 
