@@ -33,6 +33,7 @@ fn value_enum_attribute() -> TokenStream {
         #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
         #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
         #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+        #[allow(clippy::upper_case_acronyms)]
     }
 }
 
@@ -43,9 +44,54 @@ fn bit_enum_attribute() -> TokenStream {
     }
 }
 
-fn from_primitive_impl(from_prim: &[TokenStream], kind: &proc_macro2::Ident) -> TokenStream {
+fn generate_enum(
+    enum_name: &proc_macro2::Ident,
+    variants: &[(u32, proc_macro2::Ident)],
+    comment: String,
+) -> TokenStream {
+    let mut variants = variants.to_vec();
+    variants.sort_by_key(|&(number, _)| number);
+    let enumerants = variants
+        .iter()
+        .map(|(number, name)| quote! { #name = #number });
+
+    // Each item is a tuple indicating an inclusive range as opposed to an exclusive range like is
+    // common.
+    let mut number_runs = vec![(variants[0].0, variants[0].0)];
+    for &(number, _) in variants.iter().skip(1) {
+        let last_run = number_runs.last_mut().unwrap();
+        if number == last_run.1 + 1 {
+            last_run.1 = number;
+        } else if number > last_run.1 + 1 {
+            number_runs.push((number, number));
+        } else {
+            unreachable!("Variants not sorted by discriminant");
+        }
+    }
+
+    // We try to check if the given number is within a run of valid discriminants and if so
+    // transmute the number directly to the enum type.
+    let from_prim = number_runs
+        .iter()
+        .map(|&(start, end)| {
+            if end == start {
+                // Fast path if a run only contains a single discriminant
+                quote! { #start => unsafe { core::mem::transmute::<u32, #enum_name>(#start) } }
+            } else {
+                quote! { #start..=#end => unsafe { core::mem::transmute::<u32, #enum_name>(n) } }
+            }
+        })
+        .collect::<Vec<_>>();
+
+    let attribute = value_enum_attribute();
     quote! {
-        impl #kind {
+        #[doc = #comment]
+        #attribute
+        pub enum #enum_name {
+            #(#enumerants),*
+        }
+
+        impl #enum_name {
             pub fn from_u32(n: u32) -> Option<Self> {
                 Some(match n {
                     #(#from_prim,)*
@@ -124,8 +170,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     // We can have more than one enumerants mapping to the same discriminator.
     // Use associated constants for these aliases.
     let mut seen_discriminator = BTreeMap::new();
-    let mut enumerants = vec![];
-    let mut from_prim_list = vec![];
+    let mut variants = vec![];
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
     let mut extension_clauses = BTreeMap::new();
@@ -152,8 +197,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             let name = as_ident(&name_str);
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
-            enumerants.push(quote! { #name = #number });
-            from_prim_list.push(quote! { #number => Self::#name });
+            variants.push((number, name.clone()));
             from_str_impl.push(quote! { #name_str => Ok(Self::#name), });
 
             capability_clauses
@@ -188,25 +232,19 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         }
     }
 
-    let comment = format!("/// SPIR-V operand kind: {}", get_spec_link(&grammar.kind));
-    let attribute = value_enum_attribute();
-
-    let from_prim_impl = from_primitive_impl(&from_prim_list, &kind);
+    let the_enum = generate_enum(
+        &kind,
+        &variants,
+        format!("/// SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
+    );
 
     quote! {
-        #[doc = #comment]
-        #attribute
-        #[allow(clippy::upper_case_acronyms)]
-        pub enum #kind {
-            #(#enumerants),*
-        }
+        #the_enum
 
         #[allow(non_upper_case_globals)]
         impl #kind {
             #(#aliases)*
         }
-
-        #from_prim_impl
 
         impl core::str::FromStr for #kind {
             type Err = ();
@@ -250,9 +288,8 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     // We can have more than one op symbol mapping to the same opcode.
     // Use associated constants for these aliases.
     let mut seen_discriminator = BTreeMap::new();
-    let mut opcodes = vec![];
     let mut aliases = vec![];
-    let mut from_prim_list = vec![];
+    let mut variants = vec![];
 
     // Get the instruction table.
     for inst in &grammar.instructions {
@@ -262,15 +299,16 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         if let Some(discriminator) = seen_discriminator.get(&opcode) {
             aliases.push(quote! { pub const #opname : Op = Op::#discriminator; });
         } else {
-            opcodes.push(quote! { #opname = #opcode });
-            from_prim_list.push(quote! { #opcode => Op::#opname });
+            variants.push((opcode, opname.clone()));
             seen_discriminator.insert(opcode, opname.clone());
         }
     }
 
-    let comment = format!("SPIR-V {} opcodes", get_spec_link("instructions"));
-    let attribute = value_enum_attribute();
-    let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("Op"));
+    let the_enum = generate_enum(
+        &as_ident("Op"),
+        &variants,
+        format!("SPIR-V {} opcodes", get_spec_link("instructions")),
+    );
 
     quote! {
         //pub use crate::grammar::{OperandKind, OperandQuantifier, LogicalOperand};
@@ -282,97 +320,58 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
 
         #(#kinds)*
 
-        #[doc = #comment]
-        #attribute
-        #[allow(clippy::upper_case_acronyms)]
-        pub enum Op {
-            #(#opcodes),*
-        }
+        #the_enum
 
         #[allow(clippy::upper_case_acronyms)]
         #[allow(non_upper_case_globals)]
         impl Op {
             #(#aliases)*
         }
-
-        #from_prim_impl
     }
 }
 
 /// Returns the GLSL.std.450 extended instruction opcodes.
 pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
     // Get the instruction table.
-    let opcodes = grammar.instructions.iter().map(|inst| {
-        // Omit the "Op" prefix.
-        let opname = as_ident(&inst.opname);
-        let opcode = inst.opcode;
-        quote! { #opname = #opcode }
-    });
-
-    let from_prim_list = grammar
+    let variants = grammar
         .instructions
         .iter()
         .map(|inst| {
             let opname = as_ident(&inst.opname);
             let opcode = inst.opcode;
-            quote! { #opcode => GLOp::#opname }
+            (opcode, opname)
         })
         .collect::<Vec<_>>();
 
-    let comment = format!(
-        "[GLSL.std.450]({}) extended instruction opcode",
-        GLSL_STD_450_SPEC_LINK
-    );
-    let attribute = value_enum_attribute();
-    let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("GLOp"));
-
-    quote! {
-        #[doc = #comment]
-        #attribute
-        #[allow(clippy::upper_case_acronyms)]
-        pub enum GLOp {
-            #(#opcodes),*
-        }
-
-        #from_prim_impl
-    }
+    generate_enum(
+        &as_ident("GLOp"),
+        &variants,
+        format!(
+            "[GLSL.std.450]({}) extended instruction opcode",
+            GLSL_STD_450_SPEC_LINK
+        ),
+    )
 }
 
 /// Returns the OpenCL.std extended instruction opcodes.
 pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
     // Get the instruction table.
-    let opcodes = grammar.instructions.iter().map(|inst| {
-        // Omit the "Op" prefix.
-        let opname = as_ident(&inst.opname);
-        let opcode = inst.opcode;
-        quote! { #opname = #opcode }
-    });
-
-    let from_prim_list = grammar
+    let variants = grammar
         .instructions
         .iter()
         .map(|inst| {
             let opname = as_ident(&inst.opname);
             let opcode = inst.opcode;
-            quote! { #opcode => CLOp::#opname }
+            (opcode, opname)
         })
         .collect::<Vec<_>>();
 
-    let comment = format!(
-        "[OpenCL.std]({}) extended instruction opcode",
-        OPENCL_STD_SPEC_LINK
-    );
-    let attribute = value_enum_attribute();
-    let from_prim_impl = from_primitive_impl(&from_prim_list, &as_ident("CLOp"));
-
-    quote! {
-        #[doc = #comment]
-        #attribute
-        #[allow(clippy::upper_case_acronyms)]
-        pub enum CLOp {
-            #(#opcodes),*
-        }
-
-        #from_prim_impl
-    }
+    generate_enum(
+        &as_ident("CLOp"),
+        &variants,
+        format!(
+            "[OpenCL.std]({}) extended instruction opcode",
+            OPENCL_STD_SPEC_LINK
+        ),
+    )
 }
