@@ -662,9 +662,8 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
         let arg_list = get_arg_list(&inst.operands, false, kinds);
         // Initializer list for constructing the operands parameter
         // for Instruction.
-        let init_list = get_init_list(&inst.operands[1..]);
-        // Parameters that are not single values thus need special treatment.
-        let extras = get_push_extras(&inst.operands[1..],
+        let init_list = get_init_list(&inst.operands);
+        let extras = get_push_extras(&inst.operands,
                                      kinds,
                                      quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);

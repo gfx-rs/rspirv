@@ -680,6 +680,11 @@ impl Builder {
     ) -> spirv::Word {
         let mut inst =
             dr::Instruction::new(spirv::Op::TypeStructContinuedINTEL, None, result_id, vec![]);
+        inst.operands.extend(
+            member_0_type_member_1_type
+                .into_iter()
+                .map(dr::Operand::IdRef),
+        );
         if let Some(result_id) = result_id {
             self.module.types_global_values.push(inst);
             result_id
