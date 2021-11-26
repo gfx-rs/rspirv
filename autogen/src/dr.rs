@@ -225,10 +225,13 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
             // LiteralInteger is replaced by LiteralInt32.
             // IdResult and IdResultType are not stored as operands in `dr`.
             !(element.starts_with("Pair")
-                || *element == "LiteralContextDependentNumber"
-                || *element == "LiteralInteger"
-                || *element == "IdResult"
-                || *element == "IdResultType")
+                || matches!(
+                    *element,
+                    "LiteralContextDependentNumber"
+                        | "LiteralInteger"
+                        | "IdResult"
+                        | "IdResultType"
+                ))
         })
         .map(as_ident)
         .collect();
@@ -770,24 +773,21 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
     // Generate build methods for all normal instructions (instructions must be
     // in some block).
     let elements = grammar.instructions.iter().filter(|inst| {
-        let skip =
-            inst.class == Some(Type) ||
-            inst.class == Some(Constant) ||
-            inst.class == Some(ExtensionDecl) ||
-            (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall") ||
-            inst.class == Some(Debug) ||
-            inst.class == Some(Annotation) ||
-            is_terminator_instruction(inst) ||
+        let skip = matches!(
+            inst.class,
+            Some(Type | Constant | ExtensionDecl | Debug | Annotation | ModeSetting | Exclude)
+        ) || matches!(
+            inst.opname.as_str(),
             // Labels should not be inserted but attached instead.
-            inst.opname == "OpLabel" ||
-            inst.class == Some(ModeSetting) ||
-            inst.class == Some(Exclude) ||
-            inst.opname == "OpTypeForwardPointer" ||
-            inst.opname == "OpTypePointer" ||
-            inst.opname == "OpTypeOpaque" ||
-            inst.opname == "OpUndef" ||
-            inst.opname == "OpVariable" ||
-            inst.opname.starts_with("OpType");
+            "OpLabel"
+                | "OpTypeForwardPointer"
+                | "OpTypePointer"
+                | "OpTypeOpaque"
+                | "OpUndef"
+                | "OpVariable"
+        ) || (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall")
+            || is_terminator_instruction(inst)
+            || inst.opname.starts_with("OpType");
         !skip
     }).map(|inst| {
         let params = get_param_list(&inst.operands, true, kinds);
