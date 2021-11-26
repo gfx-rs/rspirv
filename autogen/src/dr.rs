@@ -657,8 +657,11 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == Some(structs::Class::Type) && inst.opname != "OpTypeForwardPointer" &&
-            inst.opname != "OpTypePointer" && inst.opname != "OpTypeOpaque"
+        inst.class == Some(structs::Class::Type)
+            && !matches!(
+                inst.opname.as_str(),
+                "OpTypeForwardPointer" | "OpTypePointer" | "OpTypeOpaque"
+            )
     }).map(|inst| {
         // Parameter list for this build method.
         let param_list = get_param_list(&inst.operands, false, kinds);
@@ -785,6 +788,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
                 | "OpTypeOpaque"
                 | "OpUndef"
                 | "OpVariable"
+                | "OpSamplerImageAddressingModeNV" // https://github.com/gfx-rs/rspirv/pull/226#issuecomment-979469790
         ) || (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall")
             || is_terminator_instruction(inst)
             || inst.opname.starts_with("OpType");

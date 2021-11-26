@@ -14541,34 +14541,6 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
-    #[doc = "Appends an OpSamplerImageAddressingModeNV instruction to the current block."]
-    pub fn sampler_image_addressing_mode_nv(&mut self, bit_width: u32) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::SamplerImageAddressingModeNV,
-            None,
-            None,
-            vec![dr::Operand::LiteralInt32(bit_width)],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpSamplerImageAddressingModeNV instruction to the current block."]
-    pub fn insert_sampler_image_addressing_mode_nv(
-        &mut self,
-        insert_point: InsertPoint,
-        bit_width: u32,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::SamplerImageAddressingModeNV,
-            None,
-            None,
-            vec![dr::Operand::LiteralInt32(bit_width)],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
-    }
     #[doc = "Appends an OpSubgroupShuffleINTEL instruction to the current block."]
     pub fn subgroup_shuffle_intel(
         &mut self,
