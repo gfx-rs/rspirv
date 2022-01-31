@@ -18,13 +18,7 @@ https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructio
 fn get_spec_link(kind: &str) -> String {
     let symbol = kind.to_snake_case();
     format!(
-        "[{text}]({link})",
-        text = kind,
-        link = format!(
-            "https://www.khronos.org/registry/spir-v/\
-                            specs/unified1/SPIRV.html#_a_id_{}_a_{}",
-            symbol, symbol
-        )
+        "[{kind}](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_{symbol}_a_{symbol})",
     )
 }
 
