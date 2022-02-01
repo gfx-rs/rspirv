@@ -228,7 +228,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let the_enum = generate_enum(
         &kind,
         &variants,
-        format!("/// SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
+        format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
     );
 
     quote! {
