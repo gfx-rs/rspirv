@@ -3313,8 +3313,32 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         []
     ),
     inst!(
+        SDot,
+        [DotProduct],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
         SDotKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        UDot,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3327,6 +3351,18 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         UDotKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        SUDot,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3339,7 +3375,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SUDotKHR,
         [DotProductKHR],
-        [],
+        ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -3349,8 +3385,34 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        SDotAccSat,
+        [DotProduct],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
         SDotAccSatKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        UDotAccSat,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3364,6 +3426,19 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         UDotAccSatKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        SUDotAccSat,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3377,7 +3452,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SUDotAccSatKHR,
         [DotProductKHR],
-        [],
+        ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -3780,10 +3855,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ["SPV_EXT_fragment_shader_interlock"],
         []
     ),
+    inst!(DemoteToHelperInvocation, [DemoteToHelperInvocation], [], []),
     inst!(
         DemoteToHelperInvocationEXT,
-        [DemoteToHelperInvocationEXT],
-        ["SPV_EXT_demote_to_helper_invocation"],
+        [DemoteToHelperInvocation],
+        [],
         []
     ),
     inst!(

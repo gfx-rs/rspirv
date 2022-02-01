@@ -62,6 +62,9 @@ impl Disassemble for spirv::ImageOperands {
         if self.contains(spirv::ImageOperands::ZERO_EXTEND) {
             bits.push("ZeroExtend")
         }
+        if self.contains(spirv::ImageOperands::NONTEMPORAL) {
+            bits.push("Nontemporal")
+        }
         if self.contains(spirv::ImageOperands::OFFSETS) {
             bits.push("Offsets")
         }

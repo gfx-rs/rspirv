@@ -163,6 +163,7 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             4416u32 => Ok(ops::Branch::TerminateInvocation),
+            5380u32 => Ok(ops::Branch::DemoteToHelperInvocation),
             _ => Err(InstructionError::WrongOpcode),
         }
     }
@@ -5338,7 +5339,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            4450u32 => Ok(ops::Op::SDotKHR {
+            4450u32 => Ok(ops::Op::SDot {
                 vector_1: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -5357,7 +5358,7 @@ impl LiftContext {
                     None => None,
                 },
             }),
-            4451u32 => Ok(ops::Op::UDotKHR {
+            4451u32 => Ok(ops::Op::UDot {
                 vector_1: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -5376,7 +5377,7 @@ impl LiftContext {
                     None => None,
                 },
             }),
-            4452u32 => Ok(ops::Op::SUDotKHR {
+            4452u32 => Ok(ops::Op::SUDot {
                 vector_1: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -5395,32 +5396,7 @@ impl LiftContext {
                     None => None,
                 },
             }),
-            4453u32 => Ok(ops::Op::SDotAccSatKHR {
-                vector_1: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                vector_2: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                accumulator: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                packed_vector_format: match operands.next() {
-                    Some(dr::Operand::PackedVectorFormat(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                },
-            }),
-            4454u32 => Ok(ops::Op::UDotAccSatKHR {
+            4453u32 => Ok(ops::Op::SDotAccSat {
                 vector_1: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -5445,7 +5421,32 @@ impl LiftContext {
                     None => None,
                 },
             }),
-            4455u32 => Ok(ops::Op::SUDotAccSatKHR {
+            4454u32 => Ok(ops::Op::UDotAccSat {
+                vector_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_vector_format: match operands.next() {
+                    Some(dr::Operand::PackedVectorFormat(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            4455u32 => Ok(ops::Op::SUDotAccSat {
                 vector_1: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -6167,7 +6168,6 @@ impl LiftContext {
             }),
             5364u32 => Ok(ops::Op::BeginInvocationInterlockEXT),
             5365u32 => Ok(ops::Op::EndInvocationInterlockEXT),
-            5380u32 => Ok(ops::Op::DemoteToHelperInvocationEXT),
             5381u32 => Ok(ops::Op::IsHelperInvocationEXT),
             5391u32 => Ok(ops::Op::ConvertUToImageNV {
                 operand: (match operands.next() {

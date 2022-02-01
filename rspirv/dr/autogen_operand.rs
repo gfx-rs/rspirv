@@ -1206,7 +1206,10 @@ impl Operand {
                 | s::Decoration::ForcePow2DepthINTEL => {
                     vec![spirv::Capability::FPGAMemoryAttributesINTEL]
                 }
-                s::Decoration::PerVertexNV => vec![spirv::Capability::FragmentBarycentricNV],
+                s::Decoration::PerVertexKHR => vec![
+                    spirv::Capability::FragmentBarycentricNV,
+                    spirv::Capability::FragmentBarycentricKHR,
+                ],
                 s::Decoration::FunctionRoundingModeINTEL
                 | s::Decoration::FunctionDenormModeINTEL
                 | s::Decoration::FunctionFloatingPointModeINTEL => {
@@ -1253,8 +1256,6 @@ impl Operand {
                 | s::Decoration::Flat
                 | s::Decoration::Centroid
                 | s::Decoration::Invariant
-                | s::Decoration::Uniform
-                | s::Decoration::UniformId
                 | s::Decoration::Location
                 | s::Decoration::Component
                 | s::Decoration::Index
@@ -1263,6 +1264,10 @@ impl Operand {
                 | s::Decoration::Offset
                 | s::Decoration::NoContraction => vec![spirv::Capability::Shader],
                 s::Decoration::SpecId => vec![spirv::Capability::Shader, spirv::Capability::Kernel],
+                s::Decoration::Uniform | s::Decoration::UniformId => vec![
+                    spirv::Capability::Shader,
+                    spirv::Capability::UniformDecoration,
+                ],
                 s::Decoration::NonUniform => vec![spirv::Capability::ShaderNonUniform],
                 s::Decoration::SecondaryViewportRelativeNV => {
                     vec![spirv::Capability::ShaderStereoViewNV]
@@ -1279,9 +1284,8 @@ impl Operand {
                 | s::Decoration::StackCallINTEL
                 | s::Decoration::GlobalVariableOffsetINTEL
                 | s::Decoration::SingleElementVectorINTEL
-                | s::Decoration::VectorComputeCallableFunctionINTEL => {
-                    vec![spirv::Capability::VectorComputeINTEL]
-                }
+                | s::Decoration::VectorComputeCallableFunctionINTEL
+                | s::Decoration::MediaBlockIOINTEL => vec![spirv::Capability::VectorComputeINTEL],
             },
             Self::BuiltIn(v) => match v {
                 s::BuiltIn::NumWorkgroups
@@ -1307,9 +1311,10 @@ impl Operand {
                     spirv::Capability::DrawParameters,
                     spirv::Capability::MeshShadingNV,
                 ],
-                s::BuiltIn::BaryCoordNV | s::BuiltIn::BaryCoordNoPerspNV => {
-                    vec![spirv::Capability::FragmentBarycentricNV]
-                }
+                s::BuiltIn::BaryCoordKHR | s::BuiltIn::BaryCoordNoPerspKHR => vec![
+                    spirv::Capability::FragmentBarycentricNV,
+                    spirv::Capability::FragmentBarycentricKHR,
+                ],
                 s::BuiltIn::FragSizeEXT | s::BuiltIn::FragInvocationCountEXT => vec![
                     spirv::Capability::FragmentDensityEXT,
                     spirv::Capability::ShadingRateNV,
@@ -1475,6 +1480,7 @@ impl Operand {
                 | s::Capability::GroupNonUniform
                 | s::Capability::ShaderLayer
                 | s::Capability::ShaderViewportIndex
+                | s::Capability::UniformDecoration
                 | s::Capability::SubgroupBallotKHR
                 | s::Capability::SubgroupVoteKHR
                 | s::Capability::StorageBuffer16BitAccess
@@ -1491,7 +1497,7 @@ impl Operand {
                 | s::Capability::RoundingModeRTE
                 | s::Capability::RoundingModeRTZ
                 | s::Capability::ImageFootprintNV
-                | s::Capability::FragmentBarycentricNV
+                | s::Capability::FragmentBarycentricKHR
                 | s::Capability::ComputeDerivativeGroupQuadsNV
                 | s::Capability::GroupNonUniformPartitionedNV
                 | s::Capability::VulkanMemoryModel
@@ -1533,12 +1539,15 @@ impl Operand {
                 | s::Capability::IOPipesINTEL
                 | s::Capability::BlockingPipesINTEL
                 | s::Capability::FPGARegINTEL
-                | s::Capability::DotProductInputAllKHR
-                | s::Capability::DotProductInput4x8BitPackedKHR
-                | s::Capability::DotProductKHR
+                | s::Capability::DotProductInputAll
+                | s::Capability::DotProductInput4x8BitPacked
+                | s::Capability::DotProduct
                 | s::Capability::BitInstructions
+                | s::Capability::AtomicFloat32AddEXT
+                | s::Capability::AtomicFloat64AddEXT
                 | s::Capability::LongConstantCompositeINTEL
                 | s::Capability::OptNoneINTEL
+                | s::Capability::AtomicFloat16AddEXT
                 | s::Capability::DebugInfoModuleINTEL => vec![],
                 s::Capability::GenericPointer => vec![spirv::Capability::Addresses],
                 s::Capability::SubgroupDispatch => vec![spirv::Capability::DeviceEnqueue],
@@ -1571,7 +1580,7 @@ impl Operand {
                     spirv::Capability::ShaderNonUniform,
                 ],
                 s::Capability::Int64Atomics => vec![spirv::Capability::Int64],
-                s::Capability::DotProductInput4x8BitKHR => vec![spirv::Capability::Int8],
+                s::Capability::DotProductInput4x8Bit => vec![spirv::Capability::Int8],
                 s::Capability::Vector16
                 | s::Capability::Float16Buffer
                 | s::Capability::ImageBasic
@@ -1659,11 +1668,8 @@ impl Operand {
                 | s::Capability::FragmentShaderShadingRateInterlockEXT
                 | s::Capability::ShaderSMBuiltinsNV
                 | s::Capability::FragmentShaderPixelInterlockEXT
-                | s::Capability::DemoteToHelperInvocationEXT
-                | s::Capability::IntegerFunctions2INTEL
-                | s::Capability::AtomicFloat32AddEXT
-                | s::Capability::AtomicFloat64AddEXT
-                | s::Capability::AtomicFloat16AddEXT => vec![spirv::Capability::Shader],
+                | s::Capability::DemoteToHelperInvocation
+                | s::Capability::IntegerFunctions2INTEL => vec![spirv::Capability::Shader],
                 s::Capability::UniformBufferArrayNonUniformIndexing
                 | s::Capability::SampledImageArrayNonUniformIndexing
                 | s::Capability::StorageBufferArrayNonUniformIndexing
@@ -1710,7 +1716,7 @@ impl Operand {
                 }
             },
             Self::PackedVectorFormat(v) => match v {
-                s::PackedVectorFormat::PackedVectorFormat4x8BitKHR => vec![],
+                s::PackedVectorFormat::PackedVectorFormat4x8Bit => vec![],
             },
             _ => vec![],
         }
@@ -2118,7 +2124,8 @@ impl Operand {
                 | s::Decoration::IOPipeStorageINTEL
                 | s::Decoration::FunctionFloatingPointModeINTEL
                 | s::Decoration::SingleElementVectorINTEL
-                | s::Decoration::VectorComputeCallableFunctionINTEL => vec![],
+                | s::Decoration::VectorComputeCallableFunctionINTEL
+                | s::Decoration::MediaBlockIOINTEL => vec![],
                 s::Decoration::ExplicitInterpAMD => {
                     vec!["SPV_AMD_shader_explicit_vertex_parameter"]
                 }
@@ -2143,7 +2150,10 @@ impl Operand {
                 s::Decoration::NoSignedWrap | s::Decoration::NoUnsignedWrap => {
                     vec!["SPV_KHR_no_integer_wrap_decoration"]
                 }
-                s::Decoration::PerVertexNV => vec!["SPV_NV_fragment_shader_barycentric"],
+                s::Decoration::PerVertexKHR => vec![
+                    "SPV_NV_fragment_shader_barycentric",
+                    "SPV_KHR_fragment_shader_barycentric",
+                ],
                 s::Decoration::PassthroughNV => vec!["SPV_NV_geometry_shader_passthrough"],
                 s::Decoration::PerPrimitiveNV
                 | s::Decoration::PerViewNV
@@ -2228,9 +2238,10 @@ impl Operand {
                     "SPV_NVX_multiview_per_view_attributes",
                     "SPV_NV_mesh_shader",
                 ],
-                s::BuiltIn::BaryCoordNV | s::BuiltIn::BaryCoordNoPerspNV => {
-                    vec!["SPV_NV_fragment_shader_barycentric"]
-                }
+                s::BuiltIn::BaryCoordKHR | s::BuiltIn::BaryCoordNoPerspKHR => vec![
+                    "SPV_NV_fragment_shader_barycentric",
+                    "SPV_KHR_fragment_shader_barycentric",
+                ],
                 s::BuiltIn::TaskCountNV
                 | s::BuiltIn::PrimitiveCountNV
                 | s::BuiltIn::PrimitiveIndicesNV
@@ -2359,6 +2370,7 @@ impl Operand {
                 | s::Capability::GroupNonUniformQuad
                 | s::Capability::ShaderLayer
                 | s::Capability::ShaderViewportIndex
+                | s::Capability::UniformDecoration
                 | s::Capability::ShaderNonUniform
                 | s::Capability::RuntimeDescriptorArray
                 | s::Capability::InputAttachmentArrayDynamicIndexing
@@ -2372,15 +2384,17 @@ impl Operand {
                 | s::Capability::UniformTexelBufferArrayNonUniformIndexing
                 | s::Capability::StorageTexelBufferArrayNonUniformIndexing
                 | s::Capability::VulkanMemoryModel
-                | s::Capability::VulkanMemoryModelDeviceScope => vec![],
+                | s::Capability::VulkanMemoryModelDeviceScope
+                | s::Capability::DemoteToHelperInvocation
+                | s::Capability::DotProductInputAll
+                | s::Capability::DotProductInput4x8Bit
+                | s::Capability::DotProductInput4x8BitPacked
+                | s::Capability::DotProduct => vec![],
                 s::Capability::Float16ImageAMD => vec!["SPV_AMD_gpu_shader_half_float_fetch"],
                 s::Capability::Groups => vec!["SPV_AMD_shader_ballot"],
                 s::Capability::FragmentMaskAMD => vec!["SPV_AMD_shader_fragment_mask"],
                 s::Capability::ImageReadWriteLodAMD => vec!["SPV_AMD_shader_image_load_store_lod"],
                 s::Capability::ImageGatherBiasLodAMD => vec!["SPV_AMD_texture_gather_bias_lod"],
-                s::Capability::DemoteToHelperInvocationEXT => {
-                    vec!["SPV_EXT_demote_to_helper_invocation"]
-                }
                 s::Capability::FragmentFullyCoveredEXT => vec!["SPV_EXT_fragment_fully_covered"],
                 s::Capability::FragmentDensityEXT => {
                     vec!["SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate"]
@@ -2482,10 +2496,6 @@ impl Operand {
                 | s::Capability::RoundingModeRTE
                 | s::Capability::RoundingModeRTZ => vec!["SPV_KHR_float_controls"],
                 s::Capability::FragmentShadingRateKHR => vec!["SPV_KHR_fragment_shading_rate"],
-                s::Capability::DotProductInputAllKHR
-                | s::Capability::DotProductInput4x8BitKHR
-                | s::Capability::DotProductInput4x8BitPackedKHR
-                | s::Capability::DotProductKHR => vec!["SPV_KHR_integer_dot_product"],
                 s::Capability::MultiView => vec!["SPV_KHR_multiview"],
                 s::Capability::SampleMaskPostDepthCoverage => vec!["SPV_KHR_post_depth_coverage"],
                 s::Capability::RayQueryProvisionalKHR | s::Capability::RayQueryKHR => {
@@ -2517,7 +2527,10 @@ impl Operand {
                     vec!["SPV_NV_compute_shader_derivatives"]
                 }
                 s::Capability::CooperativeMatrixNV => vec!["SPV_NV_cooperative_matrix"],
-                s::Capability::FragmentBarycentricNV => vec!["SPV_NV_fragment_shader_barycentric"],
+                s::Capability::FragmentBarycentricKHR => vec![
+                    "SPV_NV_fragment_shader_barycentric",
+                    "SPV_KHR_fragment_shader_barycentric",
+                ],
                 s::Capability::GeometryShaderPassthroughNV => {
                     vec!["SPV_NV_geometry_shader_passthrough"]
                 }
@@ -2553,9 +2566,7 @@ impl Operand {
                 }
             },
             Self::PackedVectorFormat(v) => match v {
-                s::PackedVectorFormat::PackedVectorFormat4x8BitKHR => {
-                    vec!["SPV_KHR_integer_dot_product"]
-                }
+                s::PackedVectorFormat::PackedVectorFormat4x8Bit => vec![],
             },
             _ => vec![],
         }

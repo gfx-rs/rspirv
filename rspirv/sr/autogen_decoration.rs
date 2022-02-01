@@ -63,6 +63,7 @@ pub enum Decoration {
     PerPrimitiveNV,
     PerViewNV,
     PerTaskNV,
+    PerVertexKHR,
     PerVertexNV,
     NonUniform,
     NonUniformEXT,
@@ -113,4 +114,5 @@ pub enum Decoration {
     FunctionFloatingPointModeINTEL(u32, spirv::FPOperationMode),
     SingleElementVectorINTEL,
     VectorComputeCallableFunctionINTEL,
+    MediaBlockIOINTEL,
 }

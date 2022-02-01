@@ -47,6 +47,7 @@ pub enum Branch {
         size: u32,
     },
     TerminateInvocation,
+    DemoteToHelperInvocation,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[allow(clippy::upper_case_acronyms)]
@@ -1365,34 +1366,34 @@ pub enum Op {
     ConvertUToAccelerationStructureKHR {
         accel: spirv::Word,
     },
-    SDotKHR {
+    SDot {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
         packed_vector_format: Option<spirv::PackedVectorFormat>,
     },
-    UDotKHR {
+    UDot {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
         packed_vector_format: Option<spirv::PackedVectorFormat>,
     },
-    SUDotKHR {
+    SUDot {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
         packed_vector_format: Option<spirv::PackedVectorFormat>,
     },
-    SDotAccSatKHR {
-        vector_1: spirv::Word,
-        vector_2: spirv::Word,
-        accumulator: spirv::Word,
-        packed_vector_format: Option<spirv::PackedVectorFormat>,
-    },
-    UDotAccSatKHR {
+    SDotAccSat {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
         accumulator: spirv::Word,
         packed_vector_format: Option<spirv::PackedVectorFormat>,
     },
-    SUDotAccSatKHR {
+    UDotAccSat {
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    },
+    SUDotAccSat {
         vector_1: spirv::Word,
         vector_2: spirv::Word,
         accumulator: spirv::Word,
@@ -1565,7 +1566,6 @@ pub enum Op {
     },
     BeginInvocationInterlockEXT,
     EndInvocationInterlockEXT,
-    DemoteToHelperInvocationEXT,
     IsHelperInvocationEXT,
     ConvertUToImageNV {
         operand: spirv::Word,

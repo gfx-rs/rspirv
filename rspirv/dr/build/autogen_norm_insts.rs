@@ -12522,6 +12522,53 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpSDot instruction to the current block."]
+    pub fn s_dot(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SDot,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSDot instruction to the current block."]
+    pub fn insert_s_dot(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SDot,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpSDotKHR instruction to the current block."]
     pub fn s_dot_khr(
         &mut self,
@@ -12559,6 +12606,53 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::SDotKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUDot instruction to the current block."]
+    pub fn u_dot(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UDot,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUDot instruction to the current block."]
+    pub fn insert_u_dot(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UDot,
             Some(result_type),
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
@@ -12616,6 +12710,53 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpSUDot instruction to the current block."]
+    pub fn su_dot(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SUDot,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSUDot instruction to the current block."]
+    pub fn insert_su_dot(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SUDot,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpSUDotKHR instruction to the current block."]
     pub fn su_dot_khr(
         &mut self,
@@ -12656,6 +12797,63 @@ impl Builder {
             Some(result_type),
             Some(_id),
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSDotAccSat instruction to the current block."]
+    pub fn s_dot_acc_sat(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SDotAccSat,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSDotAccSat instruction to the current block."]
+    pub fn insert_s_dot_acc_sat(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SDotAccSat,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
         );
         if let Some(v) = packed_vector_format {
             inst.operands.push(dr::Operand::PackedVectorFormat(v));
@@ -12720,6 +12918,63 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpUDotAccSat instruction to the current block."]
+    pub fn u_dot_acc_sat(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UDotAccSat,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUDotAccSat instruction to the current block."]
+    pub fn insert_u_dot_acc_sat(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UDotAccSat,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpUDotAccSatKHR instruction to the current block."]
     pub fn u_dot_acc_sat_khr(
         &mut self,
@@ -12763,6 +13018,63 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::UDotAccSatKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSUDotAccSat instruction to the current block."]
+    pub fn su_dot_acc_sat(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SUDotAccSat,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        if let Some(v) = packed_vector_format {
+            inst.operands.push(dr::Operand::PackedVectorFormat(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpSUDotAccSat instruction to the current block."]
+    pub fn insert_su_dot_acc_sat(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+        packed_vector_format: Option<spirv::PackedVectorFormat>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SUDotAccSat,
             Some(result_type),
             Some(_id),
             vec![
@@ -14348,25 +14660,6 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst =
             dr::Instruction::new(spirv::Op::EndInvocationInterlockEXT, None, None, vec![]);
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpDemoteToHelperInvocationEXT instruction to the current block."]
-    pub fn demote_to_helper_invocation_ext(&mut self) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst =
-            dr::Instruction::new(spirv::Op::DemoteToHelperInvocationEXT, None, None, vec![]);
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpDemoteToHelperInvocationEXT instruction to the current block."]
-    pub fn insert_demote_to_helper_invocation_ext(
-        &mut self,
-        insert_point: InsertPoint,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst =
-            dr::Instruction::new(spirv::Op::DemoteToHelperInvocationEXT, None, None, vec![]);
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
