@@ -32,6 +32,10 @@ pub enum Error {
     ImageChannelOrderUnknown(usize, spirv::Word),
     ImageChannelDataTypeUnknown(usize, spirv::Word),
     FPRoundingModeUnknown(usize, spirv::Word),
+    FPDenormModeUnknown(usize, spirv::Word),
+    QuantizationModesUnknown(usize, spirv::Word),
+    FPOperationModeUnknown(usize, spirv::Word),
+    OverflowModesUnknown(usize, spirv::Word),
     LinkageTypeUnknown(usize, spirv::Word),
     AccessQualifierUnknown(usize, spirv::Word),
     FunctionParameterAttributeUnknown(usize, spirv::Word),
@@ -44,6 +48,7 @@ pub enum Error {
     RayQueryIntersectionUnknown(usize, spirv::Word),
     RayQueryCommittedIntersectionTypeUnknown(usize, spirv::Word),
     RayQueryCandidateIntersectionTypeUnknown(usize, spirv::Word),
+    PackedVectorFormatUnknown(usize, spirv::Word),
     #[doc = r"Failed to decode a string."]
     #[doc = r""]
     #[doc = r"For structured error handling, the second element could be"]
@@ -173,6 +178,26 @@ impl fmt::Display for Error {
                 "unknown value {} for operand kind FPRoundingMode at index {}",
                 word, index
             ),
+            Error::FPDenormModeUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind FPDenormMode at index {}",
+                word, index
+            ),
+            Error::QuantizationModesUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind QuantizationModes at index {}",
+                word, index
+            ),
+            Error::FPOperationModeUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind FPOperationMode at index {}",
+                word, index
+            ),
+            Error::OverflowModesUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind OverflowModes at index {}",
+                word, index
+            ),
             Error::LinkageTypeUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind LinkageType at index {}",
@@ -231,6 +256,11 @@ impl fmt::Display for Error {
             Error::RayQueryCandidateIntersectionTypeUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind RayQueryCandidateIntersectionType at index {}",
+                word, index
+            ),
+            Error::PackedVectorFormatUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind PackedVectorFormat at index {}",
                 word, index
             ),
             Error::DecodeStringFailed(index, ref e) => {

@@ -225,10 +225,13 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
             // LiteralInteger is replaced by LiteralInt32.
             // IdResult and IdResultType are not stored as operands in `dr`.
             !(element.starts_with("Pair")
-                || *element == "LiteralContextDependentNumber"
-                || *element == "LiteralInteger"
-                || *element == "IdResult"
-                || *element == "IdResultType")
+                || matches!(
+                    *element,
+                    "LiteralContextDependentNumber"
+                        | "LiteralInteger"
+                        | "IdResult"
+                        | "IdResultType"
+                ))
         })
         .map(as_ident)
         .collect();
@@ -654,17 +657,19 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all types.
     let elements = grammar.instructions.iter().filter(|inst| {
-        inst.class == Some(structs::Class::Type) && inst.opname != "OpTypeForwardPointer" &&
-            inst.opname != "OpTypePointer" && inst.opname != "OpTypeOpaque"
+        inst.class == Some(structs::Class::Type)
+            && !matches!(
+                inst.opname.as_str(),
+                "OpTypeForwardPointer" | "OpTypePointer" | "OpTypeOpaque"
+            )
     }).map(|inst| {
         // Parameter list for this build method.
         let param_list = get_param_list(&inst.operands, false, kinds);
         let arg_list = get_arg_list(&inst.operands, false, kinds);
         // Initializer list for constructing the operands parameter
         // for Instruction.
-        let init_list = get_init_list(&inst.operands[1..]);
-        // Parameters that are not single values thus need special treatment.
-        let extras = get_push_extras(&inst.operands[1..],
+        let init_list = get_init_list(&inst.operands);
+        let extras = get_push_extras(&inst.operands,
                                      kinds,
                                      quote! { inst.operands });
         let opcode = as_ident(&inst.opname[2..]);
@@ -771,24 +776,22 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
     // Generate build methods for all normal instructions (instructions must be
     // in some block).
     let elements = grammar.instructions.iter().filter(|inst| {
-        let skip =
-            inst.class == Some(Type) ||
-            inst.class == Some(Constant) ||
-            inst.class == Some(ExtensionDecl) ||
-            (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall") ||
-            inst.class == Some(Debug) ||
-            inst.class == Some(Annotation) ||
-            is_terminator_instruction(inst) ||
+        let skip = matches!(
+            inst.class,
+            Some(Type | Constant | ExtensionDecl | Debug | Annotation | ModeSetting | Exclude)
+        ) || matches!(
+            inst.opname.as_str(),
             // Labels should not be inserted but attached instead.
-            inst.opname == "OpLabel" ||
-            inst.class == Some(ModeSetting) ||
-            inst.class == Some(Exclude) ||
-            inst.opname == "OpTypeForwardPointer" ||
-            inst.opname == "OpTypePointer" ||
-            inst.opname == "OpTypeOpaque" ||
-            inst.opname == "OpUndef" ||
-            inst.opname == "OpVariable" ||
-            inst.opname.starts_with("OpType");
+            "OpLabel"
+                | "OpTypeForwardPointer"
+                | "OpTypePointer"
+                | "OpTypeOpaque"
+                | "OpUndef"
+                | "OpVariable"
+                | "OpSamplerImageAddressingModeNV" // https://github.com/gfx-rs/rspirv/pull/226#issuecomment-979469790
+        ) || (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall")
+            || is_terminator_instruction(inst)
+            || inst.opname.starts_with("OpType");
         !skip
     }).map(|inst| {
         let params = get_param_list(&inst.operands, true, kinds);
@@ -866,8 +869,13 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
         .iter()
         .filter(|inst| {
             inst.class == Some(structs::Class::Constant)
-                && inst.opname != "OpConstant"
-                && inst.opname != "OpSpecConstant"
+                && !matches!(
+                    inst.opname.as_str(),
+                    "OpConstant"
+                        | "OpSpecConstant"
+                        | "OpConstantCompositeContinuedINTEL"
+                        | "OpSpecConstantCompositeContinuedINTEL"
+                )
         })
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);

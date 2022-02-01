@@ -1,6 +1,6 @@
 [package]
 name = "rspirv"
-version = "0.11.0+1.5.4"
+version = "0.11.0+sdk-1.2.198"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 edition = "2018"
 

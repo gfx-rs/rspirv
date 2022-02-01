@@ -5338,6 +5338,138 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            4450u32 => Ok(ops::Op::SDotKHR {
+                vector_1: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_vector_format: match operands.next() {
+                    Some(&dr::Operand::PackedVectorFormat(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            4451u32 => Ok(ops::Op::UDotKHR {
+                vector_1: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_vector_format: match operands.next() {
+                    Some(&dr::Operand::PackedVectorFormat(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            4452u32 => Ok(ops::Op::SUDotKHR {
+                vector_1: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_vector_format: match operands.next() {
+                    Some(&dr::Operand::PackedVectorFormat(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            4453u32 => Ok(ops::Op::SDotAccSatKHR {
+                vector_1: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_vector_format: match operands.next() {
+                    Some(&dr::Operand::PackedVectorFormat(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            4454u32 => Ok(ops::Op::UDotAccSatKHR {
+                vector_1: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_vector_format: match operands.next() {
+                    Some(&dr::Operand::PackedVectorFormat(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            4455u32 => Ok(ops::Op::SUDotAccSatKHR {
+                vector_1: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                packed_vector_format: match operands.next() {
+                    Some(&dr::Operand::PackedVectorFormat(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
             4473u32 => Ok(ops::Op::RayQueryInitializeKHR {
                 ray_query: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -5635,7 +5767,7 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             5056u32 => Ok(ops::Op::ReadClockKHR {
-                execution: (match operands.next() {
+                scope: (match operands.next() {
                     Some(&dr::Operand::IdScope(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
@@ -5801,6 +5933,154 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5338u32 => Ok(ops::Op::TraceMotionNV {
+                accel: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_flags: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                cull_mask: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sbt_offset: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sbt_stride: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                miss_index: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_origin: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_tmin: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_direction: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_tmax: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                time: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload_id: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5339u32 => Ok(ops::Op::TraceRayMotionNV {
+                accel: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_flags: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                cull_mask: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sbt_offset: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sbt_stride: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                miss_index: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_origin: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_tmin: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_direction: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                ray_tmax: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                time: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5341u32 => Ok(ops::Op::TypeAccelerationStructureNV),
             5344u32 => Ok(ops::Op::ExecuteCallableNV {
                 sbt_index: (match operands.next() {
@@ -5904,6 +6184,62 @@ impl LiftContext {
             5365u32 => Ok(ops::Op::EndInvocationInterlockEXT),
             5380u32 => Ok(ops::Op::DemoteToHelperInvocationEXT),
             5381u32 => Ok(ops::Op::IsHelperInvocationEXT),
+            5391u32 => Ok(ops::Op::ConvertUToImageNV {
+                operand: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5392u32 => Ok(ops::Op::ConvertUToSamplerNV {
+                operand: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5393u32 => Ok(ops::Op::ConvertImageToUNV {
+                operand: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5394u32 => Ok(ops::Op::ConvertSamplerToUNV {
+                operand: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5395u32 => Ok(ops::Op::ConvertUToSampledImageNV {
+                operand: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5396u32 => Ok(ops::Op::ConvertSampledImageToUNV {
+                operand: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5397u32 => Ok(ops::Op::SamplerImageAddressingModeNV {
+                bit_width: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5571u32 => Ok(ops::Op::SubgroupShuffleINTEL {
                 data: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
@@ -6270,7 +6606,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5600u32 => Ok(ops::Op::FunctionPointerINTEL {
+            5600u32 => Ok(ops::Op::ConstantFunctionPointerINTEL {
                 function: (match operands.next() {
                     Some(&dr::Operand::IdRef(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -6290,6 +6626,133 @@ impl LiftContext {
                     }
                     vec
                 },
+            }),
+            5609u32 => Ok(ops::Op::AsmTargetINTEL {
+                asm_target: (match operands.next() {
+                    Some(&dr::Operand::LiteralString(ref value)) => Some(value.clone()),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5610u32 => Ok(ops::Op::AsmINTEL {
+                asm_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                target: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                asm_instructions: (match operands.next() {
+                    Some(&dr::Operand::LiteralString(ref value)) => Some(value.clone()),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                constraints: (match operands.next() {
+                    Some(&dr::Operand::LiteralString(ref value)) => Some(value.clone()),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5611u32 => Ok(ops::Op::AsmCallINTEL {
+                asm: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                argument_0: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => return Err(OperandError::WrongType.into()),
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
+            5614u32 => Ok(ops::Op::AtomicFMinEXT {
+                pointer: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                memory: (match operands.next() {
+                    Some(&dr::Operand::IdScope(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                semantics: (match operands.next() {
+                    Some(&dr::Operand::IdMemorySemantics(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                value: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5615u32 => Ok(ops::Op::AtomicFMaxEXT {
+                pointer: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                memory: (match operands.next() {
+                    Some(&dr::Operand::IdScope(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                semantics: (match operands.next() {
+                    Some(&dr::Operand::IdMemorySemantics(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                value: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5630u32 => Ok(ops::Op::AssumeTrueKHR {
+                condition: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5631u32 => Ok(ops::Op::ExpectKHR {
+                value: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                expected_value: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
             }),
             5632u32 => Ok(ops::Op::DecorateString {
                 target: (match operands.next() {
@@ -8032,6 +8495,1623 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5818u32 => Ok(ops::Op::VariableLengthArrayINTEL {
+                lenght: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5819u32 => Ok(ops::Op::SaveMemoryINTEL),
+            5820u32 => Ok(ops::Op::RestoreMemoryINTEL {
+                ptr: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5840u32 => Ok(ops::Op::ArbitraryFloatSinCosPiINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                from_sign: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5841u32 => Ok(ops::Op::ArbitraryFloatCastINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5842u32 => Ok(ops::Op::ArbitraryFloatCastFromIntINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                from_sign: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5843u32 => Ok(ops::Op::ArbitraryFloatCastToIntINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5846u32 => Ok(ops::Op::ArbitraryFloatAddINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5847u32 => Ok(ops::Op::ArbitraryFloatSubINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5848u32 => Ok(ops::Op::ArbitraryFloatMulINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5849u32 => Ok(ops::Op::ArbitraryFloatDivINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5850u32 => Ok(ops::Op::ArbitraryFloatGTINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5851u32 => Ok(ops::Op::ArbitraryFloatGEINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5852u32 => Ok(ops::Op::ArbitraryFloatLTINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5853u32 => Ok(ops::Op::ArbitraryFloatLEINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5854u32 => Ok(ops::Op::ArbitraryFloatEQINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5855u32 => Ok(ops::Op::ArbitraryFloatRecipINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5856u32 => Ok(ops::Op::ArbitraryFloatRSqrtINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5857u32 => Ok(ops::Op::ArbitraryFloatCbrtINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5858u32 => Ok(ops::Op::ArbitraryFloatHypotINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5859u32 => Ok(ops::Op::ArbitraryFloatSqrtINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5860u32 => Ok(ops::Op::ArbitraryFloatLogINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5861u32 => Ok(ops::Op::ArbitraryFloatLog2INTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5862u32 => Ok(ops::Op::ArbitraryFloatLog10INTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5863u32 => Ok(ops::Op::ArbitraryFloatLog1pINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5864u32 => Ok(ops::Op::ArbitraryFloatExpINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5865u32 => Ok(ops::Op::ArbitraryFloatExp2INTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5866u32 => Ok(ops::Op::ArbitraryFloatExp10INTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5867u32 => Ok(ops::Op::ArbitraryFloatExpm1INTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5868u32 => Ok(ops::Op::ArbitraryFloatSinINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5869u32 => Ok(ops::Op::ArbitraryFloatCosINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5870u32 => Ok(ops::Op::ArbitraryFloatSinCosINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5871u32 => Ok(ops::Op::ArbitraryFloatSinPiINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5872u32 => Ok(ops::Op::ArbitraryFloatCosPiINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5873u32 => Ok(ops::Op::ArbitraryFloatASinINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5874u32 => Ok(ops::Op::ArbitraryFloatASinPiINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5875u32 => Ok(ops::Op::ArbitraryFloatACosINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5876u32 => Ok(ops::Op::ArbitraryFloatACosPiINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5877u32 => Ok(ops::Op::ArbitraryFloatATanINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5878u32 => Ok(ops::Op::ArbitraryFloatATanPiINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5879u32 => Ok(ops::Op::ArbitraryFloatATan2INTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5880u32 => Ok(ops::Op::ArbitraryFloatPowINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5881u32 => Ok(ops::Op::ArbitraryFloatPowRINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m2: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5882u32 => Ok(ops::Op::ArbitraryFloatPowNINTEL {
+                a: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                m1: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                b: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mout: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                enable_subnormals: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_mode: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                rounding_accuracy: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5887u32 => Ok(ops::Op::LoopControlINTEL {
                 loop_control_parameters: {
                     let mut vec = Vec::new();
@@ -8044,6 +10124,506 @@ impl LiftContext {
                     }
                     vec
                 },
+            }),
+            5923u32 => Ok(ops::Op::FixedSqrtINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5924u32 => Ok(ops::Op::FixedRecipINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5925u32 => Ok(ops::Op::FixedRsqrtINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5926u32 => Ok(ops::Op::FixedSinINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5927u32 => Ok(ops::Op::FixedCosINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5928u32 => Ok(ops::Op::FixedSinCosINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5929u32 => Ok(ops::Op::FixedSinPiINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5930u32 => Ok(ops::Op::FixedCosPiINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5931u32 => Ok(ops::Op::FixedSinCosPiINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5932u32 => Ok(ops::Op::FixedLogINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5933u32 => Ok(ops::Op::FixedExpINTEL {
+                input_type: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                input: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                s: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                r_i: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                q: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                o: (match operands.next() {
+                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5934u32 => Ok(ops::Op::PtrCastToCrossWorkgroupINTEL {
+                pointer: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5938u32 => Ok(ops::Op::CrossWorkgroupCastToPtrINTEL {
+                pointer: (match operands.next() {
+                    Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
             }),
             5946u32 => Ok(ops::Op::ReadPipeBlockingINTEL {
                 packet_size: (match operands.next() {
@@ -8576,6 +11156,27 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
+            }),
+            6086u32 => Ok(Type::BufferSurfaceINTEL {
+                access_qualifier: (match operands.next() {
+                    Some(&dr::Operand::AccessQualifier(ref value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6090u32 => Ok(Type::StructContinuedINTEL {
+                member_0_type_member_1_type: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(&dr::Operand::IdRef(ref value)) => Some(*value),
+                        Some(_) => return Err(OperandError::WrongType.into()),
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
             }),
             _ => Err(InstructionError::WrongOpcode),
         }

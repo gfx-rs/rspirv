@@ -78,4 +78,10 @@ pub enum Type {
         rows: spirv::Word,
         columns: spirv::Word,
     },
+    BufferSurfaceINTEL {
+        access_qualifier: spirv::AccessQualifier,
+    },
+    StructContinuedINTEL {
+        member_0_type_member_1_type: Vec<spirv::Word>,
+    },
 }
