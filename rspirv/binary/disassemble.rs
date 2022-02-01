@@ -55,11 +55,11 @@ impl Disassemble for dr::Instruction {
     fn disassemble(&self) -> String {
         let space = if !self.operands.is_empty() { " " } else { "" };
         format!(
-            "{rid}{opcode}{rtype}{space}{operands}",
+            "{rid}Op{opcode}{rtype}{space}{operands}",
             rid = self
                 .result_id
                 .map_or(String::new(), |w| format!("%{} = ", w)),
-            opcode = format!("Op{}", self.class.opname),
+            opcode = self.class.opname,
             // extra space both before and after the reseult type
             rtype = self
                 .result_type
@@ -192,11 +192,11 @@ fn disas_ext_inst(
                 operands.push(operand.disassemble())
             }
             format!(
-                "{rid}{opcode}{rtype} {operands}",
+                "{rid}Op{opcode}{rtype} {operands}",
                 rid = inst
                     .result_id
                     .map_or(String::new(), |w| format!("%{} = ", w)),
-                opcode = format!("Op{}", inst.class.opname),
+                opcode = inst.class.opname,
                 rtype = inst
                     .result_type
                     .map_or(String::new(), |w| format!("  %{} ", w)),

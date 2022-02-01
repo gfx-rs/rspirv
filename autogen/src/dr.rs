@@ -24,7 +24,7 @@ pub fn operand_has_additional_params(
     kinds
         .iter()
         .find(|kind| kind.kind == operand.kind)
-        .map_or(false, |kind| has_additional_params(kind))
+        .map_or(false, has_additional_params)
 }
 
 fn get_param_or_arg_list(

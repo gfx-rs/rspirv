@@ -28,11 +28,27 @@ jobs:
         with:
           toolchain: stable
           override: true
+          profile: minimal
           components: rustfmt
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --all -- --check
+  clippy:
+    name: Cargo clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          profile: minimal
+          components: clippy
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all --all-targets -- -Dwarnings
   test:
     name: Cargo check and test
     strategy:
@@ -47,6 +63,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           override: true
+          profile: minimal
       - uses: actions-rs/cargo@v1
         with:
           command: check
