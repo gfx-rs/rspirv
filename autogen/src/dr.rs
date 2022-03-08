@@ -716,7 +716,7 @@ fn is_terminator_instruction(inst: &structs::Instruction) -> bool {
         ),
         Some(structs::Class::Branch) => !matches!(
             inst.opname.as_str(),
-            "OpPhi" | "OpLabel" | "OpSelectionMerge"
+            "OpPhi" | "OpLabel" | "OpSelectionMerge" | "OpLoopMerge"
         ),
         _ => false,
     }

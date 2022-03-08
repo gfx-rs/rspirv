@@ -7007,6 +7007,53 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpLoopMerge instruction to the current block."]
+    pub fn loop_merge(
+        &mut self,
+        merge_block: spirv::Word,
+        continue_target: spirv::Word,
+        loop_control: spirv::LoopControl,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::LoopMerge,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(merge_block),
+                dr::Operand::IdRef(continue_target),
+                dr::Operand::LoopControl(loop_control),
+            ],
+        );
+        inst.operands.extend(additional_params);
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Insert an OpLoopMerge instruction to the current block."]
+    pub fn insert_loop_merge(
+        &mut self,
+        insert_point: InsertPoint,
+        merge_block: spirv::Word,
+        continue_target: spirv::Word,
+        loop_control: spirv::LoopControl,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::LoopMerge,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(merge_block),
+                dr::Operand::IdRef(continue_target),
+                dr::Operand::LoopControl(loop_control),
+            ],
+        );
+        inst.operands.extend(additional_params);
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
     #[doc = "Appends an OpSelectionMerge instruction to the current block."]
     pub fn selection_merge(
         &mut self,
