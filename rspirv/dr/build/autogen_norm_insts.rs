@@ -7030,7 +7030,7 @@ impl Builder {
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
     }
-    #[doc = "Insert an OpLoopMerge instruction to the current block."]
+    #[doc = "Appends an OpLoopMerge instruction to the current block."]
     pub fn insert_loop_merge(
         &mut self,
         insert_point: InsertPoint,
