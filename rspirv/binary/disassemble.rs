@@ -55,9 +55,9 @@ fn disas_join(insts: &[impl Disassemble], delimiter: &str) -> String {
         .join(delimiter)
 }
 
-fn disas_instruction<F>(
-    inst: &dr::Instruction, space: &str, disas_operands: F) -> String
-    where F: Fn(&Vec<Operand>) -> String
+fn disas_instruction<F>(inst: &dr::Instruction, space: &str, disas_operands: F) -> String
+where
+    F: Fn(&Vec<Operand>) -> String,
 {
     format!(
         "{rid}Op{opcode}{rtype}{space}{operands}",
@@ -151,12 +151,10 @@ impl Disassemble for dr::Module {
 
         let global_insts = self
             .global_inst_iter()
-            .map(|i|
-                match i.class.opcode {
-                    spirv::Op::Constant => disas_constant(i, &global_type_tracker),
-                    _ => i.disassemble()
-                }
-            )
+            .map(|i| match i.class.opcode {
+                spirv::Op::Constant => disas_constant(i, &global_type_tracker),
+                _ => i.disassemble(),
+            })
             .collect::<Vec<String>>()
             .join("\n");
         push!(&mut text, global_insts);
@@ -194,21 +192,18 @@ impl Disassemble for dr::Module {
     }
 }
 
-
 fn disas_constant(inst: &dr::Instruction, type_tracker: &tracker::TypeTracker) -> String {
     debug_assert_eq!(inst.class.opcode, spirv::Op::Constant);
     debug_assert_eq!(inst.operands.len(), 1);
     let literal_type = type_tracker.resolve(inst.result_type.unwrap());
     match inst.operands[0] {
-        LiteralInt32(value) => {
-            disas_instruction(inst, " ", |_|
-                disas_literal_int_operand(value, &literal_type.unwrap()))
-        }
-        LiteralInt64(value) => {
-            disas_instruction(inst, " ", |_|
-                disas_literal_int_operand(value, &literal_type.unwrap()))
-        }
-        _ => inst.disassemble()
+        LiteralInt32(value) => disas_instruction(inst, " ", |_| {
+            disas_literal_int_operand(value, &literal_type.unwrap())
+        }),
+        LiteralInt64(value) => disas_instruction(inst, " ", |_| {
+            disas_literal_int_operand(value, &literal_type.unwrap())
+        }),
+        _ => inst.disassemble(),
     }
 }
 
@@ -226,7 +221,7 @@ impl DisassembleLiteralInt for u32 {
         match literal_type {
             Integer(_, true) => (value as i32).to_string(),
             Integer(_, false) => value.to_string(),
-            _ => String::from("")
+            _ => String::from(""),
         }
     }
 }
@@ -236,7 +231,7 @@ impl DisassembleLiteralInt for u64 {
         match literal_type {
             Integer(_, true) => (value as i64).to_string(),
             Integer(_, false) => value.to_string(),
-            _ => String::from("")
+            _ => String::from(""),
         }
     }
 }
