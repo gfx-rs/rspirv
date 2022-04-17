@@ -19,5 +19,5 @@ deserialize = ['serde']
 path = "lib.rs"
 
 [dependencies]
-bitflags = "1"
+bitflags = "1.0.4"
 serde = {version = "1", optional = true, features = ["derive"]}
