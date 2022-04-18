@@ -1,4 +1,8 @@
+use crate::binary::tracker::Type;
+use crate::binary::tracker::Type::Integer;
 use crate::dr;
+use crate::dr::Operand;
+use crate::dr::Operand::{LiteralInt32, LiteralInt64};
 use crate::spirv;
 
 use super::tracker;
@@ -51,22 +55,29 @@ fn disas_join(insts: &[impl Disassemble], delimiter: &str) -> String {
         .join(delimiter)
 }
 
+fn disas_instruction<F>(inst: &dr::Instruction, space: &str, disas_operands: F) -> String
+where
+    F: Fn(&Vec<Operand>) -> String,
+{
+    format!(
+        "{rid}Op{opcode}{rtype}{space}{operands}",
+        rid = inst
+            .result_id
+            .map_or(String::new(), |w| format!("%{} = ", w)),
+        opcode = inst.class.opname,
+        // extra space both before and after the result type
+        rtype = inst
+            .result_type
+            .map_or(String::new(), |w| format!("  %{}{}", w, space)),
+        space = space,
+        operands = disas_operands(&inst.operands)
+    )
+}
+
 impl Disassemble for dr::Instruction {
     fn disassemble(&self) -> String {
         let space = if !self.operands.is_empty() { " " } else { "" };
-        format!(
-            "{rid}Op{opcode}{rtype}{space}{operands}",
-            rid = self
-                .result_id
-                .map_or(String::new(), |w| format!("%{} = ", w)),
-            opcode = self.class.opname,
-            // extra space both before and after the reseult type
-            rtype = self
-                .result_type
-                .map_or(String::new(), |w| format!("  %{}{}", w, space)),
-            space = space,
-            operands = disas_join(&self.operands, " ")
-        )
+        disas_instruction(self, space, |operands| disas_join(operands, " "))
     }
 }
 
@@ -133,9 +144,17 @@ impl Disassemble for dr::Module {
             push!(&mut text, header.disassemble());
         }
 
+        let mut global_type_tracker = tracker::TypeTracker::new();
+        for t in &self.types_global_values {
+            global_type_tracker.track(t)
+        }
+
         let global_insts = self
             .global_inst_iter()
-            .map(|i| i.disassemble())
+            .map(|i| match i.class.opcode {
+                spirv::Op::Constant => disas_constant(i, &global_type_tracker),
+                _ => i.disassemble(),
+            })
             .collect::<Vec<String>>()
             .join("\n");
         push!(&mut text, global_insts);
@@ -173,6 +192,50 @@ impl Disassemble for dr::Module {
     }
 }
 
+fn disas_constant(inst: &dr::Instruction, type_tracker: &tracker::TypeTracker) -> String {
+    debug_assert_eq!(inst.class.opcode, spirv::Op::Constant);
+    debug_assert_eq!(inst.operands.len(), 1);
+    let literal_type = type_tracker.resolve(inst.result_type.unwrap());
+    match inst.operands[0] {
+        LiteralInt32(value) => disas_instruction(inst, " ", |_| {
+            disas_literal_int_operand(value, &literal_type.unwrap())
+        }),
+        LiteralInt64(value) => disas_instruction(inst, " ", |_| {
+            disas_literal_int_operand(value, &literal_type.unwrap())
+        }),
+        _ => inst.disassemble(),
+    }
+}
+
+#[inline]
+fn disas_literal_int_operand<T: DisassembleLiteralInt>(value: T, literal_type: &Type) -> String {
+    DisassembleLiteralInt::disas_literal_int(value, literal_type)
+}
+
+trait DisassembleLiteralInt {
+    fn disas_literal_int(value: Self, literal_type: &Type) -> String;
+}
+
+impl DisassembleLiteralInt for u32 {
+    fn disas_literal_int(value: u32, literal_type: &Type) -> String {
+        match literal_type {
+            Integer(_, true) => (value as i32).to_string(),
+            Integer(_, false) => value.to_string(),
+            _ => String::from(""),
+        }
+    }
+}
+
+impl DisassembleLiteralInt for u64 {
+    fn disas_literal_int(value: u64, literal_type: &Type) -> String {
+        match literal_type {
+            Integer(_, true) => (value as i64).to_string(),
+            Integer(_, false) => value.to_string(),
+            _ => String::from(""),
+        }
+    }
+}
+
 fn disas_ext_inst(
     inst: &dr::Instruction,
     ext_inst_set_tracker: &tracker::ExtInstSetTracker,
@@ -191,17 +254,7 @@ fn disas_ext_inst(
             for operand in &inst.operands[2..] {
                 operands.push(operand.disassemble())
             }
-            format!(
-                "{rid}Op{opcode}{rtype} {operands}",
-                rid = inst
-                    .result_id
-                    .map_or(String::new(), |w| format!("%{} = ", w)),
-                opcode = inst.class.opname,
-                rtype = inst
-                    .result_type
-                    .map_or(String::new(), |w| format!("  %{} ", w)),
-                operands = operands.join(" ")
-            )
+            disas_instruction(inst, " ", |_| operands.join(" "))
         } else {
             inst.disassemble()
         }
@@ -212,10 +265,9 @@ fn disas_ext_inst(
 
 #[cfg(test)]
 mod tests {
+    use crate::binary::Disassemble;
     use crate::dr;
     use crate::spirv;
-
-    use crate::binary::Disassemble;
 
     #[test]
     fn test_disassemble_operand_function_control() {
@@ -300,6 +352,72 @@ mod tests {
                     %7 = OpVariable  %3  Function\n\
                     OpReturn\n\
                     OpFunctionEnd"
+        );
+    }
+
+    #[test]
+    fn test_disassemble_literal_int_constants() {
+        let mut b = dr::Builder::new();
+
+        b.capability(spirv::Capability::Shader);
+        b.ext_inst_import("GLSL.std.450");
+        b.source(spirv::SourceLanguage::GLSL, 450, None, None::<String>);
+
+        let void = b.type_void();
+        let int32 = b.type_int(32, 1);
+        let int64 = b.type_int(64, 1);
+        let uint32 = b.type_int(32, 0);
+        let uint64 = b.type_int(64, 0);
+        let voidfvoid = b.type_function(void, vec![void]);
+
+        let f = b
+            .begin_function(
+                void,
+                None,
+                spirv::FunctionControl::DONT_INLINE | spirv::FunctionControl::CONST,
+                voidfvoid,
+            )
+            .unwrap();
+        b.begin_block(None).unwrap();
+        let signed_i32_value: i32 = -1;
+        let signed_i64_value: i64 = -1;
+        b.constant_u32(int32, signed_i32_value as u32);
+        b.constant_u64(int64, signed_i64_value as u64);
+        b.constant_u32(uint32, signed_i32_value as u32);
+        b.constant_u64(uint64, signed_i64_value as u64);
+        b.ret().unwrap();
+        b.end_function().unwrap();
+
+        b.entry_point(spirv::ExecutionModel::Fragment, f, "main", vec![]);
+        b.execution_mode(f, spirv::ExecutionMode::OriginUpperLeft, vec![]);
+        b.name(f, "main");
+
+        assert_eq!(
+            b.module().disassemble(),
+            "; SPIR-V\n\
+                ; Version: 1.5\n\
+                ; Generator: rspirv\n\
+                ; Bound: 14\n\
+                OpCapability Shader\n\
+                %1 = OpExtInstImport \"GLSL.std.450\"\n\
+                OpEntryPoint Fragment %8 \"main\"\n\
+                OpExecutionMode %8 OriginUpperLeft\n\
+                OpSource GLSL 450\n\
+                OpName %8 \"main\"\n\
+                %2 = OpTypeVoid\n\
+                %3 = OpTypeInt 32 1\n\
+                %4 = OpTypeInt 64 1\n\
+                %5 = OpTypeInt 32 0\n\
+                %6 = OpTypeInt 64 0\n\
+                %7 = OpTypeFunction %2 %2\n\
+                %10 = OpConstant  %3  -1\n\
+                %11 = OpConstant  %4  -1\n\
+                %12 = OpConstant  %5  4294967295\n\
+                %13 = OpConstant  %6  18446744073709551615\n\
+                %8 = OpFunction  %2  DontInline|Const %7\n\
+                %9 = OpLabel\n\
+                OpReturn\n\
+                OpFunctionEnd"
         );
     }
 
