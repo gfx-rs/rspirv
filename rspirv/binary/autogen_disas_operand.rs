@@ -293,6 +293,12 @@ impl Disassemble for spirv::MemoryAccess {
         if self.contains(spirv::MemoryAccess::NON_PRIVATE_POINTER_KHR) {
             bits.push("NonPrivatePointerKHR")
         }
+        if self.contains(spirv::MemoryAccess::ALIAS_SCOPE_INTEL_MASK) {
+            bits.push("AliasScopeINTELMask")
+        }
+        if self.contains(spirv::MemoryAccess::NO_ALIAS_INTEL_MASK) {
+            bits.push("NoAliasINTELMask")
+        }
         bits.join("|")
     }
 }

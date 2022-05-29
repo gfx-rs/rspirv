@@ -3858,7 +3858,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(DemoteToHelperInvocation, [DemoteToHelperInvocation], [], []),
     inst!(
         DemoteToHelperInvocationEXT,
-        [DemoteToHelperInvocation],
+        [DemoteToHelperInvocationEXT],
         [],
         []
     ),
@@ -6046,6 +6046,24 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(LiteralInteger, ZeroOrMore)]
     ),
     inst!(
+        AliasDomainDeclINTEL,
+        [MemoryAccessAliasingINTEL],
+        ["SPV_INTEL_memory_access_aliasing"],
+        [(IdResult, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        AliasScopeDeclINTEL,
+        [MemoryAccessAliasingINTEL],
+        ["SPV_INTEL_memory_access_aliasing"],
+        [(IdResult, One), (IdRef, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        AliasScopeListDeclINTEL,
+        [MemoryAccessAliasingINTEL],
+        ["SPV_INTEL_memory_access_aliasing"],
+        [(IdResult, One), (IdRef, ZeroOrMore)]
+    ),
+    inst!(
         FixedSqrtINTEL,
         [ArbitraryPrecisionFixedPointINTEL],
         [],
@@ -6468,5 +6486,113 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [LongConstantCompositeINTEL],
         [],
         [(IdRef, ZeroOrMore)]
+    ),
+    inst!(
+        ControlBarrierArriveINTEL,
+        [SplitBarrierINTEL],
+        [],
+        [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
+    ),
+    inst!(
+        ControlBarrierWaitINTEL,
+        [SplitBarrierINTEL],
+        [],
+        [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
+    ),
+    inst!(
+        GroupIMulKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupFMulKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupBitwiseAndKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupBitwiseOrKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupBitwiseXorKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupLogicalAndKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupLogicalOrKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupLogicalXorKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
     ),
 ];

@@ -255,6 +255,12 @@ impl<'c, 'd> Parser<'c, 'd> {
         if memory_access.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE) {
             params.append(&mut vec![dr::Operand::IdScope(self.decoder.id()?)]);
         }
+        if memory_access.contains(spirv::MemoryAccess::ALIAS_SCOPE_INTEL_MASK) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if memory_access.contains(spirv::MemoryAccess::NO_ALIAS_INTEL_MASK) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
         Ok(params)
     }
     #[allow(unreachable_patterns)]
@@ -460,6 +466,8 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::PrefetchINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::Decoration::AliasScopeINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::NoAliasINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::BufferLocationINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }

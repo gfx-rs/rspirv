@@ -748,6 +748,11 @@ impl Operand {
             Self::MemoryAccess(v) => {
                 let mut result = vec![];
                 if v.intersects(
+                    s::MemoryAccess::ALIAS_SCOPE_INTEL_MASK | s::MemoryAccess::NO_ALIAS_INTEL_MASK,
+                ) {
+                    result.extend_from_slice(&[spirv::Capability::MemoryAccessAliasingINTEL])
+                };
+                if v.intersects(
                     s::MemoryAccess::MAKE_POINTER_AVAILABLE
                         | s::MemoryAccess::MAKE_POINTER_VISIBLE
                         | s::MemoryAccess::NON_PRIVATE_POINTER,
@@ -1236,6 +1241,9 @@ impl Operand {
                 s::Decoration::RowMajor | s::Decoration::ColMajor | s::Decoration::MatrixStride => {
                     vec![spirv::Capability::Matrix]
                 }
+                s::Decoration::AliasScopeINTEL | s::Decoration::NoAliasINTEL => {
+                    vec![spirv::Capability::MemoryAccessAliasingINTEL]
+                }
                 s::Decoration::PerPrimitiveNV
                 | s::Decoration::PerViewNV
                 | s::Decoration::PerTaskNV => vec![spirv::Capability::MeshShadingNV],
@@ -1533,6 +1541,7 @@ impl Operand {
                 | s::Capability::FPGAMemoryAccessesINTEL
                 | s::Capability::FPGAClusterAttributesINTEL
                 | s::Capability::LoopFuseINTEL
+                | s::Capability::MemoryAccessAliasingINTEL
                 | s::Capability::FPGABufferLocationINTEL
                 | s::Capability::ArbitraryPrecisionFixedPointINTEL
                 | s::Capability::USMStorageClassesINTEL
@@ -1548,7 +1557,9 @@ impl Operand {
                 | s::Capability::LongConstantCompositeINTEL
                 | s::Capability::OptNoneINTEL
                 | s::Capability::AtomicFloat16AddEXT
-                | s::Capability::DebugInfoModuleINTEL => vec![],
+                | s::Capability::DebugInfoModuleINTEL
+                | s::Capability::SplitBarrierINTEL
+                | s::Capability::GroupUniformArithmeticKHR => vec![],
                 s::Capability::GenericPointer => vec![spirv::Capability::Addresses],
                 s::Capability::SubgroupDispatch => vec![spirv::Capability::DeviceEnqueue],
                 s::Capability::GeometryPointSize
@@ -1744,6 +1755,15 @@ impl Operand {
                 let mut result = vec![];
                 if v.intersects(s::MemorySemantics::VOLATILE) {
                     result.extend_from_slice(&["SPV_KHR_vulkan_memory_model"])
+                };
+                result
+            }
+            Self::MemoryAccess(v) => {
+                let mut result = vec![];
+                if v.intersects(
+                    s::MemoryAccess::ALIAS_SCOPE_INTEL_MASK | s::MemoryAccess::NO_ALIAS_INTEL_MASK,
+                ) {
+                    result.extend_from_slice(&["SPV_INTEL_memory_access_aliasing"])
                 };
                 result
             }
@@ -2120,6 +2140,8 @@ impl Operand {
                 | s::Decoration::PrefetchINTEL
                 | s::Decoration::StallEnableINTEL
                 | s::Decoration::FuseLoopsInFunctionINTEL
+                | s::Decoration::AliasScopeINTEL
+                | s::Decoration::NoAliasINTEL
                 | s::Decoration::BufferLocationINTEL
                 | s::Decoration::IOPipeStorageINTEL
                 | s::Decoration::FunctionFloatingPointModeINTEL
@@ -2465,10 +2487,14 @@ impl Operand {
                 }
                 s::Capability::LoopFuseINTEL => vec!["SPV_INTEL_loop_fuse"],
                 s::Capability::SubgroupImageMediaBlockIOINTEL => vec!["SPV_INTEL_media_block_io"],
+                s::Capability::MemoryAccessAliasingINTEL => {
+                    vec!["SPV_INTEL_memory_access_aliasing"]
+                }
                 s::Capability::OptNoneINTEL => vec!["SPV_INTEL_optnone"],
                 s::Capability::IntegerFunctions2INTEL => {
                     vec!["SPV_INTEL_shader_integer_functions2"]
                 }
+                s::Capability::SplitBarrierINTEL => vec!["SPV_INTEL_split_barrier"],
                 s::Capability::SubgroupShuffleINTEL
                 | s::Capability::SubgroupBufferBlockIOINTEL
                 | s::Capability::SubgroupImageBlockIOINTEL => vec!["SPV_INTEL_subgroups"],
@@ -2512,6 +2538,9 @@ impl Operand {
                 s::Capability::ShaderClockKHR => vec!["SPV_KHR_shader_clock"],
                 s::Capability::DrawParameters => vec!["SPV_KHR_shader_draw_parameters"],
                 s::Capability::SubgroupVoteKHR => vec!["SPV_KHR_subgroup_vote"],
+                s::Capability::GroupUniformArithmeticKHR => {
+                    vec!["SPV_KHR_uniform_group_instructions"]
+                }
                 s::Capability::VariablePointersStorageBuffer | s::Capability::VariablePointers => {
                     vec!["SPV_KHR_variable_pointers"]
                 }
@@ -2669,6 +2698,22 @@ impl Operand {
             }
             Self::MemoryAccess(v) => {
                 let mut result = vec![];
+                result.extend(
+                    [
+                        s::MemoryAccess::ALIAS_SCOPE_INTEL_MASK,
+                        s::MemoryAccess::NO_ALIAS_INTEL_MASK,
+                    ]
+                    .iter()
+                    .filter(|arg| v.contains(**arg))
+                    .flat_map(|_| {
+                        [crate::grammar::LogicalOperand {
+                            kind: crate::grammar::OperandKind::IdRef,
+                            quantifier: crate::grammar::OperandQuantifier::One,
+                        }]
+                        .iter()
+                        .cloned()
+                    }),
+                );
                 result.extend(
                     [
                         s::MemoryAccess::MAKE_POINTER_AVAILABLE,
@@ -2838,6 +2883,12 @@ impl Operand {
                     kind: crate::grammar::OperandKind::FunctionParameterAttribute,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
+                s::Decoration::AliasScopeINTEL | s::Decoration::NoAliasINTEL => {
+                    vec![crate::grammar::LogicalOperand {
+                        kind: crate::grammar::OperandKind::IdRef,
+                        quantifier: crate::grammar::OperandQuantifier::One,
+                    }]
+                }
                 s::Decoration::AlignmentId => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::IdRef,
                     quantifier: crate::grammar::OperandQuantifier::One,

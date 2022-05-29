@@ -10068,6 +10068,39 @@ impl LiftContext {
                     vec
                 },
             }),
+            5911u32 => Ok(ops::Op::AliasDomainDeclINTEL {
+                name: match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            5912u32 => Ok(ops::Op::AliasScopeDeclINTEL {
+                alias_domain: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                name: match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            5913u32 => Ok(ops::Op::AliasScopeListDeclINTEL {
+                alias_scope1_alias_scope2: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(dr::Operand::IdRef(value)) => Some(*value),
+                        Some(_) => return Err(OperandError::WrongType.into()),
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
             5923u32 => Ok(ops::Op::FixedSqrtINTEL {
                 input_type: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
@@ -10840,6 +10873,206 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 value: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6142u32 => Ok(ops::Op::ControlBarrierArriveINTEL {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                memory: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                semantics: (match operands.next() {
+                    Some(dr::Operand::IdMemorySemantics(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6143u32 => Ok(ops::Op::ControlBarrierWaitINTEL {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                memory: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                semantics: (match operands.next() {
+                    Some(dr::Operand::IdMemorySemantics(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6401u32 => Ok(ops::Op::GroupIMulKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6402u32 => Ok(ops::Op::GroupFMulKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6403u32 => Ok(ops::Op::GroupBitwiseAndKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6404u32 => Ok(ops::Op::GroupBitwiseOrKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6405u32 => Ok(ops::Op::GroupBitwiseXorKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6406u32 => Ok(ops::Op::GroupLogicalAndKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6407u32 => Ok(ops::Op::GroupLogicalOrKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6408u32 => Ok(ops::Op::GroupLogicalXorKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operation: (match operands.next() {
+                    Some(dr::Operand::GroupOperation(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                x: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,

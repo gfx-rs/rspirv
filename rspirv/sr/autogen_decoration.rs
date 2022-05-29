@@ -109,6 +109,8 @@ pub enum Decoration {
     PrefetchINTEL(u32),
     StallEnableINTEL,
     FuseLoopsInFunctionINTEL,
+    AliasScopeINTEL(spirv::Word),
+    NoAliasINTEL(spirv::Word),
     BufferLocationINTEL(u32),
     IOPipeStorageINTEL(u32),
     FunctionFloatingPointModeINTEL(u32, spirv::FPOperationMode),

@@ -2532,6 +2532,16 @@ pub enum Op {
     LoopControlINTEL {
         loop_control_parameters: Vec<u32>,
     },
+    AliasDomainDeclINTEL {
+        name: Option<spirv::Word>,
+    },
+    AliasScopeDeclINTEL {
+        alias_domain: spirv::Word,
+        name: Option<spirv::Word>,
+    },
+    AliasScopeListDeclINTEL {
+        alias_scope1_alias_scope2: Vec<spirv::Word>,
+    },
     FixedSqrtINTEL {
         input_type: Token<Type>,
         input: spirv::Word,
@@ -2717,5 +2727,55 @@ pub enum Op {
         memory: spirv::Word,
         semantics: spirv::Word,
         value: spirv::Word,
+    },
+    ControlBarrierArriveINTEL {
+        execution: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+    },
+    ControlBarrierWaitINTEL {
+        execution: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+    },
+    GroupIMulKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    },
+    GroupFMulKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    },
+    GroupBitwiseAndKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    },
+    GroupBitwiseOrKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    },
+    GroupBitwiseXorKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    },
+    GroupLogicalAndKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    },
+    GroupLogicalOrKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    },
+    GroupLogicalXorKHR {
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
     },
 }

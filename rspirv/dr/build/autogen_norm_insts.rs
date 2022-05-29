@@ -17011,4 +17011,482 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpControlBarrierArriveINTEL instruction to the current block."]
+    pub fn control_barrier_arrive_intel(
+        &mut self,
+        execution: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ControlBarrierArriveINTEL,
+            None,
+            None,
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdScope(memory),
+                dr::Operand::IdMemorySemantics(semantics),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpControlBarrierArriveINTEL instruction to the current block."]
+    pub fn insert_control_barrier_arrive_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        execution: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ControlBarrierArriveINTEL,
+            None,
+            None,
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdScope(memory),
+                dr::Operand::IdMemorySemantics(semantics),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpControlBarrierWaitINTEL instruction to the current block."]
+    pub fn control_barrier_wait_intel(
+        &mut self,
+        execution: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ControlBarrierWaitINTEL,
+            None,
+            None,
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdScope(memory),
+                dr::Operand::IdMemorySemantics(semantics),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpControlBarrierWaitINTEL instruction to the current block."]
+    pub fn insert_control_barrier_wait_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        execution: spirv::Word,
+        memory: spirv::Word,
+        semantics: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ControlBarrierWaitINTEL,
+            None,
+            None,
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdScope(memory),
+                dr::Operand::IdMemorySemantics(semantics),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpGroupIMulKHR instruction to the current block."]
+    pub fn group_i_mul_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupIMulKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupIMulKHR instruction to the current block."]
+    pub fn insert_group_i_mul_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupIMulKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupFMulKHR instruction to the current block."]
+    pub fn group_f_mul_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupFMulKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupFMulKHR instruction to the current block."]
+    pub fn insert_group_f_mul_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupFMulKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupBitwiseAndKHR instruction to the current block."]
+    pub fn group_bitwise_and_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupBitwiseAndKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupBitwiseAndKHR instruction to the current block."]
+    pub fn insert_group_bitwise_and_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupBitwiseAndKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupBitwiseOrKHR instruction to the current block."]
+    pub fn group_bitwise_or_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupBitwiseOrKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupBitwiseOrKHR instruction to the current block."]
+    pub fn insert_group_bitwise_or_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupBitwiseOrKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupBitwiseXorKHR instruction to the current block."]
+    pub fn group_bitwise_xor_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupBitwiseXorKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupBitwiseXorKHR instruction to the current block."]
+    pub fn insert_group_bitwise_xor_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupBitwiseXorKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupLogicalAndKHR instruction to the current block."]
+    pub fn group_logical_and_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupLogicalAndKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupLogicalAndKHR instruction to the current block."]
+    pub fn insert_group_logical_and_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupLogicalAndKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupLogicalOrKHR instruction to the current block."]
+    pub fn group_logical_or_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupLogicalOrKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupLogicalOrKHR instruction to the current block."]
+    pub fn insert_group_logical_or_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupLogicalOrKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupLogicalXorKHR instruction to the current block."]
+    pub fn group_logical_xor_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupLogicalXorKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupLogicalXorKHR instruction to the current block."]
+    pub fn insert_group_logical_xor_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        operation: spirv::GroupOperation,
+        x: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupLogicalXorKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::GroupOperation(operation),
+                dr::Operand::IdRef(x),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
 }

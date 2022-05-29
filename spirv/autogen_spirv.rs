@@ -13,7 +13,7 @@ bitflags! { # [doc = "SPIR-V operand kind: [SelectionControl](https://www.khrono
 bitflags! { # [doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; const INITIATION_INTERVAL_INTEL = 65536u32 ; const MAX_CONCURRENCY_INTEL = 131072u32 ; const DEPENDENCY_ARRAY_INTEL = 262144u32 ; const PIPELINE_ENABLE_INTEL = 524288u32 ; const LOOP_COALESCE_INTEL = 1048576u32 ; const MAX_INTERLEAVING_INTEL = 2097152u32 ; const SPECULATED_ITERATIONS_INTEL = 4194304u32 ; const NO_FUSION_INTEL = 8388608u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_control_a_function_control)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FunctionControl : u32 { const NONE = 0u32 ; const INLINE = 1u32 ; const DONT_INLINE = 2u32 ; const PURE = 4u32 ; const CONST = 8u32 ; const OPT_NONE_INTEL = 65536u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemorySemantics : u32 { const RELAXED = 0u32 ; const NONE = 0u32 ; const ACQUIRE = 2u32 ; const RELEASE = 4u32 ; const ACQUIRE_RELEASE = 8u32 ; const SEQUENTIALLY_CONSISTENT = 16u32 ; const UNIFORM_MEMORY = 64u32 ; const SUBGROUP_MEMORY = 128u32 ; const WORKGROUP_MEMORY = 256u32 ; const CROSS_WORKGROUP_MEMORY = 512u32 ; const ATOMIC_COUNTER_MEMORY = 1024u32 ; const IMAGE_MEMORY = 2048u32 ; const OUTPUT_MEMORY = 4096u32 ; const OUTPUT_MEMORY_KHR = 4096u32 ; const MAKE_AVAILABLE = 8192u32 ; const MAKE_AVAILABLE_KHR = 8192u32 ; const MAKE_VISIBLE = 16384u32 ; const MAKE_VISIBLE_KHR = 16384u32 ; const VOLATILE = 32768u32 ; } }
-bitflags! { # [doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_access_a_memory_access)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemoryAccess : u32 { const NONE = 0u32 ; const VOLATILE = 1u32 ; const ALIGNED = 2u32 ; const NONTEMPORAL = 4u32 ; const MAKE_POINTER_AVAILABLE = 8u32 ; const MAKE_POINTER_AVAILABLE_KHR = 8u32 ; const MAKE_POINTER_VISIBLE = 16u32 ; const MAKE_POINTER_VISIBLE_KHR = 16u32 ; const NON_PRIVATE_POINTER = 32u32 ; const NON_PRIVATE_POINTER_KHR = 32u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_access_a_memory_access)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemoryAccess : u32 { const NONE = 0u32 ; const VOLATILE = 1u32 ; const ALIGNED = 2u32 ; const NONTEMPORAL = 4u32 ; const MAKE_POINTER_AVAILABLE = 8u32 ; const MAKE_POINTER_AVAILABLE_KHR = 8u32 ; const MAKE_POINTER_VISIBLE = 16u32 ; const MAKE_POINTER_VISIBLE_KHR = 16u32 ; const NON_PRIVATE_POINTER = 32u32 ; const NON_PRIVATE_POINTER_KHR = 32u32 ; const ALIAS_SCOPE_INTEL_MASK = 65536u32 ; const NO_ALIAS_INTEL_MASK = 131072u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct KernelProfilingInfo : u32 { const NONE = 0u32 ; const CMD_EXEC_TIME = 1u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [RayFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_flags_a_ray_flags)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct RayFlags : u32 { const NONE_KHR = 0u32 ; const OPAQUE_KHR = 1u32 ; const NO_OPAQUE_KHR = 2u32 ; const TERMINATE_ON_FIRST_HIT_KHR = 4u32 ; const SKIP_CLOSEST_HIT_SHADER_KHR = 8u32 ; const CULL_BACK_FACING_TRIANGLES_KHR = 16u32 ; const CULL_FRONT_FACING_TRIANGLES_KHR = 32u32 ; const CULL_OPAQUE_KHR = 64u32 ; const CULL_NO_OPAQUE_KHR = 128u32 ; const SKIP_TRIANGLES_KHR = 256u32 ; const SKIP_AAB_BS_KHR = 512u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [FragmentShadingRate](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fragment_shading_rate_a_fragment_shading_rate)"] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FragmentShadingRate : u32 { const VERTICAL2_PIXELS = 1u32 ; const VERTICAL4_PIXELS = 2u32 ; const HORIZONTAL2_PIXELS = 4u32 ; const HORIZONTAL4_PIXELS = 8u32 ; } }
@@ -1192,6 +1192,8 @@ pub enum Decoration {
     PrefetchINTEL = 5902u32,
     StallEnableINTEL = 5905u32,
     FuseLoopsInFunctionINTEL = 5907u32,
+    AliasScopeINTEL = 5914u32,
+    NoAliasINTEL = 5915u32,
     BufferLocationINTEL = 5921u32,
     IOPipeStorageINTEL = 5944u32,
     FunctionFloatingPointModeINTEL = 6080u32,
@@ -1225,6 +1227,7 @@ impl Decoration {
             5899u32..=5902u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5905u32 => unsafe { core::mem::transmute::<u32, Decoration>(5905u32) },
             5907u32 => unsafe { core::mem::transmute::<u32, Decoration>(5907u32) },
+            5914u32..=5915u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5921u32 => unsafe { core::mem::transmute::<u32, Decoration>(5921u32) },
             5944u32 => unsafe { core::mem::transmute::<u32, Decoration>(5944u32) },
             6080u32 => unsafe { core::mem::transmute::<u32, Decoration>(6080u32) },
@@ -1351,6 +1354,8 @@ impl core::str::FromStr for Decoration {
             "PrefetchINTEL" => Ok(Self::PrefetchINTEL),
             "StallEnableINTEL" => Ok(Self::StallEnableINTEL),
             "FuseLoopsInFunctionINTEL" => Ok(Self::FuseLoopsInFunctionINTEL),
+            "AliasScopeINTEL" => Ok(Self::AliasScopeINTEL),
+            "NoAliasINTEL" => Ok(Self::NoAliasINTEL),
             "BufferLocationINTEL" => Ok(Self::BufferLocationINTEL),
             "IOPipeStorageINTEL" => Ok(Self::IOPipeStorageINTEL),
             "FunctionFloatingPointModeINTEL" => Ok(Self::FunctionFloatingPointModeINTEL),
@@ -1952,6 +1957,7 @@ pub enum Capability {
     FPGAMemoryAccessesINTEL = 5898u32,
     FPGAClusterAttributesINTEL = 5904u32,
     LoopFuseINTEL = 5906u32,
+    MemoryAccessAliasingINTEL = 5910u32,
     FPGABufferLocationINTEL = 5920u32,
     ArbitraryPrecisionFixedPointINTEL = 5922u32,
     USMStorageClassesINTEL = 5935u32,
@@ -1969,6 +1975,8 @@ pub enum Capability {
     OptNoneINTEL = 6094u32,
     AtomicFloat16AddEXT = 6095u32,
     DebugInfoModuleINTEL = 6114u32,
+    SplitBarrierINTEL = 6141u32,
+    GroupUniformArithmeticKHR = 6400u32,
 }
 impl Capability {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -2031,6 +2039,7 @@ impl Capability {
             5897u32..=5898u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5904u32 => unsafe { core::mem::transmute::<u32, Capability>(5904u32) },
             5906u32 => unsafe { core::mem::transmute::<u32, Capability>(5906u32) },
+            5910u32 => unsafe { core::mem::transmute::<u32, Capability>(5910u32) },
             5920u32 => unsafe { core::mem::transmute::<u32, Capability>(5920u32) },
             5922u32 => unsafe { core::mem::transmute::<u32, Capability>(5922u32) },
             5935u32 => unsafe { core::mem::transmute::<u32, Capability>(5935u32) },
@@ -2043,6 +2052,8 @@ impl Capability {
             6089u32 => unsafe { core::mem::transmute::<u32, Capability>(6089u32) },
             6094u32..=6095u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6114u32 => unsafe { core::mem::transmute::<u32, Capability>(6114u32) },
+            6141u32 => unsafe { core::mem::transmute::<u32, Capability>(6141u32) },
+            6400u32 => unsafe { core::mem::transmute::<u32, Capability>(6400u32) },
             _ => return None,
         })
     }
@@ -2333,6 +2344,7 @@ impl core::str::FromStr for Capability {
             "FPGAMemoryAccessesINTEL" => Ok(Self::FPGAMemoryAccessesINTEL),
             "FPGAClusterAttributesINTEL" => Ok(Self::FPGAClusterAttributesINTEL),
             "LoopFuseINTEL" => Ok(Self::LoopFuseINTEL),
+            "MemoryAccessAliasingINTEL" => Ok(Self::MemoryAccessAliasingINTEL),
             "FPGABufferLocationINTEL" => Ok(Self::FPGABufferLocationINTEL),
             "ArbitraryPrecisionFixedPointINTEL" => Ok(Self::ArbitraryPrecisionFixedPointINTEL),
             "USMStorageClassesINTEL" => Ok(Self::USMStorageClassesINTEL),
@@ -2354,6 +2366,8 @@ impl core::str::FromStr for Capability {
             "OptNoneINTEL" => Ok(Self::OptNoneINTEL),
             "AtomicFloat16AddEXT" => Ok(Self::AtomicFloat16AddEXT),
             "DebugInfoModuleINTEL" => Ok(Self::DebugInfoModuleINTEL),
+            "SplitBarrierINTEL" => Ok(Self::SplitBarrierINTEL),
+            "GroupUniformArithmeticKHR" => Ok(Self::GroupUniformArithmeticKHR),
             _ => Err(()),
         }
     }
@@ -3107,6 +3121,9 @@ pub enum Op {
     ArbitraryFloatPowRINTEL = 5881u32,
     ArbitraryFloatPowNINTEL = 5882u32,
     LoopControlINTEL = 5887u32,
+    AliasDomainDeclINTEL = 5911u32,
+    AliasScopeDeclINTEL = 5912u32,
+    AliasScopeListDeclINTEL = 5913u32,
     FixedSqrtINTEL = 5923u32,
     FixedRecipINTEL = 5924u32,
     FixedRsqrtINTEL = 5925u32,
@@ -3145,6 +3162,16 @@ pub enum Op {
     TypeStructContinuedINTEL = 6090u32,
     ConstantCompositeContinuedINTEL = 6091u32,
     SpecConstantCompositeContinuedINTEL = 6092u32,
+    ControlBarrierArriveINTEL = 6142u32,
+    ControlBarrierWaitINTEL = 6143u32,
+    GroupIMulKHR = 6401u32,
+    GroupFMulKHR = 6402u32,
+    GroupBitwiseAndKHR = 6403u32,
+    GroupBitwiseOrKHR = 6404u32,
+    GroupBitwiseXorKHR = 6405u32,
+    GroupLogicalAndKHR = 6406u32,
+    GroupLogicalOrKHR = 6407u32,
+    GroupLogicalXorKHR = 6408u32,
 }
 impl Op {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -3204,6 +3231,7 @@ impl Op {
             5840u32..=5843u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5846u32..=5882u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5887u32 => unsafe { core::mem::transmute::<u32, Op>(5887u32) },
+            5911u32..=5913u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5923u32..=5934u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5938u32 => unsafe { core::mem::transmute::<u32, Op>(5938u32) },
             5946u32..=5947u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -3212,6 +3240,8 @@ impl Op {
             6035u32 => unsafe { core::mem::transmute::<u32, Op>(6035u32) },
             6086u32 => unsafe { core::mem::transmute::<u32, Op>(6086u32) },
             6090u32..=6092u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            6142u32..=6143u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            6401u32..=6408u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             _ => return None,
         })
     }
