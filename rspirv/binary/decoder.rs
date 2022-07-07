@@ -162,14 +162,10 @@ impl<'a> Decoder<'a> {
             None => &self.bytes[self.offset..],
         };
         // Find the null terminator.
-        let first_null_byte =
-            slice
-                .iter()
-                .position(|&c| c == 0)
-                .ok_or( match self.limit {
-                    Some(_) => Error::LimitReached(self.offset + slice.len()),
-                    None => Error::StreamExpected(self.offset),
-                })?;
+        let first_null_byte = slice.iter().position(|&c| c == 0).ok_or(match self.limit {
+            Some(_) => Error::LimitReached(self.offset + slice.len()),
+            None => Error::StreamExpected(self.offset),
+        })?;
         // Validate the string is utf8.
         let result = str::from_utf8(&slice[..first_null_byte])
             .map_err(|e| Error::DecodeStringFailed(self.offset, format!("{}", e)))?;
