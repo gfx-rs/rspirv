@@ -2,7 +2,6 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-#[allow(clippy::match_overlapping_arm)]
 impl LiftContext {
     pub fn lift_branch(&mut self, raw: &dr::Instruction) -> Result<ops::Branch, InstructionError> {
         let mut operands = raw.operands.iter();

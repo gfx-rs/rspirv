@@ -515,7 +515,6 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
 
     let lift_context = quote! {
-        #[allow(clippy::match_overlapping_arm)]
         impl LiftContext {
             pub fn lift_branch(
                 &mut self, raw: &dr::Instruction
