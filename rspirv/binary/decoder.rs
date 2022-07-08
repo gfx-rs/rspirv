@@ -16,7 +16,7 @@ const WORD_NUM_BYTES: usize = 4;
 /// surely consume the number of words decoded, while unsuccessful decoding
 /// may consume any number of bytes.
 ///
-/// TODO: The decoder should not conume words if an error occurs.
+/// TODO: The decoder should not consume words if an error occurs.
 ///
 /// Different from the [`Parser`](struct.Parser.html),
 /// this decoder is low-level; it has no knowledge of the SPIR-V grammar.
@@ -162,14 +162,10 @@ impl<'a> Decoder<'a> {
             None => &self.bytes[self.offset..],
         };
         // Find the null terminator.
-        let first_null_byte =
-            slice
-                .iter()
-                .position(|&c| c == 0)
-                .ok_or_else(|| match self.limit {
-                    Some(_) => Error::LimitReached(self.offset + slice.len()),
-                    None => Error::StreamExpected(self.offset),
-                })?;
+        let first_null_byte = slice.iter().position(|&c| c == 0).ok_or(match self.limit {
+            Some(_) => Error::LimitReached(self.offset + slice.len()),
+            None => Error::StreamExpected(self.offset),
+        })?;
         // Validate the string is utf8.
         let result = str::from_utf8(&slice[..first_null_byte])
             .map_err(|e| Error::DecodeStringFailed(self.offset, format!("{}", e)))?;
