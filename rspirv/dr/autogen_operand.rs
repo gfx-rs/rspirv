@@ -810,7 +810,8 @@ impl Operand {
                 | s::SourceLanguage::OpenCL_C
                 | s::SourceLanguage::OpenCL_CPP
                 | s::SourceLanguage::HLSL
-                | s::SourceLanguage::CPP_for_OpenCL => vec![],
+                | s::SourceLanguage::CPP_for_OpenCL
+                | s::SourceLanguage::SYCL => vec![],
             },
             Self::ExecutionModel(v) => match v {
                 s::ExecutionModel::Geometry => vec![spirv::Capability::Geometry],
@@ -927,13 +928,18 @@ impl Operand {
                 | s::ExecutionMode::DepthGreater
                 | s::ExecutionMode::DepthLess
                 | s::ExecutionMode::DepthUnchanged
-                | s::ExecutionMode::SubgroupUniformControlFlowKHR => {
-                    vec![spirv::Capability::Shader]
-                }
+                | s::ExecutionMode::SubgroupUniformControlFlowKHR
+                | s::ExecutionMode::EarlyAndLateFragmentTestsAMD => vec![spirv::Capability::Shader],
                 s::ExecutionMode::SignedZeroInfNanPreserve => {
                     vec![spirv::Capability::SignedZeroInfNanPreserve]
                 }
-                s::ExecutionMode::StencilRefReplacingEXT => {
+                s::ExecutionMode::StencilRefReplacingEXT
+                | s::ExecutionMode::StencilRefUnchangedFrontAMD
+                | s::ExecutionMode::StencilRefGreaterFrontAMD
+                | s::ExecutionMode::StencilRefLessFrontAMD
+                | s::ExecutionMode::StencilRefUnchangedBackAMD
+                | s::ExecutionMode::StencilRefGreaterBackAMD
+                | s::ExecutionMode::StencilRefLessBackAMD => {
                     vec![spirv::Capability::StencilExportEXT]
                 }
                 s::ExecutionMode::SubgroupSize
@@ -950,7 +956,8 @@ impl Operand {
                 | s::ExecutionMode::Quads
                 | s::ExecutionMode::Isolines => vec![spirv::Capability::Tessellation],
                 s::ExecutionMode::Xfb => vec![spirv::Capability::TransformFeedback],
-                s::ExecutionMode::SharedLocalMemorySizeINTEL => {
+                s::ExecutionMode::SharedLocalMemorySizeINTEL
+                | s::ExecutionMode::NamedBarrierCountINTEL => {
                     vec![spirv::Capability::VectorComputeINTEL]
                 }
             },
@@ -1382,6 +1389,7 @@ impl Operand {
                     spirv::Capability::PerViewAttributesNV,
                     spirv::Capability::MeshShadingNV,
                 ],
+                s::BuiltIn::CullMaskKHR => vec![spirv::Capability::RayCullMaskKHR],
                 s::BuiltIn::RayGeometryIndexKHR => vec![spirv::Capability::RayTracingKHR],
                 s::BuiltIn::CurrentRayTimeNV => vec![spirv::Capability::RayTracingMotionBlurNV],
                 s::BuiltIn::HitTNV => vec![spirv::Capability::RayTracingNV],
@@ -1551,6 +1559,7 @@ impl Operand {
                 | s::Capability::DotProductInputAll
                 | s::Capability::DotProductInput4x8BitPacked
                 | s::Capability::DotProduct
+                | s::Capability::RayCullMaskKHR
                 | s::Capability::BitInstructions
                 | s::Capability::AtomicFloat32AddEXT
                 | s::Capability::AtomicFloat64AddEXT
@@ -1572,7 +1581,10 @@ impl Operand {
                 | s::Capability::GroupNonUniformShuffle
                 | s::Capability::GroupNonUniformShuffleRelative
                 | s::Capability::GroupNonUniformClustered
-                | s::Capability::GroupNonUniformQuad => vec![spirv::Capability::GroupNonUniform],
+                | s::Capability::GroupNonUniformQuad
+                | s::Capability::GroupNonUniformRotateKHR => {
+                    vec![spirv::Capability::GroupNonUniform]
+                }
                 s::Capability::ImageReadWrite | s::Capability::ImageMipmap => {
                     vec![spirv::Capability::ImageBasic]
                 }
@@ -1774,7 +1786,8 @@ impl Operand {
                 | s::SourceLanguage::OpenCL_C
                 | s::SourceLanguage::OpenCL_CPP
                 | s::SourceLanguage::HLSL
-                | s::SourceLanguage::CPP_for_OpenCL => vec![],
+                | s::SourceLanguage::CPP_for_OpenCL
+                | s::SourceLanguage::SYCL => vec![],
             },
             Self::ExecutionModel(v) => match v {
                 s::ExecutionModel::Vertex
@@ -1852,7 +1865,20 @@ impl Operand {
                 | s::ExecutionMode::RoundingModeRTNINTEL
                 | s::ExecutionMode::FloatingPointModeALTINTEL
                 | s::ExecutionMode::FloatingPointModeIEEEINTEL
-                | s::ExecutionMode::SchedulerTargetFmaxMhzINTEL => vec![],
+                | s::ExecutionMode::SchedulerTargetFmaxMhzINTEL
+                | s::ExecutionMode::NamedBarrierCountINTEL => vec![],
+                s::ExecutionMode::EarlyAndLateFragmentTestsAMD => {
+                    vec!["SPV_AMD_shader_early_and_late_fragment_tests"]
+                }
+                s::ExecutionMode::StencilRefUnchangedFrontAMD
+                | s::ExecutionMode::StencilRefGreaterFrontAMD
+                | s::ExecutionMode::StencilRefLessFrontAMD
+                | s::ExecutionMode::StencilRefUnchangedBackAMD
+                | s::ExecutionMode::StencilRefGreaterBackAMD
+                | s::ExecutionMode::StencilRefLessBackAMD => vec![
+                    "SPV_AMD_shader_early_and_late_fragment_tests",
+                    "SPV_EXT_shader_stencil_export",
+                ],
                 s::ExecutionMode::PixelInterlockOrderedEXT
                 | s::ExecutionMode::PixelInterlockUnorderedEXT
                 | s::ExecutionMode::SampleInterlockOrderedEXT
@@ -2249,6 +2275,7 @@ impl Operand {
                     vec!["SPV_KHR_fragment_shading_rate"]
                 }
                 s::BuiltIn::ViewIndex => vec!["SPV_KHR_multiview"],
+                s::BuiltIn::CullMaskKHR => vec!["SPV_KHR_ray_cull_mask"],
                 s::BuiltIn::RayGeometryIndexKHR => vec!["SPV_KHR_ray_tracing"],
                 s::BuiltIn::BaseVertex | s::BuiltIn::BaseInstance => {
                     vec!["SPV_KHR_shader_draw_parameters"]
@@ -2524,6 +2551,7 @@ impl Operand {
                 s::Capability::FragmentShadingRateKHR => vec!["SPV_KHR_fragment_shading_rate"],
                 s::Capability::MultiView => vec!["SPV_KHR_multiview"],
                 s::Capability::SampleMaskPostDepthCoverage => vec!["SPV_KHR_post_depth_coverage"],
+                s::Capability::RayCullMaskKHR => vec!["SPV_KHR_ray_cull_mask"],
                 s::Capability::RayQueryProvisionalKHR | s::Capability::RayQueryKHR => {
                     vec!["SPV_KHR_ray_query"]
                 }
@@ -2537,6 +2565,7 @@ impl Operand {
                 s::Capability::SubgroupBallotKHR => vec!["SPV_KHR_shader_ballot"],
                 s::Capability::ShaderClockKHR => vec!["SPV_KHR_shader_clock"],
                 s::Capability::DrawParameters => vec!["SPV_KHR_shader_draw_parameters"],
+                s::Capability::GroupNonUniformRotateKHR => vec!["SPV_KHR_subgroup_rotate"],
                 s::Capability::SubgroupVoteKHR => vec!["SPV_KHR_subgroup_vote"],
                 s::Capability::GroupUniformArithmeticKHR => {
                     vec!["SPV_KHR_uniform_group_instructions"]
@@ -2778,6 +2807,10 @@ impl Operand {
                         quantifier: crate::grammar::OperandQuantifier::One,
                     },
                 ],
+                s::ExecutionMode::NamedBarrierCountINTEL => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::LiteralInteger,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
                 s::ExecutionMode::Invocations => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,

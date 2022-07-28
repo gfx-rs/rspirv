@@ -31,11 +31,12 @@ pub enum SourceLanguage {
     OpenCL_CPP = 4u32,
     HLSL = 5u32,
     CPP_for_OpenCL = 6u32,
+    SYCL = 7u32,
 }
 impl SourceLanguage {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
-            0u32..=6u32 => unsafe { core::mem::transmute::<u32, SourceLanguage>(n) },
+            0u32..=7u32 => unsafe { core::mem::transmute::<u32, SourceLanguage>(n) },
             _ => return None,
         })
     }
@@ -53,6 +54,7 @@ impl core::str::FromStr for SourceLanguage {
             "OpenCL_CPP" => Ok(Self::OpenCL_CPP),
             "HLSL" => Ok(Self::HLSL),
             "CPP_for_OpenCL" => Ok(Self::CPP_for_OpenCL),
+            "SYCL" => Ok(Self::SYCL),
             _ => Err(()),
         }
     }
@@ -255,7 +257,14 @@ pub enum ExecutionMode {
     SignedZeroInfNanPreserve = 4461u32,
     RoundingModeRTE = 4462u32,
     RoundingModeRTZ = 4463u32,
+    EarlyAndLateFragmentTestsAMD = 5017u32,
     StencilRefReplacingEXT = 5027u32,
+    StencilRefUnchangedFrontAMD = 5079u32,
+    StencilRefGreaterFrontAMD = 5080u32,
+    StencilRefLessFrontAMD = 5081u32,
+    StencilRefUnchangedBackAMD = 5082u32,
+    StencilRefGreaterBackAMD = 5083u32,
+    StencilRefLessBackAMD = 5084u32,
     OutputLinesNV = 5269u32,
     OutputPrimitivesNV = 5270u32,
     DerivativeGroupQuadsNV = 5289u32,
@@ -277,6 +286,7 @@ pub enum ExecutionMode {
     NoGlobalOffsetINTEL = 5895u32,
     NumSIMDWorkitemsINTEL = 5896u32,
     SchedulerTargetFmaxMhzINTEL = 5903u32,
+    NamedBarrierCountINTEL = 6417u32,
 }
 impl ExecutionMode {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -287,7 +297,9 @@ impl ExecutionMode {
             4421u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(4421u32) },
             4446u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(4446u32) },
             4459u32..=4463u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
+            5017u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5017u32) },
             5027u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5027u32) },
+            5079u32..=5084u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5269u32..=5270u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5289u32..=5290u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5298u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5298u32) },
@@ -296,6 +308,7 @@ impl ExecutionMode {
             5620u32..=5623u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5893u32..=5896u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5903u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5903u32) },
+            6417u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(6417u32) },
             _ => return None,
         })
     }
@@ -351,7 +364,14 @@ impl core::str::FromStr for ExecutionMode {
             "SignedZeroInfNanPreserve" => Ok(Self::SignedZeroInfNanPreserve),
             "RoundingModeRTE" => Ok(Self::RoundingModeRTE),
             "RoundingModeRTZ" => Ok(Self::RoundingModeRTZ),
+            "EarlyAndLateFragmentTestsAMD" => Ok(Self::EarlyAndLateFragmentTestsAMD),
             "StencilRefReplacingEXT" => Ok(Self::StencilRefReplacingEXT),
+            "StencilRefUnchangedFrontAMD" => Ok(Self::StencilRefUnchangedFrontAMD),
+            "StencilRefGreaterFrontAMD" => Ok(Self::StencilRefGreaterFrontAMD),
+            "StencilRefLessFrontAMD" => Ok(Self::StencilRefLessFrontAMD),
+            "StencilRefUnchangedBackAMD" => Ok(Self::StencilRefUnchangedBackAMD),
+            "StencilRefGreaterBackAMD" => Ok(Self::StencilRefGreaterBackAMD),
+            "StencilRefLessBackAMD" => Ok(Self::StencilRefLessBackAMD),
             "OutputLinesNV" => Ok(Self::OutputLinesNV),
             "OutputPrimitivesNV" => Ok(Self::OutputPrimitivesNV),
             "DerivativeGroupQuadsNV" => Ok(Self::DerivativeGroupQuadsNV),
@@ -373,6 +393,7 @@ impl core::str::FromStr for ExecutionMode {
             "NoGlobalOffsetINTEL" => Ok(Self::NoGlobalOffsetINTEL),
             "NumSIMDWorkitemsINTEL" => Ok(Self::NumSIMDWorkitemsINTEL),
             "SchedulerTargetFmaxMhzINTEL" => Ok(Self::SchedulerTargetFmaxMhzINTEL),
+            "NamedBarrierCountINTEL" => Ok(Self::NamedBarrierCountINTEL),
             _ => Err(()),
         }
     }
@@ -1472,6 +1493,7 @@ pub enum BuiltIn {
     SMCountNV = 5375u32,
     WarpIDNV = 5376u32,
     SMIDNV = 5377u32,
+    CullMaskKHR = 6021u32,
 }
 impl BuiltIn {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -1499,6 +1521,7 @@ impl BuiltIn {
             5330u32..=5334u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(n) },
             5351u32..=5352u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(n) },
             5374u32..=5377u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(n) },
+            6021u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(6021u32) },
             _ => return None,
         })
     }
@@ -1653,6 +1676,7 @@ impl core::str::FromStr for BuiltIn {
             "SMCountNV" => Ok(Self::SMCountNV),
             "WarpIDNV" => Ok(Self::WarpIDNV),
             "SMIDNV" => Ok(Self::SMIDNV),
+            "CullMaskKHR" => Ok(Self::CullMaskKHR),
             _ => Err(()),
         }
     }
@@ -1968,7 +1992,9 @@ pub enum Capability {
     DotProductInput4x8Bit = 6017u32,
     DotProductInput4x8BitPacked = 6018u32,
     DotProduct = 6019u32,
+    RayCullMaskKHR = 6020u32,
     BitInstructions = 6025u32,
+    GroupNonUniformRotateKHR = 6026u32,
     AtomicFloat32AddEXT = 6033u32,
     AtomicFloat64AddEXT = 6034u32,
     LongConstantCompositeINTEL = 6089u32,
@@ -2046,8 +2072,8 @@ impl Capability {
             5943u32 => unsafe { core::mem::transmute::<u32, Capability>(5943u32) },
             5945u32 => unsafe { core::mem::transmute::<u32, Capability>(5945u32) },
             5948u32 => unsafe { core::mem::transmute::<u32, Capability>(5948u32) },
-            6016u32..=6019u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
-            6025u32 => unsafe { core::mem::transmute::<u32, Capability>(6025u32) },
+            6016u32..=6020u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            6025u32..=6026u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6033u32..=6034u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6089u32 => unsafe { core::mem::transmute::<u32, Capability>(6089u32) },
             6094u32..=6095u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2359,7 +2385,9 @@ impl core::str::FromStr for Capability {
             "DotProductInput4x8BitPackedKHR" => Ok(Self::DotProductInput4x8BitPacked),
             "DotProduct" => Ok(Self::DotProduct),
             "DotProductKHR" => Ok(Self::DotProduct),
+            "RayCullMaskKHR" => Ok(Self::RayCullMaskKHR),
             "BitInstructions" => Ok(Self::BitInstructions),
+            "GroupNonUniformRotateKHR" => Ok(Self::GroupNonUniformRotateKHR),
             "AtomicFloat32AddEXT" => Ok(Self::AtomicFloat32AddEXT),
             "AtomicFloat64AddEXT" => Ok(Self::AtomicFloat64AddEXT),
             "LongConstantCompositeINTEL" => Ok(Self::LongConstantCompositeINTEL),
@@ -2866,6 +2894,7 @@ pub enum Op {
     SubgroupAllKHR = 4428u32,
     SubgroupAnyKHR = 4429u32,
     SubgroupAllEqualKHR = 4430u32,
+    GroupNonUniformRotateKHR = 4431u32,
     SubgroupReadInvocationKHR = 4432u32,
     TraceRayKHR = 4445u32,
     ExecuteCallableKHR = 4446u32,
@@ -3201,8 +3230,7 @@ impl Op {
             400u32..=403u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4416u32 => unsafe { core::mem::transmute::<u32, Op>(4416u32) },
             4421u32..=4422u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            4428u32..=4430u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            4432u32 => unsafe { core::mem::transmute::<u32, Op>(4432u32) },
+            4428u32..=4432u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4445u32..=4455u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4472u32..=4477u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4479u32 => unsafe { core::mem::transmute::<u32, Op>(4479u32) },

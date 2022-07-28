@@ -12332,6 +12332,63 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpGroupNonUniformRotateKHR instruction to the current block."]
+    pub fn group_non_uniform_rotate_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        value: spirv::Word,
+        delta: spirv::Word,
+        cluster_size: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupNonUniformRotateKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdRef(value),
+                dr::Operand::IdRef(delta),
+            ],
+        );
+        if let Some(v) = cluster_size {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupNonUniformRotateKHR instruction to the current block."]
+    pub fn insert_group_non_uniform_rotate_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        execution: spirv::Word,
+        value: spirv::Word,
+        delta: spirv::Word,
+        cluster_size: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupNonUniformRotateKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdScope(execution),
+                dr::Operand::IdRef(value),
+                dr::Operand::IdRef(delta),
+            ],
+        );
+        if let Some(v) = cluster_size {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpSubgroupReadInvocationKHR instruction to the current block."]
     pub fn subgroup_read_invocation_khr(
         &mut self,

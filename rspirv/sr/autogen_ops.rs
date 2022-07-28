@@ -1342,6 +1342,12 @@ pub enum Op {
     SubgroupAllEqualKHR {
         predicate: spirv::Word,
     },
+    GroupNonUniformRotateKHR {
+        execution: spirv::Word,
+        value: spirv::Word,
+        delta: spirv::Word,
+        cluster_size: Option<spirv::Word>,
+    },
     SubgroupReadInvocationKHR {
         value: spirv::Word,
         index: spirv::Word,

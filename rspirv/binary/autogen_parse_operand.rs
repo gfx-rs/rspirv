@@ -354,6 +354,9 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::ExecutionMode::SchedulerTargetFmaxMhzINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::NamedBarrierCountINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
             _ => vec![],
         })
     }

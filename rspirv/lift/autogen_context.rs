@@ -5235,6 +5235,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            4431u32 => Ok(ops::Op::GroupNonUniformRotateKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdScope(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                value: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                delta: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                cluster_size: match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
             4432u32 => Ok(ops::Op::SubgroupReadInvocationKHR {
                 value: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),

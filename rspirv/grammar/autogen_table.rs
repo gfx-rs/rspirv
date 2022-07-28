@@ -3260,6 +3260,19 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        GroupNonUniformRotateKHR,
+        [GroupNonUniformRotateKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne)
+        ]
+    ),
+    inst!(
         SubgroupReadInvocationKHR,
         [SubgroupBallotKHR],
         ["SPV_KHR_shader_ballot"],
