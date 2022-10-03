@@ -34,7 +34,7 @@ impl Error {
     /// This method is intended to be used by fmt::Display and error::Error to
     /// avoid duplication in implementation. So it's private.
     fn describe(&self) -> Cow<'static, str> {
-        match &*self {
+        match self {
             Error::NestedFunction => Cow::Borrowed("found nested function"),
             Error::UnclosedFunction => Cow::Borrowed("found unclosed function"),
             Error::MismatchedFunctionEnd => Cow::Borrowed("found mismatched OpFunctionEnd"),
