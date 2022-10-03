@@ -54,7 +54,7 @@ pub fn gen_operand_decode_errors(grammar: &[structs::OperandKind]) -> TokenStrea
         use std::{error, fmt};
 
         #[doc = "Decoder Error"]
-        #[derive(Debug, PartialEq)]
+        #[derive(Debug, PartialEq, Eq)]
         #[allow(clippy::upper_case_acronyms)]
         pub enum Error {
             StreamExpected(usize),

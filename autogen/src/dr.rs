@@ -857,7 +857,7 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
         }
     });
     quote! {
-        #[allow(clippy::identity_conversion, clippy::too_many_arguments)]
+        #[allow(clippy::useless_conversion, clippy::too_many_arguments)]
         impl Builder {
             #(#elements)*
         }
