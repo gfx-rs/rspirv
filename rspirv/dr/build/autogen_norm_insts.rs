@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-#[allow(clippy::identity_conversion, clippy::too_many_arguments)]
+#[allow(clippy::useless_conversion, clippy::too_many_arguments)]
 impl Builder {
     #[doc = "Appends an OpNop instruction to the current block."]
     pub fn nop(&mut self) -> BuildResult<()> {
