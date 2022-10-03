@@ -17,7 +17,7 @@ pub trait Assemble {
 
 impl Assemble for dr::ModuleHeader {
     fn assemble_into(&self, result: &mut Vec<u32>) {
-        result.extend(&[
+        result.extend([
             self.magic_number,
             self.version,
             self.generator,
@@ -74,10 +74,10 @@ impl Assemble for dr::Operand {
             | Self::IdRef(v)
             | Self::LiteralInt32(v)
             | Self::LiteralExtInstInteger(v) => result.push(v),
-            Self::LiteralInt64(v) => result.extend(&[v as u32, (v >> 32) as u32]),
+            Self::LiteralInt64(v) => result.extend([v as u32, (v >> 32) as u32]),
             Self::LiteralFloat32(v) => result.push(v.to_bits()),
             Self::LiteralFloat64(v) => {
-                result.extend(&[v.to_bits() as u32, (v.to_bits() >> 32) as u32])
+                result.extend([v.to_bits() as u32, (v.to_bits() >> 32) as u32])
             }
             Self::LiteralSpecConstantOpInteger(v) => result.push(v as u32),
             Self::LiteralString(ref v) => assemble_str(v, result),

@@ -938,7 +938,7 @@ mod tests {
             + module.debug_names.len()
             + module.debug_module_processed.len()
             + module.annotations.len())
-            + (if module.memory_model.is_some() { 1 } else { 0 })
+            + (usize::from(module.memory_model.is_some()))
             == 1
     }
 
