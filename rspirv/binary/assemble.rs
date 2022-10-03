@@ -72,13 +72,9 @@ impl Assemble for dr::Operand {
             Self::IdMemorySemantics(v)
             | Self::IdScope(v)
             | Self::IdRef(v)
-            | Self::LiteralInt32(v)
+            | Self::LiteralBit32(v)
             | Self::LiteralExtInstInteger(v) => result.push(v),
-            Self::LiteralInt64(v) => result.extend([v as u32, (v >> 32) as u32]),
-            Self::LiteralFloat32(v) => result.push(v.to_bits()),
-            Self::LiteralFloat64(v) => {
-                result.extend([v.to_bits() as u32, (v.to_bits() >> 32) as u32])
-            }
+            Self::LiteralBit64(v) => result.extend([v as u32, (v >> 32) as u32]),
             Self::LiteralSpecConstantOpInteger(v) => result.push(v as u32),
             Self::LiteralString(ref v) => assemble_str(v, result),
             Self::RayFlags(ref v) => result.push(v.bits()),
@@ -255,7 +251,7 @@ mod tests {
     // No result type, having result id
     #[test]
     fn test_assemble_inst_type_int() {
-        let operands = vec![dr::Operand::LiteralInt32(32), dr::Operand::LiteralInt32(1)];
+        let operands = vec![dr::Operand::LiteralBit32(32), dr::Operand::LiteralBit32(1)];
         assert_eq!(
             vec![wc_op(4, spirv::Op::TypeInt), 42, 32, 1],
             dr::Instruction::new(spirv::Op::TypeInt, None, Some(42), operands).assemble()

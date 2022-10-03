@@ -82,7 +82,7 @@ pub struct Block {
 }
 
 /// Data representation of a SPIR-V instruction.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Instruction {
     /// The class (grammar specification) of this instruction.
     pub class: &'static grammar::Instruction<'static>,
@@ -340,18 +340,18 @@ mod tests {
 
     #[test]
     fn test_convert_from_numbers() {
-        assert_eq!(dr::Operand::LiteralInt32(16u32), dr::Operand::from(16u32));
+        assert_eq!(dr::Operand::LiteralBit32(16u32), dr::Operand::from(16u32));
         assert_eq!(
-            dr::Operand::LiteralInt64(128934u64),
+            dr::Operand::LiteralBit64(128934u64),
             dr::Operand::from(128934u64)
         );
         assert_eq!(
-            dr::Operand::LiteralFloat32(std::f32::consts::PI),
-            dr::Operand::from(std::f32::consts::PI)
+            dr::Operand::LiteralBit32(std::f32::consts::PI.to_bits()),
+            dr::Operand::from(std::f32::consts::PI.to_bits())
         );
         assert_eq!(
-            dr::Operand::LiteralFloat64(10.4235f64),
-            dr::Operand::from(10.4235f64)
+            dr::Operand::LiteralBit64(10.4235f64.to_bits()),
+            dr::Operand::from(10.4235f64.to_bits())
         );
     }
 
@@ -397,6 +397,6 @@ mod tests {
             "INLINE",
         );
         assert_eq!(format!("{}", dr::Operand::IdRef(3)), "%3");
-        assert_eq!(format!("{}", dr::Operand::LiteralInt32(3)), "3");
+        assert_eq!(format!("{}", dr::Operand::LiteralBit32(3)), "3");
     }
 }

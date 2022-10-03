@@ -467,7 +467,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(structure),
-                dr::Operand::LiteralInt32(array_member),
+                dr::Operand::LiteralBit32(array_member),
             ],
         );
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -490,7 +490,7 @@ impl Builder {
             Some(_id),
             vec![
                 dr::Operand::IdRef(structure),
-                dr::Operand::LiteralInt32(array_member),
+                dr::Operand::LiteralBit32(array_member),
             ],
         );
         self.insert_into_block(insert_point, inst)?;
@@ -684,7 +684,7 @@ impl Builder {
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
         inst.operands
-            .extend(components.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(components.into_iter().map(dr::Operand::LiteralBit32));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -707,7 +707,7 @@ impl Builder {
             vec![dr::Operand::IdRef(vector_1), dr::Operand::IdRef(vector_2)],
         );
         inst.operands
-            .extend(components.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(components.into_iter().map(dr::Operand::LiteralBit32));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -769,7 +769,7 @@ impl Builder {
             vec![dr::Operand::IdRef(composite)],
         );
         inst.operands
-            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(indexes.into_iter().map(dr::Operand::LiteralBit32));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -791,7 +791,7 @@ impl Builder {
             vec![dr::Operand::IdRef(composite)],
         );
         inst.operands
-            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(indexes.into_iter().map(dr::Operand::LiteralBit32));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -813,7 +813,7 @@ impl Builder {
             vec![dr::Operand::IdRef(object), dr::Operand::IdRef(composite)],
         );
         inst.operands
-            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(indexes.into_iter().map(dr::Operand::LiteralBit32));
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
@@ -836,7 +836,7 @@ impl Builder {
             vec![dr::Operand::IdRef(object), dr::Operand::IdRef(composite)],
         );
         inst.operands
-            .extend(indexes.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(indexes.into_iter().map(dr::Operand::LiteralBit32));
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
@@ -10013,9 +10013,9 @@ impl Builder {
             Some(result_type),
             Some(_id),
             vec![
-                dr::Operand::LiteralInt32(packet_size),
-                dr::Operand::LiteralInt32(packet_alignment),
-                dr::Operand::LiteralInt32(capacity),
+                dr::Operand::LiteralBit32(packet_size),
+                dr::Operand::LiteralBit32(packet_alignment),
+                dr::Operand::LiteralBit32(capacity),
             ],
         );
         self.insert_into_block(InsertPoint::End, inst)?;
@@ -10038,9 +10038,9 @@ impl Builder {
             Some(result_type),
             Some(_id),
             vec![
-                dr::Operand::LiteralInt32(packet_size),
-                dr::Operand::LiteralInt32(packet_alignment),
-                dr::Operand::LiteralInt32(capacity),
+                dr::Operand::LiteralBit32(packet_size),
+                dr::Operand::LiteralBit32(packet_alignment),
+                dr::Operand::LiteralBit32(capacity),
             ],
         );
         self.insert_into_block(insert_point, inst)?;
@@ -15790,7 +15790,7 @@ impl Builder {
         inst.operands.extend(
             loop_control_parameters
                 .into_iter()
-                .map(dr::Operand::LiteralInt32),
+                .map(dr::Operand::LiteralBit32),
         );
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(())
@@ -15806,7 +15806,7 @@ impl Builder {
         inst.operands.extend(
             loop_control_parameters
                 .into_iter()
-                .map(dr::Operand::LiteralInt32),
+                .map(dr::Operand::LiteralBit32),
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(())

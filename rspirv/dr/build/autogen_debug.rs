@@ -29,7 +29,7 @@ impl Builder {
             None,
             vec![
                 dr::Operand::SourceLanguage(source_language),
-                dr::Operand::LiteralInt32(version),
+                dr::Operand::LiteralBit32(version),
             ],
         );
         if let Some(v) = file {
@@ -74,7 +74,7 @@ impl Builder {
             None,
             vec![
                 dr::Operand::IdRef(ty),
-                dr::Operand::LiteralInt32(member),
+                dr::Operand::LiteralBit32(member),
                 dr::Operand::LiteralString(name.into()),
             ],
         );

@@ -108,7 +108,7 @@ impl OperandTokens {
             "LiteralInteger" => (
                 quote! { u32 },
                 quote! { *value },
-                OperandTy::Single("LiteralInt32"),
+                OperandTy::Single("LiteralBit32"),
             ),
             "LiteralExtInstInteger" => (
                 quote! { u32 },
@@ -134,7 +134,7 @@ impl OperandTokens {
                 quote! { (u32, Jump) },
                 quote! { (first, self.lookup_jump(second)) },
                 OperandTy::Pair {
-                    first: "LiteralInt32",
+                    first: "LiteralBit32",
                     second: "IdRef",
                 },
             ),
@@ -143,7 +143,7 @@ impl OperandTokens {
                 quote! { (self.lookup_jump(first), second) },
                 OperandTy::Pair {
                     first: "IdRef",
-                    second: "LiteralInt32",
+                    second: "LiteralBit32",
                 },
             ),
             "PairIdRefIdRef" => (

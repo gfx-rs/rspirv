@@ -180,33 +180,17 @@ impl<'a> Decoder<'a> {
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
-    /// literal integer.
-    pub fn int32(&mut self) -> Result<u32> {
+    /// literal bit pattern.
+    pub fn bit32(&mut self) -> Result<u32> {
         self.word()
     }
 
     /// Decodes and returns the next two SPIR-V words as a 64-bit
-    /// literal integer.
-    pub fn int64(&mut self) -> Result<u64> {
+    /// literal bit pattern.
+    pub fn bit64(&mut self) -> Result<u64> {
         let low = u64::from(self.word()?);
         let high = u64::from(self.word()?);
         Ok((high << 32) | low)
-    }
-
-    /// Decodes and returns the next SPIR-V word as a 32-bit
-    /// literal floating point number.
-    pub fn float32(&mut self) -> Result<f32> {
-        let val = self.word()?;
-        Ok(f32::from_bits(val))
-    }
-
-    /// Decodes and returns the next two SPIR-V words as a 64-bit
-    /// literal floating point number.
-    pub fn float64(&mut self) -> Result<f64> {
-        let low = u64::from(self.word()?);
-        let high = u64::from(self.word()?);
-        let val = (high << 32) | low;
-        Ok(f64::from_bits(val))
     }
 
     /// Decodes and returns the next SPIR-V word as a 32-bit
@@ -397,31 +381,32 @@ mod tests {
     }
 
     #[test]
-    fn test_decode_int64() {
-        let b = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef];
+    fn test_decode_bit32() {
+        let b = [0x12, 0x34, 0x56, 0x78];
         let mut d = Decoder::new(&b);
-        assert_eq!(Ok(0xefcdab9078563412), d.int64());
-    }
+        assert_eq!(Ok(0x78563412), d.bit32());
 
-    #[test]
-    fn test_decode_float32() {
         let b = [0x14, 0xAE, 0x29, 0x42];
         let mut d = Decoder::new(&b);
-        assert_eq!(Ok(42.42), d.float32());
+        assert_eq!(Ok(42.42f32.to_bits()), d.bit32());
 
         let b = [0xA4, 0x70, 0x45, 0xC1];
         let mut d = Decoder::new(&b);
-        assert_eq!(Ok(-12.34), d.float32());
+        assert_eq!(Ok((-12.34f32).to_bits()), d.bit32());
     }
 
     #[test]
-    fn test_decode_float64() {
+    fn test_decode_bit64() {
+        let b = [0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef];
+        let mut d = Decoder::new(&b);
+        assert_eq!(Ok(0xefcdab9078563412), d.bit64());
+
         let b = [0xF6, 0x28, 0x5C, 0x8F, 0xC2, 0x35, 0x45, 0x40];
         let mut d = Decoder::new(&b);
-        assert_eq!(Ok(42.42), d.float64());
+        assert_eq!(Ok(42.42f64.to_bits()), d.bit64());
 
         let b = [0xAE, 0x47, 0xE1, 0x7A, 0x14, 0xAE, 0x28, 0xC0];
         let mut d = Decoder::new(&b);
-        assert_eq!(Ok(-12.34), d.float64());
+        assert_eq!(Ok((-12.34f64).to_bits()), d.bit64());
     }
 }

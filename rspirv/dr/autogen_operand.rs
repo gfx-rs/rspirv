@@ -3,7 +3,7 @@
 // DO NOT MODIFY!
 
 #[doc = "Data representation of a SPIR-V operand."]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum Operand {
     ImageOperands(spirv::ImageOperands),
@@ -49,10 +49,8 @@ pub enum Operand {
     IdMemorySemantics(spirv::Word),
     IdScope(spirv::Word),
     IdRef(spirv::Word),
-    LiteralInt32(u32),
-    LiteralInt64(u64),
-    LiteralFloat32(f32),
-    LiteralFloat64(f64),
+    LiteralBit32(u32),
+    LiteralBit64(u64),
     LiteralExtInstInteger(u32),
     LiteralSpecConstantOpInteger(spirv::Op),
     LiteralString(String),
@@ -259,22 +257,12 @@ impl From<spirv::PackedVectorFormat> for Operand {
 }
 impl From<u32> for Operand {
     fn from(o: u32) -> Self {
-        Self::LiteralInt32(o)
+        Self::LiteralBit32(o)
     }
 }
 impl From<u64> for Operand {
     fn from(o: u64) -> Self {
-        Self::LiteralInt64(o)
-    }
-}
-impl From<f32> for Operand {
-    fn from(o: f32) -> Self {
-        Self::LiteralFloat32(o)
-    }
-}
-impl From<f64> for Operand {
-    fn from(o: f64) -> Self {
-        Self::LiteralFloat64(o)
+        Self::LiteralBit64(o)
     }
 }
 impl From<spirv::Op> for Operand {
@@ -336,10 +324,8 @@ impl fmt::Display for Operand {
             Operand::LiteralString(ref v) => write!(f, "{:?}", v),
             Operand::LiteralExtInstInteger(ref v) => write!(f, "{:?}", v),
             Operand::LiteralSpecConstantOpInteger(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralInt32(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralInt64(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralFloat32(ref v) => write!(f, "{:?}", v),
-            Operand::LiteralFloat64(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralBit32(ref v) => write!(f, "{:?}", v),
+            Operand::LiteralBit64(ref v) => write!(f, "{:?}", v),
         }
     }
 }
@@ -636,28 +622,16 @@ impl Operand {
             ref other => panic!("Expected Operand::IdRef, got {} instead", other),
         }
     }
-    pub fn unwrap_literal_int32(&self) -> u32 {
+    pub fn unwrap_literal_bit32(&self) -> u32 {
         match *self {
-            Self::LiteralInt32(v) => v,
-            ref other => panic!("Expected Operand::LiteralInt32, got {} instead", other),
+            Self::LiteralBit32(v) => v,
+            ref other => panic!("Expected Operand::LiteralBit32, got {} instead", other),
         }
     }
-    pub fn unwrap_literal_int64(&self) -> u64 {
+    pub fn unwrap_literal_bit64(&self) -> u64 {
         match *self {
-            Self::LiteralInt64(v) => v,
-            ref other => panic!("Expected Operand::LiteralInt64, got {} instead", other),
-        }
-    }
-    pub fn unwrap_literal_float32(&self) -> f32 {
-        match *self {
-            Self::LiteralFloat32(v) => v,
-            ref other => panic!("Expected Operand::LiteralFloat32, got {} instead", other),
-        }
-    }
-    pub fn unwrap_literal_float64(&self) -> f64 {
-        match *self {
-            Self::LiteralFloat64(v) => v,
-            ref other => panic!("Expected Operand::LiteralFloat64, got {} instead", other),
+            Self::LiteralBit64(v) => v,
+            ref other => panic!("Expected Operand::LiteralBit64, got {} instead", other),
         }
     }
     pub fn unwrap_literal_ext_inst_integer(&self) -> u32 {

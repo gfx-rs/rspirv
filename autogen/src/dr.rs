@@ -182,7 +182,7 @@ fn get_push_extras(
                         Some(quote! {
                             for v in #name {
                                 #container.push(dr::Operand::IdRef(v.0));
-                                #container.push(dr::Operand::LiteralInt32(v.1));
+                                #container.push(dr::Operand::LiteralBit32(v.1));
                             }
                         })
                     } else if param.kind == "PairIdRefIdRef" {
@@ -222,7 +222,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         .filter(|element| {
             // Pair kinds are not used in dr::Operand.
             // LiteralContextDependentNumber is replaced by suitable literals.
-            // LiteralInteger is replaced by LiteralInt32.
+            // LiteralInteger is replaced by LiteralBit32.
             // IdResult and IdResultType are not stored as operands in `dr`.
             !(element.starts_with("Pair")
                 || matches!(
@@ -254,10 +254,8 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
             .map(|element| (element.clone(), quote! { spirv::Word }));
 
         let num_kinds = vec![
-            (format_ident!("LiteralInt32"), quote! {u32}),
-            (format_ident!("LiteralInt64"), quote! {u64}),
-            (format_ident!("LiteralFloat32"), quote! {f32}),
-            (format_ident!("LiteralFloat64"), quote! {f64}),
+            (format_ident!("LiteralBit32"), quote! {u32}),
+            (format_ident!("LiteralBit64"), quote! {u64}),
             (format_ident!("LiteralExtInstInteger"), quote! {u32}),
             (
                 format_ident!("LiteralSpecConstantOpInteger"),
@@ -310,7 +308,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         });
         quote! {
             #[doc = "Data representation of a SPIR-V operand."]
-            #[derive(Clone, Debug, PartialEq)]
+            #[derive(Clone, Debug, PartialEq, Eq, Hash)]
             #[allow(clippy::upper_case_acronyms)]
             pub enum Operand {
                 #(#kinds,)*
@@ -336,15 +334,10 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         // impl fmt::Display for dr::Operand.
         let mut kinds = kinds;
         kinds.extend(
-            [
-                "LiteralInt32",
-                "LiteralInt64",
-                "LiteralFloat32",
-                "LiteralFloat64",
-            ]
-            .iter()
-            .cloned()
-            .map(as_ident),
+            ["LiteralBit32", "LiteralBit64"]
+                .iter()
+                .cloned()
+                .map(as_ident),
         );
         let cases = kinds.iter().map(|element| {
             if element == "Dim" {

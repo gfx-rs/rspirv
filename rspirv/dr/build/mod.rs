@@ -569,7 +569,7 @@ impl Builder {
             dr::Operand::ExecutionMode(execution_mode),
         ];
         for v in params.as_ref() {
-            operands.push(dr::Operand::LiteralInt32(*v));
+            operands.push(dr::Operand::LiteralBit32(*v));
         }
 
         let inst = dr::Instruction::new(spirv::Op::ExecutionMode, None, None, operands);
@@ -588,7 +588,7 @@ impl Builder {
             dr::Operand::ExecutionMode(execution_mode),
         ];
         for v in params.as_ref() {
-            operands.push(dr::Operand::LiteralInt32(*v));
+            operands.push(dr::Operand::LiteralBit32(*v));
         }
 
         let inst = dr::Instruction::new(spirv::Op::ExecutionModeId, None, None, operands);
@@ -625,8 +625,8 @@ impl Builder {
             None,
             vec![
                 dr::Operand::IdRef(file),
-                dr::Operand::LiteralInt32(line),
-                dr::Operand::LiteralInt32(column),
+                dr::Operand::LiteralBit32(line),
+                dr::Operand::LiteralBit32(column),
             ],
         );
         if self.selected_block.is_some() {
@@ -749,109 +749,55 @@ impl Builder {
         id
     }
 
-    /// Appends an OpConstant instruction with the given 32-bit float `value`.
+    /// Appends an OpConstant instruction with the given 32-bit bit pattern `value`.
     /// or the module if no block is under construction.
-    pub fn constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
+    pub fn constant_bit32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
             spirv::Op::Constant,
             Some(result_type),
             Some(id),
-            vec![dr::Operand::LiteralFloat32(value)],
+            vec![dr::Operand::LiteralBit32(value)],
         );
         self.module.types_global_values.push(inst);
         id
     }
 
-    /// Appends an OpConstant instruction with the given 64-bit float `value`.
-    pub fn constant_f64(&mut self, result_type: spirv::Word, value: f64) -> spirv::Word {
+    /// Appends an OpConstant instruction with the given 64-bit bit pattern `value`.
+    pub fn constant_bit64(&mut self, result_type: spirv::Word, value: u64) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
             spirv::Op::Constant,
             Some(result_type),
             Some(id),
-            vec![dr::Operand::LiteralFloat64(value)],
+            vec![dr::Operand::LiteralBit64(value)],
         );
         self.module.types_global_values.push(inst);
         id
     }
 
-    /// Appends an OpConstant instruction with the given 32-bit integer `value`.
+    /// Appends an OpSpecConstant instruction with the given 32-bit bit pattern `value`.
     /// or the module if no block is under construction.
-    pub fn constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
-        let id = self.id();
-        let inst = dr::Instruction::new(
-            spirv::Op::Constant,
-            Some(result_type),
-            Some(id),
-            vec![dr::Operand::LiteralInt32(value)],
-        );
-        self.module.types_global_values.push(inst);
-        id
-    }
-
-    /// Appends an OpConstant instruction with the given 64-bit integer `value`.
-    pub fn constant_u64(&mut self, result_type: spirv::Word, value: u64) -> spirv::Word {
-        let id = self.id();
-        let inst = dr::Instruction::new(
-            spirv::Op::Constant,
-            Some(result_type),
-            Some(id),
-            vec![dr::Operand::LiteralInt64(value)],
-        );
-        self.module.types_global_values.push(inst);
-        id
-    }
-
-    /// Appends an OpSpecConstant instruction with the given 32-bit float `value`.
-    /// or the module if no block is under construction.
-    pub fn spec_constant_f32(&mut self, result_type: spirv::Word, value: f32) -> spirv::Word {
+    pub fn spec_constant_bit32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
             spirv::Op::SpecConstant,
             Some(result_type),
             Some(id),
-            vec![dr::Operand::LiteralFloat32(value)],
+            vec![dr::Operand::LiteralBit32(value)],
         );
         self.module.types_global_values.push(inst);
         id
     }
 
-    /// Appends an OpSpecConstant instruction with the given 64-bit float `value`.
-    pub fn spec_constant_f64(&mut self, result_type: spirv::Word, value: f64) -> spirv::Word {
+    /// Appends an OpSpecConstant instruction with the given 64-bit bit pattern `value`.
+    pub fn spec_constant_bit64(&mut self, result_type: spirv::Word, value: u64) -> spirv::Word {
         let id = self.id();
         let inst = dr::Instruction::new(
             spirv::Op::SpecConstant,
             Some(result_type),
             Some(id),
-            vec![dr::Operand::LiteralFloat64(value)],
-        );
-        self.module.types_global_values.push(inst);
-        id
-    }
-
-    /// Appends an OpSpecConstant instruction with the given 32-bit integer `value`.
-    /// or the module if no block is under construction.
-    pub fn spec_constant_u32(&mut self, result_type: spirv::Word, value: u32) -> spirv::Word {
-        let id = self.id();
-        let inst = dr::Instruction::new(
-            spirv::Op::SpecConstant,
-            Some(result_type),
-            Some(id),
-            vec![dr::Operand::LiteralInt32(value)],
-        );
-        self.module.types_global_values.push(inst);
-        id
-    }
-
-    /// Appends an OpSpecConstant instruction with the given 32-bit integer `value`.
-    pub fn spec_constant_u64(&mut self, result_type: spirv::Word, value: u64) -> spirv::Word {
-        let id = self.id();
-        let inst = dr::Instruction::new(
-            spirv::Op::SpecConstant,
-            Some(result_type),
-            Some(id),
-            vec![dr::Operand::LiteralInt64(value)],
+            vec![dr::Operand::LiteralBit64(value)],
         );
         self.module.types_global_values.push(inst);
         id
@@ -1018,20 +964,20 @@ mod tests {
     }
 
     #[test]
-    fn test_constant_f32() {
+    fn test_constant_bit32() {
         let mut b = Builder::new();
         let float = b.type_float(32);
         // Normal numbers
-        b.constant_f32(float, f32::consts::PI);
-        b.constant_f32(float, 2e-10);
+        b.constant_bit32(float, f32::consts::PI.to_bits());
+        b.constant_bit32(float, 2e-10f32.to_bits());
         // Zero
-        b.constant_f32(float, 0.);
+        b.constant_bit32(float, 0.0f32.to_bits());
         // Inf
-        b.constant_f32(float, f32::NEG_INFINITY);
+        b.constant_bit32(float, f32::NEG_INFINITY.to_bits());
         // Subnormal numbers
-        b.constant_f32(float, -1.0e-40_f32);
-        // Nan
-        b.constant_f32(float, f32::NAN);
+        b.constant_bit32(float, (-1.0e-40f32).to_bits());
+        // NaN
+        b.constant_bit32(float, f32::NAN.to_bits());
         let m = b.module();
         assert_eq!(7, m.types_global_values.len());
 
@@ -1039,31 +985,37 @@ mod tests {
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(dr::Operand::from(f32::consts::PI), inst.operands[0]);
+        assert_eq!(
+            dr::Operand::from(f32::consts::PI.to_bits()),
+            inst.operands[0]
+        );
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(3), inst.result_id);
-        assert_eq!(dr::Operand::from(2e-10_f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(2e-10f32.to_bits()), inst.operands[0]);
 
         let inst = &m.types_global_values[3];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(4), inst.result_id);
-        assert_eq!(dr::Operand::from(0.0f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(0.0f32.to_bits()), inst.operands[0]);
 
         let inst = &m.types_global_values[4];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(5), inst.result_id);
-        assert_eq!(dr::Operand::from(f32::NEG_INFINITY), inst.operands[0]);
+        assert_eq!(
+            dr::Operand::from(f32::NEG_INFINITY.to_bits()),
+            inst.operands[0]
+        );
 
         let inst = &m.types_global_values[5];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(6), inst.result_id);
-        assert_eq!(dr::Operand::from(-1.0e-40_f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from((-1.0e-40f32).to_bits()), inst.operands[0]);
 
         let inst = &m.types_global_values[6];
         assert_eq!(spirv::Op::Constant, inst.class.opcode);
@@ -1071,25 +1023,25 @@ mod tests {
         assert_eq!(Some(7), inst.result_id);
         // NaN != NaN
         match inst.operands[0] {
-            dr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
+            dr::Operand::LiteralBit32(f) => assert!(f32::from_bits(f).is_nan()),
             _ => panic!(),
         }
     }
 
     #[test]
-    fn test_spec_constant_f32() {
+    fn test_spec_constant_bit32() {
         let mut b = Builder::new();
         let float = b.type_float(32);
         // Normal numbers
-        b.spec_constant_f32(float, 10.);
+        b.spec_constant_bit32(float, 10.0f32.to_bits());
         // Zero
-        b.spec_constant_f32(float, -0.);
+        b.spec_constant_bit32(float, (-0.0f32).to_bits());
         // Inf
-        b.spec_constant_f32(float, f32::INFINITY);
+        b.spec_constant_bit32(float, f32::INFINITY.to_bits());
         // Subnormal numbers
-        b.spec_constant_f32(float, 1.0e-40_f32);
+        b.spec_constant_bit32(float, 1.0e-40f32.to_bits());
         // Nan
-        b.spec_constant_f32(float, f32::NAN);
+        b.spec_constant_bit32(float, f32::NAN.to_bits());
         let m = b.module();
         assert_eq!(6, m.types_global_values.len());
 
@@ -1097,25 +1049,25 @@ mod tests {
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(dr::Operand::from(10.0f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(10.0f32.to_bits()), inst.operands[0]);
 
         let inst = &m.types_global_values[2];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(3), inst.result_id);
-        assert_eq!(dr::Operand::from(-0.0f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from((-0.0f32).to_bits()), inst.operands[0]);
 
         let inst = &m.types_global_values[3];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(4), inst.result_id);
-        assert_eq!(dr::Operand::from(f32::INFINITY), inst.operands[0]);
+        assert_eq!(dr::Operand::from(f32::INFINITY.to_bits()), inst.operands[0]);
 
         let inst = &m.types_global_values[4];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(5), inst.result_id);
-        assert_eq!(dr::Operand::from(1.0e-40_f32), inst.operands[0]);
+        assert_eq!(dr::Operand::from(1.0e-40f32.to_bits()), inst.operands[0]);
 
         let inst = &m.types_global_values[5];
         assert_eq!(spirv::Op::SpecConstant, inst.class.opcode);
@@ -1123,7 +1075,7 @@ mod tests {
         assert_eq!(Some(6), inst.result_id);
         // NaN != NaN
         match inst.operands[0] {
-            dr::Operand::LiteralFloat32(f) => assert!(f.is_nan()),
+            dr::Operand::LiteralBit32(f) => assert!(f32::from_bits(f).is_nan()),
             _ => panic!(),
         }
     }
@@ -1148,7 +1100,7 @@ mod tests {
         assert_eq!(spirv::Op::TypeFloat, inst.class.opcode);
         assert_eq!(None, inst.result_type);
         assert_eq!(Some(1), inst.result_id);
-        assert_eq!(vec![dr::Operand::LiteralInt32(32)], inst.operands);
+        assert_eq!(vec![dr::Operand::LiteralBit32(32)], inst.operands);
 
         let inst = &m.types_global_values[1];
         assert_eq!(spirv::Op::TypePointer, inst.class.opcode);
@@ -1195,7 +1147,7 @@ mod tests {
         assert_eq!(1, float);
         let f32ff32 = b.type_function(float, vec![float]);
         assert_eq!(2, f32ff32);
-        let c0 = b.constant_f32(float, 0.0f32);
+        let c0 = b.constant_bit32(float, 0.0f32.to_bits());
         assert_eq!(3, c0);
 
         let fid = b

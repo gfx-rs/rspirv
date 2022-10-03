@@ -86,7 +86,7 @@ impl LiftContext {
                 branch_weights: {
                     let mut vec = Vec::new();
                     while let Some(item) = match operands.next() {
-                        Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                        Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                         Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     } {
@@ -112,7 +112,7 @@ impl LiftContext {
                     let mut vec = Vec::new();
                     while let Some(item) = match (operands.next(), operands.next()) {
                         (
-                            Some(&dr::Operand::LiteralInt32(first)),
+                            Some(&dr::Operand::LiteralBit32(first)),
                             Some(&dr::Operand::IdRef(second)),
                         ) => Some((first, self.lookup_jump(second))),
                         (None, None) => None,
@@ -142,7 +142,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 size: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -156,7 +156,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 size: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -198,7 +198,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 version: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -244,7 +244,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 member: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -272,13 +272,13 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 line: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 column: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -474,7 +474,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 array_member: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -535,7 +535,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 member: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -579,7 +579,7 @@ impl LiftContext {
                     while let Some(item) = match (operands.next(), operands.next()) {
                         (
                             Some(&dr::Operand::IdRef(first)),
-                            Some(&dr::Operand::LiteralInt32(second)),
+                            Some(&dr::Operand::LiteralBit32(second)),
                         ) => Some((self.lookup_jump(first), second)),
                         (None, None) => None,
                         _ => return Err(OperandError::WrongType.into()),
@@ -639,7 +639,7 @@ impl LiftContext {
                 components: {
                     let mut vec = Vec::new();
                     while let Some(item) = match operands.next() {
-                        Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                        Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                         Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     } {
@@ -671,7 +671,7 @@ impl LiftContext {
                 indexes: {
                     let mut vec = Vec::new();
                     while let Some(item) = match operands.next() {
-                        Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                        Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                         Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     } {
@@ -696,7 +696,7 @@ impl LiftContext {
                 indexes: {
                     let mut vec = Vec::new();
                     while let Some(item) = match operands.next() {
-                        Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                        Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                         Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     } {
@@ -4310,19 +4310,19 @@ impl LiftContext {
             }),
             323u32 => Ok(ops::Op::ConstantPipeStorage {
                 packet_size: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 packet_alignment: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 capacity: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -6234,7 +6234,7 @@ impl LiftContext {
             }),
             5397u32 => Ok(ops::Op::SamplerImageAddressingModeNV {
                 bit_width: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -6790,7 +6790,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 member: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -6810,7 +6810,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 member: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8520,37 +8520,37 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 from_sign: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8564,31 +8564,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8602,31 +8602,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 from_sign: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8640,25 +8640,25 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8672,7 +8672,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8684,31 +8684,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8722,7 +8722,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8734,31 +8734,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8772,7 +8772,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8784,31 +8784,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8822,7 +8822,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8834,31 +8834,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8872,7 +8872,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8884,7 +8884,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8898,7 +8898,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8910,7 +8910,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8924,7 +8924,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8936,7 +8936,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8950,7 +8950,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8962,7 +8962,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8976,7 +8976,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -8988,7 +8988,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9002,31 +9002,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9040,31 +9040,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9078,31 +9078,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9116,7 +9116,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9128,31 +9128,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9166,31 +9166,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9204,31 +9204,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9242,31 +9242,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9280,31 +9280,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9318,31 +9318,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9356,31 +9356,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9394,31 +9394,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9432,31 +9432,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9470,31 +9470,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9508,31 +9508,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9546,31 +9546,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9584,31 +9584,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9622,31 +9622,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9660,31 +9660,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9698,31 +9698,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9736,31 +9736,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9774,31 +9774,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9812,31 +9812,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9850,31 +9850,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9888,31 +9888,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9926,7 +9926,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9938,31 +9938,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9976,7 +9976,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -9988,31 +9988,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10026,7 +10026,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10038,31 +10038,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m2: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10076,7 +10076,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 m1: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10088,25 +10088,25 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 mout: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 enable_subnormals: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_mode: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 rounding_accuracy: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10116,7 +10116,7 @@ impl LiftContext {
                 loop_control_parameters: {
                     let mut vec = Vec::new();
                     while let Some(item) = match operands.next() {
-                        Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                        Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                         Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     } {
@@ -10139,31 +10139,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10183,31 +10183,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10227,31 +10227,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10271,31 +10271,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10315,31 +10315,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10359,31 +10359,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10403,31 +10403,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10447,31 +10447,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10491,31 +10491,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10535,31 +10535,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10579,31 +10579,31 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 s: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 r_i: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 q: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 o: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10913,13 +10913,13 @@ impl LiftContext {
             20u32 => Ok(Type::Bool),
             21u32 => Ok(Type::Int {
                 width: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 signedness: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10927,7 +10927,7 @@ impl LiftContext {
             }),
             22u32 => Ok(Type::Float {
                 width: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10941,7 +10941,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 component_count: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10955,7 +10955,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 column_count: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -10975,25 +10975,25 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 depth: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 arrayed: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 ms: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
                 sampled: (match operands.next() {
-                    Some(&dr::Operand::LiteralInt32(ref value)) => Some(*value),
+                    Some(&dr::Operand::LiteralBit32(ref value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })

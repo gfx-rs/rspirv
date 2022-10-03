@@ -38,7 +38,7 @@ impl Builder {
             None,
             vec![
                 dr::Operand::IdRef(structure_type),
-                dr::Operand::LiteralInt32(member),
+                dr::Operand::LiteralBit32(member),
                 dr::Operand::Decoration(decoration),
             ],
         );
@@ -77,7 +77,7 @@ impl Builder {
         );
         for v in targets {
             inst.operands.push(dr::Operand::IdRef(v.0));
-            inst.operands.push(dr::Operand::LiteralInt32(v.1));
+            inst.operands.push(dr::Operand::LiteralBit32(v.1));
         }
         self.module.annotations.push(inst);
     }
@@ -156,7 +156,7 @@ impl Builder {
             None,
             vec![
                 dr::Operand::IdRef(struct_type),
-                dr::Operand::LiteralInt32(member),
+                dr::Operand::LiteralBit32(member),
                 dr::Operand::Decoration(decoration),
             ],
         );
@@ -178,7 +178,7 @@ impl Builder {
             None,
             vec![
                 dr::Operand::IdRef(struct_type),
-                dr::Operand::LiteralInt32(member),
+                dr::Operand::LiteralBit32(member),
                 dr::Operand::Decoration(decoration),
             ],
         );

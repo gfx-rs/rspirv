@@ -246,19 +246,21 @@ impl LiftContext {
                                 signedness: 0,
                                 width,
                             } => match *oper {
-                                dr::Operand::LiteralInt32(v) => (Constant::UInt(v), width),
+                                dr::Operand::LiteralBit32(v) => (Constant::UInt(v), width),
                                 _ => {
                                     return Err(InstructionError::Operand(OperandError::WrongType))
                                 }
                             },
                             Type::Int { width, .. } => match *oper {
-                                dr::Operand::LiteralInt32(v) => (Constant::Int(v as i32), width),
+                                dr::Operand::LiteralBit32(v) => (Constant::Int(v as i32), width),
                                 _ => {
                                     return Err(InstructionError::Operand(OperandError::WrongType))
                                 }
                             },
                             Type::Float { width } => match *oper {
-                                dr::Operand::LiteralFloat32(v) => (Constant::Float(v), width),
+                                dr::Operand::LiteralBit32(v) => {
+                                    (Constant::Float(f32::from_bits(v)), width)
+                                }
                                 _ => {
                                     return Err(InstructionError::Operand(OperandError::WrongType))
                                 }
@@ -294,7 +296,7 @@ impl LiftContext {
                         _ => return Err(InstructionError::Operand(OperandError::WrongType)),
                     },
                     normalized: match inst.operands[1] {
-                        dr::Operand::LiteralInt32(v) => v != 0,
+                        dr::Operand::LiteralBit32(v) => v != 0,
                         _ => return Err(InstructionError::Operand(OperandError::WrongType)),
                     },
                     filter_mode: match inst.operands[2] {
