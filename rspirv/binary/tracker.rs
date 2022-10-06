@@ -42,15 +42,15 @@ impl TypeTracker {
                 match inst.class.opcode {
                     spirv::Op::TypeInt => {
                         if let (
-                            &dr::Operand::LiteralInt32(bits),
-                            &dr::Operand::LiteralInt32(sign),
+                            &dr::Operand::LiteralBit32(bits),
+                            &dr::Operand::LiteralBit32(sign),
                         ) = (&inst.operands[0], &inst.operands[1])
                         {
                             self.types.insert(rid, Type::Integer(bits, sign == 1));
                         }
                     }
                     spirv::Op::TypeFloat => {
-                        if let dr::Operand::LiteralInt32(bits) = inst.operands[0] {
+                        if let dr::Operand::LiteralBit32(bits) = inst.operands[0] {
                             self.types.insert(rid, Type::Float(bits));
                         }
                     }

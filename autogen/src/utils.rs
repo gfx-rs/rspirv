@@ -29,7 +29,7 @@ pub fn get_dr_operand_kind(kind: &str) -> Ident {
     as_ident(
         if matches!(kind, "LiteralInteger" | "LiteralContextDependentNumber") {
             // TODO: LiteralContextDependentNumber should use the correct type to decode
-            "LiteralInt32"
+            "LiteralBit32"
         } else {
             kind
         },

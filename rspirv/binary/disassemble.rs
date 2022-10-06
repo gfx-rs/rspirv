@@ -1,8 +1,8 @@
 use crate::binary::tracker::Type;
-use crate::binary::tracker::Type::Integer;
+use crate::binary::tracker::Type::{Float, Integer};
 use crate::dr;
 use crate::dr::Operand;
-use crate::dr::Operand::{LiteralInt32, LiteralInt64};
+use crate::dr::Operand::{LiteralBit32, LiteralBit64};
 use crate::spirv;
 
 use super::tracker;
@@ -192,46 +192,48 @@ impl Disassemble for dr::Module {
     }
 }
 
+// TODO: properly disassemble float literals (handle infinity, NaN, 16-bit floats, etc.)
+// in order to match `spirv-dis`'s output
 fn disas_constant(inst: &dr::Instruction, type_tracker: &tracker::TypeTracker) -> String {
     debug_assert_eq!(inst.class.opcode, spirv::Op::Constant);
     debug_assert_eq!(inst.operands.len(), 1);
     let literal_type = type_tracker.resolve(inst.result_type.unwrap());
     match inst.operands[0] {
-        LiteralInt32(value) => disas_instruction(inst, " ", |_| {
-            disas_literal_int_operand(value, &literal_type.unwrap())
+        LiteralBit32(value) => disas_instruction(inst, " ", |_| {
+            disas_literal_bit_operand(value, &literal_type.unwrap())
         }),
-        LiteralInt64(value) => disas_instruction(inst, " ", |_| {
-            disas_literal_int_operand(value, &literal_type.unwrap())
+        LiteralBit64(value) => disas_instruction(inst, " ", |_| {
+            disas_literal_bit_operand(value, &literal_type.unwrap())
         }),
         _ => inst.disassemble(),
     }
 }
 
 #[inline]
-fn disas_literal_int_operand<T: DisassembleLiteralInt>(value: T, literal_type: &Type) -> String {
-    DisassembleLiteralInt::disas_literal_int(value, literal_type)
+fn disas_literal_bit_operand<T: DisassembleLiteralBit>(value: T, literal_type: &Type) -> String {
+    DisassembleLiteralBit::disas_literal_bit(value, literal_type)
 }
 
-trait DisassembleLiteralInt {
-    fn disas_literal_int(value: Self, literal_type: &Type) -> String;
+trait DisassembleLiteralBit {
+    fn disas_literal_bit(value: Self, literal_type: &Type) -> String;
 }
 
-impl DisassembleLiteralInt for u32 {
-    fn disas_literal_int(value: u32, literal_type: &Type) -> String {
+impl DisassembleLiteralBit for u32 {
+    fn disas_literal_bit(value: u32, literal_type: &Type) -> String {
         match literal_type {
             Integer(_, true) => (value as i32).to_string(),
             Integer(_, false) => value.to_string(),
-            _ => String::from(""),
+            Float(_) => f32::from_bits(value).to_string(),
         }
     }
 }
 
-impl DisassembleLiteralInt for u64 {
-    fn disas_literal_int(value: u64, literal_type: &Type) -> String {
+impl DisassembleLiteralBit for u64 {
+    fn disas_literal_bit(value: u64, literal_type: &Type) -> String {
         match literal_type {
             Integer(_, true) => (value as i64).to_string(),
             Integer(_, false) => value.to_string(),
-            _ => String::from(""),
+            Float(_) => f64::from_bits(value).to_string(),
         }
     }
 }
@@ -356,7 +358,7 @@ mod tests {
     }
 
     #[test]
-    fn test_disassemble_literal_int_constants() {
+    fn test_disassemble_literal_bit_constants() {
         let mut b = dr::Builder::new();
 
         b.capability(spirv::Capability::Shader);
@@ -368,6 +370,8 @@ mod tests {
         let int64 = b.type_int(64, 1);
         let uint32 = b.type_int(32, 0);
         let uint64 = b.type_int(64, 0);
+        let float32 = b.type_float(32);
+        let float64 = b.type_float(64);
         let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b
@@ -381,10 +385,14 @@ mod tests {
         b.begin_block(None).unwrap();
         let signed_i32_value: i32 = -1;
         let signed_i64_value: i64 = -1;
-        b.constant_u32(int32, signed_i32_value as u32);
-        b.constant_u64(int64, signed_i64_value as u64);
-        b.constant_u32(uint32, signed_i32_value as u32);
-        b.constant_u64(uint64, signed_i64_value as u64);
+        let f32_value: f32 = -2.0;
+        let f64_value: f64 = 9.26;
+        b.constant_bit32(int32, signed_i32_value as u32);
+        b.constant_bit64(int64, signed_i64_value as u64);
+        b.constant_bit32(uint32, signed_i32_value as u32);
+        b.constant_bit64(uint64, signed_i64_value as u64);
+        b.constant_bit32(float32, f32_value.to_bits());
+        b.constant_bit64(float64, f64_value.to_bits());
         b.ret().unwrap();
         b.end_function().unwrap();
 
@@ -395,29 +403,33 @@ mod tests {
         assert_eq!(
             b.module().disassemble(),
             "; SPIR-V\n\
-                ; Version: 1.5\n\
-                ; Generator: rspirv\n\
-                ; Bound: 14\n\
-                OpCapability Shader\n\
-                %1 = OpExtInstImport \"GLSL.std.450\"\n\
-                OpEntryPoint Fragment %8 \"main\"\n\
-                OpExecutionMode %8 OriginUpperLeft\n\
-                OpSource GLSL 450\n\
-                OpName %8 \"main\"\n\
-                %2 = OpTypeVoid\n\
-                %3 = OpTypeInt 32 1\n\
-                %4 = OpTypeInt 64 1\n\
-                %5 = OpTypeInt 32 0\n\
-                %6 = OpTypeInt 64 0\n\
-                %7 = OpTypeFunction %2 %2\n\
-                %10 = OpConstant  %3  -1\n\
-                %11 = OpConstant  %4  -1\n\
-                %12 = OpConstant  %5  4294967295\n\
-                %13 = OpConstant  %6  18446744073709551615\n\
-                %8 = OpFunction  %2  DontInline|Const %7\n\
-                %9 = OpLabel\n\
-                OpReturn\n\
-                OpFunctionEnd"
+                    ; Version: 1.5\n\
+                    ; Generator: rspirv\n\
+                    ; Bound: 18\n\
+                    OpCapability Shader\n\
+                    %1 = OpExtInstImport \"GLSL.std.450\"\n\
+                    OpEntryPoint Fragment %10 \"main\"\n\
+                    OpExecutionMode %10 OriginUpperLeft\n\
+                    OpSource GLSL 450\n\
+                    OpName %10 \"main\"\n\
+                    %2 = OpTypeVoid\n\
+                    %3 = OpTypeInt 32 1\n\
+                    %4 = OpTypeInt 64 1\n\
+                    %5 = OpTypeInt 32 0\n\
+                    %6 = OpTypeInt 64 0\n\
+                    %7 = OpTypeFloat 32\n\
+                    %8 = OpTypeFloat 64\n\
+                    %9 = OpTypeFunction %2 %2\n\
+                    %12 = OpConstant  %3  -1\n\
+                    %13 = OpConstant  %4  -1\n\
+                    %14 = OpConstant  %5  4294967295\n\
+                    %15 = OpConstant  %6  18446744073709551615\n\
+                    %16 = OpConstant  %7  -2\n\
+                    %17 = OpConstant  %8  9.26\n\
+                    %10 = OpFunction  %2  DontInline|Const %9\n\
+                    %11 = OpLabel\n\
+                    OpReturn\n\
+                    OpFunctionEnd"
         );
     }
 

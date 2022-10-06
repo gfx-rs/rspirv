@@ -315,19 +315,19 @@ impl<'c, 'd> Parser<'c, 'd> {
             Some(t) => match t {
                 Type::Integer(size, _) => match size {
                     // "Value is the bit pattern for the constant. Types 32 bits wide or smaller take one word."
-                    8 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
-                    16 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
-                    32 => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
-                    64 => Ok(dr::Operand::LiteralInt64(self.decoder.int64()?)),
+                    8 => Ok(dr::Operand::LiteralBit32(self.decoder.bit32()?)),
+                    16 => Ok(dr::Operand::LiteralBit32(self.decoder.bit32()?)),
+                    32 => Ok(dr::Operand::LiteralBit32(self.decoder.bit32()?)),
+                    64 => Ok(dr::Operand::LiteralBit64(self.decoder.bit64()?)),
                     _ => Err(State::TypeUnsupported(
                         self.decoder.offset(),
                         self.inst_index,
                     )),
                 },
                 Type::Float(size) => match size {
-                    16 => Ok(dr::Operand::LiteralFloat32(self.decoder.float32()?)),
-                    32 => Ok(dr::Operand::LiteralFloat32(self.decoder.float32()?)),
-                    64 => Ok(dr::Operand::LiteralFloat64(self.decoder.float64()?)),
+                    16 => Ok(dr::Operand::LiteralBit32(self.decoder.bit32()?)),
+                    32 => Ok(dr::Operand::LiteralBit32(self.decoder.bit32()?)),
+                    64 => Ok(dr::Operand::LiteralBit64(self.decoder.bit64()?)),
                     _ => Err(State::TypeUnsupported(
                         self.decoder.offset(),
                         self.inst_index,
@@ -336,14 +336,14 @@ impl<'c, 'd> Parser<'c, 'd> {
             },
             // Treat as a normal SPIR-V word if we don't know the type.
             // TODO: find a better way to handle this.
-            None => Ok(dr::Operand::LiteralInt32(self.decoder.int32()?)),
+            None => Ok(dr::Operand::LiteralBit32(self.decoder.bit32()?)),
         }
     }
 
     fn parse_spec_constant_op(&mut self) -> Result<Vec<dr::Operand>> {
         let mut operands = vec![];
 
-        let number = self.decoder.int32()?;
+        let number = self.decoder.bit32()?;
         if let Some(g) = GInstTable::lookup_opcode(number as u16) {
             // TODO: check whether this opcode is allowed here.
             operands.push(dr::Operand::LiteralSpecConstantOpInteger(g.opcode));
@@ -712,7 +712,7 @@ mod tests {
         assert_eq!(
             vec![
                 dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                dr::Operand::LiteralInt32(450),
+                dr::Operand::LiteralBit32(450),
                 dr::Operand::IdRef(6),
                 dr::Operand::from("wow")
             ],
@@ -740,7 +740,7 @@ mod tests {
         assert_eq!(
             vec![
                 dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                dr::Operand::LiteralInt32(450),
+                dr::Operand::LiteralBit32(450),
                 dr::Operand::IdRef(6)
             ],
             inst.operands
@@ -766,7 +766,7 @@ mod tests {
         assert_eq!(
             vec![
                 dr::Operand::SourceLanguage(spirv::SourceLanguage::GLSL),
-                dr::Operand::LiteralInt32(450)
+                dr::Operand::LiteralBit32(450)
             ],
             inst.operands
         );
@@ -895,7 +895,7 @@ mod tests {
     }
 
     #[test]
-    fn test_parsing_int32() {
+    fn test_parsing_bit32_int() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x15, 0x00, 0x04, 0x00]); // OpTypeInt
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
@@ -916,11 +916,11 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![dr::Operand::LiteralInt32(0x78563412)], inst.operands);
+        assert_eq!(vec![dr::Operand::LiteralBit32(0x78563412)], inst.operands);
     }
 
     #[test]
-    fn test_parsing_int64() {
+    fn test_parsing_bit64_int() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x15, 0x00, 0x04, 0x00]); // OpTypeInt
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
@@ -943,13 +943,13 @@ mod tests {
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
         assert_eq!(
-            vec![dr::Operand::LiteralInt64(0xefcdab9078563412)],
+            vec![dr::Operand::LiteralBit64(0xefcdab9078563412)],
             inst.operands
         );
     }
 
     #[test]
-    fn test_parsing_float32() {
+    fn test_parsing_bit32_float() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x16, 0x00, 0x03, 0x00]); // OpTypeFloat
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
@@ -969,11 +969,14 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![dr::Operand::LiteralFloat32(42.42)], inst.operands);
+        assert_eq!(
+            vec![dr::Operand::LiteralBit32(42.42f32.to_bits())],
+            inst.operands
+        );
     }
 
     #[test]
-    fn test_parsing_float64() {
+    fn test_parsing_bit64_float() {
         let mut v = ZERO_BOUND_HEADER.to_vec();
         v.append(&mut vec![0x16, 0x00, 0x03, 0x00]); // OpTypeFloat
         v.append(&mut vec![0x01, 0x00, 0x00, 0x00]); // result id: 1
@@ -993,7 +996,10 @@ mod tests {
         assert_eq!("Constant", inst.class.opname);
         assert_eq!(Some(1), inst.result_type);
         assert_eq!(Some(2), inst.result_id);
-        assert_eq!(vec![dr::Operand::LiteralFloat64(-12.34)], inst.operands);
+        assert_eq!(
+            vec![dr::Operand::LiteralBit64((-12.34f64).to_bits())],
+            inst.operands
+        );
     }
 
     #[test]
@@ -1111,7 +1117,7 @@ mod tests {
                 dr::Operand::IdRef(1),
                 dr::Operand::IdRef(2),
                 dr::Operand::MemoryAccess(spirv::MemoryAccess::from_bits(3).unwrap()),
-                dr::Operand::LiteralInt32(4)
+                dr::Operand::LiteralBit32(4)
             ],
             inst.operands
         );

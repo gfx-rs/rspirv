@@ -49,7 +49,7 @@ impl Builder {
             ],
         );
         inst.operands
-            .extend(branch_weights.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(branch_weights.into_iter().map(dr::Operand::LiteralBit32));
         self.end_block(inst)
     }
     #[doc = "Insert an OpBranchConditional instruction and ends the current block."]
@@ -73,7 +73,7 @@ impl Builder {
             ],
         );
         inst.operands
-            .extend(branch_weights.into_iter().map(dr::Operand::LiteralInt32));
+            .extend(branch_weights.into_iter().map(dr::Operand::LiteralBit32));
         self.insert_end_block(insert_point, inst)
     }
     #[doc = "Appends an OpSwitch instruction and ends the current block."]
@@ -186,7 +186,7 @@ impl Builder {
             spirv::Op::LifetimeStart,
             None,
             None,
-            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralInt32(size)],
+            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralBit32(size)],
         );
         self.end_block(inst)
     }
@@ -202,7 +202,7 @@ impl Builder {
             spirv::Op::LifetimeStart,
             None,
             None,
-            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralInt32(size)],
+            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralBit32(size)],
         );
         self.insert_end_block(insert_point, inst)
     }
@@ -213,7 +213,7 @@ impl Builder {
             spirv::Op::LifetimeStop,
             None,
             None,
-            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralInt32(size)],
+            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralBit32(size)],
         );
         self.end_block(inst)
     }
@@ -229,7 +229,7 @@ impl Builder {
             spirv::Op::LifetimeStop,
             None,
             None,
-            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralInt32(size)],
+            vec![dr::Operand::IdRef(pointer), dr::Operand::LiteralBit32(size)],
         );
         self.insert_end_block(insert_point, inst)
     }

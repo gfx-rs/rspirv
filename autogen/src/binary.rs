@@ -18,7 +18,7 @@ fn get_decode_method(kind: &str) -> Ident {
     if kind.starts_with("Literal") {
         kind = &kind["Literal".len()..];
         if kind == "Integer" {
-            return as_ident("int32");
+            return as_ident("bit32");
         }
     }
     as_ident(&kind.to_snake_case())

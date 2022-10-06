@@ -57,8 +57,8 @@ impl Builder {
             None,
             result_id,
             vec![
-                dr::Operand::LiteralInt32(width),
-                dr::Operand::LiteralInt32(signedness),
+                dr::Operand::LiteralBit32(width),
+                dr::Operand::LiteralBit32(signedness),
             ],
         );
         if let Some(result_id) = result_id {
@@ -83,7 +83,7 @@ impl Builder {
             spirv::Op::TypeFloat,
             None,
             result_id,
-            vec![dr::Operand::LiteralInt32(width)],
+            vec![dr::Operand::LiteralBit32(width)],
         );
         if let Some(result_id) = result_id {
             self.module.types_global_values.push(inst);
@@ -118,7 +118,7 @@ impl Builder {
             result_id,
             vec![
                 dr::Operand::IdRef(component_type),
-                dr::Operand::LiteralInt32(component_count),
+                dr::Operand::LiteralBit32(component_count),
             ],
         );
         if let Some(result_id) = result_id {
@@ -150,7 +150,7 @@ impl Builder {
             result_id,
             vec![
                 dr::Operand::IdRef(column_type),
-                dr::Operand::LiteralInt32(column_count),
+                dr::Operand::LiteralBit32(column_count),
             ],
         );
         if let Some(result_id) = result_id {
@@ -209,10 +209,10 @@ impl Builder {
             vec![
                 dr::Operand::IdRef(sampled_type),
                 dr::Operand::Dim(dim),
-                dr::Operand::LiteralInt32(depth),
-                dr::Operand::LiteralInt32(arrayed),
-                dr::Operand::LiteralInt32(ms),
-                dr::Operand::LiteralInt32(sampled),
+                dr::Operand::LiteralBit32(depth),
+                dr::Operand::LiteralBit32(arrayed),
+                dr::Operand::LiteralBit32(ms),
+                dr::Operand::LiteralBit32(sampled),
                 dr::Operand::ImageFormat(image_format),
             ],
         );

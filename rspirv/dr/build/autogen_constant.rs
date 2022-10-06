@@ -60,7 +60,7 @@ impl Builder {
             Some(id),
             vec![
                 dr::Operand::SamplerAddressingMode(sampler_addressing_mode),
-                dr::Operand::LiteralInt32(param),
+                dr::Operand::LiteralBit32(param),
                 dr::Operand::SamplerFilterMode(sampler_filter_mode),
             ],
         );
