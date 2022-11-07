@@ -350,6 +350,9 @@ impl Disassemble for spirv::RayFlags {
         if self.contains(spirv::RayFlags::SKIP_AAB_BS_KHR) {
             bits.push("SkipAABBsKHR")
         }
+        if self.contains(spirv::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {
+            bits.push("ForceOpacityMicromap2StateEXT")
+        }
         bits.join("|")
     }
 }

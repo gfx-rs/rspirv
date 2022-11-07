@@ -14022,6 +14022,96 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpEmitMeshTasksEXT instruction to the current block."]
+    pub fn emit_mesh_tasks_ext(
+        &mut self,
+        group_count_x: spirv::Word,
+        group_count_y: spirv::Word,
+        group_count_z: spirv::Word,
+        payload: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::EmitMeshTasksEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(group_count_x),
+                dr::Operand::IdRef(group_count_y),
+                dr::Operand::IdRef(group_count_z),
+            ],
+        );
+        if let Some(v) = payload {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpEmitMeshTasksEXT instruction to the current block."]
+    pub fn insert_emit_mesh_tasks_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        group_count_x: spirv::Word,
+        group_count_y: spirv::Word,
+        group_count_z: spirv::Word,
+        payload: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::EmitMeshTasksEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(group_count_x),
+                dr::Operand::IdRef(group_count_y),
+                dr::Operand::IdRef(group_count_z),
+            ],
+        );
+        if let Some(v) = payload {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpSetMeshOutputsEXT instruction to the current block."]
+    pub fn set_mesh_outputs_ext(
+        &mut self,
+        vertex_count: spirv::Word,
+        primitive_count: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SetMeshOutputsEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(vertex_count),
+                dr::Operand::IdRef(primitive_count),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpSetMeshOutputsEXT instruction to the current block."]
+    pub fn insert_set_mesh_outputs_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        vertex_count: spirv::Word,
+        primitive_count: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SetMeshOutputsEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(vertex_count),
+                dr::Operand::IdRef(primitive_count),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
     #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current block."]
     pub fn group_non_uniform_partition_nv(
         &mut self,

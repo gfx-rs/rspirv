@@ -3671,6 +3671,18 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        EmitMeshTasksEXT,
+        [MeshShadingEXT],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        SetMeshOutputsEXT,
+        [MeshShadingEXT],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    inst!(
         GroupNonUniformPartitionNV,
         [GroupNonUniformPartitionedNV],
         ["SPV_NV_shader_subgroup_partitioned"],

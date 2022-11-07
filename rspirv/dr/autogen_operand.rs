@@ -786,6 +786,9 @@ impl Operand {
                         spirv::Capability::RayTracingKHR,
                     ])
                 };
+                if v.intersects(s::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {
+                    result.extend_from_slice(&[spirv::Capability::RayTracingOpacityMicromapEXT])
+                };
                 if v.intersects(s::RayFlags::SKIP_TRIANGLES_KHR | s::RayFlags::SKIP_AAB_BS_KHR) {
                     result.extend_from_slice(&[spirv::Capability::RayTraversalPrimitiveCullingKHR])
                 };
@@ -816,6 +819,9 @@ impl Operand {
             Self::ExecutionModel(v) => match v {
                 s::ExecutionModel::Geometry => vec![spirv::Capability::Geometry],
                 s::ExecutionModel::Kernel => vec![spirv::Capability::Kernel],
+                s::ExecutionModel::TaskEXT | s::ExecutionModel::MeshEXT => {
+                    vec![spirv::Capability::MeshShadingEXT]
+                }
                 s::ExecutionModel::TaskNV | s::ExecutionModel::MeshNV => {
                     vec![spirv::Capability::MeshShadingNV]
                 }
@@ -886,6 +892,7 @@ impl Operand {
                 s::ExecutionMode::OutputPoints => vec![
                     spirv::Capability::Geometry,
                     spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
                 ],
                 s::ExecutionMode::Triangles => {
                     vec![spirv::Capability::Geometry, spirv::Capability::Tessellation]
@@ -894,6 +901,7 @@ impl Operand {
                     spirv::Capability::Geometry,
                     spirv::Capability::Tessellation,
                     spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
                 ],
                 s::ExecutionMode::LocalSizeHint
                 | s::ExecutionMode::VecTypeHint
@@ -908,7 +916,10 @@ impl Operand {
                 }
                 s::ExecutionMode::OutputLinesNV
                 | s::ExecutionMode::OutputPrimitivesNV
-                | s::ExecutionMode::OutputTrianglesNV => vec![spirv::Capability::MeshShadingNV],
+                | s::ExecutionMode::OutputTrianglesNV => vec![
+                    spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
+                ],
                 s::ExecutionMode::RoundingModeRTPINTEL
                 | s::ExecutionMode::RoundingModeRTNINTEL
                 | s::ExecutionMode::FloatingPointModeALTINTEL
@@ -971,6 +982,7 @@ impl Operand {
                 s::StorageClass::AtomicCounter => vec![spirv::Capability::AtomicStorage],
                 s::StorageClass::CodeSectionINTEL => vec![spirv::Capability::FunctionPointersINTEL],
                 s::StorageClass::Generic => vec![spirv::Capability::GenericPointer],
+                s::StorageClass::TaskPayloadWorkgroupEXT => vec![spirv::Capability::MeshShadingEXT],
                 s::StorageClass::PhysicalStorageBuffer => {
                     vec![spirv::Capability::PhysicalStorageBufferAddresses]
                 }
@@ -1251,9 +1263,11 @@ impl Operand {
                 s::Decoration::AliasScopeINTEL | s::Decoration::NoAliasINTEL => {
                     vec![spirv::Capability::MemoryAccessAliasingINTEL]
                 }
-                s::Decoration::PerPrimitiveNV
-                | s::Decoration::PerViewNV
-                | s::Decoration::PerTaskNV => vec![spirv::Capability::MeshShadingNV],
+                s::Decoration::PerViewNV => vec![spirv::Capability::MeshShadingNV],
+                s::Decoration::PerPrimitiveNV | s::Decoration::PerTaskNV => vec![
+                    spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
+                ],
                 s::Decoration::RestrictPointer | s::Decoration::AliasedPointer => {
                     vec![spirv::Capability::PhysicalStorageBufferAddresses]
                 }
@@ -1317,6 +1331,11 @@ impl Operand {
                 | s::BuiltIn::BaryCoordSmoothSampleAMD
                 | s::BuiltIn::BaryCoordPullModelAMD => vec![],
                 s::BuiltIn::ClipDistance => vec![spirv::Capability::ClipDistance],
+                s::BuiltIn::CoreIDARM
+                | s::BuiltIn::CoreCountARM
+                | s::BuiltIn::CoreMaxIDARM
+                | s::BuiltIn::WarpIDARM
+                | s::BuiltIn::WarpMaxIDARM => vec![spirv::Capability::CoreBuiltinsARM],
                 s::BuiltIn::CullDistance => vec![spirv::Capability::CullDistance],
                 s::BuiltIn::DeviceIndex => vec![spirv::Capability::DeviceGroup],
                 s::BuiltIn::BaseVertex | s::BuiltIn::BaseInstance => {
@@ -1325,6 +1344,7 @@ impl Operand {
                 s::BuiltIn::DrawIndex => vec![
                     spirv::Capability::DrawParameters,
                     spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
                 ],
                 s::BuiltIn::BaryCoordKHR | s::BuiltIn::BaryCoordNoPerspKHR => vec![
                     spirv::Capability::FragmentBarycentricNV,
@@ -1343,6 +1363,7 @@ impl Operand {
                     spirv::Capability::ShaderLayer,
                     spirv::Capability::ShaderViewportIndexLayerEXT,
                     spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
                 ],
                 s::BuiltIn::InvocationId => {
                     vec![spirv::Capability::Geometry, spirv::Capability::Tessellation]
@@ -1353,6 +1374,7 @@ impl Operand {
                     spirv::Capability::RayTracingNV,
                     spirv::Capability::RayTracingKHR,
                     spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
                 ],
                 s::BuiltIn::WorkDim
                 | s::BuiltIn::GlobalSize
@@ -1370,6 +1392,10 @@ impl Operand {
                     spirv::Capability::GroupNonUniform,
                     spirv::Capability::SubgroupBallotKHR,
                 ],
+                s::BuiltIn::PrimitivePointIndicesEXT
+                | s::BuiltIn::PrimitiveLineIndicesEXT
+                | s::BuiltIn::PrimitiveTriangleIndicesEXT
+                | s::BuiltIn::CullPrimitiveEXT => vec![spirv::Capability::MeshShadingEXT],
                 s::BuiltIn::TaskCountNV
                 | s::BuiltIn::PrimitiveCountNV
                 | s::BuiltIn::PrimitiveIndicesNV
@@ -1384,6 +1410,7 @@ impl Operand {
                     spirv::Capability::ShaderViewportIndex,
                     spirv::Capability::ShaderViewportIndexLayerEXT,
                     spirv::Capability::MeshShadingNV,
+                    spirv::Capability::MeshShadingEXT,
                 ],
                 s::BuiltIn::PositionPerViewNV | s::BuiltIn::ViewportMaskPerViewNV => vec![
                     spirv::Capability::PerViewAttributesNV,
@@ -1497,6 +1524,7 @@ impl Operand {
                 | s::Capability::ShaderLayer
                 | s::Capability::ShaderViewportIndex
                 | s::Capability::UniformDecoration
+                | s::Capability::CoreBuiltinsARM
                 | s::Capability::SubgroupBallotKHR
                 | s::Capability::SubgroupVoteKHR
                 | s::Capability::StorageBuffer16BitAccess
@@ -1618,7 +1646,8 @@ impl Operand {
                     vec![spirv::Capability::MultiViewport]
                 }
                 s::Capability::PipeStorage => vec![spirv::Capability::Pipes],
-                s::Capability::RayTraversalPrimitiveCullingKHR => vec![
+                s::Capability::RayTraversalPrimitiveCullingKHR
+                | s::Capability::RayTracingOpacityMicromapEXT => vec![
                     spirv::Capability::RayQueryKHR,
                     spirv::Capability::RayTracingKHR,
                 ],
@@ -1679,6 +1708,7 @@ impl Operand {
                 | s::Capability::ShaderClockKHR
                 | s::Capability::FragmentFullyCoveredEXT
                 | s::Capability::MeshShadingNV
+                | s::Capability::MeshShadingEXT
                 | s::Capability::FragmentDensityEXT
                 | s::Capability::ShaderNonUniform
                 | s::Capability::RuntimeDescriptorArray
@@ -1804,7 +1834,9 @@ impl Operand {
                 | s::ExecutionModel::AnyHitNV
                 | s::ExecutionModel::ClosestHitNV
                 | s::ExecutionModel::MissNV
-                | s::ExecutionModel::CallableNV => vec![],
+                | s::ExecutionModel::CallableNV
+                | s::ExecutionModel::TaskEXT
+                | s::ExecutionModel::MeshEXT => vec![],
             },
             Self::AddressingModel(v) => match v {
                 s::AddressingModel::Logical
@@ -1907,7 +1939,9 @@ impl Operand {
                 }
                 s::ExecutionMode::OutputLinesNV
                 | s::ExecutionMode::OutputPrimitivesNV
-                | s::ExecutionMode::OutputTrianglesNV => vec!["SPV_NV_mesh_shader"],
+                | s::ExecutionMode::OutputTrianglesNV => {
+                    vec!["SPV_NV_mesh_shader", "SPV_EXT_mesh_shader"]
+                }
             },
             Self::StorageClass(v) => match v {
                 s::StorageClass::UniformConstant
@@ -1922,6 +1956,7 @@ impl Operand {
                 | s::StorageClass::PushConstant
                 | s::StorageClass::AtomicCounter
                 | s::StorageClass::Image => vec![],
+                s::StorageClass::TaskPayloadWorkgroupEXT => vec!["SPV_EXT_mesh_shader"],
                 s::StorageClass::PhysicalStorageBuffer => vec![
                     "SPV_EXT_physical_storage_buffer",
                     "SPV_KHR_physical_storage_buffer",
@@ -2203,9 +2238,10 @@ impl Operand {
                     "SPV_KHR_fragment_shader_barycentric",
                 ],
                 s::Decoration::PassthroughNV => vec!["SPV_NV_geometry_shader_passthrough"],
-                s::Decoration::PerPrimitiveNV
-                | s::Decoration::PerViewNV
-                | s::Decoration::PerTaskNV => vec!["SPV_NV_mesh_shader"],
+                s::Decoration::PerViewNV => vec!["SPV_NV_mesh_shader"],
+                s::Decoration::PerPrimitiveNV | s::Decoration::PerTaskNV => {
+                    vec!["SPV_NV_mesh_shader", "SPV_EXT_mesh_shader"]
+                }
                 s::Decoration::OverrideCoverageNV => vec!["SPV_NV_sample_mask_override_coverage"],
                 s::Decoration::SecondaryViewportRelativeNV => vec!["SPV_NV_stereo_view_rendering"],
             },
@@ -2251,6 +2287,11 @@ impl Operand {
                 | s::BuiltIn::SubgroupLocalInvocationId
                 | s::BuiltIn::VertexIndex
                 | s::BuiltIn::InstanceIndex
+                | s::BuiltIn::CoreIDARM
+                | s::BuiltIn::CoreCountARM
+                | s::BuiltIn::CoreMaxIDARM
+                | s::BuiltIn::WarpIDARM
+                | s::BuiltIn::WarpMaxIDARM
                 | s::BuiltIn::SubgroupEqMask
                 | s::BuiltIn::SubgroupGeMask
                 | s::BuiltIn::SubgroupGtMask
@@ -2269,6 +2310,10 @@ impl Operand {
                 s::BuiltIn::FragSizeEXT | s::BuiltIn::FragInvocationCountEXT => {
                     vec!["SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate"]
                 }
+                s::BuiltIn::PrimitivePointIndicesEXT
+                | s::BuiltIn::PrimitiveLineIndicesEXT
+                | s::BuiltIn::PrimitiveTriangleIndicesEXT
+                | s::BuiltIn::CullPrimitiveEXT => vec!["SPV_EXT_mesh_shader"],
                 s::BuiltIn::FragStencilRefEXT => vec!["SPV_EXT_shader_stencil_export"],
                 s::BuiltIn::DeviceIndex => vec!["SPV_KHR_device_group"],
                 s::BuiltIn::PrimitiveShadingRateKHR | s::BuiltIn::ShadingRateKHR => {
@@ -2280,9 +2325,11 @@ impl Operand {
                 s::BuiltIn::BaseVertex | s::BuiltIn::BaseInstance => {
                     vec!["SPV_KHR_shader_draw_parameters"]
                 }
-                s::BuiltIn::DrawIndex => {
-                    vec!["SPV_KHR_shader_draw_parameters", "SPV_NV_mesh_shader"]
-                }
+                s::BuiltIn::DrawIndex => vec![
+                    "SPV_KHR_shader_draw_parameters",
+                    "SPV_NV_mesh_shader",
+                    "SPV_EXT_mesh_shader",
+                ],
                 s::BuiltIn::PositionPerViewNV | s::BuiltIn::ViewportMaskPerViewNV => vec![
                     "SPV_NVX_multiview_per_view_attributes",
                     "SPV_NV_mesh_shader",
@@ -2444,6 +2491,7 @@ impl Operand {
                 s::Capability::FragmentMaskAMD => vec!["SPV_AMD_shader_fragment_mask"],
                 s::Capability::ImageReadWriteLodAMD => vec!["SPV_AMD_shader_image_load_store_lod"],
                 s::Capability::ImageGatherBiasLodAMD => vec!["SPV_AMD_texture_gather_bias_lod"],
+                s::Capability::CoreBuiltinsARM => vec!["SPV_ARM_core_builtins"],
                 s::Capability::FragmentFullyCoveredEXT => vec!["SPV_EXT_fragment_fully_covered"],
                 s::Capability::FragmentDensityEXT => {
                     vec!["SPV_EXT_fragment_invocation_density", "SPV_NV_shading_rate"]
@@ -2453,6 +2501,8 @@ impl Operand {
                 | s::Capability::FragmentShaderPixelInterlockEXT => {
                     vec!["SPV_EXT_fragment_shader_interlock"]
                 }
+                s::Capability::MeshShadingEXT => vec!["SPV_EXT_mesh_shader"],
+                s::Capability::RayTracingOpacityMicromapEXT => vec!["SPV_EXT_opacity_micromap"],
                 s::Capability::PhysicalStorageBufferAddresses => vec![
                     "SPV_EXT_physical_storage_buffer",
                     "SPV_KHR_physical_storage_buffer",

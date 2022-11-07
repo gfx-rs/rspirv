@@ -61,6 +61,7 @@ pub enum Decoration {
     ViewportRelativeNV,
     SecondaryViewportRelativeNV(u32),
     PerPrimitiveNV,
+    PerPrimitiveEXT,
     PerViewNV,
     PerTaskNV,
     PerVertexKHR,
