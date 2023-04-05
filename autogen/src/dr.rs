@@ -705,7 +705,7 @@ fn is_terminator_instruction(inst: &structs::Instruction) -> bool {
     match inst.class {
         Some(structs::Class::Reserved) => matches!(
             inst.opname.as_str(),
-            "OpTerminateRayKHR" | "OpIgnoreIntersectionKHR"
+            "OpTerminateRayKHR" | "OpIgnoreIntersectionKHR" | "OpEmitMeshTasksEXT"
         ),
         Some(structs::Class::Branch) => !matches!(
             inst.opname.as_str(),

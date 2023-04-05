@@ -55,6 +55,12 @@ pub enum Terminator {
     Branch(Branch),
     IgnoreIntersectionKHR,
     TerminateRayKHR,
+    EmitMeshTasksEXT {
+        group_count_x: spirv::Word,
+        group_count_y: spirv::Word,
+        group_count_z: spirv::Word,
+        payload: Option<spirv::Word>,
+    },
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
 #[allow(clippy::upper_case_acronyms)]
@@ -1697,12 +1703,6 @@ pub enum Op {
         granularity: spirv::Word,
         coarse: spirv::Word,
         image_operands: Option<(spirv::ImageOperands, Vec<spirv::Word>)>,
-    },
-    EmitMeshTasksEXT {
-        group_count_x: spirv::Word,
-        group_count_y: spirv::Word,
-        group_count_z: spirv::Word,
-        payload: Option<spirv::Word>,
     },
     SetMeshOutputsEXT {
         vertex_count: spirv::Word,

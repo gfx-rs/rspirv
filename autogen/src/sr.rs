@@ -447,7 +447,12 @@ pub fn gen_sr_code_from_instruction_grammar(
                     });
                 }
             }
-            Some(Reserved) if matches!(inst_name, "TerminateRayKHR" | "IgnoreIntersectionKHR") => {
+            Some(Reserved)
+                if matches!(
+                    inst_name,
+                    "TerminateRayKHR" | "IgnoreIntersectionKHR" | "EmitMeshTasksEXT"
+                ) =>
+            {
                 if field_names.is_empty() {
                     terminator_variants.push(quote! { #name_ident });
                     terminator_lifts.push(quote! {
@@ -536,6 +541,7 @@ pub fn gen_sr_code_from_instruction_grammar(
             pub fn lift_terminator(
                 &mut self, raw: &dr::Instruction
             ) -> Result<ops::Terminator, InstructionError> {
+                let mut #iter_ident = raw.operands.iter();
                 match raw.class.opcode as u32 {
                     #( #terminator_lifts )*
                     _ => self.lift_branch(raw)

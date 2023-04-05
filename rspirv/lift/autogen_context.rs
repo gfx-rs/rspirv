@@ -171,9 +171,35 @@ impl LiftContext {
         &mut self,
         raw: &dr::Instruction,
     ) -> Result<ops::Terminator, InstructionError> {
+        let mut operands = raw.operands.iter();
         match raw.class.opcode as u32 {
             4448u32 => Ok(ops::Terminator::IgnoreIntersectionKHR),
             4449u32 => Ok(ops::Terminator::TerminateRayKHR),
+            5294u32 => Ok(ops::Terminator::EmitMeshTasksEXT {
+                group_count_x: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                group_count_y: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                group_count_z: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                payload: match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
             _ => self.lift_branch(raw).map(ops::Terminator::Branch),
         }
     }
@@ -6715,31 +6741,6 @@ impl LiftContext {
                             .collect::<Result<Vec<_>, _>>()?;
                         Some((*value, operands))
                     }
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                },
-            }),
-            5294u32 => Ok(ops::Op::EmitMeshTasksEXT {
-                group_count_x: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                group_count_y: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                group_count_z: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                payload: match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 },

@@ -269,6 +269,55 @@ impl Builder {
         let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
         self.insert_end_block(insert_point, inst)
     }
+    #[doc = "Appends an OpEmitMeshTasksEXT instruction and ends the current block."]
+    pub fn emit_mesh_tasks_ext(
+        &mut self,
+        group_count_x: spirv::Word,
+        group_count_y: spirv::Word,
+        group_count_z: spirv::Word,
+        payload: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::EmitMeshTasksEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(group_count_x),
+                dr::Operand::IdRef(group_count_y),
+                dr::Operand::IdRef(group_count_z),
+            ],
+        );
+        if let Some(v) = payload {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.end_block(inst)
+    }
+    #[doc = "Insert an OpEmitMeshTasksEXT instruction and ends the current block."]
+    pub fn insert_emit_mesh_tasks_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        group_count_x: spirv::Word,
+        group_count_y: spirv::Word,
+        group_count_z: spirv::Word,
+        payload: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::EmitMeshTasksEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(group_count_x),
+                dr::Operand::IdRef(group_count_y),
+                dr::Operand::IdRef(group_count_z),
+            ],
+        );
+        if let Some(v) = payload {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_end_block(insert_point, inst)
+    }
     #[doc = "Appends an OpDemoteToHelperInvocation instruction and ends the current block."]
     pub fn demote_to_helper_invocation(&mut self) -> BuildResult<()> {
         #[allow(unused_mut)]
