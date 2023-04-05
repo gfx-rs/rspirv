@@ -5849,20 +5849,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5334u32 => Ok(ops::Op::ReportIntersectionKHR {
-                hit: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                hit_kind: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
             5335u32 => Ok(ops::Op::IgnoreIntersectionNV),
             5336u32 => Ok(ops::Op::TerminateRayNV),
             5337u32 => Ok(ops::Op::TraceNV {
@@ -6768,41 +6754,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5632u32 => Ok(ops::Op::DecorateStringGOOGLE {
-                target: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                decoration: (match operands.next() {
-                    Some(dr::Operand::Decoration(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
             5633u32 => Ok(ops::Op::MemberDecorateString {
-                struct_type: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                member: (match operands.next() {
-                    Some(dr::Operand::LiteralBit32(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                decoration: (match operands.next() {
-                    Some(dr::Operand::Decoration(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
-            5633u32 => Ok(ops::Op::MemberDecorateStringGOOGLE {
                 struct_type: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -11118,7 +11070,6 @@ impl LiftContext {
             322u32 => Ok(Type::PipeStorage),
             327u32 => Ok(Type::NamedBarrier),
             4472u32 => Ok(Type::RayQueryKHR),
-            5341u32 => Ok(Type::AccelerationStructureKHR),
             5358u32 => Ok(Type::CooperativeMatrixNV {
                 component_type: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),

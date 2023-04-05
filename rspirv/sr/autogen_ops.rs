@@ -1495,10 +1495,6 @@ pub enum Op {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     },
-    ReportIntersectionKHR {
-        hit: spirv::Word,
-        hit_kind: spirv::Word,
-    },
     IgnoreIntersectionNV,
     TerminateRayNV,
     TraceNV {
@@ -1736,16 +1732,7 @@ pub enum Op {
         target: spirv::Word,
         decoration: spirv::Decoration,
     },
-    DecorateStringGOOGLE {
-        target: spirv::Word,
-        decoration: spirv::Decoration,
-    },
     MemberDecorateString {
-        struct_type: Token<Type>,
-        member: u32,
-        decoration: spirv::Decoration,
-    },
-    MemberDecorateStringGOOGLE {
         struct_type: Token<Type>,
         member: u32,
         decoration: spirv::Decoration,
