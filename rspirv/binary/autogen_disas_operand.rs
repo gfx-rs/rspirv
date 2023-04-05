@@ -173,6 +173,12 @@ impl Disassemble for spirv::LoopControl {
         if self.contains(spirv::LoopControl::NO_FUSION_INTEL) {
             bits.push("NoFusionINTEL")
         }
+        if self.contains(spirv::LoopControl::LOOP_COUNT_INTEL) {
+            bits.push("LoopCountINTEL")
+        }
+        if self.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_INTEL) {
+            bits.push("MaxReinvocationDelayINTEL")
+        }
         bits.join("|")
     }
 }

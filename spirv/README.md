@@ -18,7 +18,7 @@ First add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-spirv = "0.2.0+sdk-1.3.231.1"
+spirv = "0.2.0"
 ```
 
 Version

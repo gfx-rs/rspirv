@@ -236,7 +236,10 @@ impl<'c, 'd> Parser<'c, 'd> {
         if loop_control.contains(spirv::LoopControl::SPECULATED_ITERATIONS_INTEL) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::NO_FUSION_INTEL) {
+        if loop_control.contains(spirv::LoopControl::LOOP_COUNT_INTEL) {
+            params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
+        }
+        if loop_control.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_INTEL) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
         Ok(params)
@@ -354,6 +357,12 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::ExecutionMode::SchedulerTargetFmaxMhzINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::StreamingInterfaceINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::ExecutionMode::RegisterMapInterfaceINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
             spirv::ExecutionMode::NamedBarrierCountINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -469,8 +478,21 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::PrefetchINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::Decoration::MathOpDSPModeINTEL => vec![
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+            ],
             spirv::Decoration::AliasScopeINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::NoAliasINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::InitiationIntervalINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MaxConcurrencyINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::PipelineEnableINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
             spirv::Decoration::BufferLocationINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -481,6 +503,34 @@ impl<'c, 'd> Parser<'c, 'd> {
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::FPOperationMode(self.decoder.fp_operation_mode()?),
             ],
+            spirv::Decoration::LatencyControlLabelINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::LatencyControlConstraintINTEL => vec![
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+            ],
+            spirv::Decoration::MMHostInterfaceAddressWidthINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceDataWidthINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceLatencyINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceReadWriteModeINTEL => {
+                vec![dr::Operand::AccessQualifier(
+                    self.decoder.access_qualifier()?,
+                )]
+            }
+            spirv::Decoration::MMHostInterfaceMaxBurstINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceWaitRequestINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
             _ => vec![],
         })
     }

@@ -71,6 +71,7 @@ pub enum Type {
     PipeStorage,
     NamedBarrier,
     RayQueryKHR,
+    HitObjectNV,
     AccelerationStructureKHR,
     CooperativeMatrixNV {
         component_type: Token<Type>,
