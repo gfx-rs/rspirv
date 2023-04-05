@@ -175,7 +175,7 @@ impl OperandTokens {
                 let key = Ident::new(name, Span::call_site());
                 quote! {
                     match #iter.next() {
-                        Some(&dr::Operand::#key(ref value)) => Some(#lift_value),
+                        Some(dr::Operand::#key(value)) => Some(#lift_value),
                         Some(_) => return Err(OperandError::WrongType.into()),
                         None => None,
                     }
@@ -199,7 +199,7 @@ impl OperandTokens {
                 let second_key = Ident::new("IdRef", Span::call_site());
                 quote! {
                     match #iter.next() {
-                        Some(&dr::Operand::#first_key(ref value)) => {
+                        Some(dr::Operand::#first_key(value)) => {
                             let operands = #iter.map(|op| {
                                 match *op {
                                     dr::Operand::#second_key(second) => Ok(second),
