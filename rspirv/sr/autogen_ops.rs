@@ -1491,7 +1491,7 @@ pub enum Op {
         index_offset: spirv::Word,
         packed_indices: spirv::Word,
     },
-    ReportIntersectionNV {
+    ReportIntersectionKHR {
         hit: spirv::Word,
         hit_kind: spirv::Word,
     },
@@ -1538,7 +1538,6 @@ pub enum Op {
         time: spirv::Word,
         payload: spirv::Word,
     },
-    TypeAccelerationStructureNV,
     ExecuteCallableNV {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,

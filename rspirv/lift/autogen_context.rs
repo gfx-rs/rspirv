@@ -5835,7 +5835,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5334u32 => Ok(ops::Op::ReportIntersectionNV {
+            5334u32 => Ok(ops::Op::ReportIntersectionKHR {
                 hit: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -6067,7 +6067,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5341u32 => Ok(ops::Op::TypeAccelerationStructureNV),
             5344u32 => Ok(ops::Op::ExecuteCallableNV {
                 sbt_index: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -11070,6 +11069,7 @@ impl LiftContext {
             322u32 => Ok(Type::PipeStorage),
             327u32 => Ok(Type::NamedBarrier),
             4472u32 => Ok(Type::RayQueryKHR),
+            5341u32 => Ok(Type::AccelerationStructureKHR),
             5358u32 => Ok(Type::CooperativeMatrixNV {
                 component_type: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),

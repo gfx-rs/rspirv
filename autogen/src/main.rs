@@ -43,13 +43,66 @@ fn map_reserved_instructions(grammar: &mut structs::Grammar) {
         .iter_mut()
         .filter(|i| i.class == Some(structs::Class::Reserved))
     {
-        if instruction.opname.starts_with("OpType")
-            // Ignore AccelerationStructureNV which has the same opcode as AccelerationStructureKHR
-            && instruction.opname != "OpTypeAccelerationStructureNV"
-        {
+        if instruction.opname.starts_with("OpType") {
             instruction.class = Some(structs::Class::Type);
         }
     }
+}
+
+fn opname_suffix_weight(opname: &str) -> u32 {
+    const VENDORS: [&str; 36] = [
+        "AMD",
+        "AMDX",
+        "ANDROID",
+        "ARM",
+        "BRCM",
+        "CHROMIUM",
+        "EXT",
+        "FB",
+        "FSL",
+        "FUCHSIA",
+        "GGP",
+        "GOOGLE",
+        "HUAWEI",
+        "IMG",
+        "INTEL",
+        "JUICE",
+        "KDAB",
+        "KHX",
+        "LUNARG",
+        "MESA",
+        "MVK",
+        "NN",
+        "NV",
+        "NVX",
+        "NXP",
+        "NZXT",
+        "QCOM",
+        "QNX",
+        "RASTERGRID",
+        "RENDERDOC",
+        "SAMSUNG",
+        "SEC",
+        "TIZEN",
+        "VALVE",
+        "VIV",
+        "VSI",
+    ];
+
+    match opname {
+        _ if opname.ends_with("KHR") => 1,
+        _ if opname.ends_with("EXT") => 2,
+        _ if VENDORS.iter().any(|v| opname.ends_with(v)) => 3,
+        _ => 0,
+    }
+}
+
+fn sort_instructions(grammar: &mut structs::Grammar) {
+    grammar.instructions.sort_by(|l, r| {
+        l.opcode
+            .cmp(&r.opcode)
+            .then_with(|| opname_suffix_weight(&l.opname).cmp(&opname_suffix_weight(&r.opname)))
+    })
 }
 
 fn main() {
@@ -73,6 +126,7 @@ fn main() {
     let grammar: structs::Grammar = {
         let mut original = serde_json::from_str(&contents).unwrap();
         map_reserved_instructions(&mut original);
+        sort_instructions(&mut original);
         original
     };
 

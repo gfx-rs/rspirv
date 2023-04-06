@@ -13729,45 +13729,6 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
-    #[doc = "Appends an OpReportIntersectionNV instruction to the current block."]
-    pub fn report_intersection_nv(
-        &mut self,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        hit: spirv::Word,
-        hit_kind: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ReportIntersectionNV,
-            Some(result_type),
-            Some(_id),
-            vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpReportIntersectionNV instruction to the current block."]
-    pub fn insert_report_intersection_nv(
-        &mut self,
-        insert_point: InsertPoint,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        hit: spirv::Word,
-        hit_kind: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ReportIntersectionNV,
-            Some(result_type),
-            Some(_id),
-            vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(_id)
-    }
     #[doc = "Appends an OpReportIntersectionKHR instruction to the current block."]
     pub fn report_intersection_khr(
         &mut self,
@@ -13800,6 +13761,45 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::ReportIntersectionKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpReportIntersectionNV instruction to the current block."]
+    pub fn report_intersection_nv(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit: spirv::Word,
+        hit_kind: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReportIntersectionNV,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpReportIntersectionNV instruction to the current block."]
+    pub fn insert_report_intersection_nv(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit: spirv::Word,
+        hit_kind: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReportIntersectionNV,
             Some(result_type),
             Some(_id),
             vec![dr::Operand::IdRef(hit), dr::Operand::IdRef(hit_kind)],

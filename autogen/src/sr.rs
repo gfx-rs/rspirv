@@ -325,9 +325,9 @@ pub fn gen_sr_code_from_instruction_grammar(
 
     // Compose the token stream for all instructions
     for inst in grammar_instructions
-        .iter() // Loop over all instructions
+        .iter()
+        // Skip constants
         .filter(|i| i.class != Some(structs::Class::Constant))
-    // Skip constants
     {
         if !seen_discriminator.insert(inst.opcode) {
             continue;
