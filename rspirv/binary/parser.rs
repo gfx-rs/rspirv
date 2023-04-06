@@ -777,7 +777,7 @@ mod tests {
     impl error::Error for ErrorString {}
     impl fmt::Display for ErrorString {
         fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-            let &ErrorString(ref s) = self;
+            let ErrorString(s) = self;
             write!(f, "{}", s)
         }
     }
