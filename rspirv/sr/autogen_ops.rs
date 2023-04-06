@@ -1491,10 +1491,6 @@ pub enum Op {
         index_offset: spirv::Word,
         packed_indices: spirv::Word,
     },
-    ReportIntersectionNV {
-        hit: spirv::Word,
-        hit_kind: spirv::Word,
-    },
     ReportIntersectionKHR {
         hit: spirv::Word,
         hit_kind: spirv::Word,
@@ -1542,7 +1538,6 @@ pub enum Op {
         time: spirv::Word,
         payload: spirv::Word,
     },
-    TypeAccelerationStructureNV,
     ExecuteCallableNV {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
@@ -1736,16 +1731,7 @@ pub enum Op {
         target: spirv::Word,
         decoration: spirv::Decoration,
     },
-    DecorateStringGOOGLE {
-        target: spirv::Word,
-        decoration: spirv::Decoration,
-    },
     MemberDecorateString {
-        struct_type: Token<Type>,
-        member: u32,
-        decoration: spirv::Decoration,
-    },
-    MemberDecorateStringGOOGLE {
         struct_type: Token<Type>,
         member: u32,
         decoration: spirv::Decoration,

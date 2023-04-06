@@ -5835,20 +5835,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5334u32 => Ok(ops::Op::ReportIntersectionNV {
-                hit: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                hit_kind: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
             5334u32 => Ok(ops::Op::ReportIntersectionKHR {
                 hit: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -6081,7 +6067,6 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5341u32 => Ok(ops::Op::TypeAccelerationStructureNV),
             5344u32 => Ok(ops::Op::ExecuteCallableNV {
                 sbt_index: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -6768,41 +6753,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5632u32 => Ok(ops::Op::DecorateStringGOOGLE {
-                target: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                decoration: (match operands.next() {
-                    Some(dr::Operand::Decoration(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
             5633u32 => Ok(ops::Op::MemberDecorateString {
-                struct_type: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                member: (match operands.next() {
-                    Some(dr::Operand::LiteralBit32(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                decoration: (match operands.next() {
-                    Some(dr::Operand::Decoration(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-            }),
-            5633u32 => Ok(ops::Op::MemberDecorateStringGOOGLE {
                 struct_type: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => return Err(OperandError::WrongType.into()),

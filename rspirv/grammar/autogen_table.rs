@@ -3595,7 +3595,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdRef, One), (IdRef, One)]
     ),
     inst!(
-        ReportIntersectionNV,
+        ReportIntersectionKHR,
         [RayTracingNV, RayTracingKHR],
         ["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
         [
@@ -3606,7 +3606,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        ReportIntersectionKHR,
+        ReportIntersectionNV,
         [RayTracingNV, RayTracingKHR],
         ["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
         [
@@ -3680,7 +3680,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        TypeAccelerationStructureNV,
+        TypeAccelerationStructureKHR,
         [RayTracingNV, RayTracingKHR, RayQueryKHR],
         [
             "SPV_NV_ray_tracing",
@@ -3690,7 +3690,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResult, One)]
     ),
     inst!(
-        TypeAccelerationStructureKHR,
+        TypeAccelerationStructureNV,
         [RayTracingNV, RayTracingKHR, RayQueryKHR],
         [
             "SPV_NV_ray_tracing",

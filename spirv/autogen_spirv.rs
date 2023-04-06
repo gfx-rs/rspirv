@@ -2859,13 +2859,13 @@ pub enum Op {
     ImageSampleFootprintNV = 5283u32,
     GroupNonUniformPartitionNV = 5296u32,
     WritePackedPrimitiveIndices4x8NV = 5299u32,
-    ReportIntersectionNV = 5334u32,
+    ReportIntersectionKHR = 5334u32,
     IgnoreIntersectionNV = 5335u32,
     TerminateRayNV = 5336u32,
     TraceNV = 5337u32,
     TraceMotionNV = 5338u32,
     TraceRayMotionNV = 5339u32,
-    TypeAccelerationStructureNV = 5341u32,
+    TypeAccelerationStructureKHR = 5341u32,
     ExecuteCallableNV = 5344u32,
     TypeCooperativeMatrixNV = 5358u32,
     CooperativeMatrixLoadNV = 5359u32,
@@ -3193,8 +3193,8 @@ impl Op {
 #[allow(clippy::upper_case_acronyms)]
 #[allow(non_upper_case_globals)]
 impl Op {
-    pub const ReportIntersectionKHR: Op = Op::ReportIntersectionNV;
-    pub const TypeAccelerationStructureKHR: Op = Op::TypeAccelerationStructureNV;
+    pub const ReportIntersectionNV: Op = Op::ReportIntersectionKHR;
+    pub const TypeAccelerationStructureNV: Op = Op::TypeAccelerationStructureKHR;
     pub const DecorateStringGOOGLE: Op = Op::DecorateString;
     pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
 }

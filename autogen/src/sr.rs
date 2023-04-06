@@ -1,3 +1,5 @@
+use std::collections::BTreeSet;
+
 use crate::structs;
 use crate::utils::*;
 
@@ -319,12 +321,18 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut field_types = Vec::new();
     let mut field_lifts = Vec::new();
 
+    let mut seen_discriminator = BTreeSet::new();
+
     // Compose the token stream for all instructions
     for inst in grammar_instructions
-        .iter() // Loop over all instructions
+        .iter()
+        // Skip constants
         .filter(|i| i.class != Some(structs::Class::Constant))
-    // Skip constants
     {
+        if !seen_discriminator.insert(inst.opcode) {
+            continue;
+        }
+
         // Get the token for its enumerant
         let inst_name = &inst.opname[2..];
 

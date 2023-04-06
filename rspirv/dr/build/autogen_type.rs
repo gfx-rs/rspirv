@@ -592,6 +592,33 @@ impl Builder {
             new_id
         }
     }
+    #[doc = "Appends an OpTypeAccelerationStructureNV instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_acceleration_structure_nv(&mut self) -> spirv::Word {
+        self.type_acceleration_structure_nv_id(None)
+    }
+    #[doc = "Appends an OpTypeAccelerationStructureNV instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_acceleration_structure_nv_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeAccelerationStructureNV,
+            None,
+            result_id,
+            vec![],
+        );
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
     #[doc = "Appends an OpTypeCooperativeMatrixNV instruction and returns the result id, or return the existing id if the instruction was already present."]
     pub fn type_cooperative_matrix_nv(
         &mut self,
