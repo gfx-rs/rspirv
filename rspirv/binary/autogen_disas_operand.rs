@@ -62,6 +62,9 @@ impl Disassemble for spirv::ImageOperands {
         if self.contains(spirv::ImageOperands::ZERO_EXTEND) {
             bits.push("ZeroExtend")
         }
+        if self.contains(spirv::ImageOperands::NONTEMPORAL) {
+            bits.push("Nontemporal")
+        }
         if self.contains(spirv::ImageOperands::OFFSETS) {
             bits.push("Offsets")
         }
@@ -169,6 +172,12 @@ impl Disassemble for spirv::LoopControl {
         }
         if self.contains(spirv::LoopControl::NO_FUSION_INTEL) {
             bits.push("NoFusionINTEL")
+        }
+        if self.contains(spirv::LoopControl::LOOP_COUNT_INTEL) {
+            bits.push("LoopCountINTEL")
+        }
+        if self.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_INTEL) {
+            bits.push("MaxReinvocationDelayINTEL")
         }
         bits.join("|")
     }
@@ -290,6 +299,12 @@ impl Disassemble for spirv::MemoryAccess {
         if self.contains(spirv::MemoryAccess::NON_PRIVATE_POINTER_KHR) {
             bits.push("NonPrivatePointerKHR")
         }
+        if self.contains(spirv::MemoryAccess::ALIAS_SCOPE_INTEL_MASK) {
+            bits.push("AliasScopeINTELMask")
+        }
+        if self.contains(spirv::MemoryAccess::NO_ALIAS_INTEL_MASK) {
+            bits.push("NoAliasINTELMask")
+        }
         bits.join("|")
     }
 }
@@ -340,6 +355,9 @@ impl Disassemble for spirv::RayFlags {
         }
         if self.contains(spirv::RayFlags::SKIP_AAB_BS_KHR) {
             bits.push("SkipAABBsKHR")
+        }
+        if self.contains(spirv::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {
+            bits.push("ForceOpacityMicromap2StateEXT")
         }
         bits.join("|")
     }

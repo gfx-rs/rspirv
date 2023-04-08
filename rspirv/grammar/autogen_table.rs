@@ -3260,6 +3260,19 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        GroupNonUniformRotateKHR,
+        [GroupNonUniformRotateKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne)
+        ]
+    ),
+    inst!(
         SubgroupReadInvocationKHR,
         [SubgroupBallotKHR],
         ["SPV_KHR_shader_ballot"],
@@ -3313,8 +3326,32 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         []
     ),
     inst!(
+        SDot,
+        [DotProduct],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
         SDotKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        UDot,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3327,6 +3364,18 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         UDotKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        SUDot,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3339,7 +3388,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SUDotKHR,
         [DotProductKHR],
-        [],
+        ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -3349,8 +3398,34 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        SDotAccSat,
+        [DotProduct],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
         SDotAccSatKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        UDotAccSat,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3364,6 +3439,19 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         UDotAccSatKHR,
         [DotProductKHR],
+        ["SPV_KHR_integer_dot_product"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (PackedVectorFormat, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        SUDotAccSat,
+        [DotProduct],
         [],
         [
             (IdResultType, One),
@@ -3377,7 +3465,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SUDotAccSatKHR,
         [DotProductKHR],
-        [],
+        ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
             (IdResult, One),
@@ -3439,6 +3527,58 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             (IdResultType, One),
             (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageSampleWeightedQCOM,
+        [TextureSampleWeightedQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageBoxFilterQCOM,
+        [TextureBoxFilterQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageBlockMatchSSDQCOM,
+        [TextureBlockMatchQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageBlockMatchSADQCOM,
+        [TextureBlockMatchQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
             (IdRef, One),
             (IdRef, One)
         ]
@@ -3565,8 +3705,304 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         ReadClockKHR,
         [ShaderClockKHR],
-        ["SPV_KHR_shader_clock"],
+        [],
         [(IdResultType, One), (IdResult, One), (IdScope, One)]
+    ),
+    inst!(
+        HitObjectRecordHitMotionNV,
+        [ShaderInvocationReorderNV, RayTracingMotionBlurNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectRecordHitWithIndexMotionNV,
+        [ShaderInvocationReorderNV, RayTracingMotionBlurNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectRecordMissMotionNV,
+        [ShaderInvocationReorderNV, RayTracingMotionBlurNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectGetWorldToObjectNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetObjectToWorldNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetObjectRayDirectionNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetObjectRayOriginNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectTraceRayMotionNV,
+        [ShaderInvocationReorderNV, RayTracingMotionBlurNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectGetShaderRecordBufferHandleNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetShaderBindingTableRecordIndexNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectRecordEmptyNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdRef, One)]
+    ),
+    inst!(
+        HitObjectTraceRayNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectRecordHitNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectRecordHitWithIndexNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectRecordMissNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectExecuteShaderNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetCurrentTimeNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetAttributesNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetHitKindNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetPrimitiveIndexNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetGeometryIndexNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetInstanceIdNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetInstanceCustomIndexNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetWorldRayDirectionNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetWorldRayOriginNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetRayTMaxNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetRayTMinNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectIsEmptyNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectIsHitNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectIsMissNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ReorderThreadWithHitObjectNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdRef, One), (IdRef, ZeroOrOne), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        ReorderThreadWithHintNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        TypeHitObjectNV,
+        [ShaderInvocationReorderNV],
+        [],
+        [(IdResult, One)]
     ),
     inst!(
         ImageSampleFootprintNV,
@@ -3581,6 +4017,18 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One),
             (ImageOperands, ZeroOrOne)
         ]
+    ),
+    inst!(
+        EmitMeshTasksEXT,
+        [MeshShadingEXT],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        SetMeshOutputsEXT,
+        [MeshShadingEXT],
+        [],
+        [(IdRef, One), (IdRef, One)]
     ),
     inst!(
         GroupNonUniformPartitionNV,
@@ -3780,10 +4228,11 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ["SPV_EXT_fragment_shader_interlock"],
         []
     ),
+    inst!(DemoteToHelperInvocation, [DemoteToHelperInvocation], [], []),
     inst!(
         DemoteToHelperInvocationEXT,
         [DemoteToHelperInvocationEXT],
-        ["SPV_EXT_demote_to_helper_invocation"],
+        [],
         []
     ),
     inst!(
@@ -5970,6 +6419,24 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(LiteralInteger, ZeroOrMore)]
     ),
     inst!(
+        AliasDomainDeclINTEL,
+        [MemoryAccessAliasingINTEL],
+        ["SPV_INTEL_memory_access_aliasing"],
+        [(IdResult, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        AliasScopeDeclINTEL,
+        [MemoryAccessAliasingINTEL],
+        ["SPV_INTEL_memory_access_aliasing"],
+        [(IdResult, One), (IdRef, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        AliasScopeListDeclINTEL,
+        [MemoryAccessAliasingINTEL],
+        ["SPV_INTEL_memory_access_aliasing"],
+        [(IdResult, One), (IdRef, ZeroOrMore)]
+    ),
+    inst!(
         FixedSqrtINTEL,
         [ArbitraryPrecisionFixedPointINTEL],
         [],
@@ -6392,5 +6859,125 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [LongConstantCompositeINTEL],
         [],
         [(IdRef, ZeroOrMore)]
+    ),
+    inst!(
+        ConvertFToBF16INTEL,
+        [BFloat16ConversionINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertBF16ToFINTEL,
+        [BFloat16ConversionINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ControlBarrierArriveINTEL,
+        [SplitBarrierINTEL],
+        [],
+        [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
+    ),
+    inst!(
+        ControlBarrierWaitINTEL,
+        [SplitBarrierINTEL],
+        [],
+        [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
+    ),
+    inst!(
+        GroupIMulKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupFMulKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupBitwiseAndKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupBitwiseOrKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupBitwiseXorKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupLogicalAndKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupLogicalOrKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GroupLogicalXorKHR,
+        [GroupUniformArithmeticKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (GroupOperation, One),
+            (IdRef, One)
+        ]
     ),
 ];

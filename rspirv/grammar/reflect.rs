@@ -107,6 +107,7 @@ pub fn is_abort(opcode: spirv::Op) -> bool {
             | spirv::Op::TerminateInvocation
             | spirv::Op::TerminateRayKHR
             | spirv::Op::IgnoreIntersectionKHR
+            | spirv::Op::EmitMeshTasksEXT
             | spirv::Op::Unreachable
     )
 }
