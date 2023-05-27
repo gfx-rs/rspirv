@@ -4,7 +4,7 @@
 
 #![allow(clippy::upper_case_acronyms)]
 #[doc = r" SPIR-V decorations."]
-#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Decoration {
     RelaxedPrecision,
     SpecId(u32),

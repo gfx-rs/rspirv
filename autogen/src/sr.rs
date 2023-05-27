@@ -279,7 +279,7 @@ pub fn gen_sr_code_from_operand_kind_grammar(
         #![allow(clippy::upper_case_acronyms)]
 
         /// SPIR-V decorations.
-        #[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+        #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Decoration {
             #( #enumerants ),*
         }
