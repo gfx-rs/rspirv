@@ -92,8 +92,12 @@ pub fn get_param_name(params: &[structs::Operand], param_index: usize) -> Ident 
 
     let mut name = raw_name.to_snake_case();
 
+    // Rename/remap rust reserved keywords
     if name == "type" {
         name = "ty".to_owned();
+    }
+    if name == "use" {
+        name = "usage".to_owned();
     }
 
     if duplicate_count > 0 {
