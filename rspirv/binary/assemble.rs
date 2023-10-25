@@ -47,6 +47,7 @@ impl Assemble for dr::Operand {
             Self::MemorySemantics(v) => result.push(v.bits()),
             Self::MemoryAccess(v) => result.push(v.bits()),
             Self::KernelProfilingInfo(v) => result.push(v.bits()),
+            Self::CooperativeMatrixOperands(v) => result.push(v.bits()),
             Self::SourceLanguage(v) => result.push(v as u32),
             Self::ExecutionModel(v) => result.push(v as u32),
             Self::AddressingModel(v) => result.push(v as u32),
@@ -87,6 +88,12 @@ impl Assemble for dr::Operand {
             Self::FPOperationMode(v) => result.push(v as u32),
             Self::OverflowModes(v) => result.push(v as u32),
             Self::PackedVectorFormat(v) => result.push(v as u32),
+            Self::HostAccessQualifier(v) => result.push(v as u32),
+            Self::CooperativeMatrixLayout(v) => result.push(v as u32),
+            Self::CooperativeMatrixUse(v) => result.push(v as u32),
+            Self::InitializationModeQualifier(v) => result.push(v as u32),
+            Self::LoadCacheControl(v) => result.push(v as u32),
+            Self::StoreCacheControl(v) => result.push(v as u32),
         }
     }
 }
