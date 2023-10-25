@@ -27,7 +27,10 @@ pub fn as_ident(ident: &str) -> Ident {
 /// given operand `kind` in the grammar.
 pub fn get_dr_operand_kind(kind: &str) -> Ident {
     as_ident(
-        if matches!(kind, "LiteralInteger" | "LiteralContextDependentNumber") {
+        if matches!(
+            kind,
+            "LiteralInteger" | "LiteralContextDependentNumber" | "LiteralFloat"
+        ) {
             // TODO: LiteralContextDependentNumber should use the correct type to decode
             "LiteralBit32"
         } else {
@@ -41,7 +44,8 @@ pub fn get_dr_operand_kind(kind: &str) -> Ident {
 pub fn get_enum_underlying_type(kind: &str, generic_string: bool) -> TokenStream {
     if kind.starts_with("Id") {
         quote! { spirv::Word }
-    } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" {
+    } else if kind == "LiteralInteger" || kind == "LiteralExtInstInteger" || kind == "LiteralFloat"
+    {
         quote! { u32 }
     } else if kind == "LiteralSpecConstantOpInteger" {
         quote! { spirv::Op }

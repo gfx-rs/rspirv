@@ -112,6 +112,11 @@ impl OperandTokens {
                 quote! { *value },
                 OperandTy::Single("LiteralBit32"),
             ),
+            "LiteralFloat" => (
+                quote! { u32 },
+                quote! { *value },
+                OperandTy::Single("LiteralBit32"),
+            ),
             "LiteralExtInstInteger" => (
                 quote! { u32 },
                 quote! { *value },
