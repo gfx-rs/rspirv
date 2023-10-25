@@ -70,6 +70,13 @@ pub enum Type {
     },
     PipeStorage,
     NamedBarrier,
+    CooperativeMatrixKHR {
+        component_type: Token<Type>,
+        scope: spirv::Word,
+        rows: spirv::Word,
+        columns: spirv::Word,
+        usage: spirv::Word,
+    },
     RayQueryKHR,
     HitObjectNV,
     AccelerationStructureKHR,

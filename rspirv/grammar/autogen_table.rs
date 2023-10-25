@@ -35,6 +35,7 @@ pub enum OperandKind {
     OverflowModes,
     LinkageType,
     AccessQualifier,
+    HostAccessQualifier,
     FunctionParameterAttribute,
     Decoration,
     BuiltIn,
@@ -46,6 +47,12 @@ pub enum OperandKind {
     RayQueryCommittedIntersectionType,
     RayQueryCandidateIntersectionType,
     PackedVectorFormat,
+    CooperativeMatrixOperands,
+    CooperativeMatrixLayout,
+    CooperativeMatrixUse,
+    InitializationModeQualifier,
+    LoadCacheControl,
+    StoreCacheControl,
     IdResultType,
     IdResult,
     IdMemorySemantics,
@@ -53,6 +60,7 @@ pub enum OperandKind {
     IdRef,
     LiteralInteger,
     LiteralString,
+    LiteralFloat,
     LiteralContextDependentNumber,
     LiteralExtInstInteger,
     LiteralSpecConstantOpInteger,
@@ -3224,6 +3232,29 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        ColorAttachmentReadEXT,
+        [TileImageColorReadAccessEXT],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        DepthAttachmentReadEXT,
+        [TileImageDepthReadAccessEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        StencilAttachmentReadEXT,
+        [TileImageStencilReadAccessEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
         TerminateInvocation,
         [Shader],
         ["SPV_KHR_terminate_invocation"],
@@ -3476,6 +3507,63 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        TypeCooperativeMatrixKHR,
+        [CooperativeMatrixKHR],
+        [],
+        [
+            (IdResult, One),
+            (IdRef, One),
+            (IdScope, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixLoadKHR,
+        [CooperativeMatrixKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixStoreKHR,
+        [CooperativeMatrixKHR],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixMulAddKHR,
+        [CooperativeMatrixKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (CooperativeMatrixOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixLengthKHR,
+        [CooperativeMatrixKHR],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
         TypeRayQueryKHR,
         [RayQueryKHR],
         ["SPV_KHR_ray_query"],
@@ -3707,6 +3795,24 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [ShaderClockKHR],
         [],
         [(IdResultType, One), (IdResult, One), (IdScope, One)]
+    ),
+    inst!(
+        FinalizeNodePayloadsAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [(IdRef, One)]
+    ),
+    inst!(
+        FinishWritingNodePayloadAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        InitializeNodePayloadsAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [(IdRef, One), (IdScope, One), (IdRef, One), (IdRef, One)]
     ),
     inst!(
         HitObjectRecordHitMotionNV,
@@ -4043,6 +4149,34 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdRef, One), (IdRef, One)]
     ),
     inst!(
+        FetchMicroTriangleVertexPositionNV,
+        [DisplacementMicromapNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        FetchMicroTriangleVertexBarycentricNV,
+        [DisplacementMicromapNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         ReportIntersectionKHR,
         [RayTracingNV, RayTracingKHR],
         ["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
@@ -4123,6 +4257,17 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One),
             (IdRef, One),
             (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        RayQueryGetIntersectionTriangleVertexPositionsKHR,
+        [RayQueryPositionFetchKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
             (IdRef, One),
             (IdRef, One)
         ]
