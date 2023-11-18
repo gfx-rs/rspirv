@@ -188,10 +188,11 @@ impl LiftContext {
             let start_label = fun.blocks[0].label.as_ref().unwrap().result_id.unwrap();
             let start_block = context.blocks.lookup_token(start_label);
             let blocks = mem::replace(&mut context.blocks, LiftStorage::new()).unwrap();
+            let fun_ret = fun.def.as_ref().and_then(|d| d.result_type).expect("functions must have a result type");
 
             functions.push(module::Function {
                 control: def.function_control,
-                result: context.types.append_id(1, Type::Void), //TODO: fty.return_type,
+                result: context.types.lookup_token(fun_ret),
                 parameters: Vec::new(),
                 blocks,
                 start_block,
