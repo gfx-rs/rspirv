@@ -16,10 +16,7 @@ pub struct Token<T> {
 
 impl<T> Clone for Token<T> {
     fn clone(&self) -> Self {
-        Token {
-            index: self.index,
-            marker: self.marker,
-        }
+        *self
     }
 }
 impl<T> Copy for Token<T> {}

@@ -34,7 +34,7 @@ fn value_enum_attribute() -> TokenStream {
 
 fn bit_enum_attribute() -> TokenStream {
     quote! {
-        #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+        #[derive(Clone, Copy, PartialEq, Eq, Hash)]
         #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
         #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
     }
@@ -153,6 +153,12 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             #attribute
             pub struct #kind: u32 {
                 #(#elements)*
+            }
+        }
+
+        impl core::fmt::Debug for #kind {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+                core::fmt::Debug::fmt(&self.0, f)
             }
         }
     }
