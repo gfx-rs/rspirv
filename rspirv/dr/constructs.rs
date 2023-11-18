@@ -394,7 +394,7 @@ mod tests {
                 "{}",
                 dr::Operand::FunctionControl(spirv::FunctionControl::INLINE)
             ),
-            "INLINE",
+            "FunctionControl(INLINE)",
         );
         assert_eq!(format!("{}", dr::Operand::IdRef(3)), "%3");
         assert_eq!(format!("{}", dr::Operand::LiteralBit32(3)), "3");
