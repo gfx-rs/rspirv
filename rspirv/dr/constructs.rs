@@ -396,7 +396,7 @@ mod tests {
                     spirv::FunctionControl::INLINE | spirv::FunctionControl::CONST
                 )
             ),
-            "INLINE | CONST",
+            "FunctionControl(INLINE | CONST)",
         );
         assert_eq!(format!("{}", dr::Operand::IdRef(3)), "%3");
         assert_eq!(format!("{}", dr::Operand::LiteralBit32(3)), "3");

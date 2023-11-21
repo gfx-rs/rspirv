@@ -155,12 +155,6 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
                 #(#elements)*
             }
         }
-
-        impl core::fmt::Display for #kind {
-            fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-                core::fmt::Display::fmt(&self.0, f)
-            }
-        }
     }
 }
 

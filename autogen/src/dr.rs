@@ -216,25 +216,24 @@ fn get_push_extras(
 /// Returns the generated dr::Operand and its fmt::Display implementation by
 /// walking the given SPIR-V operand kinds `grammar`.
 pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
-    let kind_and_category: Vec<_> = grammar
+    let kinds: Vec<_> = grammar
         .iter()
+        .map(|element| element.kind.as_str())
         .filter(|element| {
-            let kind: &str = element.kind.as_str();
-
             // Pair kinds are not used in dr::Operand.
             // LiteralContextDependentNumber is replaced by suitable literals.
             // LiteralInteger is replaced by LiteralBit32.
             // IdResult and IdResultType are not stored as operands in `dr`.
-            !(kind.starts_with("Pair")
+            !(element.starts_with("Pair")
                 || matches!(
-                    kind,
+                    *element,
                     "LiteralContextDependentNumber"
                         | "LiteralInteger"
                         | "IdResult"
                         | "IdResultType"
                 ))
         })
-        .map(|element| (as_ident(element.kind.as_str()), element.category))
+        .map(as_ident)
         .collect();
 
     let kind_to_enum: Vec<_> = grammar
@@ -249,10 +248,10 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
         .collect();
 
     let kind_and_ty = {
-        let id_kinds = kind_and_category
+        let id_kinds = kinds
             .iter()
-            .filter(|(_, category)| *category == structs::Category::Id)
-            .map(|(element, _)| (element.clone(), quote! { spirv::Word }));
+            .filter(|element| element.to_string().starts_with("Id"))
+            .map(|element| (element.clone(), quote! { spirv::Word }));
 
         let num_kinds = vec![
             (format_ident!("LiteralBit32"), quote! {u32}),
@@ -264,21 +263,21 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
             ),
         ];
 
-        let str_kinds = kind_and_category
+        let str_kinds = kinds
             .iter()
-            .filter(|(element, _)| element.to_string().ends_with("String"))
-            .map(|(element, _)| (element.clone(), quote! {String}));
+            .filter(|element| element.to_string().ends_with("String"))
+            .map(|element| (element.clone(), quote! {String}));
 
-        let enum_kinds = kind_and_category
+        let enum_kinds = kinds
             .iter()
-            .filter(|(element, _)| {
+            .filter(|element| {
                 let element = element.to_string();
                 !(element.starts_with("Id")
                     || element.ends_with("String")
                     || element.ends_with("Integer")
                     || element.ends_with("Number"))
             })
-            .map(|(element, _)| (element.clone(), quote! {spirv::#element}));
+            .map(|element| (element.clone(), quote! {spirv::#element}));
 
         enum_kinds
             .chain(id_kinds)
@@ -333,12 +332,14 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
 
     let impl_code = {
         // impl fmt::Display for dr::Operand.
-        let mut kinds = kind_and_category;
-        kinds.extend([
-            (as_ident("LiteralBit32"), structs::Category::Literal),
-            (as_ident("LiteralBit64"), structs::Category::Literal),
-        ]);
-        let cases = kinds.iter().map(|(element, category)| {
+        let mut kinds = kinds;
+        kinds.extend(
+            ["LiteralBit32", "LiteralBit64"]
+                .iter()
+                .cloned()
+                .map(as_ident),
+        );
+        let cases = kinds.iter().map(|element| {
             if element == "Dim" {
                 // Skip the "Dim" prefix, which is only used in the API to
                 // avoid having an enumerant name starting with a number
@@ -349,10 +350,6 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 // Prefix operands with a % so they're distinguishable from e.g. integer arguments.
                 quote! {
                     Operand::#element(ref v) => write!(f, "%{}", v)
-                }
-            } else if *category == structs::Category::BitEnum {
-                quote! {
-                    Operand::#element(ref v) => write!(f, "{}", v)
                 }
             } else {
                 quote! {
