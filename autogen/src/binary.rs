@@ -237,7 +237,7 @@ pub fn gen_operand_parse_methods(grammar: &[structs::OperandKind]) -> TokenStrea
     // Logic operands that expand to concrete operand pairs,
     // that is, those operand kinds with 'Pair' name prefix.
     // We only have two cases. So hard code it.
-    let pair_kinds = vec![("IdRef", "LiteralInteger"), ("IdRef", "IdRef")];
+    let pair_kinds = [("IdRef", "LiteralInteger"), ("IdRef", "IdRef")];
     let pair_cases = pair_kinds.iter().map(|&(k0, k1)| {
         let kind = as_ident(&format!("Pair{}{}", k0, k1));
         let kind0 = get_dr_operand_kind(k0);
@@ -253,7 +253,7 @@ pub fn gen_operand_parse_methods(grammar: &[structs::OperandKind]) -> TokenStrea
     });
 
     // These kinds are manually handled.
-    let manual_kinds = vec![
+    let manual_kinds = [
         "IdResultType",
         "IdResult",
         "LiteralContextDependentNumber",

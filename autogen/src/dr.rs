@@ -281,7 +281,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
 
         enum_kinds
             .chain(id_kinds)
-            .chain(num_kinds.into_iter())
+            .chain(num_kinds)
             .chain(str_kinds)
             .collect::<Vec<_>>()
     };
