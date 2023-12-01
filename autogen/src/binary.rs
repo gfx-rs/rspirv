@@ -14,14 +14,11 @@ fn get_decode_method(kind: &str) -> Ident {
         return as_ident("id");
     }
 
-    let mut kind = kind;
-    if kind.starts_with("Literal") {
-        kind = &kind["Literal".len()..];
-        if kind == "Integer" {
-            return as_ident("bit32");
-        }
+    match kind.strip_prefix("Literal") {
+        Some("Integer" | "Float") => as_ident("bit32"),
+        Some(kind) => as_ident(&kind.to_snake_case()),
+        None => as_ident(&kind.to_snake_case()),
     }
-    as_ident(&kind.to_snake_case())
 }
 
 /// Returns the generated operand decoding errors for binary::Decoder by

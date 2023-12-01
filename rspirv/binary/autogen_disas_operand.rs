@@ -383,3 +383,27 @@ impl Disassemble for spirv::FragmentShadingRate {
         bits.join("|")
     }
 }
+impl Disassemble for spirv::CooperativeMatrixOperands {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::CooperativeMatrixOperands::MATRIX_A_SIGNED_COMPONENTS_KHR) {
+            bits.push("MatrixASignedComponentsKHR")
+        }
+        if self.contains(spirv::CooperativeMatrixOperands::MATRIX_B_SIGNED_COMPONENTS_KHR) {
+            bits.push("MatrixBSignedComponentsKHR")
+        }
+        if self.contains(spirv::CooperativeMatrixOperands::MATRIX_C_SIGNED_COMPONENTS_KHR) {
+            bits.push("MatrixCSignedComponentsKHR")
+        }
+        if self.contains(spirv::CooperativeMatrixOperands::MATRIX_RESULT_SIGNED_COMPONENTS_KHR) {
+            bits.push("MatrixResultSignedComponentsKHR")
+        }
+        if self.contains(spirv::CooperativeMatrixOperands::SATURATING_ACCUMULATION_KHR) {
+            bits.push("SaturatingAccumulationKHR")
+        }
+        bits.join("|")
+    }
+}

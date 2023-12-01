@@ -317,6 +317,17 @@ impl<'a> Decoder<'a> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V HostAccessQualifier value."]
+    pub fn host_access_qualifier(&mut self) -> Result<spirv::HostAccessQualifier> {
+        if let Ok(word) = self.word() {
+            spirv::HostAccessQualifier::from_u32(word).ok_or(Error::HostAccessQualifierUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V FunctionParameterAttribute value."]
     pub fn function_parameter_attribute(&mut self) -> Result<spirv::FunctionParameterAttribute> {
         if let Ok(word) = self.word() {
@@ -424,6 +435,69 @@ impl<'a> Decoder<'a> {
     pub fn packed_vector_format(&mut self) -> Result<spirv::PackedVectorFormat> {
         if let Ok(word) = self.word() {
             spirv::PackedVectorFormat::from_u32(word).ok_or(Error::PackedVectorFormatUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V CooperativeMatrixOperands value."]
+    pub fn cooperative_matrix_operands(&mut self) -> Result<spirv::CooperativeMatrixOperands> {
+        if let Ok(word) = self.word() {
+            spirv::CooperativeMatrixOperands::from_bits(word).ok_or(
+                Error::CooperativeMatrixOperandsUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V CooperativeMatrixLayout value."]
+    pub fn cooperative_matrix_layout(&mut self) -> Result<spirv::CooperativeMatrixLayout> {
+        if let Ok(word) = self.word() {
+            spirv::CooperativeMatrixLayout::from_u32(word).ok_or(
+                Error::CooperativeMatrixLayoutUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V CooperativeMatrixUse value."]
+    pub fn cooperative_matrix_use(&mut self) -> Result<spirv::CooperativeMatrixUse> {
+        if let Ok(word) = self.word() {
+            spirv::CooperativeMatrixUse::from_u32(word).ok_or(Error::CooperativeMatrixUseUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V InitializationModeQualifier value."]
+    pub fn initialization_mode_qualifier(&mut self) -> Result<spirv::InitializationModeQualifier> {
+        if let Ok(word) = self.word() {
+            spirv::InitializationModeQualifier::from_u32(word).ok_or(
+                Error::InitializationModeQualifierUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V LoadCacheControl value."]
+    pub fn load_cache_control(&mut self) -> Result<spirv::LoadCacheControl> {
+        if let Ok(word) = self.word() {
+            spirv::LoadCacheControl::from_u32(word).ok_or(Error::LoadCacheControlUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V StoreCacheControl value."]
+    pub fn store_cache_control(&mut self) -> Result<spirv::StoreCacheControl> {
+        if let Ok(word) = self.word() {
+            spirv::StoreCacheControl::from_u32(word).ok_or(Error::StoreCacheControlUnknown(
                 self.offset - WORD_NUM_BYTES,
                 word,
             ))

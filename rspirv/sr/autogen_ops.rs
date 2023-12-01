@@ -1333,6 +1333,16 @@ pub enum Op {
         operand_1: spirv::Word,
         operand_2: spirv::Word,
     },
+    ColorAttachmentReadEXT {
+        attachment: spirv::Word,
+        sample: Option<spirv::Word>,
+    },
+    DepthAttachmentReadEXT {
+        sample: Option<spirv::Word>,
+    },
+    StencilAttachmentReadEXT {
+        sample: Option<spirv::Word>,
+    },
     SubgroupBallotKHR {
         predicate: spirv::Word,
     },
@@ -1410,6 +1420,28 @@ pub enum Op {
         vector_2: spirv::Word,
         accumulator: spirv::Word,
         packed_vector_format: Option<spirv::PackedVectorFormat>,
+    },
+    CooperativeMatrixLoadKHR {
+        pointer: spirv::Word,
+        memory_layout: spirv::Word,
+        stride: Option<spirv::Word>,
+        memory_operand: Option<spirv::MemoryAccess>,
+    },
+    CooperativeMatrixStoreKHR {
+        pointer: spirv::Word,
+        object: spirv::Word,
+        memory_layout: spirv::Word,
+        stride: Option<spirv::Word>,
+        memory_operand: Option<spirv::MemoryAccess>,
+    },
+    CooperativeMatrixMulAddKHR {
+        a: spirv::Word,
+        b: spirv::Word,
+        c: spirv::Word,
+        cooperative_matrix_operands: Option<spirv::CooperativeMatrixOperands>,
+    },
+    CooperativeMatrixLengthKHR {
+        ty: Token<Type>,
     },
     RayQueryInitializeKHR {
         ray_query: spirv::Word,
@@ -1513,6 +1545,18 @@ pub enum Op {
     },
     ReadClockKHR {
         scope: spirv::Word,
+    },
+    FinalizeNodePayloadsAMDX {
+        payload_array: spirv::Word,
+    },
+    FinishWritingNodePayloadAMDX {
+        payload: spirv::Word,
+    },
+    InitializeNodePayloadsAMDX {
+        payload_array: spirv::Word,
+        visibility: spirv::Word,
+        payload_count: spirv::Word,
+        node_index: spirv::Word,
     },
     HitObjectRecordHitMotionNV {
         hit_object: spirv::Word,
@@ -1715,6 +1759,20 @@ pub enum Op {
         index_offset: spirv::Word,
         packed_indices: spirv::Word,
     },
+    FetchMicroTriangleVertexPositionNV {
+        accel: spirv::Word,
+        instance_id: spirv::Word,
+        geometry_index: spirv::Word,
+        primitive_index: spirv::Word,
+        barycentric: spirv::Word,
+    },
+    FetchMicroTriangleVertexBarycentricNV {
+        accel: spirv::Word,
+        instance_id: spirv::Word,
+        geometry_index: spirv::Word,
+        primitive_index: spirv::Word,
+        barycentric: spirv::Word,
+    },
     ReportIntersectionKHR {
         hit: spirv::Word,
         hit_kind: spirv::Word,
@@ -1761,6 +1819,10 @@ pub enum Op {
         ray_tmax: spirv::Word,
         time: spirv::Word,
         payload: spirv::Word,
+    },
+    RayQueryGetIntersectionTriangleVertexPositionsKHR {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
     },
     ExecuteCallableNV {
         sbt_index: spirv::Word,

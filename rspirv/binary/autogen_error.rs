@@ -38,6 +38,7 @@ pub enum Error {
     OverflowModesUnknown(usize, spirv::Word),
     LinkageTypeUnknown(usize, spirv::Word),
     AccessQualifierUnknown(usize, spirv::Word),
+    HostAccessQualifierUnknown(usize, spirv::Word),
     FunctionParameterAttributeUnknown(usize, spirv::Word),
     DecorationUnknown(usize, spirv::Word),
     BuiltInUnknown(usize, spirv::Word),
@@ -49,6 +50,12 @@ pub enum Error {
     RayQueryCommittedIntersectionTypeUnknown(usize, spirv::Word),
     RayQueryCandidateIntersectionTypeUnknown(usize, spirv::Word),
     PackedVectorFormatUnknown(usize, spirv::Word),
+    CooperativeMatrixOperandsUnknown(usize, spirv::Word),
+    CooperativeMatrixLayoutUnknown(usize, spirv::Word),
+    CooperativeMatrixUseUnknown(usize, spirv::Word),
+    InitializationModeQualifierUnknown(usize, spirv::Word),
+    LoadCacheControlUnknown(usize, spirv::Word),
+    StoreCacheControlUnknown(usize, spirv::Word),
     #[doc = r"Failed to decode a string."]
     #[doc = r""]
     #[doc = r"For structured error handling, the second element could be"]
@@ -208,6 +215,11 @@ impl fmt::Display for Error {
                 "unknown value {} for operand kind AccessQualifier at index {}",
                 word, index
             ),
+            Error::HostAccessQualifierUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind HostAccessQualifier at index {}",
+                word, index
+            ),
             Error::FunctionParameterAttributeUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind FunctionParameterAttribute at index {}",
@@ -261,6 +273,36 @@ impl fmt::Display for Error {
             Error::PackedVectorFormatUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind PackedVectorFormat at index {}",
+                word, index
+            ),
+            Error::CooperativeMatrixOperandsUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind CooperativeMatrixOperands at index {}",
+                word, index
+            ),
+            Error::CooperativeMatrixLayoutUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind CooperativeMatrixLayout at index {}",
+                word, index
+            ),
+            Error::CooperativeMatrixUseUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind CooperativeMatrixUse at index {}",
+                word, index
+            ),
+            Error::InitializationModeQualifierUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind InitializationModeQualifier at index {}",
+                word, index
+            ),
+            Error::LoadCacheControlUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind LoadCacheControl at index {}",
+                word, index
+            ),
+            Error::StoreCacheControlUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind StoreCacheControl at index {}",
                 word, index
             ),
             Error::DecodeStringFailed(index, ref e) => {

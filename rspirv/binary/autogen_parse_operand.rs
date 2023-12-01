@@ -68,6 +68,9 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::AccessQualifier => vec![dr::Operand::AccessQualifier(
                 self.decoder.access_qualifier()?,
             )],
+            GOpKind::HostAccessQualifier => vec![dr::Operand::HostAccessQualifier(
+                self.decoder.host_access_qualifier()?,
+            )],
             GOpKind::FunctionParameterAttribute => vec![dr::Operand::FunctionParameterAttribute(
                 self.decoder.function_parameter_attribute()?,
             )],
@@ -96,11 +99,30 @@ impl<'c, 'd> Parser<'c, 'd> {
             GOpKind::PackedVectorFormat => vec![dr::Operand::PackedVectorFormat(
                 self.decoder.packed_vector_format()?,
             )],
+            GOpKind::CooperativeMatrixOperands => vec![dr::Operand::CooperativeMatrixOperands(
+                self.decoder.cooperative_matrix_operands()?,
+            )],
+            GOpKind::CooperativeMatrixLayout => vec![dr::Operand::CooperativeMatrixLayout(
+                self.decoder.cooperative_matrix_layout()?,
+            )],
+            GOpKind::CooperativeMatrixUse => vec![dr::Operand::CooperativeMatrixUse(
+                self.decoder.cooperative_matrix_use()?,
+            )],
+            GOpKind::InitializationModeQualifier => vec![dr::Operand::InitializationModeQualifier(
+                self.decoder.initialization_mode_qualifier()?,
+            )],
+            GOpKind::LoadCacheControl => vec![dr::Operand::LoadCacheControl(
+                self.decoder.load_cache_control()?,
+            )],
+            GOpKind::StoreCacheControl => vec![dr::Operand::StoreCacheControl(
+                self.decoder.store_cache_control()?,
+            )],
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
             GOpKind::LiteralInteger => vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)],
             GOpKind::LiteralString => vec![dr::Operand::LiteralString(self.decoder.string()?)],
+            GOpKind::LiteralFloat => vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)],
             GOpKind::LiteralExtInstInteger => vec![dr::Operand::LiteralExtInstInteger(
                 self.decoder.ext_inst_integer()?,
             )],
@@ -325,6 +347,20 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::ExecutionMode::RoundingModeRTZ => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::MaxNodeRecursionAMDX => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::ExecutionMode::StaticNumWorkgroupsAMDX => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
+            spirv::ExecutionMode::ShaderIndexAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::ExecutionMode::MaxNumWorkgroupsAMDX => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
             spirv::ExecutionMode::OutputPrimitivesNV => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -417,6 +453,13 @@ impl<'c, 'd> Parser<'c, 'd> {
             }
             spirv::Decoration::AlignmentId => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::MaxByteOffsetId => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::NodeSharesPayloadLimitsWithAMDX => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::Decoration::NodeMaxPayloadsAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::PayloadNodeNameAMDX => {
+                vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            }
             spirv::Decoration::SecondaryViewportRelativeNV => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -503,6 +546,19 @@ impl<'c, 'd> Parser<'c, 'd> {
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::FPOperationMode(self.decoder.fp_operation_mode()?),
             ],
+            spirv::Decoration::InitModeINTEL => vec![dr::Operand::InitializationModeQualifier(
+                self.decoder.initialization_mode_qualifier()?,
+            )],
+            spirv::Decoration::ImplementInRegisterMapINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::HostAccessINTEL => vec![
+                dr::Operand::HostAccessQualifier(self.decoder.host_access_qualifier()?),
+                dr::Operand::LiteralString(self.decoder.string()?),
+            ],
+            spirv::Decoration::FPMaxErrorDecorationINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
             spirv::Decoration::LatencyControlLabelINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -531,6 +587,14 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::MMHostInterfaceWaitRequestINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::Decoration::CacheControlLoadINTEL => vec![
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LoadCacheControl(self.decoder.load_cache_control()?),
+            ],
+            spirv::Decoration::CacheControlStoreINTEL => vec![
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::StoreCacheControl(self.decoder.store_cache_control()?),
+            ],
             _ => vec![],
         })
     }

@@ -546,6 +546,51 @@ impl Builder {
             new_id
         }
     }
+    #[doc = "Appends an OpTypeCooperativeMatrixKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_cooperative_matrix_khr(
+        &mut self,
+        component_type: spirv::Word,
+        scope: spirv::Word,
+        rows: spirv::Word,
+        columns: spirv::Word,
+        usage: spirv::Word,
+    ) -> spirv::Word {
+        self.type_cooperative_matrix_khr_id(None, component_type, scope, rows, columns, usage)
+    }
+    #[doc = "Appends an OpTypeCooperativeMatrixKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_cooperative_matrix_khr_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        component_type: spirv::Word,
+        scope: spirv::Word,
+        rows: spirv::Word,
+        columns: spirv::Word,
+        usage: spirv::Word,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeCooperativeMatrixKHR,
+            None,
+            result_id,
+            vec![
+                dr::Operand::IdRef(component_type),
+                dr::Operand::IdScope(scope),
+                dr::Operand::IdRef(rows),
+                dr::Operand::IdRef(columns),
+                dr::Operand::IdRef(usage),
+            ],
+        );
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
     #[doc = "Appends an OpTypeRayQueryKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
     pub fn type_ray_query_khr(&mut self) -> spirv::Word {
         self.type_ray_query_khr_id(None)

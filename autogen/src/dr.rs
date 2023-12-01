@@ -231,6 +231,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                         | "LiteralInteger"
                         | "IdResult"
                         | "IdResultType"
+                        | "LiteralFloat"
                 ))
         })
         .map(as_ident)
