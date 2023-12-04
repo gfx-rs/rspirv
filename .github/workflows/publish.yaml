@@ -1,0 +1,17 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  Publish:
+    if: github.repository_owner == 'gfx-rs'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish spirv
+        run: cargo publish --manifest-path spirv/Cargo.toml --token ${{ secrets.cratesio_token }}
+      - name: Publish rspirv
+        run: cargo publish --manifest-path rspirv/Cargo.toml --token ${{ secrets.cratesio_token }}
