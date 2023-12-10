@@ -1,5 +1,9 @@
+# Prerequisites
+
+`rspirv` uses `cargo-release` for release management. If you don't have `cargo-release` installed run `cargo install cargo-release`. Publishing to crates.io is handled by a github workflow.
+
 # Making a new release
 
-1. If you don't have cargo-release installed run `cargo install cargo-release`
-1. To prevent breakage, one should release `spirv` before releasing a new `rspirv` because it has an obvious dependency.
-1. For `rspirv` run `cargo release` in the `rspirv` directory, this should follow Semantic Versioning
+Order of releases crates is important to prevent breakage. `spirv` should released before `rspirv` because it has an obvious dependency.
+
+In the corresponding crate directory execute `cargo release <version> -x`.

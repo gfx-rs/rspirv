@@ -5,6 +5,10 @@ on:
     tags:
     paths: "**/Cargo.toml"
 
+concurrency:
+  group: ${{ github.sha }}
+  cancel-in-progress: true
+
 jobs:
   Publish:
     if: github.repository_owner == 'gfx-rs'
