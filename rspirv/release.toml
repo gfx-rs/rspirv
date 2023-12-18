@@ -4,6 +4,7 @@ tag-message = "Release {{crate_name}} {{version}}"
 tag-name = "{{crate_name}}-{{version}}"
 sign-commit = true
 sign-tag = true
+publish = false
 
 pre-release-replacements = [
   {file="README.md", search="rspirv = .*", replace="{{crate_name}} = \"{{version}}\""},
