@@ -6989,21 +6989,27 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         TypeStructContinuedINTEL,
-        [LongConstantCompositeINTEL],
+        [LongCompositesINTEL],
         [],
         [(IdRef, ZeroOrMore)]
     ),
     inst!(
         ConstantCompositeContinuedINTEL,
-        [LongConstantCompositeINTEL],
+        [LongCompositesINTEL],
         [],
         [(IdRef, ZeroOrMore)]
     ),
     inst!(
         SpecConstantCompositeContinuedINTEL,
-        [LongConstantCompositeINTEL],
+        [LongCompositesINTEL],
         [],
         [(IdRef, ZeroOrMore)]
+    ),
+    inst!(
+        CompositeConstructContinuedINTEL,
+        [LongCompositesINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrMore)]
     ),
     inst!(
         ConvertFToBF16INTEL,

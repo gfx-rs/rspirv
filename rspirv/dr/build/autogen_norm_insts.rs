@@ -19436,6 +19436,47 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpCompositeConstructContinuedINTEL instruction to the current block."]
+    pub fn composite_construct_continued_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        constituents: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CompositeConstructContinuedINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![],
+        );
+        inst.operands
+            .extend(constituents.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpCompositeConstructContinuedINTEL instruction to the current block."]
+    pub fn insert_composite_construct_continued_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        constituents: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CompositeConstructContinuedINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![],
+        );
+        inst.operands
+            .extend(constituents.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpConvertFToBF16INTEL instruction to the current block."]
     pub fn convert_f_to_bf16intel(
         &mut self,
