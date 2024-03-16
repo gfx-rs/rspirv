@@ -1369,6 +1369,9 @@ impl Operand {
                 s::Decoration::StallEnableINTEL => {
                     vec![spirv::Capability::FPGAClusterAttributesINTEL]
                 }
+                s::Decoration::StallFreeINTEL => {
+                    vec![spirv::Capability::FPGAClusterAttributesV2INTEL]
+                }
                 s::Decoration::MathOpDSPModeINTEL => vec![spirv::Capability::FPGADSPControlINTEL],
                 s::Decoration::InitiationIntervalINTEL
                 | s::Decoration::MaxConcurrencyINTEL
@@ -1394,7 +1397,10 @@ impl Operand {
                 | s::Decoration::SimpleDualPortINTEL
                 | s::Decoration::MergeINTEL
                 | s::Decoration::BankBitsINTEL
-                | s::Decoration::ForcePow2DepthINTEL => {
+                | s::Decoration::ForcePow2DepthINTEL
+                | s::Decoration::StridesizeINTEL
+                | s::Decoration::WordsizeINTEL
+                | s::Decoration::TrueDualPortINTEL => {
                     vec![spirv::Capability::FPGAMemoryAttributesINTEL]
                 }
                 s::Decoration::FPMaxErrorDecorationINTEL => {
@@ -1797,21 +1803,24 @@ impl Operand {
                 | s::Capability::BitInstructions
                 | s::Capability::AtomicFloat32AddEXT
                 | s::Capability::AtomicFloat64AddEXT
-                | s::Capability::LongConstantCompositeINTEL
+                | s::Capability::LongCompositesINTEL
                 | s::Capability::OptNoneINTEL
                 | s::Capability::AtomicFloat16AddEXT
                 | s::Capability::DebugInfoModuleINTEL
                 | s::Capability::BFloat16ConversionINTEL
                 | s::Capability::SplitBarrierINTEL
-                | s::Capability::GlobalVariableFPGADecorationsINTEL
-                | s::Capability::GlobalVariableHostAccessINTEL
                 | s::Capability::FPMaxErrorINTEL
                 | s::Capability::FPGALatencyControlINTEL
                 | s::Capability::FPGAArgumentInterfacesINTEL
+                | s::Capability::GlobalVariableHostAccessINTEL
+                | s::Capability::GlobalVariableFPGADecorationsINTEL
                 | s::Capability::GroupUniformArithmeticKHR
                 | s::Capability::CacheControlsINTEL => vec![],
                 s::Capability::GenericPointer => vec![spirv::Capability::Addresses],
                 s::Capability::SubgroupDispatch => vec![spirv::Capability::DeviceEnqueue],
+                s::Capability::FPGAClusterAttributesV2INTEL => {
+                    vec![spirv::Capability::FPGAClusterAttributesINTEL]
+                }
                 s::Capability::FPGAKernelAttributesv2INTEL => {
                     vec![spirv::Capability::FPGAKernelAttributesINTEL]
                 }
@@ -1913,7 +1922,6 @@ impl Operand {
                 | s::Capability::FragmentShadingRateKHR
                 | s::Capability::DrawParameters
                 | s::Capability::WorkgroupMemoryExplicitLayoutKHR
-                | s::Capability::WorkgroupMemoryExplicitLayout16BitAccessKHR
                 | s::Capability::MultiView
                 | s::Capability::VariablePointersStorageBuffer
                 | s::Capability::RayQueryProvisionalKHR
@@ -1968,7 +1976,8 @@ impl Operand {
                     vec![spirv::Capability::VariablePointersStorageBuffer]
                 }
                 s::Capability::VectorComputeINTEL => vec![spirv::Capability::VectorAnyINTEL],
-                s::Capability::WorkgroupMemoryExplicitLayout8BitAccessKHR => {
+                s::Capability::WorkgroupMemoryExplicitLayout8BitAccessKHR
+                | s::Capability::WorkgroupMemoryExplicitLayout16BitAccessKHR => {
                     vec![spirv::Capability::WorkgroupMemoryExplicitLayoutKHR]
                 }
             },
@@ -2467,6 +2476,9 @@ impl Operand {
                 | s::Decoration::UserSemantic
                 | s::Decoration::FunctionRoundingModeINTEL
                 | s::Decoration::FunctionDenormModeINTEL
+                | s::Decoration::StridesizeINTEL
+                | s::Decoration::WordsizeINTEL
+                | s::Decoration::TrueDualPortINTEL
                 | s::Decoration::BurstCoalesceINTEL
                 | s::Decoration::CacheSizeINTEL
                 | s::Decoration::DontStaticallyCoalesceINTEL
@@ -2485,9 +2497,7 @@ impl Operand {
                 | s::Decoration::SingleElementVectorINTEL
                 | s::Decoration::VectorComputeCallableFunctionINTEL
                 | s::Decoration::MediaBlockIOINTEL
-                | s::Decoration::InitModeINTEL
-                | s::Decoration::ImplementInRegisterMapINTEL
-                | s::Decoration::HostAccessINTEL
+                | s::Decoration::StallFreeINTEL
                 | s::Decoration::FPMaxErrorDecorationINTEL
                 | s::Decoration::LatencyControlLabelINTEL
                 | s::Decoration::LatencyControlConstraintINTEL
@@ -2500,6 +2510,9 @@ impl Operand {
                 | s::Decoration::MMHostInterfaceMaxBurstINTEL
                 | s::Decoration::MMHostInterfaceWaitRequestINTEL
                 | s::Decoration::StableKernelArgumentINTEL
+                | s::Decoration::HostAccessINTEL
+                | s::Decoration::InitModeINTEL
+                | s::Decoration::ImplementInRegisterMapINTEL
                 | s::Decoration::CacheControlLoadINTEL
                 | s::Decoration::CacheControlStoreINTEL => vec![],
                 s::Decoration::ExplicitInterpAMD => {
@@ -2855,7 +2868,8 @@ impl Operand {
                     vec!["SPV_INTEL_fpga_argument_interfaces"]
                 }
                 s::Capability::FPGABufferLocationINTEL => vec!["SPV_INTEL_fpga_buffer_location"],
-                s::Capability::FPGAClusterAttributesINTEL => {
+                s::Capability::FPGAClusterAttributesINTEL
+                | s::Capability::FPGAClusterAttributesV2INTEL => {
                     vec!["SPV_INTEL_fpga_cluster_attributes"]
                 }
                 s::Capability::FPGADSPControlINTEL => vec!["SPV_INTEL_fpga_dsp_control"],
@@ -2883,9 +2897,7 @@ impl Operand {
                 s::Capability::KernelAttributesINTEL
                 | s::Capability::FPGAKernelAttributesINTEL
                 | s::Capability::FPGAKernelAttributesv2INTEL => vec!["SPV_INTEL_kernel_attributes"],
-                s::Capability::LongConstantCompositeINTEL => {
-                    vec!["SPV_INTEL_long_constant_composite"]
-                }
+                s::Capability::LongCompositesINTEL => vec!["SPV_INTEL_long_composites"],
                 s::Capability::LoopFuseINTEL => vec!["SPV_INTEL_loop_fuse"],
                 s::Capability::SubgroupImageMediaBlockIOINTEL => vec!["SPV_INTEL_media_block_io"],
                 s::Capability::MemoryAccessAliasingINTEL => {
@@ -3600,6 +3612,10 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
+                s::Decoration::StridesizeINTEL => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::LiteralInteger,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
                 s::Decoration::FunctionDenormModeINTEL => vec![
                     crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
@@ -3636,6 +3652,10 @@ impl Operand {
                         quantifier: crate::grammar::OperandQuantifier::One,
                     }]
                 }
+                s::Decoration::WordsizeINTEL => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::LiteralInteger,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
                 s::Decoration::XfbBuffer => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,

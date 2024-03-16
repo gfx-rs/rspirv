@@ -12058,6 +12058,19 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            6096u32 => Ok(ops::Op::CompositeConstructContinuedINTEL {
+                constituents: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(dr::Operand::IdRef(value)) => Some(*value),
+                        Some(_) => return Err(OperandError::WrongType.into()),
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
             6116u32 => Ok(ops::Op::ConvertFToBF16INTEL {
                 float_value: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),

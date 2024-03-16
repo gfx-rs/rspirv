@@ -515,6 +515,12 @@ impl<'c, 'd> Parser<'c, 'd> {
             spirv::Decoration::ForcePow2DepthINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::Decoration::StridesizeINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::WordsizeINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
             spirv::Decoration::CacheSizeINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -546,16 +552,6 @@ impl<'c, 'd> Parser<'c, 'd> {
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::FPOperationMode(self.decoder.fp_operation_mode()?),
             ],
-            spirv::Decoration::InitModeINTEL => vec![dr::Operand::InitializationModeQualifier(
-                self.decoder.initialization_mode_qualifier()?,
-            )],
-            spirv::Decoration::ImplementInRegisterMapINTEL => {
-                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
-            }
-            spirv::Decoration::HostAccessINTEL => vec![
-                dr::Operand::HostAccessQualifier(self.decoder.host_access_qualifier()?),
-                dr::Operand::LiteralString(self.decoder.string()?),
-            ],
             spirv::Decoration::FPMaxErrorDecorationINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -585,6 +581,16 @@ impl<'c, 'd> Parser<'c, 'd> {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
             spirv::Decoration::MMHostInterfaceWaitRequestINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::HostAccessINTEL => vec![
+                dr::Operand::HostAccessQualifier(self.decoder.host_access_qualifier()?),
+                dr::Operand::LiteralString(self.decoder.string()?),
+            ],
+            spirv::Decoration::InitModeINTEL => vec![dr::Operand::InitializationModeQualifier(
+                self.decoder.initialization_mode_qualifier()?,
+            )],
+            spirv::Decoration::ImplementInRegisterMapINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
             spirv::Decoration::CacheControlLoadINTEL => vec![

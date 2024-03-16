@@ -3013,6 +3013,9 @@ pub enum Op {
         semantics: spirv::Word,
         value: spirv::Word,
     },
+    CompositeConstructContinuedINTEL {
+        constituents: Vec<spirv::Word>,
+    },
     ConvertFToBF16INTEL {
         float_value: spirv::Word,
     },
