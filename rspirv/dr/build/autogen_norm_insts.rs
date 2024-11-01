@@ -12278,6 +12278,149 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpUntypedVariableKHR instruction to the current block."]
+    pub fn untyped_variable_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        storage_class: spirv::StorageClass,
+        data_type: Option<spirv::Word>,
+        initializer: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedVariableKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::StorageClass(storage_class)],
+        );
+        if let Some(v) = data_type {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = initializer {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedVariableKHR instruction to the current block."]
+    pub fn insert_untyped_variable_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        storage_class: spirv::StorageClass,
+        data_type: Option<spirv::Word>,
+        initializer: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedVariableKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::StorageClass(storage_class)],
+        );
+        if let Some(v) = data_type {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = initializer {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedAccessChainKHR instruction to the current block."]
+    pub fn untyped_access_chain_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(base_type), dr::Operand::IdRef(base)],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedAccessChainKHR instruction to the current block."]
+    pub fn insert_untyped_access_chain_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(base_type), dr::Operand::IdRef(base)],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedInBoundsAccessChainKHR instruction to the current block."]
+    pub fn untyped_in_bounds_access_chain_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedInBoundsAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(base_type), dr::Operand::IdRef(base)],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedInBoundsAccessChainKHR instruction to the current block."]
+    pub fn insert_untyped_in_bounds_access_chain_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedInBoundsAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(base_type), dr::Operand::IdRef(base)],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpSubgroupBallotKHR instruction to the current block."]
     pub fn subgroup_ballot_khr(
         &mut self,
@@ -12351,6 +12494,228 @@ impl Builder {
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedPtrAccessChainKHR instruction to the current block."]
+    pub fn untyped_ptr_access_chain_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        element: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedPtrAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(base_type),
+                dr::Operand::IdRef(base),
+                dr::Operand::IdRef(element),
+            ],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedPtrAccessChainKHR instruction to the current block."]
+    pub fn insert_untyped_ptr_access_chain_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        element: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedPtrAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(base_type),
+                dr::Operand::IdRef(base),
+                dr::Operand::IdRef(element),
+            ],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedInBoundsPtrAccessChainKHR instruction to the current block."]
+    pub fn untyped_in_bounds_ptr_access_chain_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        element: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedInBoundsPtrAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(base_type),
+                dr::Operand::IdRef(base),
+                dr::Operand::IdRef(element),
+            ],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedInBoundsPtrAccessChainKHR instruction to the current block."]
+    pub fn insert_untyped_in_bounds_ptr_access_chain_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base_type: spirv::Word,
+        base: spirv::Word,
+        element: spirv::Word,
+        indexes: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedInBoundsPtrAccessChainKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(base_type),
+                dr::Operand::IdRef(base),
+                dr::Operand::IdRef(element),
+            ],
+        );
+        inst.operands
+            .extend(indexes.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedArrayLengthKHR instruction to the current block."]
+    pub fn untyped_array_length_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        structure: spirv::Word,
+        pointer: spirv::Word,
+        array_member: u32,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedArrayLengthKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(structure),
+                dr::Operand::IdRef(pointer),
+                dr::Operand::LiteralBit32(array_member),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedArrayLengthKHR instruction to the current block."]
+    pub fn insert_untyped_array_length_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        structure: spirv::Word,
+        pointer: spirv::Word,
+        array_member: u32,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedArrayLengthKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(structure),
+                dr::Operand::IdRef(pointer),
+                dr::Operand::LiteralBit32(array_member),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedPrefetchKHR instruction to the current block."]
+    pub fn untyped_prefetch_khr(
+        &mut self,
+        pointer_type: spirv::Word,
+        num_bytes: spirv::Word,
+        rw: Option<spirv::Word>,
+        locality: Option<spirv::Word>,
+        cache_type: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedPrefetchKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(pointer_type),
+                dr::Operand::IdRef(num_bytes),
+            ],
+        );
+        if let Some(v) = rw {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = locality {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = cache_type {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpUntypedPrefetchKHR instruction to the current block."]
+    pub fn insert_untyped_prefetch_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        pointer_type: spirv::Word,
+        num_bytes: spirv::Word,
+        rw: Option<spirv::Word>,
+        locality: Option<spirv::Word>,
+        cache_type: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedPrefetchKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(pointer_type),
+                dr::Operand::IdRef(num_bytes),
+            ],
+        );
+        if let Some(v) = rw {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = locality {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = cache_type {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
     }
     #[doc = "Appends an OpSubgroupAllKHR instruction to the current block."]
     pub fn subgroup_all_khr(
@@ -13558,6 +13923,43 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpCompositeConstructReplicateEXT instruction to the current block."]
+    pub fn composite_construct_replicate_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CompositeConstructReplicateEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(value)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpCompositeConstructReplicateEXT instruction to the current block."]
+    pub fn insert_composite_construct_replicate_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::CompositeConstructReplicateEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(value)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpRayQueryInitializeKHR instruction to the current block."]
     pub fn ray_query_initialize_khr(
         &mut self,
@@ -14000,6 +14402,234 @@ impl Builder {
                 dr::Operand::IdRef(target),
                 dr::Operand::IdRef(target_coordinates),
                 dr::Operand::IdRef(reference),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchWindowSSDQCOM instruction to the current block."]
+    pub fn image_block_match_window_ssdqcom(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchWindowSSDQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchWindowSSDQCOM instruction to the current block."]
+    pub fn insert_image_block_match_window_ssdqcom(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchWindowSSDQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchWindowSADQCOM instruction to the current block."]
+    pub fn image_block_match_window_sadqcom(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchWindowSADQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchWindowSADQCOM instruction to the current block."]
+    pub fn insert_image_block_match_window_sadqcom(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchWindowSADQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchGatherSSDQCOM instruction to the current block."]
+    pub fn image_block_match_gather_ssdqcom(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchGatherSSDQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchGatherSSDQCOM instruction to the current block."]
+    pub fn insert_image_block_match_gather_ssdqcom(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchGatherSSDQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchGatherSADQCOM instruction to the current block."]
+    pub fn image_block_match_gather_sadqcom(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchGatherSADQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
+                dr::Operand::IdRef(reference_coordinates),
+                dr::Operand::IdRef(block_size),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpImageBlockMatchGatherSADQCOM instruction to the current block."]
+    pub fn insert_image_block_match_gather_sadqcom(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ImageBlockMatchGatherSADQCOM,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(target_sampled_image),
+                dr::Operand::IdRef(target_coordinates),
+                dr::Operand::IdRef(reference_sampled_image),
                 dr::Operand::IdRef(reference_coordinates),
                 dr::Operand::IdRef(block_size),
             ],
@@ -14635,6 +15265,80 @@ impl Builder {
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(())
+    }
+    #[doc = "Appends an OpGroupNonUniformQuadAllKHR instruction to the current block."]
+    pub fn group_non_uniform_quad_all_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        predicate: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupNonUniformQuadAllKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(predicate)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupNonUniformQuadAllKHR instruction to the current block."]
+    pub fn insert_group_non_uniform_quad_all_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        predicate: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupNonUniformQuadAllKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(predicate)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupNonUniformQuadAnyKHR instruction to the current block."]
+    pub fn group_non_uniform_quad_any_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        predicate: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupNonUniformQuadAnyKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(predicate)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpGroupNonUniformQuadAnyKHR instruction to the current block."]
+    pub fn insert_group_non_uniform_quad_any_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        predicate: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::GroupNonUniformQuadAnyKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(predicate)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
     }
     #[doc = "Appends an OpHitObjectRecordHitMotionNV instruction to the current block."]
     pub fn hit_object_record_hit_motion_nv(
@@ -17345,6 +18049,67 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpRawAccessChainNV instruction to the current block."]
+    pub fn raw_access_chain_nv(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base: spirv::Word,
+        byte_stride: spirv::Word,
+        element_index: spirv::Word,
+        byte_offset: spirv::Word,
+        raw_access_chain_operands: Option<spirv::RawAccessChainOperands>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::RawAccessChainNV,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(base),
+                dr::Operand::IdRef(byte_stride),
+                dr::Operand::IdRef(element_index),
+                dr::Operand::IdRef(byte_offset),
+            ],
+        );
+        if let Some(v) = raw_access_chain_operands {
+            inst.operands.push(dr::Operand::RawAccessChainOperands(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpRawAccessChainNV instruction to the current block."]
+    pub fn insert_raw_access_chain_nv(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        base: spirv::Word,
+        byte_stride: spirv::Word,
+        element_index: spirv::Word,
+        byte_offset: spirv::Word,
+        raw_access_chain_operands: Option<spirv::RawAccessChainOperands>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::RawAccessChainNV,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(base),
+                dr::Operand::IdRef(byte_stride),
+                dr::Operand::IdRef(element_index),
+                dr::Operand::IdRef(byte_offset),
+            ],
+        );
+        if let Some(v) = raw_access_chain_operands {
+            inst.operands.push(dr::Operand::RawAccessChainOperands(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpSubgroupShuffleINTEL instruction to the current block."]
     pub fn subgroup_shuffle_intel(
         &mut self,
@@ -19637,6 +20402,51 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
+    #[doc = "Appends an OpSubgroupBlockPrefetchINTEL instruction to the current block."]
+    pub fn subgroup_block_prefetch_intel(
+        &mut self,
+        ptr: spirv::Word,
+        num_bytes: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupBlockPrefetchINTEL,
+            None,
+            None,
+            vec![dr::Operand::IdRef(ptr), dr::Operand::IdRef(num_bytes)],
+        );
+        if let Some(v) = memory_access {
+            inst.operands.push(dr::Operand::MemoryAccess(v));
+        }
+        inst.operands.extend(additional_params);
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpSubgroupBlockPrefetchINTEL instruction to the current block."]
+    pub fn insert_subgroup_block_prefetch_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        ptr: spirv::Word,
+        num_bytes: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SubgroupBlockPrefetchINTEL,
+            None,
+            None,
+            vec![dr::Operand::IdRef(ptr), dr::Operand::IdRef(num_bytes)],
+        );
+        if let Some(v) = memory_access {
+            inst.operands.push(dr::Operand::MemoryAccess(v));
+        }
+        inst.operands.extend(additional_params);
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
     #[doc = "Appends an OpGroupIMulKHR instruction to the current block."]
     pub fn group_i_mul_khr(
         &mut self,
@@ -20028,5 +20838,105 @@ impl Builder {
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
+    }
+    #[doc = "Appends an OpMaskedGatherINTEL instruction to the current block."]
+    pub fn masked_gather_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        ptr_vector: spirv::Word,
+        alignment: u32,
+        mask: spirv::Word,
+        fill_empty: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::MaskedGatherINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(ptr_vector),
+                dr::Operand::LiteralBit32(alignment),
+                dr::Operand::IdRef(mask),
+                dr::Operand::IdRef(fill_empty),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpMaskedGatherINTEL instruction to the current block."]
+    pub fn insert_masked_gather_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        ptr_vector: spirv::Word,
+        alignment: u32,
+        mask: spirv::Word,
+        fill_empty: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::MaskedGatherINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(ptr_vector),
+                dr::Operand::LiteralBit32(alignment),
+                dr::Operand::IdRef(mask),
+                dr::Operand::IdRef(fill_empty),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpMaskedScatterINTEL instruction to the current block."]
+    pub fn masked_scatter_intel(
+        &mut self,
+        input_vector: spirv::Word,
+        ptr_vector: spirv::Word,
+        alignment: u32,
+        mask: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::MaskedScatterINTEL,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(input_vector),
+                dr::Operand::IdRef(ptr_vector),
+                dr::Operand::LiteralBit32(alignment),
+                dr::Operand::IdRef(mask),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpMaskedScatterINTEL instruction to the current block."]
+    pub fn insert_masked_scatter_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        input_vector: spirv::Word,
+        ptr_vector: spirv::Word,
+        alignment: u32,
+        mask: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::MaskedScatterINTEL,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(input_vector),
+                dr::Operand::IdRef(ptr_vector),
+                dr::Operand::LiteralBit32(alignment),
+                dr::Operand::IdRef(mask),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
     }
 }

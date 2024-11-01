@@ -16,6 +16,7 @@ pub enum OperandKind {
     KernelProfilingInfo,
     RayFlags,
     FragmentShadingRate,
+    RawAccessChainOperands,
     SourceLanguage,
     ExecutionModel,
     AddressingModel,
@@ -53,6 +54,8 @@ pub enum OperandKind {
     InitializationModeQualifier,
     LoadCacheControl,
     StoreCacheControl,
+    NamedMaximumNumberOfRegisters,
+    FPEncoding,
     IdResultType,
     IdResult,
     IdMemorySemantics,
@@ -148,7 +151,16 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (LiteralInteger, One)
         ]
     ),
-    inst!(TypeFloat, [], [], [(IdResult, One), (LiteralInteger, One)]),
+    inst!(
+        TypeFloat,
+        [],
+        [],
+        [
+            (IdResult, One),
+            (LiteralInteger, One),
+            (FPEncoding, ZeroOrOne)
+        ]
+    ),
     inst!(
         TypeVector,
         [],
@@ -382,7 +394,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         CopyMemorySized,
-        [Addresses],
+        [Addresses, UntypedPointersKHR],
         [],
         [
             (IdRef, One),
@@ -3261,6 +3273,48 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         []
     ),
     inst!(
+        TypeUntypedPointerKHR,
+        [UntypedPointersKHR],
+        [],
+        [(IdResult, One), (StorageClass, One)]
+    ),
+    inst!(
+        UntypedVariableKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (StorageClass, One),
+            (IdRef, ZeroOrOne),
+            (IdRef, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        UntypedAccessChainKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        UntypedInBoundsAccessChainKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
         SubgroupBallotKHR,
         [SubgroupBallotKHR],
         ["SPV_KHR_shader_ballot"],
@@ -3271,6 +3325,56 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [SubgroupBallotKHR],
         ["SPV_KHR_shader_ballot"],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        UntypedPtrAccessChainKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        UntypedInBoundsPtrAccessChainKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        UntypedArrayLengthKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        UntypedPrefetchKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne),
+            (IdRef, ZeroOrOne),
+            (IdRef, ZeroOrOne)
+        ]
     ),
     inst!(
         SubgroupAllKHR,
@@ -3312,6 +3416,18 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdResult, One),
             (IdRef, One),
             (IdRef, One)
+        ]
+    ),
+    inst!(
+        ExtInstWithForwardRefsKHR,
+        [],
+        ["SPV_KHR_relaxed_extended_instruction"],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralExtInstInteger, One),
+            (IdRef, ZeroOrMore)
         ]
     ),
     inst!(
@@ -3564,6 +3680,24 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        ConstantCompositeReplicateEXT,
+        [ReplicatedCompositesEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        SpecConstantCompositeReplicateEXT,
+        [ReplicatedCompositesEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        CompositeConstructReplicateEXT,
+        [ReplicatedCompositesEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
         TypeRayQueryKHR,
         [RayQueryKHR],
         ["SPV_KHR_ray_query"],
@@ -3660,6 +3794,62 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         ImageBlockMatchSADQCOM,
         [TextureBlockMatchQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageBlockMatchWindowSSDQCOM,
+        [TextureBlockMatch2QCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageBlockMatchWindowSADQCOM,
+        [TextureBlockMatch2QCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageBlockMatchGatherSSDQCOM,
+        [TextureBlockMatch2QCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageBlockMatchGatherSADQCOM,
+        [TextureBlockMatch2QCOM],
         [],
         [
             (IdResultType, One),
@@ -3813,6 +4003,18 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [ShaderEnqueueAMDX],
         [],
         [(IdRef, One), (IdScope, One), (IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        GroupNonUniformQuadAllKHR,
+        [QuadControlKHR],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        GroupNonUniformQuadAnyKHR,
+        [QuadControlKHR],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         HitObjectRecordHitMotionNV,
@@ -4429,6 +4631,20 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(LiteralInteger, One)]
     ),
     inst!(
+        RawAccessChainNV,
+        [RawAccessChainsNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (RawAccessChainOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
         SubgroupShuffleINTEL,
         [SubgroupShuffleINTEL],
         [],
@@ -4719,7 +4935,8 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             AtomicFloat16MinMaxEXT,
             AtomicFloat32MinMaxEXT,
-            AtomicFloat64MinMaxEXT
+            AtomicFloat64MinMaxEXT,
+            AtomicFloat16VectorNV
         ],
         [],
         [
@@ -4736,7 +4953,8 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             AtomicFloat16MinMaxEXT,
             AtomicFloat32MinMaxEXT,
-            AtomicFloat64MinMaxEXT
+            AtomicFloat64MinMaxEXT,
+            AtomicFloat16VectorNV
         ],
         [],
         [
@@ -6969,7 +7187,8 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             AtomicFloat16AddEXT,
             AtomicFloat32AddEXT,
-            AtomicFloat64AddEXT
+            AtomicFloat64AddEXT,
+            AtomicFloat16VectorNV
         ],
         ["SPV_EXT_shader_atomic_float_add"],
         [
@@ -7034,6 +7253,12 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [SplitBarrierINTEL],
         [],
         [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
+    ),
+    inst!(
+        SubgroupBlockPrefetchINTEL,
+        [SubgroupBufferPrefetchINTEL],
+        [],
+        [(IdRef, One), (IdRef, One), (MemoryAccess, ZeroOrOne)]
     ),
     inst!(
         GroupIMulKHR,
@@ -7128,6 +7353,30 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdResult, One),
             (IdScope, One),
             (GroupOperation, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        MaskedGatherINTEL,
+        [MaskedGatherScatterINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (LiteralInteger, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        MaskedScatterINTEL,
+        [MaskedGatherScatterINTEL],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (LiteralInteger, One),
             (IdRef, One)
         ]
     ),

@@ -1343,11 +1343,50 @@ pub enum Op {
     StencilAttachmentReadEXT {
         sample: Option<spirv::Word>,
     },
+    UntypedVariableKHR {
+        storage_class: spirv::StorageClass,
+        data_type: Option<Token<Type>>,
+        initializer: Option<spirv::Word>,
+    },
+    UntypedAccessChainKHR {
+        base_type: Token<Type>,
+        base: spirv::Word,
+        indexes: Vec<spirv::Word>,
+    },
+    UntypedInBoundsAccessChainKHR {
+        base_type: Token<Type>,
+        base: spirv::Word,
+        indexes: Vec<spirv::Word>,
+    },
     SubgroupBallotKHR {
         predicate: spirv::Word,
     },
     SubgroupFirstInvocationKHR {
         value: spirv::Word,
+    },
+    UntypedPtrAccessChainKHR {
+        base_type: Token<Type>,
+        base: spirv::Word,
+        element: spirv::Word,
+        indexes: Vec<spirv::Word>,
+    },
+    UntypedInBoundsPtrAccessChainKHR {
+        base_type: Token<Type>,
+        base: spirv::Word,
+        element: spirv::Word,
+        indexes: Vec<spirv::Word>,
+    },
+    UntypedArrayLengthKHR {
+        structure: spirv::Word,
+        pointer: spirv::Word,
+        array_member: u32,
+    },
+    UntypedPrefetchKHR {
+        pointer_type: Token<Type>,
+        num_bytes: spirv::Word,
+        rw: Option<spirv::Word>,
+        locality: Option<spirv::Word>,
+        cache_type: Option<Token<Type>>,
     },
     SubgroupAllKHR {
         predicate: spirv::Word,
@@ -1443,6 +1482,9 @@ pub enum Op {
     CooperativeMatrixLengthKHR {
         ty: Token<Type>,
     },
+    CompositeConstructReplicateEXT {
+        value: spirv::Word,
+    },
     RayQueryInitializeKHR {
         ray_query: spirv::Word,
         accel: spirv::Word,
@@ -1491,6 +1533,34 @@ pub enum Op {
         target: spirv::Word,
         target_coordinates: spirv::Word,
         reference: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    },
+    ImageBlockMatchWindowSSDQCOM {
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    },
+    ImageBlockMatchWindowSADQCOM {
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    },
+    ImageBlockMatchGatherSSDQCOM {
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
+        reference_coordinates: spirv::Word,
+        block_size: spirv::Word,
+    },
+    ImageBlockMatchGatherSADQCOM {
+        target_sampled_image: spirv::Word,
+        target_coordinates: spirv::Word,
+        reference_sampled_image: spirv::Word,
         reference_coordinates: spirv::Word,
         block_size: spirv::Word,
     },
@@ -1557,6 +1627,12 @@ pub enum Op {
         visibility: spirv::Word,
         payload_count: spirv::Word,
         node_index: spirv::Word,
+    },
+    GroupNonUniformQuadAllKHR {
+        predicate: spirv::Word,
+    },
+    GroupNonUniformQuadAnyKHR {
+        predicate: spirv::Word,
     },
     HitObjectRecordHitMotionNV {
         hit_object: spirv::Word,
@@ -1872,6 +1948,13 @@ pub enum Op {
     },
     SamplerImageAddressingModeNV {
         bit_width: u32,
+    },
+    RawAccessChainNV {
+        base: spirv::Word,
+        byte_stride: spirv::Word,
+        element_index: spirv::Word,
+        byte_offset: spirv::Word,
+        raw_access_chain_operands: Option<spirv::RawAccessChainOperands>,
     },
     SubgroupShuffleINTEL {
         data: spirv::Word,
@@ -3032,6 +3115,11 @@ pub enum Op {
         memory: spirv::Word,
         semantics: spirv::Word,
     },
+    SubgroupBlockPrefetchINTEL {
+        ptr: spirv::Word,
+        num_bytes: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+    },
     GroupIMulKHR {
         execution: spirv::Word,
         operation: spirv::GroupOperation,
@@ -3071,5 +3159,17 @@ pub enum Op {
         execution: spirv::Word,
         operation: spirv::GroupOperation,
         x: spirv::Word,
+    },
+    MaskedGatherINTEL {
+        ptr_vector: spirv::Word,
+        alignment: u32,
+        mask: spirv::Word,
+        fill_empty: spirv::Word,
+    },
+    MaskedScatterINTEL {
+        input_vector: spirv::Word,
+        ptr_vector: spirv::Word,
+        alignment: u32,
+        mask: spirv::Word,
     },
 }

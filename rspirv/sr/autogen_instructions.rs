@@ -56,3 +56,9 @@ pub struct ExecutionModeId {
     pub entry_point: spirv::Word,
     pub mode: spirv::ExecutionMode,
 }
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ExtInstWithForwardRefsKHR {
+    pub set: spirv::Word,
+    pub instruction: u32,
+    pub operand_1_operand_2: Vec<spirv::Word>,
+}

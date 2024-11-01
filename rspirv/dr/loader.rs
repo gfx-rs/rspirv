@@ -292,7 +292,7 @@ mod tests {
         let mut b = dr::Builder::new();
 
         let void = b.type_void();
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         // Global variable
@@ -328,7 +328,7 @@ mod tests {
         let mut b = dr::Builder::new();
 
         let void = b.type_void();
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         // Global variable

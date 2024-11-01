@@ -262,14 +262,22 @@ impl LiftContext {
                                     return Err(InstructionError::Operand(OperandError::WrongType))
                                 }
                             },
-                            Type::Float { width } => match *oper {
-                                dr::Operand::LiteralBit32(v) => {
+                            Type::Float {
+                                width,
+                                floating_point_encoding,
+                            } => {
+                                if floating_point_encoding.is_some() {
+                                    // log::warn!("Constant float {id} has a custom FP encoding: {floating_point_encoding:?}");
+                                    return Err(InstructionError::Operand(
+                                        OperandError::WrongEnumValue,
+                                    ));
+                                }
+                                if let dr::Operand::LiteralBit32(v) = *oper {
                                     (Constant::Float(f32::from_bits(v)), width)
+                                } else {
+                                    return Err(InstructionError::Operand(OperandError::WrongType));
                                 }
-                                _ => {
-                                    return Err(InstructionError::Operand(OperandError::WrongType))
-                                }
-                            },
+                            }
                             _ => return Err(InstructionError::MissingResult),
                         };
                         if width > 32 {

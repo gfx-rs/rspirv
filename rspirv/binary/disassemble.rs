@@ -310,7 +310,7 @@ mod tests {
         b.source(spirv::SourceLanguage::GLSL, 450, None, None::<String>);
 
         let void = b.type_void();
-        let float32 = b.type_float(32);
+        let float32 = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b
@@ -370,8 +370,8 @@ mod tests {
         let int64 = b.type_int(64, 1);
         let uint32 = b.type_int(32, 0);
         let uint64 = b.type_int(64, 0);
-        let float32 = b.type_float(32);
-        let float64 = b.type_float(64);
+        let float32 = b.type_float(32, None);
+        let float64 = b.type_float(64, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b
@@ -442,7 +442,7 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
 
         let void = b.type_void();
-        let float32 = b.type_float(32);
+        let float32 = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b
@@ -484,7 +484,7 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::OpenCL);
 
         let void = b.type_void();
-        let float32 = b.type_float(32);
+        let float32 = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b

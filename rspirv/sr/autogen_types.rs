@@ -13,6 +13,7 @@ pub enum Type {
     },
     Float {
         width: u32,
+        floating_point_encoding: Option<spirv::FPEncoding>,
     },
     Vector {
         component_type: Token<Type>,
@@ -70,6 +71,9 @@ pub enum Type {
     },
     PipeStorage,
     NamedBarrier,
+    UntypedPointerKHR {
+        storage_class: spirv::StorageClass,
+    },
     CooperativeMatrixKHR {
         component_type: Token<Type>,
         scope: spirv::Word,

@@ -92,11 +92,20 @@ impl Disassemble for spirv::FPFastMathMode {
         if self.contains(spirv::FPFastMathMode::FAST) {
             bits.push("Fast")
         }
+        if self.contains(spirv::FPFastMathMode::ALLOW_CONTRACT) {
+            bits.push("AllowContract")
+        }
         if self.contains(spirv::FPFastMathMode::ALLOW_CONTRACT_FAST_INTEL) {
             bits.push("AllowContractFastINTEL")
         }
+        if self.contains(spirv::FPFastMathMode::ALLOW_REASSOC) {
+            bits.push("AllowReassoc")
+        }
         if self.contains(spirv::FPFastMathMode::ALLOW_REASSOC_INTEL) {
             bits.push("AllowReassocINTEL")
+        }
+        if self.contains(spirv::FPFastMathMode::ALLOW_TRANSFORM) {
+            bits.push("AllowTransform")
         }
         bits.join("|")
     }
@@ -379,6 +388,21 @@ impl Disassemble for spirv::FragmentShadingRate {
         }
         if self.contains(spirv::FragmentShadingRate::HORIZONTAL4_PIXELS) {
             bits.push("Horizontal4Pixels")
+        }
+        bits.join("|")
+    }
+}
+impl Disassemble for spirv::RawAccessChainOperands {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::RawAccessChainOperands::ROBUSTNESS_PER_COMPONENT_NV) {
+            bits.push("RobustnessPerComponentNV")
+        }
+        if self.contains(spirv::RawAccessChainOperands::ROBUSTNESS_PER_ELEMENT_NV) {
+            bits.push("RobustnessPerElementNV")
         }
         bits.join("|")
     }
