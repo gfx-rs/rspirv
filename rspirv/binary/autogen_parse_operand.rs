@@ -24,6 +24,9 @@ impl Parser<'_, '_> {
             GOpKind::FragmentShadingRate => vec![dr::Operand::FragmentShadingRate(
                 self.decoder.fragment_shading_rate()?,
             )],
+            GOpKind::RawAccessChainOperands => vec![dr::Operand::RawAccessChainOperands(
+                self.decoder.raw_access_chain_operands()?,
+            )],
             GOpKind::SourceLanguage => {
                 vec![dr::Operand::SourceLanguage(self.decoder.source_language()?)]
             }
@@ -117,6 +120,12 @@ impl Parser<'_, '_> {
             GOpKind::StoreCacheControl => vec![dr::Operand::StoreCacheControl(
                 self.decoder.store_cache_control()?,
             )],
+            GOpKind::NamedMaximumNumberOfRegisters => {
+                vec![dr::Operand::NamedMaximumNumberOfRegisters(
+                    self.decoder.named_maximum_number_of_registers()?,
+                )]
+            }
+            GOpKind::FPEncoding => vec![dr::Operand::FPEncoding(self.decoder.fp_encoding()?)],
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
@@ -361,7 +370,7 @@ impl Parser<'_, '_> {
                 dr::Operand::IdRef(self.decoder.id()?),
                 dr::Operand::IdRef(self.decoder.id()?),
             ],
-            spirv::ExecutionMode::OutputPrimitivesNV => {
+            spirv::ExecutionMode::OutputPrimitivesEXT => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
             spirv::ExecutionMode::SharedLocalMemorySizeINTEL => {
@@ -393,6 +402,10 @@ impl Parser<'_, '_> {
             spirv::ExecutionMode::SchedulerTargetFmaxMhzINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::FPFastMathDefault => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
             spirv::ExecutionMode::StreamingInterfaceINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -401,6 +414,17 @@ impl Parser<'_, '_> {
             }
             spirv::ExecutionMode::NamedBarrierCountINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::ExecutionMode::MaximumRegistersINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::ExecutionMode::MaximumRegistersIdINTEL => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::ExecutionMode::NamedMaximumRegistersINTEL => {
+                vec![dr::Operand::NamedMaximumNumberOfRegisters(
+                    self.decoder.named_maximum_number_of_registers()?,
+                )]
             }
             _ => vec![],
         })

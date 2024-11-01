@@ -94,6 +94,9 @@ impl Assemble for dr::Operand {
             Self::InitializationModeQualifier(v) => result.push(v as u32),
             Self::LoadCacheControl(v) => result.push(v as u32),
             Self::StoreCacheControl(v) => result.push(v as u32),
+            Self::RawAccessChainOperands(v) => result.push(v.bits()),
+            Self::NamedMaximumNumberOfRegisters(v) => result.push(v as u32),
+            Self::FPEncoding(v) => result.push(v as u32),
         }
     }
 }
@@ -321,7 +324,7 @@ mod tests {
     fn test_assemble_function_parameters() {
         let mut b = dr::Builder::new();
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         let ptr = b.type_pointer(None, spirv::StorageClass::Function, float);
         let fff = b.type_function(float, vec![float, float]);
         b.begin_function(float, None, spirv::FunctionControl::CONST, fff)

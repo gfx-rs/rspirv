@@ -111,6 +111,16 @@ impl Decoder<'_> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V RawAccessChainOperands value."]
+    pub fn raw_access_chain_operands(&mut self) -> Result<spirv::RawAccessChainOperands> {
+        if let Ok(word) = self.word() {
+            spirv::RawAccessChainOperands::from_bits(word).ok_or(
+                Error::RawAccessChainOperandsUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V SourceLanguage value."]
     pub fn source_language(&mut self) -> Result<spirv::SourceLanguage> {
         if let Ok(word) = self.word() {
@@ -501,6 +511,27 @@ impl Decoder<'_> {
                 self.offset - WORD_NUM_BYTES,
                 word,
             ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V NamedMaximumNumberOfRegisters value."]
+    pub fn named_maximum_number_of_registers(
+        &mut self,
+    ) -> Result<spirv::NamedMaximumNumberOfRegisters> {
+        if let Ok(word) = self.word() {
+            spirv::NamedMaximumNumberOfRegisters::from_u32(word).ok_or(
+                Error::NamedMaximumNumberOfRegistersUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V FPEncoding value."]
+    pub fn fp_encoding(&mut self) -> Result<spirv::FPEncoding> {
+        if let Ok(word) = self.word() {
+            spirv::FPEncoding::from_u32(word)
+                .ok_or(Error::FPEncodingUnknown(self.offset - WORD_NUM_BYTES, word))
         } else {
             Err(Error::StreamExpected(self.offset))
         }

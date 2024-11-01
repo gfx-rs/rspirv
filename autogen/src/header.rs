@@ -51,21 +51,23 @@ fn generate_enum(
         .iter()
         .map(|(number, name)| quote! { #name = #number });
 
-    // Each item is a tuple indicating an inclusive range as opposed to an exclusive range like is
-    // common.
-    let mut number_runs = vec![(variants[0].0, variants[0].0)];
-    for &(number, _) in variants.iter().skip(1) {
-        let last_run = number_runs.last_mut().unwrap();
-        match number.cmp(&(last_run.1 + 1)) {
-            Ordering::Equal => last_run.1 = number,
-            Ordering::Greater => number_runs.push((number, number)),
-            Ordering::Less => unreachable!("Variants not sorted by discriminant"),
+    // Each item is a tuple indicating an inclusive range as opposed to an exclusive range like
+    // is common.
+    let mut number_runs = Vec::<(u32, u32)>::new();
+    for &(number, _) in variants.iter() {
+        if let Some(last_run) = number_runs.last_mut() {
+            match number.cmp(&(last_run.1 + 1)) {
+                Ordering::Equal => last_run.1 = number,
+                Ordering::Greater => number_runs.push((number, number)),
+                Ordering::Less => unreachable!("Variants not sorted by discriminant"),
+            }
+        } else {
+            number_runs.push((number, number));
         }
     }
-
     // We try to check if the given number is within a run of valid discriminants and if so
     // transmute the number directly to the enum type.
-    let from_prim = number_runs
+    let mut from_prim = number_runs
         .iter()
         .map(|&(start, end)| {
             if end == start {
@@ -77,11 +79,22 @@ fn generate_enum(
         })
         .collect::<Vec<_>>();
 
+    // At least one variant is required for repr(u32).  Generate a Max member like Spirv-Headers
+    // tooling does.
+    let empty_enum = variants.is_empty().then_some(quote!(Max = 0x7fffffff));
+
+    // TODO: Only FPEncoding doesn't list any valid values besides a "Max". This type shouldn't be
+    // an `enum` but a `pub` newtype wrapper?
+    if variants.is_empty() {
+        from_prim.push(quote! { 0x7fffffff => Self::Max });
+    }
+
     let attribute = value_enum_attribute();
     quote! {
         #[doc = #comment]
         #attribute
         pub enum #enum_name {
+            #empty_enum
             #(#enumerants),*
         }
 
@@ -177,7 +190,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             aliases.push(quote! {
                 pub const #symbol: Self = Self::#discriminator;
             });
-            from_str_impl.push(quote! { #name_str => Ok(Self::#discriminator), });
+            from_str_impl.push(quote! { #name_str => Self::#discriminator });
         } else {
             // Special case for Dim. Its enumerants can start with a digit.
             // So prefix with the kind name here.
@@ -192,7 +205,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             let number = e.value;
             seen_discriminator.insert(e.value, name.clone());
             variants.push((number, name.clone()));
-            from_str_impl.push(quote! { #name_str => Ok(Self::#name), });
+            from_str_impl.push(quote! { #name_str => Self::#name });
 
             capability_clauses
                 .entry(&e.capabilities)
@@ -232,6 +245,12 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
         format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
     );
 
+    // TODO: Only FPEncoding doesn't list any valid values besides a "Max". This type shouldn't be
+    // an `enum` but a `pub` newtype wrapper?
+    if variants.is_empty() {
+        from_str_impl.push(quote! { "Max" => Self::Max });
+    }
+
     quote! {
         #the_enum
 
@@ -244,10 +263,10 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             type Err = ();
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
-                match s {
-                    #(#from_str_impl)*
-                    _ => Err(()),
-                }
+                Ok(match s {
+                    #(#from_str_impl,)*
+                    _ => return Err(())
+                })
             }
         }
     }

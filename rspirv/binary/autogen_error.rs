@@ -19,6 +19,7 @@ pub enum Error {
     KernelProfilingInfoUnknown(usize, spirv::Word),
     RayFlagsUnknown(usize, spirv::Word),
     FragmentShadingRateUnknown(usize, spirv::Word),
+    RawAccessChainOperandsUnknown(usize, spirv::Word),
     SourceLanguageUnknown(usize, spirv::Word),
     ExecutionModelUnknown(usize, spirv::Word),
     AddressingModelUnknown(usize, spirv::Word),
@@ -56,6 +57,8 @@ pub enum Error {
     InitializationModeQualifierUnknown(usize, spirv::Word),
     LoadCacheControlUnknown(usize, spirv::Word),
     StoreCacheControlUnknown(usize, spirv::Word),
+    NamedMaximumNumberOfRegistersUnknown(usize, spirv::Word),
+    FPEncodingUnknown(usize, spirv::Word),
     #[doc = r"Failed to decode a string."]
     #[doc = r""]
     #[doc = r"For structured error handling, the second element could be"]
@@ -118,6 +121,11 @@ impl fmt::Display for Error {
             Error::FragmentShadingRateUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind FragmentShadingRate at index {}",
+                word, index
+            ),
+            Error::RawAccessChainOperandsUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind RawAccessChainOperands at index {}",
                 word, index
             ),
             Error::SourceLanguageUnknown(index, word) => write!(
@@ -303,6 +311,16 @@ impl fmt::Display for Error {
             Error::StoreCacheControlUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind StoreCacheControl at index {}",
+                word, index
+            ),
+            Error::NamedMaximumNumberOfRegistersUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind NamedMaximumNumberOfRegisters at index {}",
+                word, index
+            ),
+            Error::FPEncodingUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind FPEncoding at index {}",
                 word, index
             ),
             Error::DecodeStringFailed(index, ref e) => {

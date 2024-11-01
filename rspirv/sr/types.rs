@@ -34,7 +34,16 @@ impl PartialEq for Type {
                     signedness: os,
                 },
             ) => sw == ow && ss == os,
-            (Float { width: s }, Float { width: o }) => s == o,
+            (
+                Float {
+                    width: sw,
+                    floating_point_encoding: se,
+                },
+                Float {
+                    width: ow,
+                    floating_point_encoding: oe,
+                },
+            ) => sw == ow && se == oe,
             (
                 Vector {
                     component_type: st,

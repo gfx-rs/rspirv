@@ -74,17 +74,29 @@ impl Builder {
         }
     }
     #[doc = "Appends an OpTypeFloat instruction and returns the result id, or return the existing id if the instruction was already present."]
-    pub fn type_float(&mut self, width: u32) -> spirv::Word {
-        self.type_float_id(None, width)
+    pub fn type_float(
+        &mut self,
+        width: u32,
+        floating_point_encoding: Option<spirv::FPEncoding>,
+    ) -> spirv::Word {
+        self.type_float_id(None, width, floating_point_encoding)
     }
     #[doc = "Appends an OpTypeFloat instruction and returns the result id, or return the existing id if the instruction was already present."]
-    pub fn type_float_id(&mut self, result_id: Option<spirv::Word>, width: u32) -> spirv::Word {
+    pub fn type_float_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        width: u32,
+        floating_point_encoding: Option<spirv::FPEncoding>,
+    ) -> spirv::Word {
         let mut inst = dr::Instruction::new(
             spirv::Op::TypeFloat,
             None,
             result_id,
             vec![dr::Operand::LiteralBit32(width)],
         );
+        if let Some(v) = floating_point_encoding {
+            inst.operands.push(dr::Operand::FPEncoding(v));
+        }
         if let Some(result_id) = result_id {
             self.module.types_global_values.push(inst);
             result_id
@@ -534,6 +546,34 @@ impl Builder {
     #[doc = "Appends an OpTypeNamedBarrier instruction and returns the result id, or return the existing id if the instruction was already present."]
     pub fn type_named_barrier_id(&mut self, result_id: Option<spirv::Word>) -> spirv::Word {
         let mut inst = dr::Instruction::new(spirv::Op::TypeNamedBarrier, None, result_id, vec![]);
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
+    #[doc = "Appends an OpTypeUntypedPointerKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_untyped_pointer_khr(&mut self, storage_class: spirv::StorageClass) -> spirv::Word {
+        self.type_untyped_pointer_khr_id(None, storage_class)
+    }
+    #[doc = "Appends an OpTypeUntypedPointerKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_untyped_pointer_khr_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        storage_class: spirv::StorageClass,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeUntypedPointerKHR,
+            None,
+            result_id,
+            vec![dr::Operand::StorageClass(storage_class)],
+        );
         if let Some(result_id) = result_id {
             self.module.types_global_values.push(inst);
             result_id

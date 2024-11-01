@@ -6,9 +6,9 @@ pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
 pub const MAJOR_VERSION: u8 = 1u8;
 pub const MINOR_VERSION: u8 = 6u8;
-pub const REVISION: u8 = 1u8;
+pub const REVISION: u8 = 4u8;
 bitflags! { # [doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE = 256u32 ; const MAKE_TEXEL_AVAILABLE_KHR = 256u32 ; const MAKE_TEXEL_VISIBLE = 512u32 ; const MAKE_TEXEL_VISIBLE_KHR = 512u32 ; const NON_PRIVATE_TEXEL = 1024u32 ; const NON_PRIVATE_TEXEL_KHR = 1024u32 ; const VOLATILE_TEXEL = 2048u32 ; const VOLATILE_TEXEL_KHR = 2048u32 ; const SIGN_EXTEND = 4096u32 ; const ZERO_EXTEND = 8192u32 ; const NONTEMPORAL = 16384u32 ; const OFFSETS = 65536u32 ; } }
-bitflags! { # [doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; const ALLOW_CONTRACT_FAST_INTEL = 65536u32 ; const ALLOW_REASSOC_INTEL = 131072u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; const ALLOW_CONTRACT = 65536u32 ; const ALLOW_CONTRACT_FAST_INTEL = 65536u32 ; const ALLOW_REASSOC = 131072u32 ; const ALLOW_REASSOC_INTEL = 131072u32 ; const ALLOW_TRANSFORM = 262144u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; const INITIATION_INTERVAL_INTEL = 65536u32 ; const MAX_CONCURRENCY_INTEL = 131072u32 ; const DEPENDENCY_ARRAY_INTEL = 262144u32 ; const PIPELINE_ENABLE_INTEL = 524288u32 ; const LOOP_COALESCE_INTEL = 1048576u32 ; const MAX_INTERLEAVING_INTEL = 2097152u32 ; const SPECULATED_ITERATIONS_INTEL = 4194304u32 ; const NO_FUSION_INTEL = 8388608u32 ; const LOOP_COUNT_INTEL = 16777216u32 ; const MAX_REINVOCATION_DELAY_INTEL = 33554432u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_control_a_function_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FunctionControl : u32 { const NONE = 0u32 ; const INLINE = 1u32 ; const DONT_INLINE = 2u32 ; const PURE = 4u32 ; const CONST = 8u32 ; const OPT_NONE_INTEL = 65536u32 ; } }
@@ -17,6 +17,7 @@ bitflags! { # [doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.or
 bitflags! { # [doc = "SPIR-V operand kind: [KernelProfilingInfo](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_profiling_info_a_kernel_profiling_info)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct KernelProfilingInfo : u32 { const NONE = 0u32 ; const CMD_EXEC_TIME = 1u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [RayFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_flags_a_ray_flags)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct RayFlags : u32 { const NONE_KHR = 0u32 ; const OPAQUE_KHR = 1u32 ; const NO_OPAQUE_KHR = 2u32 ; const TERMINATE_ON_FIRST_HIT_KHR = 4u32 ; const SKIP_CLOSEST_HIT_SHADER_KHR = 8u32 ; const CULL_BACK_FACING_TRIANGLES_KHR = 16u32 ; const CULL_FRONT_FACING_TRIANGLES_KHR = 32u32 ; const CULL_OPAQUE_KHR = 64u32 ; const CULL_NO_OPAQUE_KHR = 128u32 ; const SKIP_TRIANGLES_KHR = 256u32 ; const SKIP_AAB_BS_KHR = 512u32 ; const FORCE_OPACITY_MICROMAP2_STATE_EXT = 1024u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [FragmentShadingRate](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fragment_shading_rate_a_fragment_shading_rate)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FragmentShadingRate : u32 { const VERTICAL2_PIXELS = 1u32 ; const VERTICAL4_PIXELS = 2u32 ; const HORIZONTAL2_PIXELS = 4u32 ; const HORIZONTAL4_PIXELS = 8u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [RawAccessChainOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_raw_access_chain_operands_a_raw_access_chain_operands)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct RawAccessChainOperands : u32 { const NONE = 0u32 ; const ROBUSTNESS_PER_COMPONENT_NV = 1u32 ; const ROBUSTNESS_PER_ELEMENT_NV = 2u32 ; } }
 #[doc = "SPIR-V operand kind: [SourceLanguage](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_source_language_a_source_language)"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -36,11 +37,12 @@ pub enum SourceLanguage {
     NZSL = 9u32,
     WGSL = 10u32,
     Slang = 11u32,
+    Zig = 12u32,
 }
 impl SourceLanguage {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
-            0u32..=11u32 => unsafe { core::mem::transmute::<u32, SourceLanguage>(n) },
+            0u32..=12u32 => unsafe { core::mem::transmute::<u32, SourceLanguage>(n) },
             _ => return None,
         })
     }
@@ -50,21 +52,22 @@ impl SourceLanguage {}
 impl core::str::FromStr for SourceLanguage {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Unknown" => Ok(Self::Unknown),
-            "ESSL" => Ok(Self::ESSL),
-            "GLSL" => Ok(Self::GLSL),
-            "OpenCL_C" => Ok(Self::OpenCL_C),
-            "OpenCL_CPP" => Ok(Self::OpenCL_CPP),
-            "HLSL" => Ok(Self::HLSL),
-            "CPP_for_OpenCL" => Ok(Self::CPP_for_OpenCL),
-            "SYCL" => Ok(Self::SYCL),
-            "HERO_C" => Ok(Self::HERO_C),
-            "NZSL" => Ok(Self::NZSL),
-            "WGSL" => Ok(Self::WGSL),
-            "Slang" => Ok(Self::Slang),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Unknown" => Self::Unknown,
+            "ESSL" => Self::ESSL,
+            "GLSL" => Self::GLSL,
+            "OpenCL_C" => Self::OpenCL_C,
+            "OpenCL_CPP" => Self::OpenCL_CPP,
+            "HLSL" => Self::HLSL,
+            "CPP_for_OpenCL" => Self::CPP_for_OpenCL,
+            "SYCL" => Self::SYCL,
+            "HERO_C" => Self::HERO_C,
+            "NZSL" => Self::NZSL,
+            "WGSL" => Self::WGSL,
+            "Slang" => Self::Slang,
+            "Zig" => Self::Zig,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [ExecutionModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_model_a_execution_model)"]
@@ -83,12 +86,12 @@ pub enum ExecutionModel {
     Kernel = 6u32,
     TaskNV = 5267u32,
     MeshNV = 5268u32,
-    RayGenerationNV = 5313u32,
-    IntersectionNV = 5314u32,
-    AnyHitNV = 5315u32,
-    ClosestHitNV = 5316u32,
-    MissNV = 5317u32,
-    CallableNV = 5318u32,
+    RayGenerationKHR = 5313u32,
+    IntersectionKHR = 5314u32,
+    AnyHitKHR = 5315u32,
+    ClosestHitKHR = 5316u32,
+    MissKHR = 5317u32,
+    CallableKHR = 5318u32,
     TaskEXT = 5364u32,
     MeshEXT = 5365u32,
 }
@@ -105,42 +108,42 @@ impl ExecutionModel {
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionModel {
-    pub const RayGenerationKHR: Self = Self::RayGenerationNV;
-    pub const IntersectionKHR: Self = Self::IntersectionNV;
-    pub const AnyHitKHR: Self = Self::AnyHitNV;
-    pub const ClosestHitKHR: Self = Self::ClosestHitNV;
-    pub const MissKHR: Self = Self::MissNV;
-    pub const CallableKHR: Self = Self::CallableNV;
+    pub const RayGenerationNV: Self = Self::RayGenerationKHR;
+    pub const IntersectionNV: Self = Self::IntersectionKHR;
+    pub const AnyHitNV: Self = Self::AnyHitKHR;
+    pub const ClosestHitNV: Self = Self::ClosestHitKHR;
+    pub const MissNV: Self = Self::MissKHR;
+    pub const CallableNV: Self = Self::CallableKHR;
 }
 impl core::str::FromStr for ExecutionModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Vertex" => Ok(Self::Vertex),
-            "TessellationControl" => Ok(Self::TessellationControl),
-            "TessellationEvaluation" => Ok(Self::TessellationEvaluation),
-            "Geometry" => Ok(Self::Geometry),
-            "Fragment" => Ok(Self::Fragment),
-            "GLCompute" => Ok(Self::GLCompute),
-            "Kernel" => Ok(Self::Kernel),
-            "TaskNV" => Ok(Self::TaskNV),
-            "MeshNV" => Ok(Self::MeshNV),
-            "RayGenerationNV" => Ok(Self::RayGenerationNV),
-            "RayGenerationKHR" => Ok(Self::RayGenerationNV),
-            "IntersectionNV" => Ok(Self::IntersectionNV),
-            "IntersectionKHR" => Ok(Self::IntersectionNV),
-            "AnyHitNV" => Ok(Self::AnyHitNV),
-            "AnyHitKHR" => Ok(Self::AnyHitNV),
-            "ClosestHitNV" => Ok(Self::ClosestHitNV),
-            "ClosestHitKHR" => Ok(Self::ClosestHitNV),
-            "MissNV" => Ok(Self::MissNV),
-            "MissKHR" => Ok(Self::MissNV),
-            "CallableNV" => Ok(Self::CallableNV),
-            "CallableKHR" => Ok(Self::CallableNV),
-            "TaskEXT" => Ok(Self::TaskEXT),
-            "MeshEXT" => Ok(Self::MeshEXT),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Vertex" => Self::Vertex,
+            "TessellationControl" => Self::TessellationControl,
+            "TessellationEvaluation" => Self::TessellationEvaluation,
+            "Geometry" => Self::Geometry,
+            "Fragment" => Self::Fragment,
+            "GLCompute" => Self::GLCompute,
+            "Kernel" => Self::Kernel,
+            "TaskNV" => Self::TaskNV,
+            "MeshNV" => Self::MeshNV,
+            "RayGenerationKHR" => Self::RayGenerationKHR,
+            "RayGenerationNV" => Self::RayGenerationKHR,
+            "IntersectionKHR" => Self::IntersectionKHR,
+            "IntersectionNV" => Self::IntersectionKHR,
+            "AnyHitKHR" => Self::AnyHitKHR,
+            "AnyHitNV" => Self::AnyHitKHR,
+            "ClosestHitKHR" => Self::ClosestHitKHR,
+            "ClosestHitNV" => Self::ClosestHitKHR,
+            "MissKHR" => Self::MissKHR,
+            "MissNV" => Self::MissKHR,
+            "CallableKHR" => Self::CallableKHR,
+            "CallableNV" => Self::CallableKHR,
+            "TaskEXT" => Self::TaskEXT,
+            "MeshEXT" => Self::MeshEXT,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [AddressingModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_addressing_model_a_addressing_model)"]
@@ -171,14 +174,14 @@ impl AddressingModel {
 impl core::str::FromStr for AddressingModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Logical" => Ok(Self::Logical),
-            "Physical32" => Ok(Self::Physical32),
-            "Physical64" => Ok(Self::Physical64),
-            "PhysicalStorageBuffer64" => Ok(Self::PhysicalStorageBuffer64),
-            "PhysicalStorageBuffer64EXT" => Ok(Self::PhysicalStorageBuffer64),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Logical" => Self::Logical,
+            "Physical32" => Self::Physical32,
+            "Physical64" => Self::Physical64,
+            "PhysicalStorageBuffer64" => Self::PhysicalStorageBuffer64,
+            "PhysicalStorageBuffer64EXT" => Self::PhysicalStorageBuffer64,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [MemoryModel](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_model_a_memory_model)"]
@@ -208,14 +211,14 @@ impl MemoryModel {
 impl core::str::FromStr for MemoryModel {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Simple" => Ok(Self::Simple),
-            "GLSL450" => Ok(Self::GLSL450),
-            "OpenCL" => Ok(Self::OpenCL),
-            "Vulkan" => Ok(Self::Vulkan),
-            "VulkanKHR" => Ok(Self::Vulkan),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Simple" => Self::Simple,
+            "GLSL450" => Self::GLSL450,
+            "OpenCL" => Self::OpenCL,
+            "Vulkan" => Self::Vulkan,
+            "VulkanKHR" => Self::Vulkan,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [ExecutionMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_execution_mode_a_execution_mode)"]
@@ -286,11 +289,13 @@ pub enum ExecutionMode {
     StencilRefUnchangedBackAMD = 5082u32,
     StencilRefGreaterBackAMD = 5083u32,
     StencilRefLessBackAMD = 5084u32,
-    OutputLinesNV = 5269u32,
-    OutputPrimitivesNV = 5270u32,
-    DerivativeGroupQuadsNV = 5289u32,
-    DerivativeGroupLinearNV = 5290u32,
-    OutputTrianglesNV = 5298u32,
+    QuadDerivativesKHR = 5088u32,
+    RequireFullQuadsKHR = 5089u32,
+    OutputLinesEXT = 5269u32,
+    OutputPrimitivesEXT = 5270u32,
+    DerivativeGroupQuadsKHR = 5289u32,
+    DerivativeGroupLinearKHR = 5290u32,
+    OutputTrianglesEXT = 5298u32,
     PixelInterlockOrderedEXT = 5366u32,
     PixelInterlockUnorderedEXT = 5367u32,
     SampleInterlockOrderedEXT = 5368u32,
@@ -307,9 +312,14 @@ pub enum ExecutionMode {
     NoGlobalOffsetINTEL = 5895u32,
     NumSIMDWorkitemsINTEL = 5896u32,
     SchedulerTargetFmaxMhzINTEL = 5903u32,
+    MaximallyReconvergesKHR = 6023u32,
+    FPFastMathDefault = 6028u32,
     StreamingInterfaceINTEL = 6154u32,
     RegisterMapInterfaceINTEL = 6160u32,
     NamedBarrierCountINTEL = 6417u32,
+    MaximumRegistersINTEL = 6461u32,
+    MaximumRegistersIdINTEL = 6462u32,
+    NamedMaximumRegistersINTEL = 6463u32,
 }
 impl ExecutionMode {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -327,6 +337,7 @@ impl ExecutionMode {
             5071u32..=5073u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5077u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5077u32) },
             5079u32..=5084u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
+            5088u32..=5089u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5269u32..=5270u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5289u32..=5290u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5298u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5298u32) },
@@ -335,113 +346,127 @@ impl ExecutionMode {
             5620u32..=5623u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5893u32..=5896u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5903u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5903u32) },
+            6023u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(6023u32) },
+            6028u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(6028u32) },
             6154u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(6154u32) },
             6160u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(6160u32) },
             6417u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(6417u32) },
+            6461u32..=6463u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             _ => return None,
         })
     }
 }
 #[allow(non_upper_case_globals)]
 impl ExecutionMode {
-    pub const OutputLinesEXT: Self = Self::OutputLinesNV;
-    pub const OutputPrimitivesEXT: Self = Self::OutputPrimitivesNV;
-    pub const OutputTrianglesEXT: Self = Self::OutputTrianglesNV;
+    pub const OutputLinesNV: Self = Self::OutputLinesEXT;
+    pub const OutputPrimitivesNV: Self = Self::OutputPrimitivesEXT;
+    pub const DerivativeGroupQuadsNV: Self = Self::DerivativeGroupQuadsKHR;
+    pub const DerivativeGroupLinearNV: Self = Self::DerivativeGroupLinearKHR;
+    pub const OutputTrianglesNV: Self = Self::OutputTrianglesEXT;
 }
 impl core::str::FromStr for ExecutionMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Invocations" => Ok(Self::Invocations),
-            "SpacingEqual" => Ok(Self::SpacingEqual),
-            "SpacingFractionalEven" => Ok(Self::SpacingFractionalEven),
-            "SpacingFractionalOdd" => Ok(Self::SpacingFractionalOdd),
-            "VertexOrderCw" => Ok(Self::VertexOrderCw),
-            "VertexOrderCcw" => Ok(Self::VertexOrderCcw),
-            "PixelCenterInteger" => Ok(Self::PixelCenterInteger),
-            "OriginUpperLeft" => Ok(Self::OriginUpperLeft),
-            "OriginLowerLeft" => Ok(Self::OriginLowerLeft),
-            "EarlyFragmentTests" => Ok(Self::EarlyFragmentTests),
-            "PointMode" => Ok(Self::PointMode),
-            "Xfb" => Ok(Self::Xfb),
-            "DepthReplacing" => Ok(Self::DepthReplacing),
-            "DepthGreater" => Ok(Self::DepthGreater),
-            "DepthLess" => Ok(Self::DepthLess),
-            "DepthUnchanged" => Ok(Self::DepthUnchanged),
-            "LocalSize" => Ok(Self::LocalSize),
-            "LocalSizeHint" => Ok(Self::LocalSizeHint),
-            "InputPoints" => Ok(Self::InputPoints),
-            "InputLines" => Ok(Self::InputLines),
-            "InputLinesAdjacency" => Ok(Self::InputLinesAdjacency),
-            "Triangles" => Ok(Self::Triangles),
-            "InputTrianglesAdjacency" => Ok(Self::InputTrianglesAdjacency),
-            "Quads" => Ok(Self::Quads),
-            "Isolines" => Ok(Self::Isolines),
-            "OutputVertices" => Ok(Self::OutputVertices),
-            "OutputPoints" => Ok(Self::OutputPoints),
-            "OutputLineStrip" => Ok(Self::OutputLineStrip),
-            "OutputTriangleStrip" => Ok(Self::OutputTriangleStrip),
-            "VecTypeHint" => Ok(Self::VecTypeHint),
-            "ContractionOff" => Ok(Self::ContractionOff),
-            "Initializer" => Ok(Self::Initializer),
-            "Finalizer" => Ok(Self::Finalizer),
-            "SubgroupSize" => Ok(Self::SubgroupSize),
-            "SubgroupsPerWorkgroup" => Ok(Self::SubgroupsPerWorkgroup),
-            "SubgroupsPerWorkgroupId" => Ok(Self::SubgroupsPerWorkgroupId),
-            "LocalSizeId" => Ok(Self::LocalSizeId),
-            "LocalSizeHintId" => Ok(Self::LocalSizeHintId),
-            "NonCoherentColorAttachmentReadEXT" => Ok(Self::NonCoherentColorAttachmentReadEXT),
-            "NonCoherentDepthAttachmentReadEXT" => Ok(Self::NonCoherentDepthAttachmentReadEXT),
-            "NonCoherentStencilAttachmentReadEXT" => Ok(Self::NonCoherentStencilAttachmentReadEXT),
-            "SubgroupUniformControlFlowKHR" => Ok(Self::SubgroupUniformControlFlowKHR),
-            "PostDepthCoverage" => Ok(Self::PostDepthCoverage),
-            "DenormPreserve" => Ok(Self::DenormPreserve),
-            "DenormFlushToZero" => Ok(Self::DenormFlushToZero),
-            "SignedZeroInfNanPreserve" => Ok(Self::SignedZeroInfNanPreserve),
-            "RoundingModeRTE" => Ok(Self::RoundingModeRTE),
-            "RoundingModeRTZ" => Ok(Self::RoundingModeRTZ),
-            "EarlyAndLateFragmentTestsAMD" => Ok(Self::EarlyAndLateFragmentTestsAMD),
-            "StencilRefReplacingEXT" => Ok(Self::StencilRefReplacingEXT),
-            "CoalescingAMDX" => Ok(Self::CoalescingAMDX),
-            "MaxNodeRecursionAMDX" => Ok(Self::MaxNodeRecursionAMDX),
-            "StaticNumWorkgroupsAMDX" => Ok(Self::StaticNumWorkgroupsAMDX),
-            "ShaderIndexAMDX" => Ok(Self::ShaderIndexAMDX),
-            "MaxNumWorkgroupsAMDX" => Ok(Self::MaxNumWorkgroupsAMDX),
-            "StencilRefUnchangedFrontAMD" => Ok(Self::StencilRefUnchangedFrontAMD),
-            "StencilRefGreaterFrontAMD" => Ok(Self::StencilRefGreaterFrontAMD),
-            "StencilRefLessFrontAMD" => Ok(Self::StencilRefLessFrontAMD),
-            "StencilRefUnchangedBackAMD" => Ok(Self::StencilRefUnchangedBackAMD),
-            "StencilRefGreaterBackAMD" => Ok(Self::StencilRefGreaterBackAMD),
-            "StencilRefLessBackAMD" => Ok(Self::StencilRefLessBackAMD),
-            "OutputLinesNV" => Ok(Self::OutputLinesNV),
-            "OutputLinesEXT" => Ok(Self::OutputLinesNV),
-            "OutputPrimitivesNV" => Ok(Self::OutputPrimitivesNV),
-            "OutputPrimitivesEXT" => Ok(Self::OutputPrimitivesNV),
-            "DerivativeGroupQuadsNV" => Ok(Self::DerivativeGroupQuadsNV),
-            "DerivativeGroupLinearNV" => Ok(Self::DerivativeGroupLinearNV),
-            "OutputTrianglesNV" => Ok(Self::OutputTrianglesNV),
-            "OutputTrianglesEXT" => Ok(Self::OutputTrianglesNV),
-            "PixelInterlockOrderedEXT" => Ok(Self::PixelInterlockOrderedEXT),
-            "PixelInterlockUnorderedEXT" => Ok(Self::PixelInterlockUnorderedEXT),
-            "SampleInterlockOrderedEXT" => Ok(Self::SampleInterlockOrderedEXT),
-            "SampleInterlockUnorderedEXT" => Ok(Self::SampleInterlockUnorderedEXT),
-            "ShadingRateInterlockOrderedEXT" => Ok(Self::ShadingRateInterlockOrderedEXT),
-            "ShadingRateInterlockUnorderedEXT" => Ok(Self::ShadingRateInterlockUnorderedEXT),
-            "SharedLocalMemorySizeINTEL" => Ok(Self::SharedLocalMemorySizeINTEL),
-            "RoundingModeRTPINTEL" => Ok(Self::RoundingModeRTPINTEL),
-            "RoundingModeRTNINTEL" => Ok(Self::RoundingModeRTNINTEL),
-            "FloatingPointModeALTINTEL" => Ok(Self::FloatingPointModeALTINTEL),
-            "FloatingPointModeIEEEINTEL" => Ok(Self::FloatingPointModeIEEEINTEL),
-            "MaxWorkgroupSizeINTEL" => Ok(Self::MaxWorkgroupSizeINTEL),
-            "MaxWorkDimINTEL" => Ok(Self::MaxWorkDimINTEL),
-            "NoGlobalOffsetINTEL" => Ok(Self::NoGlobalOffsetINTEL),
-            "NumSIMDWorkitemsINTEL" => Ok(Self::NumSIMDWorkitemsINTEL),
-            "SchedulerTargetFmaxMhzINTEL" => Ok(Self::SchedulerTargetFmaxMhzINTEL),
-            "StreamingInterfaceINTEL" => Ok(Self::StreamingInterfaceINTEL),
-            "RegisterMapInterfaceINTEL" => Ok(Self::RegisterMapInterfaceINTEL),
-            "NamedBarrierCountINTEL" => Ok(Self::NamedBarrierCountINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Invocations" => Self::Invocations,
+            "SpacingEqual" => Self::SpacingEqual,
+            "SpacingFractionalEven" => Self::SpacingFractionalEven,
+            "SpacingFractionalOdd" => Self::SpacingFractionalOdd,
+            "VertexOrderCw" => Self::VertexOrderCw,
+            "VertexOrderCcw" => Self::VertexOrderCcw,
+            "PixelCenterInteger" => Self::PixelCenterInteger,
+            "OriginUpperLeft" => Self::OriginUpperLeft,
+            "OriginLowerLeft" => Self::OriginLowerLeft,
+            "EarlyFragmentTests" => Self::EarlyFragmentTests,
+            "PointMode" => Self::PointMode,
+            "Xfb" => Self::Xfb,
+            "DepthReplacing" => Self::DepthReplacing,
+            "DepthGreater" => Self::DepthGreater,
+            "DepthLess" => Self::DepthLess,
+            "DepthUnchanged" => Self::DepthUnchanged,
+            "LocalSize" => Self::LocalSize,
+            "LocalSizeHint" => Self::LocalSizeHint,
+            "InputPoints" => Self::InputPoints,
+            "InputLines" => Self::InputLines,
+            "InputLinesAdjacency" => Self::InputLinesAdjacency,
+            "Triangles" => Self::Triangles,
+            "InputTrianglesAdjacency" => Self::InputTrianglesAdjacency,
+            "Quads" => Self::Quads,
+            "Isolines" => Self::Isolines,
+            "OutputVertices" => Self::OutputVertices,
+            "OutputPoints" => Self::OutputPoints,
+            "OutputLineStrip" => Self::OutputLineStrip,
+            "OutputTriangleStrip" => Self::OutputTriangleStrip,
+            "VecTypeHint" => Self::VecTypeHint,
+            "ContractionOff" => Self::ContractionOff,
+            "Initializer" => Self::Initializer,
+            "Finalizer" => Self::Finalizer,
+            "SubgroupSize" => Self::SubgroupSize,
+            "SubgroupsPerWorkgroup" => Self::SubgroupsPerWorkgroup,
+            "SubgroupsPerWorkgroupId" => Self::SubgroupsPerWorkgroupId,
+            "LocalSizeId" => Self::LocalSizeId,
+            "LocalSizeHintId" => Self::LocalSizeHintId,
+            "NonCoherentColorAttachmentReadEXT" => Self::NonCoherentColorAttachmentReadEXT,
+            "NonCoherentDepthAttachmentReadEXT" => Self::NonCoherentDepthAttachmentReadEXT,
+            "NonCoherentStencilAttachmentReadEXT" => Self::NonCoherentStencilAttachmentReadEXT,
+            "SubgroupUniformControlFlowKHR" => Self::SubgroupUniformControlFlowKHR,
+            "PostDepthCoverage" => Self::PostDepthCoverage,
+            "DenormPreserve" => Self::DenormPreserve,
+            "DenormFlushToZero" => Self::DenormFlushToZero,
+            "SignedZeroInfNanPreserve" => Self::SignedZeroInfNanPreserve,
+            "RoundingModeRTE" => Self::RoundingModeRTE,
+            "RoundingModeRTZ" => Self::RoundingModeRTZ,
+            "EarlyAndLateFragmentTestsAMD" => Self::EarlyAndLateFragmentTestsAMD,
+            "StencilRefReplacingEXT" => Self::StencilRefReplacingEXT,
+            "CoalescingAMDX" => Self::CoalescingAMDX,
+            "MaxNodeRecursionAMDX" => Self::MaxNodeRecursionAMDX,
+            "StaticNumWorkgroupsAMDX" => Self::StaticNumWorkgroupsAMDX,
+            "ShaderIndexAMDX" => Self::ShaderIndexAMDX,
+            "MaxNumWorkgroupsAMDX" => Self::MaxNumWorkgroupsAMDX,
+            "StencilRefUnchangedFrontAMD" => Self::StencilRefUnchangedFrontAMD,
+            "StencilRefGreaterFrontAMD" => Self::StencilRefGreaterFrontAMD,
+            "StencilRefLessFrontAMD" => Self::StencilRefLessFrontAMD,
+            "StencilRefUnchangedBackAMD" => Self::StencilRefUnchangedBackAMD,
+            "StencilRefGreaterBackAMD" => Self::StencilRefGreaterBackAMD,
+            "StencilRefLessBackAMD" => Self::StencilRefLessBackAMD,
+            "QuadDerivativesKHR" => Self::QuadDerivativesKHR,
+            "RequireFullQuadsKHR" => Self::RequireFullQuadsKHR,
+            "OutputLinesEXT" => Self::OutputLinesEXT,
+            "OutputLinesNV" => Self::OutputLinesEXT,
+            "OutputPrimitivesEXT" => Self::OutputPrimitivesEXT,
+            "OutputPrimitivesNV" => Self::OutputPrimitivesEXT,
+            "DerivativeGroupQuadsKHR" => Self::DerivativeGroupQuadsKHR,
+            "DerivativeGroupQuadsNV" => Self::DerivativeGroupQuadsKHR,
+            "DerivativeGroupLinearKHR" => Self::DerivativeGroupLinearKHR,
+            "DerivativeGroupLinearNV" => Self::DerivativeGroupLinearKHR,
+            "OutputTrianglesEXT" => Self::OutputTrianglesEXT,
+            "OutputTrianglesNV" => Self::OutputTrianglesEXT,
+            "PixelInterlockOrderedEXT" => Self::PixelInterlockOrderedEXT,
+            "PixelInterlockUnorderedEXT" => Self::PixelInterlockUnorderedEXT,
+            "SampleInterlockOrderedEXT" => Self::SampleInterlockOrderedEXT,
+            "SampleInterlockUnorderedEXT" => Self::SampleInterlockUnorderedEXT,
+            "ShadingRateInterlockOrderedEXT" => Self::ShadingRateInterlockOrderedEXT,
+            "ShadingRateInterlockUnorderedEXT" => Self::ShadingRateInterlockUnorderedEXT,
+            "SharedLocalMemorySizeINTEL" => Self::SharedLocalMemorySizeINTEL,
+            "RoundingModeRTPINTEL" => Self::RoundingModeRTPINTEL,
+            "RoundingModeRTNINTEL" => Self::RoundingModeRTNINTEL,
+            "FloatingPointModeALTINTEL" => Self::FloatingPointModeALTINTEL,
+            "FloatingPointModeIEEEINTEL" => Self::FloatingPointModeIEEEINTEL,
+            "MaxWorkgroupSizeINTEL" => Self::MaxWorkgroupSizeINTEL,
+            "MaxWorkDimINTEL" => Self::MaxWorkDimINTEL,
+            "NoGlobalOffsetINTEL" => Self::NoGlobalOffsetINTEL,
+            "NumSIMDWorkitemsINTEL" => Self::NumSIMDWorkitemsINTEL,
+            "SchedulerTargetFmaxMhzINTEL" => Self::SchedulerTargetFmaxMhzINTEL,
+            "MaximallyReconvergesKHR" => Self::MaximallyReconvergesKHR,
+            "FPFastMathDefault" => Self::FPFastMathDefault,
+            "StreamingInterfaceINTEL" => Self::StreamingInterfaceINTEL,
+            "RegisterMapInterfaceINTEL" => Self::RegisterMapInterfaceINTEL,
+            "NamedBarrierCountINTEL" => Self::NamedBarrierCountINTEL,
+            "MaximumRegistersINTEL" => Self::MaximumRegistersINTEL,
+            "MaximumRegistersIdINTEL" => Self::MaximumRegistersIdINTEL,
+            "NamedMaximumRegistersINTEL" => Self::NamedMaximumRegistersINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [StorageClass](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_storage_class_a_storage_class)"]
@@ -467,12 +492,12 @@ pub enum StorageClass {
     TileImageEXT = 4172u32,
     NodePayloadAMDX = 5068u32,
     NodeOutputPayloadAMDX = 5076u32,
-    CallableDataNV = 5328u32,
-    IncomingCallableDataNV = 5329u32,
-    RayPayloadNV = 5338u32,
-    HitAttributeNV = 5339u32,
-    IncomingRayPayloadNV = 5342u32,
-    ShaderRecordBufferNV = 5343u32,
+    CallableDataKHR = 5328u32,
+    IncomingCallableDataKHR = 5329u32,
+    RayPayloadKHR = 5338u32,
+    HitAttributeKHR = 5339u32,
+    IncomingRayPayloadKHR = 5342u32,
+    ShaderRecordBufferKHR = 5343u32,
     PhysicalStorageBuffer = 5349u32,
     HitObjectAttributeNV = 5385u32,
     TaskPayloadWorkgroupEXT = 5402u32,
@@ -501,55 +526,55 @@ impl StorageClass {
 }
 #[allow(non_upper_case_globals)]
 impl StorageClass {
-    pub const CallableDataKHR: Self = Self::CallableDataNV;
-    pub const IncomingCallableDataKHR: Self = Self::IncomingCallableDataNV;
-    pub const RayPayloadKHR: Self = Self::RayPayloadNV;
-    pub const HitAttributeKHR: Self = Self::HitAttributeNV;
-    pub const IncomingRayPayloadKHR: Self = Self::IncomingRayPayloadNV;
-    pub const ShaderRecordBufferKHR: Self = Self::ShaderRecordBufferNV;
+    pub const CallableDataNV: Self = Self::CallableDataKHR;
+    pub const IncomingCallableDataNV: Self = Self::IncomingCallableDataKHR;
+    pub const RayPayloadNV: Self = Self::RayPayloadKHR;
+    pub const HitAttributeNV: Self = Self::HitAttributeKHR;
+    pub const IncomingRayPayloadNV: Self = Self::IncomingRayPayloadKHR;
+    pub const ShaderRecordBufferNV: Self = Self::ShaderRecordBufferKHR;
     pub const PhysicalStorageBufferEXT: Self = Self::PhysicalStorageBuffer;
 }
 impl core::str::FromStr for StorageClass {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "UniformConstant" => Ok(Self::UniformConstant),
-            "Input" => Ok(Self::Input),
-            "Uniform" => Ok(Self::Uniform),
-            "Output" => Ok(Self::Output),
-            "Workgroup" => Ok(Self::Workgroup),
-            "CrossWorkgroup" => Ok(Self::CrossWorkgroup),
-            "Private" => Ok(Self::Private),
-            "Function" => Ok(Self::Function),
-            "Generic" => Ok(Self::Generic),
-            "PushConstant" => Ok(Self::PushConstant),
-            "AtomicCounter" => Ok(Self::AtomicCounter),
-            "Image" => Ok(Self::Image),
-            "StorageBuffer" => Ok(Self::StorageBuffer),
-            "TileImageEXT" => Ok(Self::TileImageEXT),
-            "NodePayloadAMDX" => Ok(Self::NodePayloadAMDX),
-            "NodeOutputPayloadAMDX" => Ok(Self::NodeOutputPayloadAMDX),
-            "CallableDataNV" => Ok(Self::CallableDataNV),
-            "CallableDataKHR" => Ok(Self::CallableDataNV),
-            "IncomingCallableDataNV" => Ok(Self::IncomingCallableDataNV),
-            "IncomingCallableDataKHR" => Ok(Self::IncomingCallableDataNV),
-            "RayPayloadNV" => Ok(Self::RayPayloadNV),
-            "RayPayloadKHR" => Ok(Self::RayPayloadNV),
-            "HitAttributeNV" => Ok(Self::HitAttributeNV),
-            "HitAttributeKHR" => Ok(Self::HitAttributeNV),
-            "IncomingRayPayloadNV" => Ok(Self::IncomingRayPayloadNV),
-            "IncomingRayPayloadKHR" => Ok(Self::IncomingRayPayloadNV),
-            "ShaderRecordBufferNV" => Ok(Self::ShaderRecordBufferNV),
-            "ShaderRecordBufferKHR" => Ok(Self::ShaderRecordBufferNV),
-            "PhysicalStorageBuffer" => Ok(Self::PhysicalStorageBuffer),
-            "PhysicalStorageBufferEXT" => Ok(Self::PhysicalStorageBuffer),
-            "HitObjectAttributeNV" => Ok(Self::HitObjectAttributeNV),
-            "TaskPayloadWorkgroupEXT" => Ok(Self::TaskPayloadWorkgroupEXT),
-            "CodeSectionINTEL" => Ok(Self::CodeSectionINTEL),
-            "DeviceOnlyINTEL" => Ok(Self::DeviceOnlyINTEL),
-            "HostOnlyINTEL" => Ok(Self::HostOnlyINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "UniformConstant" => Self::UniformConstant,
+            "Input" => Self::Input,
+            "Uniform" => Self::Uniform,
+            "Output" => Self::Output,
+            "Workgroup" => Self::Workgroup,
+            "CrossWorkgroup" => Self::CrossWorkgroup,
+            "Private" => Self::Private,
+            "Function" => Self::Function,
+            "Generic" => Self::Generic,
+            "PushConstant" => Self::PushConstant,
+            "AtomicCounter" => Self::AtomicCounter,
+            "Image" => Self::Image,
+            "StorageBuffer" => Self::StorageBuffer,
+            "TileImageEXT" => Self::TileImageEXT,
+            "NodePayloadAMDX" => Self::NodePayloadAMDX,
+            "NodeOutputPayloadAMDX" => Self::NodeOutputPayloadAMDX,
+            "CallableDataKHR" => Self::CallableDataKHR,
+            "CallableDataNV" => Self::CallableDataKHR,
+            "IncomingCallableDataKHR" => Self::IncomingCallableDataKHR,
+            "IncomingCallableDataNV" => Self::IncomingCallableDataKHR,
+            "RayPayloadKHR" => Self::RayPayloadKHR,
+            "RayPayloadNV" => Self::RayPayloadKHR,
+            "HitAttributeKHR" => Self::HitAttributeKHR,
+            "HitAttributeNV" => Self::HitAttributeKHR,
+            "IncomingRayPayloadKHR" => Self::IncomingRayPayloadKHR,
+            "IncomingRayPayloadNV" => Self::IncomingRayPayloadKHR,
+            "ShaderRecordBufferKHR" => Self::ShaderRecordBufferKHR,
+            "ShaderRecordBufferNV" => Self::ShaderRecordBufferKHR,
+            "PhysicalStorageBuffer" => Self::PhysicalStorageBuffer,
+            "PhysicalStorageBufferEXT" => Self::PhysicalStorageBuffer,
+            "HitObjectAttributeNV" => Self::HitObjectAttributeNV,
+            "TaskPayloadWorkgroupEXT" => Self::TaskPayloadWorkgroupEXT,
+            "CodeSectionINTEL" => Self::CodeSectionINTEL,
+            "DeviceOnlyINTEL" => Self::DeviceOnlyINTEL,
+            "HostOnlyINTEL" => Self::HostOnlyINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [Dim](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_dim_a_dim)"]
@@ -582,17 +607,17 @@ impl Dim {}
 impl core::str::FromStr for Dim {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Dim1D" => Ok(Self::Dim1D),
-            "Dim2D" => Ok(Self::Dim2D),
-            "Dim3D" => Ok(Self::Dim3D),
-            "DimCube" => Ok(Self::DimCube),
-            "DimRect" => Ok(Self::DimRect),
-            "DimBuffer" => Ok(Self::DimBuffer),
-            "DimSubpassData" => Ok(Self::DimSubpassData),
-            "DimTileImageDataEXT" => Ok(Self::DimTileImageDataEXT),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Dim1D" => Self::Dim1D,
+            "Dim2D" => Self::Dim2D,
+            "Dim3D" => Self::Dim3D,
+            "DimCube" => Self::DimCube,
+            "DimRect" => Self::DimRect,
+            "DimBuffer" => Self::DimBuffer,
+            "DimSubpassData" => Self::DimSubpassData,
+            "DimTileImageDataEXT" => Self::DimTileImageDataEXT,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [SamplerAddressingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_addressing_mode_a_sampler_addressing_mode)"]
@@ -621,14 +646,14 @@ impl SamplerAddressingMode {}
 impl core::str::FromStr for SamplerAddressingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "None" => Ok(Self::None),
-            "ClampToEdge" => Ok(Self::ClampToEdge),
-            "Clamp" => Ok(Self::Clamp),
-            "Repeat" => Ok(Self::Repeat),
-            "RepeatMirrored" => Ok(Self::RepeatMirrored),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "None" => Self::None,
+            "ClampToEdge" => Self::ClampToEdge,
+            "Clamp" => Self::Clamp,
+            "Repeat" => Self::Repeat,
+            "RepeatMirrored" => Self::RepeatMirrored,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [SamplerFilterMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_sampler_filter_mode_a_sampler_filter_mode)"]
@@ -654,11 +679,11 @@ impl SamplerFilterMode {}
 impl core::str::FromStr for SamplerFilterMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Nearest" => Ok(Self::Nearest),
-            "Linear" => Ok(Self::Linear),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Nearest" => Self::Nearest,
+            "Linear" => Self::Linear,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [ImageFormat](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_format_a_image_format)"]
@@ -724,51 +749,51 @@ impl ImageFormat {}
 impl core::str::FromStr for ImageFormat {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Unknown" => Ok(Self::Unknown),
-            "Rgba32f" => Ok(Self::Rgba32f),
-            "Rgba16f" => Ok(Self::Rgba16f),
-            "R32f" => Ok(Self::R32f),
-            "Rgba8" => Ok(Self::Rgba8),
-            "Rgba8Snorm" => Ok(Self::Rgba8Snorm),
-            "Rg32f" => Ok(Self::Rg32f),
-            "Rg16f" => Ok(Self::Rg16f),
-            "R11fG11fB10f" => Ok(Self::R11fG11fB10f),
-            "R16f" => Ok(Self::R16f),
-            "Rgba16" => Ok(Self::Rgba16),
-            "Rgb10A2" => Ok(Self::Rgb10A2),
-            "Rg16" => Ok(Self::Rg16),
-            "Rg8" => Ok(Self::Rg8),
-            "R16" => Ok(Self::R16),
-            "R8" => Ok(Self::R8),
-            "Rgba16Snorm" => Ok(Self::Rgba16Snorm),
-            "Rg16Snorm" => Ok(Self::Rg16Snorm),
-            "Rg8Snorm" => Ok(Self::Rg8Snorm),
-            "R16Snorm" => Ok(Self::R16Snorm),
-            "R8Snorm" => Ok(Self::R8Snorm),
-            "Rgba32i" => Ok(Self::Rgba32i),
-            "Rgba16i" => Ok(Self::Rgba16i),
-            "Rgba8i" => Ok(Self::Rgba8i),
-            "R32i" => Ok(Self::R32i),
-            "Rg32i" => Ok(Self::Rg32i),
-            "Rg16i" => Ok(Self::Rg16i),
-            "Rg8i" => Ok(Self::Rg8i),
-            "R16i" => Ok(Self::R16i),
-            "R8i" => Ok(Self::R8i),
-            "Rgba32ui" => Ok(Self::Rgba32ui),
-            "Rgba16ui" => Ok(Self::Rgba16ui),
-            "Rgba8ui" => Ok(Self::Rgba8ui),
-            "R32ui" => Ok(Self::R32ui),
-            "Rgb10a2ui" => Ok(Self::Rgb10a2ui),
-            "Rg32ui" => Ok(Self::Rg32ui),
-            "Rg16ui" => Ok(Self::Rg16ui),
-            "Rg8ui" => Ok(Self::Rg8ui),
-            "R16ui" => Ok(Self::R16ui),
-            "R8ui" => Ok(Self::R8ui),
-            "R64ui" => Ok(Self::R64ui),
-            "R64i" => Ok(Self::R64i),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Unknown" => Self::Unknown,
+            "Rgba32f" => Self::Rgba32f,
+            "Rgba16f" => Self::Rgba16f,
+            "R32f" => Self::R32f,
+            "Rgba8" => Self::Rgba8,
+            "Rgba8Snorm" => Self::Rgba8Snorm,
+            "Rg32f" => Self::Rg32f,
+            "Rg16f" => Self::Rg16f,
+            "R11fG11fB10f" => Self::R11fG11fB10f,
+            "R16f" => Self::R16f,
+            "Rgba16" => Self::Rgba16,
+            "Rgb10A2" => Self::Rgb10A2,
+            "Rg16" => Self::Rg16,
+            "Rg8" => Self::Rg8,
+            "R16" => Self::R16,
+            "R8" => Self::R8,
+            "Rgba16Snorm" => Self::Rgba16Snorm,
+            "Rg16Snorm" => Self::Rg16Snorm,
+            "Rg8Snorm" => Self::Rg8Snorm,
+            "R16Snorm" => Self::R16Snorm,
+            "R8Snorm" => Self::R8Snorm,
+            "Rgba32i" => Self::Rgba32i,
+            "Rgba16i" => Self::Rgba16i,
+            "Rgba8i" => Self::Rgba8i,
+            "R32i" => Self::R32i,
+            "Rg32i" => Self::Rg32i,
+            "Rg16i" => Self::Rg16i,
+            "Rg8i" => Self::Rg8i,
+            "R16i" => Self::R16i,
+            "R8i" => Self::R8i,
+            "Rgba32ui" => Self::Rgba32ui,
+            "Rgba16ui" => Self::Rgba16ui,
+            "Rgba8ui" => Self::Rgba8ui,
+            "R32ui" => Self::R32ui,
+            "Rgb10a2ui" => Self::Rgb10a2ui,
+            "Rg32ui" => Self::Rg32ui,
+            "Rg16ui" => Self::Rg16ui,
+            "Rg8ui" => Self::Rg8ui,
+            "R16ui" => Self::R16ui,
+            "R8ui" => Self::R8ui,
+            "R64ui" => Self::R64ui,
+            "R64i" => Self::R64i,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [ImageChannelOrder](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_order_a_image_channel_order)"]
@@ -812,29 +837,29 @@ impl ImageChannelOrder {}
 impl core::str::FromStr for ImageChannelOrder {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "R" => Ok(Self::R),
-            "A" => Ok(Self::A),
-            "RG" => Ok(Self::RG),
-            "RA" => Ok(Self::RA),
-            "RGB" => Ok(Self::RGB),
-            "RGBA" => Ok(Self::RGBA),
-            "BGRA" => Ok(Self::BGRA),
-            "ARGB" => Ok(Self::ARGB),
-            "Intensity" => Ok(Self::Intensity),
-            "Luminance" => Ok(Self::Luminance),
-            "Rx" => Ok(Self::Rx),
-            "RGx" => Ok(Self::RGx),
-            "RGBx" => Ok(Self::RGBx),
-            "Depth" => Ok(Self::Depth),
-            "DepthStencil" => Ok(Self::DepthStencil),
-            "sRGB" => Ok(Self::sRGB),
-            "sRGBx" => Ok(Self::sRGBx),
-            "sRGBA" => Ok(Self::sRGBA),
-            "sBGRA" => Ok(Self::sBGRA),
-            "ABGR" => Ok(Self::ABGR),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "R" => Self::R,
+            "A" => Self::A,
+            "RG" => Self::RG,
+            "RA" => Self::RA,
+            "RGB" => Self::RGB,
+            "RGBA" => Self::RGBA,
+            "BGRA" => Self::BGRA,
+            "ARGB" => Self::ARGB,
+            "Intensity" => Self::Intensity,
+            "Luminance" => Self::Luminance,
+            "Rx" => Self::Rx,
+            "RGx" => Self::RGx,
+            "RGBx" => Self::RGBx,
+            "Depth" => Self::Depth,
+            "DepthStencil" => Self::DepthStencil,
+            "sRGB" => Self::sRGB,
+            "sRGBx" => Self::sRGBx,
+            "sRGBA" => Self::sRGBA,
+            "sBGRA" => Self::sBGRA,
+            "ABGR" => Self::ABGR,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [ImageChannelDataType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_channel_data_type_a_image_channel_data_type)"]
@@ -863,12 +888,13 @@ pub enum ImageChannelDataType {
     UnormInt101010_2 = 16u32,
     UnsignedIntRaw10EXT = 19u32,
     UnsignedIntRaw12EXT = 20u32,
+    UnormInt2_101010EXT = 21u32,
 }
 impl ImageChannelDataType {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
             0u32..=16u32 => unsafe { core::mem::transmute::<u32, ImageChannelDataType>(n) },
-            19u32..=20u32 => unsafe { core::mem::transmute::<u32, ImageChannelDataType>(n) },
+            19u32..=21u32 => unsafe { core::mem::transmute::<u32, ImageChannelDataType>(n) },
             _ => return None,
         })
     }
@@ -878,28 +904,29 @@ impl ImageChannelDataType {}
 impl core::str::FromStr for ImageChannelDataType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "SnormInt8" => Ok(Self::SnormInt8),
-            "SnormInt16" => Ok(Self::SnormInt16),
-            "UnormInt8" => Ok(Self::UnormInt8),
-            "UnormInt16" => Ok(Self::UnormInt16),
-            "UnormShort565" => Ok(Self::UnormShort565),
-            "UnormShort555" => Ok(Self::UnormShort555),
-            "UnormInt101010" => Ok(Self::UnormInt101010),
-            "SignedInt8" => Ok(Self::SignedInt8),
-            "SignedInt16" => Ok(Self::SignedInt16),
-            "SignedInt32" => Ok(Self::SignedInt32),
-            "UnsignedInt8" => Ok(Self::UnsignedInt8),
-            "UnsignedInt16" => Ok(Self::UnsignedInt16),
-            "UnsignedInt32" => Ok(Self::UnsignedInt32),
-            "HalfFloat" => Ok(Self::HalfFloat),
-            "Float" => Ok(Self::Float),
-            "UnormInt24" => Ok(Self::UnormInt24),
-            "UnormInt101010_2" => Ok(Self::UnormInt101010_2),
-            "UnsignedIntRaw10EXT" => Ok(Self::UnsignedIntRaw10EXT),
-            "UnsignedIntRaw12EXT" => Ok(Self::UnsignedIntRaw12EXT),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "SnormInt8" => Self::SnormInt8,
+            "SnormInt16" => Self::SnormInt16,
+            "UnormInt8" => Self::UnormInt8,
+            "UnormInt16" => Self::UnormInt16,
+            "UnormShort565" => Self::UnormShort565,
+            "UnormShort555" => Self::UnormShort555,
+            "UnormInt101010" => Self::UnormInt101010,
+            "SignedInt8" => Self::SignedInt8,
+            "SignedInt16" => Self::SignedInt16,
+            "SignedInt32" => Self::SignedInt32,
+            "UnsignedInt8" => Self::UnsignedInt8,
+            "UnsignedInt16" => Self::UnsignedInt16,
+            "UnsignedInt32" => Self::UnsignedInt32,
+            "HalfFloat" => Self::HalfFloat,
+            "Float" => Self::Float,
+            "UnormInt24" => Self::UnormInt24,
+            "UnormInt101010_2" => Self::UnormInt101010_2,
+            "UnsignedIntRaw10EXT" => Self::UnsignedIntRaw10EXT,
+            "UnsignedIntRaw12EXT" => Self::UnsignedIntRaw12EXT,
+            "UnormInt2_101010EXT" => Self::UnormInt2_101010EXT,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [FPRoundingMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_rounding_mode_a_fp_rounding_mode)"]
@@ -927,13 +954,13 @@ impl FPRoundingMode {}
 impl core::str::FromStr for FPRoundingMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "RTE" => Ok(Self::RTE),
-            "RTZ" => Ok(Self::RTZ),
-            "RTP" => Ok(Self::RTP),
-            "RTN" => Ok(Self::RTN),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "RTE" => Self::RTE,
+            "RTZ" => Self::RTZ,
+            "RTP" => Self::RTP,
+            "RTN" => Self::RTN,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [FPDenormMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_denorm_mode_a_fp_denorm_mode)"]
@@ -959,11 +986,11 @@ impl FPDenormMode {}
 impl core::str::FromStr for FPDenormMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Preserve" => Ok(Self::Preserve),
-            "FlushToZero" => Ok(Self::FlushToZero),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Preserve" => Self::Preserve,
+            "FlushToZero" => Self::FlushToZero,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [QuantizationModes](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_quantization_modes_a_quantization_modes)"]
@@ -995,17 +1022,17 @@ impl QuantizationModes {}
 impl core::str::FromStr for QuantizationModes {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "TRN" => Ok(Self::TRN),
-            "TRN_ZERO" => Ok(Self::TRN_ZERO),
-            "RND" => Ok(Self::RND),
-            "RND_ZERO" => Ok(Self::RND_ZERO),
-            "RND_INF" => Ok(Self::RND_INF),
-            "RND_MIN_INF" => Ok(Self::RND_MIN_INF),
-            "RND_CONV" => Ok(Self::RND_CONV),
-            "RND_CONV_ODD" => Ok(Self::RND_CONV_ODD),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "TRN" => Self::TRN,
+            "TRN_ZERO" => Self::TRN_ZERO,
+            "RND" => Self::RND,
+            "RND_ZERO" => Self::RND_ZERO,
+            "RND_INF" => Self::RND_INF,
+            "RND_MIN_INF" => Self::RND_MIN_INF,
+            "RND_CONV" => Self::RND_CONV,
+            "RND_CONV_ODD" => Self::RND_CONV_ODD,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [FPOperationMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_operation_mode_a_fp_operation_mode)"]
@@ -1031,11 +1058,11 @@ impl FPOperationMode {}
 impl core::str::FromStr for FPOperationMode {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "IEEE" => Ok(Self::IEEE),
-            "ALT" => Ok(Self::ALT),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "IEEE" => Self::IEEE,
+            "ALT" => Self::ALT,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [OverflowModes](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_overflow_modes_a_overflow_modes)"]
@@ -1063,13 +1090,13 @@ impl OverflowModes {}
 impl core::str::FromStr for OverflowModes {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "WRAP" => Ok(Self::WRAP),
-            "SAT" => Ok(Self::SAT),
-            "SAT_ZERO" => Ok(Self::SAT_ZERO),
-            "SAT_SYM" => Ok(Self::SAT_SYM),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "WRAP" => Self::WRAP,
+            "SAT" => Self::SAT,
+            "SAT_ZERO" => Self::SAT_ZERO,
+            "SAT_SYM" => Self::SAT_SYM,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [LinkageType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_linkage_type_a_linkage_type)"]
@@ -1096,12 +1123,12 @@ impl LinkageType {}
 impl core::str::FromStr for LinkageType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Export" => Ok(Self::Export),
-            "Import" => Ok(Self::Import),
-            "LinkOnceODR" => Ok(Self::LinkOnceODR),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Export" => Self::Export,
+            "Import" => Self::Import,
+            "LinkOnceODR" => Self::LinkOnceODR,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [AccessQualifier](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_access_qualifier_a_access_qualifier)"]
@@ -1128,12 +1155,12 @@ impl AccessQualifier {}
 impl core::str::FromStr for AccessQualifier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "ReadOnly" => Ok(Self::ReadOnly),
-            "WriteOnly" => Ok(Self::WriteOnly),
-            "ReadWrite" => Ok(Self::ReadWrite),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "ReadOnly" => Self::ReadOnly,
+            "WriteOnly" => Self::WriteOnly,
+            "ReadWrite" => Self::ReadWrite,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [HostAccessQualifier](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_host_access_qualifier_a_host_access_qualifier)"]
@@ -1161,13 +1188,13 @@ impl HostAccessQualifier {}
 impl core::str::FromStr for HostAccessQualifier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "NoneINTEL" => Ok(Self::NoneINTEL),
-            "ReadINTEL" => Ok(Self::ReadINTEL),
-            "WriteINTEL" => Ok(Self::WriteINTEL),
-            "ReadWriteINTEL" => Ok(Self::ReadWriteINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "NoneINTEL" => Self::NoneINTEL,
+            "ReadINTEL" => Self::ReadINTEL,
+            "WriteINTEL" => Self::WriteINTEL,
+            "ReadWriteINTEL" => Self::ReadWriteINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [FunctionParameterAttribute](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_parameter_attribute_a_function_parameter_attribute)"]
@@ -1201,18 +1228,18 @@ impl FunctionParameterAttribute {}
 impl core::str::FromStr for FunctionParameterAttribute {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Zext" => Ok(Self::Zext),
-            "Sext" => Ok(Self::Sext),
-            "ByVal" => Ok(Self::ByVal),
-            "Sret" => Ok(Self::Sret),
-            "NoAlias" => Ok(Self::NoAlias),
-            "NoCapture" => Ok(Self::NoCapture),
-            "NoWrite" => Ok(Self::NoWrite),
-            "NoReadWrite" => Ok(Self::NoReadWrite),
-            "RuntimeAlignedINTEL" => Ok(Self::RuntimeAlignedINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Zext" => Self::Zext,
+            "Sext" => Self::Sext,
+            "ByVal" => Self::ByVal,
+            "Sret" => Self::Sret,
+            "NoAlias" => Self::NoAlias,
+            "NoCapture" => Self::NoCapture,
+            "NoWrite" => Self::NoWrite,
+            "NoReadWrite" => Self::NoReadWrite,
+            "RuntimeAlignedINTEL" => Self::RuntimeAlignedINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [Decoration](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_decoration_a_decoration)"]
@@ -1273,6 +1300,7 @@ pub enum Decoration {
     NoUnsignedWrap = 4470u32,
     WeightTextureQCOM = 4487u32,
     BlockMatchTextureQCOM = 4488u32,
+    BlockMatchSamplerQCOM = 4499u32,
     ExplicitInterpAMD = 4999u32,
     NodeSharesPayloadLimitsWithAMDX = 5019u32,
     NodeMaxPayloadsAMDX = 5020u32,
@@ -1282,7 +1310,7 @@ pub enum Decoration {
     PassthroughNV = 5250u32,
     ViewportRelativeNV = 5252u32,
     SecondaryViewportRelativeNV = 5256u32,
-    PerPrimitiveNV = 5271u32,
+    PerPrimitiveEXT = 5271u32,
     PerViewNV = 5272u32,
     PerTaskNV = 5273u32,
     PerVertexKHR = 5285u32,
@@ -1367,6 +1395,7 @@ impl Decoration {
             13u32..=47u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             4469u32..=4470u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             4487u32..=4488u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
+            4499u32 => unsafe { core::mem::transmute::<u32, Decoration>(4499u32) },
             4999u32 => unsafe { core::mem::transmute::<u32, Decoration>(4999u32) },
             5019u32..=5020u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5078u32 => unsafe { core::mem::transmute::<u32, Decoration>(5078u32) },
@@ -1414,7 +1443,7 @@ impl Decoration {
 }
 #[allow(non_upper_case_globals)]
 impl Decoration {
-    pub const PerPrimitiveEXT: Self = Self::PerPrimitiveNV;
+    pub const PerPrimitiveNV: Self = Self::PerPrimitiveEXT;
     pub const PerVertexNV: Self = Self::PerVertexKHR;
     pub const NonUniformEXT: Self = Self::NonUniform;
     pub const RestrictPointerEXT: Self = Self::RestrictPointer;
@@ -1425,153 +1454,154 @@ impl Decoration {
 impl core::str::FromStr for Decoration {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "RelaxedPrecision" => Ok(Self::RelaxedPrecision),
-            "SpecId" => Ok(Self::SpecId),
-            "Block" => Ok(Self::Block),
-            "BufferBlock" => Ok(Self::BufferBlock),
-            "RowMajor" => Ok(Self::RowMajor),
-            "ColMajor" => Ok(Self::ColMajor),
-            "ArrayStride" => Ok(Self::ArrayStride),
-            "MatrixStride" => Ok(Self::MatrixStride),
-            "GLSLShared" => Ok(Self::GLSLShared),
-            "GLSLPacked" => Ok(Self::GLSLPacked),
-            "CPacked" => Ok(Self::CPacked),
-            "BuiltIn" => Ok(Self::BuiltIn),
-            "NoPerspective" => Ok(Self::NoPerspective),
-            "Flat" => Ok(Self::Flat),
-            "Patch" => Ok(Self::Patch),
-            "Centroid" => Ok(Self::Centroid),
-            "Sample" => Ok(Self::Sample),
-            "Invariant" => Ok(Self::Invariant),
-            "Restrict" => Ok(Self::Restrict),
-            "Aliased" => Ok(Self::Aliased),
-            "Volatile" => Ok(Self::Volatile),
-            "Constant" => Ok(Self::Constant),
-            "Coherent" => Ok(Self::Coherent),
-            "NonWritable" => Ok(Self::NonWritable),
-            "NonReadable" => Ok(Self::NonReadable),
-            "Uniform" => Ok(Self::Uniform),
-            "UniformId" => Ok(Self::UniformId),
-            "SaturatedConversion" => Ok(Self::SaturatedConversion),
-            "Stream" => Ok(Self::Stream),
-            "Location" => Ok(Self::Location),
-            "Component" => Ok(Self::Component),
-            "Index" => Ok(Self::Index),
-            "Binding" => Ok(Self::Binding),
-            "DescriptorSet" => Ok(Self::DescriptorSet),
-            "Offset" => Ok(Self::Offset),
-            "XfbBuffer" => Ok(Self::XfbBuffer),
-            "XfbStride" => Ok(Self::XfbStride),
-            "FuncParamAttr" => Ok(Self::FuncParamAttr),
-            "FPRoundingMode" => Ok(Self::FPRoundingMode),
-            "FPFastMathMode" => Ok(Self::FPFastMathMode),
-            "LinkageAttributes" => Ok(Self::LinkageAttributes),
-            "NoContraction" => Ok(Self::NoContraction),
-            "InputAttachmentIndex" => Ok(Self::InputAttachmentIndex),
-            "Alignment" => Ok(Self::Alignment),
-            "MaxByteOffset" => Ok(Self::MaxByteOffset),
-            "AlignmentId" => Ok(Self::AlignmentId),
-            "MaxByteOffsetId" => Ok(Self::MaxByteOffsetId),
-            "NoSignedWrap" => Ok(Self::NoSignedWrap),
-            "NoUnsignedWrap" => Ok(Self::NoUnsignedWrap),
-            "WeightTextureQCOM" => Ok(Self::WeightTextureQCOM),
-            "BlockMatchTextureQCOM" => Ok(Self::BlockMatchTextureQCOM),
-            "ExplicitInterpAMD" => Ok(Self::ExplicitInterpAMD),
-            "NodeSharesPayloadLimitsWithAMDX" => Ok(Self::NodeSharesPayloadLimitsWithAMDX),
-            "NodeMaxPayloadsAMDX" => Ok(Self::NodeMaxPayloadsAMDX),
-            "TrackFinishWritingAMDX" => Ok(Self::TrackFinishWritingAMDX),
-            "PayloadNodeNameAMDX" => Ok(Self::PayloadNodeNameAMDX),
-            "OverrideCoverageNV" => Ok(Self::OverrideCoverageNV),
-            "PassthroughNV" => Ok(Self::PassthroughNV),
-            "ViewportRelativeNV" => Ok(Self::ViewportRelativeNV),
-            "SecondaryViewportRelativeNV" => Ok(Self::SecondaryViewportRelativeNV),
-            "PerPrimitiveNV" => Ok(Self::PerPrimitiveNV),
-            "PerPrimitiveEXT" => Ok(Self::PerPrimitiveNV),
-            "PerViewNV" => Ok(Self::PerViewNV),
-            "PerTaskNV" => Ok(Self::PerTaskNV),
-            "PerVertexKHR" => Ok(Self::PerVertexKHR),
-            "PerVertexNV" => Ok(Self::PerVertexKHR),
-            "NonUniform" => Ok(Self::NonUniform),
-            "NonUniformEXT" => Ok(Self::NonUniform),
-            "RestrictPointer" => Ok(Self::RestrictPointer),
-            "RestrictPointerEXT" => Ok(Self::RestrictPointer),
-            "AliasedPointer" => Ok(Self::AliasedPointer),
-            "AliasedPointerEXT" => Ok(Self::AliasedPointer),
-            "HitObjectShaderRecordBufferNV" => Ok(Self::HitObjectShaderRecordBufferNV),
-            "BindlessSamplerNV" => Ok(Self::BindlessSamplerNV),
-            "BindlessImageNV" => Ok(Self::BindlessImageNV),
-            "BoundSamplerNV" => Ok(Self::BoundSamplerNV),
-            "BoundImageNV" => Ok(Self::BoundImageNV),
-            "SIMTCallINTEL" => Ok(Self::SIMTCallINTEL),
-            "ReferencedIndirectlyINTEL" => Ok(Self::ReferencedIndirectlyINTEL),
-            "ClobberINTEL" => Ok(Self::ClobberINTEL),
-            "SideEffectsINTEL" => Ok(Self::SideEffectsINTEL),
-            "VectorComputeVariableINTEL" => Ok(Self::VectorComputeVariableINTEL),
-            "FuncParamIOKindINTEL" => Ok(Self::FuncParamIOKindINTEL),
-            "VectorComputeFunctionINTEL" => Ok(Self::VectorComputeFunctionINTEL),
-            "StackCallINTEL" => Ok(Self::StackCallINTEL),
-            "GlobalVariableOffsetINTEL" => Ok(Self::GlobalVariableOffsetINTEL),
-            "CounterBuffer" => Ok(Self::CounterBuffer),
-            "HlslCounterBufferGOOGLE" => Ok(Self::CounterBuffer),
-            "UserSemantic" => Ok(Self::UserSemantic),
-            "HlslSemanticGOOGLE" => Ok(Self::UserSemantic),
-            "UserTypeGOOGLE" => Ok(Self::UserTypeGOOGLE),
-            "FunctionRoundingModeINTEL" => Ok(Self::FunctionRoundingModeINTEL),
-            "FunctionDenormModeINTEL" => Ok(Self::FunctionDenormModeINTEL),
-            "RegisterINTEL" => Ok(Self::RegisterINTEL),
-            "MemoryINTEL" => Ok(Self::MemoryINTEL),
-            "NumbanksINTEL" => Ok(Self::NumbanksINTEL),
-            "BankwidthINTEL" => Ok(Self::BankwidthINTEL),
-            "MaxPrivateCopiesINTEL" => Ok(Self::MaxPrivateCopiesINTEL),
-            "SinglepumpINTEL" => Ok(Self::SinglepumpINTEL),
-            "DoublepumpINTEL" => Ok(Self::DoublepumpINTEL),
-            "MaxReplicatesINTEL" => Ok(Self::MaxReplicatesINTEL),
-            "SimpleDualPortINTEL" => Ok(Self::SimpleDualPortINTEL),
-            "MergeINTEL" => Ok(Self::MergeINTEL),
-            "BankBitsINTEL" => Ok(Self::BankBitsINTEL),
-            "ForcePow2DepthINTEL" => Ok(Self::ForcePow2DepthINTEL),
-            "StridesizeINTEL" => Ok(Self::StridesizeINTEL),
-            "WordsizeINTEL" => Ok(Self::WordsizeINTEL),
-            "TrueDualPortINTEL" => Ok(Self::TrueDualPortINTEL),
-            "BurstCoalesceINTEL" => Ok(Self::BurstCoalesceINTEL),
-            "CacheSizeINTEL" => Ok(Self::CacheSizeINTEL),
-            "DontStaticallyCoalesceINTEL" => Ok(Self::DontStaticallyCoalesceINTEL),
-            "PrefetchINTEL" => Ok(Self::PrefetchINTEL),
-            "StallEnableINTEL" => Ok(Self::StallEnableINTEL),
-            "FuseLoopsInFunctionINTEL" => Ok(Self::FuseLoopsInFunctionINTEL),
-            "MathOpDSPModeINTEL" => Ok(Self::MathOpDSPModeINTEL),
-            "AliasScopeINTEL" => Ok(Self::AliasScopeINTEL),
-            "NoAliasINTEL" => Ok(Self::NoAliasINTEL),
-            "InitiationIntervalINTEL" => Ok(Self::InitiationIntervalINTEL),
-            "MaxConcurrencyINTEL" => Ok(Self::MaxConcurrencyINTEL),
-            "PipelineEnableINTEL" => Ok(Self::PipelineEnableINTEL),
-            "BufferLocationINTEL" => Ok(Self::BufferLocationINTEL),
-            "IOPipeStorageINTEL" => Ok(Self::IOPipeStorageINTEL),
-            "FunctionFloatingPointModeINTEL" => Ok(Self::FunctionFloatingPointModeINTEL),
-            "SingleElementVectorINTEL" => Ok(Self::SingleElementVectorINTEL),
-            "VectorComputeCallableFunctionINTEL" => Ok(Self::VectorComputeCallableFunctionINTEL),
-            "MediaBlockIOINTEL" => Ok(Self::MediaBlockIOINTEL),
-            "StallFreeINTEL" => Ok(Self::StallFreeINTEL),
-            "FPMaxErrorDecorationINTEL" => Ok(Self::FPMaxErrorDecorationINTEL),
-            "LatencyControlLabelINTEL" => Ok(Self::LatencyControlLabelINTEL),
-            "LatencyControlConstraintINTEL" => Ok(Self::LatencyControlConstraintINTEL),
-            "ConduitKernelArgumentINTEL" => Ok(Self::ConduitKernelArgumentINTEL),
-            "RegisterMapKernelArgumentINTEL" => Ok(Self::RegisterMapKernelArgumentINTEL),
-            "MMHostInterfaceAddressWidthINTEL" => Ok(Self::MMHostInterfaceAddressWidthINTEL),
-            "MMHostInterfaceDataWidthINTEL" => Ok(Self::MMHostInterfaceDataWidthINTEL),
-            "MMHostInterfaceLatencyINTEL" => Ok(Self::MMHostInterfaceLatencyINTEL),
-            "MMHostInterfaceReadWriteModeINTEL" => Ok(Self::MMHostInterfaceReadWriteModeINTEL),
-            "MMHostInterfaceMaxBurstINTEL" => Ok(Self::MMHostInterfaceMaxBurstINTEL),
-            "MMHostInterfaceWaitRequestINTEL" => Ok(Self::MMHostInterfaceWaitRequestINTEL),
-            "StableKernelArgumentINTEL" => Ok(Self::StableKernelArgumentINTEL),
-            "HostAccessINTEL" => Ok(Self::HostAccessINTEL),
-            "InitModeINTEL" => Ok(Self::InitModeINTEL),
-            "ImplementInRegisterMapINTEL" => Ok(Self::ImplementInRegisterMapINTEL),
-            "CacheControlLoadINTEL" => Ok(Self::CacheControlLoadINTEL),
-            "CacheControlStoreINTEL" => Ok(Self::CacheControlStoreINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "RelaxedPrecision" => Self::RelaxedPrecision,
+            "SpecId" => Self::SpecId,
+            "Block" => Self::Block,
+            "BufferBlock" => Self::BufferBlock,
+            "RowMajor" => Self::RowMajor,
+            "ColMajor" => Self::ColMajor,
+            "ArrayStride" => Self::ArrayStride,
+            "MatrixStride" => Self::MatrixStride,
+            "GLSLShared" => Self::GLSLShared,
+            "GLSLPacked" => Self::GLSLPacked,
+            "CPacked" => Self::CPacked,
+            "BuiltIn" => Self::BuiltIn,
+            "NoPerspective" => Self::NoPerspective,
+            "Flat" => Self::Flat,
+            "Patch" => Self::Patch,
+            "Centroid" => Self::Centroid,
+            "Sample" => Self::Sample,
+            "Invariant" => Self::Invariant,
+            "Restrict" => Self::Restrict,
+            "Aliased" => Self::Aliased,
+            "Volatile" => Self::Volatile,
+            "Constant" => Self::Constant,
+            "Coherent" => Self::Coherent,
+            "NonWritable" => Self::NonWritable,
+            "NonReadable" => Self::NonReadable,
+            "Uniform" => Self::Uniform,
+            "UniformId" => Self::UniformId,
+            "SaturatedConversion" => Self::SaturatedConversion,
+            "Stream" => Self::Stream,
+            "Location" => Self::Location,
+            "Component" => Self::Component,
+            "Index" => Self::Index,
+            "Binding" => Self::Binding,
+            "DescriptorSet" => Self::DescriptorSet,
+            "Offset" => Self::Offset,
+            "XfbBuffer" => Self::XfbBuffer,
+            "XfbStride" => Self::XfbStride,
+            "FuncParamAttr" => Self::FuncParamAttr,
+            "FPRoundingMode" => Self::FPRoundingMode,
+            "FPFastMathMode" => Self::FPFastMathMode,
+            "LinkageAttributes" => Self::LinkageAttributes,
+            "NoContraction" => Self::NoContraction,
+            "InputAttachmentIndex" => Self::InputAttachmentIndex,
+            "Alignment" => Self::Alignment,
+            "MaxByteOffset" => Self::MaxByteOffset,
+            "AlignmentId" => Self::AlignmentId,
+            "MaxByteOffsetId" => Self::MaxByteOffsetId,
+            "NoSignedWrap" => Self::NoSignedWrap,
+            "NoUnsignedWrap" => Self::NoUnsignedWrap,
+            "WeightTextureQCOM" => Self::WeightTextureQCOM,
+            "BlockMatchTextureQCOM" => Self::BlockMatchTextureQCOM,
+            "BlockMatchSamplerQCOM" => Self::BlockMatchSamplerQCOM,
+            "ExplicitInterpAMD" => Self::ExplicitInterpAMD,
+            "NodeSharesPayloadLimitsWithAMDX" => Self::NodeSharesPayloadLimitsWithAMDX,
+            "NodeMaxPayloadsAMDX" => Self::NodeMaxPayloadsAMDX,
+            "TrackFinishWritingAMDX" => Self::TrackFinishWritingAMDX,
+            "PayloadNodeNameAMDX" => Self::PayloadNodeNameAMDX,
+            "OverrideCoverageNV" => Self::OverrideCoverageNV,
+            "PassthroughNV" => Self::PassthroughNV,
+            "ViewportRelativeNV" => Self::ViewportRelativeNV,
+            "SecondaryViewportRelativeNV" => Self::SecondaryViewportRelativeNV,
+            "PerPrimitiveEXT" => Self::PerPrimitiveEXT,
+            "PerPrimitiveNV" => Self::PerPrimitiveEXT,
+            "PerViewNV" => Self::PerViewNV,
+            "PerTaskNV" => Self::PerTaskNV,
+            "PerVertexKHR" => Self::PerVertexKHR,
+            "PerVertexNV" => Self::PerVertexKHR,
+            "NonUniform" => Self::NonUniform,
+            "NonUniformEXT" => Self::NonUniform,
+            "RestrictPointer" => Self::RestrictPointer,
+            "RestrictPointerEXT" => Self::RestrictPointer,
+            "AliasedPointer" => Self::AliasedPointer,
+            "AliasedPointerEXT" => Self::AliasedPointer,
+            "HitObjectShaderRecordBufferNV" => Self::HitObjectShaderRecordBufferNV,
+            "BindlessSamplerNV" => Self::BindlessSamplerNV,
+            "BindlessImageNV" => Self::BindlessImageNV,
+            "BoundSamplerNV" => Self::BoundSamplerNV,
+            "BoundImageNV" => Self::BoundImageNV,
+            "SIMTCallINTEL" => Self::SIMTCallINTEL,
+            "ReferencedIndirectlyINTEL" => Self::ReferencedIndirectlyINTEL,
+            "ClobberINTEL" => Self::ClobberINTEL,
+            "SideEffectsINTEL" => Self::SideEffectsINTEL,
+            "VectorComputeVariableINTEL" => Self::VectorComputeVariableINTEL,
+            "FuncParamIOKindINTEL" => Self::FuncParamIOKindINTEL,
+            "VectorComputeFunctionINTEL" => Self::VectorComputeFunctionINTEL,
+            "StackCallINTEL" => Self::StackCallINTEL,
+            "GlobalVariableOffsetINTEL" => Self::GlobalVariableOffsetINTEL,
+            "CounterBuffer" => Self::CounterBuffer,
+            "HlslCounterBufferGOOGLE" => Self::CounterBuffer,
+            "UserSemantic" => Self::UserSemantic,
+            "HlslSemanticGOOGLE" => Self::UserSemantic,
+            "UserTypeGOOGLE" => Self::UserTypeGOOGLE,
+            "FunctionRoundingModeINTEL" => Self::FunctionRoundingModeINTEL,
+            "FunctionDenormModeINTEL" => Self::FunctionDenormModeINTEL,
+            "RegisterINTEL" => Self::RegisterINTEL,
+            "MemoryINTEL" => Self::MemoryINTEL,
+            "NumbanksINTEL" => Self::NumbanksINTEL,
+            "BankwidthINTEL" => Self::BankwidthINTEL,
+            "MaxPrivateCopiesINTEL" => Self::MaxPrivateCopiesINTEL,
+            "SinglepumpINTEL" => Self::SinglepumpINTEL,
+            "DoublepumpINTEL" => Self::DoublepumpINTEL,
+            "MaxReplicatesINTEL" => Self::MaxReplicatesINTEL,
+            "SimpleDualPortINTEL" => Self::SimpleDualPortINTEL,
+            "MergeINTEL" => Self::MergeINTEL,
+            "BankBitsINTEL" => Self::BankBitsINTEL,
+            "ForcePow2DepthINTEL" => Self::ForcePow2DepthINTEL,
+            "StridesizeINTEL" => Self::StridesizeINTEL,
+            "WordsizeINTEL" => Self::WordsizeINTEL,
+            "TrueDualPortINTEL" => Self::TrueDualPortINTEL,
+            "BurstCoalesceINTEL" => Self::BurstCoalesceINTEL,
+            "CacheSizeINTEL" => Self::CacheSizeINTEL,
+            "DontStaticallyCoalesceINTEL" => Self::DontStaticallyCoalesceINTEL,
+            "PrefetchINTEL" => Self::PrefetchINTEL,
+            "StallEnableINTEL" => Self::StallEnableINTEL,
+            "FuseLoopsInFunctionINTEL" => Self::FuseLoopsInFunctionINTEL,
+            "MathOpDSPModeINTEL" => Self::MathOpDSPModeINTEL,
+            "AliasScopeINTEL" => Self::AliasScopeINTEL,
+            "NoAliasINTEL" => Self::NoAliasINTEL,
+            "InitiationIntervalINTEL" => Self::InitiationIntervalINTEL,
+            "MaxConcurrencyINTEL" => Self::MaxConcurrencyINTEL,
+            "PipelineEnableINTEL" => Self::PipelineEnableINTEL,
+            "BufferLocationINTEL" => Self::BufferLocationINTEL,
+            "IOPipeStorageINTEL" => Self::IOPipeStorageINTEL,
+            "FunctionFloatingPointModeINTEL" => Self::FunctionFloatingPointModeINTEL,
+            "SingleElementVectorINTEL" => Self::SingleElementVectorINTEL,
+            "VectorComputeCallableFunctionINTEL" => Self::VectorComputeCallableFunctionINTEL,
+            "MediaBlockIOINTEL" => Self::MediaBlockIOINTEL,
+            "StallFreeINTEL" => Self::StallFreeINTEL,
+            "FPMaxErrorDecorationINTEL" => Self::FPMaxErrorDecorationINTEL,
+            "LatencyControlLabelINTEL" => Self::LatencyControlLabelINTEL,
+            "LatencyControlConstraintINTEL" => Self::LatencyControlConstraintINTEL,
+            "ConduitKernelArgumentINTEL" => Self::ConduitKernelArgumentINTEL,
+            "RegisterMapKernelArgumentINTEL" => Self::RegisterMapKernelArgumentINTEL,
+            "MMHostInterfaceAddressWidthINTEL" => Self::MMHostInterfaceAddressWidthINTEL,
+            "MMHostInterfaceDataWidthINTEL" => Self::MMHostInterfaceDataWidthINTEL,
+            "MMHostInterfaceLatencyINTEL" => Self::MMHostInterfaceLatencyINTEL,
+            "MMHostInterfaceReadWriteModeINTEL" => Self::MMHostInterfaceReadWriteModeINTEL,
+            "MMHostInterfaceMaxBurstINTEL" => Self::MMHostInterfaceMaxBurstINTEL,
+            "MMHostInterfaceWaitRequestINTEL" => Self::MMHostInterfaceWaitRequestINTEL,
+            "StableKernelArgumentINTEL" => Self::StableKernelArgumentINTEL,
+            "HostAccessINTEL" => Self::HostAccessINTEL,
+            "InitModeINTEL" => Self::InitModeINTEL,
+            "ImplementInRegisterMapINTEL" => Self::ImplementInRegisterMapINTEL,
+            "CacheControlLoadINTEL" => Self::CacheControlLoadINTEL,
+            "CacheControlStoreINTEL" => Self::CacheControlStoreINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [BuiltIn](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_built_in_a_built_in)"]
@@ -1671,24 +1701,24 @@ pub enum BuiltIn {
     PrimitiveLineIndicesEXT = 5295u32,
     PrimitiveTriangleIndicesEXT = 5296u32,
     CullPrimitiveEXT = 5299u32,
-    LaunchIdNV = 5319u32,
-    LaunchSizeNV = 5320u32,
-    WorldRayOriginNV = 5321u32,
-    WorldRayDirectionNV = 5322u32,
-    ObjectRayOriginNV = 5323u32,
-    ObjectRayDirectionNV = 5324u32,
-    RayTminNV = 5325u32,
-    RayTmaxNV = 5326u32,
-    InstanceCustomIndexNV = 5327u32,
-    ObjectToWorldNV = 5330u32,
-    WorldToObjectNV = 5331u32,
+    LaunchIdKHR = 5319u32,
+    LaunchSizeKHR = 5320u32,
+    WorldRayOriginKHR = 5321u32,
+    WorldRayDirectionKHR = 5322u32,
+    ObjectRayOriginKHR = 5323u32,
+    ObjectRayDirectionKHR = 5324u32,
+    RayTminKHR = 5325u32,
+    RayTmaxKHR = 5326u32,
+    InstanceCustomIndexKHR = 5327u32,
+    ObjectToWorldKHR = 5330u32,
+    WorldToObjectKHR = 5331u32,
     HitTNV = 5332u32,
-    HitKindNV = 5333u32,
+    HitKindKHR = 5333u32,
     CurrentRayTimeNV = 5334u32,
     HitTriangleVertexPositionsKHR = 5335u32,
     HitMicroTriangleVertexPositionsNV = 5337u32,
     HitMicroTriangleVertexBarycentricsNV = 5344u32,
-    IncomingRayFlagsNV = 5351u32,
+    IncomingRayFlagsKHR = 5351u32,
     RayGeometryIndexKHR = 5352u32,
     WarpsPerSMNV = 5374u32,
     SMCountNV = 5375u32,
@@ -1747,166 +1777,164 @@ impl BuiltIn {
     pub const BaryCoordNoPerspNV: Self = Self::BaryCoordNoPerspKHR;
     pub const FragmentSizeNV: Self = Self::FragSizeEXT;
     pub const InvocationsPerPixelNV: Self = Self::FragInvocationCountEXT;
-    pub const LaunchIdKHR: Self = Self::LaunchIdNV;
-    pub const LaunchSizeKHR: Self = Self::LaunchSizeNV;
-    pub const WorldRayOriginKHR: Self = Self::WorldRayOriginNV;
-    pub const WorldRayDirectionKHR: Self = Self::WorldRayDirectionNV;
-    pub const ObjectRayOriginKHR: Self = Self::ObjectRayOriginNV;
-    pub const ObjectRayDirectionKHR: Self = Self::ObjectRayDirectionNV;
-    pub const RayTminKHR: Self = Self::RayTminNV;
-    pub const RayTmaxKHR: Self = Self::RayTmaxNV;
-    pub const InstanceCustomIndexKHR: Self = Self::InstanceCustomIndexNV;
-    pub const ObjectToWorldKHR: Self = Self::ObjectToWorldNV;
-    pub const WorldToObjectKHR: Self = Self::WorldToObjectNV;
-    pub const HitKindKHR: Self = Self::HitKindNV;
-    pub const IncomingRayFlagsKHR: Self = Self::IncomingRayFlagsNV;
+    pub const LaunchIdNV: Self = Self::LaunchIdKHR;
+    pub const LaunchSizeNV: Self = Self::LaunchSizeKHR;
+    pub const WorldRayOriginNV: Self = Self::WorldRayOriginKHR;
+    pub const WorldRayDirectionNV: Self = Self::WorldRayDirectionKHR;
+    pub const ObjectRayOriginNV: Self = Self::ObjectRayOriginKHR;
+    pub const ObjectRayDirectionNV: Self = Self::ObjectRayDirectionKHR;
+    pub const RayTminNV: Self = Self::RayTminKHR;
+    pub const RayTmaxNV: Self = Self::RayTmaxKHR;
+    pub const InstanceCustomIndexNV: Self = Self::InstanceCustomIndexKHR;
+    pub const ObjectToWorldNV: Self = Self::ObjectToWorldKHR;
+    pub const WorldToObjectNV: Self = Self::WorldToObjectKHR;
+    pub const HitKindNV: Self = Self::HitKindKHR;
+    pub const IncomingRayFlagsNV: Self = Self::IncomingRayFlagsKHR;
 }
 impl core::str::FromStr for BuiltIn {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Position" => Ok(Self::Position),
-            "PointSize" => Ok(Self::PointSize),
-            "ClipDistance" => Ok(Self::ClipDistance),
-            "CullDistance" => Ok(Self::CullDistance),
-            "VertexId" => Ok(Self::VertexId),
-            "InstanceId" => Ok(Self::InstanceId),
-            "PrimitiveId" => Ok(Self::PrimitiveId),
-            "InvocationId" => Ok(Self::InvocationId),
-            "Layer" => Ok(Self::Layer),
-            "ViewportIndex" => Ok(Self::ViewportIndex),
-            "TessLevelOuter" => Ok(Self::TessLevelOuter),
-            "TessLevelInner" => Ok(Self::TessLevelInner),
-            "TessCoord" => Ok(Self::TessCoord),
-            "PatchVertices" => Ok(Self::PatchVertices),
-            "FragCoord" => Ok(Self::FragCoord),
-            "PointCoord" => Ok(Self::PointCoord),
-            "FrontFacing" => Ok(Self::FrontFacing),
-            "SampleId" => Ok(Self::SampleId),
-            "SamplePosition" => Ok(Self::SamplePosition),
-            "SampleMask" => Ok(Self::SampleMask),
-            "FragDepth" => Ok(Self::FragDepth),
-            "HelperInvocation" => Ok(Self::HelperInvocation),
-            "NumWorkgroups" => Ok(Self::NumWorkgroups),
-            "WorkgroupSize" => Ok(Self::WorkgroupSize),
-            "WorkgroupId" => Ok(Self::WorkgroupId),
-            "LocalInvocationId" => Ok(Self::LocalInvocationId),
-            "GlobalInvocationId" => Ok(Self::GlobalInvocationId),
-            "LocalInvocationIndex" => Ok(Self::LocalInvocationIndex),
-            "WorkDim" => Ok(Self::WorkDim),
-            "GlobalSize" => Ok(Self::GlobalSize),
-            "EnqueuedWorkgroupSize" => Ok(Self::EnqueuedWorkgroupSize),
-            "GlobalOffset" => Ok(Self::GlobalOffset),
-            "GlobalLinearId" => Ok(Self::GlobalLinearId),
-            "SubgroupSize" => Ok(Self::SubgroupSize),
-            "SubgroupMaxSize" => Ok(Self::SubgroupMaxSize),
-            "NumSubgroups" => Ok(Self::NumSubgroups),
-            "NumEnqueuedSubgroups" => Ok(Self::NumEnqueuedSubgroups),
-            "SubgroupId" => Ok(Self::SubgroupId),
-            "SubgroupLocalInvocationId" => Ok(Self::SubgroupLocalInvocationId),
-            "VertexIndex" => Ok(Self::VertexIndex),
-            "InstanceIndex" => Ok(Self::InstanceIndex),
-            "CoreIDARM" => Ok(Self::CoreIDARM),
-            "CoreCountARM" => Ok(Self::CoreCountARM),
-            "CoreMaxIDARM" => Ok(Self::CoreMaxIDARM),
-            "WarpIDARM" => Ok(Self::WarpIDARM),
-            "WarpMaxIDARM" => Ok(Self::WarpMaxIDARM),
-            "SubgroupEqMask" => Ok(Self::SubgroupEqMask),
-            "SubgroupEqMaskKHR" => Ok(Self::SubgroupEqMask),
-            "SubgroupGeMask" => Ok(Self::SubgroupGeMask),
-            "SubgroupGeMaskKHR" => Ok(Self::SubgroupGeMask),
-            "SubgroupGtMask" => Ok(Self::SubgroupGtMask),
-            "SubgroupGtMaskKHR" => Ok(Self::SubgroupGtMask),
-            "SubgroupLeMask" => Ok(Self::SubgroupLeMask),
-            "SubgroupLeMaskKHR" => Ok(Self::SubgroupLeMask),
-            "SubgroupLtMask" => Ok(Self::SubgroupLtMask),
-            "SubgroupLtMaskKHR" => Ok(Self::SubgroupLtMask),
-            "BaseVertex" => Ok(Self::BaseVertex),
-            "BaseInstance" => Ok(Self::BaseInstance),
-            "DrawIndex" => Ok(Self::DrawIndex),
-            "PrimitiveShadingRateKHR" => Ok(Self::PrimitiveShadingRateKHR),
-            "DeviceIndex" => Ok(Self::DeviceIndex),
-            "ViewIndex" => Ok(Self::ViewIndex),
-            "ShadingRateKHR" => Ok(Self::ShadingRateKHR),
-            "BaryCoordNoPerspAMD" => Ok(Self::BaryCoordNoPerspAMD),
-            "BaryCoordNoPerspCentroidAMD" => Ok(Self::BaryCoordNoPerspCentroidAMD),
-            "BaryCoordNoPerspSampleAMD" => Ok(Self::BaryCoordNoPerspSampleAMD),
-            "BaryCoordSmoothAMD" => Ok(Self::BaryCoordSmoothAMD),
-            "BaryCoordSmoothCentroidAMD" => Ok(Self::BaryCoordSmoothCentroidAMD),
-            "BaryCoordSmoothSampleAMD" => Ok(Self::BaryCoordSmoothSampleAMD),
-            "BaryCoordPullModelAMD" => Ok(Self::BaryCoordPullModelAMD),
-            "FragStencilRefEXT" => Ok(Self::FragStencilRefEXT),
-            "CoalescedInputCountAMDX" => Ok(Self::CoalescedInputCountAMDX),
-            "ShaderIndexAMDX" => Ok(Self::ShaderIndexAMDX),
-            "ViewportMaskNV" => Ok(Self::ViewportMaskNV),
-            "SecondaryPositionNV" => Ok(Self::SecondaryPositionNV),
-            "SecondaryViewportMaskNV" => Ok(Self::SecondaryViewportMaskNV),
-            "PositionPerViewNV" => Ok(Self::PositionPerViewNV),
-            "ViewportMaskPerViewNV" => Ok(Self::ViewportMaskPerViewNV),
-            "FullyCoveredEXT" => Ok(Self::FullyCoveredEXT),
-            "TaskCountNV" => Ok(Self::TaskCountNV),
-            "PrimitiveCountNV" => Ok(Self::PrimitiveCountNV),
-            "PrimitiveIndicesNV" => Ok(Self::PrimitiveIndicesNV),
-            "ClipDistancePerViewNV" => Ok(Self::ClipDistancePerViewNV),
-            "CullDistancePerViewNV" => Ok(Self::CullDistancePerViewNV),
-            "LayerPerViewNV" => Ok(Self::LayerPerViewNV),
-            "MeshViewCountNV" => Ok(Self::MeshViewCountNV),
-            "MeshViewIndicesNV" => Ok(Self::MeshViewIndicesNV),
-            "BaryCoordKHR" => Ok(Self::BaryCoordKHR),
-            "BaryCoordNV" => Ok(Self::BaryCoordKHR),
-            "BaryCoordNoPerspKHR" => Ok(Self::BaryCoordNoPerspKHR),
-            "BaryCoordNoPerspNV" => Ok(Self::BaryCoordNoPerspKHR),
-            "FragSizeEXT" => Ok(Self::FragSizeEXT),
-            "FragmentSizeNV" => Ok(Self::FragSizeEXT),
-            "FragInvocationCountEXT" => Ok(Self::FragInvocationCountEXT),
-            "InvocationsPerPixelNV" => Ok(Self::FragInvocationCountEXT),
-            "PrimitivePointIndicesEXT" => Ok(Self::PrimitivePointIndicesEXT),
-            "PrimitiveLineIndicesEXT" => Ok(Self::PrimitiveLineIndicesEXT),
-            "PrimitiveTriangleIndicesEXT" => Ok(Self::PrimitiveTriangleIndicesEXT),
-            "CullPrimitiveEXT" => Ok(Self::CullPrimitiveEXT),
-            "LaunchIdNV" => Ok(Self::LaunchIdNV),
-            "LaunchIdKHR" => Ok(Self::LaunchIdNV),
-            "LaunchSizeNV" => Ok(Self::LaunchSizeNV),
-            "LaunchSizeKHR" => Ok(Self::LaunchSizeNV),
-            "WorldRayOriginNV" => Ok(Self::WorldRayOriginNV),
-            "WorldRayOriginKHR" => Ok(Self::WorldRayOriginNV),
-            "WorldRayDirectionNV" => Ok(Self::WorldRayDirectionNV),
-            "WorldRayDirectionKHR" => Ok(Self::WorldRayDirectionNV),
-            "ObjectRayOriginNV" => Ok(Self::ObjectRayOriginNV),
-            "ObjectRayOriginKHR" => Ok(Self::ObjectRayOriginNV),
-            "ObjectRayDirectionNV" => Ok(Self::ObjectRayDirectionNV),
-            "ObjectRayDirectionKHR" => Ok(Self::ObjectRayDirectionNV),
-            "RayTminNV" => Ok(Self::RayTminNV),
-            "RayTminKHR" => Ok(Self::RayTminNV),
-            "RayTmaxNV" => Ok(Self::RayTmaxNV),
-            "RayTmaxKHR" => Ok(Self::RayTmaxNV),
-            "InstanceCustomIndexNV" => Ok(Self::InstanceCustomIndexNV),
-            "InstanceCustomIndexKHR" => Ok(Self::InstanceCustomIndexNV),
-            "ObjectToWorldNV" => Ok(Self::ObjectToWorldNV),
-            "ObjectToWorldKHR" => Ok(Self::ObjectToWorldNV),
-            "WorldToObjectNV" => Ok(Self::WorldToObjectNV),
-            "WorldToObjectKHR" => Ok(Self::WorldToObjectNV),
-            "HitTNV" => Ok(Self::HitTNV),
-            "HitKindNV" => Ok(Self::HitKindNV),
-            "HitKindKHR" => Ok(Self::HitKindNV),
-            "CurrentRayTimeNV" => Ok(Self::CurrentRayTimeNV),
-            "HitTriangleVertexPositionsKHR" => Ok(Self::HitTriangleVertexPositionsKHR),
-            "HitMicroTriangleVertexPositionsNV" => Ok(Self::HitMicroTriangleVertexPositionsNV),
-            "HitMicroTriangleVertexBarycentricsNV" => {
-                Ok(Self::HitMicroTriangleVertexBarycentricsNV)
-            }
-            "IncomingRayFlagsNV" => Ok(Self::IncomingRayFlagsNV),
-            "IncomingRayFlagsKHR" => Ok(Self::IncomingRayFlagsNV),
-            "RayGeometryIndexKHR" => Ok(Self::RayGeometryIndexKHR),
-            "WarpsPerSMNV" => Ok(Self::WarpsPerSMNV),
-            "SMCountNV" => Ok(Self::SMCountNV),
-            "WarpIDNV" => Ok(Self::WarpIDNV),
-            "SMIDNV" => Ok(Self::SMIDNV),
-            "HitKindFrontFacingMicroTriangleNV" => Ok(Self::HitKindFrontFacingMicroTriangleNV),
-            "HitKindBackFacingMicroTriangleNV" => Ok(Self::HitKindBackFacingMicroTriangleNV),
-            "CullMaskKHR" => Ok(Self::CullMaskKHR),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Position" => Self::Position,
+            "PointSize" => Self::PointSize,
+            "ClipDistance" => Self::ClipDistance,
+            "CullDistance" => Self::CullDistance,
+            "VertexId" => Self::VertexId,
+            "InstanceId" => Self::InstanceId,
+            "PrimitiveId" => Self::PrimitiveId,
+            "InvocationId" => Self::InvocationId,
+            "Layer" => Self::Layer,
+            "ViewportIndex" => Self::ViewportIndex,
+            "TessLevelOuter" => Self::TessLevelOuter,
+            "TessLevelInner" => Self::TessLevelInner,
+            "TessCoord" => Self::TessCoord,
+            "PatchVertices" => Self::PatchVertices,
+            "FragCoord" => Self::FragCoord,
+            "PointCoord" => Self::PointCoord,
+            "FrontFacing" => Self::FrontFacing,
+            "SampleId" => Self::SampleId,
+            "SamplePosition" => Self::SamplePosition,
+            "SampleMask" => Self::SampleMask,
+            "FragDepth" => Self::FragDepth,
+            "HelperInvocation" => Self::HelperInvocation,
+            "NumWorkgroups" => Self::NumWorkgroups,
+            "WorkgroupSize" => Self::WorkgroupSize,
+            "WorkgroupId" => Self::WorkgroupId,
+            "LocalInvocationId" => Self::LocalInvocationId,
+            "GlobalInvocationId" => Self::GlobalInvocationId,
+            "LocalInvocationIndex" => Self::LocalInvocationIndex,
+            "WorkDim" => Self::WorkDim,
+            "GlobalSize" => Self::GlobalSize,
+            "EnqueuedWorkgroupSize" => Self::EnqueuedWorkgroupSize,
+            "GlobalOffset" => Self::GlobalOffset,
+            "GlobalLinearId" => Self::GlobalLinearId,
+            "SubgroupSize" => Self::SubgroupSize,
+            "SubgroupMaxSize" => Self::SubgroupMaxSize,
+            "NumSubgroups" => Self::NumSubgroups,
+            "NumEnqueuedSubgroups" => Self::NumEnqueuedSubgroups,
+            "SubgroupId" => Self::SubgroupId,
+            "SubgroupLocalInvocationId" => Self::SubgroupLocalInvocationId,
+            "VertexIndex" => Self::VertexIndex,
+            "InstanceIndex" => Self::InstanceIndex,
+            "CoreIDARM" => Self::CoreIDARM,
+            "CoreCountARM" => Self::CoreCountARM,
+            "CoreMaxIDARM" => Self::CoreMaxIDARM,
+            "WarpIDARM" => Self::WarpIDARM,
+            "WarpMaxIDARM" => Self::WarpMaxIDARM,
+            "SubgroupEqMask" => Self::SubgroupEqMask,
+            "SubgroupEqMaskKHR" => Self::SubgroupEqMask,
+            "SubgroupGeMask" => Self::SubgroupGeMask,
+            "SubgroupGeMaskKHR" => Self::SubgroupGeMask,
+            "SubgroupGtMask" => Self::SubgroupGtMask,
+            "SubgroupGtMaskKHR" => Self::SubgroupGtMask,
+            "SubgroupLeMask" => Self::SubgroupLeMask,
+            "SubgroupLeMaskKHR" => Self::SubgroupLeMask,
+            "SubgroupLtMask" => Self::SubgroupLtMask,
+            "SubgroupLtMaskKHR" => Self::SubgroupLtMask,
+            "BaseVertex" => Self::BaseVertex,
+            "BaseInstance" => Self::BaseInstance,
+            "DrawIndex" => Self::DrawIndex,
+            "PrimitiveShadingRateKHR" => Self::PrimitiveShadingRateKHR,
+            "DeviceIndex" => Self::DeviceIndex,
+            "ViewIndex" => Self::ViewIndex,
+            "ShadingRateKHR" => Self::ShadingRateKHR,
+            "BaryCoordNoPerspAMD" => Self::BaryCoordNoPerspAMD,
+            "BaryCoordNoPerspCentroidAMD" => Self::BaryCoordNoPerspCentroidAMD,
+            "BaryCoordNoPerspSampleAMD" => Self::BaryCoordNoPerspSampleAMD,
+            "BaryCoordSmoothAMD" => Self::BaryCoordSmoothAMD,
+            "BaryCoordSmoothCentroidAMD" => Self::BaryCoordSmoothCentroidAMD,
+            "BaryCoordSmoothSampleAMD" => Self::BaryCoordSmoothSampleAMD,
+            "BaryCoordPullModelAMD" => Self::BaryCoordPullModelAMD,
+            "FragStencilRefEXT" => Self::FragStencilRefEXT,
+            "CoalescedInputCountAMDX" => Self::CoalescedInputCountAMDX,
+            "ShaderIndexAMDX" => Self::ShaderIndexAMDX,
+            "ViewportMaskNV" => Self::ViewportMaskNV,
+            "SecondaryPositionNV" => Self::SecondaryPositionNV,
+            "SecondaryViewportMaskNV" => Self::SecondaryViewportMaskNV,
+            "PositionPerViewNV" => Self::PositionPerViewNV,
+            "ViewportMaskPerViewNV" => Self::ViewportMaskPerViewNV,
+            "FullyCoveredEXT" => Self::FullyCoveredEXT,
+            "TaskCountNV" => Self::TaskCountNV,
+            "PrimitiveCountNV" => Self::PrimitiveCountNV,
+            "PrimitiveIndicesNV" => Self::PrimitiveIndicesNV,
+            "ClipDistancePerViewNV" => Self::ClipDistancePerViewNV,
+            "CullDistancePerViewNV" => Self::CullDistancePerViewNV,
+            "LayerPerViewNV" => Self::LayerPerViewNV,
+            "MeshViewCountNV" => Self::MeshViewCountNV,
+            "MeshViewIndicesNV" => Self::MeshViewIndicesNV,
+            "BaryCoordKHR" => Self::BaryCoordKHR,
+            "BaryCoordNV" => Self::BaryCoordKHR,
+            "BaryCoordNoPerspKHR" => Self::BaryCoordNoPerspKHR,
+            "BaryCoordNoPerspNV" => Self::BaryCoordNoPerspKHR,
+            "FragSizeEXT" => Self::FragSizeEXT,
+            "FragmentSizeNV" => Self::FragSizeEXT,
+            "FragInvocationCountEXT" => Self::FragInvocationCountEXT,
+            "InvocationsPerPixelNV" => Self::FragInvocationCountEXT,
+            "PrimitivePointIndicesEXT" => Self::PrimitivePointIndicesEXT,
+            "PrimitiveLineIndicesEXT" => Self::PrimitiveLineIndicesEXT,
+            "PrimitiveTriangleIndicesEXT" => Self::PrimitiveTriangleIndicesEXT,
+            "CullPrimitiveEXT" => Self::CullPrimitiveEXT,
+            "LaunchIdKHR" => Self::LaunchIdKHR,
+            "LaunchIdNV" => Self::LaunchIdKHR,
+            "LaunchSizeKHR" => Self::LaunchSizeKHR,
+            "LaunchSizeNV" => Self::LaunchSizeKHR,
+            "WorldRayOriginKHR" => Self::WorldRayOriginKHR,
+            "WorldRayOriginNV" => Self::WorldRayOriginKHR,
+            "WorldRayDirectionKHR" => Self::WorldRayDirectionKHR,
+            "WorldRayDirectionNV" => Self::WorldRayDirectionKHR,
+            "ObjectRayOriginKHR" => Self::ObjectRayOriginKHR,
+            "ObjectRayOriginNV" => Self::ObjectRayOriginKHR,
+            "ObjectRayDirectionKHR" => Self::ObjectRayDirectionKHR,
+            "ObjectRayDirectionNV" => Self::ObjectRayDirectionKHR,
+            "RayTminKHR" => Self::RayTminKHR,
+            "RayTminNV" => Self::RayTminKHR,
+            "RayTmaxKHR" => Self::RayTmaxKHR,
+            "RayTmaxNV" => Self::RayTmaxKHR,
+            "InstanceCustomIndexKHR" => Self::InstanceCustomIndexKHR,
+            "InstanceCustomIndexNV" => Self::InstanceCustomIndexKHR,
+            "ObjectToWorldKHR" => Self::ObjectToWorldKHR,
+            "ObjectToWorldNV" => Self::ObjectToWorldKHR,
+            "WorldToObjectKHR" => Self::WorldToObjectKHR,
+            "WorldToObjectNV" => Self::WorldToObjectKHR,
+            "HitTNV" => Self::HitTNV,
+            "HitKindKHR" => Self::HitKindKHR,
+            "HitKindNV" => Self::HitKindKHR,
+            "CurrentRayTimeNV" => Self::CurrentRayTimeNV,
+            "HitTriangleVertexPositionsKHR" => Self::HitTriangleVertexPositionsKHR,
+            "HitMicroTriangleVertexPositionsNV" => Self::HitMicroTriangleVertexPositionsNV,
+            "HitMicroTriangleVertexBarycentricsNV" => Self::HitMicroTriangleVertexBarycentricsNV,
+            "IncomingRayFlagsKHR" => Self::IncomingRayFlagsKHR,
+            "IncomingRayFlagsNV" => Self::IncomingRayFlagsKHR,
+            "RayGeometryIndexKHR" => Self::RayGeometryIndexKHR,
+            "WarpsPerSMNV" => Self::WarpsPerSMNV,
+            "SMCountNV" => Self::SMCountNV,
+            "WarpIDNV" => Self::WarpIDNV,
+            "SMIDNV" => Self::SMIDNV,
+            "HitKindFrontFacingMicroTriangleNV" => Self::HitKindFrontFacingMicroTriangleNV,
+            "HitKindBackFacingMicroTriangleNV" => Self::HitKindBackFacingMicroTriangleNV,
+            "CullMaskKHR" => Self::CullMaskKHR,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [Scope](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_scope_a_scope)"]
@@ -1939,17 +1967,17 @@ impl Scope {
 impl core::str::FromStr for Scope {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "CrossDevice" => Ok(Self::CrossDevice),
-            "Device" => Ok(Self::Device),
-            "Workgroup" => Ok(Self::Workgroup),
-            "Subgroup" => Ok(Self::Subgroup),
-            "Invocation" => Ok(Self::Invocation),
-            "QueueFamily" => Ok(Self::QueueFamily),
-            "QueueFamilyKHR" => Ok(Self::QueueFamily),
-            "ShaderCallKHR" => Ok(Self::ShaderCallKHR),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "CrossDevice" => Self::CrossDevice,
+            "Device" => Self::Device,
+            "Workgroup" => Self::Workgroup,
+            "Subgroup" => Self::Subgroup,
+            "Invocation" => Self::Invocation,
+            "QueueFamily" => Self::QueueFamily,
+            "QueueFamilyKHR" => Self::QueueFamily,
+            "ShaderCallKHR" => Self::ShaderCallKHR,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [GroupOperation](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_group_operation_a_group_operation)"]
@@ -1981,16 +2009,16 @@ impl GroupOperation {}
 impl core::str::FromStr for GroupOperation {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Reduce" => Ok(Self::Reduce),
-            "InclusiveScan" => Ok(Self::InclusiveScan),
-            "ExclusiveScan" => Ok(Self::ExclusiveScan),
-            "ClusteredReduce" => Ok(Self::ClusteredReduce),
-            "PartitionedReduceNV" => Ok(Self::PartitionedReduceNV),
-            "PartitionedInclusiveScanNV" => Ok(Self::PartitionedInclusiveScanNV),
-            "PartitionedExclusiveScanNV" => Ok(Self::PartitionedExclusiveScanNV),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "Reduce" => Self::Reduce,
+            "InclusiveScan" => Self::InclusiveScan,
+            "ExclusiveScan" => Self::ExclusiveScan,
+            "ClusteredReduce" => Self::ClusteredReduce,
+            "PartitionedReduceNV" => Self::PartitionedReduceNV,
+            "PartitionedInclusiveScanNV" => Self::PartitionedInclusiveScanNV,
+            "PartitionedExclusiveScanNV" => Self::PartitionedExclusiveScanNV,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [KernelEnqueueFlags](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_kernel_enqueue_flags_a_kernel_enqueue_flags)"]
@@ -2017,12 +2045,12 @@ impl KernelEnqueueFlags {}
 impl core::str::FromStr for KernelEnqueueFlags {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "NoWait" => Ok(Self::NoWait),
-            "WaitKernel" => Ok(Self::WaitKernel),
-            "WaitWorkGroup" => Ok(Self::WaitWorkGroup),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "NoWait" => Self::NoWait,
+            "WaitKernel" => Self::WaitKernel,
+            "WaitWorkGroup" => Self::WaitWorkGroup,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [Capability](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_capability_a_capability)"]
@@ -2106,6 +2134,7 @@ pub enum Capability {
     TileImageColorReadAccessEXT = 4166u32,
     TileImageDepthReadAccessEXT = 4167u32,
     TileImageStencilReadAccessEXT = 4168u32,
+    CooperativeMatrixLayoutsARM = 4201u32,
     FragmentShadingRateKHR = 4422u32,
     SubgroupBallotKHR = 4423u32,
     DrawParameters = 4427u32,
@@ -2133,11 +2162,13 @@ pub enum Capability {
     RoundingModeRTZ = 4468u32,
     RayQueryProvisionalKHR = 4471u32,
     RayQueryKHR = 4472u32,
+    UntypedPointersKHR = 4473u32,
     RayTraversalPrimitiveCullingKHR = 4478u32,
     RayTracingKHR = 4479u32,
     TextureSampleWeightedQCOM = 4484u32,
     TextureBoxFilterQCOM = 4485u32,
     TextureBlockMatchQCOM = 4486u32,
+    TextureBlockMatch2QCOM = 4498u32,
     Float16ImageAMD = 5008u32,
     ImageGatherBiasLodAMD = 5009u32,
     FragmentMaskAMD = 5010u32,
@@ -2146,6 +2177,7 @@ pub enum Capability {
     Int64ImageEXT = 5016u32,
     ShaderClockKHR = 5055u32,
     ShaderEnqueueAMDX = 5067u32,
+    QuadControlKHR = 5087u32,
     SampleMaskOverrideCoverageNV = 5249u32,
     GeometryShaderPassthroughNV = 5251u32,
     ShaderViewportIndexLayerEXT = 5254u32,
@@ -2157,7 +2189,7 @@ pub enum Capability {
     ImageFootprintNV = 5282u32,
     MeshShadingEXT = 5283u32,
     FragmentBarycentricKHR = 5284u32,
-    ComputeDerivativeGroupQuadsNV = 5288u32,
+    ComputeDerivativeGroupQuadsKHR = 5288u32,
     FragmentDensityEXT = 5291u32,
     GroupNonUniformPartitionedNV = 5297u32,
     ShaderNonUniform = 5301u32,
@@ -2178,7 +2210,7 @@ pub enum Capability {
     VulkanMemoryModel = 5345u32,
     VulkanMemoryModelDeviceScope = 5346u32,
     PhysicalStorageBufferAddresses = 5347u32,
-    ComputeDerivativeGroupLinearNV = 5350u32,
+    ComputeDerivativeGroupLinearKHR = 5350u32,
     RayTracingProvisionalKHR = 5353u32,
     CooperativeMatrixNV = 5357u32,
     FragmentShaderSampleInterlockEXT = 5363u32,
@@ -2191,7 +2223,9 @@ pub enum Capability {
     ShaderInvocationReorderNV = 5383u32,
     BindlessTextureNV = 5390u32,
     RayQueryPositionFetchKHR = 5391u32,
+    AtomicFloat16VectorNV = 5404u32,
     RayTracingDisplacementMicromapNV = 5409u32,
+    RawAccessChainsNV = 5414u32,
     SubgroupShuffleINTEL = 5568u32,
     SubgroupBufferBlockIOINTEL = 5569u32,
     SubgroupImageBlockIOINTEL = 5570u32,
@@ -2240,8 +2274,10 @@ pub enum Capability {
     DotProduct = 6019u32,
     RayCullMaskKHR = 6020u32,
     CooperativeMatrixKHR = 6022u32,
+    ReplicatedCompositesEXT = 6024u32,
     BitInstructions = 6025u32,
     GroupNonUniformRotateKHR = 6026u32,
+    FloatControls2 = 6029u32,
     AtomicFloat32AddEXT = 6033u32,
     AtomicFloat64AddEXT = 6034u32,
     LongCompositesINTEL = 6089u32,
@@ -2257,8 +2293,11 @@ pub enum Capability {
     FPGAArgumentInterfacesINTEL = 6174u32,
     GlobalVariableHostAccessINTEL = 6187u32,
     GlobalVariableFPGADecorationsINTEL = 6189u32,
+    SubgroupBufferPrefetchINTEL = 6220u32,
     GroupUniformArithmeticKHR = 6400u32,
+    MaskedGatherScatterINTEL = 6427u32,
     CacheControlsINTEL = 6441u32,
+    RegisterLimitsINTEL = 6460u32,
 }
 impl Capability {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -2267,6 +2306,7 @@ impl Capability {
             17u32..=25u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             27u32..=71u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4165u32..=4168u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            4201u32 => unsafe { core::mem::transmute::<u32, Capability>(4201u32) },
             4422u32..=4423u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4427u32..=4431u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4433u32..=4437u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2275,14 +2315,16 @@ impl Capability {
             4445u32 => unsafe { core::mem::transmute::<u32, Capability>(4445u32) },
             4447u32..=4450u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4464u32..=4468u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
-            4471u32..=4472u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            4471u32..=4473u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4478u32..=4479u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4484u32..=4486u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            4498u32 => unsafe { core::mem::transmute::<u32, Capability>(4498u32) },
             5008u32..=5010u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5013u32 => unsafe { core::mem::transmute::<u32, Capability>(5013u32) },
             5015u32..=5016u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5055u32 => unsafe { core::mem::transmute::<u32, Capability>(5055u32) },
             5067u32 => unsafe { core::mem::transmute::<u32, Capability>(5067u32) },
+            5087u32 => unsafe { core::mem::transmute::<u32, Capability>(5087u32) },
             5249u32 => unsafe { core::mem::transmute::<u32, Capability>(5249u32) },
             5251u32 => unsafe { core::mem::transmute::<u32, Capability>(5251u32) },
             5254u32..=5255u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2304,7 +2346,9 @@ impl Capability {
             5378u32..=5381u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5383u32 => unsafe { core::mem::transmute::<u32, Capability>(5383u32) },
             5390u32..=5391u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            5404u32 => unsafe { core::mem::transmute::<u32, Capability>(5404u32) },
             5409u32 => unsafe { core::mem::transmute::<u32, Capability>(5409u32) },
+            5414u32 => unsafe { core::mem::transmute::<u32, Capability>(5414u32) },
             5568u32..=5570u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5579u32 => unsafe { core::mem::transmute::<u32, Capability>(5579u32) },
             5582u32..=5584u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2338,7 +2382,8 @@ impl Capability {
             5948u32 => unsafe { core::mem::transmute::<u32, Capability>(5948u32) },
             6016u32..=6020u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6022u32 => unsafe { core::mem::transmute::<u32, Capability>(6022u32) },
-            6025u32..=6026u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            6024u32..=6026u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            6029u32 => unsafe { core::mem::transmute::<u32, Capability>(6029u32) },
             6033u32..=6034u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6089u32 => unsafe { core::mem::transmute::<u32, Capability>(6089u32) },
             6094u32..=6095u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2351,8 +2396,11 @@ impl Capability {
             6174u32 => unsafe { core::mem::transmute::<u32, Capability>(6174u32) },
             6187u32 => unsafe { core::mem::transmute::<u32, Capability>(6187u32) },
             6189u32 => unsafe { core::mem::transmute::<u32, Capability>(6189u32) },
+            6220u32 => unsafe { core::mem::transmute::<u32, Capability>(6220u32) },
             6400u32 => unsafe { core::mem::transmute::<u32, Capability>(6400u32) },
+            6427u32 => unsafe { core::mem::transmute::<u32, Capability>(6427u32) },
             6441u32 => unsafe { core::mem::transmute::<u32, Capability>(6441u32) },
+            6460u32 => unsafe { core::mem::transmute::<u32, Capability>(6460u32) },
             _ => return None,
         })
     }
@@ -2363,6 +2411,7 @@ impl Capability {
     pub const StorageUniform16: Self = Self::UniformAndStorageBuffer16BitAccess;
     pub const ShaderViewportIndexLayerNV: Self = Self::ShaderViewportIndexLayerEXT;
     pub const FragmentBarycentricNV: Self = Self::FragmentBarycentricKHR;
+    pub const ComputeDerivativeGroupQuadsNV: Self = Self::ComputeDerivativeGroupQuadsKHR;
     pub const ShadingRateNV: Self = Self::FragmentDensityEXT;
     pub const ShaderNonUniformEXT: Self = Self::ShaderNonUniform;
     pub const RuntimeDescriptorArrayEXT: Self = Self::RuntimeDescriptorArray;
@@ -2389,6 +2438,7 @@ impl Capability {
     pub const VulkanMemoryModelKHR: Self = Self::VulkanMemoryModel;
     pub const VulkanMemoryModelDeviceScopeKHR: Self = Self::VulkanMemoryModelDeviceScope;
     pub const PhysicalStorageBufferAddressesEXT: Self = Self::PhysicalStorageBufferAddresses;
+    pub const ComputeDerivativeGroupLinearNV: Self = Self::ComputeDerivativeGroupLinearKHR;
     pub const DemoteToHelperInvocationEXT: Self = Self::DemoteToHelperInvocation;
     pub const DotProductInputAllKHR: Self = Self::DotProductInputAll;
     pub const DotProductInput4x8BitKHR: Self = Self::DotProductInput4x8Bit;
@@ -2398,309 +2448,302 @@ impl Capability {
 impl core::str::FromStr for Capability {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "Matrix" => Ok(Self::Matrix),
-            "Shader" => Ok(Self::Shader),
-            "Geometry" => Ok(Self::Geometry),
-            "Tessellation" => Ok(Self::Tessellation),
-            "Addresses" => Ok(Self::Addresses),
-            "Linkage" => Ok(Self::Linkage),
-            "Kernel" => Ok(Self::Kernel),
-            "Vector16" => Ok(Self::Vector16),
-            "Float16Buffer" => Ok(Self::Float16Buffer),
-            "Float16" => Ok(Self::Float16),
-            "Float64" => Ok(Self::Float64),
-            "Int64" => Ok(Self::Int64),
-            "Int64Atomics" => Ok(Self::Int64Atomics),
-            "ImageBasic" => Ok(Self::ImageBasic),
-            "ImageReadWrite" => Ok(Self::ImageReadWrite),
-            "ImageMipmap" => Ok(Self::ImageMipmap),
-            "Pipes" => Ok(Self::Pipes),
-            "Groups" => Ok(Self::Groups),
-            "DeviceEnqueue" => Ok(Self::DeviceEnqueue),
-            "LiteralSampler" => Ok(Self::LiteralSampler),
-            "AtomicStorage" => Ok(Self::AtomicStorage),
-            "Int16" => Ok(Self::Int16),
-            "TessellationPointSize" => Ok(Self::TessellationPointSize),
-            "GeometryPointSize" => Ok(Self::GeometryPointSize),
-            "ImageGatherExtended" => Ok(Self::ImageGatherExtended),
-            "StorageImageMultisample" => Ok(Self::StorageImageMultisample),
-            "UniformBufferArrayDynamicIndexing" => Ok(Self::UniformBufferArrayDynamicIndexing),
-            "SampledImageArrayDynamicIndexing" => Ok(Self::SampledImageArrayDynamicIndexing),
-            "StorageBufferArrayDynamicIndexing" => Ok(Self::StorageBufferArrayDynamicIndexing),
-            "StorageImageArrayDynamicIndexing" => Ok(Self::StorageImageArrayDynamicIndexing),
-            "ClipDistance" => Ok(Self::ClipDistance),
-            "CullDistance" => Ok(Self::CullDistance),
-            "ImageCubeArray" => Ok(Self::ImageCubeArray),
-            "SampleRateShading" => Ok(Self::SampleRateShading),
-            "ImageRect" => Ok(Self::ImageRect),
-            "SampledRect" => Ok(Self::SampledRect),
-            "GenericPointer" => Ok(Self::GenericPointer),
-            "Int8" => Ok(Self::Int8),
-            "InputAttachment" => Ok(Self::InputAttachment),
-            "SparseResidency" => Ok(Self::SparseResidency),
-            "MinLod" => Ok(Self::MinLod),
-            "Sampled1D" => Ok(Self::Sampled1D),
-            "Image1D" => Ok(Self::Image1D),
-            "SampledCubeArray" => Ok(Self::SampledCubeArray),
-            "SampledBuffer" => Ok(Self::SampledBuffer),
-            "ImageBuffer" => Ok(Self::ImageBuffer),
-            "ImageMSArray" => Ok(Self::ImageMSArray),
-            "StorageImageExtendedFormats" => Ok(Self::StorageImageExtendedFormats),
-            "ImageQuery" => Ok(Self::ImageQuery),
-            "DerivativeControl" => Ok(Self::DerivativeControl),
-            "InterpolationFunction" => Ok(Self::InterpolationFunction),
-            "TransformFeedback" => Ok(Self::TransformFeedback),
-            "GeometryStreams" => Ok(Self::GeometryStreams),
-            "StorageImageReadWithoutFormat" => Ok(Self::StorageImageReadWithoutFormat),
-            "StorageImageWriteWithoutFormat" => Ok(Self::StorageImageWriteWithoutFormat),
-            "MultiViewport" => Ok(Self::MultiViewport),
-            "SubgroupDispatch" => Ok(Self::SubgroupDispatch),
-            "NamedBarrier" => Ok(Self::NamedBarrier),
-            "PipeStorage" => Ok(Self::PipeStorage),
-            "GroupNonUniform" => Ok(Self::GroupNonUniform),
-            "GroupNonUniformVote" => Ok(Self::GroupNonUniformVote),
-            "GroupNonUniformArithmetic" => Ok(Self::GroupNonUniformArithmetic),
-            "GroupNonUniformBallot" => Ok(Self::GroupNonUniformBallot),
-            "GroupNonUniformShuffle" => Ok(Self::GroupNonUniformShuffle),
-            "GroupNonUniformShuffleRelative" => Ok(Self::GroupNonUniformShuffleRelative),
-            "GroupNonUniformClustered" => Ok(Self::GroupNonUniformClustered),
-            "GroupNonUniformQuad" => Ok(Self::GroupNonUniformQuad),
-            "ShaderLayer" => Ok(Self::ShaderLayer),
-            "ShaderViewportIndex" => Ok(Self::ShaderViewportIndex),
-            "UniformDecoration" => Ok(Self::UniformDecoration),
-            "CoreBuiltinsARM" => Ok(Self::CoreBuiltinsARM),
-            "TileImageColorReadAccessEXT" => Ok(Self::TileImageColorReadAccessEXT),
-            "TileImageDepthReadAccessEXT" => Ok(Self::TileImageDepthReadAccessEXT),
-            "TileImageStencilReadAccessEXT" => Ok(Self::TileImageStencilReadAccessEXT),
-            "FragmentShadingRateKHR" => Ok(Self::FragmentShadingRateKHR),
-            "SubgroupBallotKHR" => Ok(Self::SubgroupBallotKHR),
-            "DrawParameters" => Ok(Self::DrawParameters),
-            "WorkgroupMemoryExplicitLayoutKHR" => Ok(Self::WorkgroupMemoryExplicitLayoutKHR),
+        Ok(match s {
+            "Matrix" => Self::Matrix,
+            "Shader" => Self::Shader,
+            "Geometry" => Self::Geometry,
+            "Tessellation" => Self::Tessellation,
+            "Addresses" => Self::Addresses,
+            "Linkage" => Self::Linkage,
+            "Kernel" => Self::Kernel,
+            "Vector16" => Self::Vector16,
+            "Float16Buffer" => Self::Float16Buffer,
+            "Float16" => Self::Float16,
+            "Float64" => Self::Float64,
+            "Int64" => Self::Int64,
+            "Int64Atomics" => Self::Int64Atomics,
+            "ImageBasic" => Self::ImageBasic,
+            "ImageReadWrite" => Self::ImageReadWrite,
+            "ImageMipmap" => Self::ImageMipmap,
+            "Pipes" => Self::Pipes,
+            "Groups" => Self::Groups,
+            "DeviceEnqueue" => Self::DeviceEnqueue,
+            "LiteralSampler" => Self::LiteralSampler,
+            "AtomicStorage" => Self::AtomicStorage,
+            "Int16" => Self::Int16,
+            "TessellationPointSize" => Self::TessellationPointSize,
+            "GeometryPointSize" => Self::GeometryPointSize,
+            "ImageGatherExtended" => Self::ImageGatherExtended,
+            "StorageImageMultisample" => Self::StorageImageMultisample,
+            "UniformBufferArrayDynamicIndexing" => Self::UniformBufferArrayDynamicIndexing,
+            "SampledImageArrayDynamicIndexing" => Self::SampledImageArrayDynamicIndexing,
+            "StorageBufferArrayDynamicIndexing" => Self::StorageBufferArrayDynamicIndexing,
+            "StorageImageArrayDynamicIndexing" => Self::StorageImageArrayDynamicIndexing,
+            "ClipDistance" => Self::ClipDistance,
+            "CullDistance" => Self::CullDistance,
+            "ImageCubeArray" => Self::ImageCubeArray,
+            "SampleRateShading" => Self::SampleRateShading,
+            "ImageRect" => Self::ImageRect,
+            "SampledRect" => Self::SampledRect,
+            "GenericPointer" => Self::GenericPointer,
+            "Int8" => Self::Int8,
+            "InputAttachment" => Self::InputAttachment,
+            "SparseResidency" => Self::SparseResidency,
+            "MinLod" => Self::MinLod,
+            "Sampled1D" => Self::Sampled1D,
+            "Image1D" => Self::Image1D,
+            "SampledCubeArray" => Self::SampledCubeArray,
+            "SampledBuffer" => Self::SampledBuffer,
+            "ImageBuffer" => Self::ImageBuffer,
+            "ImageMSArray" => Self::ImageMSArray,
+            "StorageImageExtendedFormats" => Self::StorageImageExtendedFormats,
+            "ImageQuery" => Self::ImageQuery,
+            "DerivativeControl" => Self::DerivativeControl,
+            "InterpolationFunction" => Self::InterpolationFunction,
+            "TransformFeedback" => Self::TransformFeedback,
+            "GeometryStreams" => Self::GeometryStreams,
+            "StorageImageReadWithoutFormat" => Self::StorageImageReadWithoutFormat,
+            "StorageImageWriteWithoutFormat" => Self::StorageImageWriteWithoutFormat,
+            "MultiViewport" => Self::MultiViewport,
+            "SubgroupDispatch" => Self::SubgroupDispatch,
+            "NamedBarrier" => Self::NamedBarrier,
+            "PipeStorage" => Self::PipeStorage,
+            "GroupNonUniform" => Self::GroupNonUniform,
+            "GroupNonUniformVote" => Self::GroupNonUniformVote,
+            "GroupNonUniformArithmetic" => Self::GroupNonUniformArithmetic,
+            "GroupNonUniformBallot" => Self::GroupNonUniformBallot,
+            "GroupNonUniformShuffle" => Self::GroupNonUniformShuffle,
+            "GroupNonUniformShuffleRelative" => Self::GroupNonUniformShuffleRelative,
+            "GroupNonUniformClustered" => Self::GroupNonUniformClustered,
+            "GroupNonUniformQuad" => Self::GroupNonUniformQuad,
+            "ShaderLayer" => Self::ShaderLayer,
+            "ShaderViewportIndex" => Self::ShaderViewportIndex,
+            "UniformDecoration" => Self::UniformDecoration,
+            "CoreBuiltinsARM" => Self::CoreBuiltinsARM,
+            "TileImageColorReadAccessEXT" => Self::TileImageColorReadAccessEXT,
+            "TileImageDepthReadAccessEXT" => Self::TileImageDepthReadAccessEXT,
+            "TileImageStencilReadAccessEXT" => Self::TileImageStencilReadAccessEXT,
+            "CooperativeMatrixLayoutsARM" => Self::CooperativeMatrixLayoutsARM,
+            "FragmentShadingRateKHR" => Self::FragmentShadingRateKHR,
+            "SubgroupBallotKHR" => Self::SubgroupBallotKHR,
+            "DrawParameters" => Self::DrawParameters,
+            "WorkgroupMemoryExplicitLayoutKHR" => Self::WorkgroupMemoryExplicitLayoutKHR,
             "WorkgroupMemoryExplicitLayout8BitAccessKHR" => {
-                Ok(Self::WorkgroupMemoryExplicitLayout8BitAccessKHR)
+                Self::WorkgroupMemoryExplicitLayout8BitAccessKHR
             }
             "WorkgroupMemoryExplicitLayout16BitAccessKHR" => {
-                Ok(Self::WorkgroupMemoryExplicitLayout16BitAccessKHR)
+                Self::WorkgroupMemoryExplicitLayout16BitAccessKHR
             }
-            "SubgroupVoteKHR" => Ok(Self::SubgroupVoteKHR),
-            "StorageBuffer16BitAccess" => Ok(Self::StorageBuffer16BitAccess),
-            "StorageUniformBufferBlock16" => Ok(Self::StorageBuffer16BitAccess),
-            "UniformAndStorageBuffer16BitAccess" => Ok(Self::UniformAndStorageBuffer16BitAccess),
-            "StorageUniform16" => Ok(Self::UniformAndStorageBuffer16BitAccess),
-            "StoragePushConstant16" => Ok(Self::StoragePushConstant16),
-            "StorageInputOutput16" => Ok(Self::StorageInputOutput16),
-            "DeviceGroup" => Ok(Self::DeviceGroup),
-            "MultiView" => Ok(Self::MultiView),
-            "VariablePointersStorageBuffer" => Ok(Self::VariablePointersStorageBuffer),
-            "VariablePointers" => Ok(Self::VariablePointers),
-            "AtomicStorageOps" => Ok(Self::AtomicStorageOps),
-            "SampleMaskPostDepthCoverage" => Ok(Self::SampleMaskPostDepthCoverage),
-            "StorageBuffer8BitAccess" => Ok(Self::StorageBuffer8BitAccess),
-            "UniformAndStorageBuffer8BitAccess" => Ok(Self::UniformAndStorageBuffer8BitAccess),
-            "StoragePushConstant8" => Ok(Self::StoragePushConstant8),
-            "DenormPreserve" => Ok(Self::DenormPreserve),
-            "DenormFlushToZero" => Ok(Self::DenormFlushToZero),
-            "SignedZeroInfNanPreserve" => Ok(Self::SignedZeroInfNanPreserve),
-            "RoundingModeRTE" => Ok(Self::RoundingModeRTE),
-            "RoundingModeRTZ" => Ok(Self::RoundingModeRTZ),
-            "RayQueryProvisionalKHR" => Ok(Self::RayQueryProvisionalKHR),
-            "RayQueryKHR" => Ok(Self::RayQueryKHR),
-            "RayTraversalPrimitiveCullingKHR" => Ok(Self::RayTraversalPrimitiveCullingKHR),
-            "RayTracingKHR" => Ok(Self::RayTracingKHR),
-            "TextureSampleWeightedQCOM" => Ok(Self::TextureSampleWeightedQCOM),
-            "TextureBoxFilterQCOM" => Ok(Self::TextureBoxFilterQCOM),
-            "TextureBlockMatchQCOM" => Ok(Self::TextureBlockMatchQCOM),
-            "Float16ImageAMD" => Ok(Self::Float16ImageAMD),
-            "ImageGatherBiasLodAMD" => Ok(Self::ImageGatherBiasLodAMD),
-            "FragmentMaskAMD" => Ok(Self::FragmentMaskAMD),
-            "StencilExportEXT" => Ok(Self::StencilExportEXT),
-            "ImageReadWriteLodAMD" => Ok(Self::ImageReadWriteLodAMD),
-            "Int64ImageEXT" => Ok(Self::Int64ImageEXT),
-            "ShaderClockKHR" => Ok(Self::ShaderClockKHR),
-            "ShaderEnqueueAMDX" => Ok(Self::ShaderEnqueueAMDX),
-            "SampleMaskOverrideCoverageNV" => Ok(Self::SampleMaskOverrideCoverageNV),
-            "GeometryShaderPassthroughNV" => Ok(Self::GeometryShaderPassthroughNV),
-            "ShaderViewportIndexLayerEXT" => Ok(Self::ShaderViewportIndexLayerEXT),
-            "ShaderViewportIndexLayerNV" => Ok(Self::ShaderViewportIndexLayerEXT),
-            "ShaderViewportMaskNV" => Ok(Self::ShaderViewportMaskNV),
-            "ShaderStereoViewNV" => Ok(Self::ShaderStereoViewNV),
-            "PerViewAttributesNV" => Ok(Self::PerViewAttributesNV),
-            "FragmentFullyCoveredEXT" => Ok(Self::FragmentFullyCoveredEXT),
-            "MeshShadingNV" => Ok(Self::MeshShadingNV),
-            "ImageFootprintNV" => Ok(Self::ImageFootprintNV),
-            "MeshShadingEXT" => Ok(Self::MeshShadingEXT),
-            "FragmentBarycentricKHR" => Ok(Self::FragmentBarycentricKHR),
-            "FragmentBarycentricNV" => Ok(Self::FragmentBarycentricKHR),
-            "ComputeDerivativeGroupQuadsNV" => Ok(Self::ComputeDerivativeGroupQuadsNV),
-            "FragmentDensityEXT" => Ok(Self::FragmentDensityEXT),
-            "ShadingRateNV" => Ok(Self::FragmentDensityEXT),
-            "GroupNonUniformPartitionedNV" => Ok(Self::GroupNonUniformPartitionedNV),
-            "ShaderNonUniform" => Ok(Self::ShaderNonUniform),
-            "ShaderNonUniformEXT" => Ok(Self::ShaderNonUniform),
-            "RuntimeDescriptorArray" => Ok(Self::RuntimeDescriptorArray),
-            "RuntimeDescriptorArrayEXT" => Ok(Self::RuntimeDescriptorArray),
-            "InputAttachmentArrayDynamicIndexing" => Ok(Self::InputAttachmentArrayDynamicIndexing),
-            "InputAttachmentArrayDynamicIndexingEXT" => {
-                Ok(Self::InputAttachmentArrayDynamicIndexing)
-            }
+            "SubgroupVoteKHR" => Self::SubgroupVoteKHR,
+            "StorageBuffer16BitAccess" => Self::StorageBuffer16BitAccess,
+            "StorageUniformBufferBlock16" => Self::StorageBuffer16BitAccess,
+            "UniformAndStorageBuffer16BitAccess" => Self::UniformAndStorageBuffer16BitAccess,
+            "StorageUniform16" => Self::UniformAndStorageBuffer16BitAccess,
+            "StoragePushConstant16" => Self::StoragePushConstant16,
+            "StorageInputOutput16" => Self::StorageInputOutput16,
+            "DeviceGroup" => Self::DeviceGroup,
+            "MultiView" => Self::MultiView,
+            "VariablePointersStorageBuffer" => Self::VariablePointersStorageBuffer,
+            "VariablePointers" => Self::VariablePointers,
+            "AtomicStorageOps" => Self::AtomicStorageOps,
+            "SampleMaskPostDepthCoverage" => Self::SampleMaskPostDepthCoverage,
+            "StorageBuffer8BitAccess" => Self::StorageBuffer8BitAccess,
+            "UniformAndStorageBuffer8BitAccess" => Self::UniformAndStorageBuffer8BitAccess,
+            "StoragePushConstant8" => Self::StoragePushConstant8,
+            "DenormPreserve" => Self::DenormPreserve,
+            "DenormFlushToZero" => Self::DenormFlushToZero,
+            "SignedZeroInfNanPreserve" => Self::SignedZeroInfNanPreserve,
+            "RoundingModeRTE" => Self::RoundingModeRTE,
+            "RoundingModeRTZ" => Self::RoundingModeRTZ,
+            "RayQueryProvisionalKHR" => Self::RayQueryProvisionalKHR,
+            "RayQueryKHR" => Self::RayQueryKHR,
+            "UntypedPointersKHR" => Self::UntypedPointersKHR,
+            "RayTraversalPrimitiveCullingKHR" => Self::RayTraversalPrimitiveCullingKHR,
+            "RayTracingKHR" => Self::RayTracingKHR,
+            "TextureSampleWeightedQCOM" => Self::TextureSampleWeightedQCOM,
+            "TextureBoxFilterQCOM" => Self::TextureBoxFilterQCOM,
+            "TextureBlockMatchQCOM" => Self::TextureBlockMatchQCOM,
+            "TextureBlockMatch2QCOM" => Self::TextureBlockMatch2QCOM,
+            "Float16ImageAMD" => Self::Float16ImageAMD,
+            "ImageGatherBiasLodAMD" => Self::ImageGatherBiasLodAMD,
+            "FragmentMaskAMD" => Self::FragmentMaskAMD,
+            "StencilExportEXT" => Self::StencilExportEXT,
+            "ImageReadWriteLodAMD" => Self::ImageReadWriteLodAMD,
+            "Int64ImageEXT" => Self::Int64ImageEXT,
+            "ShaderClockKHR" => Self::ShaderClockKHR,
+            "ShaderEnqueueAMDX" => Self::ShaderEnqueueAMDX,
+            "QuadControlKHR" => Self::QuadControlKHR,
+            "SampleMaskOverrideCoverageNV" => Self::SampleMaskOverrideCoverageNV,
+            "GeometryShaderPassthroughNV" => Self::GeometryShaderPassthroughNV,
+            "ShaderViewportIndexLayerEXT" => Self::ShaderViewportIndexLayerEXT,
+            "ShaderViewportIndexLayerNV" => Self::ShaderViewportIndexLayerEXT,
+            "ShaderViewportMaskNV" => Self::ShaderViewportMaskNV,
+            "ShaderStereoViewNV" => Self::ShaderStereoViewNV,
+            "PerViewAttributesNV" => Self::PerViewAttributesNV,
+            "FragmentFullyCoveredEXT" => Self::FragmentFullyCoveredEXT,
+            "MeshShadingNV" => Self::MeshShadingNV,
+            "ImageFootprintNV" => Self::ImageFootprintNV,
+            "MeshShadingEXT" => Self::MeshShadingEXT,
+            "FragmentBarycentricKHR" => Self::FragmentBarycentricKHR,
+            "FragmentBarycentricNV" => Self::FragmentBarycentricKHR,
+            "ComputeDerivativeGroupQuadsKHR" => Self::ComputeDerivativeGroupQuadsKHR,
+            "ComputeDerivativeGroupQuadsNV" => Self::ComputeDerivativeGroupQuadsKHR,
+            "FragmentDensityEXT" => Self::FragmentDensityEXT,
+            "ShadingRateNV" => Self::FragmentDensityEXT,
+            "GroupNonUniformPartitionedNV" => Self::GroupNonUniformPartitionedNV,
+            "ShaderNonUniform" => Self::ShaderNonUniform,
+            "ShaderNonUniformEXT" => Self::ShaderNonUniform,
+            "RuntimeDescriptorArray" => Self::RuntimeDescriptorArray,
+            "RuntimeDescriptorArrayEXT" => Self::RuntimeDescriptorArray,
+            "InputAttachmentArrayDynamicIndexing" => Self::InputAttachmentArrayDynamicIndexing,
+            "InputAttachmentArrayDynamicIndexingEXT" => Self::InputAttachmentArrayDynamicIndexing,
             "UniformTexelBufferArrayDynamicIndexing" => {
-                Ok(Self::UniformTexelBufferArrayDynamicIndexing)
+                Self::UniformTexelBufferArrayDynamicIndexing
             }
             "UniformTexelBufferArrayDynamicIndexingEXT" => {
-                Ok(Self::UniformTexelBufferArrayDynamicIndexing)
+                Self::UniformTexelBufferArrayDynamicIndexing
             }
             "StorageTexelBufferArrayDynamicIndexing" => {
-                Ok(Self::StorageTexelBufferArrayDynamicIndexing)
+                Self::StorageTexelBufferArrayDynamicIndexing
             }
             "StorageTexelBufferArrayDynamicIndexingEXT" => {
-                Ok(Self::StorageTexelBufferArrayDynamicIndexing)
+                Self::StorageTexelBufferArrayDynamicIndexing
             }
-            "UniformBufferArrayNonUniformIndexing" => {
-                Ok(Self::UniformBufferArrayNonUniformIndexing)
-            }
-            "UniformBufferArrayNonUniformIndexingEXT" => {
-                Ok(Self::UniformBufferArrayNonUniformIndexing)
-            }
-            "SampledImageArrayNonUniformIndexing" => Ok(Self::SampledImageArrayNonUniformIndexing),
-            "SampledImageArrayNonUniformIndexingEXT" => {
-                Ok(Self::SampledImageArrayNonUniformIndexing)
-            }
-            "StorageBufferArrayNonUniformIndexing" => {
-                Ok(Self::StorageBufferArrayNonUniformIndexing)
-            }
-            "StorageBufferArrayNonUniformIndexingEXT" => {
-                Ok(Self::StorageBufferArrayNonUniformIndexing)
-            }
-            "StorageImageArrayNonUniformIndexing" => Ok(Self::StorageImageArrayNonUniformIndexing),
-            "StorageImageArrayNonUniformIndexingEXT" => {
-                Ok(Self::StorageImageArrayNonUniformIndexing)
-            }
+            "UniformBufferArrayNonUniformIndexing" => Self::UniformBufferArrayNonUniformIndexing,
+            "UniformBufferArrayNonUniformIndexingEXT" => Self::UniformBufferArrayNonUniformIndexing,
+            "SampledImageArrayNonUniformIndexing" => Self::SampledImageArrayNonUniformIndexing,
+            "SampledImageArrayNonUniformIndexingEXT" => Self::SampledImageArrayNonUniformIndexing,
+            "StorageBufferArrayNonUniformIndexing" => Self::StorageBufferArrayNonUniformIndexing,
+            "StorageBufferArrayNonUniformIndexingEXT" => Self::StorageBufferArrayNonUniformIndexing,
+            "StorageImageArrayNonUniformIndexing" => Self::StorageImageArrayNonUniformIndexing,
+            "StorageImageArrayNonUniformIndexingEXT" => Self::StorageImageArrayNonUniformIndexing,
             "InputAttachmentArrayNonUniformIndexing" => {
-                Ok(Self::InputAttachmentArrayNonUniformIndexing)
+                Self::InputAttachmentArrayNonUniformIndexing
             }
             "InputAttachmentArrayNonUniformIndexingEXT" => {
-                Ok(Self::InputAttachmentArrayNonUniformIndexing)
+                Self::InputAttachmentArrayNonUniformIndexing
             }
             "UniformTexelBufferArrayNonUniformIndexing" => {
-                Ok(Self::UniformTexelBufferArrayNonUniformIndexing)
+                Self::UniformTexelBufferArrayNonUniformIndexing
             }
             "UniformTexelBufferArrayNonUniformIndexingEXT" => {
-                Ok(Self::UniformTexelBufferArrayNonUniformIndexing)
+                Self::UniformTexelBufferArrayNonUniformIndexing
             }
             "StorageTexelBufferArrayNonUniformIndexing" => {
-                Ok(Self::StorageTexelBufferArrayNonUniformIndexing)
+                Self::StorageTexelBufferArrayNonUniformIndexing
             }
             "StorageTexelBufferArrayNonUniformIndexingEXT" => {
-                Ok(Self::StorageTexelBufferArrayNonUniformIndexing)
+                Self::StorageTexelBufferArrayNonUniformIndexing
             }
-            "RayTracingPositionFetchKHR" => Ok(Self::RayTracingPositionFetchKHR),
-            "RayTracingNV" => Ok(Self::RayTracingNV),
-            "RayTracingMotionBlurNV" => Ok(Self::RayTracingMotionBlurNV),
-            "VulkanMemoryModel" => Ok(Self::VulkanMemoryModel),
-            "VulkanMemoryModelKHR" => Ok(Self::VulkanMemoryModel),
-            "VulkanMemoryModelDeviceScope" => Ok(Self::VulkanMemoryModelDeviceScope),
-            "VulkanMemoryModelDeviceScopeKHR" => Ok(Self::VulkanMemoryModelDeviceScope),
-            "PhysicalStorageBufferAddresses" => Ok(Self::PhysicalStorageBufferAddresses),
-            "PhysicalStorageBufferAddressesEXT" => Ok(Self::PhysicalStorageBufferAddresses),
-            "ComputeDerivativeGroupLinearNV" => Ok(Self::ComputeDerivativeGroupLinearNV),
-            "RayTracingProvisionalKHR" => Ok(Self::RayTracingProvisionalKHR),
-            "CooperativeMatrixNV" => Ok(Self::CooperativeMatrixNV),
-            "FragmentShaderSampleInterlockEXT" => Ok(Self::FragmentShaderSampleInterlockEXT),
-            "FragmentShaderShadingRateInterlockEXT" => {
-                Ok(Self::FragmentShaderShadingRateInterlockEXT)
-            }
-            "ShaderSMBuiltinsNV" => Ok(Self::ShaderSMBuiltinsNV),
-            "FragmentShaderPixelInterlockEXT" => Ok(Self::FragmentShaderPixelInterlockEXT),
-            "DemoteToHelperInvocation" => Ok(Self::DemoteToHelperInvocation),
-            "DemoteToHelperInvocationEXT" => Ok(Self::DemoteToHelperInvocation),
-            "DisplacementMicromapNV" => Ok(Self::DisplacementMicromapNV),
-            "RayTracingOpacityMicromapEXT" => Ok(Self::RayTracingOpacityMicromapEXT),
-            "ShaderInvocationReorderNV" => Ok(Self::ShaderInvocationReorderNV),
-            "BindlessTextureNV" => Ok(Self::BindlessTextureNV),
-            "RayQueryPositionFetchKHR" => Ok(Self::RayQueryPositionFetchKHR),
-            "RayTracingDisplacementMicromapNV" => Ok(Self::RayTracingDisplacementMicromapNV),
-            "SubgroupShuffleINTEL" => Ok(Self::SubgroupShuffleINTEL),
-            "SubgroupBufferBlockIOINTEL" => Ok(Self::SubgroupBufferBlockIOINTEL),
-            "SubgroupImageBlockIOINTEL" => Ok(Self::SubgroupImageBlockIOINTEL),
-            "SubgroupImageMediaBlockIOINTEL" => Ok(Self::SubgroupImageMediaBlockIOINTEL),
-            "RoundToInfinityINTEL" => Ok(Self::RoundToInfinityINTEL),
-            "FloatingPointModeINTEL" => Ok(Self::FloatingPointModeINTEL),
-            "IntegerFunctions2INTEL" => Ok(Self::IntegerFunctions2INTEL),
-            "FunctionPointersINTEL" => Ok(Self::FunctionPointersINTEL),
-            "IndirectReferencesINTEL" => Ok(Self::IndirectReferencesINTEL),
-            "AsmINTEL" => Ok(Self::AsmINTEL),
-            "AtomicFloat32MinMaxEXT" => Ok(Self::AtomicFloat32MinMaxEXT),
-            "AtomicFloat64MinMaxEXT" => Ok(Self::AtomicFloat64MinMaxEXT),
-            "AtomicFloat16MinMaxEXT" => Ok(Self::AtomicFloat16MinMaxEXT),
-            "VectorComputeINTEL" => Ok(Self::VectorComputeINTEL),
-            "VectorAnyINTEL" => Ok(Self::VectorAnyINTEL),
-            "ExpectAssumeKHR" => Ok(Self::ExpectAssumeKHR),
-            "SubgroupAvcMotionEstimationINTEL" => Ok(Self::SubgroupAvcMotionEstimationINTEL),
-            "SubgroupAvcMotionEstimationIntraINTEL" => {
-                Ok(Self::SubgroupAvcMotionEstimationIntraINTEL)
-            }
+            "RayTracingPositionFetchKHR" => Self::RayTracingPositionFetchKHR,
+            "RayTracingNV" => Self::RayTracingNV,
+            "RayTracingMotionBlurNV" => Self::RayTracingMotionBlurNV,
+            "VulkanMemoryModel" => Self::VulkanMemoryModel,
+            "VulkanMemoryModelKHR" => Self::VulkanMemoryModel,
+            "VulkanMemoryModelDeviceScope" => Self::VulkanMemoryModelDeviceScope,
+            "VulkanMemoryModelDeviceScopeKHR" => Self::VulkanMemoryModelDeviceScope,
+            "PhysicalStorageBufferAddresses" => Self::PhysicalStorageBufferAddresses,
+            "PhysicalStorageBufferAddressesEXT" => Self::PhysicalStorageBufferAddresses,
+            "ComputeDerivativeGroupLinearKHR" => Self::ComputeDerivativeGroupLinearKHR,
+            "ComputeDerivativeGroupLinearNV" => Self::ComputeDerivativeGroupLinearKHR,
+            "RayTracingProvisionalKHR" => Self::RayTracingProvisionalKHR,
+            "CooperativeMatrixNV" => Self::CooperativeMatrixNV,
+            "FragmentShaderSampleInterlockEXT" => Self::FragmentShaderSampleInterlockEXT,
+            "FragmentShaderShadingRateInterlockEXT" => Self::FragmentShaderShadingRateInterlockEXT,
+            "ShaderSMBuiltinsNV" => Self::ShaderSMBuiltinsNV,
+            "FragmentShaderPixelInterlockEXT" => Self::FragmentShaderPixelInterlockEXT,
+            "DemoteToHelperInvocation" => Self::DemoteToHelperInvocation,
+            "DemoteToHelperInvocationEXT" => Self::DemoteToHelperInvocation,
+            "DisplacementMicromapNV" => Self::DisplacementMicromapNV,
+            "RayTracingOpacityMicromapEXT" => Self::RayTracingOpacityMicromapEXT,
+            "ShaderInvocationReorderNV" => Self::ShaderInvocationReorderNV,
+            "BindlessTextureNV" => Self::BindlessTextureNV,
+            "RayQueryPositionFetchKHR" => Self::RayQueryPositionFetchKHR,
+            "AtomicFloat16VectorNV" => Self::AtomicFloat16VectorNV,
+            "RayTracingDisplacementMicromapNV" => Self::RayTracingDisplacementMicromapNV,
+            "RawAccessChainsNV" => Self::RawAccessChainsNV,
+            "SubgroupShuffleINTEL" => Self::SubgroupShuffleINTEL,
+            "SubgroupBufferBlockIOINTEL" => Self::SubgroupBufferBlockIOINTEL,
+            "SubgroupImageBlockIOINTEL" => Self::SubgroupImageBlockIOINTEL,
+            "SubgroupImageMediaBlockIOINTEL" => Self::SubgroupImageMediaBlockIOINTEL,
+            "RoundToInfinityINTEL" => Self::RoundToInfinityINTEL,
+            "FloatingPointModeINTEL" => Self::FloatingPointModeINTEL,
+            "IntegerFunctions2INTEL" => Self::IntegerFunctions2INTEL,
+            "FunctionPointersINTEL" => Self::FunctionPointersINTEL,
+            "IndirectReferencesINTEL" => Self::IndirectReferencesINTEL,
+            "AsmINTEL" => Self::AsmINTEL,
+            "AtomicFloat32MinMaxEXT" => Self::AtomicFloat32MinMaxEXT,
+            "AtomicFloat64MinMaxEXT" => Self::AtomicFloat64MinMaxEXT,
+            "AtomicFloat16MinMaxEXT" => Self::AtomicFloat16MinMaxEXT,
+            "VectorComputeINTEL" => Self::VectorComputeINTEL,
+            "VectorAnyINTEL" => Self::VectorAnyINTEL,
+            "ExpectAssumeKHR" => Self::ExpectAssumeKHR,
+            "SubgroupAvcMotionEstimationINTEL" => Self::SubgroupAvcMotionEstimationINTEL,
+            "SubgroupAvcMotionEstimationIntraINTEL" => Self::SubgroupAvcMotionEstimationIntraINTEL,
             "SubgroupAvcMotionEstimationChromaINTEL" => {
-                Ok(Self::SubgroupAvcMotionEstimationChromaINTEL)
+                Self::SubgroupAvcMotionEstimationChromaINTEL
             }
-            "VariableLengthArrayINTEL" => Ok(Self::VariableLengthArrayINTEL),
-            "FunctionFloatControlINTEL" => Ok(Self::FunctionFloatControlINTEL),
-            "FPGAMemoryAttributesINTEL" => Ok(Self::FPGAMemoryAttributesINTEL),
-            "FPFastMathModeINTEL" => Ok(Self::FPFastMathModeINTEL),
-            "ArbitraryPrecisionIntegersINTEL" => Ok(Self::ArbitraryPrecisionIntegersINTEL),
-            "ArbitraryPrecisionFloatingPointINTEL" => {
-                Ok(Self::ArbitraryPrecisionFloatingPointINTEL)
-            }
-            "UnstructuredLoopControlsINTEL" => Ok(Self::UnstructuredLoopControlsINTEL),
-            "FPGALoopControlsINTEL" => Ok(Self::FPGALoopControlsINTEL),
-            "KernelAttributesINTEL" => Ok(Self::KernelAttributesINTEL),
-            "FPGAKernelAttributesINTEL" => Ok(Self::FPGAKernelAttributesINTEL),
-            "FPGAMemoryAccessesINTEL" => Ok(Self::FPGAMemoryAccessesINTEL),
-            "FPGAClusterAttributesINTEL" => Ok(Self::FPGAClusterAttributesINTEL),
-            "LoopFuseINTEL" => Ok(Self::LoopFuseINTEL),
-            "FPGADSPControlINTEL" => Ok(Self::FPGADSPControlINTEL),
-            "MemoryAccessAliasingINTEL" => Ok(Self::MemoryAccessAliasingINTEL),
+            "VariableLengthArrayINTEL" => Self::VariableLengthArrayINTEL,
+            "FunctionFloatControlINTEL" => Self::FunctionFloatControlINTEL,
+            "FPGAMemoryAttributesINTEL" => Self::FPGAMemoryAttributesINTEL,
+            "FPFastMathModeINTEL" => Self::FPFastMathModeINTEL,
+            "ArbitraryPrecisionIntegersINTEL" => Self::ArbitraryPrecisionIntegersINTEL,
+            "ArbitraryPrecisionFloatingPointINTEL" => Self::ArbitraryPrecisionFloatingPointINTEL,
+            "UnstructuredLoopControlsINTEL" => Self::UnstructuredLoopControlsINTEL,
+            "FPGALoopControlsINTEL" => Self::FPGALoopControlsINTEL,
+            "KernelAttributesINTEL" => Self::KernelAttributesINTEL,
+            "FPGAKernelAttributesINTEL" => Self::FPGAKernelAttributesINTEL,
+            "FPGAMemoryAccessesINTEL" => Self::FPGAMemoryAccessesINTEL,
+            "FPGAClusterAttributesINTEL" => Self::FPGAClusterAttributesINTEL,
+            "LoopFuseINTEL" => Self::LoopFuseINTEL,
+            "FPGADSPControlINTEL" => Self::FPGADSPControlINTEL,
+            "MemoryAccessAliasingINTEL" => Self::MemoryAccessAliasingINTEL,
             "FPGAInvocationPipeliningAttributesINTEL" => {
-                Ok(Self::FPGAInvocationPipeliningAttributesINTEL)
+                Self::FPGAInvocationPipeliningAttributesINTEL
             }
-            "FPGABufferLocationINTEL" => Ok(Self::FPGABufferLocationINTEL),
-            "ArbitraryPrecisionFixedPointINTEL" => Ok(Self::ArbitraryPrecisionFixedPointINTEL),
-            "USMStorageClassesINTEL" => Ok(Self::USMStorageClassesINTEL),
-            "RuntimeAlignedAttributeINTEL" => Ok(Self::RuntimeAlignedAttributeINTEL),
-            "IOPipesINTEL" => Ok(Self::IOPipesINTEL),
-            "BlockingPipesINTEL" => Ok(Self::BlockingPipesINTEL),
-            "FPGARegINTEL" => Ok(Self::FPGARegINTEL),
-            "DotProductInputAll" => Ok(Self::DotProductInputAll),
-            "DotProductInputAllKHR" => Ok(Self::DotProductInputAll),
-            "DotProductInput4x8Bit" => Ok(Self::DotProductInput4x8Bit),
-            "DotProductInput4x8BitKHR" => Ok(Self::DotProductInput4x8Bit),
-            "DotProductInput4x8BitPacked" => Ok(Self::DotProductInput4x8BitPacked),
-            "DotProductInput4x8BitPackedKHR" => Ok(Self::DotProductInput4x8BitPacked),
-            "DotProduct" => Ok(Self::DotProduct),
-            "DotProductKHR" => Ok(Self::DotProduct),
-            "RayCullMaskKHR" => Ok(Self::RayCullMaskKHR),
-            "CooperativeMatrixKHR" => Ok(Self::CooperativeMatrixKHR),
-            "BitInstructions" => Ok(Self::BitInstructions),
-            "GroupNonUniformRotateKHR" => Ok(Self::GroupNonUniformRotateKHR),
-            "AtomicFloat32AddEXT" => Ok(Self::AtomicFloat32AddEXT),
-            "AtomicFloat64AddEXT" => Ok(Self::AtomicFloat64AddEXT),
-            "LongCompositesINTEL" => Ok(Self::LongCompositesINTEL),
-            "OptNoneINTEL" => Ok(Self::OptNoneINTEL),
-            "AtomicFloat16AddEXT" => Ok(Self::AtomicFloat16AddEXT),
-            "DebugInfoModuleINTEL" => Ok(Self::DebugInfoModuleINTEL),
-            "BFloat16ConversionINTEL" => Ok(Self::BFloat16ConversionINTEL),
-            "SplitBarrierINTEL" => Ok(Self::SplitBarrierINTEL),
-            "FPGAClusterAttributesV2INTEL" => Ok(Self::FPGAClusterAttributesV2INTEL),
-            "FPGAKernelAttributesv2INTEL" => Ok(Self::FPGAKernelAttributesv2INTEL),
-            "FPMaxErrorINTEL" => Ok(Self::FPMaxErrorINTEL),
-            "FPGALatencyControlINTEL" => Ok(Self::FPGALatencyControlINTEL),
-            "FPGAArgumentInterfacesINTEL" => Ok(Self::FPGAArgumentInterfacesINTEL),
-            "GlobalVariableHostAccessINTEL" => Ok(Self::GlobalVariableHostAccessINTEL),
-            "GlobalVariableFPGADecorationsINTEL" => Ok(Self::GlobalVariableFPGADecorationsINTEL),
-            "GroupUniformArithmeticKHR" => Ok(Self::GroupUniformArithmeticKHR),
-            "CacheControlsINTEL" => Ok(Self::CacheControlsINTEL),
-            _ => Err(()),
-        }
+            "FPGABufferLocationINTEL" => Self::FPGABufferLocationINTEL,
+            "ArbitraryPrecisionFixedPointINTEL" => Self::ArbitraryPrecisionFixedPointINTEL,
+            "USMStorageClassesINTEL" => Self::USMStorageClassesINTEL,
+            "RuntimeAlignedAttributeINTEL" => Self::RuntimeAlignedAttributeINTEL,
+            "IOPipesINTEL" => Self::IOPipesINTEL,
+            "BlockingPipesINTEL" => Self::BlockingPipesINTEL,
+            "FPGARegINTEL" => Self::FPGARegINTEL,
+            "DotProductInputAll" => Self::DotProductInputAll,
+            "DotProductInputAllKHR" => Self::DotProductInputAll,
+            "DotProductInput4x8Bit" => Self::DotProductInput4x8Bit,
+            "DotProductInput4x8BitKHR" => Self::DotProductInput4x8Bit,
+            "DotProductInput4x8BitPacked" => Self::DotProductInput4x8BitPacked,
+            "DotProductInput4x8BitPackedKHR" => Self::DotProductInput4x8BitPacked,
+            "DotProduct" => Self::DotProduct,
+            "DotProductKHR" => Self::DotProduct,
+            "RayCullMaskKHR" => Self::RayCullMaskKHR,
+            "CooperativeMatrixKHR" => Self::CooperativeMatrixKHR,
+            "ReplicatedCompositesEXT" => Self::ReplicatedCompositesEXT,
+            "BitInstructions" => Self::BitInstructions,
+            "GroupNonUniformRotateKHR" => Self::GroupNonUniformRotateKHR,
+            "FloatControls2" => Self::FloatControls2,
+            "AtomicFloat32AddEXT" => Self::AtomicFloat32AddEXT,
+            "AtomicFloat64AddEXT" => Self::AtomicFloat64AddEXT,
+            "LongCompositesINTEL" => Self::LongCompositesINTEL,
+            "OptNoneINTEL" => Self::OptNoneINTEL,
+            "AtomicFloat16AddEXT" => Self::AtomicFloat16AddEXT,
+            "DebugInfoModuleINTEL" => Self::DebugInfoModuleINTEL,
+            "BFloat16ConversionINTEL" => Self::BFloat16ConversionINTEL,
+            "SplitBarrierINTEL" => Self::SplitBarrierINTEL,
+            "FPGAClusterAttributesV2INTEL" => Self::FPGAClusterAttributesV2INTEL,
+            "FPGAKernelAttributesv2INTEL" => Self::FPGAKernelAttributesv2INTEL,
+            "FPMaxErrorINTEL" => Self::FPMaxErrorINTEL,
+            "FPGALatencyControlINTEL" => Self::FPGALatencyControlINTEL,
+            "FPGAArgumentInterfacesINTEL" => Self::FPGAArgumentInterfacesINTEL,
+            "GlobalVariableHostAccessINTEL" => Self::GlobalVariableHostAccessINTEL,
+            "GlobalVariableFPGADecorationsINTEL" => Self::GlobalVariableFPGADecorationsINTEL,
+            "SubgroupBufferPrefetchINTEL" => Self::SubgroupBufferPrefetchINTEL,
+            "GroupUniformArithmeticKHR" => Self::GroupUniformArithmeticKHR,
+            "MaskedGatherScatterINTEL" => Self::MaskedGatherScatterINTEL,
+            "CacheControlsINTEL" => Self::CacheControlsINTEL,
+            "RegisterLimitsINTEL" => Self::RegisterLimitsINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [RayQueryIntersection](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_query_intersection_a_ray_query_intersection)"]
@@ -2726,11 +2769,11 @@ impl RayQueryIntersection {}
 impl core::str::FromStr for RayQueryIntersection {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "RayQueryCandidateIntersectionKHR" => Ok(Self::RayQueryCandidateIntersectionKHR),
-            "RayQueryCommittedIntersectionKHR" => Ok(Self::RayQueryCommittedIntersectionKHR),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "RayQueryCandidateIntersectionKHR" => Self::RayQueryCandidateIntersectionKHR,
+            "RayQueryCommittedIntersectionKHR" => Self::RayQueryCommittedIntersectionKHR,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [RayQueryCommittedIntersectionType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_query_committed_intersection_type_a_ray_query_committed_intersection_type)"]
@@ -2759,18 +2802,16 @@ impl RayQueryCommittedIntersectionType {}
 impl core::str::FromStr for RayQueryCommittedIntersectionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "RayQueryCommittedIntersectionNoneKHR" => {
-                Ok(Self::RayQueryCommittedIntersectionNoneKHR)
-            }
+        Ok(match s {
+            "RayQueryCommittedIntersectionNoneKHR" => Self::RayQueryCommittedIntersectionNoneKHR,
             "RayQueryCommittedIntersectionTriangleKHR" => {
-                Ok(Self::RayQueryCommittedIntersectionTriangleKHR)
+                Self::RayQueryCommittedIntersectionTriangleKHR
             }
             "RayQueryCommittedIntersectionGeneratedKHR" => {
-                Ok(Self::RayQueryCommittedIntersectionGeneratedKHR)
+                Self::RayQueryCommittedIntersectionGeneratedKHR
             }
-            _ => Err(()),
-        }
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [RayQueryCandidateIntersectionType](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_ray_query_candidate_intersection_type_a_ray_query_candidate_intersection_type)"]
@@ -2798,15 +2839,13 @@ impl RayQueryCandidateIntersectionType {}
 impl core::str::FromStr for RayQueryCandidateIntersectionType {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
+        Ok(match s {
             "RayQueryCandidateIntersectionTriangleKHR" => {
-                Ok(Self::RayQueryCandidateIntersectionTriangleKHR)
+                Self::RayQueryCandidateIntersectionTriangleKHR
             }
-            "RayQueryCandidateIntersectionAABBKHR" => {
-                Ok(Self::RayQueryCandidateIntersectionAABBKHR)
-            }
-            _ => Err(()),
-        }
+            "RayQueryCandidateIntersectionAABBKHR" => Self::RayQueryCandidateIntersectionAABBKHR,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [PackedVectorFormat](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_packed_vector_format_a_packed_vector_format)"]
@@ -2833,11 +2872,11 @@ impl PackedVectorFormat {
 impl core::str::FromStr for PackedVectorFormat {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "PackedVectorFormat4x8Bit" => Ok(Self::PackedVectorFormat4x8Bit),
-            "PackedVectorFormat4x8BitKHR" => Ok(Self::PackedVectorFormat4x8Bit),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "PackedVectorFormat4x8Bit" => Self::PackedVectorFormat4x8Bit,
+            "PackedVectorFormat4x8BitKHR" => Self::PackedVectorFormat4x8Bit,
+            _ => return Err(()),
+        })
     }
 }
 bitflags! { # [doc = "SPIR-V operand kind: [CooperativeMatrixOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_cooperative_matrix_operands_a_cooperative_matrix_operands)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct CooperativeMatrixOperands : u32 { const NONE_KHR = 0u32 ; const MATRIX_A_SIGNED_COMPONENTS_KHR = 1u32 ; const MATRIX_B_SIGNED_COMPONENTS_KHR = 2u32 ; const MATRIX_C_SIGNED_COMPONENTS_KHR = 4u32 ; const MATRIX_RESULT_SIGNED_COMPONENTS_KHR = 8u32 ; const SATURATING_ACCUMULATION_KHR = 16u32 ; } }
@@ -2850,11 +2889,14 @@ bitflags! { # [doc = "SPIR-V operand kind: [CooperativeMatrixOperands](https://w
 pub enum CooperativeMatrixLayout {
     RowMajorKHR = 0u32,
     ColumnMajorKHR = 1u32,
+    RowBlockedInterleavedARM = 4202u32,
+    ColumnBlockedInterleavedARM = 4203u32,
 }
 impl CooperativeMatrixLayout {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
             0u32..=1u32 => unsafe { core::mem::transmute::<u32, CooperativeMatrixLayout>(n) },
+            4202u32..=4203u32 => unsafe { core::mem::transmute::<u32, CooperativeMatrixLayout>(n) },
             _ => return None,
         })
     }
@@ -2864,11 +2906,13 @@ impl CooperativeMatrixLayout {}
 impl core::str::FromStr for CooperativeMatrixLayout {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "RowMajorKHR" => Ok(Self::RowMajorKHR),
-            "ColumnMajorKHR" => Ok(Self::ColumnMajorKHR),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "RowMajorKHR" => Self::RowMajorKHR,
+            "ColumnMajorKHR" => Self::ColumnMajorKHR,
+            "RowBlockedInterleavedARM" => Self::RowBlockedInterleavedARM,
+            "ColumnBlockedInterleavedARM" => Self::ColumnBlockedInterleavedARM,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [CooperativeMatrixUse](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_cooperative_matrix_use_a_cooperative_matrix_use)"]
@@ -2895,12 +2939,12 @@ impl CooperativeMatrixUse {}
 impl core::str::FromStr for CooperativeMatrixUse {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "MatrixAKHR" => Ok(Self::MatrixAKHR),
-            "MatrixBKHR" => Ok(Self::MatrixBKHR),
-            "MatrixAccumulatorKHR" => Ok(Self::MatrixAccumulatorKHR),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "MatrixAKHR" => Self::MatrixAKHR,
+            "MatrixBKHR" => Self::MatrixBKHR,
+            "MatrixAccumulatorKHR" => Self::MatrixAccumulatorKHR,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [InitializationModeQualifier](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_initialization_mode_qualifier_a_initialization_mode_qualifier)"]
@@ -2926,11 +2970,11 @@ impl InitializationModeQualifier {}
 impl core::str::FromStr for InitializationModeQualifier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "InitOnDeviceReprogramINTEL" => Ok(Self::InitOnDeviceReprogramINTEL),
-            "InitOnDeviceResetINTEL" => Ok(Self::InitOnDeviceResetINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "InitOnDeviceReprogramINTEL" => Self::InitOnDeviceReprogramINTEL,
+            "InitOnDeviceResetINTEL" => Self::InitOnDeviceResetINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [LoadCacheControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_load_cache_control_a_load_cache_control)"]
@@ -2959,14 +3003,14 @@ impl LoadCacheControl {}
 impl core::str::FromStr for LoadCacheControl {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "UncachedINTEL" => Ok(Self::UncachedINTEL),
-            "CachedINTEL" => Ok(Self::CachedINTEL),
-            "StreamingINTEL" => Ok(Self::StreamingINTEL),
-            "InvalidateAfterReadINTEL" => Ok(Self::InvalidateAfterReadINTEL),
-            "ConstCachedINTEL" => Ok(Self::ConstCachedINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "UncachedINTEL" => Self::UncachedINTEL,
+            "CachedINTEL" => Self::CachedINTEL,
+            "StreamingINTEL" => Self::StreamingINTEL,
+            "InvalidateAfterReadINTEL" => Self::InvalidateAfterReadINTEL,
+            "ConstCachedINTEL" => Self::ConstCachedINTEL,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V operand kind: [StoreCacheControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_store_cache_control_a_store_cache_control)"]
@@ -2994,13 +3038,69 @@ impl StoreCacheControl {}
 impl core::str::FromStr for StoreCacheControl {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "UncachedINTEL" => Ok(Self::UncachedINTEL),
-            "WriteThroughINTEL" => Ok(Self::WriteThroughINTEL),
-            "WriteBackINTEL" => Ok(Self::WriteBackINTEL),
-            "StreamingINTEL" => Ok(Self::StreamingINTEL),
-            _ => Err(()),
-        }
+        Ok(match s {
+            "UncachedINTEL" => Self::UncachedINTEL,
+            "WriteThroughINTEL" => Self::WriteThroughINTEL,
+            "WriteBackINTEL" => Self::WriteBackINTEL,
+            "StreamingINTEL" => Self::StreamingINTEL,
+            _ => return Err(()),
+        })
+    }
+}
+#[doc = "SPIR-V operand kind: [NamedMaximumNumberOfRegisters](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_named_maximum_number_of_registers_a_named_maximum_number_of_registers)"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum NamedMaximumNumberOfRegisters {
+    AutoINTEL = 0u32,
+}
+impl NamedMaximumNumberOfRegisters {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32 => unsafe { core::mem::transmute::<u32, NamedMaximumNumberOfRegisters>(0u32) },
+            _ => return None,
+        })
+    }
+}
+#[allow(non_upper_case_globals)]
+impl NamedMaximumNumberOfRegisters {}
+impl core::str::FromStr for NamedMaximumNumberOfRegisters {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s {
+            "AutoINTEL" => Self::AutoINTEL,
+            _ => return Err(()),
+        })
+    }
+}
+#[doc = "SPIR-V operand kind: [FPEncoding](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_encoding_a_fp_encoding)"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum FPEncoding {
+    Max = 0x7fffffff,
+}
+impl FPEncoding {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0x7fffffff => Self::Max,
+            _ => return None,
+        })
+    }
+}
+#[allow(non_upper_case_globals)]
+impl FPEncoding {}
+impl core::str::FromStr for FPEncoding {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(match s {
+            "Max" => Self::Max,
+            _ => return Err(()),
+        })
     }
 }
 #[doc = "SPIR-V [instructions](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_instructions_a_instructions) opcodes"]
@@ -3358,13 +3458,22 @@ pub enum Op {
     DepthAttachmentReadEXT = 4161u32,
     StencilAttachmentReadEXT = 4162u32,
     TerminateInvocation = 4416u32,
+    TypeUntypedPointerKHR = 4417u32,
+    UntypedVariableKHR = 4418u32,
+    UntypedAccessChainKHR = 4419u32,
+    UntypedInBoundsAccessChainKHR = 4420u32,
     SubgroupBallotKHR = 4421u32,
     SubgroupFirstInvocationKHR = 4422u32,
+    UntypedPtrAccessChainKHR = 4423u32,
+    UntypedInBoundsPtrAccessChainKHR = 4424u32,
+    UntypedArrayLengthKHR = 4425u32,
+    UntypedPrefetchKHR = 4426u32,
     SubgroupAllKHR = 4428u32,
     SubgroupAnyKHR = 4429u32,
     SubgroupAllEqualKHR = 4430u32,
     GroupNonUniformRotateKHR = 4431u32,
     SubgroupReadInvocationKHR = 4432u32,
+    ExtInstWithForwardRefsKHR = 4433u32,
     TraceRayKHR = 4445u32,
     ExecuteCallableKHR = 4446u32,
     ConvertUToAccelerationStructureKHR = 4447u32,
@@ -3381,6 +3490,9 @@ pub enum Op {
     CooperativeMatrixStoreKHR = 4458u32,
     CooperativeMatrixMulAddKHR = 4459u32,
     CooperativeMatrixLengthKHR = 4460u32,
+    ConstantCompositeReplicateEXT = 4461u32,
+    SpecConstantCompositeReplicateEXT = 4462u32,
+    CompositeConstructReplicateEXT = 4463u32,
     TypeRayQueryKHR = 4472u32,
     RayQueryInitializeKHR = 4473u32,
     RayQueryTerminateKHR = 4474u32,
@@ -3392,6 +3504,10 @@ pub enum Op {
     ImageBoxFilterQCOM = 4481u32,
     ImageBlockMatchSSDQCOM = 4482u32,
     ImageBlockMatchSADQCOM = 4483u32,
+    ImageBlockMatchWindowSSDQCOM = 4500u32,
+    ImageBlockMatchWindowSADQCOM = 4501u32,
+    ImageBlockMatchGatherSSDQCOM = 4502u32,
+    ImageBlockMatchGatherSADQCOM = 4503u32,
     GroupIAddNonUniformAMD = 5000u32,
     GroupFAddNonUniformAMD = 5001u32,
     GroupFMinNonUniformAMD = 5002u32,
@@ -3406,6 +3522,8 @@ pub enum Op {
     FinalizeNodePayloadsAMDX = 5075u32,
     FinishWritingNodePayloadAMDX = 5078u32,
     InitializeNodePayloadsAMDX = 5090u32,
+    GroupNonUniformQuadAllKHR = 5110u32,
+    GroupNonUniformQuadAnyKHR = 5111u32,
     HitObjectRecordHitMotionNV = 5249u32,
     HitObjectRecordHitWithIndexMotionNV = 5250u32,
     HitObjectRecordMissMotionNV = 5251u32,
@@ -3471,6 +3589,7 @@ pub enum Op {
     ConvertUToSampledImageNV = 5395u32,
     ConvertSampledImageToUNV = 5396u32,
     SamplerImageAddressingModeNV = 5397u32,
+    RawAccessChainNV = 5398u32,
     SubgroupShuffleINTEL = 5571u32,
     SubgroupShuffleDownINTEL = 5572u32,
     SubgroupShuffleUpINTEL = 5573u32,
@@ -3715,6 +3834,7 @@ pub enum Op {
     ConvertBF16ToFINTEL = 6117u32,
     ControlBarrierArriveINTEL = 6142u32,
     ControlBarrierWaitINTEL = 6143u32,
+    SubgroupBlockPrefetchINTEL = 6221u32,
     GroupIMulKHR = 6401u32,
     GroupFMulKHR = 6402u32,
     GroupBitwiseAndKHR = 6403u32,
@@ -3723,6 +3843,8 @@ pub enum Op {
     GroupLogicalAndKHR = 6406u32,
     GroupLogicalOrKHR = 6407u32,
     GroupLogicalXorKHR = 6408u32,
+    MaskedGatherINTEL = 6428u32,
+    MaskedScatterINTEL = 6429u32,
 }
 impl Op {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -3751,18 +3873,19 @@ impl Op {
             291u32..=366u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             400u32..=403u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4160u32..=4162u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            4416u32 => unsafe { core::mem::transmute::<u32, Op>(4416u32) },
-            4421u32..=4422u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            4428u32..=4432u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            4445u32..=4460u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4416u32..=4426u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4428u32..=4433u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4445u32..=4463u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4472u32..=4477u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4479u32..=4483u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4500u32..=4503u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5000u32..=5007u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5011u32..=5012u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5056u32 => unsafe { core::mem::transmute::<u32, Op>(5056u32) },
             5075u32 => unsafe { core::mem::transmute::<u32, Op>(5075u32) },
             5078u32 => unsafe { core::mem::transmute::<u32, Op>(5078u32) },
             5090u32 => unsafe { core::mem::transmute::<u32, Op>(5090u32) },
+            5110u32..=5111u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5249u32..=5281u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5283u32 => unsafe { core::mem::transmute::<u32, Op>(5283u32) },
             5294u32..=5296u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -3772,7 +3895,7 @@ impl Op {
             5358u32..=5362u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5364u32..=5365u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5380u32..=5381u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            5391u32..=5397u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            5391u32..=5398u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5571u32..=5578u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5580u32..=5581u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5585u32..=5598u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -3797,7 +3920,9 @@ impl Op {
             6096u32 => unsafe { core::mem::transmute::<u32, Op>(6096u32) },
             6116u32..=6117u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             6142u32..=6143u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            6221u32 => unsafe { core::mem::transmute::<u32, Op>(6221u32) },
             6401u32..=6408u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            6428u32..=6429u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             _ => return None,
         })
     }

@@ -134,4 +134,38 @@ impl Builder {
         self.module.types_global_values.push(inst);
         id
     }
+    #[doc = "Appends an OpConstantCompositeReplicateEXT instruction."]
+    pub fn constant_composite_replicate_ext(
+        &mut self,
+        result_type: spirv::Word,
+        value: spirv::Word,
+    ) -> spirv::Word {
+        let id = self.id();
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ConstantCompositeReplicateEXT,
+            Some(result_type),
+            Some(id),
+            vec![dr::Operand::IdRef(value)],
+        );
+        self.module.types_global_values.push(inst);
+        id
+    }
+    #[doc = "Appends an OpSpecConstantCompositeReplicateEXT instruction."]
+    pub fn spec_constant_composite_replicate_ext(
+        &mut self,
+        result_type: spirv::Word,
+        value: spirv::Word,
+    ) -> spirv::Word {
+        let id = self.id();
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SpecConstantCompositeReplicateEXT,
+            Some(result_type),
+            Some(id),
+            vec![dr::Operand::IdRef(value)],
+        );
+        self.module.types_global_values.push(inst);
+        id
+    }
 }
