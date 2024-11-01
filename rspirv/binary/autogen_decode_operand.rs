@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-impl<'a> Decoder<'a> {
+impl Decoder<'_> {
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V ImageOperands value."]
     pub fn image_operands(&mut self) -> Result<spirv::ImageOperands> {
         if let Ok(word) = self.word() {

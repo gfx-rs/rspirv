@@ -111,7 +111,7 @@ pub fn gen_operand_decode_methods(grammar: &[structs::OperandKind]) -> TokenStre
     });
 
     quote! {
-        impl<'a> Decoder<'a> {
+        impl Decoder<'_> {
             #(#methods)*
         }
     }
@@ -288,7 +288,7 @@ pub fn gen_operand_parse_methods(grammar: &[structs::OperandKind]) -> TokenStrea
     });
 
     quote! {
-        impl<'c, 'd> Parser<'c, 'd> {
+        impl Parser<'_, '_> {
             fn parse_operand(&mut self, kind: GOpKind) -> Result<Vec<dr::Operand>> {
                 Ok(match kind {
                     #(#normal_cases),*,

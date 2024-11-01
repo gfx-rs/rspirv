@@ -1,4 +1,6 @@
-/// Rust structs for deserializing the SPIR-V JSON grammar.
+//! Rust structs for deserializing the SPIR-V JSON grammar.
+#![allow(dead_code)] // Parsed but unread fields
+
 use serde::de;
 use serde_derive::*;
 use std::{convert::TryInto, fmt, result, str};
@@ -74,7 +76,7 @@ pub struct ExtInstSetGrammar {
 fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Error> {
     struct NumOrStr;
 
-    impl<'de> de::Visitor<'de> for NumOrStr {
+    impl de::Visitor<'_> for NumOrStr {
         type Value = u32;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
@@ -93,20 +95,15 @@ fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Err
     d.deserialize_any(NumOrStr)
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Ord, PartialOrd)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Ord, PartialOrd)]
 pub enum Quantifier {
     #[serde(rename = "")]
+    #[default]
     One,
     #[serde(rename = "?")]
     ZeroOrOne,
     #[serde(rename = "*")]
     ZeroOrMore,
-}
-
-impl Default for Quantifier {
-    fn default() -> Self {
-        Quantifier::One
-    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]

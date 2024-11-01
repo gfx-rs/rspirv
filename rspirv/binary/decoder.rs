@@ -112,7 +112,7 @@ impl<'a> Decoder<'a> {
     }
 }
 
-impl<'a> Decoder<'a> {
+impl Decoder<'_> {
     /// Sets the limit to `num_words` words.
     ///
     /// The decoder will return [`State::LimitReached`](enum.ParseState.html)
@@ -144,7 +144,7 @@ impl<'a> Decoder<'a> {
     }
 }
 
-impl<'a> Decoder<'a> {
+impl Decoder<'_> {
     /// Decodes and returns the next SPIR-V word as an id.
     pub fn id(&mut self) -> Result<spirv::Word> {
         self.word()

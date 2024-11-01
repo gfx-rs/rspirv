@@ -6,7 +6,6 @@ authors = [
 	"Lei Zhang <antiagainst@gmail.com>",
 ]
 edition = "2018"
-rust-version = "1.58"
 
 publish = false
 

@@ -24,7 +24,7 @@ pub fn operand_has_additional_params(
     kinds
         .iter()
         .find(|kind| kind.kind == operand.kind)
-        .map_or(false, has_additional_params)
+        .is_some_and(has_additional_params)
 }
 
 fn get_param_or_arg_list(
@@ -391,7 +391,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 let mut seen_discriminator = BTreeMap::new();
 
                 for e in enumerators {
-                    if seen_discriminator.get(&e.value).is_none() {
+                    if let std::collections::btree_map::Entry::Vacant(seen_entry) = seen_discriminator.entry(e.value) {
                         let name = match category {
                             structs::Category::BitEnum => {
                                 use heck::ShoutySnakeCase;
@@ -412,7 +412,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                             _ => panic!("Unexpected operand type"),
                         };
 
-                        seen_discriminator.insert(e.value, name.clone());
+                        seen_entry.insert(name.clone());
 
                         capability_clauses
                             .entry(&e.capabilities)
