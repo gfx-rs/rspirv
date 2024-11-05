@@ -21,15 +21,6 @@ First add to your `Cargo.toml`:
 spirv = "0.3.0"
 ```
 
-Version
--------
-
-Note that the major and minor version of this create is tracking the SPIR-V spec,
-while the patch number is used for bugfixes for the crate itself. So version
-`1.4.2` is tracking SPIR-V 1.4 but not necessarily revision 2. Major client APIs
-like Vulkan/OpenCL pin to a specific major and minor version, regardless of the
-revision.
-
 Examples
 --------
 
