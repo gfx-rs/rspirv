@@ -353,7 +353,7 @@ impl Disassemble for spirv::RayFlags {
         if self.contains(spirv::RayFlags::SKIP_TRIANGLES_KHR) {
             bits.push("SkipTrianglesKHR")
         }
-        if self.contains(spirv::RayFlags::SKIP_AAB_BS_KHR) {
+        if self.contains(spirv::RayFlags::SKIP_AABBS_KHR) {
             bits.push("SkipAABBsKHR")
         }
         if self.contains(spirv::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {

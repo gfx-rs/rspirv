@@ -394,9 +394,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                     if seen_discriminator.get(&e.value).is_none() {
                         let name = match category {
                             structs::Category::BitEnum => {
-                                use heck::ShoutySnakeCase;
-
-                                as_ident(&e.symbol.to_shouty_snake_case().replace("NA_N", "NAN"))
+                                as_ident(&as_shouty_snake_case(&e.symbol))
                             }
                             structs::Category::ValueEnum => {
                                 let name_str = if kind == "Dim" {

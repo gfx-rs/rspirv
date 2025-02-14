@@ -897,7 +897,7 @@ impl Operand {
                 if v.intersects(s::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {
                     result.extend_from_slice(&[spirv::Capability::RayTracingOpacityMicromapEXT])
                 };
-                if v.intersects(s::RayFlags::SKIP_TRIANGLES_KHR | s::RayFlags::SKIP_AAB_BS_KHR) {
+                if v.intersects(s::RayFlags::SKIP_TRIANGLES_KHR | s::RayFlags::SKIP_AABBS_KHR) {
                     result.extend_from_slice(&[spirv::Capability::RayTraversalPrimitiveCullingKHR])
                 };
                 result

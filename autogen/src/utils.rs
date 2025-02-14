@@ -3,7 +3,7 @@ use crate::structs;
 use std::fs;
 use std::io::Write;
 
-use heck::SnakeCase;
+use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 
@@ -21,6 +21,15 @@ pub fn write_autogen_comment(file: &mut fs::File) {
 /// Converts the given string into an `Ident`, with call-site span.
 pub fn as_ident(ident: &str) -> Ident {
     Ident::new(ident, Span::call_site())
+}
+
+/// Returns an automatic conversion of the identifier to SHOUTY_SNAKE_CASE,
+/// correcting known abbreviations as needed.
+pub fn as_shouty_snake_case(ident: &str) -> String {
+    ident
+        .to_shouty_snake_case()
+        .replace("AAB_BS", "AABBS") // "AABBs"
+        .replace("NA_N", "NAN") // "NaN"
 }
 
 /// Returns the corresponding operand kind in data representation for the
