@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-impl<'c, 'd> Parser<'c, 'd> {
+impl Parser<'_, '_> {
     fn parse_operand(&mut self, kind: GOpKind) -> Result<Vec<dr::Operand>> {
         Ok(match kind {
             GOpKind::FPFastMathMode => vec![dr::Operand::FPFastMathMode(

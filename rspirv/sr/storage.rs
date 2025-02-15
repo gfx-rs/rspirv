@@ -112,8 +112,8 @@ mod tests {
     #[test]
     fn append_unique() {
         let mut storage: Storage<f64> = Storage::new();
-        let t1 = storage.append(std::f64::NAN);
-        let t2 = storage.append(std::f64::NAN);
+        let t1 = storage.append(f64::NAN);
+        let t2 = storage.append(f64::NAN);
         assert!(t1 != t2);
         assert!(storage[t1] != storage[t2]);
     }
@@ -130,8 +130,8 @@ mod tests {
     #[test]
     fn fetch_or_append_unique() {
         let mut storage: Storage<f64> = Storage::new();
-        let t1 = storage.fetch_or_append(std::f64::NAN);
-        let t2 = storage.fetch_or_append(std::f64::NAN);
+        let t1 = storage.fetch_or_append(f64::NAN);
+        let t2 = storage.fetch_or_append(f64::NAN);
         assert!(t1 != t2);
         assert!(storage[t1] != storage[t2]);
     }
