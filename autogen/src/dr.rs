@@ -391,12 +391,11 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 let mut seen_discriminator = BTreeMap::new();
 
                 for e in enumerators {
-                    if seen_discriminator.get(&e.value).is_none() {
+                    use std::collections::btree_map::Entry;
+                    if let Entry::Vacant(ve) = seen_discriminator.entry(e.value) {
                         let name = match category {
                             structs::Category::BitEnum => {
-                                use heck::ShoutySnakeCase;
-
-                                as_ident(&e.symbol.to_shouty_snake_case().replace("NA_N", "NAN"))
+                                as_ident(&as_shouty_snake_case(&e.symbol))
                             }
                             structs::Category::ValueEnum => {
                                 let name_str = if kind == "Dim" {
@@ -412,7 +411,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                             _ => panic!("Unexpected operand type"),
                         };
 
-                        seen_discriminator.insert(e.value, name.clone());
+                        ve.insert(name.clone());
 
                         capability_clauses
                             .entry(&e.capabilities)

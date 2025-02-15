@@ -40,6 +40,7 @@ pub struct Enumerant {
 }
 
 #[derive(Debug, Deserialize, Clone)]
+#[allow(dead_code)]
 pub struct OperandKind {
     pub category: Category,
     pub kind: String,
@@ -53,6 +54,7 @@ pub struct OperandKind {
 
 #[derive(Debug, Deserialize)]
 pub struct Grammar {
+    #[allow(dead_code)]
     pub copyright: Vec<String>,
     #[serde(deserialize_with = "num_or_hex")]
     pub magic_number: u32,
@@ -64,6 +66,7 @@ pub struct Grammar {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct ExtInstSetGrammar {
     pub copyright: Vec<String>,
     pub version: u32,
@@ -74,7 +77,7 @@ pub struct ExtInstSetGrammar {
 fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Error> {
     struct NumOrStr;
 
-    impl<'de> de::Visitor<'de> for NumOrStr {
+    impl de::Visitor<'_> for NumOrStr {
         type Value = u32;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
