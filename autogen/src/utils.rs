@@ -18,9 +18,14 @@ pub fn write_autogen_comment(file: &mut fs::File) {
     file.write_all(b"\n\n").unwrap();
 }
 
-/// Converts the given string into an `Ident`, with call-site span.
+/// Converts the given string into an [`Ident`], with call-site span.
 pub fn as_ident(ident: &str) -> Ident {
-    Ident::new(ident, Span::call_site())
+    let first_char = ident.chars().next().unwrap();
+    if first_char.is_ascii_digit() {
+        Ident::new(&format!("_{ident}"), Span::call_site())
+    } else {
+        Ident::new(ident, Span::call_site())
+    }
 }
 
 /// Returns the corresponding operand kind in data representation for the

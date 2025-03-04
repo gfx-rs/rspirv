@@ -18,6 +18,8 @@ pub struct Operand {
 pub struct Instruction {
     pub class: Option<Class>,
     pub opname: String,
+    #[serde(default)]
+    pub aliases: Vec<String>,
     pub opcode: u32,
     #[serde(default)]
     pub operands: Vec<Operand>,
@@ -25,12 +27,17 @@ pub struct Instruction {
     pub capabilities: Vec<String>,
     #[serde(default)]
     pub extensions: Vec<String>,
+    // TODO: Skip provisional instructions?
+    #[serde(default)]
+    pub provisional: bool,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Enumerant {
     #[serde(rename = "enumerant")]
     pub symbol: String,
+    #[serde(default)]
+    pub aliases: Vec<String>,
     #[serde(deserialize_with = "num_or_hex")]
     pub value: u32,
     #[serde(default)]

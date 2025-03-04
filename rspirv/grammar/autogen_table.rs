@@ -51,11 +51,17 @@ pub enum OperandKind {
     CooperativeMatrixOperands,
     CooperativeMatrixLayout,
     CooperativeMatrixUse,
+    CooperativeMatrixReduce,
+    TensorClampMode,
+    TensorAddressingOperands,
     InitializationModeQualifier,
     LoadCacheControl,
     StoreCacheControl,
     NamedMaximumNumberOfRegisters,
+    MatrixMultiplyAccumulateOperands,
     FPEncoding,
+    CooperativeVectorMatrixLayout,
+    ComponentType,
     IdResultType,
     IdResult,
     IdMemorySemantics,
@@ -3475,18 +3481,6 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SDot,
         [DotProduct],
-        [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One),
-            (PackedVectorFormat, ZeroOrOne)
-        ]
-    ),
-    inst!(
-        SDotKHR,
-        [DotProductKHR],
         ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
@@ -3499,18 +3493,6 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         UDot,
         [DotProduct],
-        [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One),
-            (PackedVectorFormat, ZeroOrOne)
-        ]
-    ),
-    inst!(
-        UDotKHR,
-        [DotProductKHR],
         ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
@@ -3523,18 +3505,6 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SUDot,
         [DotProduct],
-        [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One),
-            (PackedVectorFormat, ZeroOrOne)
-        ]
-    ),
-    inst!(
-        SUDotKHR,
-        [DotProductKHR],
         ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
@@ -3547,19 +3517,6 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SDotAccSat,
         [DotProduct],
-        [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (PackedVectorFormat, ZeroOrOne)
-        ]
-    ),
-    inst!(
-        SDotAccSatKHR,
-        [DotProductKHR],
         ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
@@ -3573,19 +3530,6 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         UDotAccSat,
         [DotProduct],
-        [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (PackedVectorFormat, ZeroOrOne)
-        ]
-    ),
-    inst!(
-        UDotAccSatKHR,
-        [DotProductKHR],
         ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
@@ -3599,19 +3543,6 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(
         SUDotAccSat,
         [DotProduct],
-        [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One),
-            (IdRef, One),
-            (PackedVectorFormat, ZeroOrOne)
-        ]
-    ),
-    inst!(
-        SUDotAccSatKHR,
-        [DotProductKHR],
         ["SPV_KHR_integer_dot_product"],
         [
             (IdResultType, One),
@@ -3987,10 +3918,28 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdScope, One)]
     ),
     inst!(
-        FinalizeNodePayloadsAMDX,
+        AllocateNodePayloadsAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdScope, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        EnqueueNodePayloadsAMDX,
         [ShaderEnqueueAMDX],
         [],
         [(IdRef, One)]
+    ),
+    inst!(
+        TypeNodePayloadArrayAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [(IdResult, One), (IdRef, One)]
     ),
     inst!(
         FinishWritingNodePayloadAMDX,
@@ -3999,10 +3948,33 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
-        InitializeNodePayloadsAMDX,
+        NodePayloadArrayLengthAMDX,
         [ShaderEnqueueAMDX],
         [],
-        [(IdRef, One), (IdScope, One), (IdRef, One), (IdRef, One)]
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        IsNodePayloadValidAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ConstantStringAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [(IdResult, One), (LiteralString, One)]
+    ),
+    inst!(
+        SpecConstantStringAMDX,
+        [ShaderEnqueueAMDX],
+        [],
+        [(IdResult, One), (LiteralString, One)]
     ),
     inst!(
         GroupNonUniformQuadAllKHR,
@@ -4327,6 +4299,81 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        TypeCooperativeVectorNV,
+        [CooperativeVectorNV],
+        [],
+        [(IdResult, One), (IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        CooperativeVectorMatrixMulNV,
+        [CooperativeVectorNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne),
+            (CooperativeMatrixOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeVectorOuterProductAccumulateNV,
+        [CooperativeVectorTrainingNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeVectorReduceSumAccumulateNV,
+        [CooperativeVectorTrainingNV],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        CooperativeVectorMatrixMulAddNV,
+        [CooperativeVectorNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne),
+            (CooperativeMatrixOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixConvertNV,
+        [CooperativeMatrixConversionsNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
         EmitMeshTasksEXT,
         [MeshShadingEXT],
         [],
@@ -4379,18 +4426,30 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        ReportIntersectionKHR,
-        [RayTracingNV, RayTracingKHR],
-        ["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
+        CooperativeVectorLoadNV,
+        [CooperativeVectorNV],
+        [],
         [
             (IdResultType, One),
             (IdResult, One),
             (IdRef, One),
-            (IdRef, One)
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne)
         ]
     ),
     inst!(
-        ReportIntersectionNV,
+        CooperativeVectorStoreNV,
+        [CooperativeVectorNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        ReportIntersectionKHR,
         [RayTracingNV, RayTracingKHR],
         ["SPV_NV_ray_tracing", "SPV_KHR_ray_tracing"],
         [
@@ -4485,20 +4544,27 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResult, One)]
     ),
     inst!(
-        TypeAccelerationStructureNV,
-        [RayTracingNV, RayTracingKHR, RayQueryKHR],
-        [
-            "SPV_NV_ray_tracing",
-            "SPV_KHR_ray_tracing",
-            "SPV_KHR_ray_query"
-        ],
-        [(IdResult, One)]
-    ),
-    inst!(
         ExecuteCallableNV,
         [RayTracingNV],
         ["SPV_NV_ray_tracing"],
         [(IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        RayQueryGetClusterIdNV,
+        [RayTracingClusterAccelerationStructureNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectGetClusterIdNV,
+        [RayTracingClusterAccelerationStructureNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         TypeCooperativeMatrixNV,
@@ -4575,18 +4641,188 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ["SPV_EXT_fragment_shader_interlock"],
         []
     ),
-    inst!(DemoteToHelperInvocation, [DemoteToHelperInvocation], [], []),
     inst!(
-        DemoteToHelperInvocationEXT,
-        [DemoteToHelperInvocationEXT],
+        CooperativeMatrixReduceNV,
+        [CooperativeMatrixReductionsNV],
         [],
-        []
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (CooperativeMatrixReduce, One),
+            (IdRef, One)
+        ]
     ),
     inst!(
+        CooperativeMatrixLoadTensorNV,
+        [CooperativeMatrixTensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, One),
+            (TensorAddressingOperands, One)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixStoreTensorNV,
+        [CooperativeMatrixTensorAddressingNV],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, One),
+            (TensorAddressingOperands, One)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixPerElementOpNV,
+        [CooperativeMatrixPerElementOperationsNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        TypeTensorLayoutNV,
+        [TensorAddressingNV],
+        [],
+        [(IdResult, One), (IdRef, One), (IdRef, One)]
+    ),
+    inst!(
+        TypeTensorViewNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        CreateTensorLayoutNV,
+        [TensorAddressingNV],
+        [],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        TensorLayoutSetDimensionNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        TensorLayoutSetStrideNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        TensorLayoutSliceNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        TensorLayoutSetClampValueNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        CreateTensorViewNV,
+        [TensorAddressingNV],
+        [],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        TensorViewSetDimensionNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        TensorViewSetStrideNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(DemoteToHelperInvocation, [DemoteToHelperInvocation], [], []),
+    inst!(
         IsHelperInvocationEXT,
-        [DemoteToHelperInvocationEXT],
+        [DemoteToHelperInvocation],
         ["SPV_EXT_demote_to_helper_invocation"],
         [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        TensorViewSetClipNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        TensorLayoutSetBlockSizeNV,
+        [TensorAddressingNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        CooperativeMatrixTransposeNV,
+        [CooperativeMatrixConversionsNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
         ConvertUToImageNV,
@@ -4642,6 +4878,119 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One),
             (IdRef, One),
             (RawAccessChainOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        RayQueryGetIntersectionSpherePositionNV,
+        [RayTracingSpheresGeometryNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        RayQueryGetIntersectionSphereRadiusNV,
+        [RayTracingSpheresGeometryNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        RayQueryGetIntersectionLSSPositionsNV,
+        [RayTracingLinearSweptSpheresGeometryNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        RayQueryGetIntersectionLSSRadiiNV,
+        [RayTracingLinearSweptSpheresGeometryNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        RayQueryGetIntersectionLSSHitValueNV,
+        [RayTracingLinearSweptSpheresGeometryNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        HitObjectGetSpherePositionNV,
+        [RayTracingSpheresGeometryNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetSphereRadiusNV,
+        [RayTracingSpheresGeometryNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetLSSPositionsNV,
+        [RayTracingLinearSweptSpheresGeometryNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectGetLSSRadiiNV,
+        [RayTracingLinearSweptSpheresGeometryNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectIsSphereHitNV,
+        [RayTracingSpheresGeometryNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        HitObjectIsLSSHitNV,
+        [RayTracingLinearSweptSpheresGeometryNV],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        RayQueryIsSphereHitNV,
+        [RayTracingSpheresGeometryNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        RayQueryIsLSSHitNV,
+        [RayTracingLinearSweptSpheresGeometryNV],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
         ]
     ),
     inst!(
@@ -4904,7 +5253,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         AsmTargetINTEL,
         [AsmINTEL],
         [],
-        [(IdResultType, One), (IdResult, One), (LiteralString, One)]
+        [(IdResult, One), (LiteralString, One)]
     ),
     inst!(
         AsmINTEL,
@@ -4993,25 +5342,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdRef, One), (Decoration, One)]
     ),
     inst!(
-        DecorateStringGOOGLE,
-        [],
-        [
-            "SPV_GOOGLE_decorate_string",
-            "SPV_GOOGLE_hlsl_functionality1"
-        ],
-        [(IdRef, One), (Decoration, One)]
-    ),
-    inst!(
         MemberDecorateString,
-        [],
-        [
-            "SPV_GOOGLE_decorate_string",
-            "SPV_GOOGLE_hlsl_functionality1"
-        ],
-        [(IdRef, One), (LiteralInteger, One), (Decoration, One)]
-    ),
-    inst!(
-        MemberDecorateStringGOOGLE,
         [],
         [
             "SPV_GOOGLE_decorate_string",
@@ -7255,10 +7586,114 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
     ),
     inst!(
+        ArithmeticFenceEXT,
+        [ArithmeticFenceEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
         SubgroupBlockPrefetchINTEL,
         [SubgroupBufferPrefetchINTEL],
         [],
         [(IdRef, One), (IdRef, One), (MemoryAccess, ZeroOrOne)]
+    ),
+    inst!(
+        Subgroup2DBlockLoadINTEL,
+        [Subgroup2DBlockIOINTEL],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        Subgroup2DBlockLoadTransformINTEL,
+        [Subgroup2DBlockTransformINTEL],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        Subgroup2DBlockLoadTransposeINTEL,
+        [Subgroup2DBlockTransposeINTEL],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        Subgroup2DBlockPrefetchINTEL,
+        [Subgroup2DBlockIOINTEL],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        Subgroup2DBlockStoreINTEL,
+        [Subgroup2DBlockIOINTEL],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        SubgroupMatrixMultiplyAccumulateINTEL,
+        [SubgroupMatrixMultiplyAccumulateINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MatrixMultiplyAccumulateOperands, ZeroOrOne)
+        ]
     ),
     inst!(
         GroupIMulKHR,

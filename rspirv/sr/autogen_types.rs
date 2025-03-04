@@ -82,13 +82,29 @@ pub enum Type {
         usage: spirv::Word,
     },
     RayQueryKHR,
+    NodePayloadArrayAMDX {
+        payload_type: spirv::Word,
+    },
     HitObjectNV,
+    CooperativeVectorNV {
+        component_type: Token<Type>,
+        component_count: spirv::Word,
+    },
     AccelerationStructureKHR,
     CooperativeMatrixNV {
         component_type: Token<Type>,
         execution: spirv::Word,
         rows: spirv::Word,
         columns: spirv::Word,
+    },
+    TensorLayoutNV {
+        dim: spirv::Word,
+        clamp_mode: spirv::Word,
+    },
+    TensorViewNV {
+        dim: spirv::Word,
+        has_dimensions: spirv::Word,
+        p: Vec<spirv::Word>,
     },
     BufferSurfaceINTEL {
         access_qualifier: spirv::AccessQualifier,

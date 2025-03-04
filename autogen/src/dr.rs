@@ -388,10 +388,8 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 let mut operand_clauses = BTreeMap::new();
 
                 let kind = as_ident(kind);
-                let mut seen_discriminator = BTreeMap::new();
 
                 for e in enumerators {
-                    if let std::collections::btree_map::Entry::Vacant(seen_entry) = seen_discriminator.entry(e.value) {
                         let name = match category {
                             structs::Category::BitEnum => {
                                 use heck::ShoutySnakeCase;
@@ -412,7 +410,6 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                             _ => panic!("Unexpected operand type"),
                         };
 
-                        seen_entry.insert(name.clone());
 
                         capability_clauses
                             .entry(&e.capabilities)
@@ -430,7 +427,6 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                                 .or_insert_with(Vec::new)
                                 .push(name.clone())
                         }
-                    }
                 }
 
                 let extensions = if category == &structs::Category::BitEnum {
@@ -772,84 +768,88 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
     let kinds = &grammar.operand_kinds;
     // Generate build methods for all normal instructions (instructions must be
     // in some block).
-    let elements = grammar.instructions.iter().filter(|inst| {
-        let skip = matches!(
-            inst.class,
-            Some(Type | Constant | ExtensionDecl | Debug | Annotation | ModeSetting | Exclude)
-        ) || matches!(
-            inst.opname.as_str(),
-            // Labels should not be inserted but attached instead.
-            "OpLabel"
-                | "OpTypeForwardPointer"
-                | "OpTypePointer"
-                | "OpTypeOpaque"
-                | "OpUndef"
-                | "OpVariable"
-                | "OpSamplerImageAddressingModeNV" // https://github.com/gfx-rs/rspirv/pull/226#issuecomment-979469790
-        ) || (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall")
-            || is_terminator_instruction(inst)
-            || inst.opname.starts_with("OpType");
-        !skip
-    }).map(|inst| {
-        let params = get_param_list(&inst.operands, true, kinds);
-        let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-        let opcode = as_ident(&inst.opname[2..]);
-        let comment = format!("Appends an Op{} instruction to the current block.", opcode);
-        let insert_comment = format!("Appends an Op{} instruction to the current block.", opcode);
-        let name = get_function_name(&inst.opname);
-        let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
-        let init = get_init_list(&inst.operands);
+    let elements = grammar
+        .instructions
+        .iter()
+        .filter(|inst| {
+            let skip = matches!(
+                inst.class,
+                Some(Type | Constant | ExtensionDecl | Debug | Annotation | ModeSetting | Exclude)
+            ) || matches!(
+                inst.opname.as_str(),
+                // Labels should not be inserted but attached instead.
+                "OpLabel"
+                    | "OpTypeForwardPointer"
+                    | "OpTypePointer"
+                    | "OpTypeOpaque"
+                    | "OpUndef"
+                    | "OpVariable"
+                    | "OpSamplerImageAddressingModeNV" // https://github.com/gfx-rs/rspirv/pull/226#issuecomment-979469790
+            ) || (inst.class == Some(FunctionStruct) && inst.opname != "OpFunctionCall")
+                || is_terminator_instruction(inst)
+                || inst.opname.starts_with("OpType");
+            !skip
+        })
+        .map(|inst| {
+            let params = get_param_list(&inst.operands, true, kinds);
+            let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
+            let opcode = as_ident(&inst.opname[2..]);
+            let comment = format!("Appends an Op{} instruction to the current block.", opcode);
+            let name = get_function_name(&inst.opname);
+            let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
+            let init = get_init_list(&inst.operands);
 
-        if !inst.operands.is_empty() && inst.operands[0].kind == "IdResultType" {
-            // For normal instructions, they either have both result type and
-            // result id or have none.
+            let mut result_get = quote!(None);
+            let mut id_typ = quote!(());
+            let mut id_gen = quote!();
+            let mut id_get = quote!(None);
+            let mut id_ret = quote!(());
+            let mut has_result = false;
+
+            if inst
+                .operands
+                .first()
+                .is_some_and(|o| o.kind == "IdResultType")
+            {
+                // For normal instructions, they either have both result type and
+                // result id or have none.
+                result_get = quote!(Some(result_type));
+                assert!(inst.operands[1].kind == "IdResult");
+                has_result = true;
+            }
+            // Otherwise, some `provisional` AMDX instructions seem to have a result without IdResultType
+            if has_result || inst.operands.first().is_some_and(|o| o.kind == "IdResult") {
+                id_typ = quote!(spirv::Word);
+                id_gen = quote!(let _id = result_id.unwrap_or_else(|| self.id()););
+                id_get = quote!(Some(_id));
+                id_ret = quote!(_id);
+            }
+
             quote! {
                 #[doc = #comment]
-                pub fn #name(&mut self,#(#params),*) -> BuildResult<spirv::Word> {
-                    let _id = result_id.unwrap_or_else(|| self.id());
+                pub fn #name(&mut self,#(#params),*) -> BuildResult<#id_typ> {
+                    #id_gen
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
-                        spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
+                        spirv::Op::#opcode, #result_get, #id_get, vec![#(#init),*]);
                     #(#extras)*
                     self.insert_into_block(InsertPoint::End, inst)?;
-                    Ok(_id)
-                }
-
-                #[doc = #insert_comment]
-                pub fn #insert_name(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<spirv::Word> {
-                    let _id = result_id.unwrap_or_else(|| self.id());
-                    #[allow(unused_mut)]
-                    let mut inst = dr::Instruction::new(
-                        spirv::Op::#opcode, Some(result_type), Some(_id), vec![#(#init),*]);
-                    #(#extras)*
-                    self.insert_into_block(insert_point, inst)?;
-                    Ok(_id)
-                }
-            }
-        } else {
-            quote! {
-                #[doc = #comment]
-                pub fn #name(&mut self,#(#params),*) -> BuildResult<()> {
-                    #[allow(unused_mut)]
-                    let mut inst = dr::Instruction::new(
-                        spirv::Op::#opcode, None, None, vec![#(#init),*]);
-                    #(#extras)*
-                    self.insert_into_block(InsertPoint::End, inst)?;
-                    Ok(())
+                    Ok(#id_ret)
                 }
 
                 #[doc = #comment]
-                pub fn #insert_name(&mut self,insert_point: InsertPoint, #(#params),*) -> BuildResult<()> {
+                pub fn #insert_name(&mut self, insert_point: InsertPoint, #(#params),*)
+                        -> BuildResult<#id_typ> {
+                    #id_gen
                     #[allow(unused_mut)]
                     let mut inst = dr::Instruction::new(
-                        spirv::Op::#opcode, None, None, vec![#(#init),*]);
+                        spirv::Op::#opcode, #result_get, #id_get, vec![#(#init),*]);
                     #(#extras)*
                     self.insert_into_block(insert_point, inst)?;
-                    Ok(())
+                    Ok(#id_ret)
                 }
             }
-        }
-    });
+        });
     quote! {
         #[allow(clippy::useless_conversion, clippy::too_many_arguments)]
         impl Builder {
