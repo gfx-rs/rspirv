@@ -176,7 +176,6 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 
     // We can have more than one enumerants mapping to the same discriminator.
     // Use associated constants for these aliases.
-    let mut seen_discriminator = BTreeMap::new();
     let mut variants = vec![];
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
@@ -184,59 +183,55 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut operand_clauses = BTreeMap::new();
     let mut from_str_impl = vec![];
     for e in &grammar.enumerants {
-        if let Some(discriminator) = seen_discriminator.get(&e.value) {
-            let name_str = &e.symbol;
-            let symbol = as_ident(&e.symbol);
-            aliases.push(quote! {
-                pub const #symbol: Self = Self::#discriminator;
-            });
-            from_str_impl.push(quote! { #name_str => Self::#discriminator });
+        // Special case for Dim. Its enumerants can start with a digit.
+        // So prefix with the kind name here.
+        let name_str = if grammar.kind == "Dim" {
+            let mut name = "Dim".to_string();
+            name.push_str(&e.symbol);
+            name
         } else {
-            // Special case for Dim. Its enumerants can start with a digit.
-            // So prefix with the kind name here.
-            let name_str = if grammar.kind == "Dim" {
-                let mut name = "Dim".to_string();
-                name.push_str(&e.symbol);
-                name
-            } else {
-                e.symbol.to_string()
-            };
-            let name = as_ident(&name_str);
-            let number = e.value;
-            seen_discriminator.insert(e.value, name.clone());
-            variants.push((number, name.clone()));
-            from_str_impl.push(quote! { #name_str => Self::#name });
+            e.symbol.to_string()
+        };
+        let name = as_ident(&name_str);
+        let number = e.value;
+        variants.push((number, name.clone()));
+        from_str_impl.push(quote! { #name_str => Self::#name });
 
-            capability_clauses
-                .entry(&e.capabilities)
-                .or_insert_with(Vec::new)
-                .push(name.clone());
-
-            extension_clauses
-                .entry(&e.extensions)
-                .or_insert_with(Vec::new)
-                .push(name.clone());
-
-            operand_clauses
-                .entry(name.clone())
-                .or_insert_with(Vec::new)
-                .extend(e.parameters.iter().map(|op| {
-                    let kind = as_ident(&op.kind);
-
-                    let quant = match op.quantifier {
-                        structs::Quantifier::One => quote! { OperandQuantifier::One },
-                        structs::Quantifier::ZeroOrOne => quote! { OperandQuantifier::ZeroOrOne },
-                        structs::Quantifier::ZeroOrMore => quote! { OperandQuantifier::ZeroOrMore },
-                    };
-
-                    quote! {
-                        LogicalOperand {
-                            kind: OperandKind::#kind,
-                            quantifier: #quant
-                        }
-                    }
-                }));
+        for alias in &e.aliases {
+            let alias_ident = as_ident(alias);
+            aliases.push(quote!(pub const #alias_ident: Self = Self::#name;));
+            from_str_impl.push(quote!(#alias => Self::#name));
         }
+
+        capability_clauses
+            .entry(&e.capabilities)
+            .or_insert_with(Vec::new)
+            .push(name.clone());
+
+        extension_clauses
+            .entry(&e.extensions)
+            .or_insert_with(Vec::new)
+            .push(name.clone());
+
+        operand_clauses
+            .entry(name.clone())
+            .or_insert_with(Vec::new)
+            .extend(e.parameters.iter().map(|op| {
+                let kind = as_ident(&op.kind);
+
+                let quant = match op.quantifier {
+                    structs::Quantifier::One => quote! { OperandQuantifier::One },
+                    structs::Quantifier::ZeroOrOne => quote! { OperandQuantifier::ZeroOrOne },
+                    structs::Quantifier::ZeroOrMore => quote! { OperandQuantifier::ZeroOrMore },
+                };
+
+                quote! {
+                    LogicalOperand {
+                        kind: OperandKind::#kind,
+                        quantifier: #quant
+                    }
+                }
+            }));
     }
 
     let the_enum = generate_enum(
@@ -300,21 +295,18 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
 
     // We can have more than one op symbol mapping to the same opcode.
     // Use associated constants for these aliases.
-    let mut seen_discriminator = BTreeMap::new();
     let mut aliases = vec![];
     let mut variants = vec![];
 
     // Get the instruction table.
     for inst in &grammar.instructions {
-        // Omit the "Op" prefix.
-        let opname = as_ident(&inst.opname[2..]);
+        let opname = as_ident(inst.opname.strip_prefix("Op").unwrap());
         let opcode = inst.opcode;
-        if let Some(discriminator) = seen_discriminator.get(&opcode) {
-            aliases.push(quote! { pub const #opname : Op = Op::#discriminator; });
-        } else {
-            variants.push((opcode, opname.clone()));
-            seen_discriminator.insert(opcode, opname.clone());
+        for alias in &inst.aliases {
+            let alias = as_ident(alias.strip_prefix("Op").unwrap());
+            aliases.push(quote! { pub const #alias: Op = Op::#opname; });
         }
+        variants.push((opcode, opname.clone()));
     }
 
     let the_enum = generate_enum(

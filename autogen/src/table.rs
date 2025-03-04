@@ -41,8 +41,7 @@ fn gen_instruction_table(
                 ext_inst!(#opname, #opcode, [#(#caps),*], [#(#exts),*], [#(#operands),*])
             }
         } else {
-            // Omit the "Op" prefix.
-            let opname = as_ident(&inst.opname[2..]);
+            let opname = as_ident(inst.opname.strip_prefix("Op").unwrap());
             quote! {
                 inst!(#opname, [#(#caps),*], [#(#exts),*], [#(#operands),*])
             }

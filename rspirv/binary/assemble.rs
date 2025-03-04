@@ -91,12 +91,18 @@ impl Assemble for dr::Operand {
             Self::HostAccessQualifier(v) => result.push(v as u32),
             Self::CooperativeMatrixLayout(v) => result.push(v as u32),
             Self::CooperativeMatrixUse(v) => result.push(v as u32),
+            Self::CooperativeMatrixReduce(v) => result.push(v.bits()),
+            Self::TensorClampMode(v) => result.push(v as u32),
+            Self::TensorAddressingOperands(v) => result.push(v.bits()),
             Self::InitializationModeQualifier(v) => result.push(v as u32),
             Self::LoadCacheControl(v) => result.push(v as u32),
             Self::StoreCacheControl(v) => result.push(v as u32),
             Self::RawAccessChainOperands(v) => result.push(v.bits()),
             Self::NamedMaximumNumberOfRegisters(v) => result.push(v as u32),
+            Self::MatrixMultiplyAccumulateOperands(v) => result.push(v.bits()),
             Self::FPEncoding(v) => result.push(v as u32),
+            Self::CooperativeVectorMatrixLayout(v) => result.push(v as u32),
+            Self::ComponentType(v) => result.push(v as u32),
         }
     }
 }

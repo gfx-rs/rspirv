@@ -1616,17 +1616,29 @@ pub enum Op {
     ReadClockKHR {
         scope: spirv::Word,
     },
-    FinalizeNodePayloadsAMDX {
+    AllocateNodePayloadsAMDX {
+        visibility: spirv::Word,
+        payload_count: spirv::Word,
+        node_index: spirv::Word,
+    },
+    EnqueueNodePayloadsAMDX {
         payload_array: spirv::Word,
     },
     FinishWritingNodePayloadAMDX {
         payload: spirv::Word,
     },
-    InitializeNodePayloadsAMDX {
+    NodePayloadArrayLengthAMDX {
         payload_array: spirv::Word,
-        visibility: spirv::Word,
-        payload_count: spirv::Word,
+    },
+    IsNodePayloadValidAMDX {
+        payload_type: spirv::Word,
         node_index: spirv::Word,
+    },
+    ConstantStringAMDX {
+        literal_string: String,
+    },
+    SpecConstantStringAMDX {
+        literal_string: String,
     },
     GroupNonUniformQuadAllKHR {
         predicate: spirv::Word,
@@ -1824,6 +1836,52 @@ pub enum Op {
         coarse: spirv::Word,
         image_operands: Option<(spirv::ImageOperands, Vec<spirv::Word>)>,
     },
+    CooperativeVectorMatrixMulNV {
+        input: spirv::Word,
+        input_interpretation: spirv::Word,
+        matrix: spirv::Word,
+        matrix_offset: spirv::Word,
+        matrix_interpretation: spirv::Word,
+        m: spirv::Word,
+        k: spirv::Word,
+        memory_layout: spirv::Word,
+        transpose: spirv::Word,
+        matrix_stride: Option<spirv::Word>,
+        cooperative_matrix_operands: Option<spirv::CooperativeMatrixOperands>,
+    },
+    CooperativeVectorOuterProductAccumulateNV {
+        pointer: spirv::Word,
+        offset: spirv::Word,
+        a: spirv::Word,
+        b: spirv::Word,
+        memory_layout: spirv::Word,
+        matrix_interpretation: spirv::Word,
+        matrix_stride: Option<spirv::Word>,
+    },
+    CooperativeVectorReduceSumAccumulateNV {
+        pointer: spirv::Word,
+        offset: spirv::Word,
+        v: spirv::Word,
+    },
+    CooperativeVectorMatrixMulAddNV {
+        input: spirv::Word,
+        input_interpretation: spirv::Word,
+        matrix: spirv::Word,
+        matrix_offset: spirv::Word,
+        matrix_interpretation: spirv::Word,
+        bias: spirv::Word,
+        bias_offset: spirv::Word,
+        bias_interpretation: spirv::Word,
+        m: spirv::Word,
+        k: spirv::Word,
+        memory_layout: spirv::Word,
+        transpose: spirv::Word,
+        matrix_stride: Option<spirv::Word>,
+        cooperative_matrix_operands: Option<spirv::CooperativeMatrixOperands>,
+    },
+    CooperativeMatrixConvertNV {
+        matrix: spirv::Word,
+    },
     SetMeshOutputsEXT {
         vertex_count: spirv::Word,
         primitive_count: spirv::Word,
@@ -1848,6 +1906,17 @@ pub enum Op {
         geometry_index: spirv::Word,
         primitive_index: spirv::Word,
         barycentric: spirv::Word,
+    },
+    CooperativeVectorLoadNV {
+        pointer: spirv::Word,
+        offset: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+    },
+    CooperativeVectorStoreNV {
+        pointer: spirv::Word,
+        offset: spirv::Word,
+        object: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
     },
     ReportIntersectionKHR {
         hit: spirv::Word,
@@ -1904,6 +1973,13 @@ pub enum Op {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
     },
+    RayQueryGetClusterIdNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    HitObjectGetClusterIdNV {
+        hit_object: spirv::Word,
+    },
     CooperativeMatrixLoadNV {
         pointer: spirv::Word,
         stride: spirv::Word,
@@ -1927,7 +2003,66 @@ pub enum Op {
     },
     BeginInvocationInterlockEXT,
     EndInvocationInterlockEXT,
+    CooperativeMatrixReduceNV {
+        matrix: spirv::Word,
+        reduce: spirv::CooperativeMatrixReduce,
+        combine_func: spirv::Word,
+    },
+    CooperativeMatrixLoadTensorNV {
+        pointer: spirv::Word,
+        object: spirv::Word,
+        tensor_layout: spirv::Word,
+        memory_operand: spirv::MemoryAccess,
+        tensor_addressing_operands: spirv::TensorAddressingOperands,
+    },
+    CooperativeMatrixStoreTensorNV {
+        pointer: spirv::Word,
+        object: spirv::Word,
+        tensor_layout: spirv::Word,
+        memory_operand: spirv::MemoryAccess,
+        tensor_addressing_operands: spirv::TensorAddressingOperands,
+    },
+    CreateTensorLayoutNV,
+    TensorLayoutSetDimensionNV {
+        tensor_layout: spirv::Word,
+        dim: Vec<spirv::Word>,
+    },
+    TensorLayoutSetStrideNV {
+        tensor_layout: spirv::Word,
+        stride: Vec<spirv::Word>,
+    },
+    TensorLayoutSliceNV {
+        tensor_layout: spirv::Word,
+        operands: Vec<spirv::Word>,
+    },
+    TensorLayoutSetClampValueNV {
+        tensor_layout: spirv::Word,
+        value: spirv::Word,
+    },
+    CreateTensorViewNV,
+    TensorViewSetDimensionNV {
+        tensor_view: spirv::Word,
+        dim: Vec<spirv::Word>,
+    },
+    TensorViewSetStrideNV {
+        tensor_view: spirv::Word,
+        stride: Vec<spirv::Word>,
+    },
     IsHelperInvocationEXT,
+    TensorViewSetClipNV {
+        tensor_view: spirv::Word,
+        clip_row_offset: spirv::Word,
+        clip_row_span: spirv::Word,
+        clip_col_offset: spirv::Word,
+        clip_col_span: spirv::Word,
+    },
+    TensorLayoutSetBlockSizeNV {
+        tensor_layout: spirv::Word,
+        block_size: Vec<spirv::Word>,
+    },
+    CooperativeMatrixTransposeNV {
+        matrix: spirv::Word,
+    },
     ConvertUToImageNV {
         operand: spirv::Word,
     },
@@ -1955,6 +2090,52 @@ pub enum Op {
         element_index: spirv::Word,
         byte_offset: spirv::Word,
         raw_access_chain_operands: Option<spirv::RawAccessChainOperands>,
+    },
+    RayQueryGetIntersectionSpherePositionNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionSphereRadiusNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionLSSPositionsNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionLSSRadiiNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryGetIntersectionLSSHitValueNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    HitObjectGetSpherePositionNV {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetSphereRadiusNV {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetLSSPositionsNV {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetLSSRadiiNV {
+        hit_object: spirv::Word,
+    },
+    HitObjectIsSphereHitNV {
+        hit_object: spirv::Word,
+    },
+    HitObjectIsLSSHitNV {
+        hit_object: spirv::Word,
+    },
+    RayQueryIsSphereHitNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
+    },
+    RayQueryIsLSSHitNV {
+        ray_query: spirv::Word,
+        intersection: spirv::Word,
     },
     SubgroupShuffleINTEL {
         data: spirv::Word,
@@ -3115,10 +3296,79 @@ pub enum Op {
         memory: spirv::Word,
         semantics: spirv::Word,
     },
+    ArithmeticFenceEXT {
+        target: spirv::Word,
+    },
     SubgroupBlockPrefetchINTEL {
         ptr: spirv::Word,
         num_bytes: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
+    },
+    Subgroup2DBlockLoadINTEL {
+        element_size: spirv::Word,
+        block_width: spirv::Word,
+        block_height: spirv::Word,
+        block_count: spirv::Word,
+        src_base_pointer: spirv::Word,
+        memory_width: spirv::Word,
+        memory_height: spirv::Word,
+        memory_pitch: spirv::Word,
+        coordinate: spirv::Word,
+        dst_pointer: spirv::Word,
+    },
+    Subgroup2DBlockLoadTransformINTEL {
+        element_size: spirv::Word,
+        block_width: spirv::Word,
+        block_height: spirv::Word,
+        block_count: spirv::Word,
+        src_base_pointer: spirv::Word,
+        memory_width: spirv::Word,
+        memory_height: spirv::Word,
+        memory_pitch: spirv::Word,
+        coordinate: spirv::Word,
+        dst_pointer: spirv::Word,
+    },
+    Subgroup2DBlockLoadTransposeINTEL {
+        element_size: spirv::Word,
+        block_width: spirv::Word,
+        block_height: spirv::Word,
+        block_count: spirv::Word,
+        src_base_pointer: spirv::Word,
+        memory_width: spirv::Word,
+        memory_height: spirv::Word,
+        memory_pitch: spirv::Word,
+        coordinate: spirv::Word,
+        dst_pointer: spirv::Word,
+    },
+    Subgroup2DBlockPrefetchINTEL {
+        element_size: spirv::Word,
+        block_width: spirv::Word,
+        block_height: spirv::Word,
+        block_count: spirv::Word,
+        src_base_pointer: spirv::Word,
+        memory_width: spirv::Word,
+        memory_height: spirv::Word,
+        memory_pitch: spirv::Word,
+        coordinate: spirv::Word,
+    },
+    Subgroup2DBlockStoreINTEL {
+        element_size: spirv::Word,
+        block_width: spirv::Word,
+        block_height: spirv::Word,
+        block_count: spirv::Word,
+        src_pointer: spirv::Word,
+        dst_base_pointer: spirv::Word,
+        memory_width: spirv::Word,
+        memory_height: spirv::Word,
+        memory_pitch: spirv::Word,
+        coordinate: spirv::Word,
+    },
+    SubgroupMatrixMultiplyAccumulateINTEL {
+        k_dim: spirv::Word,
+        matrix_a: spirv::Word,
+        matrix_b: spirv::Word,
+        matrix_c: spirv::Word,
+        matrix_multiply_accumulate_operands: Option<spirv::MatrixMultiplyAccumulateOperands>,
     },
     GroupIMulKHR {
         execution: spirv::Word,

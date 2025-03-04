@@ -54,11 +54,17 @@ pub enum Error {
     CooperativeMatrixOperandsUnknown(usize, spirv::Word),
     CooperativeMatrixLayoutUnknown(usize, spirv::Word),
     CooperativeMatrixUseUnknown(usize, spirv::Word),
+    CooperativeMatrixReduceUnknown(usize, spirv::Word),
+    TensorClampModeUnknown(usize, spirv::Word),
+    TensorAddressingOperandsUnknown(usize, spirv::Word),
     InitializationModeQualifierUnknown(usize, spirv::Word),
     LoadCacheControlUnknown(usize, spirv::Word),
     StoreCacheControlUnknown(usize, spirv::Word),
     NamedMaximumNumberOfRegistersUnknown(usize, spirv::Word),
+    MatrixMultiplyAccumulateOperandsUnknown(usize, spirv::Word),
     FPEncodingUnknown(usize, spirv::Word),
+    CooperativeVectorMatrixLayoutUnknown(usize, spirv::Word),
+    ComponentTypeUnknown(usize, spirv::Word),
     #[doc = r"Failed to decode a string."]
     #[doc = r""]
     #[doc = r"For structured error handling, the second element could be"]
@@ -298,6 +304,21 @@ impl fmt::Display for Error {
                 "unknown value {} for operand kind CooperativeMatrixUse at index {}",
                 word, index
             ),
+            Error::CooperativeMatrixReduceUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind CooperativeMatrixReduce at index {}",
+                word, index
+            ),
+            Error::TensorClampModeUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind TensorClampMode at index {}",
+                word, index
+            ),
+            Error::TensorAddressingOperandsUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind TensorAddressingOperands at index {}",
+                word, index
+            ),
             Error::InitializationModeQualifierUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind InitializationModeQualifier at index {}",
@@ -318,9 +339,24 @@ impl fmt::Display for Error {
                 "unknown value {} for operand kind NamedMaximumNumberOfRegisters at index {}",
                 word, index
             ),
+            Error::MatrixMultiplyAccumulateOperandsUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind MatrixMultiplyAccumulateOperands at index {}",
+                word, index
+            ),
             Error::FPEncodingUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind FPEncoding at index {}",
+                word, index
+            ),
+            Error::CooperativeVectorMatrixLayoutUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind CooperativeVectorMatrixLayout at index {}",
+                word, index
+            ),
+            Error::ComponentTypeUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind ComponentType at index {}",
                 word, index
             ),
             Error::DecodeStringFailed(index, ref e) => {

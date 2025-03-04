@@ -111,6 +111,12 @@ impl Parser<'_, '_> {
             GOpKind::CooperativeMatrixUse => vec![dr::Operand::CooperativeMatrixUse(
                 self.decoder.cooperative_matrix_use()?,
             )],
+            GOpKind::CooperativeMatrixReduce => vec![dr::Operand::CooperativeMatrixReduce(
+                self.decoder.cooperative_matrix_reduce()?,
+            )],
+            GOpKind::TensorClampMode => vec![dr::Operand::TensorClampMode(
+                self.decoder.tensor_clamp_mode()?,
+            )],
             GOpKind::InitializationModeQualifier => vec![dr::Operand::InitializationModeQualifier(
                 self.decoder.initialization_mode_qualifier()?,
             )],
@@ -125,7 +131,20 @@ impl Parser<'_, '_> {
                     self.decoder.named_maximum_number_of_registers()?,
                 )]
             }
+            GOpKind::MatrixMultiplyAccumulateOperands => {
+                vec![dr::Operand::MatrixMultiplyAccumulateOperands(
+                    self.decoder.matrix_multiply_accumulate_operands()?,
+                )]
+            }
             GOpKind::FPEncoding => vec![dr::Operand::FPEncoding(self.decoder.fp_encoding()?)],
+            GOpKind::CooperativeVectorMatrixLayout => {
+                vec![dr::Operand::CooperativeVectorMatrixLayout(
+                    self.decoder.cooperative_vector_matrix_layout()?,
+                )]
+            }
+            GOpKind::ComponentType => {
+                vec![dr::Operand::ComponentType(self.decoder.component_type()?)]
+            }
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
@@ -171,6 +190,12 @@ impl Parser<'_, '_> {
                 let val = self.decoder.decoration()?;
                 let mut ops = vec![dr::Operand::Decoration(val)];
                 ops.append(&mut self.parse_decoration_arguments(val)?);
+                ops
+            }
+            GOpKind::TensorAddressingOperands => {
+                let val = self.decoder.tensor_addressing_operands()?;
+                let mut ops = vec![dr::Operand::TensorAddressingOperands(val)];
+                ops.append(&mut self.parse_tensor_addressing_operands_arguments(val)?);
                 ops
             }
             GOpKind::IdResultType => panic!(),
@@ -356,6 +381,7 @@ impl Parser<'_, '_> {
             spirv::ExecutionMode::RoundingModeRTZ => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::IsApiEntryAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::ExecutionMode::MaxNodeRecursionAMDX => {
                 vec![dr::Operand::IdRef(self.decoder.id()?)]
             }
@@ -367,6 +393,10 @@ impl Parser<'_, '_> {
             spirv::ExecutionMode::ShaderIndexAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::ExecutionMode::MaxNumWorkgroupsAMDX => vec![
                 dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
+            spirv::ExecutionMode::SharesInputWithAMDX => vec![
                 dr::Operand::IdRef(self.decoder.id()?),
                 dr::Operand::IdRef(self.decoder.id()?),
             ],
@@ -481,8 +511,12 @@ impl Parser<'_, '_> {
                 vec![dr::Operand::IdRef(self.decoder.id()?)]
             }
             spirv::Decoration::NodeMaxPayloadsAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            spirv::Decoration::PayloadNodeNameAMDX => {
-                vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            spirv::Decoration::PayloadNodeNameAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::PayloadNodeBaseIndexAMDX => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::Decoration::PayloadNodeArraySizeAMDX => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
             }
             spirv::Decoration::SecondaryViewportRelativeNV => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
@@ -627,5 +661,18 @@ impl Parser<'_, '_> {
             ],
             _ => vec![],
         })
+    }
+    fn parse_tensor_addressing_operands_arguments(
+        &mut self,
+        tensor_addressing_operands: spirv::TensorAddressingOperands,
+    ) -> Result<Vec<dr::Operand>> {
+        let mut params = vec![];
+        if tensor_addressing_operands.contains(spirv::TensorAddressingOperands::TENSOR_VIEW) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if tensor_addressing_operands.contains(spirv::TensorAddressingOperands::DECODE_FUNC) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        Ok(params)
     }
 }

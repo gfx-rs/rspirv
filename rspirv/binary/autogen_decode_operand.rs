@@ -483,6 +483,37 @@ impl Decoder<'_> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V CooperativeMatrixReduce value."]
+    pub fn cooperative_matrix_reduce(&mut self) -> Result<spirv::CooperativeMatrixReduce> {
+        if let Ok(word) = self.word() {
+            spirv::CooperativeMatrixReduce::from_bits(word).ok_or(
+                Error::CooperativeMatrixReduceUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V TensorClampMode value."]
+    pub fn tensor_clamp_mode(&mut self) -> Result<spirv::TensorClampMode> {
+        if let Ok(word) = self.word() {
+            spirv::TensorClampMode::from_u32(word).ok_or(Error::TensorClampModeUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V TensorAddressingOperands value."]
+    pub fn tensor_addressing_operands(&mut self) -> Result<spirv::TensorAddressingOperands> {
+        if let Ok(word) = self.word() {
+            spirv::TensorAddressingOperands::from_bits(word).ok_or(
+                Error::TensorAddressingOperandsUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V InitializationModeQualifier value."]
     pub fn initialization_mode_qualifier(&mut self) -> Result<spirv::InitializationModeQualifier> {
         if let Ok(word) = self.word() {
@@ -527,11 +558,46 @@ impl Decoder<'_> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V MatrixMultiplyAccumulateOperands value."]
+    pub fn matrix_multiply_accumulate_operands(
+        &mut self,
+    ) -> Result<spirv::MatrixMultiplyAccumulateOperands> {
+        if let Ok(word) = self.word() {
+            spirv::MatrixMultiplyAccumulateOperands::from_bits(word).ok_or(
+                Error::MatrixMultiplyAccumulateOperandsUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V FPEncoding value."]
     pub fn fp_encoding(&mut self) -> Result<spirv::FPEncoding> {
         if let Ok(word) = self.word() {
             spirv::FPEncoding::from_u32(word)
                 .ok_or(Error::FPEncodingUnknown(self.offset - WORD_NUM_BYTES, word))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V CooperativeVectorMatrixLayout value."]
+    pub fn cooperative_vector_matrix_layout(
+        &mut self,
+    ) -> Result<spirv::CooperativeVectorMatrixLayout> {
+        if let Ok(word) = self.word() {
+            spirv::CooperativeVectorMatrixLayout::from_u32(word).ok_or(
+                Error::CooperativeVectorMatrixLayoutUnknown(self.offset - WORD_NUM_BYTES, word),
+            )
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V ComponentType value."]
+    pub fn component_type(&mut self) -> Result<spirv::ComponentType> {
+        if let Ok(word) = self.word() {
+            spirv::ComponentType::from_u32(word).ok_or(Error::ComponentTypeUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
         } else {
             Err(Error::StreamExpected(self.offset))
         }

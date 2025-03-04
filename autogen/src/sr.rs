@@ -1,5 +1,3 @@
-use std::collections::BTreeSet;
-
 use crate::structs;
 use crate::utils::*;
 
@@ -46,16 +44,14 @@ impl OperandTokens {
                         quote! { Token<Constant> },
                         quote! { self.constants.lookup_token(*value) },
                     ),
-                    "Field Types" => (
-                        quote! { StructMember },
-                        quote! { StructMember::new(self.types.lookup_token(*value)) },
-                    ),
                     "Parameter Types" | "Type" => (
                         quote! { Token<Type> },
                         quote! { self.types.lookup_token(*value) },
                     ),
                     // Function type is manually linked by the code.
                     "Function Type" => (quote! { spirv::Word }, quote! { *value }),
+                    // NodeSharesPayloadLimitsWithAMDX is reserved with no clearly defined operand meaning
+                    "Payload Type" => (quote! { spirv::Word }, quote! { *value }),
                     name if name.ends_with(" Type") => (
                         quote! { Token<Type> },
                         quote! { self.types.lookup_token(*value) },
@@ -326,18 +322,12 @@ pub fn gen_sr_code_from_instruction_grammar(
     let mut field_types = Vec::new();
     let mut field_lifts = Vec::new();
 
-    let mut seen_discriminator = BTreeSet::new();
-
     // Compose the token stream for all instructions
     for inst in grammar_instructions
         .iter()
         // Skip constants
         .filter(|i| i.class != Some(structs::Class::Constant))
     {
-        if !seen_discriminator.insert(inst.opcode) {
-            continue;
-        }
-
         // Get the token for its enumerant
         let inst_name = &inst.opname[2..];
 
@@ -348,13 +338,8 @@ pub fn gen_sr_code_from_instruction_grammar(
             "_"
         };
 
-        let type_name = if type_name.chars().next().unwrap().is_ascii_digit() {
-            format!("p_{}", type_name)
-        } else {
-            type_name.to_string()
-        };
+        let type_ident = as_ident(type_name);
 
-        let type_ident = Ident::new(&type_name, Span::call_site());
         let opcode = inst.opcode;
 
         // Re-use the allocation between iterations of the loop

@@ -282,13 +282,11 @@ mod tests {
         );
         assert_eq!("Inline|Pure", o.disassemble());
         let o = dr::Operand::FunctionControl(spirv::FunctionControl::all());
-        assert_eq!("Inline|DontInline|Pure|Const|OptNoneINTEL", o.disassemble());
+        assert_eq!("Inline|DontInline|Pure|Const|OptNoneEXT", o.disassemble());
     }
 
     #[test]
     fn test_disassemble_operand_memory_semantics() {
-        let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::NONE);
-        assert_eq!("None", o.disassemble());
         let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::RELAXED);
         assert_eq!("None", o.disassemble());
         let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE);
