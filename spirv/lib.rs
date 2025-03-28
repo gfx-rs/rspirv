@@ -7,6 +7,7 @@
 
 #![no_std]
 #![allow(non_camel_case_types)]
+#![deny(clippy::std_instead_of_core, clippy::alloc_instead_of_core)]
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use bitflags::bitflags;
