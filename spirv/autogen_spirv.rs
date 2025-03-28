@@ -4308,7 +4308,7 @@ impl GLOp {
         })
     }
 }
-#[doc = "[OpenCL.std](https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
+#[doc = "[OpenCL.std.100](https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -4484,6 +4484,23 @@ impl CLOp {
             0u32..=110u32 => unsafe { core::mem::transmute::<u32, CLOp>(n) },
             141u32..=187u32 => unsafe { core::mem::transmute::<u32, CLOp>(n) },
             201u32..=204u32 => unsafe { core::mem::transmute::<u32, CLOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.DebugPrintF](https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum DebugPrintFOp {
+    DebugPrintf = 1u32,
+}
+impl DebugPrintFOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32 => unsafe { core::mem::transmute::<u32, DebugPrintFOp>(1u32) },
             _ => return None,
         })
     }
