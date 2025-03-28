@@ -48,7 +48,7 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all --all-targets -- -Dwarnings
+          args: --workspace --all-features --all-targets -- -Dwarnings
   test:
     name: Cargo check and test
     strategy:
@@ -67,8 +67,8 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: check
-          args: --workspace --all-targets --verbose
+          args: --workspace --all-features --all-targets --verbose
       - uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --workspace --verbose
+          args: --workspace --all-features --verbose
