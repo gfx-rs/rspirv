@@ -186,3 +186,65 @@ impl OpenCLStd100InstructionTable {
 }
 
 include!("autogen_opencl_std_100.rs");
+
+/// The table for all `NonSemanticDebugPrintf` extended instructions.
+///
+/// This table is staic data stored in the library.
+#[allow(clippy::upper_case_acronyms)]
+pub struct NonSemanticDebugPrintfInstructionTable;
+
+impl NonSemanticDebugPrintfInstructionTable {
+    /// Looks up the given `opcode` in the instruction table and returns
+    /// a reference to the instruction grammar entry if found.
+    pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
+        NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE
+            .iter()
+            .find(|inst| inst.opcode == opcode)
+    }
+
+    /// Returns a reference to the instruction grammar entry with the given
+    /// `opcode`.
+    pub fn get(opcode: spirv::CLOp) -> &'static ExtendedInstruction<'static> {
+        NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE
+            .iter()
+            .find(|inst| (inst.opcode == opcode as spirv::Word))
+            .expect("internal error")
+    }
+
+    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
+        NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE.iter()
+    }
+}
+
+include!("autogen_nonsemantic_debugprintf.rs");
+
+/// The table for all `NonSemanticShaderDebugInfo100` extended instructions.
+///
+/// This table is staic data stored in the library.
+#[allow(clippy::upper_case_acronyms)]
+pub struct NonSemanticShaderDebugInfo100InstructionTable;
+
+impl NonSemanticShaderDebugInfo100InstructionTable {
+    /// Looks up the given `opcode` in the instruction table and returns
+    /// a reference to the instruction grammar entry if found.
+    pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
+        NONSEMANTIC_SHADER_DEBUGINFO_100_INSTRUCTION_TABLE
+            .iter()
+            .find(|inst| inst.opcode == opcode)
+    }
+
+    /// Returns a reference to the instruction grammar entry with the given
+    /// `opcode`.
+    pub fn get(opcode: spirv::CLOp) -> &'static ExtendedInstruction<'static> {
+        NONSEMANTIC_SHADER_DEBUGINFO_100_INSTRUCTION_TABLE
+            .iter()
+            .find(|inst| (inst.opcode == opcode as spirv::Word))
+            .expect("internal error")
+    }
+
+    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
+        NONSEMANTIC_SHADER_DEBUGINFO_100_INSTRUCTION_TABLE.iter()
+    }
+}
+
+include!("autogen_nonsemantic_shader_debuginfo_100.rs");

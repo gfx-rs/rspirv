@@ -9,7 +9,8 @@ mod table;
 mod utils;
 
 use std::{
-    env, fs,
+    env,
+    fs,
     io::Write,
     path::{Path, PathBuf},
     process,
@@ -132,6 +133,7 @@ fn main() {
         ("GLSL.std.450", "GLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html"),
         ("OpenCL.std.100", "CLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
         ("NonSemantic.DebugPrintF", "DebugPrintFOp", "https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md"),
+        ("NonSemantic.Shader.DebugInfo.100", "DebugInfoOp", "https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.Shader.DebugInfo.100.html"),
     ];
     let extended_instruction_sets = extended_instruction_sets.map(|(ext, op, url)| {
         let grammar: structs::ExtInstSetGrammar = serde_json::from_str(
@@ -148,6 +150,16 @@ fn main() {
     // SPIR-V header
     write_formatted(&autogen_src_dir.join("../spirv/autogen_spirv.rs"), {
         let core = header::gen_spirv_header(&grammar);
+        let extended_instruction_operands =
+            extended_instruction_sets
+                .iter()
+                .flat_map(|(_, _, _, grammar)| {
+                    grammar
+                        .operand_kinds
+                        .iter()
+                        .filter_map(header::gen_operand_kind)
+                        .map(|kind| kind.to_string())
+                });
         let extended_instruction_sets =
             extended_instruction_sets
                 .iter()
@@ -160,9 +172,10 @@ fn main() {
                     .to_string()
                 });
         format!(
-            "{}\n{}",
+            "{}\n{}\n{}",
             core,
-            extended_instruction_sets.collect::<Vec<_>>().join("\n")
+            extended_instruction_sets.collect::<Vec<_>>().join("\n"),
+            extended_instruction_operands.collect::<Vec<_>>().join("\n"),
         )
     });
 
