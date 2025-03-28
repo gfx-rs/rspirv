@@ -4088,15 +4088,11 @@ impl CLOp {
 pub enum DebugPrintFOp {
     DebugPrintf = 1u32,
 }
-impl num_traits::FromPrimitive for DebugPrintFOp {
-    #[allow(trivial_numeric_casts)]
-    fn from_i64(n: i64) -> Option<Self> {
-        Some(match n as u32 {
-            1u32 => DebugPrintFOp::DebugPrintf,
+impl DebugPrintFOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32 => unsafe { core::mem::transmute::<u32, DebugPrintFOp>(1u32) },
             _ => return None,
         })
-    }
-    fn from_u64(n: u64) -> Option<Self> {
-        Self::from_i64(n as i64)
     }
 }

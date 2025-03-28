@@ -9,8 +9,7 @@ mod table;
 mod utils;
 
 use std::{
-    env,
-    fs,
+    env, fs,
     io::Write,
     path::{Path, PathBuf},
     process,
@@ -116,36 +115,30 @@ fn main() {
     }
 
     let grammar: structs::Grammar = {
-        let mut original =
-            serde_json::from_str(
-                &std::str::from_utf8(
-                    &fs::read(autogen_src_dir.join(
-                        "external/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json",
-                    ))
-                    .unwrap(),
-                )
-                .unwrap(),
+        let mut original = serde_json::from_str(
+            &fs::read_to_string(
+                autogen_src_dir
+                    .join("external/SPIRV-Headers/include/spirv/unified1/spirv.core.grammar.json"),
             )
-            .unwrap();
+            .unwrap(),
+        )
+        .unwrap();
         map_reserved_instructions(&mut original);
         sort_instructions(&mut original);
         original
     };
 
     let extended_instruction_sets = [
-			("GLSL.std.450", "GLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html"),
-			("OpenCL.std.100", "CLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
-			("NonSemantic.DebugPrintF", "DebugPrintFOp", "https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md"),
+        ("GLSL.std.450", "GLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html"),
+        ("OpenCL.std.100", "CLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
+        ("NonSemantic.DebugPrintF", "DebugPrintFOp", "https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md"),
     ];
     let extended_instruction_sets = extended_instruction_sets.map(|(ext, op, url)| {
         let grammar: structs::ExtInstSetGrammar = serde_json::from_str(
-            &std::str::from_utf8(
-                &fs::read(autogen_src_dir.join(format!(
-                    "external/SPIRV-Headers/include/spirv/unified1/extinst.{}.grammar.json",
-                    ext.to_lowercase()
-                )))
-                .unwrap(),
-            )
+            &std::fs::read_to_string(autogen_src_dir.join(format!(
+                "external/SPIRV-Headers/include/spirv/unified1/extinst.{}.grammar.json",
+                ext.to_lowercase()
+            )))
             .unwrap(),
         )
         .unwrap();
@@ -161,7 +154,7 @@ fn main() {
                 .map(|(ext, op, url, grammar)| {
                     header::gen_opcodes(
                         op,
-                        &grammar,
+                        grammar,
                         &format!("[{}]({}) extended instruction opcode", ext, url),
                     )
                     .to_string()
@@ -169,7 +162,7 @@ fn main() {
         format!(
             "{}\n{}",
             core,
-            extended_instruction_sets.collect::<Box<_>>().join("\n")
+            extended_instruction_sets.collect::<Vec<_>>().join("\n")
         )
     });
 
