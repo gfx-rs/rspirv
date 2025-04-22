@@ -35,9 +35,9 @@ const WORD_NUM_BYTES: usize = 4;
 ///
 /// * `DecodeError::LimitReached(offset)` if the most recent limit has reached.
 /// * `DecodeError::StreamExpected(offset)` if more bytes are needed to decode
-///    the next word.
+///   the next word.
 /// * `DecodeError::<spirv-enum>Unknown(offset, value)` if failed to decode the
-///    next word as the given `<spirv-enum>`.
+///   next word as the given `<spirv-enum>`.
 ///
 /// All errors contain the byte offset of the word failed decoding.
 ///
