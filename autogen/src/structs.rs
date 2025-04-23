@@ -79,6 +79,8 @@ pub struct ExtInstSetGrammar {
     pub version: Option<u32>,
     pub revision: u32,
     pub instructions: Vec<Instruction>,
+    #[serde(default)]
+    pub operand_kinds: Vec<OperandKind>,
 }
 
 fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Error> {
@@ -92,7 +94,11 @@ fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Err
         }
 
         fn visit_str<E: de::Error>(self, value: &str) -> result::Result<Self::Value, E> {
-            Ok(u32::from_str_radix(&value[2..], 16).unwrap())
+            if let Some(value) = value.strip_prefix("0x") {
+                Ok(u32::from_str_radix(value, 16).unwrap())
+            } else {
+                Ok(value.parse::<u32>().unwrap())
+            }
         }
 
         fn visit_u64<E: de::Error>(self, value: u64) -> result::Result<Self::Value, E> {

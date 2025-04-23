@@ -7,6 +7,8 @@
 
 pub use self::syntax::CoreInstructionTable;
 pub use self::syntax::GlslStd450InstructionTable;
+pub use self::syntax::NonSemanticDebugPrintfInstructionTable;
+pub use self::syntax::NonSemanticShaderDebugInfo100InstructionTable;
 pub use self::syntax::OpenCLStd100InstructionTable;
 pub use self::syntax::{ExtendedInstruction, Instruction};
 pub use self::syntax::{LogicalOperand, OperandKind, OperandQuantifier};

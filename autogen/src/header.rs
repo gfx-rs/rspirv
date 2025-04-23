@@ -263,7 +263,7 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 
 /// Returns the code defining the enum for an operand kind by parsing
 /// the given SPIR-V `grammar`.
-fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<TokenStream> {
+pub fn gen_operand_kind(grammar: &structs::OperandKind) -> Option<TokenStream> {
     use structs::Category::*;
     match grammar.category {
         BitEnum => Some(gen_bit_enum_operand_kind(grammar)),
