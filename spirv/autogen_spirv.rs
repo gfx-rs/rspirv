@@ -4267,7 +4267,7 @@ impl Op {
     pub const DecorateStringGOOGLE: Op = Op::DecorateString;
     pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
 }
-#[doc = "[GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html) extended instruction opcode"]
+#[doc = "[GLSL.std.450](https://registry.khronos.org/SPIR-V/specs/unified1/GLSL.std.450.html) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -4364,7 +4364,7 @@ impl GLOp {
         })
     }
 }
-#[doc = "[OpenCL.std.100](https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
+#[doc = "[OpenCL.std.100](https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -4544,7 +4544,60 @@ impl CLOp {
         })
     }
 }
-#[doc = "[NonSemantic.DebugPrintF](https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md) extended instruction opcode"]
+#[doc = "[OpenCL.debuginfo.100](https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.DebugInfo.100.html) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum CLDebugInfoOp {
+    DebugInfoNone = 0u32,
+    DebugCompilationUnit = 1u32,
+    DebugTypeBasic = 2u32,
+    DebugTypePointer = 3u32,
+    DebugTypeQualifier = 4u32,
+    DebugTypeArray = 5u32,
+    DebugTypeVector = 6u32,
+    DebugTypedef = 7u32,
+    DebugTypeFunction = 8u32,
+    DebugTypeEnum = 9u32,
+    DebugTypeComposite = 10u32,
+    DebugTypeMember = 11u32,
+    DebugTypeInheritance = 12u32,
+    DebugTypePtrToMember = 13u32,
+    DebugTypeTemplate = 14u32,
+    DebugTypeTemplateParameter = 15u32,
+    DebugTypeTemplateTemplateParameter = 16u32,
+    DebugTypeTemplateParameterPack = 17u32,
+    DebugGlobalVariable = 18u32,
+    DebugFunctionDeclaration = 19u32,
+    DebugFunction = 20u32,
+    DebugLexicalBlock = 21u32,
+    DebugLexicalBlockDiscriminator = 22u32,
+    DebugScope = 23u32,
+    DebugNoScope = 24u32,
+    DebugInlinedAt = 25u32,
+    DebugLocalVariable = 26u32,
+    DebugInlinedVariable = 27u32,
+    DebugDeclare = 28u32,
+    DebugValue = 29u32,
+    DebugOperation = 30u32,
+    DebugExpression = 31u32,
+    DebugMacroDef = 32u32,
+    DebugMacroUndef = 33u32,
+    DebugImportedEntity = 34u32,
+    DebugSource = 35u32,
+    DebugModuleINTEL = 36u32,
+}
+impl CLDebugInfoOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=36u32 => unsafe { core::mem::transmute::<u32, CLDebugInfoOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.DebugPrintF](https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugPrintf.html) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
@@ -4557,6 +4610,73 @@ impl DebugPrintFOp {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
             1u32 => unsafe { core::mem::transmute::<u32, DebugPrintFOp>(1u32) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.DebugBreak](https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugBreak.html) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum DebugBreakOp {
+    DebugBreak = 1u32,
+}
+impl DebugBreakOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32 => unsafe { core::mem::transmute::<u32, DebugBreakOp>(1u32) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[DebugInfo](https://registry.khronos.org/SPIR-V/specs/unified1/DebugInfo.html) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum DebugInfoOp {
+    DebugInfoNone = 0u32,
+    DebugCompilationUnit = 1u32,
+    DebugTypeBasic = 2u32,
+    DebugTypePointer = 3u32,
+    DebugTypeQualifier = 4u32,
+    DebugTypeArray = 5u32,
+    DebugTypeVector = 6u32,
+    DebugTypedef = 7u32,
+    DebugTypeFunction = 8u32,
+    DebugTypeEnum = 9u32,
+    DebugTypeComposite = 10u32,
+    DebugTypeMember = 11u32,
+    DebugTypeInheritance = 12u32,
+    DebugTypePtrToMember = 13u32,
+    DebugTypeTemplate = 14u32,
+    DebugTypeTemplateParameter = 15u32,
+    DebugTypeTemplateTemplateParameter = 16u32,
+    DebugTypeTemplateParameterPack = 17u32,
+    DebugGlobalVariable = 18u32,
+    DebugFunctionDeclaration = 19u32,
+    DebugFunction = 20u32,
+    DebugLexicalBlock = 21u32,
+    DebugLexicalBlockDiscriminator = 22u32,
+    DebugScope = 23u32,
+    DebugNoScope = 24u32,
+    DebugInlinedAt = 25u32,
+    DebugLocalVariable = 26u32,
+    DebugInlinedVariable = 27u32,
+    DebugDeclare = 28u32,
+    DebugValue = 29u32,
+    DebugOperation = 30u32,
+    DebugExpression = 31u32,
+    DebugMacroDef = 32u32,
+    DebugMacroUndef = 33u32,
+}
+impl DebugInfoOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=33u32 => unsafe { core::mem::transmute::<u32, DebugInfoOp>(n) },
             _ => return None,
         })
     }

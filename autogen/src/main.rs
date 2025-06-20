@@ -129,9 +129,12 @@ fn main() {
     };
 
     let extended_instruction_sets = [
-        ("GLSL.std.450", "GLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html"),
-        ("OpenCL.std.100", "CLOp", "https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
-        ("NonSemantic.DebugPrintF", "DebugPrintFOp", "https://github.com/KhronosGroup/Vulkan-ValidationLayers/blob/master/docs/debug_printf.md"),
+        ("GLSL.std.450", "GLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/GLSL.std.450.html"),
+        ("OpenCL.std.100", "CLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
+        ("OpenCL.debuginfo.100", "CLDebugInfoOp", "https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.DebugInfo.100.html"),
+        ("NonSemantic.DebugPrintF", "DebugPrintFOp", "https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugPrintf.html"),
+        ("NonSemantic.DebugBreak", "DebugBreakOp", "https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugBreak.html"),
+        ("DebugInfo", "DebugInfoOp", "https://registry.khronos.org/SPIR-V/specs/unified1/DebugInfo.html"),
     ];
     let extended_instruction_sets = extended_instruction_sets.map(|(ext, op, url)| {
         let grammar: structs::ExtInstSetGrammar = serde_json::from_str(
