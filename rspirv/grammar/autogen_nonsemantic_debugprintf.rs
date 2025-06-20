@@ -3,8 +3,8 @@
 // DO NOT MODIFY!
 
 static NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE: &[ExtendedInstruction<'static>] = &[ext_inst!(
+    DebugPrintFOp,
     DebugPrintf,
-    1u32,
     [],
     [],
     [(IdRef, One), (IdRef, ZeroOrMore)]

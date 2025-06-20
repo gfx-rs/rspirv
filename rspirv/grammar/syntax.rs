@@ -18,6 +18,8 @@ pub struct Instruction<'a> {
 }
 
 /// Grammar for an extended instruction.
+// TODO: Could use a type argument for the opcode, since we always generate the right enum (and
+// deduplicate with Instruction?)
 pub struct ExtendedInstruction<'a> {
     /// OpName.
     pub opname: &'a str,
@@ -75,11 +77,11 @@ macro_rules! inst {
 
 /// Declares the grammar for an extended instruction instruction.
 macro_rules! ext_inst {
-    ($opname:ident, $opcode: expr, [$( $cap:ident ),*], [$( $ext:expr ),*],
+    ($opconst:ident, $opname:ident, [$( $cap:ident ),*], [$( $ext:expr ),*],
      [$( ($kind:ident, $quant:ident) ),*]) => {
         ExtendedInstruction {
             opname: stringify!($opname),
-            opcode: $opcode,
+            opcode: spirv::$opconst::$opname as spirv::Word,
             capabilities: &[
                 $( spirv::Capability::$cap ),*
             ],
@@ -96,9 +98,11 @@ macro_rules! ext_inst {
     }
 }
 
+// TODO: Autogenerate tables
+
 /// The table for all SPIR-V core instructions.
 ///
-/// This table is staic data stored in the library.
+/// This table is static data stored in the library.
 pub struct CoreInstructionTable;
 
 impl CoreInstructionTable {
@@ -128,7 +132,7 @@ include!("autogen_table.rs");
 
 /// The table for all `GLSLstd450` extended instructions.
 ///
-/// This table is staic data stored in the library.
+/// This table is static data stored in the library.
 pub struct GlslStd450InstructionTable;
 
 impl GlslStd450InstructionTable {
@@ -158,7 +162,7 @@ include!("autogen_glsl_std_450.rs");
 
 /// The table for all `OpenCLstd100` extended instructions.
 ///
-/// This table is staic data stored in the library.
+/// This table is static data stored in the library.
 #[allow(clippy::upper_case_acronyms)]
 pub struct OpenCLStd100InstructionTable;
 
