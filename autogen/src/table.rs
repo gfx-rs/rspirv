@@ -21,9 +21,10 @@ fn convert_quantifier(quantifier: structs::Quantifier) -> Ident {
 /// `is_ext` indicates whether the grammar is for an extended instruction set.
 pub(crate) fn gen_instruction_table(
     grammar: &[structs::Instruction],
+    ext_op_name: Option<&str>,
     name: &str,
-    is_ext: bool,
 ) -> TokenStream {
+    let ext_op_name = ext_op_name.map(as_ident);
     // Vector for strings for all instructions.
     let instructions = grammar.iter().map(|inst| {
         // Vector of strings for all operands.
@@ -34,11 +35,10 @@ pub(crate) fn gen_instruction_table(
         });
         let caps = inst.capabilities.iter().map(|cap| as_ident(cap));
         let exts = &inst.extensions;
-        if is_ext {
+        if let Some(spirv_op) = &ext_op_name {
             let opname = as_ident(&inst.opname);
-            let opcode = inst.opcode;
             quote! {
-                ext_inst!(#opname, #opcode, [#(#caps),*], [#(#exts),*], [#(#operands),*])
+                ext_inst!(#spirv_op, #opname, [#(#caps),*], [#(#exts),*], [#(#operands),*])
             }
         } else {
             let opname = as_ident(inst.opname.strip_prefix("Op").unwrap());
@@ -48,7 +48,8 @@ pub(crate) fn gen_instruction_table(
         }
     });
     let name = as_ident(name);
-    let inst_type = as_ident(if is_ext {
+
+    let inst_type = as_ident(if ext_op_name.is_some() {
         "ExtendedInstruction"
     } else {
         "Instruction"
@@ -68,7 +69,7 @@ pub fn gen_grammar_inst_table_operand_kinds(grammar: &structs::Grammar) -> Token
         .map(|kind| as_ident(&kind.kind));
 
     // Instruction table.
-    let table = gen_instruction_table(&grammar.instructions, "INSTRUCTION_TABLE", false);
+    let table = gen_instruction_table(&grammar.instructions, None, "INSTRUCTION_TABLE");
 
     quote! {
         #[doc = "All operand kinds in the SPIR-V grammar."]
