@@ -381,6 +381,11 @@ impl Parser<'_, '_> {
             spirv::ExecutionMode::RoundingModeRTZ => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::TileShadingRateQCOM => vec![
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+            ],
             spirv::ExecutionMode::IsApiEntryAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::ExecutionMode::MaxNodeRecursionAMDX => {
                 vec![dr::Operand::IdRef(self.decoder.id()?)]
