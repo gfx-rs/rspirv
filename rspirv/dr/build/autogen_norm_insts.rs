@@ -20880,7 +20880,6 @@ impl Builder {
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
-        result: spirv::Word,
         input: spirv::Word,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
@@ -20889,7 +20888,7 @@ impl Builder {
             spirv::Op::FPGARegINTEL,
             Some(result_type),
             Some(_id),
-            vec![dr::Operand::IdRef(result), dr::Operand::IdRef(input)],
+            vec![dr::Operand::IdRef(input)],
         );
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
@@ -20900,7 +20899,6 @@ impl Builder {
         insert_point: InsertPoint,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
-        result: spirv::Word,
         input: spirv::Word,
     ) -> BuildResult<spirv::Word> {
         let _id = result_id.unwrap_or_else(|| self.id());
@@ -20909,7 +20907,7 @@ impl Builder {
             spirv::Op::FPGARegINTEL,
             Some(result_type),
             Some(_id),
-            vec![dr::Operand::IdRef(result), dr::Operand::IdRef(input)],
+            vec![dr::Operand::IdRef(input)],
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
@@ -21930,6 +21928,165 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpTaskSequenceCreateINTEL instruction to the current block."]
+    pub fn task_sequence_create_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        function: spirv::Word,
+        pipelined: u32,
+        use_stall_enable_clusters: u32,
+        get_capacity: u32,
+        async_capacity: u32,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceCreateINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(function),
+                dr::Operand::LiteralBit32(pipelined),
+                dr::Operand::LiteralBit32(use_stall_enable_clusters),
+                dr::Operand::LiteralBit32(get_capacity),
+                dr::Operand::LiteralBit32(async_capacity),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpTaskSequenceCreateINTEL instruction to the current block."]
+    pub fn insert_task_sequence_create_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        function: spirv::Word,
+        pipelined: u32,
+        use_stall_enable_clusters: u32,
+        get_capacity: u32,
+        async_capacity: u32,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceCreateINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(function),
+                dr::Operand::LiteralBit32(pipelined),
+                dr::Operand::LiteralBit32(use_stall_enable_clusters),
+                dr::Operand::LiteralBit32(get_capacity),
+                dr::Operand::LiteralBit32(async_capacity),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpTaskSequenceAsyncINTEL instruction to the current block."]
+    pub fn task_sequence_async_intel(
+        &mut self,
+        sequence: spirv::Word,
+        arguments: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceAsyncINTEL,
+            None,
+            None,
+            vec![dr::Operand::IdRef(sequence)],
+        );
+        inst.operands
+            .extend(arguments.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpTaskSequenceAsyncINTEL instruction to the current block."]
+    pub fn insert_task_sequence_async_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        sequence: spirv::Word,
+        arguments: impl IntoIterator<Item = spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceAsyncINTEL,
+            None,
+            None,
+            vec![dr::Operand::IdRef(sequence)],
+        );
+        inst.operands
+            .extend(arguments.into_iter().map(dr::Operand::IdRef));
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpTaskSequenceGetINTEL instruction to the current block."]
+    pub fn task_sequence_get_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        sequence: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceGetINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(sequence)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpTaskSequenceGetINTEL instruction to the current block."]
+    pub fn insert_task_sequence_get_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        sequence: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceGetINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(sequence)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpTaskSequenceReleaseINTEL instruction to the current block."]
+    pub fn task_sequence_release_intel(&mut self, sequence: spirv::Word) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceReleaseINTEL,
+            None,
+            None,
+            vec![dr::Operand::IdRef(sequence)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpTaskSequenceReleaseINTEL instruction to the current block."]
+    pub fn insert_task_sequence_release_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        sequence: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TaskSequenceReleaseINTEL,
+            None,
+            None,
+            vec![dr::Operand::IdRef(sequence)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
     #[doc = "Appends an OpSubgroupBlockPrefetchINTEL instruction to the current block."]
     pub fn subgroup_block_prefetch_intel(
         &mut self,
@@ -22389,6 +22546,59 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpBitwiseFunctionINTEL instruction to the current block."]
+    pub fn bitwise_function_intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        a: spirv::Word,
+        b: spirv::Word,
+        c: spirv::Word,
+        lut_index: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::BitwiseFunctionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(a),
+                dr::Operand::IdRef(b),
+                dr::Operand::IdRef(c),
+                dr::Operand::IdRef(lut_index),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpBitwiseFunctionINTEL instruction to the current block."]
+    pub fn insert_bitwise_function_intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        a: spirv::Word,
+        b: spirv::Word,
+        c: spirv::Word,
+        lut_index: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::BitwiseFunctionINTEL,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(a),
+                dr::Operand::IdRef(b),
+                dr::Operand::IdRef(c),
+                dr::Operand::IdRef(lut_index),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpGroupIMulKHR instruction to the current block."]
     pub fn group_i_mul_khr(
         &mut self,
@@ -22777,6 +22987,43 @@ impl Builder {
                 dr::Operand::GroupOperation(operation),
                 dr::Operand::IdRef(x),
             ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpRoundFToTF32INTEL instruction to the current block."]
+    pub fn round_f_to_tf32intel(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        float_value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::RoundFToTF32INTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(float_value)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpRoundFToTF32INTEL instruction to the current block."]
+    pub fn insert_round_f_to_tf32intel(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        float_value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::RoundFToTF32INTEL,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(float_value)],
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
