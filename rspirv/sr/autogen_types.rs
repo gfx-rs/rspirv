@@ -112,4 +112,5 @@ pub enum Type {
     StructContinuedINTEL {
         member_0_type_member_1_type: Vec<spirv::Word>,
     },
+    TaskSequenceINTEL,
 }
