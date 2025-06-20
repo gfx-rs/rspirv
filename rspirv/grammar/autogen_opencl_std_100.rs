@@ -3,288 +3,848 @@
 // DO NOT MODIFY!
 
 static OPENCL_STD_100_INSTRUCTIONS: &[ExtendedInstruction<'static>] = &[
-    ext_inst!(CL, CLOp, acos, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, acosh, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, acospi, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, asin, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, asinh, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, asinpi, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, atan, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, atan2, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, atanh, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, atanpi, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, atan2pi, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, cbrt, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, ceil, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, copysign, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, cos, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, cosh, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, cospi, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, erfc, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, erf, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, exp, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, exp2, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, exp10, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, expm1, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, fabs, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, fdim, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, floor, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, acos, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, acosh, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, acospi, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, asin, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, asinh, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, asinpi, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, atan, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        atan2,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, atanh, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, atanpi, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        atan2pi,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, cbrt, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, ceil, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        copysign,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, cos, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, cosh, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, cospi, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, erfc, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, erf, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, exp, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, exp2, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, exp10, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, expm1, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, fabs, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        fdim,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, floor, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         fma,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, fmax, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, fmin, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, fmod, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, fract, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, frexp, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, hypot, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, ilogb, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, ldexp, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, lgamma, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, lgamma_r, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, log, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, log2, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, log10, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, log1p, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, logb, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        fmax,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        fmin,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        fmod,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        fract,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        frexp,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        hypot,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, ilogb, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        ldexp,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, lgamma, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        lgamma_r,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, log, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, log2, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, log10, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, log1p, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, logb, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         mad,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, maxmag, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, minmag, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, modf, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, nan, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, nextafter, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, pow, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, pown, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, powr, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, remainder, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        maxmag,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        minmag,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        modf,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, nan, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        nextafter,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        pow,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        pown,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        powr,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        remainder,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         remquo,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, rint, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, rootn, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, round, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, rsqrt, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, sin, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, sincos, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, sinh, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, sinpi, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, sqrt, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, tan, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, tanh, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, tanpi, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, tgamma, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, trunc, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_cos, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_divide, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, half_exp, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_exp2, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_exp10, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_log, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_log2, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_log10, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_powr, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, half_recip, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_rsqrt, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_sin, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_sqrt, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, half_tan, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_cos, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, rint, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        rootn,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, round, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, rsqrt, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, sin, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        sincos,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, sinh, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, sinpi, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, sqrt, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, tan, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, tanh, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, tanpi, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, tgamma, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, trunc, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_cos,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_divide,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_exp,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_exp2,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_exp10,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_log,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_log2,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_log10,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_powr,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_recip,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_rsqrt,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_sin,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_sqrt,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        half_tan,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_cos,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         native_divide,
         [],
         [],
         [(IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, native_exp, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_exp2, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_exp10, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_log, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_log2, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_log10, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_powr, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, native_recip, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_rsqrt, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_sin, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_sqrt, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, native_tan, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        native_exp,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_exp2,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_exp10,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_log,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_log2,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_log10,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_powr,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_recip,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_rsqrt,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_sin,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_sqrt,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        native_tan,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         fclamp,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, degrees, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, fmax_common, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, fmin_common, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        degrees,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        fmax_common,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        fmin_common,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         mix,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, radians, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, step, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        radians,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        step,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         smoothstep,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, sign, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, cross, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, distance, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, length, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, normalize, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, sign, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        cross,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        distance,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, length, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        normalize,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         fast_distance,
         [],
         [],
         [(IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, fast_length, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, fast_normalize, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, s_abs, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, s_abs_diff, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, s_add_sat, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_add_sat, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, s_hadd, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_hadd, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, s_rhadd, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_rhadd, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        fast_length,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        fast_normalize,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(OpenclStd100, OpenclStd100Op, s_abs, [], [], [(IdRef, One)]),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_abs_diff,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_add_sat,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_add_sat,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_hadd,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_hadd,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_rhadd,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_rhadd,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         s_clamp,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         u_clamp,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, clz, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, ctz, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, clz, [], [], [(IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, ctz, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         s_mad_hi,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         u_mad_sat,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         s_mad_sat,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, s_max, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_max, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, s_min, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_min, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, s_mul_hi, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, rotate, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, s_sub_sat, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_sub_sat, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_upsample, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, s_upsample, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, popcount, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        s_max,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_max,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_min,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_min,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_mul_hi,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        rotate,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_sub_sat,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_sub_sat,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_upsample,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        s_upsample,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        popcount,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         s_mad24,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         u_mad24,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, s_mul24, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_mul24, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        s_mul24,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_mul24,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         vloadn,
         [],
         [],
         [(IdRef, One), (IdRef, One), (LiteralInteger, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vstoren,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, vload_half, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        vload_half,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         vload_halfn,
         [],
         [],
         [(IdRef, One), (IdRef, One), (LiteralInteger, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vstore_half,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vstore_half_r,
         [],
         [],
@@ -296,16 +856,16 @@ static OPENCL_STD_100_INSTRUCTIONS: &[ExtendedInstruction<'static>] = &[
         ]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vstore_halfn,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vstore_halfn_r,
         [],
         [],
@@ -317,24 +877,24 @@ static OPENCL_STD_100_INSTRUCTIONS: &[ExtendedInstruction<'static>] = &[
         ]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vloada_halfn,
         [],
         [],
         [(IdRef, One), (IdRef, One), (LiteralInteger, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vstorea_halfn,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         vstorea_halfn_r,
         [],
         [],
@@ -345,46 +905,74 @@ static OPENCL_STD_100_INSTRUCTIONS: &[ExtendedInstruction<'static>] = &[
             (FPRoundingMode, One)
         ]
     ),
-    ext_inst!(CL, CLOp, shuffle, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        shuffle,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         shuffle2,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         printf,
         [],
         [],
         [(IdRef, One), (IdRef, ZeroOrMore)]
     ),
-    ext_inst!(CL, CLOp, prefetch, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        prefetch,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         bitselect,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
         select,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(CL, CLOp, u_abs, [], [], [(IdRef, One)]),
-    ext_inst!(CL, CLOp, u_abs_diff, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(CL, CLOp, u_mul_hi, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(OpenclStd100, OpenclStd100Op, u_abs, [], [], [(IdRef, One)]),
     ext_inst!(
-        CL,
-        CLOp,
+        OpenclStd100,
+        OpenclStd100Op,
+        u_abs_diff,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
+        u_mul_hi,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        OpenclStd100,
+        OpenclStd100Op,
         u_mad_hi,
         [],
         [],

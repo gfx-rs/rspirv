@@ -9,6 +9,7 @@ mod table;
 mod utils;
 
 use std::{
+    collections::BTreeMap,
     env, fs,
     io::Write,
     path::{Path, PathBuf},
@@ -128,78 +129,134 @@ fn main() {
         original
     };
 
-    // (import_name, file_key, op, url)
-    // import_name: canonical OpExtInstImport string (case-sensitive, per SPIRV-Tools)
-    // file_key: grammar filename stem (lowercase), may differ from import_name
-    let extended_instruction_sets = [
-        ("GLSL.std.450", "glsl.std.450", "GLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/GLSL.std.450.html"),
-        ("OpenCL.std", "opencl.std.100", "CLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
-        ("NonSemantic.DebugPrintF", "nonsemantic.debugprintf", "DebugPrintFOp", "https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugPrintf.html"),
-    ];
-    let extended_instruction_sets = extended_instruction_sets.map(|(ext, file_key, op, url)| {
-        let grammar: structs::ExtInstSetGrammar = serde_json::from_str(
-            &std::fs::read_to_string(autogen_src_dir.join(format!(
-                "external/SPIRV-Headers/include/spirv/unified1/extinst.{file_key}.grammar.json",
-            )))
-            .unwrap(),
-        )
-        .unwrap();
-        (ext, file_key, op, url, grammar)
-    });
+    // Automatically discover all extended instruction sets from SPIRV-Headers
+    let extinst_dir = autogen_src_dir.join("external/SPIRV-Headers/include/spirv/unified1");
+    let extended_instruction_sets: BTreeMap<String, structs::ExtInstSetGrammar> =
+        fs::read_dir(&extinst_dir)
+            .unwrap()
+            .filter_map(|entry| {
+                let entry = entry.unwrap();
+                let filename = entry.file_name().to_string_lossy().into_owned();
+                let key = filename
+                    .strip_prefix("extinst.")
+                    .and_then(|s| s.strip_suffix(".grammar.json"))?;
+                let grammar: structs::ExtInstSetGrammar =
+                    serde_json::from_str(&fs::read_to_string(entry.path()).unwrap()).unwrap();
+                Some((key.to_owned(), grammar))
+            })
+            .collect();
+
+    // Canonical OpExtInstImport name strings for known extended instruction sets.
+    // Grammar filenames don't carry these, and the casing/separators are not
+    // derivable (e.g. "OpenCL.std" vs filename "opencl.std.100").  Names are
+    // case-sensitive and must match exactly what SPIR-V binaries contain.
+    // Reference: https://github.com/KhronosGroup/SPIRV-Tools/blob/main/source/ext_inst.cpp
+    let canonical_import_names: BTreeMap<&str, &str> = BTreeMap::from([
+        ("arm.motion-engine.100", "Arm.MotionEngine.100"),
+        ("debuginfo", "DebugInfo"),
+        ("glsl.std.450", "GLSL.std.450"),
+        ("nonsemantic.clspvreflection", "NonSemantic.ClspvReflection"),
+        ("nonsemantic.debugbreak", "NonSemantic.DebugBreak"),
+        ("nonsemantic.debugprintf", "NonSemantic.DebugPrintf"),
+        (
+            "nonsemantic.shader.debuginfo.100",
+            "NonSemantic.Shader.DebugInfo.100",
+        ),
+        ("nonsemantic.vkspreflection", "NonSemantic.VkspReflection"),
+        ("opencl.debuginfo.100", "OpenCL.DebugInfo.100"),
+        ("opencl.std.100", "OpenCL.std"),
+        ("spv-amd-gcn-shader", "SPV_AMD_gcn_shader"),
+        ("spv-amd-shader-ballot", "SPV_AMD_shader_ballot"),
+        (
+            "spv-amd-shader-explicit-vertex-parameter",
+            "SPV_AMD_shader_explicit_vertex_parameter",
+        ),
+        (
+            "spv-amd-shader-trinary-minmax",
+            "SPV_AMD_shader_trinary_minmax",
+        ),
+        ("tosa.001000.1", "TOSA.001000.1"),
+    ]);
+
+    // Derive module, variant, and op names for each extended instruction set
+    struct ExtInstInfo {
+        /// Lowercased grammar filename key, e.g. "glsl.std.450"
+        file_key: String,
+        /// Canonical OpExtInstImport name, e.g. "GLSL.std.450"
+        import_name: String,
+        /// Module name: dots/hyphens replaced with underscores, e.g. "glsl_std_450"
+        module_name: String,
+        /// PascalCase variant name, e.g. "GlslStd450", "NonsemanticDebugprintf"
+        variant_name: String,
+        /// Op enum name in the spirv crate, e.g. "GlslStd450Op"
+        op_name: String,
+        /// UPPER_CASE table name prefix, e.g. "GLSL_STD_450_INSTRUCTION"
+        table_name: String,
+        /// Whether this extension defines its own operand kinds
+        has_operand_kinds: bool,
+        grammar: structs::ExtInstSetGrammar,
+    }
+    let extended_instruction_sets: Vec<ExtInstInfo> = extended_instruction_sets
+        .into_iter()
+        .map(|(key, grammar)| {
+            let import_name = canonical_import_names
+                .get(key.as_str())
+                .unwrap_or_else(|| panic!("unknown extended instruction set {:?}, add its canonical OpExtInstImport name to the mapping", key))
+                .to_string();
+            let module_name = key.replace(['.', '-'], "_");
+            let variant_name: String = key
+                .split(['.', '-'])
+                .flat_map(|part| {
+                    let mut chars = part.chars();
+                    chars.next().unwrap().to_uppercase().chain(chars)
+                })
+                .collect();
+            let op_name = format!("{variant_name}Op");
+            let table_name = format!("{}_INSTRUCTION", module_name.to_uppercase());
+            let has_operand_kinds = !grammar.operand_kinds.is_empty();
+            ExtInstInfo {
+                file_key: key,
+                import_name,
+                module_name,
+                variant_name,
+                op_name,
+                table_name,
+                has_operand_kinds,
+                grammar,
+            }
+        })
+        .collect();
 
     // SPIR-V header
     write_formatted(&autogen_src_dir.join("../spirv/autogen_spirv.rs"), {
         let core = header::gen_spirv_header(&grammar);
-        let extended_instruction_sets =
-            extended_instruction_sets
-                .iter()
-                .map(|(ext, _file_key, op, url, grammar)| {
-                    header::gen_opcodes(
-                        op,
-                        grammar,
-                        &format!("[{}]({}) extended instruction opcode", ext, url),
-                    )
-                    .to_string()
-                });
-        format!(
-            "{}\n{}",
-            core,
-            extended_instruction_sets.collect::<Vec<_>>().join("\n")
-        )
+        let ext_opcodes = extended_instruction_sets
+            .iter()
+            .map(|ext| {
+                header::gen_opcodes(
+                    &ext.op_name,
+                    &ext.grammar,
+                    &format!(
+                        "[{}](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.{}.grammar.json) extended instruction opcode",
+                        ext.import_name, ext.file_key,
+                    ),
+                )
+                .to_string()
+            });
+        format!("{}\n{}", core, ext_opcodes.collect::<Vec<_>>().join("\n"))
     });
 
-    // Derive module and variant names for extensions with operand kinds
-    let ext_info: Vec<_> = extended_instruction_sets
-        .iter()
-        .map(|(_ext, file_key, _, _, grammar)| {
-            let module_name = file_key.replace(['.', '-'], "_");
-            let variant_name: String = file_key
-                .split(['.', '-'])
-                .flat_map(|part| {
-                    let mut chars = part.chars();
-                    // Uppercase the first character
-                    chars.next().unwrap().to_uppercase().chain(chars)
-                })
-                .collect();
-            let has_operand_kinds = !grammar.operand_kinds.is_empty();
-            (module_name, variant_name, has_operand_kinds)
-        })
-        .collect();
-
     // Wrapper variants for core OperandKind: only extensions with operand kinds
-    let ext_wrapper_variants: Vec<(&str, &str)> = ext_info
+    let ext_wrapper_variants: Vec<(&str, &str)> = extended_instruction_sets
         .iter()
-        .filter(|(_, _, has)| *has)
-        .map(|(module, variant, _)| (variant.as_str(), module.as_str()))
+        .filter(|ext| ext.has_operand_kinds)
+        .map(|ext| (ext.variant_name.as_str(), ext.module_name.as_str()))
         .collect();
 
-    // Collect ExtInstOp variant info: (variant_name, op_name) for all extended sets
+    // All extension variants for ExtInstOp enum
     let ext_inst_variants: Vec<(&str, &str)> = extended_instruction_sets
         .iter()
-        .map(|(_, _, op, _, _)| {
-            let variant = op.strip_suffix("Op").unwrap_or(op);
-            (variant, *op)
-        })
+        .map(|ext| (ext.variant_name.as_str(), ext.op_name.as_str()))
         .collect();
 
     // Instruction table
@@ -219,30 +276,28 @@ fn main() {
         ),
     );
     // Extended instruction sets
-    for (
-        (ext, _file_key, spirv_op, _, ext_grammar),
-        (module_name, variant_name, _has_operand_kinds),
-    ) in extended_instruction_sets.iter().zip(&ext_info)
-    {
-        let autogen_file = format!("autogen_{module_name}.rs");
-        let table_name = format!("{}_INSTRUCTION", module_name.to_uppercase());
-        let ext_variant_name = spirv_op.strip_suffix("Op").unwrap_or(spirv_op);
+    for ext in &extended_instruction_sets {
+        let autogen_file = format!("autogen_{}.rs", ext.module_name);
         write_formatted(
             &autogen_src_dir.join(format!("../rspirv/grammar/{autogen_file}")),
             table::gen_ext_instruction_file(
-                &ext_grammar.operand_kinds,
-                &ext_grammar.instructions,
-                spirv_op,
-                ext_variant_name,
-                &table_name,
-                variant_name,
+                &ext.grammar.operand_kinds,
+                &ext.grammar.instructions,
+                &ext.op_name,
+                &ext.variant_name,
+                &ext.table_name,
+                &ext.variant_name,
             ),
         );
         tables.push_str(&format!(
-            "pub mod {module_name} {{ use super::*; include!(\"{autogen_file}\"); }}\n\
-             pub use {module_name}::{table_name}_TABLE;\n"
+            "pub mod {} {{ use super::*; include!(\"{autogen_file}\"); }}\n\
+             pub use {}::{}_TABLE;\n",
+            ext.module_name, ext.module_name, ext.table_name,
         ));
-        table_lookup.push_str(&format!("\"{ext}\" => &{table_name}_TABLE,\n"));
+        table_lookup.push_str(&format!(
+            "\"{}\" => &{}_TABLE,\n",
+            ext.import_name, ext.table_name,
+        ));
     }
     write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_tables.rs"),

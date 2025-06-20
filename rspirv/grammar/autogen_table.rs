@@ -77,21 +77,49 @@ pub enum OperandKind {
     PairIdRefLiteralInteger,
     PairIdRefIdRef,
     TensorOperands,
+    Debuginfo(debuginfo::ExtOperandKind),
+    NonsemanticClspvreflection(nonsemantic_clspvreflection::ExtOperandKind),
+    NonsemanticShaderDebuginfo100(nonsemantic_shader_debuginfo_100::ExtOperandKind),
+    OpenclDebuginfo100(opencl_debuginfo_100::ExtOperandKind),
 }
 #[doc = "Wrapper enum for all extended instruction set opcodes."]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum ExtInstOp {
-    GL(spirv::GLOp),
-    CL(spirv::CLOp),
-    DebugPrintF(spirv::DebugPrintFOp),
+    ArmMotionEngine100(spirv::ArmMotionEngine100Op),
+    Debuginfo(spirv::DebuginfoOp),
+    GlslStd450(spirv::GlslStd450Op),
+    NonsemanticClspvreflection(spirv::NonsemanticClspvreflectionOp),
+    NonsemanticDebugbreak(spirv::NonsemanticDebugbreakOp),
+    NonsemanticDebugprintf(spirv::NonsemanticDebugprintfOp),
+    NonsemanticShaderDebuginfo100(spirv::NonsemanticShaderDebuginfo100Op),
+    NonsemanticVkspreflection(spirv::NonsemanticVkspreflectionOp),
+    OpenclDebuginfo100(spirv::OpenclDebuginfo100Op),
+    OpenclStd100(spirv::OpenclStd100Op),
+    SpvAmdGcnShader(spirv::SpvAmdGcnShaderOp),
+    SpvAmdShaderBallot(spirv::SpvAmdShaderBallotOp),
+    SpvAmdShaderExplicitVertexParameter(spirv::SpvAmdShaderExplicitVertexParameterOp),
+    SpvAmdShaderTrinaryMinmax(spirv::SpvAmdShaderTrinaryMinmaxOp),
+    Tosa0010001(spirv::Tosa0010001Op),
 }
 impl From<ExtInstOp> for spirv::Word {
     fn from(op: ExtInstOp) -> spirv::Word {
         match op {
-            ExtInstOp::GL(v) => v as spirv::Word,
-            ExtInstOp::CL(v) => v as spirv::Word,
-            ExtInstOp::DebugPrintF(v) => v as spirv::Word,
+            ExtInstOp::ArmMotionEngine100(v) => v as spirv::Word,
+            ExtInstOp::Debuginfo(v) => v as spirv::Word,
+            ExtInstOp::GlslStd450(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticClspvreflection(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticDebugbreak(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticDebugprintf(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticShaderDebuginfo100(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticVkspreflection(v) => v as spirv::Word,
+            ExtInstOp::OpenclDebuginfo100(v) => v as spirv::Word,
+            ExtInstOp::OpenclStd100(v) => v as spirv::Word,
+            ExtInstOp::SpvAmdGcnShader(v) => v as spirv::Word,
+            ExtInstOp::SpvAmdShaderBallot(v) => v as spirv::Word,
+            ExtInstOp::SpvAmdShaderExplicitVertexParameter(v) => v as spirv::Word,
+            ExtInstOp::SpvAmdShaderTrinaryMinmax(v) => v as spirv::Word,
+            ExtInstOp::Tosa0010001(v) => v as spirv::Word,
         }
     }
 }

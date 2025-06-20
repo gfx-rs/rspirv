@@ -3,8 +3,8 @@
 // DO NOT MODIFY!
 
 static NONSEMANTIC_DEBUGPRINTF_INSTRUCTIONS: &[ExtendedInstruction<'static>] = &[ext_inst!(
-    DebugPrintF,
-    DebugPrintFOp,
+    NonsemanticDebugprintf,
+    NonsemanticDebugprintfOp,
     DebugPrintf,
     [],
     [],

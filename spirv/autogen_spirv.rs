@@ -4757,13 +4757,82 @@ impl Op {
         )
     }
 }
-#[doc = "[GLSL.std.450](https://registry.khronos.org/SPIR-V/specs/unified1/GLSL.std.450.html) extended instruction opcode"]
+#[doc = "[Arm.MotionEngine.100](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.arm.motion-engine.100.grammar.json) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[allow(clippy::upper_case_acronyms)]
-pub enum GLOp {
+pub enum ArmMotionEngine100Op {
+    MIN_SAD = 0u32,
+    MIN_SAD_COST = 1u32,
+    RAW_SAD = 2u32,
+}
+impl ArmMotionEngine100Op {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=2u32 => unsafe { core::mem::transmute::<u32, ArmMotionEngine100Op>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[DebugInfo](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.debuginfo.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum DebuginfoOp {
+    DebugInfoNone = 0u32,
+    DebugCompilationUnit = 1u32,
+    DebugTypeBasic = 2u32,
+    DebugTypePointer = 3u32,
+    DebugTypeQualifier = 4u32,
+    DebugTypeArray = 5u32,
+    DebugTypeVector = 6u32,
+    DebugTypedef = 7u32,
+    DebugTypeFunction = 8u32,
+    DebugTypeEnum = 9u32,
+    DebugTypeComposite = 10u32,
+    DebugTypeMember = 11u32,
+    DebugTypeInheritance = 12u32,
+    DebugTypePtrToMember = 13u32,
+    DebugTypeTemplate = 14u32,
+    DebugTypeTemplateParameter = 15u32,
+    DebugTypeTemplateTemplateParameter = 16u32,
+    DebugTypeTemplateParameterPack = 17u32,
+    DebugGlobalVariable = 18u32,
+    DebugFunctionDeclaration = 19u32,
+    DebugFunction = 20u32,
+    DebugLexicalBlock = 21u32,
+    DebugLexicalBlockDiscriminator = 22u32,
+    DebugScope = 23u32,
+    DebugNoScope = 24u32,
+    DebugInlinedAt = 25u32,
+    DebugLocalVariable = 26u32,
+    DebugInlinedVariable = 27u32,
+    DebugDeclare = 28u32,
+    DebugValue = 29u32,
+    DebugOperation = 30u32,
+    DebugExpression = 31u32,
+    DebugMacroDef = 32u32,
+    DebugMacroUndef = 33u32,
+}
+impl DebuginfoOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=33u32 => unsafe { core::mem::transmute::<u32, DebuginfoOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[GLSL.std.450](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.glsl.std.450.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum GlslStd450Op {
     Round = 1u32,
     RoundEven = 2u32,
     Trunc = 3u32,
@@ -4846,21 +4915,255 @@ pub enum GLOp {
     NMax = 80u32,
     NClamp = 81u32,
 }
-impl GLOp {
+impl GlslStd450Op {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
-            1u32..=81u32 => unsafe { core::mem::transmute::<u32, GLOp>(n) },
+            1u32..=81u32 => unsafe { core::mem::transmute::<u32, GlslStd450Op>(n) },
             _ => return None,
         })
     }
 }
-#[doc = "[OpenCL.std](https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
+#[doc = "[NonSemantic.ClspvReflection](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.nonsemantic.clspvreflection.grammar.json) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[allow(clippy::upper_case_acronyms)]
-pub enum CLOp {
+pub enum NonsemanticClspvreflectionOp {
+    Kernel = 1u32,
+    ArgumentInfo = 2u32,
+    ArgumentStorageBuffer = 3u32,
+    ArgumentUniform = 4u32,
+    ArgumentPodStorageBuffer = 5u32,
+    ArgumentPodUniform = 6u32,
+    ArgumentPodPushConstant = 7u32,
+    ArgumentSampledImage = 8u32,
+    ArgumentStorageImage = 9u32,
+    ArgumentSampler = 10u32,
+    ArgumentWorkgroup = 11u32,
+    SpecConstantWorkgroupSize = 12u32,
+    SpecConstantGlobalOffset = 13u32,
+    SpecConstantWorkDim = 14u32,
+    PushConstantGlobalOffset = 15u32,
+    PushConstantEnqueuedLocalSize = 16u32,
+    PushConstantGlobalSize = 17u32,
+    PushConstantRegionOffset = 18u32,
+    PushConstantNumWorkgroups = 19u32,
+    PushConstantRegionGroupOffset = 20u32,
+    ConstantDataStorageBuffer = 21u32,
+    ConstantDataUniform = 22u32,
+    LiteralSampler = 23u32,
+    PropertyRequiredWorkgroupSize = 24u32,
+    SpecConstantSubgroupMaxSize = 25u32,
+    ArgumentPointerPushConstant = 26u32,
+    ArgumentPointerUniform = 27u32,
+    ProgramScopeVariablesStorageBuffer = 28u32,
+    ProgramScopeVariablePointerRelocation = 29u32,
+    ImageArgumentInfoChannelOrderPushConstant = 30u32,
+    ImageArgumentInfoChannelDataTypePushConstant = 31u32,
+    ImageArgumentInfoChannelOrderUniform = 32u32,
+    ImageArgumentInfoChannelDataTypeUniform = 33u32,
+    ArgumentStorageTexelBuffer = 34u32,
+    ArgumentUniformTexelBuffer = 35u32,
+    ConstantDataPointerPushConstant = 36u32,
+    ProgramScopeVariablePointerPushConstant = 37u32,
+    PrintfInfo = 38u32,
+    PrintfBufferStorageBuffer = 39u32,
+    PrintfBufferPointerPushConstant = 40u32,
+    NormalizedSamplerMaskPushConstant = 41u32,
+    WorkgroupVariableSize = 42u32,
+}
+impl NonsemanticClspvreflectionOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32..=42u32 => unsafe { core::mem::transmute::<u32, NonsemanticClspvreflectionOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.DebugBreak](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.nonsemantic.debugbreak.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum NonsemanticDebugbreakOp {
+    DebugBreak = 1u32,
+}
+impl NonsemanticDebugbreakOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32 => unsafe { core::mem::transmute::<u32, NonsemanticDebugbreakOp>(1u32) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.DebugPrintf](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.nonsemantic.debugprintf.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum NonsemanticDebugprintfOp {
+    DebugPrintf = 1u32,
+}
+impl NonsemanticDebugprintfOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32 => unsafe { core::mem::transmute::<u32, NonsemanticDebugprintfOp>(1u32) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.Shader.DebugInfo.100](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.nonsemantic.shader.debuginfo.100.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum NonsemanticShaderDebuginfo100Op {
+    DebugInfoNone = 0u32,
+    DebugCompilationUnit = 1u32,
+    DebugTypeBasic = 2u32,
+    DebugTypePointer = 3u32,
+    DebugTypeQualifier = 4u32,
+    DebugTypeArray = 5u32,
+    DebugTypeVector = 6u32,
+    DebugTypedef = 7u32,
+    DebugTypeFunction = 8u32,
+    DebugTypeEnum = 9u32,
+    DebugTypeComposite = 10u32,
+    DebugTypeMember = 11u32,
+    DebugTypeInheritance = 12u32,
+    DebugTypePtrToMember = 13u32,
+    DebugTypeTemplate = 14u32,
+    DebugTypeTemplateParameter = 15u32,
+    DebugTypeTemplateTemplateParameter = 16u32,
+    DebugTypeTemplateParameterPack = 17u32,
+    DebugGlobalVariable = 18u32,
+    DebugFunctionDeclaration = 19u32,
+    DebugFunction = 20u32,
+    DebugLexicalBlock = 21u32,
+    DebugLexicalBlockDiscriminator = 22u32,
+    DebugScope = 23u32,
+    DebugNoScope = 24u32,
+    DebugInlinedAt = 25u32,
+    DebugLocalVariable = 26u32,
+    DebugInlinedVariable = 27u32,
+    DebugDeclare = 28u32,
+    DebugValue = 29u32,
+    DebugOperation = 30u32,
+    DebugExpression = 31u32,
+    DebugMacroDef = 32u32,
+    DebugMacroUndef = 33u32,
+    DebugImportedEntity = 34u32,
+    DebugSource = 35u32,
+    DebugFunctionDefinition = 101u32,
+    DebugSourceContinued = 102u32,
+    DebugLine = 103u32,
+    DebugNoLine = 104u32,
+    DebugBuildIdentifier = 105u32,
+    DebugStoragePath = 106u32,
+    DebugEntryPoint = 107u32,
+    DebugTypeMatrix = 108u32,
+}
+impl NonsemanticShaderDebuginfo100Op {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=35u32 => unsafe {
+                core::mem::transmute::<u32, NonsemanticShaderDebuginfo100Op>(n)
+            },
+            101u32..=108u32 => unsafe {
+                core::mem::transmute::<u32, NonsemanticShaderDebuginfo100Op>(n)
+            },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.VkspReflection](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.nonsemantic.vkspreflection.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum NonsemanticVkspreflectionOp {
+    Configuration = 1u32,
+    StartCounter = 2u32,
+    StopCounter = 3u32,
+    PushConstants = 4u32,
+    SpecializationMapEntry = 5u32,
+    DescriptorSetBuffer = 6u32,
+    DescriptorSetImage = 7u32,
+    DescriptorSetSampler = 8u32,
+}
+impl NonsemanticVkspreflectionOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32..=8u32 => unsafe { core::mem::transmute::<u32, NonsemanticVkspreflectionOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[OpenCL.DebugInfo.100](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.opencl.debuginfo.100.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum OpenclDebuginfo100Op {
+    DebugInfoNone = 0u32,
+    DebugCompilationUnit = 1u32,
+    DebugTypeBasic = 2u32,
+    DebugTypePointer = 3u32,
+    DebugTypeQualifier = 4u32,
+    DebugTypeArray = 5u32,
+    DebugTypeVector = 6u32,
+    DebugTypedef = 7u32,
+    DebugTypeFunction = 8u32,
+    DebugTypeEnum = 9u32,
+    DebugTypeComposite = 10u32,
+    DebugTypeMember = 11u32,
+    DebugTypeInheritance = 12u32,
+    DebugTypePtrToMember = 13u32,
+    DebugTypeTemplate = 14u32,
+    DebugTypeTemplateParameter = 15u32,
+    DebugTypeTemplateTemplateParameter = 16u32,
+    DebugTypeTemplateParameterPack = 17u32,
+    DebugGlobalVariable = 18u32,
+    DebugFunctionDeclaration = 19u32,
+    DebugFunction = 20u32,
+    DebugLexicalBlock = 21u32,
+    DebugLexicalBlockDiscriminator = 22u32,
+    DebugScope = 23u32,
+    DebugNoScope = 24u32,
+    DebugInlinedAt = 25u32,
+    DebugLocalVariable = 26u32,
+    DebugInlinedVariable = 27u32,
+    DebugDeclare = 28u32,
+    DebugValue = 29u32,
+    DebugOperation = 30u32,
+    DebugExpression = 31u32,
+    DebugMacroDef = 32u32,
+    DebugMacroUndef = 33u32,
+    DebugImportedEntity = 34u32,
+    DebugSource = 35u32,
+    DebugModuleINTEL = 36u32,
+}
+impl OpenclDebuginfo100Op {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=36u32 => unsafe { core::mem::transmute::<u32, OpenclDebuginfo100Op>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[OpenCL.std](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.opencl.std.100.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum OpenclStd100Op {
     acos = 0u32,
     acosh = 1u32,
     acospi = 2u32,
@@ -5024,29 +5327,177 @@ pub enum CLOp {
     u_mul_hi = 203u32,
     u_mad_hi = 204u32,
 }
-impl CLOp {
+impl OpenclStd100Op {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
-            0u32..=110u32 => unsafe { core::mem::transmute::<u32, CLOp>(n) },
-            141u32..=187u32 => unsafe { core::mem::transmute::<u32, CLOp>(n) },
-            201u32..=204u32 => unsafe { core::mem::transmute::<u32, CLOp>(n) },
+            0u32..=110u32 => unsafe { core::mem::transmute::<u32, OpenclStd100Op>(n) },
+            141u32..=187u32 => unsafe { core::mem::transmute::<u32, OpenclStd100Op>(n) },
+            201u32..=204u32 => unsafe { core::mem::transmute::<u32, OpenclStd100Op>(n) },
             _ => return None,
         })
     }
 }
-#[doc = "[NonSemantic.DebugPrintF](https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugPrintf.html) extended instruction opcode"]
+#[doc = "[SPV_AMD_gcn_shader](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.spv-amd-gcn-shader.grammar.json) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[allow(clippy::upper_case_acronyms)]
-pub enum DebugPrintFOp {
-    DebugPrintf = 1u32,
+pub enum SpvAmdGcnShaderOp {
+    CubeFaceIndexAMD = 1u32,
+    CubeFaceCoordAMD = 2u32,
+    TimeAMD = 3u32,
 }
-impl DebugPrintFOp {
+impl SpvAmdGcnShaderOp {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
-            1u32 => unsafe { core::mem::transmute::<u32, DebugPrintFOp>(1u32) },
+            1u32..=3u32 => unsafe { core::mem::transmute::<u32, SpvAmdGcnShaderOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[SPV_AMD_shader_ballot](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.spv-amd-shader-ballot.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum SpvAmdShaderBallotOp {
+    SwizzleInvocationsAMD = 1u32,
+    SwizzleInvocationsMaskedAMD = 2u32,
+    WriteInvocationAMD = 3u32,
+    MbcntAMD = 4u32,
+}
+impl SpvAmdShaderBallotOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32..=4u32 => unsafe { core::mem::transmute::<u32, SpvAmdShaderBallotOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[SPV_AMD_shader_explicit_vertex_parameter](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.spv-amd-shader-explicit-vertex-parameter.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum SpvAmdShaderExplicitVertexParameterOp {
+    InterpolateAtVertexAMD = 1u32,
+}
+impl SpvAmdShaderExplicitVertexParameterOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32 => unsafe {
+                core::mem::transmute::<u32, SpvAmdShaderExplicitVertexParameterOp>(1u32)
+            },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[SPV_AMD_shader_trinary_minmax](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.spv-amd-shader-trinary-minmax.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum SpvAmdShaderTrinaryMinmaxOp {
+    FMin3AMD = 1u32,
+    UMin3AMD = 2u32,
+    SMin3AMD = 3u32,
+    FMax3AMD = 4u32,
+    UMax3AMD = 5u32,
+    SMax3AMD = 6u32,
+    FMid3AMD = 7u32,
+    UMid3AMD = 8u32,
+    SMid3AMD = 9u32,
+}
+impl SpvAmdShaderTrinaryMinmaxOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            1u32..=9u32 => unsafe { core::mem::transmute::<u32, SpvAmdShaderTrinaryMinmaxOp>(n) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[TOSA.001000.1](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.tosa.001000.1.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum Tosa0010001Op {
+    ARGMAX = 0u32,
+    AVG_POOL2D = 1u32,
+    CONV2D = 2u32,
+    CONV3D = 3u32,
+    DEPTHWISE_CONV2D = 4u32,
+    FFT2D = 5u32,
+    MATMUL = 6u32,
+    MAX_POOL2D = 7u32,
+    RFFT2D = 8u32,
+    TRANSPOSE_CONV2D = 9u32,
+    CLAMP = 10u32,
+    ERF = 11u32,
+    SIGMOID = 12u32,
+    TANH = 13u32,
+    ADD = 14u32,
+    ARITHMETIC_RIGHT_SHIFT = 15u32,
+    BITWISE_AND = 16u32,
+    BITWISE_OR = 17u32,
+    BITWISE_XOR = 18u32,
+    INTDIV = 19u32,
+    LOGICAL_AND = 20u32,
+    LOGICAL_LEFT_SHIFT = 21u32,
+    LOGICAL_RIGHT_SHIFT = 22u32,
+    LOGICAL_OR = 23u32,
+    LOGICAL_XOR = 24u32,
+    MAXIMUM = 25u32,
+    MINIMUM = 26u32,
+    MUL = 27u32,
+    POW = 28u32,
+    SUB = 29u32,
+    TABLE = 30u32,
+    ABS = 31u32,
+    BITWISE_NOT = 32u32,
+    CEIL = 33u32,
+    CLZ = 34u32,
+    COS = 35u32,
+    EXP = 36u32,
+    FLOOR = 37u32,
+    LOG = 38u32,
+    LOGICAL_NOT = 39u32,
+    NEGATE = 40u32,
+    RECIPROCAL = 41u32,
+    RSQRT = 42u32,
+    SIN = 43u32,
+    SELECT = 44u32,
+    EQUAL = 45u32,
+    GREATER = 46u32,
+    GREATER_EQUAL = 47u32,
+    REDUCE_ALL = 48u32,
+    REDUCE_ANY = 49u32,
+    REDUCE_MAX = 50u32,
+    REDUCE_MIN = 51u32,
+    REDUCE_PRODUCT = 52u32,
+    REDUCE_SUM = 53u32,
+    CONCAT = 54u32,
+    PAD = 55u32,
+    RESHAPE = 56u32,
+    REVERSE = 57u32,
+    SLICE = 58u32,
+    TILE = 59u32,
+    TRANSPOSE = 60u32,
+    GATHER = 61u32,
+    SCATTER = 62u32,
+    RESIZE = 63u32,
+    CAST = 64u32,
+    RESCALE = 65u32,
+}
+impl Tosa0010001Op {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=65u32 => unsafe { core::mem::transmute::<u32, Tosa0010001Op>(n) },
             _ => return None,
         })
     }

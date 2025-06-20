@@ -209,6 +209,18 @@ impl Parser<'_, '_> {
             GOpKind::LiteralContextDependentNumber => panic!(),
             GOpKind::LiteralSpecConstantOpInteger => panic!(),
             GOpKind::PairLiteralIntegerIdRef => panic!(),
+            GOpKind::Debuginfo(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
+            GOpKind::NonsemanticClspvreflection(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
+            GOpKind::NonsemanticShaderDebuginfo100(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
+            GOpKind::OpenclDebuginfo100(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
         })
     }
     fn parse_image_operands_arguments(
