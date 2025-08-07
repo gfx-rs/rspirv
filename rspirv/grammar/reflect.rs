@@ -57,6 +57,7 @@ pub fn is_type(opcode: spirv::Op) -> bool {
             | spirv::Op::TypeStruct
             | spirv::Op::TypeOpaque
             | spirv::Op::TypePointer
+            | spirv::Op::TypeUntypedPointerKHR
             | spirv::Op::TypeFunction
             | spirv::Op::TypeEvent
             | spirv::Op::TypeDeviceEvent
@@ -91,7 +92,7 @@ pub fn is_constant(opcode: spirv::Op) -> bool {
 
 /// Returns true if the given opcode is for a variable-defining instruction.
 pub fn is_variable(opcode: spirv::Op) -> bool {
-    opcode == spirv::Op::Variable
+    matches!(opcode, spirv::Op::Variable | spirv::Op::UntypedVariableKHR)
 }
 
 /// Returns true if the given opcode is a return instruction.

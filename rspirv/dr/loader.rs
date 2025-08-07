@@ -156,7 +156,7 @@ impl binary::Consumer for Loader {
             {
                 self.module.types_global_values.push(inst)
             }
-            spirv::Op::Variable if self.function.is_none() => {
+            spirv::Op::Variable | spirv::Op::UntypedVariableKHR if self.function.is_none() => {
                 self.module.types_global_values.push(inst)
             }
             spirv::Op::Undef if self.function.is_none() => {
