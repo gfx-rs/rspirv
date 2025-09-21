@@ -66,6 +66,7 @@ pub fn is_type(opcode: spirv::Op) -> bool {
             | spirv::Op::TypeAccelerationStructureKHR
             | spirv::Op::TypeRayQueryKHR
             | spirv::Op::TypeForwardPointer
+            | spirv::Op::TypeCooperativeMatrixKHR
     )
 }
 
