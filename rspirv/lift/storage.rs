@@ -41,7 +41,7 @@ impl<T, L: Borrow<Token<T>>> LiftStorage<T, L> {
         &mut self,
         id: spirv::Word,
         value: T,
-    ) -> (Token<T>, VacantEntry<spirv::Word, L>) {
+    ) -> (Token<T>, VacantEntry<'_, spirv::Word, L>) {
         let token = self.values.append(value);
         match self.lookup.entry(id) {
             Entry::Occupied(_) => panic!("Id {:?} is already used", id),

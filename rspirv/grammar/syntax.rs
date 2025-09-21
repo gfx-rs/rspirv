@@ -115,7 +115,7 @@ impl CoreInstructionTable {
     pub fn get(opcode: spirv::Op) -> &'static Instruction<'static> {
         INSTRUCTION_TABLE
             .iter()
-            .find(|inst| (inst.opcode == opcode))
+            .find(|inst| inst.opcode == opcode)
             .expect("internal error")
     }
 
@@ -145,7 +145,7 @@ impl GlslStd450InstructionTable {
     pub fn get(opcode: spirv::GLOp) -> &'static ExtendedInstruction<'static> {
         GLSL_STD_450_INSTRUCTION_TABLE
             .iter()
-            .find(|inst| (inst.opcode == opcode as spirv::Word))
+            .find(|inst| inst.opcode == opcode as spirv::Word)
             .expect("internal error")
     }
 
@@ -176,7 +176,7 @@ impl OpenCLStd100InstructionTable {
     pub fn get(opcode: spirv::CLOp) -> &'static ExtendedInstruction<'static> {
         OPENCL_STD_100_INSTRUCTION_TABLE
             .iter()
-            .find(|inst| (inst.opcode == opcode as spirv::Word))
+            .find(|inst| inst.opcode == opcode as spirv::Word)
             .expect("internal error")
     }
 
