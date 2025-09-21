@@ -558,6 +558,82 @@ impl Builder {
             new_id
         }
     }
+    #[doc = "Appends an OpTypeTensorARM instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_tensor_arm(
+        &mut self,
+        element_type: spirv::Word,
+        rank: Option<spirv::Word>,
+        shape: Option<spirv::Word>,
+    ) -> spirv::Word {
+        self.type_tensor_arm_id(None, element_type, rank, shape)
+    }
+    #[doc = "Appends an OpTypeTensorARM instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_tensor_arm_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        element_type: spirv::Word,
+        rank: Option<spirv::Word>,
+        shape: Option<spirv::Word>,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeTensorARM,
+            None,
+            result_id,
+            vec![dr::Operand::IdRef(element_type)],
+        );
+        if let Some(v) = rank {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = shape {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
+    #[doc = "Appends an OpTypeGraphARM instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_graph_arm(
+        &mut self,
+        num_inputs: u32,
+        in_out_types: impl IntoIterator<Item = spirv::Word>,
+    ) -> spirv::Word {
+        self.type_graph_arm_id(None, num_inputs, in_out_types)
+    }
+    #[doc = "Appends an OpTypeGraphARM instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_graph_arm_id(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        num_inputs: u32,
+        in_out_types: impl IntoIterator<Item = spirv::Word>,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeGraphARM,
+            None,
+            result_id,
+            vec![dr::Operand::LiteralBit32(num_inputs)],
+        );
+        inst.operands
+            .extend(in_out_types.into_iter().map(dr::Operand::IdRef));
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
     #[doc = "Appends an OpTypeUntypedPointerKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
     pub fn type_untyped_pointer_khr(&mut self, storage_class: spirv::StorageClass) -> spirv::Word {
         self.type_untyped_pointer_khr_id(None, storage_class)

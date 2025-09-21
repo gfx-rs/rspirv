@@ -53,6 +53,7 @@ pub enum Decoration {
     MaxByteOffset(u32),
     AlignmentId(spirv::Word),
     MaxByteOffsetId(spirv::Word),
+    SaturatedToLargestFloat8NormalConversionEXT,
     NoSignedWrap,
     NoUnsignedWrap,
     WeightTextureQCOM,

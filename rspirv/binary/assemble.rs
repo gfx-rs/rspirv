@@ -94,6 +94,7 @@ impl Assemble for dr::Operand {
             Self::CooperativeMatrixReduce(v) => result.push(v.bits()),
             Self::TensorClampMode(v) => result.push(v as u32),
             Self::TensorAddressingOperands(v) => result.push(v.bits()),
+            Self::TensorOperands(v) => result.push(v.bits()),
             Self::InitializationModeQualifier(v) => result.push(v as u32),
             Self::LoadCacheControl(v) => result.push(v as u32),
             Self::StoreCacheControl(v) => result.push(v as u32),

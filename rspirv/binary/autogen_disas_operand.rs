@@ -481,3 +481,27 @@ impl Disassemble for spirv::MatrixMultiplyAccumulateOperands {
         bits.join("|")
     }
 }
+impl Disassemble for spirv::TensorOperands {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::TensorOperands::NONTEMPORAL_ARM) {
+            bits.push("NontemporalARM")
+        }
+        if self.contains(spirv::TensorOperands::OUT_OF_BOUNDS_VALUE_ARM) {
+            bits.push("OutOfBoundsValueARM")
+        }
+        if self.contains(spirv::TensorOperands::MAKE_ELEMENT_AVAILABLE_ARM) {
+            bits.push("MakeElementAvailableARM")
+        }
+        if self.contains(spirv::TensorOperands::MAKE_ELEMENT_VISIBLE_ARM) {
+            bits.push("MakeElementVisibleARM")
+        }
+        if self.contains(spirv::TensorOperands::NON_PRIVATE_ELEMENT_ARM) {
+            bits.push("NonPrivateElementARM")
+        }
+        bits.join("|")
+    }
+}

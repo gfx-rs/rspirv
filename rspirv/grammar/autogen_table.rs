@@ -76,6 +76,7 @@ pub enum OperandKind {
     PairLiteralIntegerIdRef,
     PairIdRefLiteralInteger,
     PairIdRefIdRef,
+    TensorOperands,
 }
 static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     inst!(Nop, [], [], []),
@@ -3271,6 +3272,93 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [TileImageStencilReadAccessEXT],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrOne)]
+    ),
+    inst!(
+        TypeTensorARM,
+        [TensorsARM],
+        [],
+        [
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne),
+            (IdRef, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        TensorReadARM,
+        [TensorsARM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (TensorOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        TensorWriteARM,
+        [TensorsARM],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (TensorOperands, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        TensorQuerySizeARM,
+        [TensorsARM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        GraphConstantARM,
+        [GraphARM],
+        [],
+        [(IdResultType, One), (IdResult, One), (LiteralInteger, One)]
+    ),
+    inst!(
+        GraphEntryPointARM,
+        [GraphARM],
+        [],
+        [(IdRef, One), (LiteralString, One), (IdRef, ZeroOrMore)]
+    ),
+    inst!(
+        GraphARM,
+        [GraphARM],
+        [],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        GraphInputARM,
+        [GraphARM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        GraphSetOutputARM,
+        [GraphARM],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, ZeroOrMore)]
+    ),
+    inst!(GraphEndARM, [GraphARM], [], []),
+    inst!(
+        TypeGraphARM,
+        [GraphARM],
+        [],
+        [(IdResult, One), (LiteralInteger, One), (IdRef, ZeroOrMore)]
     ),
     inst!(
         TerminateInvocation,
@@ -7862,5 +7950,23 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (LiteralInteger, One),
             (IdRef, One)
         ]
+    ),
+    inst!(
+        ConvertHandleToImageINTEL,
+        [BindlessImagesINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertHandleToSamplerINTEL,
+        [BindlessImagesINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConvertHandleToSampledImageINTEL,
+        [BindlessImagesINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
 ];
