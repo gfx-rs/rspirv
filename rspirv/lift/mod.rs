@@ -64,7 +64,7 @@ impl From<OperandError> for InstructionError {
     }
 }
 
-/// Error that may occur during the convesion from the data representation
+/// Error that may occur during the conversion from the data representation
 /// of a module into a structured representation.
 #[derive(Clone, Debug)]
 pub enum ConversionError {

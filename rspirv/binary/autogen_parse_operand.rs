@@ -322,7 +322,6 @@ impl Parser<'_, '_> {
         }
         Ok(params)
     }
-    #[allow(unreachable_patterns)]
     fn parse_execution_mode_arguments(
         &mut self,
         execution_mode: spirv::ExecutionMode,
@@ -459,7 +458,6 @@ impl Parser<'_, '_> {
             _ => vec![],
         })
     }
-    #[allow(unreachable_patterns)]
     fn parse_decoration_arguments(
         &mut self,
         decoration: spirv::Decoration,

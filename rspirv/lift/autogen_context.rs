@@ -203,7 +203,6 @@ impl LiftContext {
             _ => self.lift_branch(raw).map(ops::Terminator::Branch),
         }
     }
-    #[allow(unreachable_patterns)]
     pub fn lift_op(&mut self, raw: &dr::Instruction) -> Result<ops::Op, InstructionError> {
         let mut operands = raw.operands.iter();
         match raw.class.opcode as u32 {
