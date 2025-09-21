@@ -602,4 +602,15 @@ impl Decoder<'_> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V TensorOperands value."]
+    pub fn tensor_operands(&mut self) -> Result<spirv::TensorOperands> {
+        if let Ok(word) = self.word() {
+            spirv::TensorOperands::from_bits(word).ok_or(Error::TensorOperandsUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
 }

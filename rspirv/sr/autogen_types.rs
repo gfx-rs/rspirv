@@ -71,6 +71,15 @@ pub enum Type {
     },
     PipeStorage,
     NamedBarrier,
+    TensorARM {
+        element_type: Token<Type>,
+        rank: Option<spirv::Word>,
+        shape: Option<spirv::Word>,
+    },
+    GraphARM {
+        num_inputs: u32,
+        in_out_types: Vec<spirv::Word>,
+    },
     UntypedPointerKHR {
         storage_class: spirv::StorageClass,
     },

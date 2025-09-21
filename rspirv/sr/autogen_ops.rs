@@ -1343,6 +1343,40 @@ pub enum Op {
     StencilAttachmentReadEXT {
         sample: Option<spirv::Word>,
     },
+    TensorReadARM {
+        tensor: spirv::Word,
+        coordinates: spirv::Word,
+        tensor_operands: Option<spirv::TensorOperands>,
+    },
+    TensorWriteARM {
+        tensor: spirv::Word,
+        coordinates: spirv::Word,
+        object: spirv::Word,
+        tensor_operands: Option<spirv::TensorOperands>,
+    },
+    TensorQuerySizeARM {
+        tensor: spirv::Word,
+        dimension: spirv::Word,
+    },
+    GraphConstantARM {
+        graph_constant_id: u32,
+    },
+    GraphEntryPointARM {
+        graph: spirv::Word,
+        name: String,
+        interface: Vec<spirv::Word>,
+    },
+    GraphARM,
+    GraphInputARM {
+        input_index: spirv::Word,
+        element_index: Vec<spirv::Word>,
+    },
+    GraphSetOutputARM {
+        value: spirv::Word,
+        output_index: spirv::Word,
+        element_index: Vec<spirv::Word>,
+    },
+    GraphEndARM,
     UntypedVariableKHR {
         storage_class: spirv::StorageClass,
         data_type: Option<Token<Type>>,
@@ -2255,7 +2289,7 @@ pub enum Op {
     },
     AsmCallINTEL {
         asm: spirv::Word,
-        argument_0: Vec<spirv::Word>,
+        argument: Vec<spirv::Word>,
     },
     AtomicFMinEXT {
         pointer: spirv::Word,
@@ -3090,7 +3124,7 @@ pub enum Op {
         name: Option<spirv::Word>,
     },
     AliasScopeListDeclINTEL {
-        alias_scope1_alias_scope2: Vec<spirv::Word>,
+        alias_scope_1_alias_scope_2: Vec<spirv::Word>,
     },
     FixedSqrtINTEL {
         input: spirv::Word,
@@ -3436,5 +3470,14 @@ pub enum Op {
         ptr_vector: spirv::Word,
         alignment: u32,
         mask: spirv::Word,
+    },
+    ConvertHandleToImageINTEL {
+        operand: spirv::Word,
+    },
+    ConvertHandleToSamplerINTEL {
+        operand: spirv::Word,
+    },
+    ConvertHandleToSampledImageINTEL {
+        operand: spirv::Word,
     },
 }

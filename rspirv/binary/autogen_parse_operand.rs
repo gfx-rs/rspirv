@@ -198,6 +198,12 @@ impl Parser<'_, '_> {
                 ops.append(&mut self.parse_tensor_addressing_operands_arguments(val)?);
                 ops
             }
+            GOpKind::TensorOperands => {
+                let val = self.decoder.tensor_operands()?;
+                let mut ops = vec![dr::Operand::TensorOperands(val)];
+                ops.append(&mut self.parse_tensor_operands_arguments(val)?);
+                ops
+            }
             GOpKind::IdResultType => panic!(),
             GOpKind::IdResult => panic!(),
             GOpKind::LiteralContextDependentNumber => panic!(),
@@ -674,6 +680,22 @@ impl Parser<'_, '_> {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
         }
         if tensor_addressing_operands.contains(spirv::TensorAddressingOperands::DECODE_FUNC) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        Ok(params)
+    }
+    fn parse_tensor_operands_arguments(
+        &mut self,
+        tensor_operands: spirv::TensorOperands,
+    ) -> Result<Vec<dr::Operand>> {
+        let mut params = vec![];
+        if tensor_operands.contains(spirv::TensorOperands::OUT_OF_BOUNDS_VALUE_ARM) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if tensor_operands.contains(spirv::TensorOperands::MAKE_ELEMENT_AVAILABLE_ARM) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if tensor_operands.contains(spirv::TensorOperands::MAKE_ELEMENT_VISIBLE_ARM) {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
         }
         Ok(params)
