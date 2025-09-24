@@ -737,6 +737,36 @@ impl Builder {
         }
     }
 
+    /// Appends an OpTypeUntypedPointerKHR instruction and returns the result id, or return the existing id if the instruction was already present.
+    pub fn type_untyped_pointer(
+        &mut self,
+        result_id: Option<spirv::Word>,
+        storage_class: spirv::StorageClass,
+    ) -> spirv::Word {
+        let mut inst = dr::Instruction::new(
+            spirv::Op::TypeUntypedPointerKHR,
+            None,
+            result_id,
+            vec![
+                dr::Operand::StorageClass(storage_class),
+            ],
+        );
+        if let Some(result_id) = result_id {
+            // An explicit ID was provided, emit it no matter what.
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            // No ID was provided, and the type has already been declared.
+            id
+        } else {
+            // No ID was provided, it didn't already exist, so generate a new ID and emit it.
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
+
     /// Appends an OpTypeOpaque instruction and returns the result id.
     pub fn type_opaque(&mut self, type_name: impl Into<String>) -> spirv::Word {
         let id = self.id();
@@ -821,6 +851,41 @@ impl Builder {
             operands.push(dr::Operand::IdRef(val));
         }
         let inst = dr::Instruction::new(spirv::Op::Variable, Some(result_type), Some(id), operands);
+
+        match (self.selected_function, self.selected_block) {
+            (Some(selected_function), Some(selected_block)) => {
+                self.module.functions[selected_function].blocks[selected_block]
+                    .instructions
+                    .push(inst)
+            }
+            _ => self.module.types_global_values.push(inst),
+        }
+        id
+    }
+
+    /// Appends an OpUntypedVariable instruction to either the current block
+    /// or the module if no block is under construction.
+    pub fn untyped_variable(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        storage_class: spirv::StorageClass,
+        data_type: Option<spirv::Word>,
+        initializer: Option<spirv::Word>,
+    ) -> spirv::Word {
+        let id = match result_id {
+            Some(v) => v,
+            None => self.id(),
+        };
+        let mut operands = vec![dr::Operand::StorageClass(storage_class)];
+        if let Some(val) = data_type {
+            operands.push(dr::Operand::IdRef(val));
+        }
+        if let Some(val) = initializer {
+            operands.push(dr::Operand::IdRef(val));
+        }
+
+        let inst = dr::Instruction::new(spirv::Op::UntypedVariableKHR, Some(result_type), Some(id), operands);
 
         match (self.selected_function, self.selected_block) {
             (Some(selected_function), Some(selected_block)) => {
