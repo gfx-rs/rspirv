@@ -291,16 +291,42 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     // Use associated constants for these aliases.
     let mut aliases = vec![];
     let mut variants = vec![];
+    let mut types = vec![];
+    let mut constants = vec![];
+    let mut annotations = vec![];
+    let mut debugs = vec![];
+    let mut control_flows = vec![];
 
     // Get the instruction table.
     for inst in &grammar.instructions {
         let opname = as_ident(inst.opname.strip_prefix("Op").unwrap());
         let opcode = inst.opcode;
+        variants.push((opcode, opname.clone()));
+
+        let opname = quote!(Self::#opname);
         for alias in &inst.aliases {
             let alias = as_ident(alias.strip_prefix("Op").unwrap());
-            aliases.push(quote! { pub const #alias: Op = Op::#opname; });
+            aliases.push(quote! { pub const #alias: Self = #opname; });
         }
-        variants.push((opcode, opname.clone()));
+
+        match inst.class {
+            Some(structs::Class::Type) => {
+                types.push(opname);
+            }
+            Some(structs::Class::Constant) => {
+                constants.push(opname);
+            }
+            Some(structs::Class::Annotation) => {
+                annotations.push(opname);
+            }
+            Some(structs::Class::Debug) => {
+                debugs.push(opname);
+            }
+            Some(structs::Class::Branch) => {
+                control_flows.push(opname);
+            }
+            _ => {}
+        }
     }
 
     let the_enum = generate_enum(
@@ -325,6 +351,37 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         #[allow(non_upper_case_globals)]
         impl Op {
             #(#aliases)*
+
+            /// Returns [`true`] if the given opcode is a type-declaring instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_type_declaration_instructions>
+            pub fn is_type(self) -> bool {
+                matches!(self, #(#types)|*)
+            }
+            /// Returns [`true`] if the given opcode is a constant-defining instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_constant_creation_instructions>
+            pub fn is_constant(self) -> bool {
+                matches!(self, #(#constants)|*)
+            }
+            /// Returns [`true`] if the given opcode is an annotation instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Annotation>
+            pub fn is_annotation(self) -> bool {
+                matches!(self, #(#annotations)|*)
+            }
+            /// Returns [`true`] if the given opcode is a debug instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_debug_instructions>
+            pub fn is_debug(self) -> bool {
+                matches!(self, #(#debugs)|*)
+            }
+            /// Returns [`true`] if the given opcode is a control-flow instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_control_flow_instructions>
+            pub fn is_control_flow(self) -> bool {
+                matches!(self, #(#control_flows)|*)
+            }
         }
     }
 }

@@ -150,10 +150,8 @@ impl binary::Consumer for Loader {
                     None => self.module.types_global_values.push(inst),
                 }
             }
-            opcode if grammar::reflect::is_annotation(opcode) => self.module.annotations.push(inst),
-            opcode
-                if grammar::reflect::is_type(opcode) || grammar::reflect::is_constant(opcode) =>
-            {
+            opcode if opcode.is_annotation() => self.module.annotations.push(inst),
+            opcode if opcode.is_type() || opcode.is_constant() => {
                 self.module.types_global_values.push(inst)
             }
             spirv::Op::Variable if self.function.is_none() => {

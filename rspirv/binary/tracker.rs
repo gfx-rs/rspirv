@@ -38,7 +38,7 @@ impl TypeTracker {
 
     pub fn track(&mut self, inst: &dr::Instruction) {
         if let Some(rid) = inst.result_id {
-            if grammar::reflect::is_type(inst.class.opcode) {
+            if inst.class.opcode.is_type() {
                 match inst.class.opcode {
                     spirv::Op::TypeInt => {
                         if let (
