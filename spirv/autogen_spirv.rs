@@ -4199,17 +4199,139 @@ impl Op {
 #[allow(clippy::upper_case_acronyms)]
 #[allow(non_upper_case_globals)]
 impl Op {
-    pub const SDotKHR: Op = Op::SDot;
-    pub const UDotKHR: Op = Op::UDot;
-    pub const SUDotKHR: Op = Op::SUDot;
-    pub const SDotAccSatKHR: Op = Op::SDotAccSat;
-    pub const UDotAccSatKHR: Op = Op::UDotAccSat;
-    pub const SUDotAccSatKHR: Op = Op::SUDotAccSat;
-    pub const ReportIntersectionNV: Op = Op::ReportIntersectionKHR;
-    pub const TypeAccelerationStructureNV: Op = Op::TypeAccelerationStructureKHR;
-    pub const DemoteToHelperInvocationEXT: Op = Op::DemoteToHelperInvocation;
-    pub const DecorateStringGOOGLE: Op = Op::DecorateString;
-    pub const MemberDecorateStringGOOGLE: Op = Op::MemberDecorateString;
+    pub const SDotKHR: Self = Self::SDot;
+    pub const UDotKHR: Self = Self::UDot;
+    pub const SUDotKHR: Self = Self::SUDot;
+    pub const SDotAccSatKHR: Self = Self::SDotAccSat;
+    pub const UDotAccSatKHR: Self = Self::UDotAccSat;
+    pub const SUDotAccSatKHR: Self = Self::SUDotAccSat;
+    pub const ReportIntersectionNV: Self = Self::ReportIntersectionKHR;
+    pub const TypeAccelerationStructureNV: Self = Self::TypeAccelerationStructureKHR;
+    pub const DemoteToHelperInvocationEXT: Self = Self::DemoteToHelperInvocation;
+    pub const DecorateStringGOOGLE: Self = Self::DecorateString;
+    pub const MemberDecorateStringGOOGLE: Self = Self::MemberDecorateString;
+    #[doc = r" Returns [`true`] if the given opcode is a type-declaring instruction."]
+    #[doc = r""]
+    #[doc = r" <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_type_declaration_instructions>"]
+    pub fn is_type(self) -> bool {
+        matches!(
+            self,
+            Self::TypeVoid
+                | Self::TypeBool
+                | Self::TypeInt
+                | Self::TypeFloat
+                | Self::TypeVector
+                | Self::TypeMatrix
+                | Self::TypeImage
+                | Self::TypeSampler
+                | Self::TypeSampledImage
+                | Self::TypeArray
+                | Self::TypeRuntimeArray
+                | Self::TypeStruct
+                | Self::TypeOpaque
+                | Self::TypePointer
+                | Self::TypeFunction
+                | Self::TypeEvent
+                | Self::TypeDeviceEvent
+                | Self::TypeReserveId
+                | Self::TypeQueue
+                | Self::TypePipe
+                | Self::TypeForwardPointer
+                | Self::TypePipeStorage
+                | Self::TypeNamedBarrier
+                | Self::TypeUntypedPointerKHR
+                | Self::TypeCooperativeMatrixKHR
+                | Self::TypeRayQueryKHR
+                | Self::TypeNodePayloadArrayAMDX
+                | Self::TypeHitObjectNV
+                | Self::TypeCooperativeVectorNV
+                | Self::TypeAccelerationStructureKHR
+                | Self::TypeCooperativeMatrixNV
+                | Self::TypeTensorLayoutNV
+                | Self::TypeTensorViewNV
+                | Self::TypeBufferSurfaceINTEL
+                | Self::TypeStructContinuedINTEL
+        )
+    }
+    #[doc = r" Returns [`true`] if the given opcode is a constant-defining instruction."]
+    #[doc = r""]
+    #[doc = r" <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_constant_creation_instructions>"]
+    pub fn is_constant(self) -> bool {
+        matches!(
+            self,
+            Self::ConstantTrue
+                | Self::ConstantFalse
+                | Self::Constant
+                | Self::ConstantComposite
+                | Self::ConstantSampler
+                | Self::ConstantNull
+                | Self::SpecConstantTrue
+                | Self::SpecConstantFalse
+                | Self::SpecConstant
+                | Self::SpecConstantComposite
+                | Self::SpecConstantOp
+                | Self::ConstantCompositeReplicateEXT
+                | Self::SpecConstantCompositeReplicateEXT
+                | Self::ConstantCompositeContinuedINTEL
+                | Self::SpecConstantCompositeContinuedINTEL
+        )
+    }
+    #[doc = r" Returns [`true`] if the given opcode is an annotation instruction."]
+    #[doc = r""]
+    #[doc = r" <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Annotation>"]
+    pub fn is_annotation(self) -> bool {
+        matches!(
+            self,
+            Self::Decorate
+                | Self::MemberDecorate
+                | Self::DecorationGroup
+                | Self::GroupDecorate
+                | Self::GroupMemberDecorate
+                | Self::DecorateId
+                | Self::DecorateString
+                | Self::MemberDecorateString
+        )
+    }
+    #[doc = r" Returns [`true`] if the given opcode is a debug instruction."]
+    #[doc = r""]
+    #[doc = r" <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_debug_instructions>"]
+    pub fn is_debug(self) -> bool {
+        matches!(
+            self,
+            Self::SourceContinued
+                | Self::Source
+                | Self::SourceExtension
+                | Self::Name
+                | Self::MemberName
+                | Self::String
+                | Self::Line
+                | Self::NoLine
+                | Self::ModuleProcessed
+        )
+    }
+    #[doc = r" Returns [`true`] if the given opcode is a control-flow instruction."]
+    #[doc = r""]
+    #[doc = r" <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_control_flow_instructions>"]
+    pub fn is_control_flow(self) -> bool {
+        matches!(
+            self,
+            Self::Phi
+                | Self::LoopMerge
+                | Self::SelectionMerge
+                | Self::Label
+                | Self::Branch
+                | Self::BranchConditional
+                | Self::Switch
+                | Self::Kill
+                | Self::Return
+                | Self::ReturnValue
+                | Self::Unreachable
+                | Self::LifetimeStart
+                | Self::LifetimeStop
+                | Self::TerminateInvocation
+                | Self::DemoteToHelperInvocation
+        )
+    }
 }
 #[doc = "[GLSL.std.450](https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html) extended instruction opcode"]
 #[repr(u32)]

@@ -122,7 +122,6 @@ pub enum Class {
     #[serde(rename = "Constant-Creation")]
     Constant,
     Debug,
-    DebugLine,
     #[serde(rename = "Extension")]
     ExtensionDecl,
     #[serde(rename = "Function")]
