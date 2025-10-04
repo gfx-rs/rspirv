@@ -248,9 +248,6 @@ fn disas_ext_inst(
     if let (&dr::Operand::IdRef(id), &dr::Operand::LiteralExtInstInteger(opcode)) =
         (&inst.operands[0], &inst.operands[1])
     {
-        if !ext_inst_set_tracker.have(id) {
-            return inst.disassemble();
-        }
         if let Some(grammar) = ext_inst_set_tracker.resolve(id, opcode) {
             let mut operands = vec![inst.operands[0].disassemble(), grammar.opname.to_string()];
             for operand in &inst.operands[2..] {

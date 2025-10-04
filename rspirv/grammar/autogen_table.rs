@@ -78,7 +78,24 @@ pub enum OperandKind {
     PairIdRefIdRef,
     TensorOperands,
 }
-static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
+#[doc = "Wrapper enum for all extended instruction set opcodes."]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[allow(clippy::upper_case_acronyms)]
+pub enum ExtInstOp {
+    GL(spirv::GLOp),
+    CL(spirv::CLOp),
+    DebugPrintF(spirv::DebugPrintFOp),
+}
+impl From<ExtInstOp> for spirv::Word {
+    fn from(op: ExtInstOp) -> spirv::Word {
+        match op {
+            ExtInstOp::GL(v) => v as spirv::Word,
+            ExtInstOp::CL(v) => v as spirv::Word,
+            ExtInstOp::DebugPrintF(v) => v as spirv::Word,
+        }
+    }
+}
+static INSTRUCTIONS: &[Instruction<'static>] = &[
     inst!(Nop, [], [], []),
     inst!(Undef, [], [], [(IdResultType, One), (IdResult, One)]),
     inst!(SourceContinued, [], [], [(LiteralString, One)]),
@@ -8437,3 +8454,5 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
 ];
+pub static INSTRUCTION_TABLE: InstructionTable<spirv::Op> =
+    InstructionTable(INSTRUCTIONS, std::marker::PhantomData);
