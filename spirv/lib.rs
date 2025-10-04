@@ -13,3 +13,10 @@
 use bitflags::bitflags;
 
 include!("autogen_spirv.rs");
+
+impl From<Op> for Word {
+    // Exists because of repr()
+    fn from(value: Op) -> Self {
+        value as Word
+    }
+}

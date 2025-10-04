@@ -1,13 +1,13 @@
-use crate::dr;
-use crate::grammar;
-use crate::spirv;
-
 use std::collections;
 
-use crate::grammar::GlslStd450InstructionTable as GGlInstTable;
-use crate::grammar::OpenCLStd100InstructionTable as GClInstTable;
+use crate::dr;
+use crate::grammar;
+use crate::grammar::InstructionTable;
+use crate::grammar::GLSL_STD_450_INSTRUCTION_TABLE as GGlInstTable;
+use crate::grammar::OPENCL_STD_100_INSTRUCTION_TABLE as GClInstTable;
+use crate::spirv;
 
-type GExtInstRef = &'static grammar::ExtendedInstruction<'static>;
+pub type GExtInstRef = &'static grammar::ExtendedInstruction<'static>;
 
 // TODO: Add support for other types.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -70,18 +70,12 @@ impl TypeTracker {
     }
 }
 
-#[allow(clippy::upper_case_acronyms)]
-enum ExtInstSet {
-    GlslStd450,
-    OpenCLStd100,
-}
-
 /// Struct for tracking extended instruction sets.
 ///
 /// If a given extended instruction set is not supported, it will just be
 /// silently ignored.
 pub struct ExtInstSetTracker {
-    sets: collections::HashMap<spirv::Word, ExtInstSet>,
+    sets: collections::HashMap<spirv::Word, &'static InstructionTable<grammar::ExtInstOp>>,
 }
 
 impl ExtInstSetTracker {
@@ -96,27 +90,24 @@ impl ExtInstSetTracker {
     /// If the given extended instruction set is not recognized, it will
     /// be silently ignored.
     pub fn track(&mut self, inst: &dr::Instruction) {
-        if inst.class.opcode != spirv::Op::ExtInstImport
-            || inst.result_id.is_none()
-            || inst.operands.is_empty()
-        {
+        if inst.class.opcode != spirv::Op::ExtInstImport || inst.operands.is_empty() {
             return;
         }
         if let dr::Operand::LiteralString(ref s) = inst.operands[0] {
-            if s == "GLSL.std.450" {
-                self.sets
-                    .insert(inst.result_id.unwrap(), ExtInstSet::GlslStd450);
-            } else if s == "OpenCL.std" {
-                self.sets
-                    .insert(inst.result_id.unwrap(), ExtInstSet::OpenCLStd100);
-            }
+            // TODO: Add/autogenerate
+            self.sets.insert(
+                inst.result_id
+                    .expect("Importing extended instructions requires a result_id"),
+                match s.as_str() {
+                    "GLSL.std.450" => &GGlInstTable,
+                    "OpenCL.std" => &GClInstTable,
+                    x => {
+                        eprintln!("TODO ERROR: Extended instruction set `{x}` not recognized");
+                        return;
+                    }
+                },
+            );
         }
-    }
-
-    /// Returns true if the given extended instruction `set` has been
-    /// recognized thus tracked.
-    pub fn have(&self, set: spirv::Word) -> bool {
-        self.sets.contains_key(&set)
     }
 
     /// Resolves the extended instruction with `opcode` in set `set`.
@@ -125,10 +116,7 @@ impl ExtInstSetTracker {
     /// sets and unknown opcode in tracked instruction sets.
     pub fn resolve(&self, set: spirv::Word, opcode: spirv::Word) -> Option<GExtInstRef> {
         if let Some(ext_inst_set) = self.sets.get(&set) {
-            match *ext_inst_set {
-                ExtInstSet::GlslStd450 => GGlInstTable::lookup_opcode(opcode),
-                ExtInstSet::OpenCLStd100 => GClInstTable::lookup_opcode(opcode),
-            }
+            ext_inst_set.lookup_opcode(opcode)
         } else {
             None
         }

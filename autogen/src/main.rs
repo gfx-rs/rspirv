@@ -166,13 +166,23 @@ fn main() {
         )
     });
 
+    // Collect ExtInstOp variant info: (variant_name, op_name) for all extended sets
+    let ext_inst_variants: Vec<(&str, &str)> = extended_instruction_sets
+        .iter()
+        .map(|(_, op, _, _)| {
+            let variant = op.strip_suffix("Op").unwrap_or(op);
+            (variant, *op)
+        })
+        .collect();
+
     // Instruction table
     write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_table.rs"),
-        table::gen_grammar_inst_table_operand_kinds(&grammar),
+        table::gen_grammar_inst_table_operand_kinds(&grammar, &ext_inst_variants),
     );
     // Extended instruction sets
     for (ext, spirv_op, _, grammar) in extended_instruction_sets {
+        let variant_name = spirv_op.strip_suffix("Op").unwrap_or(spirv_op);
         write_formatted(
             &autogen_src_dir.join(format!(
                 "../rspirv/grammar/autogen_{}.rs",
@@ -181,7 +191,8 @@ fn main() {
             table::gen_instruction_table(
                 &grammar.instructions,
                 Some(spirv_op),
-                &format!("{}_INSTRUCTION_TABLE", ext.replace(".", "_").to_uppercase()),
+                Some(variant_name),
+                &format!("{}_INSTRUCTION", ext.replace(".", "_").to_uppercase()),
             ),
         );
     }
