@@ -186,7 +186,14 @@ fn main() {
         .to_owned();
     write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_table.rs"),
-        table::gen_grammar_inst_table_operand_kinds(&grammar, &ext_inst_variants),
+        table::gen_grammar_inst_table_operand_kinds(
+            &grammar.operand_kinds,
+            &grammar.instructions,
+            None,
+            None,
+            "INSTRUCTION",
+            &ext_inst_variants,
+        ),
     );
     // Extended instruction sets
     for (ext, file_key, spirv_op, _, grammar) in extended_instruction_sets {
@@ -198,11 +205,13 @@ fn main() {
         let variant_name = spirv_op.strip_suffix("Op").unwrap_or(spirv_op);
         write_formatted(
             &autogen_src_dir.join(format!("../rspirv/grammar/{autogen_file}")),
-            table::gen_instruction_table(
+            table::gen_grammar_inst_table_operand_kinds(
+                &grammar.operand_kinds,
                 &grammar.instructions,
                 Some(spirv_op),
                 Some(variant_name),
                 &table_name,
+                &[],
             ),
         );
         tables.push_str(&format!("include!(\"{autogen_file}\");\n"));
