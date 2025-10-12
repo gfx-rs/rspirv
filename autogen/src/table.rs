@@ -13,22 +13,21 @@ fn convert_quantifier(quantifier: structs::Quantifier) -> Ident {
     })
 }
 
-/// Returns the code for the whole instruction table by walking the given
-/// `grammar`.
+/// Returns the code for the whole instruction table.
 ///
-/// `grammar` is expected to be an array of SPIR-V instructions.
+/// `instructions` is expected to be an array of SPIR-V instructions.
 /// `name` is the name of the generated table.
 ///
 /// For extended instruction sets, `ext_op_name` is the spirv Op enum name
 /// and `ext_variant_name` is the `ExtInstOp` wrapper variant name.
 pub(crate) fn gen_instruction_table(
-    grammar: &[structs::Instruction],
+    instructions: &[structs::Instruction],
     ext_op_name: Option<&str>,
     ext_variant_name: Option<&str>,
     name: &str,
 ) -> TokenStream {
     // Vector for strings for all instructions.
-    let instructions = grammar.iter().map(|inst| {
+    let instructions = instructions.iter().map(|inst| {
         // Vector of strings for all operands.
         let operands = inst.operands.iter().map(|e| {
             let kind = as_ident(&e.kind);
@@ -72,58 +71,72 @@ pub(crate) fn gen_instruction_table(
     }
 }
 
-/// Returns the generated grammar::INSTRUCTION_TABLE, grammar::OperandKind,
-/// and grammar::ExtInstOp by walking the given SPIR-V `grammar`.
+/// Generates the `OperandKind` enum (if any), optionally the `ExtInstOp`
+/// wrapper enum, and the instruction table.
 ///
-/// `ext_inst_variants` contains `(variant_name, op_name)` for all extended
-/// instruction sets, used to generate the `ExtInstOp` wrapper enum.
+/// When `ext_inst_variants` is non-empty (core grammar call), the `ExtInstOp`
+/// enum is generated alongside `OperandKind`.
 pub fn gen_grammar_inst_table_operand_kinds(
-    grammar: &structs::Grammar,
+    operand_kinds: &[structs::OperandKind],
+    instructions: &[structs::Instruction],
+    ext_op_name: Option<&str>,
+    ext_variant_name: Option<&str>,
+    name: &str,
     ext_inst_variants: &[(&str, &str)],
 ) -> TokenStream {
     // Enum for all operand kinds.
-    let elements = grammar
-        .operand_kinds
-        .iter()
-        .map(|kind| as_ident(&kind.kind));
+    let elements = operand_kinds.iter().map(|kind| as_ident(&kind.kind));
 
     // Instruction table.
-    let table = gen_instruction_table(&grammar.instructions, None, None, "INSTRUCTION");
+    let table = gen_instruction_table(instructions, ext_op_name, ext_variant_name, name);
 
-    // ExtInstOp enum: wrapper for all extended instruction set opcodes
-    let ext_inst_variants_def = ext_inst_variants.iter().map(|(variant, op_name)| {
-        let variant = as_ident(variant);
-        let op = as_ident(op_name);
-        quote! { #variant(spirv::#op) }
-    });
-    let ext_inst_from_arms = ext_inst_variants.iter().map(|(variant, _)| {
-        let variant = as_ident(variant);
-        quote! { ExtInstOp::#variant(v) => v as spirv::Word }
-    });
+    let operand_kinds = if operand_kinds.is_empty() {
+        None
+    } else {
+        Some(quote! {
+            #[doc = "All operand kinds in the SPIR-V grammar."]
+            #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+            #[allow(clippy::upper_case_acronyms)]
+            pub enum OperandKind {
+                #(#elements),*
+            }
+        })
+    };
 
-    quote! {
-        #[doc = "All operand kinds in the SPIR-V grammar."]
-        #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-        #[allow(clippy::upper_case_acronyms)]
-        pub enum OperandKind {
-            #(#elements),*
-        }
+    // ExtInstOp enum: only generated for the core grammar call
+    let ext_inst_op = if ext_inst_variants.is_empty() {
+        None
+    } else {
+        let ext_inst_variants_def = ext_inst_variants.iter().map(|(variant, op_name)| {
+            let variant = as_ident(variant);
+            let op = as_ident(op_name);
+            quote! { #variant(spirv::#op) }
+        });
+        let ext_inst_from_arms = ext_inst_variants.iter().map(|(variant, _)| {
+            let variant = as_ident(variant);
+            quote! { ExtInstOp::#variant(v) => v as spirv::Word }
+        });
+        Some(quote! {
+            #[doc = "Wrapper enum for all extended instruction set opcodes."]
+            #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+            #[allow(clippy::upper_case_acronyms)]
+            pub enum ExtInstOp {
+                #(#ext_inst_variants_def),*
+            }
 
-        #[doc = "Wrapper enum for all extended instruction set opcodes."]
-        #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-        #[allow(clippy::upper_case_acronyms)]
-        pub enum ExtInstOp {
-            #(#ext_inst_variants_def),*
-        }
-
-        impl From<ExtInstOp> for spirv::Word {
-            fn from(op: ExtInstOp) -> spirv::Word {
-                match op {
-                    #(#ext_inst_from_arms),*
+            impl From<ExtInstOp> for spirv::Word {
+                fn from(op: ExtInstOp) -> spirv::Word {
+                    match op {
+                        #(#ext_inst_from_arms),*
+                    }
                 }
             }
-        }
+        })
+    };
 
+    quote! {
+        #operand_kinds
+        #ext_inst_op
         #table
     }
 }
