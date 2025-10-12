@@ -122,8 +122,4 @@ impl<Op: Into<spirv::Word> + Clone + Copy + Eq> InstructionTable<Op> {
     }
 }
 
-include!("autogen_table.rs");
-
-include!("autogen_glsl_std_450.rs");
-
-include!("autogen_opencl_std_100.rs");
+include!("autogen_tables.rs");

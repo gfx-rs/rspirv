@@ -128,21 +128,23 @@ fn main() {
         original
     };
 
+    // (import_name, file_key, op, url)
+    // import_name: canonical OpExtInstImport string (case-sensitive, per SPIRV-Tools)
+    // file_key: grammar filename stem (lowercase), may differ from import_name
     let extended_instruction_sets = [
-        ("GLSL.std.450", "GLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/GLSL.std.450.html"),
-        ("OpenCL.std.100", "CLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
-        ("NonSemantic.DebugPrintF", "DebugPrintFOp", "https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugPrintf.html"),
+        ("GLSL.std.450", "glsl.std.450", "GLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/GLSL.std.450.html"),
+        ("OpenCL.std", "opencl.std.100", "CLOp", "https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html"),
+        ("NonSemantic.DebugPrintF", "nonsemantic.debugprintf", "DebugPrintFOp", "https://github.khronos.org/SPIRV-Registry/nonsemantic/NonSemantic.DebugPrintf.html"),
     ];
-    let extended_instruction_sets = extended_instruction_sets.map(|(ext, op, url)| {
+    let extended_instruction_sets = extended_instruction_sets.map(|(ext, file_key, op, url)| {
         let grammar: structs::ExtInstSetGrammar = serde_json::from_str(
             &std::fs::read_to_string(autogen_src_dir.join(format!(
-                "external/SPIRV-Headers/include/spirv/unified1/extinst.{}.grammar.json",
-                ext.to_lowercase()
+                "external/SPIRV-Headers/include/spirv/unified1/extinst.{file_key}.grammar.json",
             )))
             .unwrap(),
         )
         .unwrap();
-        (ext, op, url, grammar)
+        (ext, file_key, op, url, grammar)
     });
 
     // SPIR-V header
@@ -151,7 +153,7 @@ fn main() {
         let extended_instruction_sets =
             extended_instruction_sets
                 .iter()
-                .map(|(ext, op, url, grammar)| {
+                .map(|(ext, _file_key, op, url, grammar)| {
                     header::gen_opcodes(
                         op,
                         grammar,
@@ -169,33 +171,47 @@ fn main() {
     // Collect ExtInstOp variant info: (variant_name, op_name) for all extended sets
     let ext_inst_variants: Vec<(&str, &str)> = extended_instruction_sets
         .iter()
-        .map(|(_, op, _, _)| {
+        .map(|(_, _, op, _, _)| {
             let variant = op.strip_suffix("Op").unwrap_or(op);
             (variant, *op)
         })
         .collect();
 
     // Instruction table
+    let mut tables = String::new();
+    tables.push_str("include!(\"autogen_table.rs\");\n");
+    let mut table_lookup = r#"pub fn ext_inst_table(set: &str) ->
+            Option<&'static InstructionTable<ExtInstOp>> {
+        Some(match set {"#
+        .to_owned();
     write_formatted(
         &autogen_src_dir.join("../rspirv/grammar/autogen_table.rs"),
         table::gen_grammar_inst_table_operand_kinds(&grammar, &ext_inst_variants),
     );
     // Extended instruction sets
-    for (ext, spirv_op, _, grammar) in extended_instruction_sets {
+    for (ext, file_key, spirv_op, _, grammar) in extended_instruction_sets {
+        let autogen_file = format!("autogen_{}.rs", file_key.replace(['.', '-'], "_"));
+        let table_name = format!(
+            "{}_INSTRUCTION",
+            file_key.replace(['.', '-'], "_").to_uppercase()
+        );
         let variant_name = spirv_op.strip_suffix("Op").unwrap_or(spirv_op);
         write_formatted(
-            &autogen_src_dir.join(format!(
-                "../rspirv/grammar/autogen_{}.rs",
-                ext.replace(".", "_").to_lowercase()
-            )),
+            &autogen_src_dir.join(format!("../rspirv/grammar/{autogen_file}")),
             table::gen_instruction_table(
                 &grammar.instructions,
                 Some(spirv_op),
                 Some(variant_name),
-                &format!("{}_INSTRUCTION", ext.replace(".", "_").to_uppercase()),
+                &table_name,
             ),
         );
+        tables.push_str(&format!("include!(\"{autogen_file}\");\n"));
+        table_lookup.push_str(&format!("\"{ext}\" => &{table_name}_TABLE,\n"));
     }
+    write_formatted(
+        &autogen_src_dir.join("../rspirv/grammar/autogen_tables.rs"),
+        format!("{tables}\n{table_lookup} _ => return None,}})}}\n"),
+    );
 
     // Path to the generated operands kind in data representation.
     write_formatted(

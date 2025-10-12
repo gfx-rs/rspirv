@@ -4854,7 +4854,7 @@ impl GLOp {
         })
     }
 }
-#[doc = "[OpenCL.std.100](https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
+#[doc = "[OpenCL.std](https://registry.khronos.org/SPIR-V/specs/unified1/OpenCL.ExtendedInstructionSet.100.html) extended instruction opcode"]
 #[repr(u32)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]

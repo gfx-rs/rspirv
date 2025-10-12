@@ -2,9 +2,6 @@ use std::collections;
 
 use crate::dr;
 use crate::grammar;
-use crate::grammar::InstructionTable;
-use crate::grammar::GLSL_STD_450_INSTRUCTION_TABLE as GGlInstTable;
-use crate::grammar::OPENCL_STD_100_INSTRUCTION_TABLE as GClInstTable;
 use crate::spirv;
 
 pub type GExtInstRef = &'static grammar::ExtendedInstruction<'static>;
@@ -75,7 +72,7 @@ impl TypeTracker {
 /// If a given extended instruction set is not supported, it will just be
 /// silently ignored.
 pub struct ExtInstSetTracker {
-    sets: collections::HashMap<spirv::Word, &'static InstructionTable<grammar::ExtInstOp>>,
+    sets: collections::HashMap<spirv::Word, &'static grammar::InstructionTable<grammar::ExtInstOp>>,
 }
 
 impl ExtInstSetTracker {
@@ -94,19 +91,16 @@ impl ExtInstSetTracker {
             return;
         }
         if let dr::Operand::LiteralString(ref s) = inst.operands[0] {
-            // TODO: Add/autogenerate
-            self.sets.insert(
-                inst.result_id
-                    .expect("Importing extended instructions requires a result_id"),
-                match s.as_str() {
-                    "GLSL.std.450" => &GGlInstTable,
-                    "OpenCL.std" => &GClInstTable,
-                    x => {
-                        eprintln!("TODO ERROR: Extended instruction set `{x}` not recognized");
-                        return;
-                    }
-                },
-            );
+            if let Some(table) = grammar::ext_inst_table(s) {
+                self.sets.insert(
+                    inst.result_id
+                        .expect("Importing extended instructions requires a result_id"),
+                    table,
+                );
+            } else {
+                // TODO: Bubble error up
+                eprintln!("ERROR: Extended instruction set `{s}` not recognized");
+            }
         }
     }
 
