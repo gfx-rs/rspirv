@@ -1413,6 +1413,7 @@ pub enum Decoration {
     HostAccessINTEL = 6188u32,
     InitModeINTEL = 6190u32,
     ImplementInRegisterMapINTEL = 6191u32,
+    ConditionalINTEL = 6247u32,
     CacheControlLoadINTEL = 6442u32,
     CacheControlStoreINTEL = 6443u32,
 }
@@ -1467,6 +1468,7 @@ impl Decoration {
             6175u32..=6183u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             6188u32 => unsafe { core::mem::transmute::<u32, Decoration>(6188u32) },
             6190u32..=6191u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
+            6247u32 => unsafe { core::mem::transmute::<u32, Decoration>(6247u32) },
             6442u32..=6443u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             _ => return None,
         })
@@ -1636,6 +1638,7 @@ impl core::str::FromStr for Decoration {
             "HostAccessINTEL" => Self::HostAccessINTEL,
             "InitModeINTEL" => Self::InitModeINTEL,
             "ImplementInRegisterMapINTEL" => Self::ImplementInRegisterMapINTEL,
+            "ConditionalINTEL" => Self::ConditionalINTEL,
             "CacheControlLoadINTEL" => Self::CacheControlLoadINTEL,
             "CacheControlStoreINTEL" => Self::CacheControlStoreINTEL,
             _ => return Err(()),
@@ -2238,6 +2241,7 @@ pub enum Capability {
     TextureBoxFilterQCOM = 4485u32,
     TextureBlockMatchQCOM = 4486u32,
     TileShadingQCOM = 4495u32,
+    CooperativeMatrixConversionQCOM = 4496u32,
     TextureBlockMatch2QCOM = 4498u32,
     Float16ImageAMD = 5008u32,
     ImageGatherBiasLodAMD = 5009u32,
@@ -2387,6 +2391,9 @@ pub enum Capability {
     Subgroup2DBlockTransposeINTEL = 6230u32,
     SubgroupMatrixMultiplyAccumulateINTEL = 6236u32,
     TernaryBitwiseFunctionINTEL = 6241u32,
+    UntypedVariableLengthArrayINTEL = 6243u32,
+    SpecConditionalINTEL = 6245u32,
+    FunctionVariantsINTEL = 6246u32,
     GroupUniformArithmeticKHR = 6400u32,
     TensorFloat32RoundingINTEL = 6425u32,
     MaskedGatherScatterINTEL = 6427u32,
@@ -2416,7 +2423,7 @@ impl Capability {
             4471u32..=4473u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4478u32..=4479u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4484u32..=4486u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
-            4495u32 => unsafe { core::mem::transmute::<u32, Capability>(4495u32) },
+            4495u32..=4496u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4498u32 => unsafe { core::mem::transmute::<u32, Capability>(4498u32) },
             5008u32..=5010u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5013u32 => unsafe { core::mem::transmute::<u32, Capability>(5013u32) },
@@ -2508,6 +2515,8 @@ impl Capability {
             6228u32..=6230u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6236u32 => unsafe { core::mem::transmute::<u32, Capability>(6236u32) },
             6241u32 => unsafe { core::mem::transmute::<u32, Capability>(6241u32) },
+            6243u32 => unsafe { core::mem::transmute::<u32, Capability>(6243u32) },
+            6245u32..=6246u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6400u32 => unsafe { core::mem::transmute::<u32, Capability>(6400u32) },
             6425u32 => unsafe { core::mem::transmute::<u32, Capability>(6425u32) },
             6427u32 => unsafe { core::mem::transmute::<u32, Capability>(6427u32) },
@@ -2686,6 +2695,7 @@ impl core::str::FromStr for Capability {
             "TextureBoxFilterQCOM" => Self::TextureBoxFilterQCOM,
             "TextureBlockMatchQCOM" => Self::TextureBlockMatchQCOM,
             "TileShadingQCOM" => Self::TileShadingQCOM,
+            "CooperativeMatrixConversionQCOM" => Self::CooperativeMatrixConversionQCOM,
             "TextureBlockMatch2QCOM" => Self::TextureBlockMatch2QCOM,
             "Float16ImageAMD" => Self::Float16ImageAMD,
             "ImageGatherBiasLodAMD" => Self::ImageGatherBiasLodAMD,
@@ -2891,6 +2901,9 @@ impl core::str::FromStr for Capability {
             "Subgroup2DBlockTransposeINTEL" => Self::Subgroup2DBlockTransposeINTEL,
             "SubgroupMatrixMultiplyAccumulateINTEL" => Self::SubgroupMatrixMultiplyAccumulateINTEL,
             "TernaryBitwiseFunctionINTEL" => Self::TernaryBitwiseFunctionINTEL,
+            "UntypedVariableLengthArrayINTEL" => Self::UntypedVariableLengthArrayINTEL,
+            "SpecConditionalINTEL" => Self::SpecConditionalINTEL,
+            "FunctionVariantsINTEL" => Self::FunctionVariantsINTEL,
             "GroupUniformArithmeticKHR" => Self::GroupUniformArithmeticKHR,
             "TensorFloat32RoundingINTEL" => Self::TensorFloat32RoundingINTEL,
             "MaskedGatherScatterINTEL" => Self::MaskedGatherScatterINTEL,
@@ -3778,6 +3791,7 @@ pub enum Op {
     GroupNonUniformRotateKHR = 4431u32,
     SubgroupReadInvocationKHR = 4432u32,
     ExtInstWithForwardRefsKHR = 4433u32,
+    UntypedGroupAsyncCopyKHR = 4434u32,
     TraceRayKHR = 4445u32,
     ExecuteCallableKHR = 4446u32,
     ConvertUToAccelerationStructureKHR = 4447u32,
@@ -3808,10 +3822,14 @@ pub enum Op {
     ImageBoxFilterQCOM = 4481u32,
     ImageBlockMatchSSDQCOM = 4482u32,
     ImageBlockMatchSADQCOM = 4483u32,
+    BitCastArrayQCOM = 4497u32,
     ImageBlockMatchWindowSSDQCOM = 4500u32,
     ImageBlockMatchWindowSADQCOM = 4501u32,
     ImageBlockMatchGatherSSDQCOM = 4502u32,
     ImageBlockMatchGatherSADQCOM = 4503u32,
+    CompositeConstructCoopMatQCOM = 4540u32,
+    CompositeExtractCoopMatQCOM = 4541u32,
+    ExtractSubArrayQCOM = 4542u32,
     GroupIAddNonUniformAMD = 5000u32,
     GroupFAddNonUniformAMD = 5001u32,
     GroupFMinNonUniformAMD = 5002u32,
@@ -3890,7 +3908,7 @@ pub enum Op {
     RayQueryGetIntersectionTriangleVertexPositionsKHR = 5340u32,
     TypeAccelerationStructureKHR = 5341u32,
     ExecuteCallableNV = 5344u32,
-    RayQueryGetClusterIdNV = 5345u32,
+    RayQueryGetIntersectionClusterIdNV = 5345u32,
     HitObjectGetClusterIdNV = 5346u32,
     TypeCooperativeMatrixNV = 5358u32,
     CooperativeMatrixLoadNV = 5359u32,
@@ -4197,6 +4215,14 @@ pub enum Op {
     Subgroup2DBlockStoreINTEL = 6235u32,
     SubgroupMatrixMultiplyAccumulateINTEL = 6237u32,
     BitwiseFunctionINTEL = 6242u32,
+    UntypedVariableLengthArrayINTEL = 6244u32,
+    ConditionalExtensionINTEL = 6248u32,
+    ConditionalEntryPointINTEL = 6249u32,
+    ConditionalCapabilityINTEL = 6250u32,
+    SpecConstantTargetINTEL = 6251u32,
+    SpecConstantArchitectureINTEL = 6252u32,
+    SpecConstantCapabilitiesINTEL = 6253u32,
+    ConditionalCopyObjectINTEL = 6254u32,
     GroupIMulKHR = 6401u32,
     GroupFMulKHR = 6402u32,
     GroupBitwiseAndKHR = 6403u32,
@@ -4242,11 +4268,13 @@ impl Op {
             4181u32..=4186u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4190u32 => unsafe { core::mem::transmute::<u32, Op>(4190u32) },
             4416u32..=4426u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            4428u32..=4433u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4428u32..=4434u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4445u32..=4463u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4472u32..=4477u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4479u32..=4483u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4497u32 => unsafe { core::mem::transmute::<u32, Op>(4497u32) },
             4500u32..=4503u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4540u32..=4542u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5000u32..=5007u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5011u32..=5012u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5056u32 => unsafe { core::mem::transmute::<u32, Op>(5056u32) },
@@ -4298,6 +4326,8 @@ impl Op {
             6231u32..=6235u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             6237u32 => unsafe { core::mem::transmute::<u32, Op>(6237u32) },
             6242u32 => unsafe { core::mem::transmute::<u32, Op>(6242u32) },
+            6244u32 => unsafe { core::mem::transmute::<u32, Op>(6244u32) },
+            6248u32..=6254u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             6401u32..=6408u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             6426u32 => unsafe { core::mem::transmute::<u32, Op>(6426u32) },
             6428u32..=6429u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -4317,6 +4347,7 @@ impl Op {
     pub const SUDotAccSatKHR: Self = Self::SUDotAccSat;
     pub const ReportIntersectionNV: Self = Self::ReportIntersectionKHR;
     pub const TypeAccelerationStructureNV: Self = Self::TypeAccelerationStructureKHR;
+    pub const RayQueryGetClusterIdNV: Self = Self::RayQueryGetIntersectionClusterIdNV;
     pub const DemoteToHelperInvocationEXT: Self = Self::DemoteToHelperInvocation;
     pub const DecorateStringGOOGLE: Self = Self::DecorateString;
     pub const MemberDecorateStringGOOGLE: Self = Self::MemberDecorateString;
@@ -4387,6 +4418,9 @@ impl Op {
                 | Self::SpecConstantCompositeReplicateEXT
                 | Self::ConstantCompositeContinuedINTEL
                 | Self::SpecConstantCompositeContinuedINTEL
+                | Self::SpecConstantTargetINTEL
+                | Self::SpecConstantArchitectureINTEL
+                | Self::SpecConstantCapabilitiesINTEL
         )
     }
     #[doc = r" Returns [`true`] if the given opcode is an annotation instruction."]

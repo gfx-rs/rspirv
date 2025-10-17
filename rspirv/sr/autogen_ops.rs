@@ -2,7 +2,7 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-use crate::sr::{module::Jump, storage::Token, Type};
+use crate::sr::{module::Jump, storage::Token, Constant, Type};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Branch {
     Phi {
@@ -1160,7 +1160,7 @@ pub enum Op {
     GroupNonUniformBroadcast {
         execution: spirv::Word,
         value: spirv::Word,
-        id: spirv::Word,
+        invocation_id: spirv::Word,
     },
     GroupNonUniformBroadcastFirst {
         execution: spirv::Word,
@@ -1195,7 +1195,7 @@ pub enum Op {
     GroupNonUniformShuffle {
         execution: spirv::Word,
         value: spirv::Word,
-        id: spirv::Word,
+        invocation_id: spirv::Word,
     },
     GroupNonUniformShuffleXor {
         execution: spirv::Word,
@@ -1441,6 +1441,17 @@ pub enum Op {
         value: spirv::Word,
         index: spirv::Word,
     },
+    UntypedGroupAsyncCopyKHR {
+        execution: spirv::Word,
+        destination: spirv::Word,
+        source: spirv::Word,
+        element_num_bytes: spirv::Word,
+        num_elements: spirv::Word,
+        stride: spirv::Word,
+        event: spirv::Word,
+        destination_memory_operands: Option<spirv::MemoryAccess>,
+        source_memory_operands: Option<spirv::MemoryAccess>,
+    },
     TraceRayKHR {
         accel: spirv::Word,
         ray_flags: spirv::Word,
@@ -1570,6 +1581,9 @@ pub enum Op {
         reference_coordinates: spirv::Word,
         block_size: spirv::Word,
     },
+    BitCastArrayQCOM {
+        source_array: spirv::Word,
+    },
     ImageBlockMatchWindowSSDQCOM {
         target_sampled_image: spirv::Word,
         target_coordinates: spirv::Word,
@@ -1597,6 +1611,16 @@ pub enum Op {
         reference_sampled_image: spirv::Word,
         reference_coordinates: spirv::Word,
         block_size: spirv::Word,
+    },
+    CompositeConstructCoopMatQCOM {
+        source_array: spirv::Word,
+    },
+    CompositeExtractCoopMatQCOM {
+        source_cooperative_matrix: spirv::Word,
+    },
+    ExtractSubArrayQCOM {
+        source_array: spirv::Word,
+        index: spirv::Word,
     },
     GroupIAddNonUniformAMD {
         execution: spirv::Word,
@@ -2007,7 +2031,7 @@ pub enum Op {
         sbt_index: spirv::Word,
         callable_data_id: spirv::Word,
     },
-    RayQueryGetClusterIdNV {
+    RayQueryGetIntersectionClusterIdNV {
         ray_query: spirv::Word,
         intersection: spirv::Word,
     },
@@ -2461,7 +2485,7 @@ pub enum Op {
     SubgroupAvcImeSetDualReferenceINTEL {
         fwd_ref_offset: spirv::Word,
         bwd_ref_offset: spirv::Word,
-        id_search_window_config: spirv::Word,
+        search_window_config: spirv::Word,
         payload: spirv::Word,
     },
     SubgroupAvcImeRefWindowSizeINTEL {
@@ -2771,7 +2795,7 @@ pub enum Op {
         payload: spirv::Word,
     },
     VariableLengthArrayINTEL {
-        lenght: spirv::Word,
+        length: Token<Constant>,
     },
     SaveMemoryINTEL,
     RestoreMemoryINTEL {
@@ -3415,6 +3439,13 @@ pub enum Op {
         b: spirv::Word,
         c: spirv::Word,
         lut_index: spirv::Word,
+    },
+    UntypedVariableLengthArrayINTEL {
+        element_type: Token<Type>,
+        length: Token<Constant>,
+    },
+    ConditionalCopyObjectINTEL {
+        condition_0_operand_0_condition_1_operand_1: Vec<spirv::Word>,
     },
     GroupIMulKHR {
         execution: spirv::Word,

@@ -147,6 +147,7 @@ pub enum Decoration {
     HostAccessINTEL(spirv::HostAccessQualifier, String),
     InitModeINTEL(spirv::InitializationModeQualifier),
     ImplementInRegisterMapINTEL(u32),
+    ConditionalINTEL(spirv::Word),
     CacheControlLoadINTEL(u32, spirv::LoadCacheControl),
     CacheControlStoreINTEL(u32, spirv::StoreCacheControl),
 }

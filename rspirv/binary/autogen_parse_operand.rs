@@ -660,6 +660,7 @@ impl Parser<'_, '_> {
             spirv::Decoration::ImplementInRegisterMapINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::Decoration::ConditionalINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::CacheControlLoadINTEL => vec![
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::LoadCacheControl(self.decoder.load_cache_control()?),

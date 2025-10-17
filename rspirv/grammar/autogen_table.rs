@@ -844,7 +844,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
     ),
     inst!(
         QuantizeToF16,
-        [],
+        [Shader],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
@@ -3525,6 +3525,24 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        UntypedGroupAsyncCopyKHR,
+        [UntypedPointersKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
         TraceRayKHR,
         [RayTracingKHR],
         ["SPV_KHR_ray_tracing"],
@@ -3825,6 +3843,12 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        BitCastArrayQCOM,
+        [CooperativeMatrixConversionQCOM],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
         ImageBlockMatchWindowSSDQCOM,
         [TextureBlockMatch2QCOM],
         [],
@@ -3876,6 +3900,29 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One),
             (IdRef, One),
             (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        CompositeConstructCoopMatQCOM,
+        [CooperativeMatrixConversionQCOM],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        CompositeExtractCoopMatQCOM,
+        [CooperativeMatrixConversionQCOM],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ExtractSubArrayQCOM,
+        [CooperativeMatrixConversionQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
             (IdRef, One),
             (IdRef, One)
         ]
@@ -4644,7 +4691,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdRef, One), (IdRef, One)]
     ),
     inst!(
-        RayQueryGetClusterIdNV,
+        RayQueryGetIntersectionClusterIdNV,
         [RayTracingClusterAccelerationStructureNV],
         [],
         [
@@ -7824,6 +7871,81 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
             (IdRef, One),
             (IdRef, One)
         ]
+    ),
+    inst!(
+        UntypedVariableLengthArrayINTEL,
+        [UntypedVariableLengthArrayINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        ConditionalExtensionINTEL,
+        [SpecConditionalINTEL],
+        [],
+        [(IdRef, One), (LiteralString, One)]
+    ),
+    inst!(
+        ConditionalEntryPointINTEL,
+        [SpecConditionalINTEL],
+        [],
+        [
+            (IdRef, One),
+            (ExecutionModel, One),
+            (IdRef, One),
+            (LiteralString, One),
+            (IdRef, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        ConditionalCapabilityINTEL,
+        [SpecConditionalINTEL],
+        [],
+        [(IdRef, One), (Capability, One)]
+    ),
+    inst!(
+        SpecConstantTargetINTEL,
+        [FunctionVariantsINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (LiteralInteger, One),
+            (LiteralInteger, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        SpecConstantArchitectureINTEL,
+        [FunctionVariantsINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One),
+            (LiteralInteger, One)
+        ]
+    ),
+    inst!(
+        SpecConstantCapabilitiesINTEL,
+        [FunctionVariantsINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (Capability, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        ConditionalCopyObjectINTEL,
+        [SpecConditionalINTEL],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrMore)]
     ),
     inst!(
         GroupIMulKHR,

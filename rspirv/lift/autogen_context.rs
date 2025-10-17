@@ -4533,7 +4533,7 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
-                id: (match operands.next() {
+                invocation_id: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
@@ -4663,7 +4663,7 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
-                id: (match operands.next() {
+                invocation_id: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
@@ -5642,6 +5642,60 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            4434u32 => Ok(ops::Op::UntypedGroupAsyncCopyKHR {
+                execution: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                destination: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                source: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                element_num_bytes: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                num_elements: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                stride: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                event: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                destination_memory_operands: match operands.next() {
+                    Some(dr::Operand::MemoryAccess(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+                source_memory_operands: match operands.next() {
+                    Some(dr::Operand::MemoryAccess(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
             4445u32 => Ok(ops::Op::TraceRayKHR {
                 accel: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -6165,6 +6219,14 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            4497u32 => Ok(ops::Op::BitCastArrayQCOM {
+                source_array: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             4500u32 => Ok(ops::Op::ImageBlockMatchWindowSSDQCOM {
                 target_sampled_image: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -6287,6 +6349,36 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
                 block_size: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            4540u32 => Ok(ops::Op::CompositeConstructCoopMatQCOM {
+                source_array: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            4541u32 => Ok(ops::Op::CompositeExtractCoopMatQCOM {
+                source_cooperative_matrix: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            4542u32 => Ok(ops::Op::ExtractSubArrayQCOM {
+                source_array: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                index: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
@@ -8025,7 +8117,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5345u32 => Ok(ops::Op::RayQueryGetClusterIdNV {
+            5345u32 => Ok(ops::Op::RayQueryGetIntersectionClusterIdNV {
                 ray_query: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -9619,7 +9711,7 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
-                id_search_window_config: (match operands.next() {
+                search_window_config: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
@@ -10835,8 +10927,8 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             5818u32 => Ok(ops::Op::VariableLengthArrayINTEL {
-                lenght: (match operands.next() {
-                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                length: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(self.constants.lookup_token(*value)),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -13733,6 +13825,33 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            6244u32 => Ok(ops::Op::UntypedVariableLengthArrayINTEL {
+                element_type: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                length: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(self.constants.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6254u32 => Ok(ops::Op::ConditionalCopyObjectINTEL {
+                condition_0_operand_0_condition_1_operand_1: {
+                    let mut vec = Vec::new();
+                    while let Some(item) = match operands.next() {
+                        Some(dr::Operand::IdRef(value)) => Some(*value),
+                        Some(_) => return Err(OperandError::WrongType.into()),
+                        None => None,
+                    } {
+                        vec.push(item);
+                    }
+                    vec
+                },
+            }),
             6401u32 => Ok(ops::Op::GroupIMulKHR {
                 execution: (match operands.next() {
                     Some(dr::Operand::IdScope(value)) => Some(*value),
@@ -14739,6 +14858,101 @@ impl LiftContext {
                 }
                 vec
             },
+        })
+    }
+    #[allow(unused)]
+    pub fn lift_conditional_extension_intel(
+        &mut self,
+        raw: &dr::Instruction,
+    ) -> Result<instructions::ConditionalExtensionINTEL, InstructionError> {
+        if raw.class.opcode as u32 != 6248u32 {
+            return Err(InstructionError::WrongOpcode);
+        }
+        let mut operands = raw.operands.iter();
+        Ok(instructions::ConditionalExtensionINTEL {
+            condition: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            name: (match operands.next() {
+                Some(dr::Operand::LiteralString(value)) => Some(value.clone()),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+        })
+    }
+    #[allow(unused)]
+    pub fn lift_conditional_entry_point_intel(
+        &mut self,
+        raw: &dr::Instruction,
+    ) -> Result<instructions::ConditionalEntryPointINTEL, InstructionError> {
+        if raw.class.opcode as u32 != 6249u32 {
+            return Err(InstructionError::WrongOpcode);
+        }
+        let mut operands = raw.operands.iter();
+        Ok(instructions::ConditionalEntryPointINTEL {
+            condition: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            execution_model: (match operands.next() {
+                Some(dr::Operand::ExecutionModel(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            entry_point: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            name: (match operands.next() {
+                Some(dr::Operand::LiteralString(value)) => Some(value.clone()),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            interface: {
+                let mut vec = Vec::new();
+                while let Some(item) = match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                } {
+                    vec.push(item);
+                }
+                vec
+            },
+        })
+    }
+    #[allow(unused)]
+    pub fn lift_conditional_capability_intel(
+        &mut self,
+        raw: &dr::Instruction,
+    ) -> Result<instructions::ConditionalCapabilityINTEL, InstructionError> {
+        if raw.class.opcode as u32 != 6250u32 {
+            return Err(InstructionError::WrongOpcode);
+        }
+        let mut operands = raw.operands.iter();
+        Ok(instructions::ConditionalCapabilityINTEL {
+            condition: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            capability: (match operands.next() {
+                Some(dr::Operand::Capability(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
         })
     }
 }
