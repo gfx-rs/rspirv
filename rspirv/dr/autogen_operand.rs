@@ -1137,14 +1137,12 @@ impl Operand {
             },
             Self::ExecutionMode(v) => match v {
                 s::ExecutionMode::LocalSize | s::ExecutionMode::LocalSizeId => vec![],
-                s::ExecutionMode::DerivativeGroupLinearKHR => vec![
-                    spirv::Capability::ComputeDerivativeGroupLinearNV,
-                    spirv::Capability::ComputeDerivativeGroupLinearKHR,
-                ],
-                s::ExecutionMode::DerivativeGroupQuadsKHR => vec![
-                    spirv::Capability::ComputeDerivativeGroupQuadsNV,
-                    spirv::Capability::ComputeDerivativeGroupQuadsKHR,
-                ],
+                s::ExecutionMode::DerivativeGroupLinearKHR => {
+                    vec![spirv::Capability::ComputeDerivativeGroupLinearKHR]
+                }
+                s::ExecutionMode::DerivativeGroupQuadsKHR => {
+                    vec![spirv::Capability::ComputeDerivativeGroupQuadsKHR]
+                }
                 s::ExecutionMode::DenormFlushToZero => vec![spirv::Capability::DenormFlushToZero],
                 s::ExecutionMode::DenormPreserve => vec![spirv::Capability::DenormPreserve],
                 s::ExecutionMode::NumSIMDWorkitemsINTEL
@@ -1691,6 +1689,7 @@ impl Operand {
                     vec![spirv::Capability::ShaderStereoViewNV]
                 }
                 s::Decoration::ViewportRelativeNV => vec![spirv::Capability::ShaderViewportMaskNV],
+                s::Decoration::ConditionalINTEL => vec![spirv::Capability::SpecConditionalINTEL],
                 s::Decoration::Patch => vec![spirv::Capability::Tessellation],
                 s::Decoration::XfbBuffer | s::Decoration::XfbStride => {
                     vec![spirv::Capability::TransformFeedback]
@@ -2057,6 +2056,7 @@ impl Operand {
                 | s::Capability::Subgroup2DBlockIOINTEL
                 | s::Capability::SubgroupMatrixMultiplyAccumulateINTEL
                 | s::Capability::TernaryBitwiseFunctionINTEL
+                | s::Capability::SpecConditionalINTEL
                 | s::Capability::GroupUniformArithmeticKHR
                 | s::Capability::TensorFloat32RoundingINTEL
                 | s::Capability::MaskedGatherScatterINTEL
@@ -2070,6 +2070,9 @@ impl Operand {
                     spirv::Capability::BFloat16TypeKHR,
                     spirv::Capability::CooperativeMatrixKHR,
                 ],
+                s::Capability::CooperativeMatrixConversionQCOM => {
+                    vec![spirv::Capability::CooperativeMatrixKHR]
+                }
                 s::Capability::SubgroupDispatch => vec![spirv::Capability::DeviceEnqueue],
                 s::Capability::FPGAClusterAttributesV2INTEL => {
                     vec![spirv::Capability::FPGAClusterAttributesINTEL]
@@ -2228,6 +2231,9 @@ impl Operand {
                     vec![spirv::Capability::ShaderViewportIndexLayerEXT]
                 }
                 s::Capability::ShaderStereoViewNV => vec![spirv::Capability::ShaderViewportMaskNV],
+                s::Capability::FunctionVariantsINTEL => {
+                    vec![spirv::Capability::SpecConditionalINTEL]
+                }
                 s::Capability::UniformAndStorageBuffer16BitAccess => {
                     vec![spirv::Capability::StorageBuffer16BitAccess]
                 }
@@ -2239,6 +2245,10 @@ impl Operand {
                     vec![spirv::Capability::Subgroup2DBlockIOINTEL]
                 }
                 s::Capability::TessellationPointSize => vec![spirv::Capability::Tessellation],
+                s::Capability::UntypedVariableLengthArrayINTEL => vec![
+                    spirv::Capability::VariableLengthArrayINTEL,
+                    spirv::Capability::UntypedPointersKHR,
+                ],
                 s::Capability::VariablePointers => {
                     vec![spirv::Capability::VariablePointersStorageBuffer]
                 }
@@ -2894,6 +2904,7 @@ impl Operand {
                 | s::Decoration::HostAccessINTEL
                 | s::Decoration::InitModeINTEL
                 | s::Decoration::ImplementInRegisterMapINTEL
+                | s::Decoration::ConditionalINTEL
                 | s::Decoration::CacheControlLoadINTEL
                 | s::Decoration::CacheControlStoreINTEL => vec![],
                 s::Decoration::ExplicitInterpAMD => {
@@ -3296,6 +3307,9 @@ impl Operand {
                 s::Capability::FunctionPointersINTEL | s::Capability::IndirectReferencesINTEL => {
                     vec!["SPV_INTEL_function_pointers"]
                 }
+                s::Capability::SpecConditionalINTEL | s::Capability::FunctionVariantsINTEL => {
+                    vec!["SPV_INTEL_function_variants"]
+                }
                 s::Capability::GlobalVariableFPGADecorationsINTEL => {
                     vec!["SPV_INTEL_global_variable_fpga_decorations"]
                 }
@@ -3343,7 +3357,10 @@ impl Operand {
                     vec!["SPV_INTEL_unstructured_loop_controls"]
                 }
                 s::Capability::USMStorageClassesINTEL => vec!["SPV_INTEL_usm_storage_classes"],
-                s::Capability::VariableLengthArrayINTEL => vec!["SPV_INTEL_variable_length_array"],
+                s::Capability::VariableLengthArrayINTEL
+                | s::Capability::UntypedVariableLengthArrayINTEL => {
+                    vec!["SPV_INTEL_variable_length_array"]
+                }
                 s::Capability::VectorComputeINTEL | s::Capability::VectorAnyINTEL => {
                     vec!["SPV_INTEL_vector_compute"]
                 }
@@ -3465,6 +3482,9 @@ impl Operand {
                 s::Capability::ShaderStereoViewNV => vec!["SPV_NV_stereo_view_rendering"],
                 s::Capability::TensorAddressingNV => vec!["SPV_NV_tensor_addressing"],
                 s::Capability::ShaderViewportMaskNV => vec!["SPV_NV_viewport_array2"],
+                s::Capability::CooperativeMatrixConversionQCOM => {
+                    vec!["SPV_QCOM_cooperative_matrix_conversion"]
+                }
                 s::Capability::TextureSampleWeightedQCOM
                 | s::Capability::TextureBoxFilterQCOM
                 | s::Capability::TextureBlockMatchQCOM => vec!["SPV_QCOM_image_processing"],
@@ -3953,6 +3973,10 @@ impl Operand {
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
                 s::Decoration::PayloadNodeBaseIndexAMDX => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::IdRef,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
+                s::Decoration::ConditionalINTEL => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::IdRef,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],

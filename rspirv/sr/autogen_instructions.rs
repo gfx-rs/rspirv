@@ -68,3 +68,21 @@ pub struct CooperativeMatrixPerElementOpNV {
     pub func: spirv::Word,
     pub operands: Vec<spirv::Word>,
 }
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConditionalExtensionINTEL {
+    pub condition: spirv::Word,
+    pub name: String,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConditionalEntryPointINTEL {
+    pub condition: spirv::Word,
+    pub execution_model: spirv::ExecutionModel,
+    pub entry_point: spirv::Word,
+    pub name: String,
+    pub interface: Vec<spirv::Word>,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConditionalCapabilityINTEL {
+    pub condition: spirv::Word,
+    pub capability: spirv::Capability,
+}

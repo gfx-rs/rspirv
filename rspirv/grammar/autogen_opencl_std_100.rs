@@ -116,6 +116,40 @@ static OPENCL_STD_100_INSTRUCTION_TABLE: &[ExtendedInstruction<'static>] = &[
     ext_inst!(native_sin, 92u32, [], [], [(IdRef, One)]),
     ext_inst!(native_sqrt, 93u32, [], [], [(IdRef, One)]),
     ext_inst!(native_tan, 94u32, [], [], [(IdRef, One)]),
+    ext_inst!(
+        fclamp,
+        95u32,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(degrees, 96u32, [], [], [(IdRef, One)]),
+    ext_inst!(fmax_common, 97u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(fmin_common, 98u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(
+        mix,
+        99u32,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(radians, 100u32, [], [], [(IdRef, One)]),
+    ext_inst!(step, 101u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(
+        smoothstep,
+        102u32,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(sign, 103u32, [], [], [(IdRef, One)]),
+    ext_inst!(cross, 104u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(distance, 105u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(length, 106u32, [], [], [(IdRef, One)]),
+    ext_inst!(normalize, 107u32, [], [], [(IdRef, One)]),
+    ext_inst!(fast_distance, 108u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(fast_length, 109u32, [], [], [(IdRef, One)]),
+    ext_inst!(fast_normalize, 110u32, [], [], [(IdRef, One)]),
     ext_inst!(s_abs, 141u32, [], [], [(IdRef, One)]),
     ext_inst!(s_abs_diff, 142u32, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(s_add_sat, 143u32, [], [], [(IdRef, One), (IdRef, One)]),
@@ -188,64 +222,6 @@ static OPENCL_STD_100_INSTRUCTION_TABLE: &[ExtendedInstruction<'static>] = &[
     ),
     ext_inst!(s_mul24, 169u32, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(u_mul24, 170u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(u_abs, 201u32, [], [], [(IdRef, One)]),
-    ext_inst!(u_abs_diff, 202u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(u_mul_hi, 203u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(
-        u_mad_hi,
-        204u32,
-        [],
-        [],
-        [(IdRef, One), (IdRef, One), (IdRef, One)]
-    ),
-    ext_inst!(
-        fclamp,
-        95u32,
-        [],
-        [],
-        [(IdRef, One), (IdRef, One), (IdRef, One)]
-    ),
-    ext_inst!(degrees, 96u32, [], [], [(IdRef, One)]),
-    ext_inst!(fmax_common, 97u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(fmin_common, 98u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(
-        mix,
-        99u32,
-        [],
-        [],
-        [(IdRef, One), (IdRef, One), (IdRef, One)]
-    ),
-    ext_inst!(radians, 100u32, [], [], [(IdRef, One)]),
-    ext_inst!(step, 101u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(
-        smoothstep,
-        102u32,
-        [],
-        [],
-        [(IdRef, One), (IdRef, One), (IdRef, One)]
-    ),
-    ext_inst!(sign, 103u32, [], [], [(IdRef, One)]),
-    ext_inst!(cross, 104u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(distance, 105u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(length, 106u32, [], [], [(IdRef, One)]),
-    ext_inst!(normalize, 107u32, [], [], [(IdRef, One)]),
-    ext_inst!(fast_distance, 108u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(fast_length, 109u32, [], [], [(IdRef, One)]),
-    ext_inst!(fast_normalize, 110u32, [], [], [(IdRef, One)]),
-    ext_inst!(
-        bitselect,
-        186u32,
-        [],
-        [],
-        [(IdRef, One), (IdRef, One), (IdRef, One)]
-    ),
-    ext_inst!(
-        select,
-        187u32,
-        [],
-        [],
-        [(IdRef, One), (IdRef, One), (IdRef, One)]
-    ),
     ext_inst!(
         vloadn,
         171u32,
@@ -342,4 +318,28 @@ static OPENCL_STD_100_INSTRUCTION_TABLE: &[ExtendedInstruction<'static>] = &[
     ),
     ext_inst!(printf, 184u32, [], [], [(IdRef, One), (IdRef, ZeroOrMore)]),
     ext_inst!(prefetch, 185u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(
+        bitselect,
+        186u32,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        select,
+        187u32,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(u_abs, 201u32, [], [], [(IdRef, One)]),
+    ext_inst!(u_abs_diff, 202u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(u_mul_hi, 203u32, [], [], [(IdRef, One), (IdRef, One)]),
+    ext_inst!(
+        u_mad_hi,
+        204u32,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One), (IdRef, One)]
+    ),
 ];

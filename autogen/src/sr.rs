@@ -491,7 +491,7 @@ pub fn gen_sr_code_from_instruction_grammar(
     };
 
     let ops = quote! {
-        use crate::sr::{module::Jump, storage::Token, Type};
+        use crate::sr::{module::Jump, storage::Token, Constant, Type};
 
         #[derive(Clone, Debug, Eq, PartialEq)]
         pub enum Branch {
