@@ -68,9 +68,21 @@ macro_rules! inst {
 }
 
 /// Declares the grammar for an extended instruction instruction.
+///
+/// Operand kinds can be plain idents (resolved as `OperandKind::$kind`)
+/// or full expressions (e.g. `OperandKind::DebugInfo(ExtOperandKind::...)`
+/// for extension-specific kinds).
 macro_rules! ext_inst {
+    // All-ident operands: wrap as OperandKind::$kind and forward to the expr arm
     ($variant:ident, $opconst:ident, $opname:ident, [$( $cap:ident ),*], [$( $ext:expr ),*],
      [$( ($kind:ident, $quant:ident) ),*]) => {
+        ext_inst!($variant, $opconst, $opname, [$($cap),*], [$($ext),*],
+            [$((OperandKind::$kind, $quant)),*],)
+    };
+    // Pre-wrapped expression operands (from extensions with own operand kinds).
+    // Trailing comma distinguishes from the ident arm above.
+    ($variant:ident, $opconst:ident, $opname:ident, [$( $cap:ident ),*], [$( $ext:expr ),*],
+     [$( ($kind:expr, $quant:ident) ),*], ) => {
         ExtendedInstruction {
             opname: stringify!($opname),
             opcode: ExtInstOp::$variant(spirv::$opconst::$opname),
@@ -82,7 +94,7 @@ macro_rules! ext_inst {
             ],
             operands: &[
                 $( LogicalOperand {
-                    kind: OperandKind::$kind,
+                    kind: $kind,
                     quantifier: OperandQuantifier::$quant }
                 ),*
             ],
