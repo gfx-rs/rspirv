@@ -168,6 +168,31 @@ fn main() {
         )
     });
 
+    // Derive module and variant names for extensions with operand kinds
+    let ext_info: Vec<_> = extended_instruction_sets
+        .iter()
+        .map(|(_ext, file_key, _, _, grammar)| {
+            let module_name = file_key.replace(['.', '-'], "_");
+            let variant_name: String = file_key
+                .split(['.', '-'])
+                .flat_map(|part| {
+                    let mut chars = part.chars();
+                    // Uppercase the first character
+                    chars.next().unwrap().to_uppercase().chain(chars)
+                })
+                .collect();
+            let has_operand_kinds = !grammar.operand_kinds.is_empty();
+            (module_name, variant_name, has_operand_kinds)
+        })
+        .collect();
+
+    // Wrapper variants for core OperandKind: only extensions with operand kinds
+    let ext_wrapper_variants: Vec<(&str, &str)> = ext_info
+        .iter()
+        .filter(|(_, _, has)| *has)
+        .map(|(module, variant, _)| (variant.as_str(), module.as_str()))
+        .collect();
+
     // Collect ExtInstOp variant info: (variant_name, op_name) for all extended sets
     let ext_inst_variants: Vec<(&str, &str)> = extended_instruction_sets
         .iter()
@@ -189,32 +214,34 @@ fn main() {
         table::gen_grammar_inst_table_operand_kinds(
             &grammar.operand_kinds,
             &grammar.instructions,
-            None,
-            None,
-            "INSTRUCTION",
+            &ext_wrapper_variants,
             &ext_inst_variants,
         ),
     );
     // Extended instruction sets
-    for (ext, file_key, spirv_op, _, grammar) in extended_instruction_sets {
-        let autogen_file = format!("autogen_{}.rs", file_key.replace(['.', '-'], "_"));
-        let table_name = format!(
-            "{}_INSTRUCTION",
-            file_key.replace(['.', '-'], "_").to_uppercase()
-        );
-        let variant_name = spirv_op.strip_suffix("Op").unwrap_or(spirv_op);
+    for (
+        (ext, _file_key, spirv_op, _, ext_grammar),
+        (module_name, variant_name, _has_operand_kinds),
+    ) in extended_instruction_sets.iter().zip(&ext_info)
+    {
+        let autogen_file = format!("autogen_{module_name}.rs");
+        let table_name = format!("{}_INSTRUCTION", module_name.to_uppercase());
+        let ext_variant_name = spirv_op.strip_suffix("Op").unwrap_or(spirv_op);
         write_formatted(
             &autogen_src_dir.join(format!("../rspirv/grammar/{autogen_file}")),
-            table::gen_grammar_inst_table_operand_kinds(
-                &grammar.operand_kinds,
-                &grammar.instructions,
-                Some(spirv_op),
-                Some(variant_name),
+            table::gen_ext_instruction_file(
+                &ext_grammar.operand_kinds,
+                &ext_grammar.instructions,
+                spirv_op,
+                ext_variant_name,
                 &table_name,
-                &[],
+                variant_name,
             ),
         );
-        tables.push_str(&format!("include!(\"{autogen_file}\");\n"));
+        tables.push_str(&format!(
+            "pub mod {module_name} {{ use super::*; include!(\"{autogen_file}\"); }}\n\
+             pub use {module_name}::{table_name}_TABLE;\n"
+        ));
         table_lookup.push_str(&format!("\"{ext}\" => &{table_name}_TABLE,\n"));
     }
     write_formatted(
@@ -271,7 +298,13 @@ fn main() {
     // Path to the generated operand parsing methods.
     write_formatted(
         &autogen_src_dir.join("../rspirv/binary/autogen_parse_operand.rs"),
-        binary::gen_operand_parse_methods(&grammar.operand_kinds),
+        {
+            let variant_names: Vec<&str> = ext_wrapper_variants
+                .iter()
+                .map(|(variant, _)| *variant)
+                .collect();
+            binary::gen_operand_parse_methods(&grammar.operand_kinds, &variant_names)
+        },
     );
     // Path to the generated operand parsing methods.
     write_formatted(
