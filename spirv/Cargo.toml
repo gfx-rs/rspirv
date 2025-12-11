@@ -1,6 +1,6 @@
 [package]
 name = "spirv"
-version = "0.3.0+sdk-1.4.328.1"
+version = "0.3.0+sdk-1.4.335.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 edition = "2018"
 

@@ -10,7 +10,7 @@ pub const REVISION: u8 = 4u8;
 bitflags! { # [doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE = 256u32 ; const MAKE_TEXEL_VISIBLE = 512u32 ; const NON_PRIVATE_TEXEL = 1024u32 ; const VOLATILE_TEXEL = 2048u32 ; const SIGN_EXTEND = 4096u32 ; const ZERO_EXTEND = 8192u32 ; const NONTEMPORAL = 16384u32 ; const OFFSETS = 65536u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; const ALLOW_CONTRACT = 65536u32 ; const ALLOW_REASSOC = 131072u32 ; const ALLOW_TRANSFORM = 262144u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
-bitflags! { # [doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; const INITIATION_INTERVAL_INTEL = 65536u32 ; const MAX_CONCURRENCY_INTEL = 131072u32 ; const DEPENDENCY_ARRAY_INTEL = 262144u32 ; const PIPELINE_ENABLE_INTEL = 524288u32 ; const LOOP_COALESCE_INTEL = 1048576u32 ; const MAX_INTERLEAVING_INTEL = 2097152u32 ; const SPECULATED_ITERATIONS_INTEL = 4194304u32 ; const NO_FUSION_INTEL = 8388608u32 ; const LOOP_COUNT_INTEL = 16777216u32 ; const MAX_REINVOCATION_DELAY_INTEL = 33554432u32 ; } }
+bitflags! { # [doc = "SPIR-V operand kind: [LoopControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_loop_control_a_loop_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct LoopControl : u32 { const NONE = 0u32 ; const UNROLL = 1u32 ; const DONT_UNROLL = 2u32 ; const DEPENDENCY_INFINITE = 4u32 ; const DEPENDENCY_LENGTH = 8u32 ; const MIN_ITERATIONS = 16u32 ; const MAX_ITERATIONS = 32u32 ; const ITERATION_MULTIPLE = 64u32 ; const PEEL_COUNT = 128u32 ; const PARTIAL_COUNT = 256u32 ; const INITIATION_INTERVAL_ALTERA = 65536u32 ; const MAX_CONCURRENCY_ALTERA = 131072u32 ; const DEPENDENCY_ARRAY_ALTERA = 262144u32 ; const PIPELINE_ENABLE_ALTERA = 524288u32 ; const LOOP_COALESCE_ALTERA = 1048576u32 ; const MAX_INTERLEAVING_ALTERA = 2097152u32 ; const SPECULATED_ITERATIONS_ALTERA = 4194304u32 ; const NO_FUSION_ALTERA = 8388608u32 ; const LOOP_COUNT_ALTERA = 16777216u32 ; const MAX_REINVOCATION_DELAY_ALTERA = 33554432u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [FunctionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_function_control_a_function_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FunctionControl : u32 { const NONE = 0u32 ; const INLINE = 1u32 ; const DONT_INLINE = 2u32 ; const PURE = 4u32 ; const CONST = 8u32 ; const OPT_NONE_EXT = 65536u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [MemorySemantics](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_semantics_a_memory_semantics)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemorySemantics : u32 { const RELAXED = 0u32 ; const ACQUIRE = 2u32 ; const RELEASE = 4u32 ; const ACQUIRE_RELEASE = 8u32 ; const SEQUENTIALLY_CONSISTENT = 16u32 ; const UNIFORM_MEMORY = 64u32 ; const SUBGROUP_MEMORY = 128u32 ; const WORKGROUP_MEMORY = 256u32 ; const CROSS_WORKGROUP_MEMORY = 512u32 ; const ATOMIC_COUNTER_MEMORY = 1024u32 ; const IMAGE_MEMORY = 2048u32 ; const OUTPUT_MEMORY = 4096u32 ; const MAKE_AVAILABLE = 8192u32 ; const MAKE_VISIBLE = 16384u32 ; const VOLATILE = 32768u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [MemoryAccess](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_memory_access_a_memory_access)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct MemoryAccess : u32 { const NONE = 0u32 ; const VOLATILE = 1u32 ; const ALIGNED = 2u32 ; const NONTEMPORAL = 4u32 ; const MAKE_POINTER_AVAILABLE = 8u32 ; const MAKE_POINTER_VISIBLE = 16u32 ; const NON_PRIVATE_POINTER = 32u32 ; const ALIAS_SCOPE_INTEL_MASK = 65536u32 ; const NO_ALIAS_INTEL_MASK = 131072u32 ; } }
@@ -308,6 +308,7 @@ pub enum ExecutionMode {
     SampleInterlockUnorderedEXT = 5369u32,
     ShadingRateInterlockOrderedEXT = 5370u32,
     ShadingRateInterlockUnorderedEXT = 5371u32,
+    Shader64BitIndexingEXT = 5427u32,
     SharedLocalMemorySizeINTEL = 5618u32,
     RoundingModeRTPINTEL = 5620u32,
     RoundingModeRTNINTEL = 5621u32,
@@ -349,6 +350,7 @@ impl ExecutionMode {
             5289u32..=5290u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5298u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5298u32) },
             5366u32..=5371u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
+            5427u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5427u32) },
             5618u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5618u32) },
             5620u32..=5623u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5893u32..=5896u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
@@ -458,6 +460,7 @@ impl core::str::FromStr for ExecutionMode {
             "SampleInterlockUnorderedEXT" => Self::SampleInterlockUnorderedEXT,
             "ShadingRateInterlockOrderedEXT" => Self::ShadingRateInterlockOrderedEXT,
             "ShadingRateInterlockUnorderedEXT" => Self::ShadingRateInterlockUnorderedEXT,
+            "Shader64BitIndexingEXT" => Self::Shader64BitIndexingEXT,
             "SharedLocalMemorySizeINTEL" => Self::SharedLocalMemorySizeINTEL,
             "RoundingModeRTPINTEL" => Self::RoundingModeRTPINTEL,
             "RoundingModeRTNINTEL" => Self::RoundingModeRTNINTEL,
@@ -512,9 +515,10 @@ pub enum StorageClass {
     PhysicalStorageBuffer = 5349u32,
     HitObjectAttributeNV = 5385u32,
     TaskPayloadWorkgroupEXT = 5402u32,
+    HitObjectAttributeEXT = 5411u32,
     CodeSectionINTEL = 5605u32,
-    DeviceOnlyINTEL = 5936u32,
-    HostOnlyINTEL = 5937u32,
+    DeviceOnlyALTERA = 5936u32,
+    HostOnlyALTERA = 5937u32,
 }
 impl StorageClass {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -529,6 +533,7 @@ impl StorageClass {
             5349u32 => unsafe { core::mem::transmute::<u32, StorageClass>(5349u32) },
             5385u32 => unsafe { core::mem::transmute::<u32, StorageClass>(5385u32) },
             5402u32 => unsafe { core::mem::transmute::<u32, StorageClass>(5402u32) },
+            5411u32 => unsafe { core::mem::transmute::<u32, StorageClass>(5411u32) },
             5605u32 => unsafe { core::mem::transmute::<u32, StorageClass>(5605u32) },
             5936u32..=5937u32 => unsafe { core::mem::transmute::<u32, StorageClass>(n) },
             _ => return None,
@@ -544,6 +549,8 @@ impl StorageClass {
     pub const IncomingRayPayloadNV: Self = Self::IncomingRayPayloadKHR;
     pub const ShaderRecordBufferNV: Self = Self::ShaderRecordBufferKHR;
     pub const PhysicalStorageBufferEXT: Self = Self::PhysicalStorageBuffer;
+    pub const DeviceOnlyINTEL: Self = Self::DeviceOnlyALTERA;
+    pub const HostOnlyINTEL: Self = Self::HostOnlyALTERA;
 }
 impl core::str::FromStr for StorageClass {
     type Err = ();
@@ -581,9 +588,12 @@ impl core::str::FromStr for StorageClass {
             "PhysicalStorageBufferEXT" => Self::PhysicalStorageBuffer,
             "HitObjectAttributeNV" => Self::HitObjectAttributeNV,
             "TaskPayloadWorkgroupEXT" => Self::TaskPayloadWorkgroupEXT,
+            "HitObjectAttributeEXT" => Self::HitObjectAttributeEXT,
             "CodeSectionINTEL" => Self::CodeSectionINTEL,
-            "DeviceOnlyINTEL" => Self::DeviceOnlyINTEL,
-            "HostOnlyINTEL" => Self::HostOnlyINTEL,
+            "DeviceOnlyALTERA" => Self::DeviceOnlyALTERA,
+            "DeviceOnlyINTEL" => Self::DeviceOnlyALTERA,
+            "HostOnlyALTERA" => Self::HostOnlyALTERA,
+            "HostOnlyINTEL" => Self::HostOnlyALTERA,
             _ => return Err(()),
         })
     }
@@ -1235,7 +1245,7 @@ pub enum FunctionParameterAttribute {
     NoCapture = 5u32,
     NoWrite = 6u32,
     NoReadWrite = 7u32,
-    RuntimeAlignedINTEL = 5940u32,
+    RuntimeAlignedALTERA = 5940u32,
 }
 impl FunctionParameterAttribute {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -1247,7 +1257,9 @@ impl FunctionParameterAttribute {
     }
 }
 #[allow(non_upper_case_globals)]
-impl FunctionParameterAttribute {}
+impl FunctionParameterAttribute {
+    pub const RuntimeAlignedINTEL: Self = Self::RuntimeAlignedALTERA;
+}
 impl core::str::FromStr for FunctionParameterAttribute {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -1260,7 +1272,8 @@ impl core::str::FromStr for FunctionParameterAttribute {
             "NoCapture" => Self::NoCapture,
             "NoWrite" => Self::NoWrite,
             "NoReadWrite" => Self::NoReadWrite,
-            "RuntimeAlignedINTEL" => Self::RuntimeAlignedINTEL,
+            "RuntimeAlignedALTERA" => Self::RuntimeAlignedALTERA,
+            "RuntimeAlignedINTEL" => Self::RuntimeAlignedALTERA,
             _ => return Err(()),
         })
     }
@@ -1346,6 +1359,7 @@ pub enum Decoration {
     RestrictPointer = 5355u32,
     AliasedPointer = 5356u32,
     HitObjectShaderRecordBufferNV = 5386u32,
+    HitObjectShaderRecordBufferEXT = 5389u32,
     BindlessSamplerNV = 5398u32,
     BindlessImageNV = 5399u32,
     BoundSamplerNV = 5400u32,
@@ -1364,55 +1378,55 @@ pub enum Decoration {
     UserTypeGOOGLE = 5636u32,
     FunctionRoundingModeINTEL = 5822u32,
     FunctionDenormModeINTEL = 5823u32,
-    RegisterINTEL = 5825u32,
-    MemoryINTEL = 5826u32,
-    NumbanksINTEL = 5827u32,
-    BankwidthINTEL = 5828u32,
-    MaxPrivateCopiesINTEL = 5829u32,
-    SinglepumpINTEL = 5830u32,
-    DoublepumpINTEL = 5831u32,
-    MaxReplicatesINTEL = 5832u32,
-    SimpleDualPortINTEL = 5833u32,
-    MergeINTEL = 5834u32,
-    BankBitsINTEL = 5835u32,
-    ForcePow2DepthINTEL = 5836u32,
-    StridesizeINTEL = 5883u32,
-    WordsizeINTEL = 5884u32,
-    TrueDualPortINTEL = 5885u32,
-    BurstCoalesceINTEL = 5899u32,
-    CacheSizeINTEL = 5900u32,
-    DontStaticallyCoalesceINTEL = 5901u32,
-    PrefetchINTEL = 5902u32,
-    StallEnableINTEL = 5905u32,
-    FuseLoopsInFunctionINTEL = 5907u32,
-    MathOpDSPModeINTEL = 5909u32,
+    RegisterALTERA = 5825u32,
+    MemoryALTERA = 5826u32,
+    NumbanksALTERA = 5827u32,
+    BankwidthALTERA = 5828u32,
+    MaxPrivateCopiesALTERA = 5829u32,
+    SinglepumpALTERA = 5830u32,
+    DoublepumpALTERA = 5831u32,
+    MaxReplicatesALTERA = 5832u32,
+    SimpleDualPortALTERA = 5833u32,
+    MergeALTERA = 5834u32,
+    BankBitsALTERA = 5835u32,
+    ForcePow2DepthALTERA = 5836u32,
+    StridesizeALTERA = 5883u32,
+    WordsizeALTERA = 5884u32,
+    TrueDualPortALTERA = 5885u32,
+    BurstCoalesceALTERA = 5899u32,
+    CacheSizeALTERA = 5900u32,
+    DontStaticallyCoalesceALTERA = 5901u32,
+    PrefetchALTERA = 5902u32,
+    StallEnableALTERA = 5905u32,
+    FuseLoopsInFunctionALTERA = 5907u32,
+    MathOpDSPModeALTERA = 5909u32,
     AliasScopeINTEL = 5914u32,
     NoAliasINTEL = 5915u32,
-    InitiationIntervalINTEL = 5917u32,
-    MaxConcurrencyINTEL = 5918u32,
-    PipelineEnableINTEL = 5919u32,
-    BufferLocationINTEL = 5921u32,
-    IOPipeStorageINTEL = 5944u32,
+    InitiationIntervalALTERA = 5917u32,
+    MaxConcurrencyALTERA = 5918u32,
+    PipelineEnableALTERA = 5919u32,
+    BufferLocationALTERA = 5921u32,
+    IOPipeStorageALTERA = 5944u32,
     FunctionFloatingPointModeINTEL = 6080u32,
     SingleElementVectorINTEL = 6085u32,
     VectorComputeCallableFunctionINTEL = 6087u32,
     MediaBlockIOINTEL = 6140u32,
-    StallFreeINTEL = 6151u32,
+    StallFreeALTERA = 6151u32,
     FPMaxErrorDecorationINTEL = 6170u32,
-    LatencyControlLabelINTEL = 6172u32,
-    LatencyControlConstraintINTEL = 6173u32,
-    ConduitKernelArgumentINTEL = 6175u32,
-    RegisterMapKernelArgumentINTEL = 6176u32,
-    MMHostInterfaceAddressWidthINTEL = 6177u32,
-    MMHostInterfaceDataWidthINTEL = 6178u32,
-    MMHostInterfaceLatencyINTEL = 6179u32,
-    MMHostInterfaceReadWriteModeINTEL = 6180u32,
-    MMHostInterfaceMaxBurstINTEL = 6181u32,
-    MMHostInterfaceWaitRequestINTEL = 6182u32,
-    StableKernelArgumentINTEL = 6183u32,
+    LatencyControlLabelALTERA = 6172u32,
+    LatencyControlConstraintALTERA = 6173u32,
+    ConduitKernelArgumentALTERA = 6175u32,
+    RegisterMapKernelArgumentALTERA = 6176u32,
+    MMHostInterfaceAddressWidthALTERA = 6177u32,
+    MMHostInterfaceDataWidthALTERA = 6178u32,
+    MMHostInterfaceLatencyALTERA = 6179u32,
+    MMHostInterfaceReadWriteModeALTERA = 6180u32,
+    MMHostInterfaceMaxBurstALTERA = 6181u32,
+    MMHostInterfaceWaitRequestALTERA = 6182u32,
+    StableKernelArgumentALTERA = 6183u32,
     HostAccessINTEL = 6188u32,
-    InitModeINTEL = 6190u32,
-    ImplementInRegisterMapINTEL = 6191u32,
+    InitModeALTERA = 6190u32,
+    ImplementInRegisterMapALTERA = 6191u32,
     ConditionalINTEL = 6247u32,
     CacheControlLoadINTEL = 6442u32,
     CacheControlStoreINTEL = 6443u32,
@@ -1441,6 +1455,7 @@ impl Decoration {
             5300u32 => unsafe { core::mem::transmute::<u32, Decoration>(5300u32) },
             5355u32..=5356u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5386u32 => unsafe { core::mem::transmute::<u32, Decoration>(5386u32) },
+            5389u32 => unsafe { core::mem::transmute::<u32, Decoration>(5389u32) },
             5398u32..=5401u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5599u32 => unsafe { core::mem::transmute::<u32, Decoration>(5599u32) },
             5602u32 => unsafe { core::mem::transmute::<u32, Decoration>(5602u32) },
@@ -1483,6 +1498,47 @@ impl Decoration {
     pub const AliasedPointerEXT: Self = Self::AliasedPointer;
     pub const HlslCounterBufferGOOGLE: Self = Self::CounterBuffer;
     pub const HlslSemanticGOOGLE: Self = Self::UserSemantic;
+    pub const RegisterINTEL: Self = Self::RegisterALTERA;
+    pub const MemoryINTEL: Self = Self::MemoryALTERA;
+    pub const NumbanksINTEL: Self = Self::NumbanksALTERA;
+    pub const BankwidthINTEL: Self = Self::BankwidthALTERA;
+    pub const MaxPrivateCopiesINTEL: Self = Self::MaxPrivateCopiesALTERA;
+    pub const SinglepumpINTEL: Self = Self::SinglepumpALTERA;
+    pub const DoublepumpINTEL: Self = Self::DoublepumpALTERA;
+    pub const MaxReplicatesINTEL: Self = Self::MaxReplicatesALTERA;
+    pub const SimpleDualPortINTEL: Self = Self::SimpleDualPortALTERA;
+    pub const MergeINTEL: Self = Self::MergeALTERA;
+    pub const BankBitsINTEL: Self = Self::BankBitsALTERA;
+    pub const ForcePow2DepthINTEL: Self = Self::ForcePow2DepthALTERA;
+    pub const StridesizeINTEL: Self = Self::StridesizeALTERA;
+    pub const WordsizeINTEL: Self = Self::WordsizeALTERA;
+    pub const TrueDualPortINTEL: Self = Self::TrueDualPortALTERA;
+    pub const BurstCoalesceINTEL: Self = Self::BurstCoalesceALTERA;
+    pub const CacheSizeINTEL: Self = Self::CacheSizeALTERA;
+    pub const DontStaticallyCoalesceINTEL: Self = Self::DontStaticallyCoalesceALTERA;
+    pub const PrefetchINTEL: Self = Self::PrefetchALTERA;
+    pub const StallEnableINTEL: Self = Self::StallEnableALTERA;
+    pub const FuseLoopsInFunctionINTEL: Self = Self::FuseLoopsInFunctionALTERA;
+    pub const MathOpDSPModeINTEL: Self = Self::MathOpDSPModeALTERA;
+    pub const InitiationIntervalINTEL: Self = Self::InitiationIntervalALTERA;
+    pub const MaxConcurrencyINTEL: Self = Self::MaxConcurrencyALTERA;
+    pub const PipelineEnableINTEL: Self = Self::PipelineEnableALTERA;
+    pub const BufferLocationINTEL: Self = Self::BufferLocationALTERA;
+    pub const IOPipeStorageINTEL: Self = Self::IOPipeStorageALTERA;
+    pub const StallFreeINTEL: Self = Self::StallFreeALTERA;
+    pub const LatencyControlLabelINTEL: Self = Self::LatencyControlLabelALTERA;
+    pub const LatencyControlConstraintINTEL: Self = Self::LatencyControlConstraintALTERA;
+    pub const ConduitKernelArgumentINTEL: Self = Self::ConduitKernelArgumentALTERA;
+    pub const RegisterMapKernelArgumentINTEL: Self = Self::RegisterMapKernelArgumentALTERA;
+    pub const MMHostInterfaceAddressWidthINTEL: Self = Self::MMHostInterfaceAddressWidthALTERA;
+    pub const MMHostInterfaceDataWidthINTEL: Self = Self::MMHostInterfaceDataWidthALTERA;
+    pub const MMHostInterfaceLatencyINTEL: Self = Self::MMHostInterfaceLatencyALTERA;
+    pub const MMHostInterfaceReadWriteModeINTEL: Self = Self::MMHostInterfaceReadWriteModeALTERA;
+    pub const MMHostInterfaceMaxBurstINTEL: Self = Self::MMHostInterfaceMaxBurstALTERA;
+    pub const MMHostInterfaceWaitRequestINTEL: Self = Self::MMHostInterfaceWaitRequestALTERA;
+    pub const StableKernelArgumentINTEL: Self = Self::StableKernelArgumentALTERA;
+    pub const InitModeINTEL: Self = Self::InitModeALTERA;
+    pub const ImplementInRegisterMapINTEL: Self = Self::ImplementInRegisterMapALTERA;
 }
 impl core::str::FromStr for Decoration {
     type Err = ();
@@ -1569,6 +1625,7 @@ impl core::str::FromStr for Decoration {
             "AliasedPointer" => Self::AliasedPointer,
             "AliasedPointerEXT" => Self::AliasedPointer,
             "HitObjectShaderRecordBufferNV" => Self::HitObjectShaderRecordBufferNV,
+            "HitObjectShaderRecordBufferEXT" => Self::HitObjectShaderRecordBufferEXT,
             "BindlessSamplerNV" => Self::BindlessSamplerNV,
             "BindlessImageNV" => Self::BindlessImageNV,
             "BoundSamplerNV" => Self::BoundSamplerNV,
@@ -1589,55 +1646,96 @@ impl core::str::FromStr for Decoration {
             "UserTypeGOOGLE" => Self::UserTypeGOOGLE,
             "FunctionRoundingModeINTEL" => Self::FunctionRoundingModeINTEL,
             "FunctionDenormModeINTEL" => Self::FunctionDenormModeINTEL,
-            "RegisterINTEL" => Self::RegisterINTEL,
-            "MemoryINTEL" => Self::MemoryINTEL,
-            "NumbanksINTEL" => Self::NumbanksINTEL,
-            "BankwidthINTEL" => Self::BankwidthINTEL,
-            "MaxPrivateCopiesINTEL" => Self::MaxPrivateCopiesINTEL,
-            "SinglepumpINTEL" => Self::SinglepumpINTEL,
-            "DoublepumpINTEL" => Self::DoublepumpINTEL,
-            "MaxReplicatesINTEL" => Self::MaxReplicatesINTEL,
-            "SimpleDualPortINTEL" => Self::SimpleDualPortINTEL,
-            "MergeINTEL" => Self::MergeINTEL,
-            "BankBitsINTEL" => Self::BankBitsINTEL,
-            "ForcePow2DepthINTEL" => Self::ForcePow2DepthINTEL,
-            "StridesizeINTEL" => Self::StridesizeINTEL,
-            "WordsizeINTEL" => Self::WordsizeINTEL,
-            "TrueDualPortINTEL" => Self::TrueDualPortINTEL,
-            "BurstCoalesceINTEL" => Self::BurstCoalesceINTEL,
-            "CacheSizeINTEL" => Self::CacheSizeINTEL,
-            "DontStaticallyCoalesceINTEL" => Self::DontStaticallyCoalesceINTEL,
-            "PrefetchINTEL" => Self::PrefetchINTEL,
-            "StallEnableINTEL" => Self::StallEnableINTEL,
-            "FuseLoopsInFunctionINTEL" => Self::FuseLoopsInFunctionINTEL,
-            "MathOpDSPModeINTEL" => Self::MathOpDSPModeINTEL,
+            "RegisterALTERA" => Self::RegisterALTERA,
+            "RegisterINTEL" => Self::RegisterALTERA,
+            "MemoryALTERA" => Self::MemoryALTERA,
+            "MemoryINTEL" => Self::MemoryALTERA,
+            "NumbanksALTERA" => Self::NumbanksALTERA,
+            "NumbanksINTEL" => Self::NumbanksALTERA,
+            "BankwidthALTERA" => Self::BankwidthALTERA,
+            "BankwidthINTEL" => Self::BankwidthALTERA,
+            "MaxPrivateCopiesALTERA" => Self::MaxPrivateCopiesALTERA,
+            "MaxPrivateCopiesINTEL" => Self::MaxPrivateCopiesALTERA,
+            "SinglepumpALTERA" => Self::SinglepumpALTERA,
+            "SinglepumpINTEL" => Self::SinglepumpALTERA,
+            "DoublepumpALTERA" => Self::DoublepumpALTERA,
+            "DoublepumpINTEL" => Self::DoublepumpALTERA,
+            "MaxReplicatesALTERA" => Self::MaxReplicatesALTERA,
+            "MaxReplicatesINTEL" => Self::MaxReplicatesALTERA,
+            "SimpleDualPortALTERA" => Self::SimpleDualPortALTERA,
+            "SimpleDualPortINTEL" => Self::SimpleDualPortALTERA,
+            "MergeALTERA" => Self::MergeALTERA,
+            "MergeINTEL" => Self::MergeALTERA,
+            "BankBitsALTERA" => Self::BankBitsALTERA,
+            "BankBitsINTEL" => Self::BankBitsALTERA,
+            "ForcePow2DepthALTERA" => Self::ForcePow2DepthALTERA,
+            "ForcePow2DepthINTEL" => Self::ForcePow2DepthALTERA,
+            "StridesizeALTERA" => Self::StridesizeALTERA,
+            "StridesizeINTEL" => Self::StridesizeALTERA,
+            "WordsizeALTERA" => Self::WordsizeALTERA,
+            "WordsizeINTEL" => Self::WordsizeALTERA,
+            "TrueDualPortALTERA" => Self::TrueDualPortALTERA,
+            "TrueDualPortINTEL" => Self::TrueDualPortALTERA,
+            "BurstCoalesceALTERA" => Self::BurstCoalesceALTERA,
+            "BurstCoalesceINTEL" => Self::BurstCoalesceALTERA,
+            "CacheSizeALTERA" => Self::CacheSizeALTERA,
+            "CacheSizeINTEL" => Self::CacheSizeALTERA,
+            "DontStaticallyCoalesceALTERA" => Self::DontStaticallyCoalesceALTERA,
+            "DontStaticallyCoalesceINTEL" => Self::DontStaticallyCoalesceALTERA,
+            "PrefetchALTERA" => Self::PrefetchALTERA,
+            "PrefetchINTEL" => Self::PrefetchALTERA,
+            "StallEnableALTERA" => Self::StallEnableALTERA,
+            "StallEnableINTEL" => Self::StallEnableALTERA,
+            "FuseLoopsInFunctionALTERA" => Self::FuseLoopsInFunctionALTERA,
+            "FuseLoopsInFunctionINTEL" => Self::FuseLoopsInFunctionALTERA,
+            "MathOpDSPModeALTERA" => Self::MathOpDSPModeALTERA,
+            "MathOpDSPModeINTEL" => Self::MathOpDSPModeALTERA,
             "AliasScopeINTEL" => Self::AliasScopeINTEL,
             "NoAliasINTEL" => Self::NoAliasINTEL,
-            "InitiationIntervalINTEL" => Self::InitiationIntervalINTEL,
-            "MaxConcurrencyINTEL" => Self::MaxConcurrencyINTEL,
-            "PipelineEnableINTEL" => Self::PipelineEnableINTEL,
-            "BufferLocationINTEL" => Self::BufferLocationINTEL,
-            "IOPipeStorageINTEL" => Self::IOPipeStorageINTEL,
+            "InitiationIntervalALTERA" => Self::InitiationIntervalALTERA,
+            "InitiationIntervalINTEL" => Self::InitiationIntervalALTERA,
+            "MaxConcurrencyALTERA" => Self::MaxConcurrencyALTERA,
+            "MaxConcurrencyINTEL" => Self::MaxConcurrencyALTERA,
+            "PipelineEnableALTERA" => Self::PipelineEnableALTERA,
+            "PipelineEnableINTEL" => Self::PipelineEnableALTERA,
+            "BufferLocationALTERA" => Self::BufferLocationALTERA,
+            "BufferLocationINTEL" => Self::BufferLocationALTERA,
+            "IOPipeStorageALTERA" => Self::IOPipeStorageALTERA,
+            "IOPipeStorageINTEL" => Self::IOPipeStorageALTERA,
             "FunctionFloatingPointModeINTEL" => Self::FunctionFloatingPointModeINTEL,
             "SingleElementVectorINTEL" => Self::SingleElementVectorINTEL,
             "VectorComputeCallableFunctionINTEL" => Self::VectorComputeCallableFunctionINTEL,
             "MediaBlockIOINTEL" => Self::MediaBlockIOINTEL,
-            "StallFreeINTEL" => Self::StallFreeINTEL,
+            "StallFreeALTERA" => Self::StallFreeALTERA,
+            "StallFreeINTEL" => Self::StallFreeALTERA,
             "FPMaxErrorDecorationINTEL" => Self::FPMaxErrorDecorationINTEL,
-            "LatencyControlLabelINTEL" => Self::LatencyControlLabelINTEL,
-            "LatencyControlConstraintINTEL" => Self::LatencyControlConstraintINTEL,
-            "ConduitKernelArgumentINTEL" => Self::ConduitKernelArgumentINTEL,
-            "RegisterMapKernelArgumentINTEL" => Self::RegisterMapKernelArgumentINTEL,
-            "MMHostInterfaceAddressWidthINTEL" => Self::MMHostInterfaceAddressWidthINTEL,
-            "MMHostInterfaceDataWidthINTEL" => Self::MMHostInterfaceDataWidthINTEL,
-            "MMHostInterfaceLatencyINTEL" => Self::MMHostInterfaceLatencyINTEL,
-            "MMHostInterfaceReadWriteModeINTEL" => Self::MMHostInterfaceReadWriteModeINTEL,
-            "MMHostInterfaceMaxBurstINTEL" => Self::MMHostInterfaceMaxBurstINTEL,
-            "MMHostInterfaceWaitRequestINTEL" => Self::MMHostInterfaceWaitRequestINTEL,
-            "StableKernelArgumentINTEL" => Self::StableKernelArgumentINTEL,
+            "LatencyControlLabelALTERA" => Self::LatencyControlLabelALTERA,
+            "LatencyControlLabelINTEL" => Self::LatencyControlLabelALTERA,
+            "LatencyControlConstraintALTERA" => Self::LatencyControlConstraintALTERA,
+            "LatencyControlConstraintINTEL" => Self::LatencyControlConstraintALTERA,
+            "ConduitKernelArgumentALTERA" => Self::ConduitKernelArgumentALTERA,
+            "ConduitKernelArgumentINTEL" => Self::ConduitKernelArgumentALTERA,
+            "RegisterMapKernelArgumentALTERA" => Self::RegisterMapKernelArgumentALTERA,
+            "RegisterMapKernelArgumentINTEL" => Self::RegisterMapKernelArgumentALTERA,
+            "MMHostInterfaceAddressWidthALTERA" => Self::MMHostInterfaceAddressWidthALTERA,
+            "MMHostInterfaceAddressWidthINTEL" => Self::MMHostInterfaceAddressWidthALTERA,
+            "MMHostInterfaceDataWidthALTERA" => Self::MMHostInterfaceDataWidthALTERA,
+            "MMHostInterfaceDataWidthINTEL" => Self::MMHostInterfaceDataWidthALTERA,
+            "MMHostInterfaceLatencyALTERA" => Self::MMHostInterfaceLatencyALTERA,
+            "MMHostInterfaceLatencyINTEL" => Self::MMHostInterfaceLatencyALTERA,
+            "MMHostInterfaceReadWriteModeALTERA" => Self::MMHostInterfaceReadWriteModeALTERA,
+            "MMHostInterfaceReadWriteModeINTEL" => Self::MMHostInterfaceReadWriteModeALTERA,
+            "MMHostInterfaceMaxBurstALTERA" => Self::MMHostInterfaceMaxBurstALTERA,
+            "MMHostInterfaceMaxBurstINTEL" => Self::MMHostInterfaceMaxBurstALTERA,
+            "MMHostInterfaceWaitRequestALTERA" => Self::MMHostInterfaceWaitRequestALTERA,
+            "MMHostInterfaceWaitRequestINTEL" => Self::MMHostInterfaceWaitRequestALTERA,
+            "StableKernelArgumentALTERA" => Self::StableKernelArgumentALTERA,
+            "StableKernelArgumentINTEL" => Self::StableKernelArgumentALTERA,
             "HostAccessINTEL" => Self::HostAccessINTEL,
-            "InitModeINTEL" => Self::InitModeINTEL,
-            "ImplementInRegisterMapINTEL" => Self::ImplementInRegisterMapINTEL,
+            "InitModeALTERA" => Self::InitModeALTERA,
+            "InitModeINTEL" => Self::InitModeALTERA,
+            "ImplementInRegisterMapALTERA" => Self::ImplementInRegisterMapALTERA,
+            "ImplementInRegisterMapINTEL" => Self::ImplementInRegisterMapALTERA,
             "ConditionalINTEL" => Self::ConditionalINTEL,
             "CacheControlLoadINTEL" => Self::CacheControlLoadINTEL,
             "CacheControlStoreINTEL" => Self::CacheControlStoreINTEL,
@@ -2300,6 +2398,7 @@ pub enum Capability {
     DisplacementMicromapNV = 5380u32,
     RayTracingOpacityMicromapEXT = 5381u32,
     ShaderInvocationReorderNV = 5383u32,
+    ShaderInvocationReorderEXT = 5388u32,
     BindlessTextureNV = 5390u32,
     RayQueryPositionFetchKHR = 5391u32,
     CooperativeVectorNV = 5394u32,
@@ -2308,6 +2407,7 @@ pub enum Capability {
     RawAccessChainsNV = 5414u32,
     RayTracingSpheresGeometryNV = 5418u32,
     RayTracingLinearSweptSpheresGeometryNV = 5419u32,
+    Shader64BitIndexingEXT = 5426u32,
     CooperativeMatrixReductionsNV = 5430u32,
     CooperativeMatrixConversionsNV = 5431u32,
     CooperativeMatrixPerElementOperationsNV = 5432u32,
@@ -2337,27 +2437,27 @@ pub enum Capability {
     SubgroupAvcMotionEstimationChromaINTEL = 5698u32,
     VariableLengthArrayINTEL = 5817u32,
     FunctionFloatControlINTEL = 5821u32,
-    FPGAMemoryAttributesINTEL = 5824u32,
+    FPGAMemoryAttributesALTERA = 5824u32,
     FPFastMathModeINTEL = 5837u32,
-    ArbitraryPrecisionIntegersINTEL = 5844u32,
-    ArbitraryPrecisionFloatingPointINTEL = 5845u32,
+    ArbitraryPrecisionIntegersALTERA = 5844u32,
+    ArbitraryPrecisionFloatingPointALTERA = 5845u32,
     UnstructuredLoopControlsINTEL = 5886u32,
-    FPGALoopControlsINTEL = 5888u32,
+    FPGALoopControlsALTERA = 5888u32,
     KernelAttributesINTEL = 5892u32,
     FPGAKernelAttributesINTEL = 5897u32,
-    FPGAMemoryAccessesINTEL = 5898u32,
-    FPGAClusterAttributesINTEL = 5904u32,
-    LoopFuseINTEL = 5906u32,
-    FPGADSPControlINTEL = 5908u32,
+    FPGAMemoryAccessesALTERA = 5898u32,
+    FPGAClusterAttributesALTERA = 5904u32,
+    LoopFuseALTERA = 5906u32,
+    FPGADSPControlALTERA = 5908u32,
     MemoryAccessAliasingINTEL = 5910u32,
-    FPGAInvocationPipeliningAttributesINTEL = 5916u32,
-    FPGABufferLocationINTEL = 5920u32,
-    ArbitraryPrecisionFixedPointINTEL = 5922u32,
-    USMStorageClassesINTEL = 5935u32,
-    RuntimeAlignedAttributeINTEL = 5939u32,
-    IOPipesINTEL = 5943u32,
-    BlockingPipesINTEL = 5945u32,
-    FPGARegINTEL = 5948u32,
+    FPGAInvocationPipeliningAttributesALTERA = 5916u32,
+    FPGABufferLocationALTERA = 5920u32,
+    ArbitraryPrecisionFixedPointALTERA = 5922u32,
+    USMStorageClassesALTERA = 5935u32,
+    RuntimeAlignedAttributeALTERA = 5939u32,
+    IOPipesALTERA = 5943u32,
+    BlockingPipesALTERA = 5945u32,
+    FPGARegALTERA = 5948u32,
     DotProductInputAll = 6016u32,
     DotProductInput4x8Bit = 6017u32,
     DotProductInput4x8BitPacked = 6018u32,
@@ -2368,6 +2468,7 @@ pub enum Capability {
     BitInstructions = 6025u32,
     GroupNonUniformRotateKHR = 6026u32,
     FloatControls2 = 6029u32,
+    FMAKHR = 6030u32,
     AtomicFloat32AddEXT = 6033u32,
     AtomicFloat64AddEXT = 6034u32,
     LongCompositesINTEL = 6089u32,
@@ -2377,14 +2478,14 @@ pub enum Capability {
     BFloat16ConversionINTEL = 6115u32,
     SplitBarrierINTEL = 6141u32,
     ArithmeticFenceEXT = 6144u32,
-    FPGAClusterAttributesV2INTEL = 6150u32,
+    FPGAClusterAttributesV2ALTERA = 6150u32,
     FPGAKernelAttributesv2INTEL = 6161u32,
-    TaskSequenceINTEL = 6162u32,
+    TaskSequenceALTERA = 6162u32,
     FPMaxErrorINTEL = 6169u32,
-    FPGALatencyControlINTEL = 6171u32,
-    FPGAArgumentInterfacesINTEL = 6174u32,
+    FPGALatencyControlALTERA = 6171u32,
+    FPGAArgumentInterfacesALTERA = 6174u32,
     GlobalVariableHostAccessINTEL = 6187u32,
-    GlobalVariableFPGADecorationsINTEL = 6189u32,
+    GlobalVariableFPGADecorationsALTERA = 6189u32,
     SubgroupBufferPrefetchINTEL = 6220u32,
     Subgroup2DBlockIOINTEL = 6228u32,
     Subgroup2DBlockTransformINTEL = 6229u32,
@@ -2454,12 +2555,14 @@ impl Capability {
             5372u32..=5373u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5378u32..=5381u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5383u32 => unsafe { core::mem::transmute::<u32, Capability>(5383u32) },
+            5388u32 => unsafe { core::mem::transmute::<u32, Capability>(5388u32) },
             5390u32..=5391u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5394u32 => unsafe { core::mem::transmute::<u32, Capability>(5394u32) },
             5404u32 => unsafe { core::mem::transmute::<u32, Capability>(5404u32) },
             5409u32 => unsafe { core::mem::transmute::<u32, Capability>(5409u32) },
             5414u32 => unsafe { core::mem::transmute::<u32, Capability>(5414u32) },
             5418u32..=5419u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            5426u32 => unsafe { core::mem::transmute::<u32, Capability>(5426u32) },
             5430u32..=5435u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5437u32 => unsafe { core::mem::transmute::<u32, Capability>(5437u32) },
             5439u32 => unsafe { core::mem::transmute::<u32, Capability>(5439u32) },
@@ -2497,7 +2600,7 @@ impl Capability {
             6016u32..=6020u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6022u32 => unsafe { core::mem::transmute::<u32, Capability>(6022u32) },
             6024u32..=6026u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
-            6029u32 => unsafe { core::mem::transmute::<u32, Capability>(6029u32) },
+            6029u32..=6030u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6033u32..=6034u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             6089u32 => unsafe { core::mem::transmute::<u32, Capability>(6089u32) },
             6094u32..=6095u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2562,11 +2665,34 @@ impl Capability {
     pub const PhysicalStorageBufferAddressesEXT: Self = Self::PhysicalStorageBufferAddresses;
     pub const ComputeDerivativeGroupLinearNV: Self = Self::ComputeDerivativeGroupLinearKHR;
     pub const DemoteToHelperInvocationEXT: Self = Self::DemoteToHelperInvocation;
+    pub const FPGAMemoryAttributesINTEL: Self = Self::FPGAMemoryAttributesALTERA;
+    pub const ArbitraryPrecisionIntegersINTEL: Self = Self::ArbitraryPrecisionIntegersALTERA;
+    pub const ArbitraryPrecisionFloatingPointINTEL: Self =
+        Self::ArbitraryPrecisionFloatingPointALTERA;
+    pub const FPGALoopControlsINTEL: Self = Self::FPGALoopControlsALTERA;
+    pub const FPGAMemoryAccessesINTEL: Self = Self::FPGAMemoryAccessesALTERA;
+    pub const FPGAClusterAttributesINTEL: Self = Self::FPGAClusterAttributesALTERA;
+    pub const LoopFuseINTEL: Self = Self::LoopFuseALTERA;
+    pub const FPGADSPControlINTEL: Self = Self::FPGADSPControlALTERA;
+    pub const FPGAInvocationPipeliningAttributesINTEL: Self =
+        Self::FPGAInvocationPipeliningAttributesALTERA;
+    pub const FPGABufferLocationINTEL: Self = Self::FPGABufferLocationALTERA;
+    pub const ArbitraryPrecisionFixedPointINTEL: Self = Self::ArbitraryPrecisionFixedPointALTERA;
+    pub const USMStorageClassesINTEL: Self = Self::USMStorageClassesALTERA;
+    pub const RuntimeAlignedAttributeINTEL: Self = Self::RuntimeAlignedAttributeALTERA;
+    pub const IOPipesINTEL: Self = Self::IOPipesALTERA;
+    pub const BlockingPipesINTEL: Self = Self::BlockingPipesALTERA;
+    pub const FPGARegINTEL: Self = Self::FPGARegALTERA;
     pub const DotProductInputAllKHR: Self = Self::DotProductInputAll;
     pub const DotProductInput4x8BitKHR: Self = Self::DotProductInput4x8Bit;
     pub const DotProductInput4x8BitPackedKHR: Self = Self::DotProductInput4x8BitPacked;
     pub const DotProductKHR: Self = Self::DotProduct;
     pub const OptNoneINTEL: Self = Self::OptNoneEXT;
+    pub const FPGAClusterAttributesV2INTEL: Self = Self::FPGAClusterAttributesV2ALTERA;
+    pub const TaskSequenceINTEL: Self = Self::TaskSequenceALTERA;
+    pub const FPGALatencyControlINTEL: Self = Self::FPGALatencyControlALTERA;
+    pub const FPGAArgumentInterfacesINTEL: Self = Self::FPGAArgumentInterfacesALTERA;
+    pub const GlobalVariableFPGADecorationsINTEL: Self = Self::GlobalVariableFPGADecorationsALTERA;
 }
 impl core::str::FromStr for Capability {
     type Err = ();
@@ -2795,6 +2921,7 @@ impl core::str::FromStr for Capability {
             "DisplacementMicromapNV" => Self::DisplacementMicromapNV,
             "RayTracingOpacityMicromapEXT" => Self::RayTracingOpacityMicromapEXT,
             "ShaderInvocationReorderNV" => Self::ShaderInvocationReorderNV,
+            "ShaderInvocationReorderEXT" => Self::ShaderInvocationReorderEXT,
             "BindlessTextureNV" => Self::BindlessTextureNV,
             "RayQueryPositionFetchKHR" => Self::RayQueryPositionFetchKHR,
             "CooperativeVectorNV" => Self::CooperativeVectorNV,
@@ -2805,6 +2932,7 @@ impl core::str::FromStr for Capability {
             "RayTracingLinearSweptSpheresGeometryNV" => {
                 Self::RayTracingLinearSweptSpheresGeometryNV
             }
+            "Shader64BitIndexingEXT" => Self::Shader64BitIndexingEXT,
             "CooperativeMatrixReductionsNV" => Self::CooperativeMatrixReductionsNV,
             "CooperativeMatrixConversionsNV" => Self::CooperativeMatrixConversionsNV,
             "CooperativeMatrixPerElementOperationsNV" => {
@@ -2840,29 +2968,47 @@ impl core::str::FromStr for Capability {
             }
             "VariableLengthArrayINTEL" => Self::VariableLengthArrayINTEL,
             "FunctionFloatControlINTEL" => Self::FunctionFloatControlINTEL,
-            "FPGAMemoryAttributesINTEL" => Self::FPGAMemoryAttributesINTEL,
+            "FPGAMemoryAttributesALTERA" => Self::FPGAMemoryAttributesALTERA,
+            "FPGAMemoryAttributesINTEL" => Self::FPGAMemoryAttributesALTERA,
             "FPFastMathModeINTEL" => Self::FPFastMathModeINTEL,
-            "ArbitraryPrecisionIntegersINTEL" => Self::ArbitraryPrecisionIntegersINTEL,
-            "ArbitraryPrecisionFloatingPointINTEL" => Self::ArbitraryPrecisionFloatingPointINTEL,
+            "ArbitraryPrecisionIntegersALTERA" => Self::ArbitraryPrecisionIntegersALTERA,
+            "ArbitraryPrecisionIntegersINTEL" => Self::ArbitraryPrecisionIntegersALTERA,
+            "ArbitraryPrecisionFloatingPointALTERA" => Self::ArbitraryPrecisionFloatingPointALTERA,
+            "ArbitraryPrecisionFloatingPointINTEL" => Self::ArbitraryPrecisionFloatingPointALTERA,
             "UnstructuredLoopControlsINTEL" => Self::UnstructuredLoopControlsINTEL,
-            "FPGALoopControlsINTEL" => Self::FPGALoopControlsINTEL,
+            "FPGALoopControlsALTERA" => Self::FPGALoopControlsALTERA,
+            "FPGALoopControlsINTEL" => Self::FPGALoopControlsALTERA,
             "KernelAttributesINTEL" => Self::KernelAttributesINTEL,
             "FPGAKernelAttributesINTEL" => Self::FPGAKernelAttributesINTEL,
-            "FPGAMemoryAccessesINTEL" => Self::FPGAMemoryAccessesINTEL,
-            "FPGAClusterAttributesINTEL" => Self::FPGAClusterAttributesINTEL,
-            "LoopFuseINTEL" => Self::LoopFuseINTEL,
-            "FPGADSPControlINTEL" => Self::FPGADSPControlINTEL,
+            "FPGAMemoryAccessesALTERA" => Self::FPGAMemoryAccessesALTERA,
+            "FPGAMemoryAccessesINTEL" => Self::FPGAMemoryAccessesALTERA,
+            "FPGAClusterAttributesALTERA" => Self::FPGAClusterAttributesALTERA,
+            "FPGAClusterAttributesINTEL" => Self::FPGAClusterAttributesALTERA,
+            "LoopFuseALTERA" => Self::LoopFuseALTERA,
+            "LoopFuseINTEL" => Self::LoopFuseALTERA,
+            "FPGADSPControlALTERA" => Self::FPGADSPControlALTERA,
+            "FPGADSPControlINTEL" => Self::FPGADSPControlALTERA,
             "MemoryAccessAliasingINTEL" => Self::MemoryAccessAliasingINTEL,
-            "FPGAInvocationPipeliningAttributesINTEL" => {
-                Self::FPGAInvocationPipeliningAttributesINTEL
+            "FPGAInvocationPipeliningAttributesALTERA" => {
+                Self::FPGAInvocationPipeliningAttributesALTERA
             }
-            "FPGABufferLocationINTEL" => Self::FPGABufferLocationINTEL,
-            "ArbitraryPrecisionFixedPointINTEL" => Self::ArbitraryPrecisionFixedPointINTEL,
-            "USMStorageClassesINTEL" => Self::USMStorageClassesINTEL,
-            "RuntimeAlignedAttributeINTEL" => Self::RuntimeAlignedAttributeINTEL,
-            "IOPipesINTEL" => Self::IOPipesINTEL,
-            "BlockingPipesINTEL" => Self::BlockingPipesINTEL,
-            "FPGARegINTEL" => Self::FPGARegINTEL,
+            "FPGAInvocationPipeliningAttributesINTEL" => {
+                Self::FPGAInvocationPipeliningAttributesALTERA
+            }
+            "FPGABufferLocationALTERA" => Self::FPGABufferLocationALTERA,
+            "FPGABufferLocationINTEL" => Self::FPGABufferLocationALTERA,
+            "ArbitraryPrecisionFixedPointALTERA" => Self::ArbitraryPrecisionFixedPointALTERA,
+            "ArbitraryPrecisionFixedPointINTEL" => Self::ArbitraryPrecisionFixedPointALTERA,
+            "USMStorageClassesALTERA" => Self::USMStorageClassesALTERA,
+            "USMStorageClassesINTEL" => Self::USMStorageClassesALTERA,
+            "RuntimeAlignedAttributeALTERA" => Self::RuntimeAlignedAttributeALTERA,
+            "RuntimeAlignedAttributeINTEL" => Self::RuntimeAlignedAttributeALTERA,
+            "IOPipesALTERA" => Self::IOPipesALTERA,
+            "IOPipesINTEL" => Self::IOPipesALTERA,
+            "BlockingPipesALTERA" => Self::BlockingPipesALTERA,
+            "BlockingPipesINTEL" => Self::BlockingPipesALTERA,
+            "FPGARegALTERA" => Self::FPGARegALTERA,
+            "FPGARegINTEL" => Self::FPGARegALTERA,
             "DotProductInputAll" => Self::DotProductInputAll,
             "DotProductInputAllKHR" => Self::DotProductInputAll,
             "DotProductInput4x8Bit" => Self::DotProductInput4x8Bit,
@@ -2877,6 +3023,7 @@ impl core::str::FromStr for Capability {
             "BitInstructions" => Self::BitInstructions,
             "GroupNonUniformRotateKHR" => Self::GroupNonUniformRotateKHR,
             "FloatControls2" => Self::FloatControls2,
+            "FMAKHR" => Self::FMAKHR,
             "AtomicFloat32AddEXT" => Self::AtomicFloat32AddEXT,
             "AtomicFloat64AddEXT" => Self::AtomicFloat64AddEXT,
             "LongCompositesINTEL" => Self::LongCompositesINTEL,
@@ -2887,14 +3034,19 @@ impl core::str::FromStr for Capability {
             "BFloat16ConversionINTEL" => Self::BFloat16ConversionINTEL,
             "SplitBarrierINTEL" => Self::SplitBarrierINTEL,
             "ArithmeticFenceEXT" => Self::ArithmeticFenceEXT,
-            "FPGAClusterAttributesV2INTEL" => Self::FPGAClusterAttributesV2INTEL,
+            "FPGAClusterAttributesV2ALTERA" => Self::FPGAClusterAttributesV2ALTERA,
+            "FPGAClusterAttributesV2INTEL" => Self::FPGAClusterAttributesV2ALTERA,
             "FPGAKernelAttributesv2INTEL" => Self::FPGAKernelAttributesv2INTEL,
-            "TaskSequenceINTEL" => Self::TaskSequenceINTEL,
+            "TaskSequenceALTERA" => Self::TaskSequenceALTERA,
+            "TaskSequenceINTEL" => Self::TaskSequenceALTERA,
             "FPMaxErrorINTEL" => Self::FPMaxErrorINTEL,
-            "FPGALatencyControlINTEL" => Self::FPGALatencyControlINTEL,
-            "FPGAArgumentInterfacesINTEL" => Self::FPGAArgumentInterfacesINTEL,
+            "FPGALatencyControlALTERA" => Self::FPGALatencyControlALTERA,
+            "FPGALatencyControlINTEL" => Self::FPGALatencyControlALTERA,
+            "FPGAArgumentInterfacesALTERA" => Self::FPGAArgumentInterfacesALTERA,
+            "FPGAArgumentInterfacesINTEL" => Self::FPGAArgumentInterfacesALTERA,
             "GlobalVariableHostAccessINTEL" => Self::GlobalVariableHostAccessINTEL,
-            "GlobalVariableFPGADecorationsINTEL" => Self::GlobalVariableFPGADecorationsINTEL,
+            "GlobalVariableFPGADecorationsALTERA" => Self::GlobalVariableFPGADecorationsALTERA,
+            "GlobalVariableFPGADecorationsINTEL" => Self::GlobalVariableFPGADecorationsALTERA,
             "SubgroupBufferPrefetchINTEL" => Self::SubgroupBufferPrefetchINTEL,
             "Subgroup2DBlockIOINTEL" => Self::Subgroup2DBlockIOINTEL,
             "Subgroup2DBlockTransformINTEL" => Self::Subgroup2DBlockTransformINTEL,
@@ -3160,8 +3312,8 @@ bitflags! { # [doc = "SPIR-V operand kind: [TensorAddressingOperands](https://ww
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[allow(clippy::upper_case_acronyms)]
 pub enum InitializationModeQualifier {
-    InitOnDeviceReprogramINTEL = 0u32,
-    InitOnDeviceResetINTEL = 1u32,
+    InitOnDeviceReprogramALTERA = 0u32,
+    InitOnDeviceResetALTERA = 1u32,
 }
 impl InitializationModeQualifier {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -3172,13 +3324,18 @@ impl InitializationModeQualifier {
     }
 }
 #[allow(non_upper_case_globals)]
-impl InitializationModeQualifier {}
+impl InitializationModeQualifier {
+    pub const InitOnDeviceReprogramINTEL: Self = Self::InitOnDeviceReprogramALTERA;
+    pub const InitOnDeviceResetINTEL: Self = Self::InitOnDeviceResetALTERA;
+}
 impl core::str::FromStr for InitializationModeQualifier {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(match s {
-            "InitOnDeviceReprogramINTEL" => Self::InitOnDeviceReprogramINTEL,
-            "InitOnDeviceResetINTEL" => Self::InitOnDeviceResetINTEL,
+            "InitOnDeviceReprogramALTERA" => Self::InitOnDeviceReprogramALTERA,
+            "InitOnDeviceReprogramINTEL" => Self::InitOnDeviceReprogramALTERA,
+            "InitOnDeviceResetALTERA" => Self::InitOnDeviceResetALTERA,
+            "InitOnDeviceResetINTEL" => Self::InitOnDeviceResetALTERA,
             _ => return Err(()),
         })
     }
@@ -3785,6 +3942,7 @@ pub enum Op {
     UntypedInBoundsPtrAccessChainKHR = 4424u32,
     UntypedArrayLengthKHR = 4425u32,
     UntypedPrefetchKHR = 4426u32,
+    FmaKHR = 4427u32,
     SubgroupAllKHR = 4428u32,
     SubgroupAnyKHR = 4429u32,
     SubgroupAllEqualKHR = 4430u32,
@@ -3899,6 +4057,36 @@ pub enum Op {
     FetchMicroTriangleVertexBarycentricNV = 5301u32,
     CooperativeVectorLoadNV = 5302u32,
     CooperativeVectorStoreNV = 5303u32,
+    HitObjectRecordFromQueryEXT = 5304u32,
+    HitObjectRecordMissEXT = 5305u32,
+    HitObjectRecordMissMotionEXT = 5306u32,
+    HitObjectGetIntersectionTriangleVertexPositionsEXT = 5307u32,
+    HitObjectGetRayFlagsEXT = 5308u32,
+    HitObjectSetShaderBindingTableRecordIndexEXT = 5309u32,
+    HitObjectReorderExecuteShaderEXT = 5310u32,
+    HitObjectTraceReorderExecuteEXT = 5311u32,
+    HitObjectTraceMotionReorderExecuteEXT = 5312u32,
+    TypeHitObjectEXT = 5313u32,
+    ReorderThreadWithHintEXT = 5314u32,
+    ReorderThreadWithHitObjectEXT = 5315u32,
+    HitObjectTraceRayEXT = 5316u32,
+    HitObjectTraceRayMotionEXT = 5317u32,
+    HitObjectRecordEmptyEXT = 5318u32,
+    HitObjectExecuteShaderEXT = 5319u32,
+    HitObjectGetCurrentTimeEXT = 5320u32,
+    HitObjectGetAttributesEXT = 5321u32,
+    HitObjectGetHitKindEXT = 5322u32,
+    HitObjectGetPrimitiveIndexEXT = 5323u32,
+    HitObjectGetGeometryIndexEXT = 5324u32,
+    HitObjectGetInstanceIdEXT = 5325u32,
+    HitObjectGetInstanceCustomIndexEXT = 5326u32,
+    HitObjectGetObjectRayOriginEXT = 5327u32,
+    HitObjectGetObjectRayDirectionEXT = 5328u32,
+    HitObjectGetWorldRayDirectionEXT = 5329u32,
+    HitObjectGetWorldRayOriginEXT = 5330u32,
+    HitObjectGetObjectToWorldEXT = 5331u32,
+    HitObjectGetWorldToObjectEXT = 5332u32,
+    HitObjectGetRayTMaxEXT = 5333u32,
     ReportIntersectionKHR = 5334u32,
     IgnoreIntersectionNV = 5335u32,
     TerminateRayNV = 5336u32,
@@ -3910,6 +4098,12 @@ pub enum Op {
     ExecuteCallableNV = 5344u32,
     RayQueryGetIntersectionClusterIdNV = 5345u32,
     HitObjectGetClusterIdNV = 5346u32,
+    HitObjectGetRayTMinEXT = 5347u32,
+    HitObjectGetShaderBindingTableRecordIndexEXT = 5348u32,
+    HitObjectGetShaderRecordBufferHandleEXT = 5349u32,
+    HitObjectIsEmptyEXT = 5350u32,
+    HitObjectIsHitEXT = 5351u32,
+    HitObjectIsMissEXT = 5352u32,
     TypeCooperativeMatrixNV = 5358u32,
     CooperativeMatrixLoadNV = 5359u32,
     CooperativeMatrixStoreNV = 5360u32,
@@ -4113,24 +4307,24 @@ pub enum Op {
     VariableLengthArrayINTEL = 5818u32,
     SaveMemoryINTEL = 5819u32,
     RestoreMemoryINTEL = 5820u32,
-    ArbitraryFloatSinCosPiINTEL = 5840u32,
-    ArbitraryFloatCastINTEL = 5841u32,
-    ArbitraryFloatCastFromIntINTEL = 5842u32,
-    ArbitraryFloatCastToIntINTEL = 5843u32,
-    ArbitraryFloatAddINTEL = 5846u32,
-    ArbitraryFloatSubINTEL = 5847u32,
-    ArbitraryFloatMulINTEL = 5848u32,
-    ArbitraryFloatDivINTEL = 5849u32,
-    ArbitraryFloatGTINTEL = 5850u32,
-    ArbitraryFloatGEINTEL = 5851u32,
-    ArbitraryFloatLTINTEL = 5852u32,
-    ArbitraryFloatLEINTEL = 5853u32,
-    ArbitraryFloatEQINTEL = 5854u32,
-    ArbitraryFloatRecipINTEL = 5855u32,
-    ArbitraryFloatRSqrtINTEL = 5856u32,
-    ArbitraryFloatCbrtINTEL = 5857u32,
-    ArbitraryFloatHypotINTEL = 5858u32,
-    ArbitraryFloatSqrtINTEL = 5859u32,
+    ArbitraryFloatSinCosPiALTERA = 5840u32,
+    ArbitraryFloatCastALTERA = 5841u32,
+    ArbitraryFloatCastFromIntALTERA = 5842u32,
+    ArbitraryFloatCastToIntALTERA = 5843u32,
+    ArbitraryFloatAddALTERA = 5846u32,
+    ArbitraryFloatSubALTERA = 5847u32,
+    ArbitraryFloatMulALTERA = 5848u32,
+    ArbitraryFloatDivALTERA = 5849u32,
+    ArbitraryFloatGTALTERA = 5850u32,
+    ArbitraryFloatGEALTERA = 5851u32,
+    ArbitraryFloatLTALTERA = 5852u32,
+    ArbitraryFloatLEALTERA = 5853u32,
+    ArbitraryFloatEQALTERA = 5854u32,
+    ArbitraryFloatRecipALTERA = 5855u32,
+    ArbitraryFloatRSqrtALTERA = 5856u32,
+    ArbitraryFloatCbrtALTERA = 5857u32,
+    ArbitraryFloatHypotALTERA = 5858u32,
+    ArbitraryFloatSqrtALTERA = 5859u32,
     ArbitraryFloatLogINTEL = 5860u32,
     ArbitraryFloatLog2INTEL = 5861u32,
     ArbitraryFloatLog10INTEL = 5862u32,
@@ -4158,22 +4352,22 @@ pub enum Op {
     AliasDomainDeclINTEL = 5911u32,
     AliasScopeDeclINTEL = 5912u32,
     AliasScopeListDeclINTEL = 5913u32,
-    FixedSqrtINTEL = 5923u32,
-    FixedRecipINTEL = 5924u32,
-    FixedRsqrtINTEL = 5925u32,
-    FixedSinINTEL = 5926u32,
-    FixedCosINTEL = 5927u32,
-    FixedSinCosINTEL = 5928u32,
-    FixedSinPiINTEL = 5929u32,
-    FixedCosPiINTEL = 5930u32,
-    FixedSinCosPiINTEL = 5931u32,
-    FixedLogINTEL = 5932u32,
-    FixedExpINTEL = 5933u32,
-    PtrCastToCrossWorkgroupINTEL = 5934u32,
-    CrossWorkgroupCastToPtrINTEL = 5938u32,
-    ReadPipeBlockingINTEL = 5946u32,
-    WritePipeBlockingINTEL = 5947u32,
-    FPGARegINTEL = 5949u32,
+    FixedSqrtALTERA = 5923u32,
+    FixedRecipALTERA = 5924u32,
+    FixedRsqrtALTERA = 5925u32,
+    FixedSinALTERA = 5926u32,
+    FixedCosALTERA = 5927u32,
+    FixedSinCosALTERA = 5928u32,
+    FixedSinPiALTERA = 5929u32,
+    FixedCosPiALTERA = 5930u32,
+    FixedSinCosPiALTERA = 5931u32,
+    FixedLogALTERA = 5932u32,
+    FixedExpALTERA = 5933u32,
+    PtrCastToCrossWorkgroupALTERA = 5934u32,
+    CrossWorkgroupCastToPtrALTERA = 5938u32,
+    ReadPipeBlockingALTERA = 5946u32,
+    WritePipeBlockingALTERA = 5947u32,
+    FPGARegALTERA = 5949u32,
     RayQueryGetRayTMinKHR = 6016u32,
     RayQueryGetRayFlagsKHR = 6017u32,
     RayQueryGetIntersectionTKHR = 6018u32,
@@ -4202,11 +4396,11 @@ pub enum Op {
     ControlBarrierArriveINTEL = 6142u32,
     ControlBarrierWaitINTEL = 6143u32,
     ArithmeticFenceEXT = 6145u32,
-    TaskSequenceCreateINTEL = 6163u32,
-    TaskSequenceAsyncINTEL = 6164u32,
-    TaskSequenceGetINTEL = 6165u32,
-    TaskSequenceReleaseINTEL = 6166u32,
-    TypeTaskSequenceINTEL = 6199u32,
+    TaskSequenceCreateALTERA = 6163u32,
+    TaskSequenceAsyncALTERA = 6164u32,
+    TaskSequenceGetALTERA = 6165u32,
+    TaskSequenceReleaseALTERA = 6166u32,
+    TypeTaskSequenceALTERA = 6199u32,
     SubgroupBlockPrefetchINTEL = 6221u32,
     Subgroup2DBlockLoadINTEL = 6231u32,
     Subgroup2DBlockLoadTransformINTEL = 6232u32,
@@ -4267,8 +4461,7 @@ impl Op {
             4160u32..=4166u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4181u32..=4186u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4190u32 => unsafe { core::mem::transmute::<u32, Op>(4190u32) },
-            4416u32..=4426u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            4428u32..=4434u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4416u32..=4434u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4445u32..=4463u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4472u32..=4477u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4479u32..=4483u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -4287,9 +4480,8 @@ impl Op {
             5249u32..=5281u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5283u32 => unsafe { core::mem::transmute::<u32, Op>(5283u32) },
             5288u32..=5296u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            5299u32..=5303u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            5334u32..=5341u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            5344u32..=5346u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            5299u32..=5341u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            5344u32..=5352u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5358u32..=5362u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5364u32..=5382u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5384u32 => unsafe { core::mem::transmute::<u32, Op>(5384u32) },
@@ -4351,6 +4543,45 @@ impl Op {
     pub const DemoteToHelperInvocationEXT: Self = Self::DemoteToHelperInvocation;
     pub const DecorateStringGOOGLE: Self = Self::DecorateString;
     pub const MemberDecorateStringGOOGLE: Self = Self::MemberDecorateString;
+    pub const ArbitraryFloatSinCosPiINTEL: Self = Self::ArbitraryFloatSinCosPiALTERA;
+    pub const ArbitraryFloatCastINTEL: Self = Self::ArbitraryFloatCastALTERA;
+    pub const ArbitraryFloatCastFromIntINTEL: Self = Self::ArbitraryFloatCastFromIntALTERA;
+    pub const ArbitraryFloatCastToIntINTEL: Self = Self::ArbitraryFloatCastToIntALTERA;
+    pub const ArbitraryFloatAddINTEL: Self = Self::ArbitraryFloatAddALTERA;
+    pub const ArbitraryFloatSubINTEL: Self = Self::ArbitraryFloatSubALTERA;
+    pub const ArbitraryFloatMulINTEL: Self = Self::ArbitraryFloatMulALTERA;
+    pub const ArbitraryFloatDivINTEL: Self = Self::ArbitraryFloatDivALTERA;
+    pub const ArbitraryFloatGTINTEL: Self = Self::ArbitraryFloatGTALTERA;
+    pub const ArbitraryFloatGEINTEL: Self = Self::ArbitraryFloatGEALTERA;
+    pub const ArbitraryFloatLTINTEL: Self = Self::ArbitraryFloatLTALTERA;
+    pub const ArbitraryFloatLEINTEL: Self = Self::ArbitraryFloatLEALTERA;
+    pub const ArbitraryFloatEQINTEL: Self = Self::ArbitraryFloatEQALTERA;
+    pub const ArbitraryFloatRecipINTEL: Self = Self::ArbitraryFloatRecipALTERA;
+    pub const ArbitraryFloatRSqrtINTEL: Self = Self::ArbitraryFloatRSqrtALTERA;
+    pub const ArbitraryFloatCbrtINTEL: Self = Self::ArbitraryFloatCbrtALTERA;
+    pub const ArbitraryFloatHypotINTEL: Self = Self::ArbitraryFloatHypotALTERA;
+    pub const ArbitraryFloatSqrtINTEL: Self = Self::ArbitraryFloatSqrtALTERA;
+    pub const FixedSqrtINTEL: Self = Self::FixedSqrtALTERA;
+    pub const FixedRecipINTEL: Self = Self::FixedRecipALTERA;
+    pub const FixedRsqrtINTEL: Self = Self::FixedRsqrtALTERA;
+    pub const FixedSinINTEL: Self = Self::FixedSinALTERA;
+    pub const FixedCosINTEL: Self = Self::FixedCosALTERA;
+    pub const FixedSinCosINTEL: Self = Self::FixedSinCosALTERA;
+    pub const FixedSinPiINTEL: Self = Self::FixedSinPiALTERA;
+    pub const FixedCosPiINTEL: Self = Self::FixedCosPiALTERA;
+    pub const FixedSinCosPiINTEL: Self = Self::FixedSinCosPiALTERA;
+    pub const FixedLogINTEL: Self = Self::FixedLogALTERA;
+    pub const FixedExpINTEL: Self = Self::FixedExpALTERA;
+    pub const PtrCastToCrossWorkgroupINTEL: Self = Self::PtrCastToCrossWorkgroupALTERA;
+    pub const CrossWorkgroupCastToPtrINTEL: Self = Self::CrossWorkgroupCastToPtrALTERA;
+    pub const ReadPipeBlockingINTEL: Self = Self::ReadPipeBlockingALTERA;
+    pub const WritePipeBlockingINTEL: Self = Self::WritePipeBlockingALTERA;
+    pub const FPGARegINTEL: Self = Self::FPGARegALTERA;
+    pub const TaskSequenceCreateINTEL: Self = Self::TaskSequenceCreateALTERA;
+    pub const TaskSequenceAsyncINTEL: Self = Self::TaskSequenceAsyncALTERA;
+    pub const TaskSequenceGetINTEL: Self = Self::TaskSequenceGetALTERA;
+    pub const TaskSequenceReleaseINTEL: Self = Self::TaskSequenceReleaseALTERA;
+    pub const TypeTaskSequenceINTEL: Self = Self::TypeTaskSequenceALTERA;
     #[doc = r" Returns [`true`] if the given opcode is a type-declaring instruction."]
     #[doc = r""]
     #[doc = r" <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_type_declaration_instructions>"]
@@ -4388,13 +4619,13 @@ impl Op {
                 | Self::TypeNodePayloadArrayAMDX
                 | Self::TypeHitObjectNV
                 | Self::TypeCooperativeVectorNV
+                | Self::TypeHitObjectEXT
                 | Self::TypeAccelerationStructureKHR
                 | Self::TypeCooperativeMatrixNV
                 | Self::TypeTensorLayoutNV
                 | Self::TypeTensorViewNV
                 | Self::TypeBufferSurfaceINTEL
                 | Self::TypeStructContinuedINTEL
-                | Self::TypeTaskSequenceINTEL
         )
     }
     #[doc = r" Returns [`true`] if the given opcode is a constant-defining instruction."]

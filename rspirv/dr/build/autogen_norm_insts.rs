@@ -13067,6 +13067,55 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
+    #[doc = "Appends an OpFmaKHR instruction to the current block."]
+    pub fn fma_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+        operand_3: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FmaKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(operand_1),
+                dr::Operand::IdRef(operand_2),
+                dr::Operand::IdRef(operand_3),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFmaKHR instruction to the current block."]
+    pub fn insert_fma_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+        operand_3: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FmaKHR,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(operand_1),
+                dr::Operand::IdRef(operand_2),
+                dr::Operand::IdRef(operand_3),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpSubgroupAllKHR instruction to the current block."]
     pub fn subgroup_all_khr(
         &mut self,
@@ -17995,6 +18044,1354 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
+    #[doc = "Appends an OpHitObjectRecordFromQueryEXT instruction to the current block."]
+    pub fn hit_object_record_from_query_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        ray_query: spirv::Word,
+        sbt_record_index: spirv::Word,
+        hit_object_attributes: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordFromQueryEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(ray_query),
+                dr::Operand::IdRef(sbt_record_index),
+                dr::Operand::IdRef(hit_object_attributes),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectRecordFromQueryEXT instruction to the current block."]
+    pub fn insert_hit_object_record_from_query_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        ray_query: spirv::Word,
+        sbt_record_index: spirv::Word,
+        hit_object_attributes: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordFromQueryEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(ray_query),
+                dr::Operand::IdRef(sbt_record_index),
+                dr::Operand::IdRef(hit_object_attributes),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectRecordMissEXT instruction to the current block."]
+    pub fn hit_object_record_miss_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        ray_flags: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordMissEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectRecordMissEXT instruction to the current block."]
+    pub fn insert_hit_object_record_miss_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        ray_flags: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordMissEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectRecordMissMotionEXT instruction to the current block."]
+    pub fn hit_object_record_miss_motion_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        ray_flags: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordMissMotionEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(current_time),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectRecordMissMotionEXT instruction to the current block."]
+    pub fn insert_hit_object_record_miss_motion_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        ray_flags: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordMissMotionEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(current_time),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectGetIntersectionTriangleVertexPositionsEXT instruction to the current block."]
+    pub fn hit_object_get_intersection_triangle_vertex_positions_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetIntersectionTriangleVertexPositionsEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetIntersectionTriangleVertexPositionsEXT instruction to the current block."]
+    pub fn insert_hit_object_get_intersection_triangle_vertex_positions_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetIntersectionTriangleVertexPositionsEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetRayFlagsEXT instruction to the current block."]
+    pub fn hit_object_get_ray_flags_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetRayFlagsEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetRayFlagsEXT instruction to the current block."]
+    pub fn insert_hit_object_get_ray_flags_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetRayFlagsEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectSetShaderBindingTableRecordIndexEXT instruction to the current block."]
+    pub fn hit_object_set_shader_binding_table_record_index_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        sbt_record_index: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectSetShaderBindingTableRecordIndexEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(sbt_record_index),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectSetShaderBindingTableRecordIndexEXT instruction to the current block."]
+    pub fn insert_hit_object_set_shader_binding_table_record_index_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        sbt_record_index: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectSetShaderBindingTableRecordIndexEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(sbt_record_index),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectReorderExecuteShaderEXT instruction to the current block."]
+    pub fn hit_object_reorder_execute_shader_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectReorderExecuteShaderEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object), dr::Operand::IdRef(payload)],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectReorderExecuteShaderEXT instruction to the current block."]
+    pub fn insert_hit_object_reorder_execute_shader_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectReorderExecuteShaderEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object), dr::Operand::IdRef(payload)],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceReorderExecuteEXT instruction to the current block."]
+    pub fn hit_object_trace_reorder_execute_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceReorderExecuteEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceReorderExecuteEXT instruction to the current block."]
+    pub fn insert_hit_object_trace_reorder_execute_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceReorderExecuteEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceMotionReorderExecuteEXT instruction to the current block."]
+    pub fn hit_object_trace_motion_reorder_execute_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceMotionReorderExecuteEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(current_time),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceMotionReorderExecuteEXT instruction to the current block."]
+    pub fn insert_hit_object_trace_motion_reorder_execute_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceMotionReorderExecuteEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(current_time),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpReorderThreadWithHintEXT instruction to the current block."]
+    pub fn reorder_thread_with_hint_ext(
+        &mut self,
+        hint: spirv::Word,
+        bits: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReorderThreadWithHintEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hint), dr::Operand::IdRef(bits)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpReorderThreadWithHintEXT instruction to the current block."]
+    pub fn insert_reorder_thread_with_hint_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hint: spirv::Word,
+        bits: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReorderThreadWithHintEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hint), dr::Operand::IdRef(bits)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpReorderThreadWithHitObjectEXT instruction to the current block."]
+    pub fn reorder_thread_with_hit_object_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReorderThreadWithHitObjectEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpReorderThreadWithHitObjectEXT instruction to the current block."]
+    pub fn insert_reorder_thread_with_hit_object_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ReorderThreadWithHitObjectEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        if let Some(v) = hint {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        if let Some(v) = bits {
+            inst.operands.push(dr::Operand::IdRef(v));
+        }
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceRayEXT instruction to the current block."]
+    pub fn hit_object_trace_ray_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceRayEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceRayEXT instruction to the current block."]
+    pub fn insert_hit_object_trace_ray_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceRayEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceRayMotionEXT instruction to the current block."]
+    pub fn hit_object_trace_ray_motion_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceRayMotionEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(current_time),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectTraceRayMotionEXT instruction to the current block."]
+    pub fn insert_hit_object_trace_ray_motion_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectTraceRayMotionEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(acceleration_structure),
+                dr::Operand::IdRef(ray_flags),
+                dr::Operand::IdRef(cull_mask),
+                dr::Operand::IdRef(sbt_offset),
+                dr::Operand::IdRef(sbt_stride),
+                dr::Operand::IdRef(miss_index),
+                dr::Operand::IdRef(ray_origin),
+                dr::Operand::IdRef(ray_tmin),
+                dr::Operand::IdRef(ray_direction),
+                dr::Operand::IdRef(ray_tmax),
+                dr::Operand::IdRef(current_time),
+                dr::Operand::IdRef(payload),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectRecordEmptyEXT instruction to the current block."]
+    pub fn hit_object_record_empty_ext(&mut self, hit_object: spirv::Word) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordEmptyEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectRecordEmptyEXT instruction to the current block."]
+    pub fn insert_hit_object_record_empty_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectRecordEmptyEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectExecuteShaderEXT instruction to the current block."]
+    pub fn hit_object_execute_shader_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectExecuteShaderEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object), dr::Operand::IdRef(payload)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectExecuteShaderEXT instruction to the current block."]
+    pub fn insert_hit_object_execute_shader_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        payload: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectExecuteShaderEXT,
+            None,
+            None,
+            vec![dr::Operand::IdRef(hit_object), dr::Operand::IdRef(payload)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectGetCurrentTimeEXT instruction to the current block."]
+    pub fn hit_object_get_current_time_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetCurrentTimeEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetCurrentTimeEXT instruction to the current block."]
+    pub fn insert_hit_object_get_current_time_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetCurrentTimeEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetAttributesEXT instruction to the current block."]
+    pub fn hit_object_get_attributes_ext(
+        &mut self,
+        hit_object: spirv::Word,
+        hit_object_attribute: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetAttributesEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(hit_object_attribute),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectGetAttributesEXT instruction to the current block."]
+    pub fn insert_hit_object_get_attributes_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        hit_object: spirv::Word,
+        hit_object_attribute: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetAttributesEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(hit_object),
+                dr::Operand::IdRef(hit_object_attribute),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(())
+    }
+    #[doc = "Appends an OpHitObjectGetHitKindEXT instruction to the current block."]
+    pub fn hit_object_get_hit_kind_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetHitKindEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetHitKindEXT instruction to the current block."]
+    pub fn insert_hit_object_get_hit_kind_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetHitKindEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetPrimitiveIndexEXT instruction to the current block."]
+    pub fn hit_object_get_primitive_index_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetPrimitiveIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetPrimitiveIndexEXT instruction to the current block."]
+    pub fn insert_hit_object_get_primitive_index_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetPrimitiveIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetGeometryIndexEXT instruction to the current block."]
+    pub fn hit_object_get_geometry_index_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetGeometryIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetGeometryIndexEXT instruction to the current block."]
+    pub fn insert_hit_object_get_geometry_index_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetGeometryIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetInstanceIdEXT instruction to the current block."]
+    pub fn hit_object_get_instance_id_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetInstanceIdEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetInstanceIdEXT instruction to the current block."]
+    pub fn insert_hit_object_get_instance_id_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetInstanceIdEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetInstanceCustomIndexEXT instruction to the current block."]
+    pub fn hit_object_get_instance_custom_index_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetInstanceCustomIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetInstanceCustomIndexEXT instruction to the current block."]
+    pub fn insert_hit_object_get_instance_custom_index_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetInstanceCustomIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetObjectRayOriginEXT instruction to the current block."]
+    pub fn hit_object_get_object_ray_origin_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetObjectRayOriginEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetObjectRayOriginEXT instruction to the current block."]
+    pub fn insert_hit_object_get_object_ray_origin_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetObjectRayOriginEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetObjectRayDirectionEXT instruction to the current block."]
+    pub fn hit_object_get_object_ray_direction_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetObjectRayDirectionEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetObjectRayDirectionEXT instruction to the current block."]
+    pub fn insert_hit_object_get_object_ray_direction_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetObjectRayDirectionEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetWorldRayDirectionEXT instruction to the current block."]
+    pub fn hit_object_get_world_ray_direction_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetWorldRayDirectionEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetWorldRayDirectionEXT instruction to the current block."]
+    pub fn insert_hit_object_get_world_ray_direction_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetWorldRayDirectionEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetWorldRayOriginEXT instruction to the current block."]
+    pub fn hit_object_get_world_ray_origin_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetWorldRayOriginEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetWorldRayOriginEXT instruction to the current block."]
+    pub fn insert_hit_object_get_world_ray_origin_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetWorldRayOriginEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetObjectToWorldEXT instruction to the current block."]
+    pub fn hit_object_get_object_to_world_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetObjectToWorldEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetObjectToWorldEXT instruction to the current block."]
+    pub fn insert_hit_object_get_object_to_world_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetObjectToWorldEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetWorldToObjectEXT instruction to the current block."]
+    pub fn hit_object_get_world_to_object_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetWorldToObjectEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetWorldToObjectEXT instruction to the current block."]
+    pub fn insert_hit_object_get_world_to_object_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetWorldToObjectEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetRayTMaxEXT instruction to the current block."]
+    pub fn hit_object_get_ray_t_max_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetRayTMaxEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetRayTMaxEXT instruction to the current block."]
+    pub fn insert_hit_object_get_ray_t_max_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetRayTMaxEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpReportIntersectionKHR instruction to the current block."]
     pub fn report_intersection_khr(
         &mut self,
@@ -18454,6 +19851,228 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::HitObjectGetClusterIdNV,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetRayTMinEXT instruction to the current block."]
+    pub fn hit_object_get_ray_t_min_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetRayTMinEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetRayTMinEXT instruction to the current block."]
+    pub fn insert_hit_object_get_ray_t_min_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetRayTMinEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetShaderBindingTableRecordIndexEXT instruction to the current block."]
+    pub fn hit_object_get_shader_binding_table_record_index_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetShaderBindingTableRecordIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetShaderBindingTableRecordIndexEXT instruction to the current block."]
+    pub fn insert_hit_object_get_shader_binding_table_record_index_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetShaderBindingTableRecordIndexEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetShaderRecordBufferHandleEXT instruction to the current block."]
+    pub fn hit_object_get_shader_record_buffer_handle_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetShaderRecordBufferHandleEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectGetShaderRecordBufferHandleEXT instruction to the current block."]
+    pub fn insert_hit_object_get_shader_record_buffer_handle_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectGetShaderRecordBufferHandleEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectIsEmptyEXT instruction to the current block."]
+    pub fn hit_object_is_empty_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectIsEmptyEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectIsEmptyEXT instruction to the current block."]
+    pub fn insert_hit_object_is_empty_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectIsEmptyEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectIsHitEXT instruction to the current block."]
+    pub fn hit_object_is_hit_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectIsHitEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectIsHitEXT instruction to the current block."]
+    pub fn insert_hit_object_is_hit_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectIsHitEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectIsMissEXT instruction to the current block."]
+    pub fn hit_object_is_miss_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectIsMissEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(hit_object)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpHitObjectIsMissEXT instruction to the current block."]
+    pub fn insert_hit_object_is_miss_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        hit_object: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::HitObjectIsMissEXT,
             Some(result_type),
             Some(_id),
             vec![dr::Operand::IdRef(hit_object)],
@@ -21470,133 +23089,6 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
-    #[doc = "Appends an OpReadPipeBlockingINTEL instruction to the current block."]
-    pub fn read_pipe_blocking_intel(
-        &mut self,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        packet_size: spirv::Word,
-        packet_alignment: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ReadPipeBlockingINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![
-                dr::Operand::IdRef(packet_size),
-                dr::Operand::IdRef(packet_alignment),
-            ],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpReadPipeBlockingINTEL instruction to the current block."]
-    pub fn insert_read_pipe_blocking_intel(
-        &mut self,
-        insert_point: InsertPoint,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        packet_size: spirv::Word,
-        packet_alignment: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::ReadPipeBlockingINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![
-                dr::Operand::IdRef(packet_size),
-                dr::Operand::IdRef(packet_alignment),
-            ],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpWritePipeBlockingINTEL instruction to the current block."]
-    pub fn write_pipe_blocking_intel(
-        &mut self,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        packet_size: spirv::Word,
-        packet_alignment: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::WritePipeBlockingINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![
-                dr::Operand::IdRef(packet_size),
-                dr::Operand::IdRef(packet_alignment),
-            ],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpWritePipeBlockingINTEL instruction to the current block."]
-    pub fn insert_write_pipe_blocking_intel(
-        &mut self,
-        insert_point: InsertPoint,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        packet_size: spirv::Word,
-        packet_alignment: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::WritePipeBlockingINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![
-                dr::Operand::IdRef(packet_size),
-                dr::Operand::IdRef(packet_alignment),
-            ],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpFPGARegINTEL instruction to the current block."]
-    pub fn fpga_reg_intel(
-        &mut self,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        input: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::FPGARegINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![dr::Operand::IdRef(input)],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpFPGARegINTEL instruction to the current block."]
-    pub fn insert_fpga_reg_intel(
-        &mut self,
-        insert_point: InsertPoint,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        input: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::FPGARegINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![dr::Operand::IdRef(input)],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(_id)
-    }
     #[doc = "Appends an OpRayQueryGetRayTMinKHR instruction to the current block."]
     pub fn ray_query_get_ray_t_min_khr(
         &mut self,
@@ -22612,165 +24104,6 @@ impl Builder {
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
-    }
-    #[doc = "Appends an OpTaskSequenceCreateINTEL instruction to the current block."]
-    pub fn task_sequence_create_intel(
-        &mut self,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        function: spirv::Word,
-        pipelined: u32,
-        use_stall_enable_clusters: u32,
-        get_capacity: u32,
-        async_capacity: u32,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceCreateINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![
-                dr::Operand::IdRef(function),
-                dr::Operand::LiteralBit32(pipelined),
-                dr::Operand::LiteralBit32(use_stall_enable_clusters),
-                dr::Operand::LiteralBit32(get_capacity),
-                dr::Operand::LiteralBit32(async_capacity),
-            ],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpTaskSequenceCreateINTEL instruction to the current block."]
-    pub fn insert_task_sequence_create_intel(
-        &mut self,
-        insert_point: InsertPoint,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        function: spirv::Word,
-        pipelined: u32,
-        use_stall_enable_clusters: u32,
-        get_capacity: u32,
-        async_capacity: u32,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceCreateINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![
-                dr::Operand::IdRef(function),
-                dr::Operand::LiteralBit32(pipelined),
-                dr::Operand::LiteralBit32(use_stall_enable_clusters),
-                dr::Operand::LiteralBit32(get_capacity),
-                dr::Operand::LiteralBit32(async_capacity),
-            ],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpTaskSequenceAsyncINTEL instruction to the current block."]
-    pub fn task_sequence_async_intel(
-        &mut self,
-        sequence: spirv::Word,
-        arguments: impl IntoIterator<Item = spirv::Word>,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceAsyncINTEL,
-            None,
-            None,
-            vec![dr::Operand::IdRef(sequence)],
-        );
-        inst.operands
-            .extend(arguments.into_iter().map(dr::Operand::IdRef));
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpTaskSequenceAsyncINTEL instruction to the current block."]
-    pub fn insert_task_sequence_async_intel(
-        &mut self,
-        insert_point: InsertPoint,
-        sequence: spirv::Word,
-        arguments: impl IntoIterator<Item = spirv::Word>,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceAsyncINTEL,
-            None,
-            None,
-            vec![dr::Operand::IdRef(sequence)],
-        );
-        inst.operands
-            .extend(arguments.into_iter().map(dr::Operand::IdRef));
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpTaskSequenceGetINTEL instruction to the current block."]
-    pub fn task_sequence_get_intel(
-        &mut self,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        sequence: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceGetINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![dr::Operand::IdRef(sequence)],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpTaskSequenceGetINTEL instruction to the current block."]
-    pub fn insert_task_sequence_get_intel(
-        &mut self,
-        insert_point: InsertPoint,
-        result_type: spirv::Word,
-        result_id: Option<spirv::Word>,
-        sequence: spirv::Word,
-    ) -> BuildResult<spirv::Word> {
-        let _id = result_id.unwrap_or_else(|| self.id());
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceGetINTEL,
-            Some(result_type),
-            Some(_id),
-            vec![dr::Operand::IdRef(sequence)],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(_id)
-    }
-    #[doc = "Appends an OpTaskSequenceReleaseINTEL instruction to the current block."]
-    pub fn task_sequence_release_intel(&mut self, sequence: spirv::Word) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceReleaseINTEL,
-            None,
-            None,
-            vec![dr::Operand::IdRef(sequence)],
-        );
-        self.insert_into_block(InsertPoint::End, inst)?;
-        Ok(())
-    }
-    #[doc = "Appends an OpTaskSequenceReleaseINTEL instruction to the current block."]
-    pub fn insert_task_sequence_release_intel(
-        &mut self,
-        insert_point: InsertPoint,
-        sequence: spirv::Word,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::TaskSequenceReleaseINTEL,
-            None,
-            None,
-            vec![dr::Operand::IdRef(sequence)],
-        );
-        self.insert_into_block(insert_point, inst)?;
-        Ok(())
     }
     #[doc = "Appends an OpSubgroupBlockPrefetchINTEL instruction to the current block."]
     pub fn subgroup_block_prefetch_intel(

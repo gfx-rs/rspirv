@@ -140,35 +140,35 @@ impl Disassemble for spirv::LoopControl {
         if self.contains(spirv::LoopControl::PARTIAL_COUNT) {
             bits.push("PartialCount")
         }
-        if self.contains(spirv::LoopControl::INITIATION_INTERVAL_INTEL) {
-            bits.push("InitiationIntervalINTEL")
+        if self.contains(spirv::LoopControl::INITIATION_INTERVAL_ALTERA) {
+            bits.push("InitiationIntervalALTERA")
         }
-        if self.contains(spirv::LoopControl::MAX_CONCURRENCY_INTEL) {
-            bits.push("MaxConcurrencyINTEL")
+        if self.contains(spirv::LoopControl::MAX_CONCURRENCY_ALTERA) {
+            bits.push("MaxConcurrencyALTERA")
         }
-        if self.contains(spirv::LoopControl::DEPENDENCY_ARRAY_INTEL) {
-            bits.push("DependencyArrayINTEL")
+        if self.contains(spirv::LoopControl::DEPENDENCY_ARRAY_ALTERA) {
+            bits.push("DependencyArrayALTERA")
         }
-        if self.contains(spirv::LoopControl::PIPELINE_ENABLE_INTEL) {
-            bits.push("PipelineEnableINTEL")
+        if self.contains(spirv::LoopControl::PIPELINE_ENABLE_ALTERA) {
+            bits.push("PipelineEnableALTERA")
         }
-        if self.contains(spirv::LoopControl::LOOP_COALESCE_INTEL) {
-            bits.push("LoopCoalesceINTEL")
+        if self.contains(spirv::LoopControl::LOOP_COALESCE_ALTERA) {
+            bits.push("LoopCoalesceALTERA")
         }
-        if self.contains(spirv::LoopControl::MAX_INTERLEAVING_INTEL) {
-            bits.push("MaxInterleavingINTEL")
+        if self.contains(spirv::LoopControl::MAX_INTERLEAVING_ALTERA) {
+            bits.push("MaxInterleavingALTERA")
         }
-        if self.contains(spirv::LoopControl::SPECULATED_ITERATIONS_INTEL) {
-            bits.push("SpeculatedIterationsINTEL")
+        if self.contains(spirv::LoopControl::SPECULATED_ITERATIONS_ALTERA) {
+            bits.push("SpeculatedIterationsALTERA")
         }
-        if self.contains(spirv::LoopControl::NO_FUSION_INTEL) {
-            bits.push("NoFusionINTEL")
+        if self.contains(spirv::LoopControl::NO_FUSION_ALTERA) {
+            bits.push("NoFusionALTERA")
         }
-        if self.contains(spirv::LoopControl::LOOP_COUNT_INTEL) {
-            bits.push("LoopCountINTEL")
+        if self.contains(spirv::LoopControl::LOOP_COUNT_ALTERA) {
+            bits.push("LoopCountALTERA")
         }
-        if self.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_INTEL) {
-            bits.push("MaxReinvocationDelayINTEL")
+        if self.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_ALTERA) {
+            bits.push("MaxReinvocationDelayALTERA")
         }
         bits.join("|")
     }
