@@ -1422,6 +1422,11 @@ pub enum Op {
         locality: Option<spirv::Word>,
         cache_type: Option<Token<Type>>,
     },
+    FmaKHR {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+        operand_3: spirv::Word,
+    },
     SubgroupAllKHR {
         predicate: spirv::Word,
     },
@@ -1976,6 +1981,168 @@ pub enum Op {
         object: spirv::Word,
         memory_access: Option<spirv::MemoryAccess>,
     },
+    HitObjectRecordFromQueryEXT {
+        hit_object: spirv::Word,
+        ray_query: spirv::Word,
+        sbt_record_index: spirv::Word,
+        hit_object_attributes: spirv::Word,
+    },
+    HitObjectRecordMissEXT {
+        hit_object: spirv::Word,
+        ray_flags: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+    },
+    HitObjectRecordMissMotionEXT {
+        hit_object: spirv::Word,
+        ray_flags: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+    },
+    HitObjectGetIntersectionTriangleVertexPositionsEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetRayFlagsEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectSetShaderBindingTableRecordIndexEXT {
+        hit_object: spirv::Word,
+        sbt_record_index: spirv::Word,
+    },
+    HitObjectReorderExecuteShaderEXT {
+        hit_object: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    },
+    HitObjectTraceReorderExecuteEXT {
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    },
+    HitObjectTraceMotionReorderExecuteEXT {
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+        payload: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    },
+    ReorderThreadWithHintEXT {
+        hint: spirv::Word,
+        bits: spirv::Word,
+    },
+    ReorderThreadWithHitObjectEXT {
+        hit_object: spirv::Word,
+        hint: Option<spirv::Word>,
+        bits: Option<spirv::Word>,
+    },
+    HitObjectTraceRayEXT {
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        payload: spirv::Word,
+    },
+    HitObjectTraceRayMotionEXT {
+        hit_object: spirv::Word,
+        acceleration_structure: spirv::Word,
+        ray_flags: spirv::Word,
+        cull_mask: spirv::Word,
+        sbt_offset: spirv::Word,
+        sbt_stride: spirv::Word,
+        miss_index: spirv::Word,
+        ray_origin: spirv::Word,
+        ray_tmin: spirv::Word,
+        ray_direction: spirv::Word,
+        ray_tmax: spirv::Word,
+        current_time: spirv::Word,
+        payload: spirv::Word,
+    },
+    HitObjectRecordEmptyEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectExecuteShaderEXT {
+        hit_object: spirv::Word,
+        payload: spirv::Word,
+    },
+    HitObjectGetCurrentTimeEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetAttributesEXT {
+        hit_object: spirv::Word,
+        hit_object_attribute: spirv::Word,
+    },
+    HitObjectGetHitKindEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetPrimitiveIndexEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetGeometryIndexEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetInstanceIdEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetInstanceCustomIndexEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetObjectRayOriginEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetObjectRayDirectionEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetWorldRayDirectionEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetWorldRayOriginEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetObjectToWorldEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetWorldToObjectEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetRayTMaxEXT {
+        hit_object: spirv::Word,
+    },
     ReportIntersectionKHR {
         hit: spirv::Word,
         hit_kind: spirv::Word,
@@ -2036,6 +2203,24 @@ pub enum Op {
         intersection: spirv::Word,
     },
     HitObjectGetClusterIdNV {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetRayTMinEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetShaderBindingTableRecordIndexEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectGetShaderRecordBufferHandleEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectIsEmptyEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectIsHitEXT {
+        hit_object: spirv::Word,
+    },
+    HitObjectIsMissEXT {
         hit_object: spirv::Word,
     },
     CooperativeMatrixLoadNV {
@@ -2801,7 +2986,7 @@ pub enum Op {
     RestoreMemoryINTEL {
         ptr: spirv::Word,
     },
-    ArbitraryFloatSinCosPiINTEL {
+    ArbitraryFloatSinCosPiALTERA {
         a: spirv::Word,
         ma: u32,
         m_result: u32,
@@ -2809,7 +2994,7 @@ pub enum Op {
         rounding: u32,
         rounding_accuracy: u32,
     },
-    ArbitraryFloatCastINTEL {
+    ArbitraryFloatCastALTERA {
         a: spirv::Word,
         ma: u32,
         mresult: u32,
@@ -2817,7 +3002,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatCastFromIntINTEL {
+    ArbitraryFloatCastFromIntALTERA {
         a: spirv::Word,
         mresult: u32,
         from_sign: u32,
@@ -2825,7 +3010,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatCastToIntINTEL {
+    ArbitraryFloatCastToIntALTERA {
         a: spirv::Word,
         ma: u32,
         to_sign: u32,
@@ -2833,7 +3018,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatAddINTEL {
+    ArbitraryFloatAddALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
@@ -2843,7 +3028,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatSubINTEL {
+    ArbitraryFloatSubALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
@@ -2853,7 +3038,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatMulINTEL {
+    ArbitraryFloatMulALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
@@ -2863,7 +3048,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatDivINTEL {
+    ArbitraryFloatDivALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
@@ -2873,37 +3058,37 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatGTINTEL {
+    ArbitraryFloatGTALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
         mb: u32,
     },
-    ArbitraryFloatGEINTEL {
+    ArbitraryFloatGEALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
         mb: u32,
     },
-    ArbitraryFloatLTINTEL {
+    ArbitraryFloatLTALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
         mb: u32,
     },
-    ArbitraryFloatLEINTEL {
+    ArbitraryFloatLEALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
         mb: u32,
     },
-    ArbitraryFloatEQINTEL {
+    ArbitraryFloatEQALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
         mb: u32,
     },
-    ArbitraryFloatRecipINTEL {
+    ArbitraryFloatRecipALTERA {
         a: spirv::Word,
         ma: u32,
         mresult: u32,
@@ -2911,7 +3096,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatRSqrtINTEL {
+    ArbitraryFloatRSqrtALTERA {
         a: spirv::Word,
         ma: u32,
         mresult: u32,
@@ -2919,7 +3104,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatCbrtINTEL {
+    ArbitraryFloatCbrtALTERA {
         a: spirv::Word,
         ma: u32,
         mresult: u32,
@@ -2927,7 +3112,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatHypotINTEL {
+    ArbitraryFloatHypotALTERA {
         a: spirv::Word,
         ma: u32,
         b: spirv::Word,
@@ -2937,7 +3122,7 @@ pub enum Op {
         rounding: u32,
         accuracy: u32,
     },
-    ArbitraryFloatSqrtINTEL {
+    ArbitraryFloatSqrtALTERA {
         a: spirv::Word,
         ma: u32,
         mresult: u32,
@@ -3150,7 +3335,7 @@ pub enum Op {
     AliasScopeListDeclINTEL {
         alias_scope_1_alias_scope_2: Vec<spirv::Word>,
     },
-    FixedSqrtINTEL {
+    FixedSqrtALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3158,7 +3343,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedRecipINTEL {
+    FixedRecipALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3166,7 +3351,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedRsqrtINTEL {
+    FixedRsqrtALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3174,7 +3359,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedSinINTEL {
+    FixedSinALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3182,7 +3367,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedCosINTEL {
+    FixedCosALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3190,7 +3375,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedSinCosINTEL {
+    FixedSinCosALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3198,7 +3383,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedSinPiINTEL {
+    FixedSinPiALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3206,7 +3391,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedCosPiINTEL {
+    FixedCosPiALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3214,7 +3399,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedSinCosPiINTEL {
+    FixedSinCosPiALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3222,7 +3407,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedLogINTEL {
+    FixedLogALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3230,7 +3415,7 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    FixedExpINTEL {
+    FixedExpALTERA {
         input: spirv::Word,
         s: u32,
         i: u32,
@@ -3238,21 +3423,21 @@ pub enum Op {
         q: u32,
         o: u32,
     },
-    PtrCastToCrossWorkgroupINTEL {
+    PtrCastToCrossWorkgroupALTERA {
         pointer: spirv::Word,
     },
-    CrossWorkgroupCastToPtrINTEL {
+    CrossWorkgroupCastToPtrALTERA {
         pointer: spirv::Word,
     },
-    ReadPipeBlockingINTEL {
+    ReadPipeBlockingALTERA {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     },
-    WritePipeBlockingINTEL {
+    WritePipeBlockingALTERA {
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     },
-    FPGARegINTEL {
+    FPGARegALTERA {
         input: spirv::Word,
     },
     RayQueryGetRayTMinKHR {
@@ -3346,23 +3531,24 @@ pub enum Op {
     ArithmeticFenceEXT {
         target: spirv::Word,
     },
-    TaskSequenceCreateINTEL {
+    TaskSequenceCreateALTERA {
         function: spirv::Word,
         pipelined: u32,
         use_stall_enable_clusters: u32,
         get_capacity: u32,
         async_capacity: u32,
     },
-    TaskSequenceAsyncINTEL {
+    TaskSequenceAsyncALTERA {
         sequence: spirv::Word,
         arguments: Vec<spirv::Word>,
     },
-    TaskSequenceGetINTEL {
+    TaskSequenceGetALTERA {
         sequence: spirv::Word,
     },
-    TaskSequenceReleaseINTEL {
+    TaskSequenceReleaseALTERA {
         sequence: spirv::Word,
     },
+    TypeTaskSequenceALTERA,
     SubgroupBlockPrefetchINTEL {
         ptr: spirv::Word,
         num_bytes: spirv::Word,

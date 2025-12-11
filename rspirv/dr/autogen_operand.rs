@@ -968,18 +968,18 @@ impl Operand {
             Self::LoopControl(v) => {
                 let mut result = vec![];
                 if v.intersects(
-                    s::LoopControl::INITIATION_INTERVAL_INTEL
-                        | s::LoopControl::MAX_CONCURRENCY_INTEL
-                        | s::LoopControl::DEPENDENCY_ARRAY_INTEL
-                        | s::LoopControl::PIPELINE_ENABLE_INTEL
-                        | s::LoopControl::LOOP_COALESCE_INTEL
-                        | s::LoopControl::MAX_INTERLEAVING_INTEL
-                        | s::LoopControl::SPECULATED_ITERATIONS_INTEL
-                        | s::LoopControl::NO_FUSION_INTEL
-                        | s::LoopControl::LOOP_COUNT_INTEL
-                        | s::LoopControl::MAX_REINVOCATION_DELAY_INTEL,
+                    s::LoopControl::INITIATION_INTERVAL_ALTERA
+                        | s::LoopControl::MAX_CONCURRENCY_ALTERA
+                        | s::LoopControl::DEPENDENCY_ARRAY_ALTERA
+                        | s::LoopControl::PIPELINE_ENABLE_ALTERA
+                        | s::LoopControl::LOOP_COALESCE_ALTERA
+                        | s::LoopControl::MAX_INTERLEAVING_ALTERA
+                        | s::LoopControl::SPECULATED_ITERATIONS_ALTERA
+                        | s::LoopControl::NO_FUSION_ALTERA
+                        | s::LoopControl::LOOP_COUNT_ALTERA
+                        | s::LoopControl::MAX_REINVOCATION_DELAY_ALTERA,
                 ) {
-                    result.extend_from_slice(&[spirv::Capability::FPGALoopControlsINTEL])
+                    result.extend_from_slice(&[spirv::Capability::FPGALoopControlsALTERA])
                 };
                 result
             }
@@ -1234,6 +1234,9 @@ impl Operand {
                 | s::ExecutionMode::SubgroupUniformControlFlowKHR
                 | s::ExecutionMode::EarlyAndLateFragmentTestsAMD
                 | s::ExecutionMode::MaximallyReconvergesKHR => vec![spirv::Capability::Shader],
+                s::ExecutionMode::Shader64BitIndexingEXT => {
+                    vec![spirv::Capability::Shader64BitIndexingEXT]
+                }
                 s::ExecutionMode::CoalescingAMDX
                 | s::ExecutionMode::IsApiEntryAMDX
                 | s::ExecutionMode::MaxNodeRecursionAMDX
@@ -1317,6 +1320,9 @@ impl Operand {
                     spirv::Capability::VectorComputeINTEL,
                 ],
                 s::StorageClass::NodePayloadAMDX => vec![spirv::Capability::ShaderEnqueueAMDX],
+                s::StorageClass::HitObjectAttributeEXT => {
+                    vec![spirv::Capability::ShaderInvocationReorderEXT]
+                }
                 s::StorageClass::HitObjectAttributeNV => {
                     vec![spirv::Capability::ShaderInvocationReorderNV]
                 }
@@ -1324,8 +1330,8 @@ impl Operand {
                     vec![spirv::Capability::TileImageColorReadAccessEXT]
                 }
                 s::StorageClass::TileAttachmentQCOM => vec![spirv::Capability::TileShadingQCOM],
-                s::StorageClass::DeviceOnlyINTEL | s::StorageClass::HostOnlyINTEL => {
-                    vec![spirv::Capability::USMStorageClassesINTEL]
+                s::StorageClass::DeviceOnlyALTERA | s::StorageClass::HostOnlyALTERA => {
+                    vec![spirv::Capability::USMStorageClassesALTERA]
                 }
             },
             Self::Dim(v) => match v {
@@ -1462,7 +1468,7 @@ impl Operand {
                 | s::QuantizationModes::RND_MIN_INF
                 | s::QuantizationModes::RND_CONV
                 | s::QuantizationModes::RND_CONV_ODD => {
-                    vec![spirv::Capability::ArbitraryPrecisionFixedPointINTEL]
+                    vec![spirv::Capability::ArbitraryPrecisionFixedPointALTERA]
                 }
             },
             Self::FPOperationMode(v) => match v {
@@ -1475,7 +1481,7 @@ impl Operand {
                 | s::OverflowModes::SAT
                 | s::OverflowModes::SAT_ZERO
                 | s::OverflowModes::SAT_SYM => {
-                    vec![spirv::Capability::ArbitraryPrecisionFixedPointINTEL]
+                    vec![spirv::Capability::ArbitraryPrecisionFixedPointALTERA]
                 }
             },
             Self::LinkageType(v) => match v {
@@ -1505,8 +1511,8 @@ impl Operand {
                 | s::FunctionParameterAttribute::NoCapture
                 | s::FunctionParameterAttribute::NoWrite
                 | s::FunctionParameterAttribute::NoReadWrite => vec![spirv::Capability::Kernel],
-                s::FunctionParameterAttribute::RuntimeAlignedINTEL => {
-                    vec![spirv::Capability::RuntimeAlignedAttributeINTEL]
+                s::FunctionParameterAttribute::RuntimeAlignedALTERA => {
+                    vec![spirv::Capability::RuntimeAlignedAttributeALTERA]
                 }
             },
             Self::Decoration(v) => match v {
@@ -1540,56 +1546,58 @@ impl Operand {
                 s::Decoration::CacheControlLoadINTEL | s::Decoration::CacheControlStoreINTEL => {
                     vec![spirv::Capability::CacheControlsINTEL]
                 }
-                s::Decoration::ConduitKernelArgumentINTEL
-                | s::Decoration::RegisterMapKernelArgumentINTEL
-                | s::Decoration::MMHostInterfaceAddressWidthINTEL
-                | s::Decoration::MMHostInterfaceDataWidthINTEL
-                | s::Decoration::MMHostInterfaceLatencyINTEL
-                | s::Decoration::MMHostInterfaceReadWriteModeINTEL
-                | s::Decoration::MMHostInterfaceMaxBurstINTEL
-                | s::Decoration::MMHostInterfaceWaitRequestINTEL
-                | s::Decoration::StableKernelArgumentINTEL => {
-                    vec![spirv::Capability::FPGAArgumentInterfacesINTEL]
+                s::Decoration::ConduitKernelArgumentALTERA
+                | s::Decoration::RegisterMapKernelArgumentALTERA
+                | s::Decoration::MMHostInterfaceAddressWidthALTERA
+                | s::Decoration::MMHostInterfaceDataWidthALTERA
+                | s::Decoration::MMHostInterfaceLatencyALTERA
+                | s::Decoration::MMHostInterfaceReadWriteModeALTERA
+                | s::Decoration::MMHostInterfaceMaxBurstALTERA
+                | s::Decoration::MMHostInterfaceWaitRequestALTERA
+                | s::Decoration::StableKernelArgumentALTERA => {
+                    vec![spirv::Capability::FPGAArgumentInterfacesALTERA]
                 }
-                s::Decoration::BufferLocationINTEL => {
-                    vec![spirv::Capability::FPGABufferLocationINTEL]
+                s::Decoration::BufferLocationALTERA => {
+                    vec![spirv::Capability::FPGABufferLocationALTERA]
                 }
-                s::Decoration::StallEnableINTEL => {
-                    vec![spirv::Capability::FPGAClusterAttributesINTEL]
+                s::Decoration::StallEnableALTERA => {
+                    vec![spirv::Capability::FPGAClusterAttributesALTERA]
                 }
-                s::Decoration::StallFreeINTEL => {
-                    vec![spirv::Capability::FPGAClusterAttributesV2INTEL]
+                s::Decoration::StallFreeALTERA => {
+                    vec![spirv::Capability::FPGAClusterAttributesV2ALTERA]
                 }
-                s::Decoration::MathOpDSPModeINTEL => vec![spirv::Capability::FPGADSPControlINTEL],
-                s::Decoration::InitiationIntervalINTEL
-                | s::Decoration::MaxConcurrencyINTEL
-                | s::Decoration::PipelineEnableINTEL => {
-                    vec![spirv::Capability::FPGAInvocationPipeliningAttributesINTEL]
+                s::Decoration::MathOpDSPModeALTERA => vec![spirv::Capability::FPGADSPControlALTERA],
+                s::Decoration::InitiationIntervalALTERA
+                | s::Decoration::MaxConcurrencyALTERA
+                | s::Decoration::PipelineEnableALTERA => {
+                    vec![spirv::Capability::FPGAInvocationPipeliningAttributesALTERA]
                 }
-                s::Decoration::LatencyControlLabelINTEL
-                | s::Decoration::LatencyControlConstraintINTEL => {
-                    vec![spirv::Capability::FPGALatencyControlINTEL]
+                s::Decoration::LatencyControlLabelALTERA
+                | s::Decoration::LatencyControlConstraintALTERA => {
+                    vec![spirv::Capability::FPGALatencyControlALTERA]
                 }
-                s::Decoration::BurstCoalesceINTEL
-                | s::Decoration::CacheSizeINTEL
-                | s::Decoration::DontStaticallyCoalesceINTEL
-                | s::Decoration::PrefetchINTEL => vec![spirv::Capability::FPGAMemoryAccessesINTEL],
-                s::Decoration::RegisterINTEL
-                | s::Decoration::MemoryINTEL
-                | s::Decoration::NumbanksINTEL
-                | s::Decoration::BankwidthINTEL
-                | s::Decoration::MaxPrivateCopiesINTEL
-                | s::Decoration::SinglepumpINTEL
-                | s::Decoration::DoublepumpINTEL
-                | s::Decoration::MaxReplicatesINTEL
-                | s::Decoration::SimpleDualPortINTEL
-                | s::Decoration::MergeINTEL
-                | s::Decoration::BankBitsINTEL
-                | s::Decoration::ForcePow2DepthINTEL
-                | s::Decoration::StridesizeINTEL
-                | s::Decoration::WordsizeINTEL
-                | s::Decoration::TrueDualPortINTEL => {
-                    vec![spirv::Capability::FPGAMemoryAttributesINTEL]
+                s::Decoration::BurstCoalesceALTERA
+                | s::Decoration::CacheSizeALTERA
+                | s::Decoration::DontStaticallyCoalesceALTERA
+                | s::Decoration::PrefetchALTERA => {
+                    vec![spirv::Capability::FPGAMemoryAccessesALTERA]
+                }
+                s::Decoration::RegisterALTERA
+                | s::Decoration::MemoryALTERA
+                | s::Decoration::NumbanksALTERA
+                | s::Decoration::BankwidthALTERA
+                | s::Decoration::MaxPrivateCopiesALTERA
+                | s::Decoration::SinglepumpALTERA
+                | s::Decoration::DoublepumpALTERA
+                | s::Decoration::MaxReplicatesALTERA
+                | s::Decoration::SimpleDualPortALTERA
+                | s::Decoration::MergeALTERA
+                | s::Decoration::BankBitsALTERA
+                | s::Decoration::ForcePow2DepthALTERA
+                | s::Decoration::StridesizeALTERA
+                | s::Decoration::WordsizeALTERA
+                | s::Decoration::TrueDualPortALTERA => {
+                    vec![spirv::Capability::FPGAMemoryAttributesALTERA]
                 }
                 s::Decoration::FPMaxErrorDecorationINTEL => {
                     vec![spirv::Capability::FPMaxErrorINTEL]
@@ -1607,13 +1615,13 @@ impl Operand {
                     vec![spirv::Capability::GeometryShaderPassthroughNV]
                 }
                 s::Decoration::Stream => vec![spirv::Capability::GeometryStreams],
-                s::Decoration::InitModeINTEL | s::Decoration::ImplementInRegisterMapINTEL => {
-                    vec![spirv::Capability::GlobalVariableFPGADecorationsINTEL]
+                s::Decoration::InitModeALTERA | s::Decoration::ImplementInRegisterMapALTERA => {
+                    vec![spirv::Capability::GlobalVariableFPGADecorationsALTERA]
                 }
                 s::Decoration::HostAccessINTEL => {
                     vec![spirv::Capability::GlobalVariableHostAccessINTEL]
                 }
-                s::Decoration::IOPipeStorageINTEL => vec![spirv::Capability::IOPipesINTEL],
+                s::Decoration::IOPipeStorageALTERA => vec![spirv::Capability::IOPipesALTERA],
                 s::Decoration::ReferencedIndirectlyINTEL => {
                     vec![spirv::Capability::IndirectReferencesINTEL]
                 }
@@ -1628,7 +1636,7 @@ impl Operand {
                     vec![spirv::Capability::Kernel, spirv::Capability::FloatControls2]
                 }
                 s::Decoration::LinkageAttributes => vec![spirv::Capability::Linkage],
-                s::Decoration::FuseLoopsInFunctionINTEL => vec![spirv::Capability::LoopFuseINTEL],
+                s::Decoration::FuseLoopsInFunctionALTERA => vec![spirv::Capability::LoopFuseALTERA],
                 s::Decoration::RowMajor | s::Decoration::ColMajor | s::Decoration::MatrixStride => {
                     vec![spirv::Capability::Matrix]
                 }
@@ -1680,6 +1688,9 @@ impl Operand {
                 | s::Decoration::PayloadNodeArraySizeAMDX
                 | s::Decoration::PayloadDispatchIndirectAMDX => {
                     vec![spirv::Capability::ShaderEnqueueAMDX]
+                }
+                s::Decoration::HitObjectShaderRecordBufferEXT => {
+                    vec![spirv::Capability::ShaderInvocationReorderEXT]
                 }
                 s::Decoration::HitObjectShaderRecordBufferNV => {
                     vec![spirv::Capability::ShaderInvocationReorderNV]
@@ -1982,6 +1993,7 @@ impl Operand {
                 | s::Capability::RawAccessChainsNV
                 | s::Capability::RayTracingSpheresGeometryNV
                 | s::Capability::RayTracingLinearSweptSpheresGeometryNV
+                | s::Capability::Shader64BitIndexingEXT
                 | s::Capability::CooperativeMatrixReductionsNV
                 | s::Capability::CooperativeMatrixConversionsNV
                 | s::Capability::CooperativeMatrixPerElementOperationsNV
@@ -2009,26 +2021,26 @@ impl Operand {
                 | s::Capability::SubgroupAvcMotionEstimationChromaINTEL
                 | s::Capability::VariableLengthArrayINTEL
                 | s::Capability::FunctionFloatControlINTEL
-                | s::Capability::FPGAMemoryAttributesINTEL
-                | s::Capability::ArbitraryPrecisionIntegersINTEL
-                | s::Capability::ArbitraryPrecisionFloatingPointINTEL
+                | s::Capability::FPGAMemoryAttributesALTERA
+                | s::Capability::ArbitraryPrecisionIntegersALTERA
+                | s::Capability::ArbitraryPrecisionFloatingPointALTERA
                 | s::Capability::UnstructuredLoopControlsINTEL
-                | s::Capability::FPGALoopControlsINTEL
+                | s::Capability::FPGALoopControlsALTERA
                 | s::Capability::KernelAttributesINTEL
                 | s::Capability::FPGAKernelAttributesINTEL
-                | s::Capability::FPGAMemoryAccessesINTEL
-                | s::Capability::FPGAClusterAttributesINTEL
-                | s::Capability::LoopFuseINTEL
-                | s::Capability::FPGADSPControlINTEL
+                | s::Capability::FPGAMemoryAccessesALTERA
+                | s::Capability::FPGAClusterAttributesALTERA
+                | s::Capability::LoopFuseALTERA
+                | s::Capability::FPGADSPControlALTERA
                 | s::Capability::MemoryAccessAliasingINTEL
-                | s::Capability::FPGAInvocationPipeliningAttributesINTEL
-                | s::Capability::FPGABufferLocationINTEL
-                | s::Capability::ArbitraryPrecisionFixedPointINTEL
-                | s::Capability::USMStorageClassesINTEL
-                | s::Capability::RuntimeAlignedAttributeINTEL
-                | s::Capability::IOPipesINTEL
-                | s::Capability::BlockingPipesINTEL
-                | s::Capability::FPGARegINTEL
+                | s::Capability::FPGAInvocationPipeliningAttributesALTERA
+                | s::Capability::FPGABufferLocationALTERA
+                | s::Capability::ArbitraryPrecisionFixedPointALTERA
+                | s::Capability::USMStorageClassesALTERA
+                | s::Capability::RuntimeAlignedAttributeALTERA
+                | s::Capability::IOPipesALTERA
+                | s::Capability::BlockingPipesALTERA
+                | s::Capability::FPGARegALTERA
                 | s::Capability::DotProductInputAll
                 | s::Capability::DotProductInput4x8BitPacked
                 | s::Capability::DotProduct
@@ -2037,6 +2049,7 @@ impl Operand {
                 | s::Capability::ReplicatedCompositesEXT
                 | s::Capability::BitInstructions
                 | s::Capability::FloatControls2
+                | s::Capability::FMAKHR
                 | s::Capability::AtomicFloat32AddEXT
                 | s::Capability::AtomicFloat64AddEXT
                 | s::Capability::LongCompositesINTEL
@@ -2046,12 +2059,12 @@ impl Operand {
                 | s::Capability::BFloat16ConversionINTEL
                 | s::Capability::SplitBarrierINTEL
                 | s::Capability::ArithmeticFenceEXT
-                | s::Capability::TaskSequenceINTEL
+                | s::Capability::TaskSequenceALTERA
                 | s::Capability::FPMaxErrorINTEL
-                | s::Capability::FPGALatencyControlINTEL
-                | s::Capability::FPGAArgumentInterfacesINTEL
+                | s::Capability::FPGALatencyControlALTERA
+                | s::Capability::FPGAArgumentInterfacesALTERA
                 | s::Capability::GlobalVariableHostAccessINTEL
-                | s::Capability::GlobalVariableFPGADecorationsINTEL
+                | s::Capability::GlobalVariableFPGADecorationsALTERA
                 | s::Capability::SubgroupBufferPrefetchINTEL
                 | s::Capability::Subgroup2DBlockIOINTEL
                 | s::Capability::SubgroupMatrixMultiplyAccumulateINTEL
@@ -2074,8 +2087,8 @@ impl Operand {
                     vec![spirv::Capability::CooperativeMatrixKHR]
                 }
                 s::Capability::SubgroupDispatch => vec![spirv::Capability::DeviceEnqueue],
-                s::Capability::FPGAClusterAttributesV2INTEL => {
-                    vec![spirv::Capability::FPGAClusterAttributesINTEL]
+                s::Capability::FPGAClusterAttributesV2ALTERA => {
+                    vec![spirv::Capability::FPGAClusterAttributesALTERA]
                 }
                 s::Capability::FPGAKernelAttributesv2INTEL => {
                     vec![spirv::Capability::FPGAKernelAttributesINTEL]
@@ -2140,6 +2153,7 @@ impl Operand {
                     spirv::Capability::RayTracingKHR,
                 ],
                 s::Capability::ShaderInvocationReorderNV
+                | s::Capability::ShaderInvocationReorderEXT
                 | s::Capability::RayTracingDisplacementMicromapNV
                 | s::Capability::RayTracingClusterAccelerationStructureNV => {
                     vec![spirv::Capability::RayTracingKHR]
@@ -2282,9 +2296,11 @@ impl Operand {
             },
             Self::CooperativeMatrixLayout(v) => match v {
                 s::CooperativeMatrixLayout::RowMajorKHR
-                | s::CooperativeMatrixLayout::ColumnMajorKHR
-                | s::CooperativeMatrixLayout::RowBlockedInterleavedARM
-                | s::CooperativeMatrixLayout::ColumnBlockedInterleavedARM => vec![],
+                | s::CooperativeMatrixLayout::ColumnMajorKHR => vec![],
+                s::CooperativeMatrixLayout::RowBlockedInterleavedARM
+                | s::CooperativeMatrixLayout::ColumnBlockedInterleavedARM => {
+                    vec![spirv::Capability::CooperativeMatrixLayoutsARM]
+                }
             },
             Self::CooperativeMatrixUse(v) => match v {
                 s::CooperativeMatrixUse::MatrixAKHR
@@ -2311,9 +2327,9 @@ impl Operand {
                 result
             }
             Self::InitializationModeQualifier(v) => match v {
-                s::InitializationModeQualifier::InitOnDeviceReprogramINTEL
-                | s::InitializationModeQualifier::InitOnDeviceResetINTEL => {
-                    vec![spirv::Capability::GlobalVariableFPGADecorationsINTEL]
+                s::InitializationModeQualifier::InitOnDeviceReprogramALTERA
+                | s::InitializationModeQualifier::InitOnDeviceResetALTERA => {
+                    vec![spirv::Capability::GlobalVariableFPGADecorationsALTERA]
                 }
             },
             Self::LoadCacheControl(v) => match v {
@@ -2528,6 +2544,7 @@ impl Operand {
                 | s::ExecutionMode::QuadDerivativesKHR
                 | s::ExecutionMode::RequireFullQuadsKHR
                 | s::ExecutionMode::SharesInputWithAMDX
+                | s::ExecutionMode::Shader64BitIndexingEXT
                 | s::ExecutionMode::SharedLocalMemorySizeINTEL
                 | s::ExecutionMode::RoundingModeRTPINTEL
                 | s::ExecutionMode::RoundingModeRTNINTEL
@@ -2603,16 +2620,16 @@ impl Operand {
                 | s::StorageClass::TileImageEXT
                 | s::StorageClass::TileAttachmentQCOM
                 | s::StorageClass::NodePayloadAMDX
-                | s::StorageClass::HitObjectAttributeNV => vec![],
+                | s::StorageClass::HitObjectAttributeNV
+                | s::StorageClass::HitObjectAttributeEXT
+                | s::StorageClass::DeviceOnlyALTERA
+                | s::StorageClass::HostOnlyALTERA => vec![],
                 s::StorageClass::TaskPayloadWorkgroupEXT => vec!["SPV_EXT_mesh_shader"],
                 s::StorageClass::PhysicalStorageBuffer => vec![
                     "SPV_EXT_physical_storage_buffer",
                     "SPV_KHR_physical_storage_buffer",
                 ],
                 s::StorageClass::CodeSectionINTEL => vec!["SPV_INTEL_function_pointers"],
-                s::StorageClass::DeviceOnlyINTEL | s::StorageClass::HostOnlyINTEL => {
-                    vec!["SPV_INTEL_usm_storage_classes"]
-                }
                 s::StorageClass::StorageBuffer => vec![
                     "SPV_KHR_storage_buffer_storage_class",
                     "SPV_KHR_variable_pointers",
@@ -2792,7 +2809,7 @@ impl Operand {
                 | s::FunctionParameterAttribute::NoCapture
                 | s::FunctionParameterAttribute::NoWrite
                 | s::FunctionParameterAttribute::NoReadWrite
-                | s::FunctionParameterAttribute::RuntimeAlignedINTEL => vec![],
+                | s::FunctionParameterAttribute::RuntimeAlignedALTERA => vec![],
             },
             Self::Decoration(v) => match v {
                 s::Decoration::RelaxedPrecision
@@ -2853,6 +2870,7 @@ impl Operand {
                 | s::Decoration::PayloadDispatchIndirectAMDX
                 | s::Decoration::ViewportRelativeNV
                 | s::Decoration::HitObjectShaderRecordBufferNV
+                | s::Decoration::HitObjectShaderRecordBufferEXT
                 | s::Decoration::BindlessSamplerNV
                 | s::Decoration::BindlessImageNV
                 | s::Decoration::BoundSamplerNV
@@ -2867,43 +2885,55 @@ impl Operand {
                 | s::Decoration::GlobalVariableOffsetINTEL
                 | s::Decoration::FunctionRoundingModeINTEL
                 | s::Decoration::FunctionDenormModeINTEL
-                | s::Decoration::StridesizeINTEL
-                | s::Decoration::WordsizeINTEL
-                | s::Decoration::TrueDualPortINTEL
-                | s::Decoration::BurstCoalesceINTEL
-                | s::Decoration::CacheSizeINTEL
-                | s::Decoration::DontStaticallyCoalesceINTEL
-                | s::Decoration::PrefetchINTEL
-                | s::Decoration::StallEnableINTEL
-                | s::Decoration::FuseLoopsInFunctionINTEL
-                | s::Decoration::MathOpDSPModeINTEL
+                | s::Decoration::RegisterALTERA
+                | s::Decoration::MemoryALTERA
+                | s::Decoration::NumbanksALTERA
+                | s::Decoration::BankwidthALTERA
+                | s::Decoration::MaxPrivateCopiesALTERA
+                | s::Decoration::SinglepumpALTERA
+                | s::Decoration::DoublepumpALTERA
+                | s::Decoration::MaxReplicatesALTERA
+                | s::Decoration::SimpleDualPortALTERA
+                | s::Decoration::MergeALTERA
+                | s::Decoration::BankBitsALTERA
+                | s::Decoration::ForcePow2DepthALTERA
+                | s::Decoration::StridesizeALTERA
+                | s::Decoration::WordsizeALTERA
+                | s::Decoration::TrueDualPortALTERA
+                | s::Decoration::BurstCoalesceALTERA
+                | s::Decoration::CacheSizeALTERA
+                | s::Decoration::DontStaticallyCoalesceALTERA
+                | s::Decoration::PrefetchALTERA
+                | s::Decoration::StallEnableALTERA
+                | s::Decoration::FuseLoopsInFunctionALTERA
+                | s::Decoration::MathOpDSPModeALTERA
                 | s::Decoration::AliasScopeINTEL
                 | s::Decoration::NoAliasINTEL
-                | s::Decoration::InitiationIntervalINTEL
-                | s::Decoration::MaxConcurrencyINTEL
-                | s::Decoration::PipelineEnableINTEL
-                | s::Decoration::BufferLocationINTEL
-                | s::Decoration::IOPipeStorageINTEL
+                | s::Decoration::InitiationIntervalALTERA
+                | s::Decoration::MaxConcurrencyALTERA
+                | s::Decoration::PipelineEnableALTERA
+                | s::Decoration::BufferLocationALTERA
+                | s::Decoration::IOPipeStorageALTERA
                 | s::Decoration::FunctionFloatingPointModeINTEL
                 | s::Decoration::SingleElementVectorINTEL
                 | s::Decoration::VectorComputeCallableFunctionINTEL
                 | s::Decoration::MediaBlockIOINTEL
-                | s::Decoration::StallFreeINTEL
+                | s::Decoration::StallFreeALTERA
                 | s::Decoration::FPMaxErrorDecorationINTEL
-                | s::Decoration::LatencyControlLabelINTEL
-                | s::Decoration::LatencyControlConstraintINTEL
-                | s::Decoration::ConduitKernelArgumentINTEL
-                | s::Decoration::RegisterMapKernelArgumentINTEL
-                | s::Decoration::MMHostInterfaceAddressWidthINTEL
-                | s::Decoration::MMHostInterfaceDataWidthINTEL
-                | s::Decoration::MMHostInterfaceLatencyINTEL
-                | s::Decoration::MMHostInterfaceReadWriteModeINTEL
-                | s::Decoration::MMHostInterfaceMaxBurstINTEL
-                | s::Decoration::MMHostInterfaceWaitRequestINTEL
-                | s::Decoration::StableKernelArgumentINTEL
+                | s::Decoration::LatencyControlLabelALTERA
+                | s::Decoration::LatencyControlConstraintALTERA
+                | s::Decoration::ConduitKernelArgumentALTERA
+                | s::Decoration::RegisterMapKernelArgumentALTERA
+                | s::Decoration::MMHostInterfaceAddressWidthALTERA
+                | s::Decoration::MMHostInterfaceDataWidthALTERA
+                | s::Decoration::MMHostInterfaceLatencyALTERA
+                | s::Decoration::MMHostInterfaceReadWriteModeALTERA
+                | s::Decoration::MMHostInterfaceMaxBurstALTERA
+                | s::Decoration::MMHostInterfaceWaitRequestALTERA
+                | s::Decoration::StableKernelArgumentALTERA
                 | s::Decoration::HostAccessINTEL
-                | s::Decoration::InitModeINTEL
-                | s::Decoration::ImplementInRegisterMapINTEL
+                | s::Decoration::InitModeALTERA
+                | s::Decoration::ImplementInRegisterMapALTERA
                 | s::Decoration::ConditionalINTEL
                 | s::Decoration::CacheControlLoadINTEL
                 | s::Decoration::CacheControlStoreINTEL => vec![],
@@ -2919,18 +2949,6 @@ impl Operand {
                     vec!["SPV_GOOGLE_hlsl_functionality1"]
                 }
                 s::Decoration::UserTypeGOOGLE => vec!["SPV_GOOGLE_user_type"],
-                s::Decoration::RegisterINTEL
-                | s::Decoration::MemoryINTEL
-                | s::Decoration::NumbanksINTEL
-                | s::Decoration::BankwidthINTEL
-                | s::Decoration::MaxPrivateCopiesINTEL
-                | s::Decoration::SinglepumpINTEL
-                | s::Decoration::DoublepumpINTEL
-                | s::Decoration::MaxReplicatesINTEL
-                | s::Decoration::SimpleDualPortINTEL
-                | s::Decoration::MergeINTEL
-                | s::Decoration::BankBitsINTEL
-                | s::Decoration::ForcePow2DepthINTEL => vec!["SPV_INTEL_fpga_memory_attributes"],
                 s::Decoration::ReferencedIndirectlyINTEL => vec!["SPV_INTEL_function_pointers"],
                 s::Decoration::NoSignedWrap | s::Decoration::NoUnsignedWrap => {
                     vec!["SPV_KHR_no_integer_wrap_decoration"]
@@ -3188,6 +3206,76 @@ impl Operand {
                 | s::Capability::ShaderLayer
                 | s::Capability::ShaderViewportIndex
                 | s::Capability::UniformDecoration => vec![],
+                s::Capability::ArbitraryPrecisionFixedPointALTERA => vec![
+                    "SPV_ALTERA_arbitrary_precision_fixed_point",
+                    "SPV_INTEL_arbitrary_precision_fixed_point",
+                ],
+                s::Capability::ArbitraryPrecisionFloatingPointALTERA => vec![
+                    "SPV_ALTERA_arbitrary_precision_floating_point",
+                    "SPV_INTEL_arbitrary_precision_floating_point",
+                ],
+                s::Capability::ArbitraryPrecisionIntegersALTERA => vec![
+                    "SPV_ALTERA_arbitrary_precision_integers",
+                    "SPV_INTEL_arbitrary_precision_integers",
+                ],
+                s::Capability::BlockingPipesALTERA => {
+                    vec!["SPV_ALTERA_blocking_pipes", "SPV_INTEL_blocking_pipes"]
+                }
+                s::Capability::FPGAArgumentInterfacesALTERA => vec![
+                    "SPV_ALTERA_fpga_argument_interfaces",
+                    "SPV_INTEL_fpga_argument_interfaces",
+                ],
+                s::Capability::FPGABufferLocationALTERA => vec![
+                    "SPV_ALTERA_fpga_buffer_location",
+                    "SPV_INTEL_fpga_buffer_location",
+                ],
+                s::Capability::FPGAClusterAttributesALTERA
+                | s::Capability::FPGAClusterAttributesV2ALTERA => vec![
+                    "SPV_ALTERA_fpga_cluster_attributes",
+                    "SPV_INTEL_fpga_cluster_attributes",
+                ],
+                s::Capability::FPGADSPControlALTERA => {
+                    vec!["SPV_ALTERA_fpga_dsp_control", "SPV_INTEL_fpga_dsp_control"]
+                }
+                s::Capability::FPGAInvocationPipeliningAttributesALTERA => vec![
+                    "SPV_ALTERA_fpga_invocation_pipelining_attributes",
+                    "SPV_INTEL_fpga_invocation_pipelining_attributes",
+                ],
+                s::Capability::FPGALatencyControlALTERA => vec![
+                    "SPV_ALTERA_fpga_latency_control",
+                    "SPV_INTEL_fpga_latency_control",
+                ],
+                s::Capability::FPGALoopControlsALTERA => vec![
+                    "SPV_ALTERA_fpga_loop_controls",
+                    "SPV_INTEL_fpga_loop_controls",
+                ],
+                s::Capability::FPGAMemoryAccessesALTERA => vec![
+                    "SPV_ALTERA_fpga_memory_accesses",
+                    "SPV_INTEL_fpga_memory_accesses",
+                ],
+                s::Capability::FPGAMemoryAttributesALTERA => vec![
+                    "SPV_ALTERA_fpga_memory_attributes",
+                    "SPV_INTEL_fpga_memory_attributes",
+                ],
+                s::Capability::FPGARegALTERA => vec!["SPV_ALTERA_fpga_reg", "SPV_INTEL_fpga_reg"],
+                s::Capability::GlobalVariableFPGADecorationsALTERA => vec![
+                    "SPV_ALTERA_global_variable_fpga_decorations",
+                    "SPV_INTEL_global_variable_fpga_decorations",
+                ],
+                s::Capability::IOPipesALTERA => vec!["SPV_ALTERA_io_pipes", "SPV_INTEL_io_pipes"],
+                s::Capability::LoopFuseALTERA => {
+                    vec!["SPV_ALTERA_loop_fuse", "SPV_INTEL_loop_fuse"]
+                }
+                s::Capability::RuntimeAlignedAttributeALTERA => {
+                    vec!["SPV_ALTERA_runtime_aligned", "SPV_INTEL_runtime_aligned"]
+                }
+                s::Capability::TaskSequenceALTERA => {
+                    vec!["SPV_ALTERA_task_sequence", "SPV_INTEL_task_sequence"]
+                }
+                s::Capability::USMStorageClassesALTERA => vec![
+                    "SPV_ALTERA_usm_storage_classes",
+                    "SPV_INTEL_usm_storage_classes",
+                ],
                 s::Capability::ShaderEnqueueAMDX => vec!["SPV_AMDX_shader_enqueue"],
                 s::Capability::Float16ImageAMD => vec!["SPV_AMD_gpu_shader_half_float_fetch"],
                 s::Capability::Groups => vec!["SPV_AMD_shader_ballot"],
@@ -3240,6 +3328,7 @@ impl Operand {
                     "SPV_KHR_physical_storage_buffer",
                 ],
                 s::Capability::ReplicatedCompositesEXT => vec!["SPV_EXT_replicated_composites"],
+                s::Capability::Shader64BitIndexingEXT => vec!["SPV_EXT_shader_64bit_indexing"],
                 s::Capability::AtomicFloat16AddEXT => vec!["SPV_EXT_shader_atomic_float16_add"],
                 s::Capability::AtomicFloat32AddEXT | s::Capability::AtomicFloat64AddEXT => {
                     vec!["SPV_EXT_shader_atomic_float_add"]
@@ -3250,6 +3339,9 @@ impl Operand {
                     vec!["SPV_EXT_shader_atomic_float_min_max"]
                 }
                 s::Capability::Int64ImageEXT => vec!["SPV_EXT_shader_image_int64"],
+                s::Capability::ShaderInvocationReorderEXT => {
+                    vec!["SPV_EXT_shader_invocation_reorder"]
+                }
                 s::Capability::StencilExportEXT => vec!["SPV_EXT_shader_stencil_export"],
                 s::Capability::TileImageColorReadAccessEXT
                 | s::Capability::TileImageDepthReadAccessEXT
@@ -3261,18 +3353,8 @@ impl Operand {
                 s::Capability::Subgroup2DBlockIOINTEL
                 | s::Capability::Subgroup2DBlockTransformINTEL
                 | s::Capability::Subgroup2DBlockTransposeINTEL => vec!["SPV_INTEL_2d_block_io"],
-                s::Capability::ArbitraryPrecisionFixedPointINTEL => {
-                    vec!["SPV_INTEL_arbitrary_precision_fixed_point"]
-                }
-                s::Capability::ArbitraryPrecisionFloatingPointINTEL => {
-                    vec!["SPV_INTEL_arbitrary_precision_floating_point"]
-                }
-                s::Capability::ArbitraryPrecisionIntegersINTEL => {
-                    vec!["SPV_INTEL_arbitrary_precision_integers"]
-                }
                 s::Capability::BFloat16ConversionINTEL => vec!["SPV_INTEL_bfloat16_conversion"],
                 s::Capability::BindlessImagesINTEL => vec!["SPV_INTEL_bindless_images"],
-                s::Capability::BlockingPipesINTEL => vec!["SPV_INTEL_blocking_pipes"],
                 s::Capability::CacheControlsINTEL => vec!["SPV_INTEL_cache_controls"],
                 s::Capability::DebugInfoModuleINTEL => vec!["SPV_INTEL_debug_module"],
                 s::Capability::SubgroupAvcMotionEstimationINTEL
@@ -3285,33 +3367,11 @@ impl Operand {
                 | s::Capability::FunctionFloatControlINTEL => vec!["SPV_INTEL_float_controls2"],
                 s::Capability::FPFastMathModeINTEL => vec!["SPV_INTEL_fp_fast_math_mode"],
                 s::Capability::FPMaxErrorINTEL => vec!["SPV_INTEL_fp_max_error"],
-                s::Capability::FPGAArgumentInterfacesINTEL => {
-                    vec!["SPV_INTEL_fpga_argument_interfaces"]
-                }
-                s::Capability::FPGABufferLocationINTEL => vec!["SPV_INTEL_fpga_buffer_location"],
-                s::Capability::FPGAClusterAttributesINTEL
-                | s::Capability::FPGAClusterAttributesV2INTEL => {
-                    vec!["SPV_INTEL_fpga_cluster_attributes"]
-                }
-                s::Capability::FPGADSPControlINTEL => vec!["SPV_INTEL_fpga_dsp_control"],
-                s::Capability::FPGAInvocationPipeliningAttributesINTEL => {
-                    vec!["SPV_INTEL_fpga_invocation_pipelining_attributes"]
-                }
-                s::Capability::FPGALatencyControlINTEL => vec!["SPV_INTEL_fpga_latency_control"],
-                s::Capability::FPGALoopControlsINTEL => vec!["SPV_INTEL_fpga_loop_controls"],
-                s::Capability::FPGAMemoryAccessesINTEL => vec!["SPV_INTEL_fpga_memory_accesses"],
-                s::Capability::FPGAMemoryAttributesINTEL => {
-                    vec!["SPV_INTEL_fpga_memory_attributes"]
-                }
-                s::Capability::FPGARegINTEL => vec!["SPV_INTEL_fpga_reg"],
                 s::Capability::FunctionPointersINTEL | s::Capability::IndirectReferencesINTEL => {
                     vec!["SPV_INTEL_function_pointers"]
                 }
                 s::Capability::SpecConditionalINTEL | s::Capability::FunctionVariantsINTEL => {
                     vec!["SPV_INTEL_function_variants"]
-                }
-                s::Capability::GlobalVariableFPGADecorationsINTEL => {
-                    vec!["SPV_INTEL_global_variable_fpga_decorations"]
                 }
                 s::Capability::GlobalVariableHostAccessINTEL => {
                     vec!["SPV_INTEL_global_variable_host_access"]
@@ -3320,19 +3380,16 @@ impl Operand {
                 s::Capability::Int4TypeINTEL | s::Capability::Int4CooperativeMatrixINTEL => {
                     vec!["SPV_INTEL_int4"]
                 }
-                s::Capability::IOPipesINTEL => vec!["SPV_INTEL_io_pipes"],
                 s::Capability::KernelAttributesINTEL
                 | s::Capability::FPGAKernelAttributesINTEL
                 | s::Capability::FPGAKernelAttributesv2INTEL => vec!["SPV_INTEL_kernel_attributes"],
                 s::Capability::LongCompositesINTEL => vec!["SPV_INTEL_long_composites"],
-                s::Capability::LoopFuseINTEL => vec!["SPV_INTEL_loop_fuse"],
                 s::Capability::MaskedGatherScatterINTEL => vec!["SPV_INTEL_masked_gather_scatter"],
                 s::Capability::RegisterLimitsINTEL => vec!["SPV_INTEL_maximum_registers"],
                 s::Capability::SubgroupImageMediaBlockIOINTEL => vec!["SPV_INTEL_media_block_io"],
                 s::Capability::MemoryAccessAliasingINTEL => {
                     vec!["SPV_INTEL_memory_access_aliasing"]
                 }
-                s::Capability::RuntimeAlignedAttributeINTEL => vec!["SPV_INTEL_runtime_aligned"],
                 s::Capability::IntegerFunctions2INTEL => {
                     vec!["SPV_INTEL_shader_integer_functions2"]
                 }
@@ -3346,7 +3403,6 @@ impl Operand {
                 s::Capability::SubgroupShuffleINTEL
                 | s::Capability::SubgroupBufferBlockIOINTEL
                 | s::Capability::SubgroupImageBlockIOINTEL => vec!["SPV_INTEL_subgroups"],
-                s::Capability::TaskSequenceINTEL => vec!["SPV_INTEL_task_sequence"],
                 s::Capability::TensorFloat32RoundingINTEL => {
                     vec!["SPV_INTEL_tensor_float32_conversion"]
                 }
@@ -3356,7 +3412,6 @@ impl Operand {
                 s::Capability::UnstructuredLoopControlsINTEL => {
                     vec!["SPV_INTEL_unstructured_loop_controls"]
                 }
-                s::Capability::USMStorageClassesINTEL => vec!["SPV_INTEL_usm_storage_classes"],
                 s::Capability::VariableLengthArrayINTEL
                 | s::Capability::UntypedVariableLengthArrayINTEL => {
                     vec!["SPV_INTEL_variable_length_array"]
@@ -3384,6 +3439,7 @@ impl Operand {
                 | s::Capability::RoundingModeRTE
                 | s::Capability::RoundingModeRTZ => vec!["SPV_KHR_float_controls"],
                 s::Capability::FloatControls2 => vec!["SPV_KHR_float_controls2"],
+                s::Capability::FMAKHR => vec!["SPV_KHR_fma"],
                 s::Capability::FragmentShadingRateKHR => vec!["SPV_KHR_fragment_shading_rate"],
                 s::Capability::DotProductInputAll
                 | s::Capability::DotProductInput4x8Bit
@@ -3532,8 +3588,8 @@ impl Operand {
                 | s::TensorClampMode::RepeatMirrored => vec![],
             },
             Self::InitializationModeQualifier(v) => match v {
-                s::InitializationModeQualifier::InitOnDeviceReprogramINTEL
-                | s::InitializationModeQualifier::InitOnDeviceResetINTEL => vec![],
+                s::InitializationModeQualifier::InitOnDeviceReprogramALTERA
+                | s::InitializationModeQualifier::InitOnDeviceResetALTERA => vec![],
             },
             Self::LoadCacheControl(v) => match v {
                 s::LoadCacheControl::UncachedINTEL
@@ -3656,15 +3712,15 @@ impl Operand {
                         s::LoopControl::ITERATION_MULTIPLE,
                         s::LoopControl::PEEL_COUNT,
                         s::LoopControl::PARTIAL_COUNT,
-                        s::LoopControl::INITIATION_INTERVAL_INTEL,
-                        s::LoopControl::MAX_CONCURRENCY_INTEL,
-                        s::LoopControl::DEPENDENCY_ARRAY_INTEL,
-                        s::LoopControl::PIPELINE_ENABLE_INTEL,
-                        s::LoopControl::LOOP_COALESCE_INTEL,
-                        s::LoopControl::MAX_INTERLEAVING_INTEL,
-                        s::LoopControl::SPECULATED_ITERATIONS_INTEL,
-                        s::LoopControl::LOOP_COUNT_INTEL,
-                        s::LoopControl::MAX_REINVOCATION_DELAY_INTEL,
+                        s::LoopControl::INITIATION_INTERVAL_ALTERA,
+                        s::LoopControl::MAX_CONCURRENCY_ALTERA,
+                        s::LoopControl::DEPENDENCY_ARRAY_ALTERA,
+                        s::LoopControl::PIPELINE_ENABLE_ALTERA,
+                        s::LoopControl::LOOP_COALESCE_ALTERA,
+                        s::LoopControl::MAX_INTERLEAVING_ALTERA,
+                        s::LoopControl::SPECULATED_ITERATIONS_ALTERA,
+                        s::LoopControl::LOOP_COUNT_ALTERA,
+                        s::LoopControl::MAX_REINVOCATION_DELAY_ALTERA,
                     ]
                     .iter()
                     .filter(|arg| v.contains(**arg))
@@ -3926,7 +3982,7 @@ impl Operand {
                 _ => vec![],
             },
             Self::Decoration(v) => match v {
-                s::Decoration::MMHostInterfaceReadWriteModeINTEL => {
+                s::Decoration::MMHostInterfaceReadWriteModeALTERA => {
                     vec![crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::AccessQualifier,
                         quantifier: crate::grammar::OperandQuantifier::One,
@@ -4006,7 +4062,7 @@ impl Operand {
                     kind: crate::grammar::OperandKind::IdScope,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::InitModeINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::InitModeALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::InitializationModeQualifier,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4014,7 +4070,7 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralFloat,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MMHostInterfaceAddressWidthINTEL => {
+                s::Decoration::MMHostInterfaceAddressWidthALTERA => {
                     vec![crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
@@ -4032,15 +4088,15 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::BankBitsINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::BankBitsALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::ZeroOrMore,
                 }],
-                s::Decoration::BankwidthINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::BankwidthALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::NumbanksINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::NumbanksALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4048,7 +4104,7 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::BufferLocationINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::BufferLocationALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4076,7 +4132,7 @@ impl Operand {
                         quantifier: crate::grammar::OperandQuantifier::One,
                     },
                 ],
-                s::Decoration::CacheSizeINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::CacheSizeALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4084,11 +4140,11 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::InitiationIntervalINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::InitiationIntervalALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MMHostInterfaceDataWidthINTEL => {
+                s::Decoration::MMHostInterfaceDataWidthALTERA => {
                     vec![crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
@@ -4098,15 +4154,15 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::PipelineEnableINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::PipelineEnableALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::ForcePow2DepthINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::ForcePow2DepthALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::IOPipeStorageINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::IOPipeStorageALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4114,7 +4170,7 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MaxConcurrencyINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::MaxConcurrencyALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4122,13 +4178,13 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MMHostInterfaceLatencyINTEL => {
+                s::Decoration::MMHostInterfaceLatencyALTERA => {
                     vec![crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
                     }]
                 }
-                s::Decoration::LatencyControlLabelINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::LatencyControlLabelALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4144,21 +4200,21 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MMHostInterfaceMaxBurstINTEL => {
+                s::Decoration::MMHostInterfaceMaxBurstALTERA => {
                     vec![crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
                     }]
                 }
-                s::Decoration::MaxPrivateCopiesINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::MaxPrivateCopiesALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MaxReplicatesINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::MaxReplicatesALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MathOpDSPModeINTEL => vec![
+                s::Decoration::MathOpDSPModeALTERA => vec![
                     crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
@@ -4179,11 +4235,11 @@ impl Operand {
                         quantifier: crate::grammar::OperandQuantifier::One,
                     }]
                 }
-                s::Decoration::PrefetchINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::PrefetchALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::LatencyControlConstraintINTEL => vec![
+                s::Decoration::LatencyControlConstraintALTERA => vec![
                     crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
@@ -4205,7 +4261,7 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::StridesizeINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::StridesizeALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4239,19 +4295,19 @@ impl Operand {
                         quantifier: crate::grammar::OperandQuantifier::One,
                     },
                 ],
-                s::Decoration::ImplementInRegisterMapINTEL => {
+                s::Decoration::ImplementInRegisterMapALTERA => {
                     vec![crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
                     }]
                 }
-                s::Decoration::MMHostInterfaceWaitRequestINTEL => {
+                s::Decoration::MMHostInterfaceWaitRequestALTERA => {
                     vec![crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralInteger,
                         quantifier: crate::grammar::OperandQuantifier::One,
                     }]
                 }
-                s::Decoration::WordsizeINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::WordsizeALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4263,11 +4319,11 @@ impl Operand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MemoryINTEL => vec![crate::grammar::LogicalOperand {
+                s::Decoration::MemoryALTERA => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralString,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
-                s::Decoration::MergeINTEL => vec![
+                s::Decoration::MergeALTERA => vec![
                     crate::grammar::LogicalOperand {
                         kind: crate::grammar::OperandKind::LiteralString,
                         quantifier: crate::grammar::OperandQuantifier::One,

@@ -809,6 +809,25 @@ impl Builder {
             new_id
         }
     }
+    #[doc = "Appends an OpTypeHitObjectEXT instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_hit_object_ext(&mut self) -> spirv::Word {
+        self.type_hit_object_ext_id(None)
+    }
+    #[doc = "Appends an OpTypeHitObjectEXT instruction and returns the result id, or return the existing id if the instruction was already present."]
+    pub fn type_hit_object_ext_id(&mut self, result_id: Option<spirv::Word>) -> spirv::Word {
+        let mut inst = dr::Instruction::new(spirv::Op::TypeHitObjectEXT, None, result_id, vec![]);
+        if let Some(result_id) = result_id {
+            self.module.types_global_values.push(inst);
+            result_id
+        } else if let Some(id) = self.dedup_insert_type(&inst) {
+            id
+        } else {
+            let new_id = self.id();
+            inst.result_id = Some(new_id);
+            self.module.types_global_values.push(inst);
+            new_id
+        }
+    }
     #[doc = "Appends an OpTypeAccelerationStructureKHR instruction and returns the result id, or return the existing id if the instruction was already present."]
     pub fn type_acceleration_structure_khr(&mut self) -> spirv::Word {
         self.type_acceleration_structure_khr_id(None)
@@ -998,26 +1017,6 @@ impl Builder {
                 .into_iter()
                 .map(dr::Operand::IdRef),
         );
-        if let Some(result_id) = result_id {
-            self.module.types_global_values.push(inst);
-            result_id
-        } else if let Some(id) = self.dedup_insert_type(&inst) {
-            id
-        } else {
-            let new_id = self.id();
-            inst.result_id = Some(new_id);
-            self.module.types_global_values.push(inst);
-            new_id
-        }
-    }
-    #[doc = "Appends an OpTypeTaskSequenceINTEL instruction and returns the result id, or return the existing id if the instruction was already present."]
-    pub fn type_task_sequence_intel(&mut self) -> spirv::Word {
-        self.type_task_sequence_intel_id(None)
-    }
-    #[doc = "Appends an OpTypeTaskSequenceINTEL instruction and returns the result id, or return the existing id if the instruction was already present."]
-    pub fn type_task_sequence_intel_id(&mut self, result_id: Option<spirv::Word>) -> spirv::Word {
-        let mut inst =
-            dr::Instruction::new(spirv::Op::TypeTaskSequenceINTEL, None, result_id, vec![]);
         if let Some(result_id) = result_id {
             self.module.types_global_values.push(inst);
             result_id
