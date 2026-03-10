@@ -2920,7 +2920,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -2937,7 +2937,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -2954,7 +2954,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -2971,7 +2971,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -2988,7 +2988,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3005,7 +3005,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3022,7 +3022,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3039,7 +3039,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3056,7 +3056,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3073,7 +3073,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3090,7 +3090,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3107,7 +3107,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3124,7 +3124,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3141,7 +3141,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3158,7 +3158,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -3175,7 +3175,7 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [
             GroupNonUniformArithmetic,
             GroupNonUniformClustered,
-            GroupNonUniformPartitionedNV
+            GroupNonUniformPartitionedEXT
         ],
         [],
         [
@@ -4136,6 +4136,43 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        TypeBufferEXT,
+        [DescriptorHeapEXT],
+        [],
+        [(IdResult, One), (StorageClass, One)]
+    ),
+    inst!(
+        BufferPointerEXT,
+        [DescriptorHeapEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        UntypedImageTexelPointerEXT,
+        [DescriptorHeapEXT],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        MemberDecorateIdEXT,
+        [DescriptorHeapEXT],
+        [],
+        [(IdRef, One), (LiteralInteger, One), (Decoration, One)]
+    ),
+    inst!(
+        ConstantSizeOfEXT,
+        [DescriptorHeapEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
         HitObjectRecordHitMotionNV,
         [ShaderInvocationReorderNV, RayTracingMotionBlurNV],
         [],
@@ -4446,8 +4483,8 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        TypeCooperativeVectorNV,
-        [CooperativeVectorNV],
+        TypeVectorIdEXT,
+        [CooperativeVectorNV, LongVectorEXT],
         [],
         [(IdResult, One), (IdRef, One), (IdRef, One)]
     ),
@@ -4533,9 +4570,9 @@ static INSTRUCTION_TABLE: &[Instruction<'static>] = &[
         [(IdRef, One), (IdRef, One)]
     ),
     inst!(
-        GroupNonUniformPartitionNV,
-        [GroupNonUniformPartitionedNV],
-        ["SPV_NV_shader_subgroup_partitioned"],
+        GroupNonUniformPartitionEXT,
+        [GroupNonUniformPartitionedEXT],
+        [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(

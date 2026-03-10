@@ -94,8 +94,11 @@ pub enum Type {
     NodePayloadArrayAMDX {
         payload_type: spirv::Word,
     },
+    BufferEXT {
+        storage_class: spirv::StorageClass,
+    },
     HitObjectNV,
-    CooperativeVectorNV {
+    VectorIdEXT {
         component_type: Token<Type>,
         component_count: spirv::Word,
     },
