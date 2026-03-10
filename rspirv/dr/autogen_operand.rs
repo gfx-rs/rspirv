@@ -1546,6 +1546,9 @@ impl Operand {
                 s::Decoration::CacheControlLoadINTEL | s::Decoration::CacheControlStoreINTEL => {
                     vec![spirv::Capability::CacheControlsINTEL]
                 }
+                s::Decoration::ArrayStrideIdEXT | s::Decoration::OffsetIdEXT => {
+                    vec![spirv::Capability::DescriptorHeapEXT]
+                }
                 s::Decoration::ConduitKernelArgumentALTERA
                 | s::Decoration::RegisterMapKernelArgumentALTERA
                 | s::Decoration::MMHostInterfaceAddressWidthALTERA
@@ -1653,6 +1656,9 @@ impl Operand {
                 s::Decoration::RestrictPointer | s::Decoration::AliasedPointer => {
                     vec![spirv::Capability::PhysicalStorageBufferAddresses]
                 }
+                s::Decoration::MemberOffsetNV | s::Decoration::BankNV => {
+                    vec![spirv::Capability::PushConstantBanksNV]
+                }
                 s::Decoration::OverrideCoverageNV => {
                     vec![spirv::Capability::SampleMaskOverrideCoverageNV]
                 }
@@ -1736,6 +1742,9 @@ impl Operand {
                 | s::BuiltIn::WarpIDARM
                 | s::BuiltIn::WarpMaxIDARM => vec![spirv::Capability::CoreBuiltinsARM],
                 s::BuiltIn::CullDistance => vec![spirv::Capability::CullDistance],
+                s::BuiltIn::SamplerHeapEXT | s::BuiltIn::ResourceHeapEXT => {
+                    vec![spirv::Capability::DescriptorHeapEXT]
+                }
                 s::BuiltIn::DeviceIndex => vec![spirv::Capability::DeviceGroup],
                 s::BuiltIn::BaseVertex | s::BuiltIn::BaseInstance => {
                     vec![spirv::Capability::DrawParameters]
@@ -1914,10 +1923,10 @@ impl Operand {
                 s::GroupOperation::ClusteredReduce => {
                     vec![spirv::Capability::GroupNonUniformClustered]
                 }
-                s::GroupOperation::PartitionedReduceNV
-                | s::GroupOperation::PartitionedInclusiveScanNV
-                | s::GroupOperation::PartitionedExclusiveScanNV => {
-                    vec![spirv::Capability::GroupNonUniformPartitionedNV]
+                s::GroupOperation::PartitionedReduceEXT
+                | s::GroupOperation::PartitionedInclusiveScanEXT
+                | s::GroupOperation::PartitionedExclusiveScanEXT => {
+                    vec![spirv::Capability::GroupNonUniformPartitionedEXT]
                 }
                 s::GroupOperation::Reduce
                 | s::GroupOperation::InclusiveScan
@@ -1984,7 +1993,7 @@ impl Operand {
                 | s::Capability::BFloat16TypeKHR
                 | s::Capability::ImageFootprintNV
                 | s::Capability::FragmentBarycentricKHR
-                | s::Capability::GroupNonUniformPartitionedNV
+                | s::Capability::GroupNonUniformPartitionedEXT
                 | s::Capability::VulkanMemoryModel
                 | s::Capability::VulkanMemoryModelDeviceScope
                 | s::Capability::BindlessTextureNV
@@ -1993,6 +2002,7 @@ impl Operand {
                 | s::Capability::RawAccessChainsNV
                 | s::Capability::RayTracingSpheresGeometryNV
                 | s::Capability::RayTracingLinearSweptSpheresGeometryNV
+                | s::Capability::LongVectorEXT
                 | s::Capability::Shader64BitIndexingEXT
                 | s::Capability::CooperativeMatrixReductionsNV
                 | s::Capability::CooperativeMatrixConversionsNV
@@ -2234,7 +2244,8 @@ impl Operand {
                 | s::Capability::DemoteToHelperInvocation
                 | s::Capability::DisplacementMicromapNV
                 | s::Capability::RayTracingOpacityMicromapEXT
-                | s::Capability::RayQueryPositionFetchKHR => vec![spirv::Capability::Shader],
+                | s::Capability::RayQueryPositionFetchKHR
+                | s::Capability::PushConstantBanksNV => vec![spirv::Capability::Shader],
                 s::Capability::UniformBufferArrayNonUniformIndexing
                 | s::Capability::SampledImageArrayNonUniformIndexing
                 | s::Capability::StorageBufferArrayNonUniformIndexing
@@ -2259,6 +2270,7 @@ impl Operand {
                     vec![spirv::Capability::Subgroup2DBlockIOINTEL]
                 }
                 s::Capability::TessellationPointSize => vec![spirv::Capability::Tessellation],
+                s::Capability::DescriptorHeapEXT => vec![spirv::Capability::UntypedPointersKHR],
                 s::Capability::UntypedVariableLengthArrayINTEL => vec![
                     spirv::Capability::VariableLengthArrayINTEL,
                     spirv::Capability::UntypedPointersKHR,
@@ -2868,9 +2880,13 @@ impl Operand {
                 | s::Decoration::PayloadNodeSparseArrayAMDX
                 | s::Decoration::PayloadNodeArraySizeAMDX
                 | s::Decoration::PayloadDispatchIndirectAMDX
+                | s::Decoration::ArrayStrideIdEXT
+                | s::Decoration::OffsetIdEXT
                 | s::Decoration::ViewportRelativeNV
+                | s::Decoration::MemberOffsetNV
                 | s::Decoration::HitObjectShaderRecordBufferNV
                 | s::Decoration::HitObjectShaderRecordBufferEXT
+                | s::Decoration::BankNV
                 | s::Decoration::BindlessSamplerNV
                 | s::Decoration::BindlessImageNV
                 | s::Decoration::BoundSamplerNV
@@ -3019,6 +3035,8 @@ impl Operand {
                 | s::BuiltIn::TileApronSizeQCOM
                 | s::BuiltIn::RemainingRecursionLevelsAMDX
                 | s::BuiltIn::ShaderIndexAMDX
+                | s::BuiltIn::SamplerHeapEXT
+                | s::BuiltIn::ResourceHeapEXT
                 | s::BuiltIn::HitTriangleVertexPositionsKHR
                 | s::BuiltIn::HitMicroTriangleVertexPositionsNV
                 | s::BuiltIn::HitMicroTriangleVertexBarycentricsNV
@@ -3124,12 +3142,10 @@ impl Operand {
                 s::GroupOperation::Reduce
                 | s::GroupOperation::InclusiveScan
                 | s::GroupOperation::ExclusiveScan
-                | s::GroupOperation::ClusteredReduce => vec![],
-                s::GroupOperation::PartitionedReduceNV
-                | s::GroupOperation::PartitionedInclusiveScanNV
-                | s::GroupOperation::PartitionedExclusiveScanNV => {
-                    vec!["SPV_NV_shader_subgroup_partitioned"]
-                }
+                | s::GroupOperation::ClusteredReduce
+                | s::GroupOperation::PartitionedReduceEXT
+                | s::GroupOperation::PartitionedInclusiveScanEXT
+                | s::GroupOperation::PartitionedExclusiveScanEXT => vec![],
             },
             Self::KernelEnqueueFlags(v) => match v {
                 s::KernelEnqueueFlags::NoWait
@@ -3294,6 +3310,7 @@ impl Operand {
                 s::Capability::DemoteToHelperInvocation => {
                     vec!["SPV_EXT_demote_to_helper_invocation"]
                 }
+                s::Capability::DescriptorHeapEXT => vec!["SPV_EXT_descriptor_heap"],
                 s::Capability::ShaderNonUniform
                 | s::Capability::RuntimeDescriptorArray
                 | s::Capability::InputAttachmentArrayDynamicIndexing
@@ -3320,6 +3337,7 @@ impl Operand {
                 | s::Capability::FragmentShaderPixelInterlockEXT => {
                     vec!["SPV_EXT_fragment_shader_interlock"]
                 }
+                s::Capability::LongVectorEXT => vec!["SPV_EXT_long_vector"],
                 s::Capability::MeshShadingEXT => vec!["SPV_EXT_mesh_shader"],
                 s::Capability::RayTracingOpacityMicromapEXT => vec!["SPV_EXT_opacity_micromap"],
                 s::Capability::OptNoneEXT => vec!["SPV_EXT_optnone", "SPV_INTEL_optnone"],
@@ -3520,6 +3538,7 @@ impl Operand {
                     vec!["SPV_NV_linear_swept_spheres"]
                 }
                 s::Capability::MeshShadingNV => vec!["SPV_NV_mesh_shader"],
+                s::Capability::PushConstantBanksNV => vec!["SPV_NV_push_constant_bank"],
                 s::Capability::RawAccessChainsNV => vec!["SPV_NV_raw_access_chains"],
                 s::Capability::RayTracingNV => vec!["SPV_NV_ray_tracing"],
                 s::Capability::RayTracingMotionBlurNV => vec!["SPV_NV_ray_tracing_motion_blur"],
@@ -3532,9 +3551,10 @@ impl Operand {
                     vec!["SPV_NV_shader_invocation_reorder"]
                 }
                 s::Capability::ShaderSMBuiltinsNV => vec!["SPV_NV_shader_sm_builtins"],
-                s::Capability::GroupNonUniformPartitionedNV => {
-                    vec!["SPV_NV_shader_subgroup_partitioned"]
-                }
+                s::Capability::GroupNonUniformPartitionedEXT => vec![
+                    "SPV_NV_shader_subgroup_partitioned",
+                    "SPV_EXT_shader_subgroup_partitioned",
+                ],
                 s::Capability::ShaderStereoViewNV => vec!["SPV_NV_stereo_view_rendering"],
                 s::Capability::TensorAddressingNV => vec!["SPV_NV_tensor_addressing"],
                 s::Capability::ShaderViewportMaskNV => vec!["SPV_NV_viewport_array2"],
@@ -4028,7 +4048,15 @@ impl Operand {
                     kind: crate::grammar::OperandKind::IdRef,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
+                s::Decoration::ArrayStrideIdEXT => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::IdRef,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
                 s::Decoration::PayloadNodeBaseIndexAMDX => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::IdRef,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
+                s::Decoration::OffsetIdEXT => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::IdRef,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4085,6 +4113,10 @@ impl Operand {
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
                 s::Decoration::InputAttachmentIndex => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::LiteralInteger,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
+                s::Decoration::BankNV => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
@@ -4316,6 +4348,10 @@ impl Operand {
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],
                 s::Decoration::XfbStride => vec![crate::grammar::LogicalOperand {
+                    kind: crate::grammar::OperandKind::LiteralInteger,
+                    quantifier: crate::grammar::OperandQuantifier::One,
+                }],
+                s::Decoration::MemberOffsetNV => vec![crate::grammar::LogicalOperand {
                     kind: crate::grammar::OperandKind::LiteralInteger,
                     quantifier: crate::grammar::OperandQuantifier::One,
                 }],

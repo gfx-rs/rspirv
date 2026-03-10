@@ -1347,6 +1347,8 @@ pub enum Decoration {
     PayloadNodeSparseArrayAMDX = 5099u32,
     PayloadNodeArraySizeAMDX = 5100u32,
     PayloadDispatchIndirectAMDX = 5105u32,
+    ArrayStrideIdEXT = 5124u32,
+    OffsetIdEXT = 5125u32,
     OverrideCoverageNV = 5248u32,
     PassthroughNV = 5250u32,
     ViewportRelativeNV = 5252u32,
@@ -1358,8 +1360,10 @@ pub enum Decoration {
     NonUniform = 5300u32,
     RestrictPointer = 5355u32,
     AliasedPointer = 5356u32,
+    MemberOffsetNV = 5358u32,
     HitObjectShaderRecordBufferNV = 5386u32,
     HitObjectShaderRecordBufferEXT = 5389u32,
+    BankNV = 5397u32,
     BindlessSamplerNV = 5398u32,
     BindlessImageNV = 5399u32,
     BoundSamplerNV = 5400u32,
@@ -1446,6 +1450,7 @@ impl Decoration {
             5091u32 => unsafe { core::mem::transmute::<u32, Decoration>(5091u32) },
             5098u32..=5100u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5105u32 => unsafe { core::mem::transmute::<u32, Decoration>(5105u32) },
+            5124u32..=5125u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5248u32 => unsafe { core::mem::transmute::<u32, Decoration>(5248u32) },
             5250u32 => unsafe { core::mem::transmute::<u32, Decoration>(5250u32) },
             5252u32 => unsafe { core::mem::transmute::<u32, Decoration>(5252u32) },
@@ -1454,9 +1459,10 @@ impl Decoration {
             5285u32 => unsafe { core::mem::transmute::<u32, Decoration>(5285u32) },
             5300u32 => unsafe { core::mem::transmute::<u32, Decoration>(5300u32) },
             5355u32..=5356u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
+            5358u32 => unsafe { core::mem::transmute::<u32, Decoration>(5358u32) },
             5386u32 => unsafe { core::mem::transmute::<u32, Decoration>(5386u32) },
             5389u32 => unsafe { core::mem::transmute::<u32, Decoration>(5389u32) },
-            5398u32..=5401u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
+            5397u32..=5401u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5599u32 => unsafe { core::mem::transmute::<u32, Decoration>(5599u32) },
             5602u32 => unsafe { core::mem::transmute::<u32, Decoration>(5602u32) },
             5607u32..=5608u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
@@ -1608,6 +1614,8 @@ impl core::str::FromStr for Decoration {
             "PayloadNodeSparseArrayAMDX" => Self::PayloadNodeSparseArrayAMDX,
             "PayloadNodeArraySizeAMDX" => Self::PayloadNodeArraySizeAMDX,
             "PayloadDispatchIndirectAMDX" => Self::PayloadDispatchIndirectAMDX,
+            "ArrayStrideIdEXT" => Self::ArrayStrideIdEXT,
+            "OffsetIdEXT" => Self::OffsetIdEXT,
             "OverrideCoverageNV" => Self::OverrideCoverageNV,
             "PassthroughNV" => Self::PassthroughNV,
             "ViewportRelativeNV" => Self::ViewportRelativeNV,
@@ -1624,8 +1632,10 @@ impl core::str::FromStr for Decoration {
             "RestrictPointerEXT" => Self::RestrictPointer,
             "AliasedPointer" => Self::AliasedPointer,
             "AliasedPointerEXT" => Self::AliasedPointer,
+            "MemberOffsetNV" => Self::MemberOffsetNV,
             "HitObjectShaderRecordBufferNV" => Self::HitObjectShaderRecordBufferNV,
             "HitObjectShaderRecordBufferEXT" => Self::HitObjectShaderRecordBufferEXT,
+            "BankNV" => Self::BankNV,
             "BindlessSamplerNV" => Self::BindlessSamplerNV,
             "BindlessImageNV" => Self::BindlessImageNV,
             "BoundSamplerNV" => Self::BoundSamplerNV,
@@ -1821,6 +1831,8 @@ pub enum BuiltIn {
     FragStencilRefEXT = 5014u32,
     RemainingRecursionLevelsAMDX = 5021u32,
     ShaderIndexAMDX = 5073u32,
+    SamplerHeapEXT = 5122u32,
+    ResourceHeapEXT = 5123u32,
     ViewportMaskNV = 5253u32,
     SecondaryPositionNV = 5257u32,
     SecondaryViewportMaskNV = 5258u32,
@@ -1896,6 +1908,7 @@ impl BuiltIn {
             5014u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(5014u32) },
             5021u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(5021u32) },
             5073u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(5073u32) },
+            5122u32..=5123u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(n) },
             5253u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(5253u32) },
             5257u32..=5258u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(n) },
             5261u32..=5262u32 => unsafe { core::mem::transmute::<u32, BuiltIn>(n) },
@@ -2025,6 +2038,8 @@ impl core::str::FromStr for BuiltIn {
             "FragStencilRefEXT" => Self::FragStencilRefEXT,
             "RemainingRecursionLevelsAMDX" => Self::RemainingRecursionLevelsAMDX,
             "ShaderIndexAMDX" => Self::ShaderIndexAMDX,
+            "SamplerHeapEXT" => Self::SamplerHeapEXT,
+            "ResourceHeapEXT" => Self::ResourceHeapEXT,
             "ViewportMaskNV" => Self::ViewportMaskNV,
             "SecondaryPositionNV" => Self::SecondaryPositionNV,
             "SecondaryViewportMaskNV" => Self::SecondaryViewportMaskNV,
@@ -2155,9 +2170,9 @@ pub enum GroupOperation {
     InclusiveScan = 1u32,
     ExclusiveScan = 2u32,
     ClusteredReduce = 3u32,
-    PartitionedReduceNV = 6u32,
-    PartitionedInclusiveScanNV = 7u32,
-    PartitionedExclusiveScanNV = 8u32,
+    PartitionedReduceEXT = 6u32,
+    PartitionedInclusiveScanEXT = 7u32,
+    PartitionedExclusiveScanEXT = 8u32,
 }
 impl GroupOperation {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -2169,7 +2184,11 @@ impl GroupOperation {
     }
 }
 #[allow(non_upper_case_globals)]
-impl GroupOperation {}
+impl GroupOperation {
+    pub const PartitionedReduceNV: Self = Self::PartitionedReduceEXT;
+    pub const PartitionedInclusiveScanNV: Self = Self::PartitionedInclusiveScanEXT;
+    pub const PartitionedExclusiveScanNV: Self = Self::PartitionedExclusiveScanEXT;
+}
 impl core::str::FromStr for GroupOperation {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -2178,9 +2197,12 @@ impl core::str::FromStr for GroupOperation {
             "InclusiveScan" => Self::InclusiveScan,
             "ExclusiveScan" => Self::ExclusiveScan,
             "ClusteredReduce" => Self::ClusteredReduce,
-            "PartitionedReduceNV" => Self::PartitionedReduceNV,
-            "PartitionedInclusiveScanNV" => Self::PartitionedInclusiveScanNV,
-            "PartitionedExclusiveScanNV" => Self::PartitionedExclusiveScanNV,
+            "PartitionedReduceEXT" => Self::PartitionedReduceEXT,
+            "PartitionedReduceNV" => Self::PartitionedReduceEXT,
+            "PartitionedInclusiveScanEXT" => Self::PartitionedInclusiveScanEXT,
+            "PartitionedInclusiveScanNV" => Self::PartitionedInclusiveScanEXT,
+            "PartitionedExclusiveScanEXT" => Self::PartitionedExclusiveScanEXT,
+            "PartitionedExclusiveScanNV" => Self::PartitionedExclusiveScanEXT,
             _ => return Err(()),
         })
     }
@@ -2355,6 +2377,7 @@ pub enum Capability {
     BFloat16TypeKHR = 5116u32,
     BFloat16DotProductKHR = 5117u32,
     BFloat16CooperativeMatrixKHR = 5118u32,
+    DescriptorHeapEXT = 5128u32,
     SampleMaskOverrideCoverageNV = 5249u32,
     GeometryShaderPassthroughNV = 5251u32,
     ShaderViewportIndexLayerEXT = 5254u32,
@@ -2368,7 +2391,7 @@ pub enum Capability {
     FragmentBarycentricKHR = 5284u32,
     ComputeDerivativeGroupQuadsKHR = 5288u32,
     FragmentDensityEXT = 5291u32,
-    GroupNonUniformPartitionedNV = 5297u32,
+    GroupNonUniformPartitionedEXT = 5297u32,
     ShaderNonUniform = 5301u32,
     RuntimeDescriptorArray = 5302u32,
     InputAttachmentArrayDynamicIndexing = 5303u32,
@@ -2407,6 +2430,8 @@ pub enum Capability {
     RawAccessChainsNV = 5414u32,
     RayTracingSpheresGeometryNV = 5418u32,
     RayTracingLinearSweptSpheresGeometryNV = 5419u32,
+    PushConstantBanksNV = 5423u32,
+    LongVectorEXT = 5425u32,
     Shader64BitIndexingEXT = 5426u32,
     CooperativeMatrixReductionsNV = 5430u32,
     CooperativeMatrixConversionsNV = 5431u32,
@@ -2535,6 +2560,7 @@ impl Capability {
             5112u32 => unsafe { core::mem::transmute::<u32, Capability>(5112u32) },
             5114u32 => unsafe { core::mem::transmute::<u32, Capability>(5114u32) },
             5116u32..=5118u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            5128u32 => unsafe { core::mem::transmute::<u32, Capability>(5128u32) },
             5249u32 => unsafe { core::mem::transmute::<u32, Capability>(5249u32) },
             5251u32 => unsafe { core::mem::transmute::<u32, Capability>(5251u32) },
             5254u32..=5255u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2562,7 +2588,8 @@ impl Capability {
             5409u32 => unsafe { core::mem::transmute::<u32, Capability>(5409u32) },
             5414u32 => unsafe { core::mem::transmute::<u32, Capability>(5414u32) },
             5418u32..=5419u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
-            5426u32 => unsafe { core::mem::transmute::<u32, Capability>(5426u32) },
+            5423u32 => unsafe { core::mem::transmute::<u32, Capability>(5423u32) },
+            5425u32..=5426u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5430u32..=5435u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5437u32 => unsafe { core::mem::transmute::<u32, Capability>(5437u32) },
             5439u32 => unsafe { core::mem::transmute::<u32, Capability>(5439u32) },
@@ -2638,6 +2665,7 @@ impl Capability {
     pub const FragmentBarycentricNV: Self = Self::FragmentBarycentricKHR;
     pub const ComputeDerivativeGroupQuadsNV: Self = Self::ComputeDerivativeGroupQuadsKHR;
     pub const ShadingRateNV: Self = Self::FragmentDensityEXT;
+    pub const GroupNonUniformPartitionedNV: Self = Self::GroupNonUniformPartitionedEXT;
     pub const ShaderNonUniformEXT: Self = Self::ShaderNonUniform;
     pub const RuntimeDescriptorArrayEXT: Self = Self::RuntimeDescriptorArray;
     pub const InputAttachmentArrayDynamicIndexingEXT: Self =
@@ -2837,6 +2865,7 @@ impl core::str::FromStr for Capability {
             "BFloat16TypeKHR" => Self::BFloat16TypeKHR,
             "BFloat16DotProductKHR" => Self::BFloat16DotProductKHR,
             "BFloat16CooperativeMatrixKHR" => Self::BFloat16CooperativeMatrixKHR,
+            "DescriptorHeapEXT" => Self::DescriptorHeapEXT,
             "SampleMaskOverrideCoverageNV" => Self::SampleMaskOverrideCoverageNV,
             "GeometryShaderPassthroughNV" => Self::GeometryShaderPassthroughNV,
             "ShaderViewportIndexLayerEXT" => Self::ShaderViewportIndexLayerEXT,
@@ -2854,7 +2883,8 @@ impl core::str::FromStr for Capability {
             "ComputeDerivativeGroupQuadsNV" => Self::ComputeDerivativeGroupQuadsKHR,
             "FragmentDensityEXT" => Self::FragmentDensityEXT,
             "ShadingRateNV" => Self::FragmentDensityEXT,
-            "GroupNonUniformPartitionedNV" => Self::GroupNonUniformPartitionedNV,
+            "GroupNonUniformPartitionedEXT" => Self::GroupNonUniformPartitionedEXT,
+            "GroupNonUniformPartitionedNV" => Self::GroupNonUniformPartitionedEXT,
             "ShaderNonUniform" => Self::ShaderNonUniform,
             "ShaderNonUniformEXT" => Self::ShaderNonUniform,
             "RuntimeDescriptorArray" => Self::RuntimeDescriptorArray,
@@ -2932,6 +2962,8 @@ impl core::str::FromStr for Capability {
             "RayTracingLinearSweptSpheresGeometryNV" => {
                 Self::RayTracingLinearSweptSpheresGeometryNV
             }
+            "PushConstantBanksNV" => Self::PushConstantBanksNV,
+            "LongVectorEXT" => Self::LongVectorEXT,
             "Shader64BitIndexingEXT" => Self::Shader64BitIndexingEXT,
             "CooperativeMatrixReductionsNV" => Self::CooperativeMatrixReductionsNV,
             "CooperativeMatrixConversionsNV" => Self::CooperativeMatrixConversionsNV,
@@ -4009,6 +4041,11 @@ pub enum Op {
     SpecConstantStringAMDX = 5104u32,
     GroupNonUniformQuadAllKHR = 5110u32,
     GroupNonUniformQuadAnyKHR = 5111u32,
+    TypeBufferEXT = 5115u32,
+    BufferPointerEXT = 5119u32,
+    UntypedImageTexelPointerEXT = 5126u32,
+    MemberDecorateIdEXT = 5127u32,
+    ConstantSizeOfEXT = 5129u32,
     HitObjectRecordHitMotionNV = 5249u32,
     HitObjectRecordHitWithIndexMotionNV = 5250u32,
     HitObjectRecordMissMotionNV = 5251u32,
@@ -4043,7 +4080,7 @@ pub enum Op {
     ReorderThreadWithHintNV = 5280u32,
     TypeHitObjectNV = 5281u32,
     ImageSampleFootprintNV = 5283u32,
-    TypeCooperativeVectorNV = 5288u32,
+    TypeVectorIdEXT = 5288u32,
     CooperativeVectorMatrixMulNV = 5289u32,
     CooperativeVectorOuterProductAccumulateNV = 5290u32,
     CooperativeVectorReduceSumAccumulateNV = 5291u32,
@@ -4051,7 +4088,7 @@ pub enum Op {
     CooperativeMatrixConvertNV = 5293u32,
     EmitMeshTasksEXT = 5294u32,
     SetMeshOutputsEXT = 5295u32,
-    GroupNonUniformPartitionNV = 5296u32,
+    GroupNonUniformPartitionEXT = 5296u32,
     WritePackedPrimitiveIndices4x8NV = 5299u32,
     FetchMicroTriangleVertexPositionNV = 5300u32,
     FetchMicroTriangleVertexBarycentricNV = 5301u32,
@@ -4477,6 +4514,10 @@ impl Op {
             5101u32 => unsafe { core::mem::transmute::<u32, Op>(5101u32) },
             5103u32..=5104u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5110u32..=5111u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            5115u32 => unsafe { core::mem::transmute::<u32, Op>(5115u32) },
+            5119u32 => unsafe { core::mem::transmute::<u32, Op>(5119u32) },
+            5126u32..=5127u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            5129u32 => unsafe { core::mem::transmute::<u32, Op>(5129u32) },
             5249u32..=5281u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5283u32 => unsafe { core::mem::transmute::<u32, Op>(5283u32) },
             5288u32..=5296u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -4537,6 +4578,8 @@ impl Op {
     pub const SDotAccSatKHR: Self = Self::SDotAccSat;
     pub const UDotAccSatKHR: Self = Self::UDotAccSat;
     pub const SUDotAccSatKHR: Self = Self::SUDotAccSat;
+    pub const TypeCooperativeVectorNV: Self = Self::TypeVectorIdEXT;
+    pub const GroupNonUniformPartitionNV: Self = Self::GroupNonUniformPartitionEXT;
     pub const ReportIntersectionNV: Self = Self::ReportIntersectionKHR;
     pub const TypeAccelerationStructureNV: Self = Self::TypeAccelerationStructureKHR;
     pub const RayQueryGetClusterIdNV: Self = Self::RayQueryGetIntersectionClusterIdNV;
@@ -4617,8 +4660,9 @@ impl Op {
                 | Self::TypeCooperativeMatrixKHR
                 | Self::TypeRayQueryKHR
                 | Self::TypeNodePayloadArrayAMDX
+                | Self::TypeBufferEXT
                 | Self::TypeHitObjectNV
-                | Self::TypeCooperativeVectorNV
+                | Self::TypeVectorIdEXT
                 | Self::TypeHitObjectEXT
                 | Self::TypeAccelerationStructureKHR
                 | Self::TypeCooperativeMatrixNV
@@ -4647,6 +4691,7 @@ impl Op {
                 | Self::SpecConstantOp
                 | Self::ConstantCompositeReplicateEXT
                 | Self::SpecConstantCompositeReplicateEXT
+                | Self::ConstantSizeOfEXT
                 | Self::ConstantCompositeContinuedINTEL
                 | Self::SpecConstantCompositeContinuedINTEL
                 | Self::SpecConstantTargetINTEL
@@ -4666,6 +4711,7 @@ impl Op {
                 | Self::GroupDecorate
                 | Self::GroupMemberDecorate
                 | Self::DecorateId
+                | Self::MemberDecorateIdEXT
                 | Self::DecorateString
                 | Self::MemberDecorateString
         )

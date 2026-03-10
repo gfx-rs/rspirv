@@ -15816,6 +15816,96 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpBufferPointerEXT instruction to the current block."]
+    pub fn buffer_pointer_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        buffer: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::BufferPointerEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(buffer)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpBufferPointerEXT instruction to the current block."]
+    pub fn insert_buffer_pointer_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        buffer: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::BufferPointerEXT,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(buffer)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedImageTexelPointerEXT instruction to the current block."]
+    pub fn untyped_image_texel_pointer_ext(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        image_type: spirv::Word,
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        sample: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedImageTexelPointerEXT,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(image_type),
+                dr::Operand::IdRef(image),
+                dr::Operand::IdRef(coordinate),
+                dr::Operand::IdRef(sample),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpUntypedImageTexelPointerEXT instruction to the current block."]
+    pub fn insert_untyped_image_texel_pointer_ext(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        image_type: spirv::Word,
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        sample: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::UntypedImageTexelPointerEXT,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(image_type),
+                dr::Operand::IdRef(image),
+                dr::Operand::IdRef(coordinate),
+                dr::Operand::IdRef(sample),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpHitObjectRecordHitMotionNV instruction to the current block."]
     pub fn hit_object_record_hit_motion_nv(
         &mut self,
@@ -17748,8 +17838,8 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(())
     }
-    #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current block."]
-    pub fn group_non_uniform_partition_nv(
+    #[doc = "Appends an OpGroupNonUniformPartitionEXT instruction to the current block."]
+    pub fn group_non_uniform_partition_ext(
         &mut self,
         result_type: spirv::Word,
         result_id: Option<spirv::Word>,
@@ -17758,7 +17848,7 @@ impl Builder {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
-            spirv::Op::GroupNonUniformPartitionNV,
+            spirv::Op::GroupNonUniformPartitionEXT,
             Some(result_type),
             Some(_id),
             vec![dr::Operand::IdRef(value)],
@@ -17766,8 +17856,8 @@ impl Builder {
         self.insert_into_block(InsertPoint::End, inst)?;
         Ok(_id)
     }
-    #[doc = "Appends an OpGroupNonUniformPartitionNV instruction to the current block."]
-    pub fn insert_group_non_uniform_partition_nv(
+    #[doc = "Appends an OpGroupNonUniformPartitionEXT instruction to the current block."]
+    pub fn insert_group_non_uniform_partition_ext(
         &mut self,
         insert_point: InsertPoint,
         result_type: spirv::Word,
@@ -17777,7 +17867,7 @@ impl Builder {
         let _id = result_id.unwrap_or_else(|| self.id());
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
-            spirv::Op::GroupNonUniformPartitionNV,
+            spirv::Op::GroupNonUniformPartitionEXT,
             Some(result_type),
             Some(_id),
             vec![dr::Operand::IdRef(value)],

@@ -101,6 +101,28 @@ impl Builder {
         inst.operands.extend(additional_params);
         self.module.annotations.push(inst);
     }
+    #[doc = "Appends an OpMemberDecorateIdEXT instruction."]
+    pub fn member_decorate_id_ext(
+        &mut self,
+        structure_type: spirv::Word,
+        member: u32,
+        decoration: spirv::Decoration,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
+    ) {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::MemberDecorateIdEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(structure_type),
+                dr::Operand::LiteralBit32(member),
+                dr::Operand::Decoration(decoration),
+            ],
+        );
+        inst.operands.extend(additional_params);
+        self.module.annotations.push(inst);
+    }
     #[doc = "Appends an OpDecorateString instruction."]
     pub fn decorate_string(
         &mut self,

@@ -527,9 +527,15 @@ impl Parser<'_, '_> {
             spirv::Decoration::PayloadNodeArraySizeAMDX => {
                 vec![dr::Operand::IdRef(self.decoder.id()?)]
             }
+            spirv::Decoration::ArrayStrideIdEXT => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::OffsetIdEXT => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::SecondaryViewportRelativeNV => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::Decoration::MemberOffsetNV => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::BankNV => vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)],
             spirv::Decoration::SIMTCallINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }

@@ -6697,6 +6697,60 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5119u32 => Ok(ops::Op::BufferPointerEXT {
+                buffer: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5126u32 => Ok(ops::Op::UntypedImageTexelPointerEXT {
+                image_type: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                image: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                coordinate: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                sample: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5127u32 => Ok(ops::Op::MemberDecorateIdEXT {
+                structure_type: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                member: (match operands.next() {
+                    Some(dr::Operand::LiteralBit32(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                decoration: (match operands.next() {
+                    Some(dr::Operand::Decoration(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5249u32 => Ok(ops::Op::HitObjectRecordHitMotionNV {
                 hit_object: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -7747,7 +7801,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5296u32 => Ok(ops::Op::GroupNonUniformPartitionNV {
+            5296u32 => Ok(ops::Op::GroupNonUniformPartitionEXT {
                 value: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -15154,8 +15208,16 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5115u32 => Ok(Type::BufferEXT {
+                storage_class: (match operands.next() {
+                    Some(dr::Operand::StorageClass(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5281u32 => Ok(Type::HitObjectNV),
-            5288u32 => Ok(Type::CooperativeVectorNV {
+            5288u32 => Ok(Type::VectorIdEXT {
                 component_type: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
                     Some(_) => return Err(OperandError::WrongType.into()),

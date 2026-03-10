@@ -168,6 +168,23 @@ impl Builder {
         self.module.types_global_values.push(inst);
         id
     }
+    #[doc = "Appends an OpConstantSizeOfEXT instruction."]
+    pub fn constant_size_of_ext(
+        &mut self,
+        result_type: spirv::Word,
+        ty: spirv::Word,
+    ) -> spirv::Word {
+        let id = self.id();
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ConstantSizeOfEXT,
+            Some(result_type),
+            Some(id),
+            vec![dr::Operand::IdRef(ty)],
+        );
+        self.module.types_global_values.push(inst);
+        id
+    }
     #[doc = "Appends an OpSpecConstantTargetINTEL instruction."]
     pub fn spec_constant_target_intel(
         &mut self,

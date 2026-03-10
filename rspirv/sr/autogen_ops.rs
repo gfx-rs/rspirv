@@ -1709,6 +1709,20 @@ pub enum Op {
     GroupNonUniformQuadAnyKHR {
         predicate: spirv::Word,
     },
+    BufferPointerEXT {
+        buffer: spirv::Word,
+    },
+    UntypedImageTexelPointerEXT {
+        image_type: spirv::Word,
+        image: spirv::Word,
+        coordinate: spirv::Word,
+        sample: spirv::Word,
+    },
+    MemberDecorateIdEXT {
+        structure_type: Token<Type>,
+        member: u32,
+        decoration: spirv::Decoration,
+    },
     HitObjectRecordHitMotionNV {
         hit_object: spirv::Word,
         acceleration_structure: spirv::Word,
@@ -1949,7 +1963,7 @@ pub enum Op {
         vertex_count: spirv::Word,
         primitive_count: spirv::Word,
     },
-    GroupNonUniformPartitionNV {
+    GroupNonUniformPartitionEXT {
         value: spirv::Word,
     },
     WritePackedPrimitiveIndices4x8NV {
