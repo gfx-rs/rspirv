@@ -18,7 +18,7 @@ First add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-spirv = "0.3.0"
+spirv = "0.4.0"
 ```
 
 Examples
