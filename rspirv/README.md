@@ -34,7 +34,7 @@ First add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-rspirv = "0.12.0"
+rspirv = "0.13.0"
 ```
 
 Examples
