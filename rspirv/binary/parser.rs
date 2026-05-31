@@ -7,7 +7,7 @@ use super::{
     tracker::{Type, TypeTracker},
     DecodeError,
 };
-use std::{error, fmt, result, slice};
+use std::{error, fmt, result};
 
 use crate::grammar::OperandKind as GOpKind;
 use crate::grammar::OperandQuantifier as GOpCount;
@@ -162,9 +162,26 @@ pub fn parse_bytes(binary: impl AsRef<[u8]>, consumer: &mut dyn Consumer) -> Res
 /// Parses the given `binary` and consumes the module using the given
 /// `consumer`.
 pub fn parse_words(binary: impl AsRef<[u32]>, consumer: &mut dyn Consumer) -> Result<()> {
-    let len = binary.as_ref().len() * 4;
-    let buf = unsafe { slice::from_raw_parts(binary.as_ref().as_ptr() as *const u8, len) };
-    Parser::new(buf, consumer).parse()
+    // SPIR-V words are decoded as little-endian byte sequences. The in-memory
+    // layout of a `[u32]` is host-endian, so a zero-copy reinterpretation is
+    // only valid on little-endian targets. On big-endian targets we have to
+    // re-serialize each word into little-endian byte order first.
+    #[cfg(target_endian = "little")]
+    {
+        let words = binary.as_ref();
+        let len = words.len() * 4;
+        let buf = unsafe { std::slice::from_raw_parts(words.as_ptr() as *const u8, len) };
+        Parser::new(buf, consumer).parse()
+    }
+    #[cfg(target_endian = "big")]
+    {
+        let buf: Vec<u8> = binary
+            .as_ref()
+            .iter()
+            .flat_map(|word| word.to_le_bytes())
+            .collect();
+        Parser::new(&buf, consumer).parse()
+    }
 }
 
 /// The SPIR-V binary parser.
