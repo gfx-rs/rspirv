@@ -2,7 +2,7 @@ use crate::structs;
 use crate::utils::*;
 
 use heck::{ShoutySnakeCase, SnakeCase};
-use proc_macro2::TokenStream;
+use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
@@ -278,9 +278,9 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
     let magic_number = format!("{:#010X}", grammar.magic_number)
         .parse::<TokenStream>()
         .unwrap();
-    let major_version = grammar.major_version;
-    let minor_version = grammar.minor_version;
-    let revision = grammar.revision;
+    let major_version = Literal::u8_unsuffixed(grammar.major_version);
+    let minor_version = Literal::u8_unsuffixed(grammar.minor_version);
+    let revision = Literal::u8_unsuffixed(grammar.revision);
 
     // Operand kinds.
     let kinds = grammar.operand_kinds.iter().filter_map(gen_operand_kind);
@@ -339,9 +339,10 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         //pub use crate::grammar::{OperandKind, OperandQuantifier, LogicalOperand};
         pub type Word = u32;
         pub const MAGIC_NUMBER: u32 = #magic_number;
-        pub const MAJOR_VERSION: u8 = #major_version;
-        pub const MINOR_VERSION: u8 = #minor_version;
-        pub const REVISION: u8 = #revision;
+
+        macro_rules! version_major { () => { #major_version } }
+        macro_rules! version_minor { () => { #minor_version } }
+        macro_rules! version_revision { () => { #revision } }
 
         #(#kinds)*
 

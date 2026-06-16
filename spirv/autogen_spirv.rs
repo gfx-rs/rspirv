@@ -4,9 +4,21 @@
 
 pub type Word = u32;
 pub const MAGIC_NUMBER: u32 = 0x07230203;
-pub const MAJOR_VERSION: u8 = 1u8;
-pub const MINOR_VERSION: u8 = 6u8;
-pub const REVISION: u8 = 4u8;
+macro_rules! version_major {
+    () => {
+        1
+    };
+}
+macro_rules! version_minor {
+    () => {
+        6
+    };
+}
+macro_rules! version_revision {
+    () => {
+        4
+    };
+}
 bitflags! { # [doc = "SPIR-V operand kind: [ImageOperands](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_image_operands_a_image_operands)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct ImageOperands : u32 { const NONE = 0u32 ; const BIAS = 1u32 ; const LOD = 2u32 ; const GRAD = 4u32 ; const CONST_OFFSET = 8u32 ; const OFFSET = 16u32 ; const CONST_OFFSETS = 32u32 ; const SAMPLE = 64u32 ; const MIN_LOD = 128u32 ; const MAKE_TEXEL_AVAILABLE = 256u32 ; const MAKE_TEXEL_VISIBLE = 512u32 ; const NON_PRIVATE_TEXEL = 1024u32 ; const VOLATILE_TEXEL = 2048u32 ; const SIGN_EXTEND = 4096u32 ; const ZERO_EXTEND = 8192u32 ; const NONTEMPORAL = 16384u32 ; const OFFSETS = 65536u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [FPFastMathMode](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_fp_fast_math_mode_a_fp_fast_math_mode)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct FPFastMathMode : u32 { const NONE = 0u32 ; const NOT_NAN = 1u32 ; const NOT_INF = 2u32 ; const NSZ = 4u32 ; const ALLOW_RECIP = 8u32 ; const FAST = 16u32 ; const ALLOW_CONTRACT = 65536u32 ; const ALLOW_REASSOC = 131072u32 ; const ALLOW_TRANSFORM = 262144u32 ; } }
 bitflags! { # [doc = "SPIR-V operand kind: [SelectionControl](https://www.khronos.org/registry/spir-v/specs/unified1/SPIRV.html#_a_id_selection_control_a_selection_control)"] # [derive (Clone , Copy , Debug , PartialEq , Eq , Hash)] # [cfg_attr (feature = "serialize" , derive (serde :: Serialize))] # [cfg_attr (feature = "deserialize" , derive (serde :: Deserialize))] pub struct SelectionControl : u32 { const NONE = 0u32 ; const FLATTEN = 1u32 ; const DONT_FLATTEN = 2u32 ; } }
