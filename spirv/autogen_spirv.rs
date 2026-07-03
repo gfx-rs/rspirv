@@ -297,6 +297,7 @@ pub enum ExecutionMode {
     QuadDerivativesKHR = 5088u32,
     RequireFullQuadsKHR = 5089u32,
     SharesInputWithAMDX = 5102u32,
+    ArithmeticPoisonKHR = 5157u32,
     OutputLinesEXT = 5269u32,
     OutputPrimitivesEXT = 5270u32,
     DerivativeGroupQuadsKHR = 5289u32,
@@ -346,6 +347,7 @@ impl ExecutionMode {
             5079u32..=5084u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5088u32..=5089u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5102u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5102u32) },
+            5157u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5157u32) },
             5269u32..=5270u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5289u32..=5290u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5298u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5298u32) },
@@ -444,6 +446,7 @@ impl core::str::FromStr for ExecutionMode {
             "QuadDerivativesKHR" => Self::QuadDerivativesKHR,
             "RequireFullQuadsKHR" => Self::RequireFullQuadsKHR,
             "SharesInputWithAMDX" => Self::SharesInputWithAMDX,
+            "ArithmeticPoisonKHR" => Self::ArithmeticPoisonKHR,
             "OutputLinesEXT" => Self::OutputLinesEXT,
             "OutputLinesNV" => Self::OutputLinesEXT,
             "OutputPrimitivesEXT" => Self::OutputPrimitivesEXT,
@@ -1349,6 +1352,7 @@ pub enum Decoration {
     PayloadDispatchIndirectAMDX = 5105u32,
     ArrayStrideIdEXT = 5124u32,
     OffsetIdEXT = 5125u32,
+    UTFEncodedKHR = 5145u32,
     OverrideCoverageNV = 5248u32,
     PassthroughNV = 5250u32,
     ViewportRelativeNV = 5252u32,
@@ -1451,6 +1455,7 @@ impl Decoration {
             5098u32..=5100u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
             5105u32 => unsafe { core::mem::transmute::<u32, Decoration>(5105u32) },
             5124u32..=5125u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
+            5145u32 => unsafe { core::mem::transmute::<u32, Decoration>(5145u32) },
             5248u32 => unsafe { core::mem::transmute::<u32, Decoration>(5248u32) },
             5250u32 => unsafe { core::mem::transmute::<u32, Decoration>(5250u32) },
             5252u32 => unsafe { core::mem::transmute::<u32, Decoration>(5252u32) },
@@ -1616,6 +1621,7 @@ impl core::str::FromStr for Decoration {
             "PayloadDispatchIndirectAMDX" => Self::PayloadDispatchIndirectAMDX,
             "ArrayStrideIdEXT" => Self::ArrayStrideIdEXT,
             "OffsetIdEXT" => Self::OffsetIdEXT,
+            "UTFEncodedKHR" => Self::UTFEncodedKHR,
             "OverrideCoverageNV" => Self::OverrideCoverageNV,
             "PassthroughNV" => Self::PassthroughNV,
             "ViewportRelativeNV" => Self::ViewportRelativeNV,
@@ -2377,7 +2383,10 @@ pub enum Capability {
     BFloat16TypeKHR = 5116u32,
     BFloat16DotProductKHR = 5117u32,
     BFloat16CooperativeMatrixKHR = 5118u32,
+    AbortKHR = 5120u32,
     DescriptorHeapEXT = 5128u32,
+    ConstantDataKHR = 5146u32,
+    PoisonFreezeKHR = 5156u32,
     SampleMaskOverrideCoverageNV = 5249u32,
     GeometryShaderPassthroughNV = 5251u32,
     ShaderViewportIndexLayerEXT = 5254u32,
@@ -2526,6 +2535,10 @@ pub enum Capability {
     CacheControlsINTEL = 6441u32,
     RegisterLimitsINTEL = 6460u32,
     BindlessImagesINTEL = 6528u32,
+    DotProductFloat16AccFloat32VALVE = 6912u32,
+    DotProductFloat16AccFloat16VALVE = 6913u32,
+    DotProductBFloat16AccVALVE = 6914u32,
+    DotProductFloat8AccFloat32VALVE = 6915u32,
 }
 impl Capability {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -2560,7 +2573,10 @@ impl Capability {
             5112u32 => unsafe { core::mem::transmute::<u32, Capability>(5112u32) },
             5114u32 => unsafe { core::mem::transmute::<u32, Capability>(5114u32) },
             5116u32..=5118u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            5120u32 => unsafe { core::mem::transmute::<u32, Capability>(5120u32) },
             5128u32 => unsafe { core::mem::transmute::<u32, Capability>(5128u32) },
+            5146u32 => unsafe { core::mem::transmute::<u32, Capability>(5146u32) },
+            5156u32 => unsafe { core::mem::transmute::<u32, Capability>(5156u32) },
             5249u32 => unsafe { core::mem::transmute::<u32, Capability>(5249u32) },
             5251u32 => unsafe { core::mem::transmute::<u32, Capability>(5251u32) },
             5254u32..=5255u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2653,6 +2669,7 @@ impl Capability {
             6441u32 => unsafe { core::mem::transmute::<u32, Capability>(6441u32) },
             6460u32 => unsafe { core::mem::transmute::<u32, Capability>(6460u32) },
             6528u32 => unsafe { core::mem::transmute::<u32, Capability>(6528u32) },
+            6912u32..=6915u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             _ => return None,
         })
     }
@@ -2865,7 +2882,10 @@ impl core::str::FromStr for Capability {
             "BFloat16TypeKHR" => Self::BFloat16TypeKHR,
             "BFloat16DotProductKHR" => Self::BFloat16DotProductKHR,
             "BFloat16CooperativeMatrixKHR" => Self::BFloat16CooperativeMatrixKHR,
+            "AbortKHR" => Self::AbortKHR,
             "DescriptorHeapEXT" => Self::DescriptorHeapEXT,
+            "ConstantDataKHR" => Self::ConstantDataKHR,
+            "PoisonFreezeKHR" => Self::PoisonFreezeKHR,
             "SampleMaskOverrideCoverageNV" => Self::SampleMaskOverrideCoverageNV,
             "GeometryShaderPassthroughNV" => Self::GeometryShaderPassthroughNV,
             "ShaderViewportIndexLayerEXT" => Self::ShaderViewportIndexLayerEXT,
@@ -3094,6 +3114,10 @@ impl core::str::FromStr for Capability {
             "CacheControlsINTEL" => Self::CacheControlsINTEL,
             "RegisterLimitsINTEL" => Self::RegisterLimitsINTEL,
             "BindlessImagesINTEL" => Self::BindlessImagesINTEL,
+            "DotProductFloat16AccFloat32VALVE" => Self::DotProductFloat16AccFloat32VALVE,
+            "DotProductFloat16AccFloat16VALVE" => Self::DotProductFloat16AccFloat16VALVE,
+            "DotProductBFloat16AccVALVE" => Self::DotProductBFloat16AccVALVE,
+            "DotProductFloat8AccFloat32VALVE" => Self::DotProductFloat8AccFloat32VALVE,
             _ => return Err(()),
         })
     }
@@ -4043,9 +4067,14 @@ pub enum Op {
     GroupNonUniformQuadAnyKHR = 5111u32,
     TypeBufferEXT = 5115u32,
     BufferPointerEXT = 5119u32,
+    AbortKHR = 5121u32,
     UntypedImageTexelPointerEXT = 5126u32,
     MemberDecorateIdEXT = 5127u32,
     ConstantSizeOfEXT = 5129u32,
+    ConstantDataKHR = 5147u32,
+    SpecConstantDataKHR = 5148u32,
+    PoisonKHR = 5158u32,
+    FreezeKHR = 5159u32,
     HitObjectRecordHitMotionNV = 5249u32,
     HitObjectRecordHitWithIndexMotionNV = 5250u32,
     HitObjectRecordMissMotionNV = 5251u32,
@@ -4468,6 +4497,9 @@ pub enum Op {
     ConvertHandleToImageINTEL = 6529u32,
     ConvertHandleToSamplerINTEL = 6530u32,
     ConvertHandleToSampledImageINTEL = 6531u32,
+    FDot2MixAcc32VALVE = 6916u32,
+    FDot2MixAcc16VALVE = 6917u32,
+    FDot4MixAcc32VALVE = 6918u32,
 }
 impl Op {
     pub fn from_u32(n: u32) -> Option<Self> {
@@ -4516,8 +4548,11 @@ impl Op {
             5110u32..=5111u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5115u32 => unsafe { core::mem::transmute::<u32, Op>(5115u32) },
             5119u32 => unsafe { core::mem::transmute::<u32, Op>(5119u32) },
+            5121u32 => unsafe { core::mem::transmute::<u32, Op>(5121u32) },
             5126u32..=5127u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5129u32 => unsafe { core::mem::transmute::<u32, Op>(5129u32) },
+            5147u32..=5148u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            5158u32..=5159u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5249u32..=5281u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5283u32 => unsafe { core::mem::transmute::<u32, Op>(5283u32) },
             5288u32..=5296u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -4565,6 +4600,7 @@ impl Op {
             6426u32 => unsafe { core::mem::transmute::<u32, Op>(6426u32) },
             6428u32..=6429u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             6529u32..=6531u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            6916u32..=6918u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             _ => return None,
         })
     }
@@ -4692,6 +4728,8 @@ impl Op {
                 | Self::ConstantCompositeReplicateEXT
                 | Self::SpecConstantCompositeReplicateEXT
                 | Self::ConstantSizeOfEXT
+                | Self::ConstantDataKHR
+                | Self::SpecConstantDataKHR
                 | Self::ConstantCompositeContinuedINTEL
                 | Self::SpecConstantCompositeContinuedINTEL
                 | Self::SpecConstantTargetINTEL
@@ -4753,6 +4791,7 @@ impl Op {
                 | Self::LifetimeStart
                 | Self::LifetimeStop
                 | Self::TerminateInvocation
+                | Self::AbortKHR
                 | Self::DemoteToHelperInvocation
         )
     }
@@ -5011,6 +5050,71 @@ impl NonsemanticDebugprintfOp {
     pub fn from_u32(n: u32) -> Option<Self> {
         Some(match n {
             1u32 => unsafe { core::mem::transmute::<u32, NonsemanticDebugprintfOp>(1u32) },
+            _ => return None,
+        })
+    }
+}
+#[doc = "[NonSemantic.Shader.DebugInfo](https://github.com/KhronosGroup/SPIRV-Headers/blob/main/include/spirv/unified1/extinst.nonsemantic.shader.debuginfo.grammar.json) extended instruction opcode"]
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+#[allow(clippy::upper_case_acronyms)]
+pub enum NonsemanticShaderDebuginfoOp {
+    DebugInfoNone = 0u32,
+    DebugCompilationUnit = 1u32,
+    DebugTypeBasic = 2u32,
+    DebugTypePointer = 3u32,
+    DebugTypeQualifier = 4u32,
+    DebugTypeArray = 5u32,
+    DebugTypeVector = 6u32,
+    DebugTypedef = 7u32,
+    DebugTypeFunction = 8u32,
+    DebugTypeEnum = 9u32,
+    DebugTypeComposite = 10u32,
+    DebugTypeMember = 11u32,
+    DebugTypeInheritance = 12u32,
+    DebugTypePtrToMember = 13u32,
+    DebugTypeTemplate = 14u32,
+    DebugTypeTemplateParameter = 15u32,
+    DebugTypeTemplateTemplateParameter = 16u32,
+    DebugTypeTemplateParameterPack = 17u32,
+    DebugGlobalVariable = 18u32,
+    DebugFunctionDeclaration = 19u32,
+    DebugFunction = 20u32,
+    DebugLexicalBlock = 21u32,
+    DebugLexicalBlockDiscriminator = 22u32,
+    DebugScope = 23u32,
+    DebugNoScope = 24u32,
+    DebugInlinedAt = 25u32,
+    DebugLocalVariable = 26u32,
+    DebugInlinedVariable = 27u32,
+    DebugDeclare = 28u32,
+    DebugValue = 29u32,
+    DebugOperation = 30u32,
+    DebugExpression = 31u32,
+    DebugMacroDef = 32u32,
+    DebugMacroUndef = 33u32,
+    DebugImportedEntity = 34u32,
+    DebugSource = 35u32,
+    DebugFunctionDefinition = 101u32,
+    DebugSourceContinued = 102u32,
+    DebugLine = 103u32,
+    DebugNoLine = 104u32,
+    DebugBuildIdentifier = 105u32,
+    DebugStoragePath = 106u32,
+    DebugEntryPoint = 107u32,
+    DebugTypeMatrix = 108u32,
+    DebugTypeVectorIdEXT = 109u32,
+    DebugTypeCooperativeMatrixKHR = 110u32,
+}
+impl NonsemanticShaderDebuginfoOp {
+    pub fn from_u32(n: u32) -> Option<Self> {
+        Some(match n {
+            0u32..=35u32 => unsafe { core::mem::transmute::<u32, NonsemanticShaderDebuginfoOp>(n) },
+            101u32..=110u32 => unsafe {
+                core::mem::transmute::<u32, NonsemanticShaderDebuginfoOp>(n)
+            },
             _ => return None,
         })
     }

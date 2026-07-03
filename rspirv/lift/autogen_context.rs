@@ -163,6 +163,20 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             4416u32 => Ok(ops::Branch::TerminateInvocation),
+            5121u32 => Ok(ops::Branch::AbortKHR {
+                message_type: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                message: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5380u32 => Ok(ops::Branch::DemoteToHelperInvocation),
             _ => Err(InstructionError::WrongOpcode),
         }
@@ -6746,6 +6760,15 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
                 decoration: (match operands.next() {
                     Some(dr::Operand::Decoration(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5158u32 => Ok(ops::Op::PoisonKHR),
+            5159u32 => Ok(ops::Op::FreezeKHR {
+                value: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -14889,6 +14912,66 @@ impl LiftContext {
             }),
             6531u32 => Ok(ops::Op::ConvertHandleToSampledImageINTEL {
                 operand: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6916u32 => Ok(ops::Op::FDot2MixAcc32VALVE {
+                vector_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6917u32 => Ok(ops::Op::FDot2MixAcc16VALVE {
+                vector_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6918u32 => Ok(ops::Op::FDot4MixAcc32VALVE {
+                vector_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,

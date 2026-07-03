@@ -33,6 +33,11 @@ pub mod nonsemantic_debugprintf {
     include!("autogen_nonsemantic_debugprintf.rs");
 }
 pub use nonsemantic_debugprintf::NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE;
+pub mod nonsemantic_shader_debuginfo {
+    use super::*;
+    include!("autogen_nonsemantic_shader_debuginfo.rs");
+}
+pub use nonsemantic_shader_debuginfo::NONSEMANTIC_SHADER_DEBUGINFO_INSTRUCTION_TABLE;
 pub mod nonsemantic_shader_debuginfo_100 {
     use super::*;
     include!("autogen_nonsemantic_shader_debuginfo_100.rs");
@@ -87,6 +92,7 @@ pub fn ext_inst_table(set: &str) -> Option<&'static InstructionTable<ExtInstOp>>
         "NonSemantic.ClspvReflection" => &NONSEMANTIC_CLSPVREFLECTION_INSTRUCTION_TABLE,
         "NonSemantic.DebugBreak" => &NONSEMANTIC_DEBUGBREAK_INSTRUCTION_TABLE,
         "NonSemantic.DebugPrintf" => &NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE,
+        "NonSemantic.Shader.DebugInfo" => &NONSEMANTIC_SHADER_DEBUGINFO_INSTRUCTION_TABLE,
         "NonSemantic.Shader.DebugInfo.100" => &NONSEMANTIC_SHADER_DEBUGINFO_100_INSTRUCTION_TABLE,
         "NonSemantic.VkspReflection" => &NONSEMANTIC_VKSPREFLECTION_INSTRUCTION_TABLE,
         "OpenCL.DebugInfo.100" => &OPENCL_DEBUGINFO_100_INSTRUCTION_TABLE,

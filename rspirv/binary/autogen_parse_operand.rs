@@ -215,6 +215,9 @@ impl Parser<'_, '_> {
             GOpKind::NonsemanticClspvreflection(_) => {
                 todo!("extended instruction operand kind not yet supported for parsing")
             }
+            GOpKind::NonsemanticShaderDebuginfo(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
             GOpKind::NonsemanticShaderDebuginfo100(_) => {
                 todo!("extended instruction operand kind not yet supported for parsing")
             }

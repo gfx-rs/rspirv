@@ -269,6 +269,43 @@ impl Builder {
         let mut inst = dr::Instruction::new(spirv::Op::TerminateRayKHR, None, None, vec![]);
         self.insert_end_block(insert_point, inst)
     }
+    #[doc = "Appends an OpAbortKHR instruction and ends the current block."]
+    pub fn abort_khr(
+        &mut self,
+        message_type: spirv::Word,
+        message: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::AbortKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(message_type),
+                dr::Operand::IdRef(message),
+            ],
+        );
+        self.end_block(inst)
+    }
+    #[doc = "Insert an OpAbortKHR instruction and ends the current block."]
+    pub fn insert_abort_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        message_type: spirv::Word,
+        message: spirv::Word,
+    ) -> BuildResult<()> {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::AbortKHR,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(message_type),
+                dr::Operand::IdRef(message),
+            ],
+        );
+        self.insert_end_block(insert_point, inst)
+    }
     #[doc = "Appends an OpEmitMeshTasksEXT instruction and ends the current block."]
     pub fn emit_mesh_tasks_ext(
         &mut self,

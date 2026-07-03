@@ -158,9 +158,14 @@ fn main() {
         ("nonsemantic.clspvreflection", "NonSemantic.ClspvReflection"),
         ("nonsemantic.debugbreak", "NonSemantic.DebugBreak"),
         ("nonsemantic.debugprintf", "NonSemantic.DebugPrintf"),
+        // TODO: These are prefix matches in SPIRV-Tools
         (
             "nonsemantic.shader.debuginfo.100",
             "NonSemantic.Shader.DebugInfo.100",
+        ),
+        (
+            "nonsemantic.shader.debuginfo",
+            "NonSemantic.Shader.DebugInfo",
         ),
         ("nonsemantic.vkspreflection", "NonSemantic.VkspReflection"),
         ("opencl.debuginfo.100", "OpenCL.DebugInfo.100"),
