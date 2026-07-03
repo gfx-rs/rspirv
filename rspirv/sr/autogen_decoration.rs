@@ -156,4 +156,5 @@ pub enum Decoration {
     ConditionalINTEL(spirv::Word),
     CacheControlLoadINTEL(u32, spirv::LoadCacheControl),
     CacheControlStoreINTEL(u32, spirv::StoreCacheControl),
+    IntrinsicSAMSUNG(u32),
 }

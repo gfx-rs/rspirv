@@ -104,6 +104,7 @@ impl Assemble for dr::Operand {
             Self::FPEncoding(v) => result.push(v as u32),
             Self::CooperativeVectorMatrixLayout(v) => result.push(v as u32),
             Self::ComponentType(v) => result.push(v as u32),
+            Self::GatherModes(v) => result.push(v as u32),
         }
     }
 }

@@ -145,6 +145,7 @@ impl Parser<'_, '_> {
             GOpKind::ComponentType => {
                 vec![dr::Operand::ComponentType(self.decoder.component_type()?)]
             }
+            GOpKind::GatherModes => vec![dr::Operand::GatherModes(self.decoder.gather_modes()?)],
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
@@ -319,6 +320,9 @@ impl Parser<'_, '_> {
         if loop_control.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
+        if loop_control.contains(spirv::LoopControl::MULTIPLE_WAIT_QUEUES_QCOM) {
+            params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
+        }
         Ok(params)
     }
     fn parse_memory_access_arguments(
@@ -461,6 +465,9 @@ impl Parser<'_, '_> {
                 dr::Operand::IdRef(self.decoder.id()?),
                 dr::Operand::IdRef(self.decoder.id()?),
             ],
+            spirv::ExecutionMode::OpacityMicromapIdKHR => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
             spirv::ExecutionMode::StreamingInterfaceINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -690,6 +697,9 @@ impl Parser<'_, '_> {
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::StoreCacheControl(self.decoder.store_cache_control()?),
             ],
+            spirv::Decoration::IntrinsicSAMSUNG => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
             _ => vec![],
         })
     }
@@ -702,6 +712,10 @@ impl Parser<'_, '_> {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
         }
         if tensor_addressing_operands.contains(spirv::TensorAddressingOperands::DECODE_FUNC) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if tensor_addressing_operands.contains(spirv::TensorAddressingOperands::DECODE_VECTOR_FUNC)
+        {
             params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
         }
         Ok(params)
