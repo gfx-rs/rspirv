@@ -15906,6 +15906,70 @@ impl Builder {
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)
     }
+    #[doc = "Appends an OpPoisonKHR instruction to the current block."]
+    pub fn poison_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst =
+            dr::Instruction::new(spirv::Op::PoisonKHR, Some(result_type), Some(_id), vec![]);
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpPoisonKHR instruction to the current block."]
+    pub fn insert_poison_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst =
+            dr::Instruction::new(spirv::Op::PoisonKHR, Some(result_type), Some(_id), vec![]);
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFreezeKHR instruction to the current block."]
+    pub fn freeze_khr(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FreezeKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(value)],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFreezeKHR instruction to the current block."]
+    pub fn insert_freeze_khr(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        value: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FreezeKHR,
+            Some(result_type),
+            Some(_id),
+            vec![dr::Operand::IdRef(value)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
     #[doc = "Appends an OpHitObjectRecordHitMotionNV instruction to the current block."]
     pub fn hit_object_record_hit_motion_nv(
         &mut self,
@@ -25429,6 +25493,153 @@ impl Builder {
             Some(result_type),
             Some(_id),
             vec![dr::Operand::IdRef(operand)],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFDot2MixAcc32VALVE instruction to the current block."]
+    pub fn f_dot2_mix_acc32_valve(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FDot2MixAcc32VALVE,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFDot2MixAcc32VALVE instruction to the current block."]
+    pub fn insert_f_dot2_mix_acc32_valve(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FDot2MixAcc32VALVE,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFDot2MixAcc16VALVE instruction to the current block."]
+    pub fn f_dot2_mix_acc16_valve(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FDot2MixAcc16VALVE,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFDot2MixAcc16VALVE instruction to the current block."]
+    pub fn insert_f_dot2_mix_acc16_valve(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FDot2MixAcc16VALVE,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        self.insert_into_block(insert_point, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFDot4MixAcc32VALVE instruction to the current block."]
+    pub fn f_dot4_mix_acc32_valve(
+        &mut self,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FDot4MixAcc32VALVE,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
+        );
+        self.insert_into_block(InsertPoint::End, inst)?;
+        Ok(_id)
+    }
+    #[doc = "Appends an OpFDot4MixAcc32VALVE instruction to the current block."]
+    pub fn insert_f_dot4_mix_acc32_valve(
+        &mut self,
+        insert_point: InsertPoint,
+        result_type: spirv::Word,
+        result_id: Option<spirv::Word>,
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    ) -> BuildResult<spirv::Word> {
+        let _id = result_id.unwrap_or_else(|| self.id());
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::FDot4MixAcc32VALVE,
+            Some(result_type),
+            Some(_id),
+            vec![
+                dr::Operand::IdRef(vector_1),
+                dr::Operand::IdRef(vector_2),
+                dr::Operand::IdRef(accumulator),
+            ],
         );
         self.insert_into_block(insert_point, inst)?;
         Ok(_id)

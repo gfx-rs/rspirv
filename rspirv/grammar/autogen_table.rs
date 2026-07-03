@@ -79,6 +79,7 @@ pub enum OperandKind {
     TensorOperands,
     Debuginfo(debuginfo::ExtOperandKind),
     NonsemanticClspvreflection(nonsemantic_clspvreflection::ExtOperandKind),
+    NonsemanticShaderDebuginfo(nonsemantic_shader_debuginfo::ExtOperandKind),
     NonsemanticShaderDebuginfo100(nonsemantic_shader_debuginfo_100::ExtOperandKind),
     OpenclDebuginfo100(opencl_debuginfo_100::ExtOperandKind),
 }
@@ -92,6 +93,7 @@ pub enum ExtInstOp {
     NonsemanticClspvreflection(spirv::NonsemanticClspvreflectionOp),
     NonsemanticDebugbreak(spirv::NonsemanticDebugbreakOp),
     NonsemanticDebugprintf(spirv::NonsemanticDebugprintfOp),
+    NonsemanticShaderDebuginfo(spirv::NonsemanticShaderDebuginfoOp),
     NonsemanticShaderDebuginfo100(spirv::NonsemanticShaderDebuginfo100Op),
     NonsemanticVkspreflection(spirv::NonsemanticVkspreflectionOp),
     OpenclDebuginfo100(spirv::OpenclDebuginfo100Op),
@@ -111,6 +113,7 @@ impl From<ExtInstOp> for spirv::Word {
             ExtInstOp::NonsemanticClspvreflection(v) => v as spirv::Word,
             ExtInstOp::NonsemanticDebugbreak(v) => v as spirv::Word,
             ExtInstOp::NonsemanticDebugprintf(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticShaderDebuginfo(v) => v as spirv::Word,
             ExtInstOp::NonsemanticShaderDebuginfo100(v) => v as spirv::Word,
             ExtInstOp::NonsemanticVkspreflection(v) => v as spirv::Word,
             ExtInstOp::OpenclDebuginfo100(v) => v as spirv::Word,
@@ -4192,6 +4195,7 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
+    inst!(AbortKHR, [AbortKHR], [], [(IdRef, One), (IdRef, One)]),
     inst!(
         UntypedImageTexelPointerEXT,
         [DescriptorHeapEXT],
@@ -4214,6 +4218,38 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
     inst!(
         ConstantSizeOfEXT,
         [DescriptorHeapEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConstantDataKHR,
+        [ConstantDataKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (LiteralInteger, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        SpecConstantDataKHR,
+        [ConstantDataKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (LiteralInteger, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        PoisonKHR,
+        [PoisonFreezeKHR],
+        [],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        FreezeKHR,
+        [PoisonFreezeKHR],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
@@ -8480,6 +8516,42 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [BindlessImagesINTEL],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        FDot2MixAcc32VALVE,
+        [DotProductFloat16AccFloat32VALVE, DotProductBFloat16AccVALVE],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        FDot2MixAcc16VALVE,
+        [DotProductFloat16AccFloat16VALVE, DotProductBFloat16AccVALVE],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        FDot4MixAcc32VALVE,
+        [DotProductFloat8AccFloat32VALVE],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
     ),
 ];
 pub static INSTRUCTION_TABLE: InstructionTable<spirv::Op> =

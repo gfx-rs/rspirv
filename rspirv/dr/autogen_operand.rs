@@ -1204,6 +1204,7 @@ impl Operand {
                     spirv::Capability::MeshShadingNV,
                     spirv::Capability::MeshShadingEXT,
                 ],
+                s::ExecutionMode::ArithmeticPoisonKHR => vec![spirv::Capability::PoisonFreezeKHR],
                 s::ExecutionMode::QuadDerivativesKHR | s::ExecutionMode::RequireFullQuadsKHR => {
                     vec![spirv::Capability::QuadControlKHR]
                 }
@@ -1546,6 +1547,7 @@ impl Operand {
                 s::Decoration::CacheControlLoadINTEL | s::Decoration::CacheControlStoreINTEL => {
                     vec![spirv::Capability::CacheControlsINTEL]
                 }
+                s::Decoration::UTFEncodedKHR => vec![spirv::Capability::ConstantDataKHR],
                 s::Decoration::ArrayStrideIdEXT | s::Decoration::OffsetIdEXT => {
                     vec![spirv::Capability::DescriptorHeapEXT]
                 }
@@ -1991,6 +1993,9 @@ impl Operand {
                 | s::Capability::QuadControlKHR
                 | s::Capability::Int4TypeINTEL
                 | s::Capability::BFloat16TypeKHR
+                | s::Capability::AbortKHR
+                | s::Capability::ConstantDataKHR
+                | s::Capability::PoisonFreezeKHR
                 | s::Capability::ImageFootprintNV
                 | s::Capability::FragmentBarycentricKHR
                 | s::Capability::GroupNonUniformPartitionedEXT
@@ -2088,7 +2093,10 @@ impl Operand {
                 | s::Capability::BindlessImagesINTEL => vec![],
                 s::Capability::GenericPointer => vec![spirv::Capability::Addresses],
                 s::Capability::AtomicStorageOps => vec![spirv::Capability::AtomicStorage],
-                s::Capability::BFloat16DotProductKHR => vec![spirv::Capability::BFloat16TypeKHR],
+                s::Capability::BFloat16DotProductKHR
+                | s::Capability::DotProductBFloat16AccVALVE => {
+                    vec![spirv::Capability::BFloat16TypeKHR]
+                }
                 s::Capability::BFloat16CooperativeMatrixKHR => vec![
                     spirv::Capability::BFloat16TypeKHR,
                     spirv::Capability::CooperativeMatrixKHR,
@@ -2102,6 +2110,13 @@ impl Operand {
                 }
                 s::Capability::FPGAKernelAttributesv2INTEL => {
                     vec![spirv::Capability::FPGAKernelAttributesINTEL]
+                }
+                s::Capability::DotProductFloat16AccFloat32VALVE
+                | s::Capability::DotProductFloat16AccFloat16VALVE => {
+                    vec![spirv::Capability::Float16]
+                }
+                s::Capability::DotProductFloat8AccFloat32VALVE => {
+                    vec![spirv::Capability::Float8EXT]
                 }
                 s::Capability::Float8CooperativeMatrixEXT => vec![
                     spirv::Capability::Float8EXT,
@@ -2556,6 +2571,7 @@ impl Operand {
                 | s::ExecutionMode::QuadDerivativesKHR
                 | s::ExecutionMode::RequireFullQuadsKHR
                 | s::ExecutionMode::SharesInputWithAMDX
+                | s::ExecutionMode::ArithmeticPoisonKHR
                 | s::ExecutionMode::Shader64BitIndexingEXT
                 | s::ExecutionMode::SharedLocalMemorySizeINTEL
                 | s::ExecutionMode::RoundingModeRTPINTEL
@@ -2882,6 +2898,7 @@ impl Operand {
                 | s::Decoration::PayloadDispatchIndirectAMDX
                 | s::Decoration::ArrayStrideIdEXT
                 | s::Decoration::OffsetIdEXT
+                | s::Decoration::UTFEncodedKHR
                 | s::Decoration::ViewportRelativeNV
                 | s::Decoration::MemberOffsetNV
                 | s::Decoration::HitObjectShaderRecordBufferNV
@@ -3444,10 +3461,12 @@ impl Operand {
                 s::Capability::StorageBuffer8BitAccess
                 | s::Capability::UniformAndStorageBuffer8BitAccess
                 | s::Capability::StoragePushConstant8 => vec!["SPV_KHR_8bit_storage"],
+                s::Capability::AbortKHR => vec!["SPV_KHR_abort"],
                 s::Capability::BFloat16TypeKHR
                 | s::Capability::BFloat16DotProductKHR
                 | s::Capability::BFloat16CooperativeMatrixKHR => vec!["SPV_KHR_bfloat16"],
                 s::Capability::BitInstructions => vec!["SPV_KHR_bit_instructions"],
+                s::Capability::ConstantDataKHR => vec!["SPV_KHR_constant_data"],
                 s::Capability::CooperativeMatrixKHR => vec!["SPV_KHR_cooperative_matrix"],
                 s::Capability::DeviceGroup => vec!["SPV_KHR_device_group"],
                 s::Capability::ExpectAssumeKHR => vec!["SPV_KHR_expect_assume"],
@@ -3464,6 +3483,7 @@ impl Operand {
                 | s::Capability::DotProductInput4x8BitPacked
                 | s::Capability::DotProduct => vec!["SPV_KHR_integer_dot_product"],
                 s::Capability::MultiView => vec!["SPV_KHR_multiview"],
+                s::Capability::PoisonFreezeKHR => vec!["SPV_KHR_poison_freeze"],
                 s::Capability::SampleMaskPostDepthCoverage => vec!["SPV_KHR_post_depth_coverage"],
                 s::Capability::QuadControlKHR => vec!["SPV_KHR_quad_control"],
                 s::Capability::RayCullMaskKHR => vec!["SPV_KHR_ray_cull_mask"],
@@ -3566,6 +3586,12 @@ impl Operand {
                 | s::Capability::TextureBlockMatchQCOM => vec!["SPV_QCOM_image_processing"],
                 s::Capability::TextureBlockMatch2QCOM => vec!["SPV_QCOM_image_processing2"],
                 s::Capability::TileShadingQCOM => vec!["SPV_QCOM_tile_shading"],
+                s::Capability::DotProductFloat16AccFloat32VALVE
+                | s::Capability::DotProductFloat16AccFloat16VALVE
+                | s::Capability::DotProductBFloat16AccVALVE
+                | s::Capability::DotProductFloat8AccFloat32VALVE => {
+                    vec!["SPV_VALVE_mixed_float_dot_product"]
+                }
             },
             Self::RayQueryIntersection(v) => match v {
                 s::RayQueryIntersection::RayQueryCandidateIntersectionKHR

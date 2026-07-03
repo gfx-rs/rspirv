@@ -70,6 +70,7 @@ pub enum Decoration {
     PayloadDispatchIndirectAMDX,
     ArrayStrideIdEXT(spirv::Word),
     OffsetIdEXT(spirv::Word),
+    UTFEncodedKHR,
     OverrideCoverageNV,
     PassthroughNV,
     ViewportRelativeNV,
