@@ -170,6 +170,9 @@ impl Disassemble for spirv::LoopControl {
         if self.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_ALTERA) {
             bits.push("MaxReinvocationDelayALTERA")
         }
+        if self.contains(spirv::LoopControl::MULTIPLE_WAIT_QUEUES_QCOM) {
+            bits.push("MultipleWaitQueuesQCOM")
+        }
         bits.join("|")
     }
 }
@@ -329,8 +332,8 @@ impl Disassemble for spirv::RayFlags {
         if self.contains(spirv::RayFlags::SKIP_AAB_BS_KHR) {
             bits.push("SkipAABBsKHR")
         }
-        if self.contains(spirv::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {
-            bits.push("ForceOpacityMicromap2StateEXT")
+        if self.contains(spirv::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_KHR) {
+            bits.push("ForceOpacityMicromap2StateKHR")
         }
         bits.join("|")
     }
@@ -424,6 +427,9 @@ impl Disassemble for spirv::TensorAddressingOperands {
         }
         if self.contains(spirv::TensorAddressingOperands::DECODE_FUNC) {
             bits.push("DecodeFunc")
+        }
+        if self.contains(spirv::TensorAddressingOperands::DECODE_VECTOR_FUNC) {
+            bits.push("DecodeVectorFunc")
         }
         bits.join("|")
     }

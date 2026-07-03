@@ -153,6 +153,10 @@ fn main() {
     // Reference: https://github.com/KhronosGroup/SPIRV-Tools/blob/main/source/ext_inst.cpp
     let canonical_import_names: BTreeMap<&str, &str> = BTreeMap::from([
         ("arm.motion-engine.100", "Arm.MotionEngine.100"),
+        (
+            "arm.experimental-ml-operations",
+            "Arm.ExperimentalMLOperations",
+        ),
         ("debuginfo", "DebugInfo"),
         ("glsl.std.450", "GLSL.std.450"),
         ("nonsemantic.clspvreflection", "NonSemantic.ClspvReflection"),
@@ -167,6 +171,7 @@ fn main() {
             "nonsemantic.shader.debuginfo",
             "NonSemantic.Shader.DebugInfo",
         ),
+        ("nonsemantic.graph.debuginfo", "NonSemantic.Graph.DebugInfo"),
         ("nonsemantic.vkspreflection", "NonSemantic.VkspReflection"),
         ("opencl.debuginfo.100", "OpenCL.DebugInfo.100"),
         ("opencl.std.100", "OpenCL.std"),

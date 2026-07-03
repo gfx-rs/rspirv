@@ -1381,6 +1381,10 @@ pub enum Op {
         element_index: Vec<spirv::Word>,
     },
     GraphEndARM,
+    BitcastExtractEXT {
+        base: spirv::Word,
+        offset: spirv::Word,
+    },
     UntypedVariableKHR {
         storage_class: spirv::StorageClass,
         data_type: Option<Token<Type>>,
@@ -1630,6 +1634,13 @@ pub enum Op {
     ExtractSubArrayQCOM {
         source_array: spirv::Word,
         index: spirv::Word,
+    },
+    ImageGatherQCOM {
+        sampled_image: spirv::Word,
+        coordinate: spirv::Word,
+        component: spirv::Word,
+        mode: spirv::Word,
+        image_operands: Option<(spirv::ImageOperands, Vec<spirv::Word>)>,
     },
     GroupIAddNonUniformAMD {
         execution: spirv::Word,
@@ -2008,6 +2019,7 @@ pub enum Op {
         ray_query: spirv::Word,
         sbt_record_index: spirv::Word,
         hit_object_attributes: spirv::Word,
+        hit_kind: Option<spirv::Word>,
     },
     HitObjectRecordMissEXT {
         hit_object: spirv::Word,
@@ -3452,10 +3464,14 @@ pub enum Op {
         pointer: spirv::Word,
     },
     ReadPipeBlockingALTERA {
+        pipe: spirv::Word,
+        pointer: spirv::Word,
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     },
     WritePipeBlockingALTERA {
+        pipe: spirv::Word,
+        pointer: spirv::Word,
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     },
@@ -3540,12 +3556,12 @@ pub enum Op {
     ConvertBF16ToFINTEL {
         b_float16_value: spirv::Word,
     },
-    ControlBarrierArriveINTEL {
+    ControlBarrierArriveEXT {
         execution: spirv::Word,
         memory: spirv::Word,
         semantics: spirv::Word,
     },
-    ControlBarrierWaitINTEL {
+    ControlBarrierWaitEXT {
         execution: spirv::Word,
         memory: spirv::Word,
         semantics: spirv::Word,
@@ -3654,6 +3670,18 @@ pub enum Op {
     },
     ConditionalCopyObjectINTEL {
         condition_0_operand_0_condition_1_operand_1: Vec<spirv::Word>,
+    },
+    PredicatedLoadINTEL {
+        pointer: spirv::Word,
+        predicate: spirv::Word,
+        default_value: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+    },
+    PredicatedStoreINTEL {
+        pointer: spirv::Word,
+        object: spirv::Word,
+        predicate: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
     },
     GroupIMulKHR {
         execution: spirv::Word,

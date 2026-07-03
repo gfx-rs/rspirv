@@ -65,6 +65,7 @@ pub enum Error {
     FPEncodingUnknown(usize, spirv::Word),
     CooperativeVectorMatrixLayoutUnknown(usize, spirv::Word),
     ComponentTypeUnknown(usize, spirv::Word),
+    GatherModesUnknown(usize, spirv::Word),
     TensorOperandsUnknown(usize, spirv::Word),
     #[doc = r"Failed to decode a string."]
     #[doc = r""]
@@ -358,6 +359,11 @@ impl fmt::Display for Error {
             Error::ComponentTypeUnknown(index, word) => write!(
                 f,
                 "unknown value {} for operand kind ComponentType at index {}",
+                word, index
+            ),
+            Error::GatherModesUnknown(index, word) => write!(
+                f,
+                "unknown value {} for operand kind GatherModes at index {}",
                 word, index
             ),
             Error::TensorOperandsUnknown(index, word) => write!(

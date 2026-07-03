@@ -3,6 +3,11 @@
 // DO NOT MODIFY!
 
 include!("autogen_table.rs");
+pub mod arm_experimental_ml_operations {
+    use super::*;
+    include!("autogen_arm_experimental_ml_operations.rs");
+}
+pub use arm_experimental_ml_operations::ARM_EXPERIMENTAL_ML_OPERATIONS_INSTRUCTION_TABLE;
 pub mod arm_motion_engine_100 {
     use super::*;
     include!("autogen_arm_motion_engine_100.rs");
@@ -33,6 +38,11 @@ pub mod nonsemantic_debugprintf {
     include!("autogen_nonsemantic_debugprintf.rs");
 }
 pub use nonsemantic_debugprintf::NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE;
+pub mod nonsemantic_graph_debuginfo {
+    use super::*;
+    include!("autogen_nonsemantic_graph_debuginfo.rs");
+}
+pub use nonsemantic_graph_debuginfo::NONSEMANTIC_GRAPH_DEBUGINFO_INSTRUCTION_TABLE;
 pub mod nonsemantic_shader_debuginfo {
     use super::*;
     include!("autogen_nonsemantic_shader_debuginfo.rs");
@@ -86,12 +96,14 @@ pub use tosa_001000_1::TOSA_001000_1_INSTRUCTION_TABLE;
 
 pub fn ext_inst_table(set: &str) -> Option<&'static InstructionTable<ExtInstOp>> {
     Some(match set {
+        "Arm.ExperimentalMLOperations" => &ARM_EXPERIMENTAL_ML_OPERATIONS_INSTRUCTION_TABLE,
         "Arm.MotionEngine.100" => &ARM_MOTION_ENGINE_100_INSTRUCTION_TABLE,
         "DebugInfo" => &DEBUGINFO_INSTRUCTION_TABLE,
         "GLSL.std.450" => &GLSL_STD_450_INSTRUCTION_TABLE,
         "NonSemantic.ClspvReflection" => &NONSEMANTIC_CLSPVREFLECTION_INSTRUCTION_TABLE,
         "NonSemantic.DebugBreak" => &NONSEMANTIC_DEBUGBREAK_INSTRUCTION_TABLE,
         "NonSemantic.DebugPrintf" => &NONSEMANTIC_DEBUGPRINTF_INSTRUCTION_TABLE,
+        "NonSemantic.Graph.DebugInfo" => &NONSEMANTIC_GRAPH_DEBUGINFO_INSTRUCTION_TABLE,
         "NonSemantic.Shader.DebugInfo" => &NONSEMANTIC_SHADER_DEBUGINFO_INSTRUCTION_TABLE,
         "NonSemantic.Shader.DebugInfo.100" => &NONSEMANTIC_SHADER_DEBUGINFO_100_INSTRUCTION_TABLE,
         "NonSemantic.VkspReflection" => &NONSEMANTIC_VKSPREFLECTION_INSTRUCTION_TABLE,
