@@ -104,12 +104,6 @@ impl ExtInstSetTracker {
         }
     }
 
-    /// Returns true if the given extended instruction `set` has been
-    /// recognized thus tracked.
-    pub fn have(&self, set: spirv::Word) -> bool {
-        self.sets.contains_key(&set)
-    }
-
     /// Resolves the extended instruction with `opcode` in set `set`.
     ///
     /// This method will return `None` for both untracked instruction

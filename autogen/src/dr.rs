@@ -390,44 +390,40 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 let kind = as_ident(kind);
 
                 for e in enumerators {
-                    use std::collections::btree_map::Entry;
-                    if let Entry::Vacant(ve) = seen_discriminator.entry(e.value) {
-                        let name = match category {
-                            structs::Category::BitEnum => {
-                                as_ident(&as_shouty_snake_case(&e.symbol))
-                            }
-                            structs::Category::ValueEnum => {
-                                let name_str = if kind == "Dim" {
-                                    let mut name = "Dim".to_string();
-                                    name.push_str(&e.symbol);
-                                    name
-                                } else {
-                                    e.symbol.to_string()
-                                };
-
-                                as_ident(&name_str)
-                            }
-                            _ => panic!("Unexpected operand type"),
-                        };
-
-                        ve.insert(name.clone());
-
-                        capability_clauses
-                            .entry(&e.capabilities)
-                            .or_insert_with(Vec::new)
-                            .push(name.clone());
-
-                        extension_clauses
-                            .entry(&e.extensions)
-                            .or_insert_with(Vec::new)
-                            .push(name.clone());
-
-                        if !e.parameters.is_empty() {
-                            operand_clauses
-                                .entry(&e.parameters)
-                                .or_insert_with(Vec::new)
-                                .push(name.clone())
+                    let name = match category {
+                        structs::Category::BitEnum => {
+                            as_ident(&as_shouty_snake_case(&e.symbol))
                         }
+                        structs::Category::ValueEnum => {
+                            let name_str = if kind == "Dim" {
+                                let mut name = "Dim".to_string();
+                                name.push_str(&e.symbol);
+                                name
+                            } else {
+                                e.symbol.to_string()
+                            };
+
+                            as_ident(&name_str)
+                        }
+                        _ => panic!("Unexpected operand type"),
+                    };
+
+                    capability_clauses
+                        .entry(&e.capabilities)
+                        .or_insert_with(Vec::new)
+                        .push(name.clone());
+
+                    extension_clauses
+                        .entry(&e.extensions)
+                        .or_insert_with(Vec::new)
+                        .push(name.clone());
+
+                    if !e.parameters.is_empty() {
+                        operand_clauses
+                            .entry(&e.parameters)
+                            .or_insert_with(Vec::new)
+                            .push(name.clone())
+                    }
                 }
 
                 let extensions = if category == &structs::Category::BitEnum {
