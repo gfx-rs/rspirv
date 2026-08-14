@@ -434,7 +434,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                                 let kinds = std::iter::repeat(quote! { s::#kind });
 
                                 quote! {
-                                    if vals.intersects(#(#kinds::#vals)|*) {
+                                    if v.intersects(#(#kinds::#vals)|*) {
                                         result.extend_from_slice(&[#( #k ),*])
                                     }
                                 }
@@ -475,7 +475,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                                 let capabilities = k.iter().map(|cap| as_ident(cap));
 
                                 quote! {
-                                    if vals.intersects(#(#kinds::#vals)|*) {
+                                    if v.intersects(#(#kinds::#vals)|*) {
                                         result.extend_from_slice(&[#( spirv::Capability::#capabilities ),*])
                                     }
                                 }
@@ -530,7 +530,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
 
                             quote! {
                                 result.extend([#(#kinds::#vals,)*].iter().filter(|arg| {
-                                    vals.contains(**arg)
+                                    v.contains(**arg)
                                 }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
                             }
                         });

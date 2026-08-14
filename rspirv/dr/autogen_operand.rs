@@ -931,16 +931,16 @@ impl Operand {
         match self {
             Self::ImageOperands(v) => {
                 let mut result = vec![];
-                if vals.intersects(s::ImageOperands::OFFSET | s::ImageOperands::CONST_OFFSETS) {
+                if v.intersects(s::ImageOperands::OFFSET | s::ImageOperands::CONST_OFFSETS) {
                     result.extend_from_slice(&[spirv::Capability::ImageGatherExtended])
                 };
-                if vals.intersects(s::ImageOperands::MIN_LOD) {
+                if v.intersects(s::ImageOperands::MIN_LOD) {
                     result.extend_from_slice(&[spirv::Capability::MinLod])
                 };
-                if vals.intersects(s::ImageOperands::BIAS) {
+                if v.intersects(s::ImageOperands::BIAS) {
                     result.extend_from_slice(&[spirv::Capability::Shader])
                 };
-                if vals.intersects(
+                if v.intersects(
                     s::ImageOperands::MAKE_TEXEL_AVAILABLE
                         | s::ImageOperands::MAKE_TEXEL_VISIBLE
                         | s::ImageOperands::NON_PRIVATE_TEXEL
@@ -952,10 +952,10 @@ impl Operand {
             }
             Self::FPFastMathMode(v) => {
                 let mut result = vec![];
-                if vals.intersects(s::FPFastMathMode::ALLOW_TRANSFORM) {
+                if v.intersects(s::FPFastMathMode::ALLOW_TRANSFORM) {
                     result.extend_from_slice(&[spirv::Capability::FloatControls2])
                 };
-                if vals.intersects(
+                if v.intersects(
                     s::FPFastMathMode::ALLOW_CONTRACT | s::FPFastMathMode::ALLOW_REASSOC,
                 ) {
                     result.extend_from_slice(&[
@@ -967,7 +967,7 @@ impl Operand {
             }
             Self::LoopControl(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::LoopControl::INITIATION_INTERVAL_ALTERA
                         | s::LoopControl::MAX_CONCURRENCY_ALTERA
                         | s::LoopControl::DEPENDENCY_ARRAY_ALTERA
@@ -985,20 +985,20 @@ impl Operand {
             }
             Self::FunctionControl(v) => {
                 let mut result = vec![];
-                if vals.intersects(s::FunctionControl::OPT_NONE_EXT) {
+                if v.intersects(s::FunctionControl::OPT_NONE_EXT) {
                     result.extend_from_slice(&[spirv::Capability::OptNoneEXT])
                 };
                 result
             }
             Self::MemorySemantics(v) => {
                 let mut result = vec![];
-                if vals.intersects(s::MemorySemantics::ATOMIC_COUNTER_MEMORY) {
+                if v.intersects(s::MemorySemantics::ATOMIC_COUNTER_MEMORY) {
                     result.extend_from_slice(&[spirv::Capability::AtomicStorage])
                 };
-                if vals.intersects(s::MemorySemantics::UNIFORM_MEMORY) {
+                if v.intersects(s::MemorySemantics::UNIFORM_MEMORY) {
                     result.extend_from_slice(&[spirv::Capability::Shader])
                 };
-                if vals.intersects(
+                if v.intersects(
                     s::MemorySemantics::OUTPUT_MEMORY
                         | s::MemorySemantics::MAKE_AVAILABLE
                         | s::MemorySemantics::MAKE_VISIBLE
@@ -1010,12 +1010,12 @@ impl Operand {
             }
             Self::MemoryAccess(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::MemoryAccess::ALIAS_SCOPE_INTEL_MASK | s::MemoryAccess::NO_ALIAS_INTEL_MASK,
                 ) {
                     result.extend_from_slice(&[spirv::Capability::MemoryAccessAliasingINTEL])
                 };
-                if vals.intersects(
+                if v.intersects(
                     s::MemoryAccess::MAKE_POINTER_AVAILABLE
                         | s::MemoryAccess::MAKE_POINTER_VISIBLE
                         | s::MemoryAccess::NON_PRIVATE_POINTER,
@@ -1026,14 +1026,14 @@ impl Operand {
             }
             Self::KernelProfilingInfo(v) => {
                 let mut result = vec![];
-                if vals.intersects(s::KernelProfilingInfo::CMD_EXEC_TIME) {
+                if v.intersects(s::KernelProfilingInfo::CMD_EXEC_TIME) {
                     result.extend_from_slice(&[spirv::Capability::Kernel])
                 };
                 result
             }
             Self::RayFlags(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::RayFlags::NONE_KHR
                         | s::RayFlags::OPAQUE_KHR
                         | s::RayFlags::NO_OPAQUE_KHR
@@ -1049,17 +1049,17 @@ impl Operand {
                         spirv::Capability::RayTracingKHR,
                     ])
                 };
-                if vals.intersects(s::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {
+                if v.intersects(s::RayFlags::FORCE_OPACITY_MICROMAP2_STATE_EXT) {
                     result.extend_from_slice(&[spirv::Capability::RayTracingOpacityMicromapEXT])
                 };
-                if vals.intersects(s::RayFlags::SKIP_TRIANGLES_KHR | s::RayFlags::SKIP_AABBS_KHR) {
+                if v.intersects(s::RayFlags::SKIP_TRIANGLES_KHR | s::RayFlags::SKIP_AABBS_KHR) {
                     result.extend_from_slice(&[spirv::Capability::RayTraversalPrimitiveCullingKHR])
                 };
                 result
             }
             Self::FragmentShadingRate(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::FragmentShadingRate::VERTICAL2_PIXELS
                         | s::FragmentShadingRate::VERTICAL4_PIXELS
                         | s::FragmentShadingRate::HORIZONTAL2_PIXELS
@@ -1071,7 +1071,7 @@ impl Operand {
             }
             Self::RawAccessChainOperands(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::RawAccessChainOperands::ROBUSTNESS_PER_COMPONENT_NV
                         | s::RawAccessChainOperands::ROBUSTNESS_PER_ELEMENT_NV,
                 ) {
@@ -2328,10 +2328,10 @@ impl Operand {
             },
             Self::TensorAddressingOperands(v) => {
                 let mut result = vec![];
-                if vals.intersects(s::TensorAddressingOperands::DECODE_FUNC) {
+                if v.intersects(s::TensorAddressingOperands::DECODE_FUNC) {
                     result.extend_from_slice(&[spirv::Capability::CooperativeMatrixBlockLoadsNV])
                 };
-                if vals.intersects(s::TensorAddressingOperands::TENSOR_VIEW) {
+                if v.intersects(s::TensorAddressingOperands::TENSOR_VIEW) {
                     result.extend_from_slice(&[
                         spirv::Capability::CooperativeMatrixTensorAddressingNV,
                     ])
@@ -2397,7 +2397,7 @@ impl Operand {
             },
             Self::TensorOperands(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::TensorOperands::NONE_ARM
                         | s::TensorOperands::NONTEMPORAL_ARM
                         | s::TensorOperands::OUT_OF_BOUNDS_VALUE_ARM
@@ -2417,7 +2417,7 @@ impl Operand {
         match self {
             Self::ImageOperands(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::ImageOperands::MAKE_TEXEL_AVAILABLE
                         | s::ImageOperands::MAKE_TEXEL_VISIBLE
                         | s::ImageOperands::NON_PRIVATE_TEXEL
@@ -2429,7 +2429,7 @@ impl Operand {
             }
             Self::MemorySemantics(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::MemorySemantics::OUTPUT_MEMORY
                         | s::MemorySemantics::MAKE_AVAILABLE
                         | s::MemorySemantics::MAKE_VISIBLE
@@ -2441,12 +2441,12 @@ impl Operand {
             }
             Self::MemoryAccess(v) => {
                 let mut result = vec![];
-                if vals.intersects(
+                if v.intersects(
                     s::MemoryAccess::ALIAS_SCOPE_INTEL_MASK | s::MemoryAccess::NO_ALIAS_INTEL_MASK,
                 ) {
                     result.extend_from_slice(&["SPV_INTEL_memory_access_aliasing"])
                 };
-                if vals.intersects(
+                if v.intersects(
                     s::MemoryAccess::MAKE_POINTER_AVAILABLE
                         | s::MemoryAccess::MAKE_POINTER_VISIBLE
                         | s::MemoryAccess::NON_PRIVATE_POINTER,
@@ -3675,7 +3675,7 @@ impl Operand {
                         s::ImageOperands::OFFSETS,
                     ]
                     .iter()
-                    .filter(|arg| vals.contains(**arg))
+                    .filter(|arg| v.contains(**arg))
                     .flat_map(|_| {
                         [crate::grammar::LogicalOperand {
                             kind: crate::grammar::OperandKind::IdRef,
@@ -3688,7 +3688,7 @@ impl Operand {
                 result.extend(
                     [s::ImageOperands::GRAD]
                         .iter()
-                        .filter(|arg| vals.contains(**arg))
+                        .filter(|arg| v.contains(**arg))
                         .flat_map(|_| {
                             [
                                 crate::grammar::LogicalOperand {
@@ -3710,7 +3710,7 @@ impl Operand {
                         s::ImageOperands::MAKE_TEXEL_VISIBLE,
                     ]
                     .iter()
-                    .filter(|arg| vals.contains(**arg))
+                    .filter(|arg| v.contains(**arg))
                     .flat_map(|_| {
                         [crate::grammar::LogicalOperand {
                             kind: crate::grammar::OperandKind::IdScope,
@@ -3743,7 +3743,7 @@ impl Operand {
                         s::LoopControl::MAX_REINVOCATION_DELAY_ALTERA,
                     ]
                     .iter()
-                    .filter(|arg| vals.contains(**arg))
+                    .filter(|arg| v.contains(**arg))
                     .flat_map(|_| {
                         [crate::grammar::LogicalOperand {
                             kind: crate::grammar::OperandKind::LiteralInteger,
@@ -3763,7 +3763,7 @@ impl Operand {
                         s::MemoryAccess::NO_ALIAS_INTEL_MASK,
                     ]
                     .iter()
-                    .filter(|arg| vals.contains(**arg))
+                    .filter(|arg| v.contains(**arg))
                     .flat_map(|_| {
                         [crate::grammar::LogicalOperand {
                             kind: crate::grammar::OperandKind::IdRef,
@@ -3779,7 +3779,7 @@ impl Operand {
                         s::MemoryAccess::MAKE_POINTER_VISIBLE,
                     ]
                     .iter()
-                    .filter(|arg| vals.contains(**arg))
+                    .filter(|arg| v.contains(**arg))
                     .flat_map(|_| {
                         [crate::grammar::LogicalOperand {
                             kind: crate::grammar::OperandKind::IdScope,
@@ -3792,7 +3792,7 @@ impl Operand {
                 result.extend(
                     [s::MemoryAccess::ALIGNED]
                         .iter()
-                        .filter(|arg| vals.contains(**arg))
+                        .filter(|arg| v.contains(**arg))
                         .flat_map(|_| {
                             [crate::grammar::LogicalOperand {
                                 kind: crate::grammar::OperandKind::LiteralInteger,
@@ -4401,7 +4401,7 @@ impl Operand {
                         s::TensorAddressingOperands::DECODE_FUNC,
                     ]
                     .iter()
-                    .filter(|arg| vals.contains(**arg))
+                    .filter(|arg| v.contains(**arg))
                     .flat_map(|_| {
                         [crate::grammar::LogicalOperand {
                             kind: crate::grammar::OperandKind::IdRef,
@@ -4422,7 +4422,7 @@ impl Operand {
                         s::TensorOperands::MAKE_ELEMENT_VISIBLE_ARM,
                     ]
                     .iter()
-                    .filter(|arg| vals.contains(**arg))
+                    .filter(|arg| v.contains(**arg))
                     .flat_map(|_| {
                         [crate::grammar::LogicalOperand {
                             kind: crate::grammar::OperandKind::IdRef,
