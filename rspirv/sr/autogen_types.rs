@@ -13,6 +13,7 @@ pub enum Type {
     },
     Float {
         width: u32,
+        floating_point_encoding: Option<spirv::FPEncoding>,
     },
     Vector {
         component_type: Token<Type>,
@@ -70,6 +71,18 @@ pub enum Type {
     },
     PipeStorage,
     NamedBarrier,
+    TensorARM {
+        element_type: Token<Type>,
+        rank: Option<spirv::Word>,
+        shape: Option<spirv::Word>,
+    },
+    GraphARM {
+        num_inputs: u32,
+        in_out_types: Vec<spirv::Word>,
+    },
+    UntypedPointerKHR {
+        storage_class: spirv::StorageClass,
+    },
     CooperativeMatrixKHR {
         component_type: Token<Type>,
         scope: spirv::Word,
@@ -78,13 +91,33 @@ pub enum Type {
         usage: spirv::Word,
     },
     RayQueryKHR,
+    NodePayloadArrayAMDX {
+        payload_type: spirv::Word,
+    },
+    BufferEXT {
+        storage_class: spirv::StorageClass,
+    },
     HitObjectNV,
+    VectorIdEXT {
+        component_type: Token<Type>,
+        component_count: spirv::Word,
+    },
+    HitObjectEXT,
     AccelerationStructureKHR,
     CooperativeMatrixNV {
         component_type: Token<Type>,
         execution: spirv::Word,
         rows: spirv::Word,
         columns: spirv::Word,
+    },
+    TensorLayoutNV {
+        dim: spirv::Word,
+        clamp_mode: spirv::Word,
+    },
+    TensorViewNV {
+        dim: spirv::Word,
+        has_dimensions: spirv::Word,
+        p: Vec<spirv::Word>,
     },
     BufferSurfaceINTEL {
         access_qualifier: spirv::AccessQualifier,

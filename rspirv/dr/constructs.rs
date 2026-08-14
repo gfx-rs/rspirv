@@ -306,7 +306,7 @@ impl Instruction {
         operands: Vec<Operand>,
     ) -> Self {
         Instruction {
-            class: grammar::CoreInstructionTable::get(opcode),
+            class: grammar::INSTRUCTION_TABLE.get(opcode),
             result_type,
             result_id,
             operands,

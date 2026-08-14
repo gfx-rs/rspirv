@@ -9,9 +9,9 @@ use super::{
 };
 use std::{error, fmt, result, slice};
 
-use crate::grammar::CoreInstructionTable as GInstTable;
 use crate::grammar::OperandKind as GOpKind;
 use crate::grammar::OperandQuantifier as GOpCount;
+use crate::grammar::INSTRUCTION_TABLE as GInstTable;
 
 use crate::utils::version;
 
@@ -286,7 +286,7 @@ impl<'c, 'd> Parser<'c, 'd> {
                     self.inst_index,
                 ));
             }
-            if let Some(grammar) = GInstTable::lookup_opcode(opcode) {
+            if let Some(grammar) = GInstTable.lookup_opcode(opcode as spirv::Word) {
                 self.decoder.set_limit((wc - 1) as usize);
                 let result = self.parse_operands(grammar)?;
                 if !self.decoder.limit_reached() {
@@ -344,7 +344,7 @@ impl<'c, 'd> Parser<'c, 'd> {
         let mut operands = vec![];
 
         let number = self.decoder.bit32()?;
-        if let Some(g) = GInstTable::lookup_opcode(number as u16) {
+        if let Some(g) = GInstTable.lookup_opcode(number) {
             // TODO: check whether this opcode is allowed here.
             operands.push(dr::Operand::LiteralSpecConstantOpInteger(g.opcode));
 

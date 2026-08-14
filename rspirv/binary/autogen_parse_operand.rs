@@ -24,6 +24,9 @@ impl Parser<'_, '_> {
             GOpKind::FragmentShadingRate => vec![dr::Operand::FragmentShadingRate(
                 self.decoder.fragment_shading_rate()?,
             )],
+            GOpKind::RawAccessChainOperands => vec![dr::Operand::RawAccessChainOperands(
+                self.decoder.raw_access_chain_operands()?,
+            )],
             GOpKind::SourceLanguage => {
                 vec![dr::Operand::SourceLanguage(self.decoder.source_language()?)]
             }
@@ -108,6 +111,12 @@ impl Parser<'_, '_> {
             GOpKind::CooperativeMatrixUse => vec![dr::Operand::CooperativeMatrixUse(
                 self.decoder.cooperative_matrix_use()?,
             )],
+            GOpKind::CooperativeMatrixReduce => vec![dr::Operand::CooperativeMatrixReduce(
+                self.decoder.cooperative_matrix_reduce()?,
+            )],
+            GOpKind::TensorClampMode => vec![dr::Operand::TensorClampMode(
+                self.decoder.tensor_clamp_mode()?,
+            )],
             GOpKind::InitializationModeQualifier => vec![dr::Operand::InitializationModeQualifier(
                 self.decoder.initialization_mode_qualifier()?,
             )],
@@ -117,6 +126,25 @@ impl Parser<'_, '_> {
             GOpKind::StoreCacheControl => vec![dr::Operand::StoreCacheControl(
                 self.decoder.store_cache_control()?,
             )],
+            GOpKind::NamedMaximumNumberOfRegisters => {
+                vec![dr::Operand::NamedMaximumNumberOfRegisters(
+                    self.decoder.named_maximum_number_of_registers()?,
+                )]
+            }
+            GOpKind::MatrixMultiplyAccumulateOperands => {
+                vec![dr::Operand::MatrixMultiplyAccumulateOperands(
+                    self.decoder.matrix_multiply_accumulate_operands()?,
+                )]
+            }
+            GOpKind::FPEncoding => vec![dr::Operand::FPEncoding(self.decoder.fp_encoding()?)],
+            GOpKind::CooperativeVectorMatrixLayout => {
+                vec![dr::Operand::CooperativeVectorMatrixLayout(
+                    self.decoder.cooperative_vector_matrix_layout()?,
+                )]
+            }
+            GOpKind::ComponentType => {
+                vec![dr::Operand::ComponentType(self.decoder.component_type()?)]
+            }
             GOpKind::IdMemorySemantics => vec![dr::Operand::IdMemorySemantics(self.decoder.id()?)],
             GOpKind::IdScope => vec![dr::Operand::IdScope(self.decoder.id()?)],
             GOpKind::IdRef => vec![dr::Operand::IdRef(self.decoder.id()?)],
@@ -164,11 +192,35 @@ impl Parser<'_, '_> {
                 ops.append(&mut self.parse_decoration_arguments(val)?);
                 ops
             }
+            GOpKind::TensorAddressingOperands => {
+                let val = self.decoder.tensor_addressing_operands()?;
+                let mut ops = vec![dr::Operand::TensorAddressingOperands(val)];
+                ops.append(&mut self.parse_tensor_addressing_operands_arguments(val)?);
+                ops
+            }
+            GOpKind::TensorOperands => {
+                let val = self.decoder.tensor_operands()?;
+                let mut ops = vec![dr::Operand::TensorOperands(val)];
+                ops.append(&mut self.parse_tensor_operands_arguments(val)?);
+                ops
+            }
             GOpKind::IdResultType => panic!(),
             GOpKind::IdResult => panic!(),
             GOpKind::LiteralContextDependentNumber => panic!(),
             GOpKind::LiteralSpecConstantOpInteger => panic!(),
             GOpKind::PairLiteralIntegerIdRef => panic!(),
+            GOpKind::Debuginfo(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
+            GOpKind::NonsemanticClspvreflection(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
+            GOpKind::NonsemanticShaderDebuginfo100(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
+            GOpKind::OpenclDebuginfo100(_) => {
+                todo!("extended instruction operand kind not yet supported for parsing")
+            }
         })
     }
     fn parse_image_operands_arguments(
@@ -237,31 +289,31 @@ impl Parser<'_, '_> {
         if loop_control.contains(spirv::LoopControl::PARTIAL_COUNT) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::INITIATION_INTERVAL_INTEL) {
+        if loop_control.contains(spirv::LoopControl::INITIATION_INTERVAL_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::MAX_CONCURRENCY_INTEL) {
+        if loop_control.contains(spirv::LoopControl::MAX_CONCURRENCY_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::DEPENDENCY_ARRAY_INTEL) {
+        if loop_control.contains(spirv::LoopControl::DEPENDENCY_ARRAY_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::PIPELINE_ENABLE_INTEL) {
+        if loop_control.contains(spirv::LoopControl::PIPELINE_ENABLE_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::LOOP_COALESCE_INTEL) {
+        if loop_control.contains(spirv::LoopControl::LOOP_COALESCE_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::MAX_INTERLEAVING_INTEL) {
+        if loop_control.contains(spirv::LoopControl::MAX_INTERLEAVING_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::SPECULATED_ITERATIONS_INTEL) {
+        if loop_control.contains(spirv::LoopControl::SPECULATED_ITERATIONS_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::LOOP_COUNT_INTEL) {
+        if loop_control.contains(spirv::LoopControl::LOOP_COUNT_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
-        if loop_control.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_INTEL) {
+        if loop_control.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_ALTERA) {
             params.append(&mut vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]);
         }
         Ok(params)
@@ -288,7 +340,6 @@ impl Parser<'_, '_> {
         }
         Ok(params)
     }
-    #[allow(unreachable_patterns)]
     fn parse_execution_mode_arguments(
         &mut self,
         execution_mode: spirv::ExecutionMode,
@@ -347,6 +398,12 @@ impl Parser<'_, '_> {
             spirv::ExecutionMode::RoundingModeRTZ => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::TileShadingRateQCOM => vec![
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+            ],
+            spirv::ExecutionMode::IsApiEntryAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::ExecutionMode::MaxNodeRecursionAMDX => {
                 vec![dr::Operand::IdRef(self.decoder.id()?)]
             }
@@ -361,7 +418,11 @@ impl Parser<'_, '_> {
                 dr::Operand::IdRef(self.decoder.id()?),
                 dr::Operand::IdRef(self.decoder.id()?),
             ],
-            spirv::ExecutionMode::OutputPrimitivesNV => {
+            spirv::ExecutionMode::SharesInputWithAMDX => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
+            spirv::ExecutionMode::OutputPrimitivesEXT => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
             spirv::ExecutionMode::SharedLocalMemorySizeINTEL => {
@@ -393,6 +454,10 @@ impl Parser<'_, '_> {
             spirv::ExecutionMode::SchedulerTargetFmaxMhzINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::FPFastMathDefault => vec![
+                dr::Operand::IdRef(self.decoder.id()?),
+                dr::Operand::IdRef(self.decoder.id()?),
+            ],
             spirv::ExecutionMode::StreamingInterfaceINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -402,10 +467,20 @@ impl Parser<'_, '_> {
             spirv::ExecutionMode::NamedBarrierCountINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::ExecutionMode::MaximumRegistersINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::ExecutionMode::MaximumRegistersIdINTEL => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::ExecutionMode::NamedMaximumRegistersINTEL => {
+                vec![dr::Operand::NamedMaximumNumberOfRegisters(
+                    self.decoder.named_maximum_number_of_registers()?,
+                )]
+            }
             _ => vec![],
         })
     }
-    #[allow(unreachable_patterns)]
     fn parse_decoration_arguments(
         &mut self,
         decoration: spirv::Decoration,
@@ -457,12 +532,22 @@ impl Parser<'_, '_> {
                 vec![dr::Operand::IdRef(self.decoder.id()?)]
             }
             spirv::Decoration::NodeMaxPayloadsAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            spirv::Decoration::PayloadNodeNameAMDX => {
-                vec![dr::Operand::LiteralString(self.decoder.string()?)]
+            spirv::Decoration::PayloadNodeNameAMDX => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::PayloadNodeBaseIndexAMDX => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
             }
+            spirv::Decoration::PayloadNodeArraySizeAMDX => {
+                vec![dr::Operand::IdRef(self.decoder.id()?)]
+            }
+            spirv::Decoration::ArrayStrideIdEXT => vec![dr::Operand::IdRef(self.decoder.id()?)],
+            spirv::Decoration::OffsetIdEXT => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::SecondaryViewportRelativeNV => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
+            spirv::Decoration::MemberOffsetNV => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::BankNV => vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)],
             spirv::Decoration::SIMTCallINTEL => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
@@ -490,103 +575,110 @@ impl Parser<'_, '_> {
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::FPDenormMode(self.decoder.fp_denorm_mode()?),
             ],
-            spirv::Decoration::MemoryINTEL => {
+            spirv::Decoration::MemoryALTERA => {
                 vec![dr::Operand::LiteralString(self.decoder.string()?)]
             }
-            spirv::Decoration::NumbanksINTEL => {
+            spirv::Decoration::NumbanksALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::BankwidthINTEL => {
+            spirv::Decoration::BankwidthALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::MaxPrivateCopiesINTEL => {
+            spirv::Decoration::MaxPrivateCopiesALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::MaxReplicatesINTEL => {
+            spirv::Decoration::MaxReplicatesALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::MergeINTEL => vec![
+            spirv::Decoration::MergeALTERA => vec![
                 dr::Operand::LiteralString(self.decoder.string()?),
                 dr::Operand::LiteralString(self.decoder.string()?),
             ],
-            spirv::Decoration::BankBitsINTEL => {
+            spirv::Decoration::BankBitsALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::ForcePow2DepthINTEL => {
+            spirv::Decoration::ForcePow2DepthALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::CacheSizeINTEL => {
+            spirv::Decoration::StridesizeALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::PrefetchINTEL => {
+            spirv::Decoration::WordsizeALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::MathOpDSPModeINTEL => vec![
+            spirv::Decoration::CacheSizeALTERA => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::PrefetchALTERA => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MathOpDSPModeALTERA => vec![
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
             ],
             spirv::Decoration::AliasScopeINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::NoAliasINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
-            spirv::Decoration::InitiationIntervalINTEL => {
+            spirv::Decoration::InitiationIntervalALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::MaxConcurrencyINTEL => {
+            spirv::Decoration::MaxConcurrencyALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::PipelineEnableINTEL => {
+            spirv::Decoration::PipelineEnableALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::BufferLocationINTEL => {
+            spirv::Decoration::BufferLocationALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::IOPipeStorageINTEL => {
+            spirv::Decoration::IOPipeStorageALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
             spirv::Decoration::FunctionFloatingPointModeINTEL => vec![
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::FPOperationMode(self.decoder.fp_operation_mode()?),
             ],
-            spirv::Decoration::InitModeINTEL => vec![dr::Operand::InitializationModeQualifier(
-                self.decoder.initialization_mode_qualifier()?,
-            )],
-            spirv::Decoration::ImplementInRegisterMapINTEL => {
+            spirv::Decoration::FPMaxErrorDecorationINTEL => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::LatencyControlLabelALTERA => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::LatencyControlConstraintALTERA => vec![
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+                dr::Operand::LiteralBit32(self.decoder.bit32()?),
+            ],
+            spirv::Decoration::MMHostInterfaceAddressWidthALTERA => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceDataWidthALTERA => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceLatencyALTERA => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceReadWriteModeALTERA => {
+                vec![dr::Operand::AccessQualifier(
+                    self.decoder.access_qualifier()?,
+                )]
+            }
+            spirv::Decoration::MMHostInterfaceMaxBurstALTERA => {
+                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
+            }
+            spirv::Decoration::MMHostInterfaceWaitRequestALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
             spirv::Decoration::HostAccessINTEL => vec![
                 dr::Operand::HostAccessQualifier(self.decoder.host_access_qualifier()?),
                 dr::Operand::LiteralString(self.decoder.string()?),
             ],
-            spirv::Decoration::FPMaxErrorDecorationINTEL => {
+            spirv::Decoration::InitModeALTERA => vec![dr::Operand::InitializationModeQualifier(
+                self.decoder.initialization_mode_qualifier()?,
+            )],
+            spirv::Decoration::ImplementInRegisterMapALTERA => {
                 vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
             }
-            spirv::Decoration::LatencyControlLabelINTEL => {
-                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
-            }
-            spirv::Decoration::LatencyControlConstraintINTEL => vec![
-                dr::Operand::LiteralBit32(self.decoder.bit32()?),
-                dr::Operand::LiteralBit32(self.decoder.bit32()?),
-                dr::Operand::LiteralBit32(self.decoder.bit32()?),
-            ],
-            spirv::Decoration::MMHostInterfaceAddressWidthINTEL => {
-                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
-            }
-            spirv::Decoration::MMHostInterfaceDataWidthINTEL => {
-                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
-            }
-            spirv::Decoration::MMHostInterfaceLatencyINTEL => {
-                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
-            }
-            spirv::Decoration::MMHostInterfaceReadWriteModeINTEL => {
-                vec![dr::Operand::AccessQualifier(
-                    self.decoder.access_qualifier()?,
-                )]
-            }
-            spirv::Decoration::MMHostInterfaceMaxBurstINTEL => {
-                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
-            }
-            spirv::Decoration::MMHostInterfaceWaitRequestINTEL => {
-                vec![dr::Operand::LiteralBit32(self.decoder.bit32()?)]
-            }
+            spirv::Decoration::ConditionalINTEL => vec![dr::Operand::IdRef(self.decoder.id()?)],
             spirv::Decoration::CacheControlLoadINTEL => vec![
                 dr::Operand::LiteralBit32(self.decoder.bit32()?),
                 dr::Operand::LoadCacheControl(self.decoder.load_cache_control()?),
@@ -597,5 +689,34 @@ impl Parser<'_, '_> {
             ],
             _ => vec![],
         })
+    }
+    fn parse_tensor_addressing_operands_arguments(
+        &mut self,
+        tensor_addressing_operands: spirv::TensorAddressingOperands,
+    ) -> Result<Vec<dr::Operand>> {
+        let mut params = vec![];
+        if tensor_addressing_operands.contains(spirv::TensorAddressingOperands::TENSOR_VIEW) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if tensor_addressing_operands.contains(spirv::TensorAddressingOperands::DECODE_FUNC) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        Ok(params)
+    }
+    fn parse_tensor_operands_arguments(
+        &mut self,
+        tensor_operands: spirv::TensorOperands,
+    ) -> Result<Vec<dr::Operand>> {
+        let mut params = vec![];
+        if tensor_operands.contains(spirv::TensorOperands::OUT_OF_BOUNDS_VALUE_ARM) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if tensor_operands.contains(spirv::TensorOperands::MAKE_ELEMENT_AVAILABLE_ARM) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        if tensor_operands.contains(spirv::TensorOperands::MAKE_ELEMENT_VISIBLE_ARM) {
+            params.append(&mut vec![dr::Operand::IdRef(self.decoder.id()?)]);
+        }
+        Ok(params)
     }
 }

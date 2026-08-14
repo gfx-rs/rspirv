@@ -35,26 +35,14 @@ impl Disassemble for spirv::ImageOperands {
         if self.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE) {
             bits.push("MakeTexelAvailable")
         }
-        if self.contains(spirv::ImageOperands::MAKE_TEXEL_AVAILABLE_KHR) {
-            bits.push("MakeTexelAvailableKHR")
-        }
         if self.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE) {
             bits.push("MakeTexelVisible")
-        }
-        if self.contains(spirv::ImageOperands::MAKE_TEXEL_VISIBLE_KHR) {
-            bits.push("MakeTexelVisibleKHR")
         }
         if self.contains(spirv::ImageOperands::NON_PRIVATE_TEXEL) {
             bits.push("NonPrivateTexel")
         }
-        if self.contains(spirv::ImageOperands::NON_PRIVATE_TEXEL_KHR) {
-            bits.push("NonPrivateTexelKHR")
-        }
         if self.contains(spirv::ImageOperands::VOLATILE_TEXEL) {
             bits.push("VolatileTexel")
-        }
-        if self.contains(spirv::ImageOperands::VOLATILE_TEXEL_KHR) {
-            bits.push("VolatileTexelKHR")
         }
         if self.contains(spirv::ImageOperands::SIGN_EXTEND) {
             bits.push("SignExtend")
@@ -92,11 +80,14 @@ impl Disassemble for spirv::FPFastMathMode {
         if self.contains(spirv::FPFastMathMode::FAST) {
             bits.push("Fast")
         }
-        if self.contains(spirv::FPFastMathMode::ALLOW_CONTRACT_FAST_INTEL) {
-            bits.push("AllowContractFastINTEL")
+        if self.contains(spirv::FPFastMathMode::ALLOW_CONTRACT) {
+            bits.push("AllowContract")
         }
-        if self.contains(spirv::FPFastMathMode::ALLOW_REASSOC_INTEL) {
-            bits.push("AllowReassocINTEL")
+        if self.contains(spirv::FPFastMathMode::ALLOW_REASSOC) {
+            bits.push("AllowReassoc")
+        }
+        if self.contains(spirv::FPFastMathMode::ALLOW_TRANSFORM) {
+            bits.push("AllowTransform")
         }
         bits.join("|")
     }
@@ -149,35 +140,35 @@ impl Disassemble for spirv::LoopControl {
         if self.contains(spirv::LoopControl::PARTIAL_COUNT) {
             bits.push("PartialCount")
         }
-        if self.contains(spirv::LoopControl::INITIATION_INTERVAL_INTEL) {
-            bits.push("InitiationIntervalINTEL")
+        if self.contains(spirv::LoopControl::INITIATION_INTERVAL_ALTERA) {
+            bits.push("InitiationIntervalALTERA")
         }
-        if self.contains(spirv::LoopControl::MAX_CONCURRENCY_INTEL) {
-            bits.push("MaxConcurrencyINTEL")
+        if self.contains(spirv::LoopControl::MAX_CONCURRENCY_ALTERA) {
+            bits.push("MaxConcurrencyALTERA")
         }
-        if self.contains(spirv::LoopControl::DEPENDENCY_ARRAY_INTEL) {
-            bits.push("DependencyArrayINTEL")
+        if self.contains(spirv::LoopControl::DEPENDENCY_ARRAY_ALTERA) {
+            bits.push("DependencyArrayALTERA")
         }
-        if self.contains(spirv::LoopControl::PIPELINE_ENABLE_INTEL) {
-            bits.push("PipelineEnableINTEL")
+        if self.contains(spirv::LoopControl::PIPELINE_ENABLE_ALTERA) {
+            bits.push("PipelineEnableALTERA")
         }
-        if self.contains(spirv::LoopControl::LOOP_COALESCE_INTEL) {
-            bits.push("LoopCoalesceINTEL")
+        if self.contains(spirv::LoopControl::LOOP_COALESCE_ALTERA) {
+            bits.push("LoopCoalesceALTERA")
         }
-        if self.contains(spirv::LoopControl::MAX_INTERLEAVING_INTEL) {
-            bits.push("MaxInterleavingINTEL")
+        if self.contains(spirv::LoopControl::MAX_INTERLEAVING_ALTERA) {
+            bits.push("MaxInterleavingALTERA")
         }
-        if self.contains(spirv::LoopControl::SPECULATED_ITERATIONS_INTEL) {
-            bits.push("SpeculatedIterationsINTEL")
+        if self.contains(spirv::LoopControl::SPECULATED_ITERATIONS_ALTERA) {
+            bits.push("SpeculatedIterationsALTERA")
         }
-        if self.contains(spirv::LoopControl::NO_FUSION_INTEL) {
-            bits.push("NoFusionINTEL")
+        if self.contains(spirv::LoopControl::NO_FUSION_ALTERA) {
+            bits.push("NoFusionALTERA")
         }
-        if self.contains(spirv::LoopControl::LOOP_COUNT_INTEL) {
-            bits.push("LoopCountINTEL")
+        if self.contains(spirv::LoopControl::LOOP_COUNT_ALTERA) {
+            bits.push("LoopCountALTERA")
         }
-        if self.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_INTEL) {
-            bits.push("MaxReinvocationDelayINTEL")
+        if self.contains(spirv::LoopControl::MAX_REINVOCATION_DELAY_ALTERA) {
+            bits.push("MaxReinvocationDelayALTERA")
         }
         bits.join("|")
     }
@@ -200,8 +191,8 @@ impl Disassemble for spirv::FunctionControl {
         if self.contains(spirv::FunctionControl::CONST) {
             bits.push("Const")
         }
-        if self.contains(spirv::FunctionControl::OPT_NONE_INTEL) {
-            bits.push("OptNoneINTEL")
+        if self.contains(spirv::FunctionControl::OPT_NONE_EXT) {
+            bits.push("OptNoneEXT")
         }
         bits.join("|")
     }
@@ -245,20 +236,11 @@ impl Disassemble for spirv::MemorySemantics {
         if self.contains(spirv::MemorySemantics::OUTPUT_MEMORY) {
             bits.push("OutputMemory")
         }
-        if self.contains(spirv::MemorySemantics::OUTPUT_MEMORY_KHR) {
-            bits.push("OutputMemoryKHR")
-        }
         if self.contains(spirv::MemorySemantics::MAKE_AVAILABLE) {
             bits.push("MakeAvailable")
         }
-        if self.contains(spirv::MemorySemantics::MAKE_AVAILABLE_KHR) {
-            bits.push("MakeAvailableKHR")
-        }
         if self.contains(spirv::MemorySemantics::MAKE_VISIBLE) {
             bits.push("MakeVisible")
-        }
-        if self.contains(spirv::MemorySemantics::MAKE_VISIBLE_KHR) {
-            bits.push("MakeVisibleKHR")
         }
         if self.contains(spirv::MemorySemantics::VOLATILE) {
             bits.push("Volatile")
@@ -284,20 +266,11 @@ impl Disassemble for spirv::MemoryAccess {
         if self.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE) {
             bits.push("MakePointerAvailable")
         }
-        if self.contains(spirv::MemoryAccess::MAKE_POINTER_AVAILABLE_KHR) {
-            bits.push("MakePointerAvailableKHR")
-        }
         if self.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE) {
             bits.push("MakePointerVisible")
         }
-        if self.contains(spirv::MemoryAccess::MAKE_POINTER_VISIBLE_KHR) {
-            bits.push("MakePointerVisibleKHR")
-        }
         if self.contains(spirv::MemoryAccess::NON_PRIVATE_POINTER) {
             bits.push("NonPrivatePointer")
-        }
-        if self.contains(spirv::MemoryAccess::NON_PRIVATE_POINTER_KHR) {
-            bits.push("NonPrivatePointerKHR")
         }
         if self.contains(spirv::MemoryAccess::ALIAS_SCOPE_INTEL_MASK) {
             bits.push("AliasScopeINTELMask")
@@ -383,6 +356,21 @@ impl Disassemble for spirv::FragmentShadingRate {
         bits.join("|")
     }
 }
+impl Disassemble for spirv::RawAccessChainOperands {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::RawAccessChainOperands::ROBUSTNESS_PER_COMPONENT_NV) {
+            bits.push("RobustnessPerComponentNV")
+        }
+        if self.contains(spirv::RawAccessChainOperands::ROBUSTNESS_PER_ELEMENT_NV) {
+            bits.push("RobustnessPerElementNV")
+        }
+        bits.join("|")
+    }
+}
 impl Disassemble for spirv::CooperativeMatrixOperands {
     fn disassemble(&self) -> String {
         if self.is_empty() {
@@ -403,6 +391,116 @@ impl Disassemble for spirv::CooperativeMatrixOperands {
         }
         if self.contains(spirv::CooperativeMatrixOperands::SATURATING_ACCUMULATION_KHR) {
             bits.push("SaturatingAccumulationKHR")
+        }
+        bits.join("|")
+    }
+}
+impl Disassemble for spirv::CooperativeMatrixReduce {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::CooperativeMatrixReduce::ROW) {
+            bits.push("Row")
+        }
+        if self.contains(spirv::CooperativeMatrixReduce::COLUMN) {
+            bits.push("Column")
+        }
+        if self.contains(spirv::CooperativeMatrixReduce::_2X2) {
+            bits.push("2x2")
+        }
+        bits.join("|")
+    }
+}
+impl Disassemble for spirv::TensorAddressingOperands {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::TensorAddressingOperands::TENSOR_VIEW) {
+            bits.push("TensorView")
+        }
+        if self.contains(spirv::TensorAddressingOperands::DECODE_FUNC) {
+            bits.push("DecodeFunc")
+        }
+        bits.join("|")
+    }
+}
+impl Disassemble for spirv::MatrixMultiplyAccumulateOperands {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_A_SIGNED_COMPONENTS_INTEL)
+        {
+            bits.push("MatrixASignedComponentsINTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_B_SIGNED_COMPONENTS_INTEL)
+        {
+            bits.push("MatrixBSignedComponentsINTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_CB_FLOAT16_INTEL) {
+            bits.push("MatrixCBFloat16INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_RESULT_B_FLOAT16_INTEL) {
+            bits.push("MatrixResultBFloat16INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_A_PACKED_INT8_INTEL) {
+            bits.push("MatrixAPackedInt8INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_B_PACKED_INT8_INTEL) {
+            bits.push("MatrixBPackedInt8INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_A_PACKED_INT4_INTEL) {
+            bits.push("MatrixAPackedInt4INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_B_PACKED_INT4_INTEL) {
+            bits.push("MatrixBPackedInt4INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_ATF32INTEL) {
+            bits.push("MatrixATF32INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_BTF32INTEL) {
+            bits.push("MatrixBTF32INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_A_PACKED_FLOAT16_INTEL) {
+            bits.push("MatrixAPackedFloat16INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_B_PACKED_FLOAT16_INTEL) {
+            bits.push("MatrixBPackedFloat16INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_A_PACKED_B_FLOAT16_INTEL) {
+            bits.push("MatrixAPackedBFloat16INTEL")
+        }
+        if self.contains(spirv::MatrixMultiplyAccumulateOperands::MATRIX_B_PACKED_B_FLOAT16_INTEL) {
+            bits.push("MatrixBPackedBFloat16INTEL")
+        }
+        bits.join("|")
+    }
+}
+impl Disassemble for spirv::TensorOperands {
+    fn disassemble(&self) -> String {
+        if self.is_empty() {
+            return "None".to_string();
+        }
+        let mut bits = vec![];
+        if self.contains(spirv::TensorOperands::NONTEMPORAL_ARM) {
+            bits.push("NontemporalARM")
+        }
+        if self.contains(spirv::TensorOperands::OUT_OF_BOUNDS_VALUE_ARM) {
+            bits.push("OutOfBoundsValueARM")
+        }
+        if self.contains(spirv::TensorOperands::MAKE_ELEMENT_AVAILABLE_ARM) {
+            bits.push("MakeElementAvailableARM")
+        }
+        if self.contains(spirv::TensorOperands::MAKE_ELEMENT_VISIBLE_ARM) {
+            bits.push("MakeElementVisibleARM")
+        }
+        if self.contains(spirv::TensorOperands::NON_PRIVATE_ELEMENT_ARM) {
+            bits.push("NonPrivateElementARM")
         }
         bits.join("|")
     }

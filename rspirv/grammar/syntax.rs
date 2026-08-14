@@ -1,12 +1,17 @@
+use std::marker::PhantomData;
+
 use crate::spirv;
 
 /// Grammar for a SPIR-V instruction.
 #[derive(Debug, PartialEq, Eq, Hash)]
-pub struct Instruction<'a> {
+pub struct BaseInstruction<'a, Op: Clone + Copy>
+where
+    Op: Into<spirv::Word>,
+{
     /// Opname.
     pub opname: &'a str,
     /// Opcode.
-    pub opcode: spirv::Op,
+    pub opcode: Op,
     /// Capabilities required for this instruction.
     pub capabilities: &'a [spirv::Capability],
     /// Extensions required for this instruction.
@@ -17,19 +22,8 @@ pub struct Instruction<'a> {
     pub operands: &'a [LogicalOperand],
 }
 
-/// Grammar for an extended instruction.
-pub struct ExtendedInstruction<'a> {
-    /// OpName.
-    pub opname: &'a str,
-    /// Opcode.
-    pub opcode: spirv::Word,
-    /// Capabilities required for this instruction.
-    pub capabilities: &'a [spirv::Capability],
-    /// Extensions required for this instruction.
-    pub extensions: &'a [&'a str],
-    /// Logical operands for this instruction.
-    pub operands: &'a [LogicalOperand],
-}
+pub type Instruction<'a> = BaseInstruction<'a, spirv::Op>;
+pub type ExtendedInstruction<'a> = BaseInstruction<'a, ExtInstOp>;
 
 /// Grammar for a SPIR-V logical operand.
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -74,12 +68,24 @@ macro_rules! inst {
 }
 
 /// Declares the grammar for an extended instruction instruction.
+///
+/// Operand kinds can be plain idents (resolved as `OperandKind::$kind`)
+/// or full expressions (e.g. `OperandKind::DebugInfo(ExtOperandKind::...)`
+/// for extension-specific kinds).
 macro_rules! ext_inst {
-    ($opname:ident, $opcode: expr, [$( $cap:ident ),*], [$( $ext:expr ),*],
+    // All-ident operands: wrap as OperandKind::$kind and forward to the expr arm
+    ($variant:ident, $opconst:ident, $opname:ident, [$( $cap:ident ),*], [$( $ext:expr ),*],
      [$( ($kind:ident, $quant:ident) ),*]) => {
+        ext_inst!($variant, $opconst, $opname, [$($cap),*], [$($ext),*],
+            [$((OperandKind::$kind, $quant)),*],)
+    };
+    // Pre-wrapped expression operands (from extensions with own operand kinds).
+    // Trailing comma distinguishes from the ident arm above.
+    ($variant:ident, $opconst:ident, $opname:ident, [$( $cap:ident ),*], [$( $ext:expr ),*],
+     [$( ($kind:expr, $quant:ident) ),*], ) => {
         ExtendedInstruction {
             opname: stringify!($opname),
-            opcode: $opcode,
+            opcode: ExtInstOp::$variant(spirv::$opconst::$opname),
             capabilities: &[
                 $( spirv::Capability::$cap ),*
             ],
@@ -88,7 +94,7 @@ macro_rules! ext_inst {
             ],
             operands: &[
                 $( LogicalOperand {
-                    kind: OperandKind::$kind,
+                    kind: $kind,
                     quantifier: OperandQuantifier::$quant }
                 ),*
             ],
@@ -98,91 +104,34 @@ macro_rules! ext_inst {
 
 /// The table for all SPIR-V core instructions.
 ///
-/// This table is staic data stored in the library.
-pub struct CoreInstructionTable;
+/// This table is static data stored in the library.
+pub struct InstructionTable<Op: Into<spirv::Word> + Clone + Copy + Eq + 'static>(
+    &'static [BaseInstruction<'static, Op>],
+    PhantomData<Op>,
+);
 
-impl CoreInstructionTable {
+impl<Op: Into<spirv::Word> + Clone + Copy + Eq> InstructionTable<Op> {
     /// Looks up the given `opcode` in the instruction table and returns
     /// a reference to the instruction grammar entry if found.
-    pub fn lookup_opcode(opcode: u16) -> Option<&'static Instruction<'static>> {
-        INSTRUCTION_TABLE
-            .iter()
-            .find(|inst| (inst.opcode as u16) == opcode)
+    pub fn lookup_opcode(
+        &self,
+        opcode: spirv::Word,
+    ) -> Option<&'static BaseInstruction<'static, Op>> {
+        self.0.iter().find(|inst| inst.opcode.into() == opcode)
     }
 
     /// Returns a reference to the instruction grammar entry with the given
     /// `opcode`.
-    pub fn get(opcode: spirv::Op) -> &'static Instruction<'static> {
-        INSTRUCTION_TABLE
-            .iter()
-            .find(|inst| (inst.opcode == opcode))
-            .expect("internal error")
-    }
-
-    pub fn iter() -> impl Iterator<Item = &'static Instruction<'static>> {
-        INSTRUCTION_TABLE.iter()
-    }
-}
-
-include!("autogen_table.rs");
-
-/// The table for all `GLSLstd450` extended instructions.
-///
-/// This table is staic data stored in the library.
-pub struct GlslStd450InstructionTable;
-
-impl GlslStd450InstructionTable {
-    /// Looks up the given `opcode` in the instruction table and returns
-    /// a reference to the instruction grammar entry if found.
-    pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
-        GLSL_STD_450_INSTRUCTION_TABLE
+    pub fn get(&self, opcode: Op) -> &'static BaseInstruction<'static, Op> {
+        self.0
             .iter()
             .find(|inst| inst.opcode == opcode)
-    }
-
-    /// Returns a reference to the instruction grammar entry with the given
-    /// `opcode`.
-    pub fn get(opcode: spirv::GLOp) -> &'static ExtendedInstruction<'static> {
-        GLSL_STD_450_INSTRUCTION_TABLE
-            .iter()
-            .find(|inst| (inst.opcode == opcode as spirv::Word))
             .expect("internal error")
     }
 
-    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
-        GLSL_STD_450_INSTRUCTION_TABLE.iter()
+    pub fn iter(&self) -> impl Iterator<Item = &'static BaseInstruction<'static, Op>> {
+        self.0.iter()
     }
 }
 
-include!("autogen_glsl_std_450.rs");
-
-/// The table for all `OpenCLstd100` extended instructions.
-///
-/// This table is staic data stored in the library.
-#[allow(clippy::upper_case_acronyms)]
-pub struct OpenCLStd100InstructionTable;
-
-impl OpenCLStd100InstructionTable {
-    /// Looks up the given `opcode` in the instruction table and returns
-    /// a reference to the instruction grammar entry if found.
-    pub fn lookup_opcode(opcode: u32) -> Option<&'static ExtendedInstruction<'static>> {
-        OPENCL_STD_100_INSTRUCTION_TABLE
-            .iter()
-            .find(|inst| inst.opcode == opcode)
-    }
-
-    /// Returns a reference to the instruction grammar entry with the given
-    /// `opcode`.
-    pub fn get(opcode: spirv::CLOp) -> &'static ExtendedInstruction<'static> {
-        OPENCL_STD_100_INSTRUCTION_TABLE
-            .iter()
-            .find(|inst| (inst.opcode == opcode as spirv::Word))
-            .expect("internal error")
-    }
-
-    pub fn iter() -> impl Iterator<Item = &'static ExtendedInstruction<'static>> {
-        OPENCL_STD_100_INSTRUCTION_TABLE.iter()
-    }
-}
-
-include!("autogen_opencl_std_100.rs");
+include!("autogen_tables.rs");

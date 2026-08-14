@@ -56,3 +56,33 @@ pub struct ExecutionModeId {
     pub entry_point: spirv::Word,
     pub mode: spirv::ExecutionMode,
 }
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ExtInstWithForwardRefsKHR {
+    pub set: spirv::Word,
+    pub instruction: u32,
+    pub operand_1_operand_2: Vec<spirv::Word>,
+}
+#[derive(Clone, Debug)]
+pub struct CooperativeMatrixPerElementOpNV {
+    pub matrix: spirv::Word,
+    pub func: spirv::Word,
+    pub operands: Vec<spirv::Word>,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConditionalExtensionINTEL {
+    pub condition: spirv::Word,
+    pub name: String,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConditionalEntryPointINTEL {
+    pub condition: spirv::Word,
+    pub execution_model: spirv::ExecutionModel,
+    pub entry_point: spirv::Word,
+    pub name: String,
+    pub interface: Vec<spirv::Word>,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConditionalCapabilityINTEL {
+    pub condition: spirv::Word,
+    pub capability: spirv::Capability,
+}

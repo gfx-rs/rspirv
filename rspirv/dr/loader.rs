@@ -136,6 +136,7 @@ impl binary::Consumer for Loader {
             spirv::Op::MemoryModel => self.module.memory_model = Some(inst),
             spirv::Op::EntryPoint => self.module.entry_points.push(inst),
             spirv::Op::ExecutionMode => self.module.execution_modes.push(inst),
+            spirv::Op::ExecutionModeId => self.module.execution_modes.push(inst),
             spirv::Op::String
             | spirv::Op::SourceExtension
             | spirv::Op::Source
@@ -150,10 +151,8 @@ impl binary::Consumer for Loader {
                     None => self.module.types_global_values.push(inst),
                 }
             }
-            opcode if grammar::reflect::is_annotation(opcode) => self.module.annotations.push(inst),
-            opcode
-                if grammar::reflect::is_type(opcode) || grammar::reflect::is_constant(opcode) =>
-            {
+            opcode if opcode.is_annotation() => self.module.annotations.push(inst),
+            opcode if opcode.is_type() || opcode.is_constant() => {
                 self.module.types_global_values.push(inst)
             }
             spirv::Op::Variable if self.function.is_none() => {
@@ -292,7 +291,7 @@ mod tests {
         let mut b = dr::Builder::new();
 
         let void = b.type_void();
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         // Global variable
@@ -328,7 +327,7 @@ mod tests {
         let mut b = dr::Builder::new();
 
         let void = b.type_void();
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         // Global variable

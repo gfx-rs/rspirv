@@ -335,21 +335,4 @@ impl Builder {
             dr::Instruction::new(spirv::Op::DemoteToHelperInvocation, None, None, vec![]);
         self.insert_end_block(insert_point, inst)
     }
-    #[doc = "Appends an OpDemoteToHelperInvocationEXT instruction and ends the current block."]
-    pub fn demote_to_helper_invocation_ext(&mut self) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst =
-            dr::Instruction::new(spirv::Op::DemoteToHelperInvocationEXT, None, None, vec![]);
-        self.end_block(inst)
-    }
-    #[doc = "Insert an OpDemoteToHelperInvocationEXT instruction and ends the current block."]
-    pub fn insert_demote_to_helper_invocation_ext(
-        &mut self,
-        insert_point: InsertPoint,
-    ) -> BuildResult<()> {
-        #[allow(unused_mut)]
-        let mut inst =
-            dr::Instruction::new(spirv::Op::DemoteToHelperInvocationEXT, None, None, vec![]);
-        self.insert_end_block(insert_point, inst)
-    }
 }

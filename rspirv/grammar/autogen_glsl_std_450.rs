@@ -2,164 +2,410 @@
 //   external/spirv.core.grammar.json.
 // DO NOT MODIFY!
 
-static GLSL_STD_450_INSTRUCTION_TABLE: &[ExtendedInstruction<'static>] = &[
-    ext_inst!(Round, 1u32, [], [], [(IdRef, One)]),
-    ext_inst!(RoundEven, 2u32, [], [], [(IdRef, One)]),
-    ext_inst!(Trunc, 3u32, [], [], [(IdRef, One)]),
-    ext_inst!(FAbs, 4u32, [], [], [(IdRef, One)]),
-    ext_inst!(SAbs, 5u32, [], [], [(IdRef, One)]),
-    ext_inst!(FSign, 6u32, [], [], [(IdRef, One)]),
-    ext_inst!(SSign, 7u32, [], [], [(IdRef, One)]),
-    ext_inst!(Floor, 8u32, [], [], [(IdRef, One)]),
-    ext_inst!(Ceil, 9u32, [], [], [(IdRef, One)]),
-    ext_inst!(Fract, 10u32, [], [], [(IdRef, One)]),
-    ext_inst!(Radians, 11u32, [], [], [(IdRef, One)]),
-    ext_inst!(Degrees, 12u32, [], [], [(IdRef, One)]),
-    ext_inst!(Sin, 13u32, [], [], [(IdRef, One)]),
-    ext_inst!(Cos, 14u32, [], [], [(IdRef, One)]),
-    ext_inst!(Tan, 15u32, [], [], [(IdRef, One)]),
-    ext_inst!(Asin, 16u32, [], [], [(IdRef, One)]),
-    ext_inst!(Acos, 17u32, [], [], [(IdRef, One)]),
-    ext_inst!(Atan, 18u32, [], [], [(IdRef, One)]),
-    ext_inst!(Sinh, 19u32, [], [], [(IdRef, One)]),
-    ext_inst!(Cosh, 20u32, [], [], [(IdRef, One)]),
-    ext_inst!(Tanh, 21u32, [], [], [(IdRef, One)]),
-    ext_inst!(Asinh, 22u32, [], [], [(IdRef, One)]),
-    ext_inst!(Acosh, 23u32, [], [], [(IdRef, One)]),
-    ext_inst!(Atanh, 24u32, [], [], [(IdRef, One)]),
-    ext_inst!(Atan2, 25u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(Pow, 26u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(Exp, 27u32, [], [], [(IdRef, One)]),
-    ext_inst!(Log, 28u32, [], [], [(IdRef, One)]),
-    ext_inst!(Exp2, 29u32, [], [], [(IdRef, One)]),
-    ext_inst!(Log2, 30u32, [], [], [(IdRef, One)]),
-    ext_inst!(Sqrt, 31u32, [], [], [(IdRef, One)]),
-    ext_inst!(InverseSqrt, 32u32, [], [], [(IdRef, One)]),
-    ext_inst!(Determinant, 33u32, [], [], [(IdRef, One)]),
-    ext_inst!(MatrixInverse, 34u32, [], [], [(IdRef, One)]),
-    ext_inst!(Modf, 35u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(ModfStruct, 36u32, [], [], [(IdRef, One)]),
-    ext_inst!(FMin, 37u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(UMin, 38u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(SMin, 39u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(FMax, 40u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(UMax, 41u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(SMax, 42u32, [], [], [(IdRef, One), (IdRef, One)]),
+static GLSL_STD_450_INSTRUCTIONS: &[ExtendedInstruction<'static>] = &[
+    ext_inst!(GlslStd450, GlslStd450Op, Round, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, RoundEven, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Trunc, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, FAbs, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, SAbs, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, FSign, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, SSign, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Floor, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Ceil, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Fract, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Radians, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Degrees, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Sin, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Cos, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Tan, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Asin, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Acos, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Atan, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Sinh, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Cosh, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Tanh, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Asinh, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Acosh, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Atanh, [], [], [(IdRef, One)]),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Atan2,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Pow,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(GlslStd450, GlslStd450Op, Exp, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Log, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Exp2, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Log2, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, Sqrt, [], [], [(IdRef, One)]),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        InverseSqrt,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Determinant,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        MatrixInverse,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Modf,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(GlslStd450, GlslStd450Op, ModfStruct, [], [], [(IdRef, One)]),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        FMin,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UMin,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        SMin,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        FMax,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UMax,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        SMax,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         FClamp,
-        43u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         UClamp,
-        44u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         SClamp,
-        45u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         FMix,
-        46u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         IMix,
-        47u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(Step, 48u32, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Step,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         SmoothStep,
-        49u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         Fma,
-        50u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(Frexp, 51u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(FrexpStruct, 52u32, [], [], [(IdRef, One)]),
-    ext_inst!(Ldexp, 53u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(PackSnorm4x8, 54u32, [], [], [(IdRef, One)]),
-    ext_inst!(PackUnorm4x8, 55u32, [], [], [(IdRef, One)]),
-    ext_inst!(PackSnorm2x16, 56u32, [], [], [(IdRef, One)]),
-    ext_inst!(PackUnorm2x16, 57u32, [], [], [(IdRef, One)]),
-    ext_inst!(PackHalf2x16, 58u32, [], [], [(IdRef, One)]),
-    ext_inst!(PackDouble2x32, 59u32, [Float64], [], [(IdRef, One)]),
-    ext_inst!(UnpackSnorm2x16, 60u32, [], [], [(IdRef, One)]),
-    ext_inst!(UnpackUnorm2x16, 61u32, [], [], [(IdRef, One)]),
-    ext_inst!(UnpackHalf2x16, 62u32, [], [], [(IdRef, One)]),
-    ext_inst!(UnpackSnorm4x8, 63u32, [], [], [(IdRef, One)]),
-    ext_inst!(UnpackUnorm4x8, 64u32, [], [], [(IdRef, One)]),
-    ext_inst!(UnpackDouble2x32, 65u32, [Float64], [], [(IdRef, One)]),
-    ext_inst!(Length, 66u32, [], [], [(IdRef, One)]),
-    ext_inst!(Distance, 67u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(Cross, 68u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(Normalize, 69u32, [], [], [(IdRef, One)]),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Frexp,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        FrexpStruct,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Ldexp,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        PackSnorm4x8,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        PackUnorm4x8,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        PackSnorm2x16,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        PackUnorm2x16,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        PackHalf2x16,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        PackDouble2x32,
+        [Float64],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UnpackSnorm2x16,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UnpackUnorm2x16,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UnpackHalf2x16,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UnpackSnorm4x8,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UnpackUnorm4x8,
+        [],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        UnpackDouble2x32,
+        [Float64],
+        [],
+        [(IdRef, One)]
+    ),
+    ext_inst!(GlslStd450, GlslStd450Op, Length, [], [], [(IdRef, One)]),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Distance,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Cross,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(GlslStd450, GlslStd450Op, Normalize, [], [], [(IdRef, One)]),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         FaceForward,
-        70u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(Reflect, 71u32, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        Reflect,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         Refract,
-        72u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(FindILsb, 73u32, [], [], [(IdRef, One)]),
-    ext_inst!(FindSMsb, 74u32, [], [], [(IdRef, One)]),
-    ext_inst!(FindUMsb, 75u32, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, FindILsb, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, FindSMsb, [], [], [(IdRef, One)]),
+    ext_inst!(GlslStd450, GlslStd450Op, FindUMsb, [], [], [(IdRef, One)]),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         InterpolateAtCentroid,
-        76u32,
         [InterpolationFunction],
         [],
         [(IdRef, One)]
     ),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         InterpolateAtSample,
-        77u32,
         [InterpolationFunction],
         [],
         [(IdRef, One), (IdRef, One)]
     ),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         InterpolateAtOffset,
-        78u32,
         [InterpolationFunction],
         [],
         [(IdRef, One), (IdRef, One)]
     ),
-    ext_inst!(NMin, 79u32, [], [], [(IdRef, One), (IdRef, One)]),
-    ext_inst!(NMax, 80u32, [], [], [(IdRef, One), (IdRef, One)]),
     ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        NMin,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
+        NMax,
+        [],
+        [],
+        [(IdRef, One), (IdRef, One)]
+    ),
+    ext_inst!(
+        GlslStd450,
+        GlslStd450Op,
         NClamp,
-        81u32,
         [],
         [],
         [(IdRef, One), (IdRef, One), (IdRef, One)]
     ),
 ];
+pub static GLSL_STD_450_INSTRUCTION_TABLE: InstructionTable<ExtInstOp> =
+    InstructionTable(GLSL_STD_450_INSTRUCTIONS, std::marker::PhantomData);

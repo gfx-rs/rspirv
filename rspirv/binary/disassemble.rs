@@ -248,9 +248,6 @@ fn disas_ext_inst(
     if let (&dr::Operand::IdRef(id), &dr::Operand::LiteralExtInstInteger(opcode)) =
         (&inst.operands[0], &inst.operands[1])
     {
-        if !ext_inst_set_tracker.have(id) {
-            return inst.disassemble();
-        }
         if let Some(grammar) = ext_inst_set_tracker.resolve(id, opcode) {
             let mut operands = vec![inst.operands[0].disassemble(), grammar.opname.to_string()];
             for operand in &inst.operands[2..] {
@@ -282,13 +279,11 @@ mod tests {
         );
         assert_eq!("Inline|Pure", o.disassemble());
         let o = dr::Operand::FunctionControl(spirv::FunctionControl::all());
-        assert_eq!("Inline|DontInline|Pure|Const|OptNoneINTEL", o.disassemble());
+        assert_eq!("Inline|DontInline|Pure|Const|OptNoneEXT", o.disassemble());
     }
 
     #[test]
     fn test_disassemble_operand_memory_semantics() {
-        let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::NONE);
-        assert_eq!("None", o.disassemble());
         let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::RELAXED);
         assert_eq!("None", o.disassemble());
         let o = dr::Operand::MemorySemantics(spirv::MemorySemantics::RELEASE);
@@ -310,7 +305,7 @@ mod tests {
         b.source(spirv::SourceLanguage::GLSL, 450, None, None::<String>);
 
         let void = b.type_void();
-        let float32 = b.type_float(32);
+        let float32 = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b
@@ -370,8 +365,8 @@ mod tests {
         let int64 = b.type_int(64, 1);
         let uint32 = b.type_int(32, 0);
         let uint64 = b.type_int(64, 0);
-        let float32 = b.type_float(32);
-        let float64 = b.type_float(64);
+        let float32 = b.type_float(32, None);
+        let float64 = b.type_float(64, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         let f = b
@@ -442,7 +437,7 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::Simple);
 
         let void = b.type_void();
-        let float32 = b.type_float(32);
+        let float32 = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b
@@ -484,7 +479,7 @@ mod tests {
         b.memory_model(spirv::AddressingModel::Logical, spirv::MemoryModel::OpenCL);
 
         let void = b.type_void();
-        let float32 = b.type_float(32);
+        let float32 = b.type_float(32, None);
         let voidfvoid = b.type_function(void, vec![void]);
 
         assert!(b

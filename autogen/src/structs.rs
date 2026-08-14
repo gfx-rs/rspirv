@@ -1,4 +1,6 @@
-/// Rust structs for deserializing the SPIR-V JSON grammar.
+//! Rust structs for deserializing the SPIR-V JSON grammar.
+#![allow(dead_code)] // Parsed but unread fields
+
 use serde::de;
 use serde_derive::*;
 use std::{convert::TryInto, fmt, result, str};
@@ -16,6 +18,8 @@ pub struct Operand {
 pub struct Instruction {
     pub class: Option<Class>,
     pub opname: String,
+    #[serde(default)]
+    pub aliases: Vec<String>,
     pub opcode: u32,
     #[serde(default)]
     pub operands: Vec<Operand>,
@@ -23,12 +27,17 @@ pub struct Instruction {
     pub capabilities: Vec<String>,
     #[serde(default)]
     pub extensions: Vec<String>,
+    // TODO: Skip provisional instructions?
+    #[serde(default)]
+    pub provisional: bool,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Enumerant {
     #[serde(rename = "enumerant")]
     pub symbol: String,
+    #[serde(default)]
+    pub aliases: Vec<String>,
     #[serde(deserialize_with = "num_or_hex")]
     pub value: u32,
     #[serde(default)]
@@ -68,10 +77,13 @@ pub struct Grammar {
 #[derive(Debug, Deserialize)]
 #[allow(dead_code)]
 pub struct ExtInstSetGrammar {
+    #[serde(default)]
     pub copyright: Vec<String>,
-    pub version: u32,
+    pub version: Option<u32>,
     pub revision: u32,
     pub instructions: Vec<Instruction>,
+    #[serde(default)]
+    pub operand_kinds: Vec<OperandKind>,
 }
 
 fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Error> {
@@ -85,7 +97,8 @@ fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Err
         }
 
         fn visit_str<E: de::Error>(self, value: &str) -> result::Result<Self::Value, E> {
-            Ok(u32::from_str_radix(&value[2..], 16).unwrap())
+            let hex = value.strip_prefix("0x").unwrap();
+            Ok(u32::from_str_radix(hex, 16).unwrap())
         }
 
         fn visit_u64<E: de::Error>(self, value: u64) -> result::Result<Self::Value, E> {
@@ -96,20 +109,15 @@ fn num_or_hex<'de, D: de::Deserializer<'de>>(d: D) -> result::Result<u32, D::Err
     d.deserialize_any(NumOrStr)
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Ord, PartialOrd)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Ord, PartialOrd)]
 pub enum Quantifier {
     #[serde(rename = "")]
+    #[default]
     One,
     #[serde(rename = "?")]
     ZeroOrOne,
     #[serde(rename = "*")]
     ZeroOrMore,
-}
-
-impl Default for Quantifier {
-    fn default() -> Self {
-        Quantifier::One
-    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
@@ -120,7 +128,6 @@ pub enum Class {
     #[serde(rename = "Constant-Creation")]
     Constant,
     Debug,
-    DebugLine,
     #[serde(rename = "Extension")]
     ExtensionDecl,
     #[serde(rename = "Function")]
@@ -152,6 +159,8 @@ pub enum Class {
     DeviceSideEnqueue,
     #[serde(rename = "Non-Uniform")]
     NonUniform,
+    Tensor,
+    Graph,
     Reserved,
     #[serde(rename = "@exclude")]
     Exclude,

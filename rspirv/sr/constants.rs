@@ -50,7 +50,7 @@ impl Constant {
     }
 
     pub fn is_null_constant(&self) -> bool {
-        matches!(self, Constant::Null { .. })
+        matches!(self, Constant::Null)
     }
 
     pub fn is_sampler_constant(&self) -> bool {

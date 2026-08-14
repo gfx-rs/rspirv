@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::structs;
 use crate::utils::*;
 
@@ -128,7 +126,6 @@ fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&st
     }).filter_map(|element| {
         // Get the symbol and all the parameters for each enumerant.
         let pairs: Vec<(&str, Vec<&str>)> = element.enumerants.iter()
-            .scan(HashSet::new(), |seen_values, e| Some(if seen_values.insert(e.value) { Some(e) } else { None })).flatten()
             .filter_map(|e| {
                 let params: Vec<&str> = e.parameters.iter().map(
                     |p| { p.kind.as_str() }
@@ -155,7 +152,7 @@ fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&st
             // For each operand kind in the BitEnum category, its
             // enumerants are bit masks. If a certain bit having associated
             // parameters is set, we also need to decode the corresponding
-            // parameters. E.g., for MemoryAccess Aigned, an additional
+            // parameters. E.g., for MemoryAccess Aligned, an additional
             // LiteralInteger, which stands for the known alignment, should
             // be decoded.
 
@@ -194,10 +191,7 @@ fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&st
                     spirv::#kind::#symbol => vec![#(#params),*]
                 }
             });
-            // TODO: filter duplicated symbols mapping to the same discriminator to avoid
-            // unreachable patterns.
             quote! {
-                #[allow(unreachable_patterns)]
                 fn #function_name(&mut self, #lo_kind: spirv::#kind) -> Result<Vec<dr::Operand>> {
                     Ok(match #lo_kind {
                         #(#cases),*,
@@ -212,7 +206,10 @@ fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&st
 
 /// Returns the generated operand parsing methods for binary::Parser by
 /// walking the given SPIR-V operand kinds `grammar`.
-pub fn gen_operand_parse_methods(grammar: &[structs::OperandKind]) -> TokenStream {
+pub fn gen_operand_parse_methods(
+    grammar: &[structs::OperandKind],
+    ext_wrapper_variants: &[&str],
+) -> TokenStream {
     // Operand kinds whose enumerants have parameters. For these kinds, we need
     // to decode more than just the enumerants themselves.
     let (further_parse_kinds, further_parse_methods): (Vec<_>, Vec<_>) =
@@ -287,14 +284,30 @@ pub fn gen_operand_parse_methods(grammar: &[structs::OperandKind]) -> TokenStrea
         }
     });
 
+    // Extended instruction operand kinds wrapped in OperandKind variants.
+    // These are operand kinds specific to extended instruction sets (e.g.
+    // DebugInfo, OpenCL.debuginfo.100) that appear in the grammar tables
+    // but are not yet supported for binary parsing. Extended instructions
+    // are parsed generically (all operands read as raw words), so these
+    // kinds are never reached through `parse_operand`.
+    let ext_operand_cases = ext_wrapper_variants.iter().map(|variant| {
+        let variant = as_ident(variant);
+        quote! {
+            GOpKind::#variant(_) => todo!("extended instruction operand kind not yet supported for parsing")
+        }
+    });
+
+    let all_cases = normal_cases
+        .chain(pair_cases)
+        .chain(further_parse_cases)
+        .chain(manual_cases)
+        .chain(ext_operand_cases);
+
     quote! {
         impl Parser<'_, '_> {
             fn parse_operand(&mut self, kind: GOpKind) -> Result<Vec<dr::Operand>> {
                 Ok(match kind {
-                    #(#normal_cases),*,
-                    #(#pair_cases),*,
-                    #(#further_parse_cases),*,
-                    #(#manual_cases),*,
+                    #(#all_cases),*
                 })
             }
             #(#further_parse_methods)*

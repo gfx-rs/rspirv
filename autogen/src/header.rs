@@ -7,12 +7,6 @@ use quote::quote;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
 
-static GLSL_STD_450_SPEC_LINK: &str = "\
-https://www.khronos.org/registry/spir-v/specs/unified1/GLSL.std.450.html";
-
-static OPENCL_STD_SPEC_LINK: &str = "\
-https://www.khronos.org/registry/spir-v/specs/unified1/OpenCL.ExtendedInstructionSet.100.html";
-
 /// Returns the markdown string containing a link to the spec for the given
 /// operand `kind`.
 fn get_spec_link(kind: &str) -> String {
@@ -43,7 +37,7 @@ fn bit_enum_attribute() -> TokenStream {
 fn generate_enum(
     enum_name: &proc_macro2::Ident,
     variants: &[(u32, proc_macro2::Ident)],
-    comment: String,
+    comment: &str,
 ) -> TokenStream {
     let mut variants = variants.to_vec();
     variants.sort_by_key(|&(number, _)| number);
@@ -51,21 +45,23 @@ fn generate_enum(
         .iter()
         .map(|(number, name)| quote! { #name = #number });
 
-    // Each item is a tuple indicating an inclusive range as opposed to an exclusive range like is
-    // common.
-    let mut number_runs = vec![(variants[0].0, variants[0].0)];
-    for &(number, _) in variants.iter().skip(1) {
-        let last_run = number_runs.last_mut().unwrap();
-        match number.cmp(&(last_run.1 + 1)) {
-            Ordering::Equal => last_run.1 = number,
-            Ordering::Greater => number_runs.push((number, number)),
-            Ordering::Less => unreachable!("Variants not sorted by discriminant"),
+    // Each item is a tuple indicating an inclusive range as opposed to an exclusive range like
+    // is common.
+    let mut number_runs = Vec::<(u32, u32)>::new();
+    for &(number, _) in variants.iter() {
+        if let Some(last_run) = number_runs.last_mut() {
+            match number.cmp(&(last_run.1 + 1)) {
+                Ordering::Equal => last_run.1 = number,
+                Ordering::Greater => number_runs.push((number, number)),
+                Ordering::Less => unreachable!("Variants not sorted by discriminant"),
+            }
+        } else {
+            number_runs.push((number, number));
         }
     }
-
     // We try to check if the given number is within a run of valid discriminants and if so
     // transmute the number directly to the enum type.
-    let from_prim = number_runs
+    let mut from_prim = number_runs
         .iter()
         .map(|&(start, end)| {
             if end == start {
@@ -77,11 +73,22 @@ fn generate_enum(
         })
         .collect::<Vec<_>>();
 
+    // At least one variant is required for repr(u32).  Generate a Max member like Spirv-Headers
+    // tooling does.
+    let empty_enum = variants.is_empty().then_some(quote!(Max = 0x7fffffff));
+
+    // TODO: Only FPEncoding doesn't list any valid values besides a "Max". This type shouldn't be
+    // an `enum` but a `pub` newtype wrapper?
+    if variants.is_empty() {
+        from_prim.push(quote! { 0x7fffffff => Self::Max });
+    }
+
     let attribute = value_enum_attribute();
     quote! {
         #[doc = #comment]
         #attribute
         pub enum #enum_name {
+            #empty_enum
             #(#enumerants),*
         }
 
@@ -157,7 +164,6 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
 
     // We can have more than one enumerants mapping to the same discriminator.
     // Use associated constants for these aliases.
-    let mut seen_discriminator = BTreeMap::new();
     let mut variants = vec![];
     let mut aliases = vec![];
     let mut capability_clauses = BTreeMap::new();
@@ -165,66 +171,68 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut operand_clauses = BTreeMap::new();
     let mut from_str_impl = vec![];
     for e in &grammar.enumerants {
-        if let Some(discriminator) = seen_discriminator.get(&e.value) {
-            let name_str = &e.symbol;
-            let symbol = as_ident(&e.symbol);
-            aliases.push(quote! {
-                pub const #symbol: Self = Self::#discriminator;
-            });
-            from_str_impl.push(quote! { #name_str => Ok(Self::#discriminator), });
+        // Special case for Dim. Its enumerants can start with a digit.
+        // So prefix with the kind name here.
+        let name_str = if grammar.kind == "Dim" {
+            let mut name = "Dim".to_string();
+            name.push_str(&e.symbol);
+            name
         } else {
-            // Special case for Dim. Its enumerants can start with a digit.
-            // So prefix with the kind name here.
-            let name_str = if grammar.kind == "Dim" {
-                let mut name = "Dim".to_string();
-                name.push_str(&e.symbol);
-                name
-            } else {
-                e.symbol.to_string()
-            };
-            let name = as_ident(&name_str);
-            let number = e.value;
-            seen_discriminator.insert(e.value, name.clone());
-            variants.push((number, name.clone()));
-            from_str_impl.push(quote! { #name_str => Ok(Self::#name), });
+            e.symbol.to_string()
+        };
+        let name = as_ident(&name_str);
+        let number = e.value;
+        variants.push((number, name.clone()));
+        from_str_impl.push(quote! { #name_str => Self::#name });
 
-            capability_clauses
-                .entry(&e.capabilities)
-                .or_insert_with(Vec::new)
-                .push(name.clone());
-
-            extension_clauses
-                .entry(&e.extensions)
-                .or_insert_with(Vec::new)
-                .push(name.clone());
-
-            operand_clauses
-                .entry(name.clone())
-                .or_insert_with(Vec::new)
-                .extend(e.parameters.iter().map(|op| {
-                    let kind = as_ident(&op.kind);
-
-                    let quant = match op.quantifier {
-                        structs::Quantifier::One => quote! { OperandQuantifier::One },
-                        structs::Quantifier::ZeroOrOne => quote! { OperandQuantifier::ZeroOrOne },
-                        structs::Quantifier::ZeroOrMore => quote! { OperandQuantifier::ZeroOrMore },
-                    };
-
-                    quote! {
-                        LogicalOperand {
-                            kind: OperandKind::#kind,
-                            quantifier: #quant
-                        }
-                    }
-                }));
+        for alias in &e.aliases {
+            let alias_ident = as_ident(alias);
+            aliases.push(quote!(pub const #alias_ident: Self = Self::#name;));
+            from_str_impl.push(quote!(#alias => Self::#name));
         }
+
+        capability_clauses
+            .entry(&e.capabilities)
+            .or_insert_with(Vec::new)
+            .push(name.clone());
+
+        extension_clauses
+            .entry(&e.extensions)
+            .or_insert_with(Vec::new)
+            .push(name.clone());
+
+        operand_clauses
+            .entry(name.clone())
+            .or_insert_with(Vec::new)
+            .extend(e.parameters.iter().map(|op| {
+                let kind = as_ident(&op.kind);
+
+                let quant = match op.quantifier {
+                    structs::Quantifier::One => quote! { OperandQuantifier::One },
+                    structs::Quantifier::ZeroOrOne => quote! { OperandQuantifier::ZeroOrOne },
+                    structs::Quantifier::ZeroOrMore => quote! { OperandQuantifier::ZeroOrMore },
+                };
+
+                quote! {
+                    LogicalOperand {
+                        kind: OperandKind::#kind,
+                        quantifier: #quant
+                    }
+                }
+            }));
     }
 
     let the_enum = generate_enum(
         &kind,
         &variants,
-        format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
+        &format!("SPIR-V operand kind: {}", get_spec_link(&grammar.kind)),
     );
+
+    // TODO: Only FPEncoding doesn't list any valid values besides a "Max". This type shouldn't be
+    // an `enum` but a `pub` newtype wrapper?
+    if variants.is_empty() {
+        from_str_impl.push(quote! { "Max" => Self::Max });
+    }
 
     quote! {
         #the_enum
@@ -238,10 +246,10 @@ fn gen_value_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
             type Err = ();
 
             fn from_str(s: &str) -> Result<Self, Self::Err> {
-                match s {
-                    #(#from_str_impl)*
-                    _ => Err(()),
-                }
+                Ok(match s {
+                    #(#from_str_impl,)*
+                    _ => return Err(())
+                })
             }
         }
     }
@@ -275,27 +283,50 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
 
     // We can have more than one op symbol mapping to the same opcode.
     // Use associated constants for these aliases.
-    let mut seen_discriminator = BTreeMap::new();
     let mut aliases = vec![];
     let mut variants = vec![];
+    let mut types = vec![];
+    let mut constants = vec![];
+    let mut annotations = vec![];
+    let mut debugs = vec![];
+    let mut control_flows = vec![];
 
     // Get the instruction table.
     for inst in &grammar.instructions {
-        // Omit the "Op" prefix.
-        let opname = as_ident(&inst.opname[2..]);
+        let opname = as_ident(inst.opname.strip_prefix("Op").unwrap());
         let opcode = inst.opcode;
-        if let Some(discriminator) = seen_discriminator.get(&opcode) {
-            aliases.push(quote! { pub const #opname : Op = Op::#discriminator; });
-        } else {
-            variants.push((opcode, opname.clone()));
-            seen_discriminator.insert(opcode, opname.clone());
+        variants.push((opcode, opname.clone()));
+
+        let opname = quote!(Self::#opname);
+        for alias in &inst.aliases {
+            let alias = as_ident(alias.strip_prefix("Op").unwrap());
+            aliases.push(quote! { pub const #alias: Self = #opname; });
+        }
+
+        match inst.class {
+            Some(structs::Class::Type) => {
+                types.push(opname);
+            }
+            Some(structs::Class::Constant) => {
+                constants.push(opname);
+            }
+            Some(structs::Class::Annotation) => {
+                annotations.push(opname);
+            }
+            Some(structs::Class::Debug) => {
+                debugs.push(opname);
+            }
+            Some(structs::Class::Branch) => {
+                control_flows.push(opname);
+            }
+            _ => {}
         }
     }
 
     let the_enum = generate_enum(
         &as_ident("Op"),
         &variants,
-        format!("SPIR-V {} opcodes", get_spec_link("instructions")),
+        &format!("SPIR-V {} opcodes", get_spec_link("instructions")),
     );
 
     quote! {
@@ -314,12 +345,44 @@ pub fn gen_spirv_header(grammar: &structs::Grammar) -> TokenStream {
         #[allow(non_upper_case_globals)]
         impl Op {
             #(#aliases)*
+
+            /// Returns [`true`] if the given opcode is a type-declaring instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_type_declaration_instructions>
+            pub fn is_type(self) -> bool {
+                matches!(self, #(#types)|*)
+            }
+            /// Returns [`true`] if the given opcode is a constant-defining instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_constant_creation_instructions>
+            pub fn is_constant(self) -> bool {
+                matches!(self, #(#constants)|*)
+            }
+            /// Returns [`true`] if the given opcode is an annotation instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#Annotation>
+            pub fn is_annotation(self) -> bool {
+                matches!(self, #(#annotations)|*)
+            }
+            /// Returns [`true`] if the given opcode is a debug instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_debug_instructions>
+            pub fn is_debug(self) -> bool {
+                matches!(self, #(#debugs)|*)
+            }
+            /// Returns [`true`] if the given opcode is a control-flow instruction.
+            ///
+            /// <https://registry.khronos.org/SPIR-V/specs/unified1/SPIRV.html#_control_flow_instructions>
+            pub fn is_control_flow(self) -> bool {
+                matches!(self, #(#control_flows)|*)
+            }
         }
     }
 }
 
-/// Returns the GLSL.std.450 extended instruction opcodes.
-pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
+/// Returns extended instruction opcodes
+pub fn gen_opcodes(op: &str, grammar: &structs::ExtInstSetGrammar, comment: &str) -> TokenStream {
+    let op = as_ident(op);
     // Get the instruction table.
     let variants = grammar
         .instructions
@@ -331,35 +394,5 @@ pub fn gen_glsl_std_450_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenSt
         })
         .collect::<Vec<_>>();
 
-    generate_enum(
-        &as_ident("GLOp"),
-        &variants,
-        format!(
-            "[GLSL.std.450]({}) extended instruction opcode",
-            GLSL_STD_450_SPEC_LINK
-        ),
-    )
-}
-
-/// Returns the OpenCL.std extended instruction opcodes.
-pub fn gen_opencl_std_opcodes(grammar: &structs::ExtInstSetGrammar) -> TokenStream {
-    // Get the instruction table.
-    let variants = grammar
-        .instructions
-        .iter()
-        .map(|inst| {
-            let opname = as_ident(&inst.opname);
-            let opcode = inst.opcode;
-            (opcode, opname)
-        })
-        .collect::<Vec<_>>();
-
-    generate_enum(
-        &as_ident("CLOp"),
-        &variants,
-        format!(
-            "[OpenCL.std]({}) extended instruction opcode",
-            OPENCL_STD_SPEC_LINK
-        ),
-    )
+    generate_enum(&op, &variants, comment)
 }

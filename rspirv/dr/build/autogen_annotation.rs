@@ -101,6 +101,28 @@ impl Builder {
         inst.operands.extend(additional_params);
         self.module.annotations.push(inst);
     }
+    #[doc = "Appends an OpMemberDecorateIdEXT instruction."]
+    pub fn member_decorate_id_ext(
+        &mut self,
+        structure_type: spirv::Word,
+        member: u32,
+        decoration: spirv::Decoration,
+        additional_params: impl IntoIterator<Item = dr::Operand>,
+    ) {
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::MemberDecorateIdEXT,
+            None,
+            None,
+            vec![
+                dr::Operand::IdRef(structure_type),
+                dr::Operand::LiteralBit32(member),
+                dr::Operand::Decoration(decoration),
+            ],
+        );
+        inst.operands.extend(additional_params);
+        self.module.annotations.push(inst);
+    }
     #[doc = "Appends an OpDecorateString instruction."]
     pub fn decorate_string(
         &mut self,
@@ -111,26 +133,6 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::DecorateString,
-            None,
-            None,
-            vec![
-                dr::Operand::IdRef(target),
-                dr::Operand::Decoration(decoration),
-            ],
-        );
-        inst.operands.extend(additional_params);
-        self.module.annotations.push(inst);
-    }
-    #[doc = "Appends an OpDecorateStringGOOGLE instruction."]
-    pub fn decorate_string_google(
-        &mut self,
-        target: spirv::Word,
-        decoration: spirv::Decoration,
-        additional_params: impl IntoIterator<Item = dr::Operand>,
-    ) {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::DecorateStringGOOGLE,
             None,
             None,
             vec![
@@ -152,28 +154,6 @@ impl Builder {
         #[allow(unused_mut)]
         let mut inst = dr::Instruction::new(
             spirv::Op::MemberDecorateString,
-            None,
-            None,
-            vec![
-                dr::Operand::IdRef(struct_type),
-                dr::Operand::LiteralBit32(member),
-                dr::Operand::Decoration(decoration),
-            ],
-        );
-        inst.operands.extend(additional_params);
-        self.module.annotations.push(inst);
-    }
-    #[doc = "Appends an OpMemberDecorateStringGOOGLE instruction."]
-    pub fn member_decorate_string_google(
-        &mut self,
-        struct_type: spirv::Word,
-        member: u32,
-        decoration: spirv::Decoration,
-        additional_params: impl IntoIterator<Item = dr::Operand>,
-    ) {
-        #[allow(unused_mut)]
-        let mut inst = dr::Instruction::new(
-            spirv::Op::MemberDecorateStringGOOGLE,
             None,
             None,
             vec![

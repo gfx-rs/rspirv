@@ -587,8 +587,24 @@ impl Builder {
             dr::Operand::IdRef(entry_point),
             dr::Operand::ExecutionMode(execution_mode),
         ];
-        for v in params.as_ref() {
-            operands.push(dr::Operand::LiteralBit32(*v));
+
+        // Different execution modes require different operand types
+        match execution_mode {
+            // From SPIRV spec section 3.6.38:
+            // "Same as the LocalSize Mode, but using <id> operands instead of literals.
+            // The operands are consumed as unsigned and each must be an integer type
+            // scalar."
+            spirv::ExecutionMode::LocalSizeId => {
+                for v in params.as_ref() {
+                    operands.push(dr::Operand::IdRef(*v));
+                }
+            }
+            // Other execution modes use literal values
+            _ => {
+                for v in params.as_ref() {
+                    operands.push(dr::Operand::LiteralBit32(*v));
+                }
+            }
         }
 
         let inst = dr::Instruction::new(spirv::Op::ExecutionModeId, None, None, operands);
@@ -966,7 +982,7 @@ mod tests {
     #[test]
     fn test_constant_bit32() {
         let mut b = Builder::new();
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         // Normal numbers
         b.constant_bit32(float, f32::consts::PI.to_bits());
         b.constant_bit32(float, 2e-10f32.to_bits());
@@ -1031,7 +1047,7 @@ mod tests {
     #[test]
     fn test_spec_constant_bit32() {
         let mut b = Builder::new();
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         // Normal numbers
         b.spec_constant_bit32(float, 10.0f32.to_bits());
         // Zero
@@ -1083,8 +1099,8 @@ mod tests {
     #[test]
     fn test_forward_ref_pointer_type() {
         let mut b = Builder::new();
-        let float = b.type_float(32); // 1
-                                      // Let builder generate
+        let float = b.type_float(32, None); // 1
+                                            // Let builder generate
         let p1 = b.type_pointer(None, spirv::StorageClass::Input, float); // 2
                                                                           // We supply
         let pointee = b.id(); // 3
@@ -1143,7 +1159,7 @@ mod tests {
     fn test_forward_ref_phi() {
         let mut b = Builder::new();
 
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         assert_eq!(1, float);
         let f32ff32 = b.type_function(float, vec![float]);
         assert_eq!(2, f32ff32);
@@ -1210,7 +1226,7 @@ mod tests {
 
         let void = b.type_void();
         assert_eq!(1, void);
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         assert_eq!(2, float);
         let ifp = b.type_pointer(None, spirv::StorageClass::Input, float);
         assert_eq!(3, ifp);
@@ -1263,7 +1279,7 @@ mod tests {
 
         let void = b.type_void();
         assert_eq!(1, void);
-        let float = b.type_float(32);
+        let float = b.type_float(32, None);
         assert_eq!(2, float);
         let voidfvoid = b.type_function(void, vec![void]);
         assert_eq!(3, voidfvoid);
