@@ -111,7 +111,7 @@ fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         as_ident(&format!("{}ret_value", prepend))
     } else {
-        as_ident(&format!("{}{}", prepend, &opname[2..].to_snake_case()))
+        as_ident(&format!("{}{}", prepend, opname[2..].to_snake_case()))
     };
 
     quote! { #name }
