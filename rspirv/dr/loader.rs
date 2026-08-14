@@ -136,6 +136,7 @@ impl binary::Consumer for Loader {
             spirv::Op::MemoryModel => self.module.memory_model = Some(inst),
             spirv::Op::EntryPoint => self.module.entry_points.push(inst),
             spirv::Op::ExecutionMode => self.module.execution_modes.push(inst),
+            spirv::Op::ExecutionModeId => self.module.execution_modes.push(inst),
             spirv::Op::String
             | spirv::Op::SourceExtension
             | spirv::Op::Source

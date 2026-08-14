@@ -587,8 +587,24 @@ impl Builder {
             dr::Operand::IdRef(entry_point),
             dr::Operand::ExecutionMode(execution_mode),
         ];
-        for v in params.as_ref() {
-            operands.push(dr::Operand::LiteralBit32(*v));
+
+        // Different execution modes require different operand types
+        match execution_mode {
+            // From SPIRV spec section 3.6.38:
+            // "Same as the LocalSize Mode, but using <id> operands instead of literals.
+            // The operands are consumed as unsigned and each must be an integer type
+            // scalar."
+            spirv::ExecutionMode::LocalSizeId => {
+                for v in params.as_ref() {
+                    operands.push(dr::Operand::IdRef(*v));
+                }
+            }
+            // Other execution modes use literal values
+            _ => {
+                for v in params.as_ref() {
+                    operands.push(dr::Operand::LiteralBit32(*v));
+                }
+            }
         }
 
         let inst = dr::Instruction::new(spirv::Op::ExecutionModeId, None, None, operands);
