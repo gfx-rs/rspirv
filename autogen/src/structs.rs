@@ -49,6 +49,7 @@ pub struct Enumerant {
 }
 
 #[derive(Debug, Deserialize, Clone)]
+#[allow(dead_code)]
 pub struct OperandKind {
     pub category: Category,
     pub kind: String,
@@ -62,6 +63,7 @@ pub struct OperandKind {
 
 #[derive(Debug, Deserialize)]
 pub struct Grammar {
+    #[allow(dead_code)]
     pub copyright: Vec<String>,
     #[serde(deserialize_with = "num_or_hex")]
     pub magic_number: u32,
@@ -73,6 +75,7 @@ pub struct Grammar {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct ExtInstSetGrammar {
     #[serde(default)]
     pub copyright: Vec<String>,

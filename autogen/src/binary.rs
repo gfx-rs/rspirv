@@ -1,7 +1,7 @@
 use crate::structs;
 use crate::utils::*;
 
-use heck::{ShoutySnakeCase, SnakeCase};
+use heck::SnakeCase;
 use proc_macro2::{Ident, TokenStream};
 use quote::quote;
 
@@ -165,7 +165,7 @@ fn gen_operand_param_parse_methods(grammar: &[structs::OperandKind]) -> Vec<(&st
                     let decode = get_decode_method(element);
                     quote! { dr::Operand::#op_kind(self.decoder.#decode()?) }
                 });
-                let bit = as_ident(&symbol.to_shouty_snake_case());
+                let bit = as_ident(&as_shouty_snake_case(symbol));
                 quote! {
                     if #lo_kind.contains(spirv::#kind::#bit) {
                         params.append(&mut vec![#(#params),*]);
@@ -328,13 +328,7 @@ pub fn gen_disas_bit_enum_operands(grammar: &[structs::OperandKind]) -> TokenStr
                     if enumerant.value == 0x0000 {
                         None
                     } else {
-                        let symbol = as_ident(
-                            &enumerant
-                                .symbol
-                                .to_snake_case()
-                                .replace("na_n", "nan")
-                                .to_uppercase(),
-                        );
+                        let symbol = as_ident(&as_shouty_snake_case(&enumerant.symbol));
                         Some((quote! { #kind::#symbol }, &enumerant.symbol))
                     }
                 })
