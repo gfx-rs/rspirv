@@ -99,7 +99,8 @@ fn get_function_name(opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         quote! { ret_value }
     } else {
-        let name = as_ident(&opname[2..].to_snake_case());
+        let opname = opname.strip_prefix("Op").unwrap();
+        let name = as_ident(&opname.to_snake_case());
         quote! { #name }
     }
 }
@@ -111,7 +112,8 @@ fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         as_ident(&format!("{}ret_value", prepend))
     } else {
-        as_ident(&format!("{}{}", prepend, &opname[2..].to_snake_case()))
+        let opname = opname.strip_prefix("Op").unwrap();
+        as_ident(&format!("{}{}", prepend, opname.to_snake_case()))
     };
 
     quote! { #name }
@@ -662,8 +664,9 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
         let extras = get_push_extras(&inst.operands,
                                      kinds,
                                      quote! { inst.operands });
-        let opcode = as_ident(&inst.opname[2..]);
-        let name = as_ident(&inst.opname[2..].to_snake_case());
+        let opname = inst.opname.strip_prefix("Op").unwrap();
+        let opcode = as_ident(opname);
+        let name = as_ident(&opname.to_snake_case());
 
         let comment = format!("Appends an Op{} instruction and returns the result id, or return the existing id if the instruction was already present.", opcode);
         let name_id = format_ident!("{}_id", name);
@@ -722,7 +725,8 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+        let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!(
                 "Appends an Op{} instruction and ends the current block.",
                 opcode
@@ -793,7 +797,8 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, true, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction to the current block.", opcode);
             let name = get_function_name(&inst.opname);
             let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
@@ -877,7 +882,8 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction.", opcode);
             let name = get_function_name(&inst.opname);
             let init = get_init_list(&inst.operands);
@@ -915,7 +921,8 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction.", opcode);
             let name = get_function_name(&inst.opname);
             let init = get_init_list(&inst.operands);
@@ -958,7 +965,8 @@ pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction.", opcode);
             let name = get_function_name(&inst.opname);
             let init = get_init_list(&inst.operands);

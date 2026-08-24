@@ -329,7 +329,7 @@ pub fn gen_sr_code_from_instruction_grammar(
         .filter(|i| i.class != Some(structs::Class::Constant))
     {
         // Get the token for its enumerant
-        let inst_name = &inst.opname[2..];
+        let inst_name = inst.opname.strip_prefix("Op").unwrap();
 
         let name_ident = Ident::new(inst_name, Span::call_site());
         let type_name = if inst.opname.len() > TYPE_PREFIX_LENGTH {
