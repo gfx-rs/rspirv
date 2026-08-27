@@ -10,6 +10,7 @@ repository = "https://github.com/gfx-rs/rspirv"
 readme = "README.md"
 license = "Apache-2.0"
 keywords = ["spirv", "vulkan", "opengl", "opencl"]
+rust-version = "1.87"
 
 [lib]
 path = "lib.rs"
