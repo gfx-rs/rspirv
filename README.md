@@ -28,8 +28,6 @@ Rust.
 Documentation
 -------------
 
-The current implementation supports SPIR-V 1.5 (Revision 4).
-
 Multiple crates are published from this project:
 
 |  Name  |   Crate   |   Docs   |
