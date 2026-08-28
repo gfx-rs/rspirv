@@ -154,6 +154,11 @@ impl LiftContext {
                                 };
                             }
                         }
+                        spirv::Op::FunctionCall => {
+                            let op = context.lift_function_call(inst)?;
+                            dbg!(&op);
+                            // TODO: Add as function call?
+                        }
                         _ => {
                             if let Some(id) = inst.result_id {
                                 let op = context.lift_op(inst)?;
