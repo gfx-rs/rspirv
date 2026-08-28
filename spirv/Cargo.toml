@@ -3,6 +3,7 @@ name = "spirv"
 version = "0.4.0+sdk-1.4.341.0"
 authors = ["Lei Zhang <antiagainst@gmail.com>"]
 edition = "2018"
+rust-version = "1.87"
 
 description = "Rust definition of SPIR-V structs and enums"
 documentation = "https://docs.rs/spirv"
