@@ -72,6 +72,9 @@
 //!             OpReturn\n\
 //!             OpFunctionEnd");
 //! ```
+//!
+//! These bindings have been generated from the <https://github.com/KhronosGroup/SPIRV-Headers> tag
+//! or release described by this crates' version metadata (the value after the `+`).
 
 pub use spirv;
 
