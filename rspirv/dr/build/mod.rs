@@ -577,18 +577,26 @@ impl Builder {
     }
 
     /// Appends an OpExecutionModeId instruction.
+    ///
+    /// Every `params` must be an ID reference to a constant.
     pub fn execution_mode_id(
         &mut self,
         entry_point: spirv::Word,
         execution_mode: spirv::ExecutionMode,
-        params: impl AsRef<[u32]>,
+        params: impl AsRef<[spirv::Word]>,
     ) {
         let mut operands = vec![
             dr::Operand::IdRef(entry_point),
             dr::Operand::ExecutionMode(execution_mode),
         ];
-        for v in params.as_ref() {
-            operands.push(dr::Operand::LiteralBit32(*v));
+
+        assert!(
+            !params.as_ref().is_empty(),
+            "Use execution_mode() when not taking any parameters"
+        );
+
+        for &v in params.as_ref() {
+            operands.push(dr::Operand::IdRef(v));
         }
 
         let inst = dr::Instruction::new(spirv::Op::ExecutionModeId, None, None, operands);
