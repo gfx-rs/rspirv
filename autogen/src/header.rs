@@ -1,7 +1,7 @@
 use crate::structs;
 use crate::utils::*;
 
-use heck::SnakeCase;
+use heck::{ShoutySnakeCase, SnakeCase};
 use proc_macro2::TokenStream;
 use quote::quote;
 use std::cmp::Ordering;
@@ -109,7 +109,13 @@ fn gen_bit_enum_operand_kind(grammar: &structs::OperandKind) -> TokenStream {
     let mut additional_operands_list = vec![];
 
     for enumerant in grammar.enumerants.iter() {
-        let symbol = as_ident(&as_shouty_snake_case(&enumerant.symbol));
+        // Special treatment for "NaN"
+        let symbol = as_ident(
+            &enumerant
+                .symbol
+                .to_shouty_snake_case()
+                .replace("NA_N", "NAN"),
+        );
         let value = enumerant.value;
 
         elements.push(quote! {

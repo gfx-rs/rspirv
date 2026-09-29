@@ -111,7 +111,7 @@ fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         as_ident(&format!("{}ret_value", prepend))
     } else {
-        as_ident(&format!("{}{}", prepend, opname[2..].to_snake_case()))
+        as_ident(&format!("{}{}", prepend, &opname[2..].to_snake_case()))
     };
 
     quote! { #name }
@@ -390,51 +390,54 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 let kind = as_ident(kind);
 
                 for e in enumerators {
-                    let name = match category {
-                        structs::Category::BitEnum => {
-                            as_ident(&as_shouty_snake_case(&e.symbol))
-                        }
-                        structs::Category::ValueEnum => {
-                            let name_str = if kind == "Dim" {
-                                let mut name = "Dim".to_string();
-                                name.push_str(&e.symbol);
-                                name
-                            } else {
-                                e.symbol.to_string()
-                            };
+                        let name = match category {
+                            structs::Category::BitEnum => {
+                                use heck::ShoutySnakeCase;
 
-                            as_ident(&name_str)
-                        }
-                        _ => panic!("Unexpected operand type"),
-                    };
+                                as_ident(&e.symbol.to_shouty_snake_case().replace("NA_N", "NAN"))
+                            }
+                            structs::Category::ValueEnum => {
+                                let name_str = if kind == "Dim" {
+                                    let mut name = "Dim".to_string();
+                                    name.push_str(&e.symbol);
+                                    name
+                                } else {
+                                    e.symbol.to_string()
+                                };
 
-                    capability_clauses
-                        .entry(&e.capabilities)
-                        .or_insert_with(Vec::new)
-                        .push(name.clone());
+                                as_ident(&name_str)
+                            }
+                            _ => panic!("Unexpected operand type"),
+                        };
 
-                    extension_clauses
-                        .entry(&e.extensions)
-                        .or_insert_with(Vec::new)
-                        .push(name.clone());
 
-                    if !e.parameters.is_empty() {
-                        operand_clauses
-                            .entry(&e.parameters)
+                        capability_clauses
+                            .entry(&e.capabilities)
                             .or_insert_with(Vec::new)
-                            .push(name.clone())
-                    }
+                            .push(name.clone());
+
+                        extension_clauses
+                            .entry(&e.extensions)
+                            .or_insert_with(Vec::new)
+                            .push(name.clone());
+
+                        if !e.parameters.is_empty() {
+                            operand_clauses
+                                .entry(&e.parameters)
+                                .or_insert_with(Vec::new)
+                                .push(name.clone())
+                        }
                 }
 
                 let extensions = if category == &structs::Category::BitEnum {
                     let extensions = extension_clauses
                             .into_iter()
                             .filter(|(k, _)| !k.is_empty())
-                            .map(|(k, vals)| {
+                            .map(|(k, v)| {
                                 let kinds = std::iter::repeat(quote! { s::#kind });
 
                                 quote! {
-                                    if v.intersects(#(#kinds::#vals)|*) {
+                                    if v.intersects(#(#kinds::#v)|*) {
                                         result.extend_from_slice(&[#( #k ),*])
                                     }
                                 }
@@ -452,10 +455,10 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                             }
                         }
                 } else {
-                    let extensions = extension_clauses.into_iter().map(|(k, vals)| {
+                    let extensions = extension_clauses.into_iter().map(|(k, v)| {
                         let kinds = std::iter::repeat(quote! { s::#kind });
                         quote! {
-                            #( #kinds::#vals )|* => vec![#( #k ),*]
+                            #( #kinds::#v )|* => vec![#( #k ),*]
                         }
                     });
 
@@ -470,12 +473,12 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                     let capabilities = capability_clauses
                             .into_iter()
                             .filter(|(k, _)| !k.is_empty())
-                            .map(|(k, vals)| {
+                            .map(|(k, v)| {
                                 let kinds = std::iter::repeat(quote! { s::#kind });
                                 let capabilities = k.iter().map(|cap| as_ident(cap));
 
                                 quote! {
-                                    if v.intersects(#(#kinds::#vals)|*) {
+                                    if v.intersects(#(#kinds::#v)|*) {
                                         result.extend_from_slice(&[#( spirv::Capability::#capabilities ),*])
                                     }
                                 }
@@ -493,11 +496,11 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                             }
                         }
                 } else {
-                    let capabilities = capability_clauses.into_iter().map(|(k, vals)| {
+                    let capabilities = capability_clauses.into_iter().map(|(k, v)| {
                         let kinds = std::iter::repeat(quote! { s::#kind });
                         let capabilities = k.iter().map(|cap| as_ident(cap));
                         quote! {
-                            #( #kinds::#vals )|* => vec![#( spirv::Capability::#capabilities ),*]
+                            #( #kinds::#v )|* => vec![#( spirv::Capability::#capabilities ),*]
                         }
                     });
 
@@ -513,7 +516,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 } else if category == &structs::Category::BitEnum {
                     let operands = operand_clauses
                         .into_iter()
-                        .map(|(k, vals)| {
+                        .map(|(k, v)| {
                             let operands = k.iter().map(|op| {
                                 let kind = as_ident(&op.kind);
                                 let quant = translate_quant(op.quantifier);
@@ -529,7 +532,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                             let kinds = std::iter::repeat(quote! { s::#kind });
 
                             quote! {
-                                result.extend([#(#kinds::#vals,)*].iter().filter(|arg| {
+                                result.extend([#(#kinds::#v,)*].iter().filter(|arg| {
                                     v.contains(**arg)
                                 }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
                             }
@@ -545,7 +548,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 } else {
                     let operands = operand_clauses
                         .into_iter()
-                        .map(|(k, vals)| {
+                        .map(|(k, v)| {
                             let operands = k.iter().map(|op| {
                                 let kind = as_ident(&op.kind);
                                 let quant = translate_quant(op.quantifier);
@@ -561,7 +564,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                             let kinds = std::iter::repeat(quote! { s::#kind });
 
                             quote! {
-                                #( #kinds::#vals )|* => vec![#( #operands ),*]
+                                #( #kinds::#v )|* => vec![#( #operands ),*]
                             }
                         });
 
