@@ -47,6 +47,10 @@ pub enum Branch {
         size: u32,
     },
     TerminateInvocation,
+    AbortKHR {
+        message_type: Token<Type>,
+        message: spirv::Word,
+    },
     DemoteToHelperInvocation,
 }
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -1377,6 +1381,10 @@ pub enum Op {
         element_index: Vec<spirv::Word>,
     },
     GraphEndARM,
+    BitcastExtractEXT {
+        base: spirv::Word,
+        offset: spirv::Word,
+    },
     UntypedVariableKHR {
         storage_class: spirv::StorageClass,
         data_type: Option<Token<Type>>,
@@ -1617,6 +1625,11 @@ pub enum Op {
         reference_coordinates: spirv::Word,
         block_size: spirv::Word,
     },
+    BFloat16MulAddQCOM {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+        operand_3: spirv::Word,
+    },
     CompositeConstructCoopMatQCOM {
         source_array: spirv::Word,
     },
@@ -1626,6 +1639,13 @@ pub enum Op {
     ExtractSubArrayQCOM {
         source_array: spirv::Word,
         index: spirv::Word,
+    },
+    ImageGatherQCOM {
+        sampled_image: spirv::Word,
+        coordinate: spirv::Word,
+        component: spirv::Word,
+        mode: spirv::Word,
+        image_operands: Option<(spirv::ImageOperands, Vec<spirv::Word>)>,
     },
     GroupIAddNonUniformAMD {
         execution: spirv::Word,
@@ -1722,6 +1742,10 @@ pub enum Op {
         structure_type: Token<Type>,
         member: u32,
         decoration: spirv::Decoration,
+    },
+    PoisonKHR,
+    FreezeKHR {
+        value: spirv::Word,
     },
     HitObjectRecordHitMotionNV {
         hit_object: spirv::Word,
@@ -1956,7 +1980,7 @@ pub enum Op {
         matrix_stride: Option<spirv::Word>,
         cooperative_matrix_operands: Option<spirv::CooperativeMatrixOperands>,
     },
-    CooperativeMatrixConvertNV {
+    CooperativeMatrixConvertUseEXT {
         matrix: spirv::Word,
     },
     SetMeshOutputsEXT {
@@ -2000,6 +2024,7 @@ pub enum Op {
         ray_query: spirv::Word,
         sbt_record_index: spirv::Word,
         hit_object_attributes: spirv::Word,
+        hit_kind: Option<spirv::Word>,
     },
     HitObjectRecordMissEXT {
         hit_object: spirv::Word,
@@ -2258,13 +2283,12 @@ pub enum Op {
     CooperativeMatrixLengthNV {
         ty: Token<Type>,
     },
+    CooperativeMatrixGetCoordinateEXT {
+        matrix: spirv::Word,
+        index: spirv::Word,
+    },
     BeginInvocationInterlockEXT,
     EndInvocationInterlockEXT,
-    CooperativeMatrixReduceNV {
-        matrix: spirv::Word,
-        reduce: spirv::CooperativeMatrixReduce,
-        combine_func: spirv::Word,
-    },
     CooperativeMatrixLoadTensorNV {
         pointer: spirv::Word,
         object: spirv::Word,
@@ -3444,10 +3468,14 @@ pub enum Op {
         pointer: spirv::Word,
     },
     ReadPipeBlockingALTERA {
+        pipe: spirv::Word,
+        pointer: spirv::Word,
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     },
     WritePipeBlockingALTERA {
+        pipe: spirv::Word,
+        pointer: spirv::Word,
         packet_size: spirv::Word,
         packet_alignment: spirv::Word,
     },
@@ -3532,12 +3560,12 @@ pub enum Op {
     ConvertBF16ToFINTEL {
         b_float16_value: spirv::Word,
     },
-    ControlBarrierArriveINTEL {
+    ControlBarrierArriveEXT {
         execution: spirv::Word,
         memory: spirv::Word,
         semantics: spirv::Word,
     },
-    ControlBarrierWaitINTEL {
+    ControlBarrierWaitEXT {
         execution: spirv::Word,
         memory: spirv::Word,
         semantics: spirv::Word,
@@ -3647,6 +3675,18 @@ pub enum Op {
     ConditionalCopyObjectINTEL {
         condition_0_operand_0_condition_1_operand_1: Vec<spirv::Word>,
     },
+    PredicatedLoadINTEL {
+        pointer: spirv::Word,
+        predicate: spirv::Word,
+        default_value: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+    },
+    PredicatedStoreINTEL {
+        pointer: spirv::Word,
+        object: spirv::Word,
+        predicate: spirv::Word,
+        memory_access: Option<spirv::MemoryAccess>,
+    },
     GroupIMulKHR {
         execution: spirv::Word,
         operation: spirv::GroupOperation,
@@ -3710,5 +3750,20 @@ pub enum Op {
     },
     ConvertHandleToSampledImageINTEL {
         operand: spirv::Word,
+    },
+    FDot2MixAcc32VALVE {
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    },
+    FDot2MixAcc16VALVE {
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
+    },
+    FDot4MixAcc32VALVE {
+        vector_1: spirv::Word,
+        vector_2: spirv::Word,
+        accumulator: spirv::Word,
     },
 }

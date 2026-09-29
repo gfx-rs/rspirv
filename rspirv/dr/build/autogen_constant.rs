@@ -185,6 +185,44 @@ impl Builder {
         self.module.types_global_values.push(inst);
         id
     }
+    #[doc = "Appends an OpConstantDataKHR instruction."]
+    pub fn constant_data_khr(
+        &mut self,
+        result_type: spirv::Word,
+        data: impl IntoIterator<Item = u32>,
+    ) -> spirv::Word {
+        let id = self.id();
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::ConstantDataKHR,
+            Some(result_type),
+            Some(id),
+            vec![],
+        );
+        inst.operands
+            .extend(data.into_iter().map(dr::Operand::LiteralBit32));
+        self.module.types_global_values.push(inst);
+        id
+    }
+    #[doc = "Appends an OpSpecConstantDataKHR instruction."]
+    pub fn spec_constant_data_khr(
+        &mut self,
+        result_type: spirv::Word,
+        data: impl IntoIterator<Item = u32>,
+    ) -> spirv::Word {
+        let id = self.id();
+        #[allow(unused_mut)]
+        let mut inst = dr::Instruction::new(
+            spirv::Op::SpecConstantDataKHR,
+            Some(result_type),
+            Some(id),
+            vec![],
+        );
+        inst.operands
+            .extend(data.into_iter().map(dr::Operand::LiteralBit32));
+        self.module.types_global_values.push(inst);
+        id
+    }
     #[doc = "Appends an OpSpecConstantTargetINTEL instruction."]
     pub fn spec_constant_target_intel(
         &mut self,

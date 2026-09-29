@@ -70,6 +70,7 @@ pub enum Decoration {
     PayloadDispatchIndirectAMDX,
     ArrayStrideIdEXT(spirv::Word),
     OffsetIdEXT(spirv::Word),
+    UTFEncodedKHR,
     OverrideCoverageNV,
     PassthroughNV,
     ViewportRelativeNV,
@@ -89,6 +90,7 @@ pub enum Decoration {
     BindlessImageNV,
     BoundSamplerNV,
     BoundImageNV,
+    CooperativeMatrixTransposeEXT,
     SIMTCallINTEL(u32),
     ReferencedIndirectlyINTEL,
     ClobberINTEL(String),
@@ -155,4 +157,5 @@ pub enum Decoration {
     ConditionalINTEL(spirv::Word),
     CacheControlLoadINTEL(u32, spirv::LoadCacheControl),
     CacheControlStoreINTEL(u32, spirv::StoreCacheControl),
+    IntrinsicSAMSUNG(u32),
 }

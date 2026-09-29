@@ -163,6 +163,20 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             4416u32 => Ok(ops::Branch::TerminateInvocation),
+            5121u32 => Ok(ops::Branch::AbortKHR {
+                message_type: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(self.types.lookup_token(*value)),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                message: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             5380u32 => Ok(ops::Branch::DemoteToHelperInvocation),
             _ => Err(InstructionError::WrongOpcode),
         }
@@ -5384,6 +5398,20 @@ impl LiftContext {
                 },
             }),
             4186u32 => Ok(ops::Op::GraphEndARM),
+            4195u32 => Ok(ops::Op::BitcastExtractEXT {
+                base: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                offset: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             4418u32 => Ok(ops::Op::UntypedVariableKHR {
                 storage_class: (match operands.next() {
                     Some(dr::Operand::StorageClass(value)) => Some(*value),
@@ -6375,6 +6403,26 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            4505u32 => Ok(ops::Op::BFloat16MulAddQCOM {
+                operand_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operand_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operand_3: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             4540u32 => Ok(ops::Op::CompositeConstructCoopMatQCOM {
                 source_array: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -6404,6 +6452,45 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
+            }),
+            4545u32 => Ok(ops::Op::ImageGatherQCOM {
+                sampled_image: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                coordinate: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                component: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                mode: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                image_operands: match operands.next() {
+                    Some(dr::Operand::ImageOperands(value)) => {
+                        let operands = operands
+                            .map(|op| match *op {
+                                dr::Operand::IdRef(second) => Ok(second),
+                                _ => Err(OperandError::WrongType),
+                            })
+                            .collect::<Result<Vec<_>, _>>()?;
+                        Some((*value, operands))
+                    }
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
             }),
             5000u32 => Ok(ops::Op::GroupIAddNonUniformAMD {
                 execution: (match operands.next() {
@@ -6746,6 +6833,15 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
                 decoration: (match operands.next() {
                     Some(dr::Operand::Decoration(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            5158u32 => Ok(ops::Op::PoisonKHR),
+            5159u32 => Ok(ops::Op::FreezeKHR {
+                value: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
@@ -7779,7 +7875,7 @@ impl LiftContext {
                     None => None,
                 },
             }),
-            5293u32 => Ok(ops::Op::CooperativeMatrixConvertNV {
+            5293u32 => Ok(ops::Op::CooperativeMatrixConvertUseEXT {
                 matrix: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -7956,6 +8052,11 @@ impl LiftContext {
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
+                hit_kind: match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
             }),
             5305u32 => Ok(ops::Op::HitObjectRecordMissEXT {
                 hit_object: (match operands.next() {
@@ -9021,28 +9122,22 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5364u32 => Ok(ops::Op::BeginInvocationInterlockEXT),
-            5365u32 => Ok(ops::Op::EndInvocationInterlockEXT),
-            5366u32 => Ok(ops::Op::CooperativeMatrixReduceNV {
+            5363u32 => Ok(ops::Op::CooperativeMatrixGetCoordinateEXT {
                 matrix: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
-                reduce: (match operands.next() {
-                    Some(dr::Operand::CooperativeMatrixReduce(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                combine_func: (match operands.next() {
+                index: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5364u32 => Ok(ops::Op::BeginInvocationInterlockEXT),
+            5365u32 => Ok(ops::Op::EndInvocationInterlockEXT),
             5367u32 => Ok(ops::Op::CooperativeMatrixLoadTensorNV {
                 pointer: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -13828,6 +13923,18 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             5946u32 => Ok(ops::Op::ReadPipeBlockingALTERA {
+                pipe: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                pointer: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
                 packet_size: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -13842,6 +13949,18 @@ impl LiftContext {
                 .ok_or(OperandError::Missing)?,
             }),
             5947u32 => Ok(ops::Op::WritePipeBlockingALTERA {
+                pipe: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                pointer: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
                 packet_size: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -14128,7 +14247,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            6142u32 => Ok(ops::Op::ControlBarrierArriveINTEL {
+            6142u32 => Ok(ops::Op::ControlBarrierArriveEXT {
                 execution: (match operands.next() {
                     Some(dr::Operand::IdScope(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -14148,7 +14267,7 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            6143u32 => Ok(ops::Op::ControlBarrierWaitINTEL {
+            6143u32 => Ok(ops::Op::ControlBarrierWaitEXT {
                 execution: (match operands.next() {
                     Some(dr::Operand::IdScope(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -14651,6 +14770,56 @@ impl LiftContext {
                     vec
                 },
             }),
+            6258u32 => Ok(ops::Op::PredicatedLoadINTEL {
+                pointer: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                predicate: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                default_value: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                memory_access: match operands.next() {
+                    Some(dr::Operand::MemoryAccess(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
+            6259u32 => Ok(ops::Op::PredicatedStoreINTEL {
+                pointer: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                object: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                predicate: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                memory_access: match operands.next() {
+                    Some(dr::Operand::MemoryAccess(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                },
+            }),
             6401u32 => Ok(ops::Op::GroupIMulKHR {
                 execution: (match operands.next() {
                     Some(dr::Operand::IdScope(value)) => Some(*value),
@@ -14889,6 +15058,66 @@ impl LiftContext {
             }),
             6531u32 => Ok(ops::Op::ConvertHandleToSampledImageINTEL {
                 operand: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6916u32 => Ok(ops::Op::FDot2MixAcc32VALVE {
+                vector_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6917u32 => Ok(ops::Op::FDot2MixAcc16VALVE {
+                vector_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
+            6918u32 => Ok(ops::Op::FDot4MixAcc32VALVE {
+                vector_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                vector_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                accumulator: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
@@ -15633,15 +15862,45 @@ impl LiftContext {
         })
     }
     #[allow(unused)]
-    pub fn lift_cooperative_matrix_per_element_op_nv(
+    pub fn lift_cooperative_matrix_reduce_ext(
         &mut self,
         raw: &dr::Instruction,
-    ) -> Result<instructions::CooperativeMatrixPerElementOpNV, InstructionError> {
+    ) -> Result<instructions::CooperativeMatrixReduceEXT, InstructionError> {
+        if raw.class.opcode as u32 != 5366u32 {
+            return Err(InstructionError::WrongOpcode);
+        }
+        let mut operands = raw.operands.iter();
+        Ok(instructions::CooperativeMatrixReduceEXT {
+            matrix: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            reduce: (match operands.next() {
+                Some(dr::Operand::CooperativeMatrixReduce(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            combine_func: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+        })
+    }
+    #[allow(unused)]
+    pub fn lift_cooperative_matrix_per_element_op_ext(
+        &mut self,
+        raw: &dr::Instruction,
+    ) -> Result<instructions::CooperativeMatrixPerElementOpEXT, InstructionError> {
         if raw.class.opcode as u32 != 5369u32 {
             return Err(InstructionError::WrongOpcode);
         }
         let mut operands = raw.operands.iter();
-        Ok(instructions::CooperativeMatrixPerElementOpNV {
+        Ok(instructions::CooperativeMatrixPerElementOpEXT {
             matrix: (match operands.next() {
                 Some(dr::Operand::IdRef(value)) => Some(*value),
                 Some(_) => return Err(OperandError::WrongType.into()),

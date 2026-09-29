@@ -3,7 +3,8 @@
 //! This crate contains Rust definitions of all SPIR-V structs, enums,
 //! and constants.
 //!
-//! The version of this crate is the version of SPIR-V it contains.
+//! These bindings have been generated from the <https://github.com/KhronosGroup/SPIRV-Headers> tag
+//! or release described by this crates' version metadata (the value after the `+`).
 
 #![no_std]
 #![allow(non_camel_case_types)]

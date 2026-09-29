@@ -602,6 +602,17 @@ impl Decoder<'_> {
             Err(Error::StreamExpected(self.offset))
         }
     }
+    #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V GatherModes value."]
+    pub fn gather_modes(&mut self) -> Result<spirv::GatherModes> {
+        if let Ok(word) = self.word() {
+            spirv::GatherModes::from_u32(word).ok_or(Error::GatherModesUnknown(
+                self.offset - WORD_NUM_BYTES,
+                word,
+            ))
+        } else {
+            Err(Error::StreamExpected(self.offset))
+        }
+    }
     #[doc = "Decodes and returns the next SPIR-V word as\na SPIR-V TensorOperands value."]
     pub fn tensor_operands(&mut self) -> Result<spirv::TensorOperands> {
         if let Ok(word) = self.word() {

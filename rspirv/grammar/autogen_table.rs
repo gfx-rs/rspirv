@@ -62,6 +62,7 @@ pub enum OperandKind {
     FPEncoding,
     CooperativeVectorMatrixLayout,
     ComponentType,
+    GatherModes,
     IdResultType,
     IdResult,
     IdMemorySemantics,
@@ -79,6 +80,7 @@ pub enum OperandKind {
     TensorOperands,
     Debuginfo(debuginfo::ExtOperandKind),
     NonsemanticClspvreflection(nonsemantic_clspvreflection::ExtOperandKind),
+    NonsemanticShaderDebuginfo(nonsemantic_shader_debuginfo::ExtOperandKind),
     NonsemanticShaderDebuginfo100(nonsemantic_shader_debuginfo_100::ExtOperandKind),
     OpenclDebuginfo100(opencl_debuginfo_100::ExtOperandKind),
 }
@@ -86,12 +88,15 @@ pub enum OperandKind {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[allow(clippy::upper_case_acronyms)]
 pub enum ExtInstOp {
+    ArmExperimentalMlOperations(spirv::ArmExperimentalMlOperationsOp),
     ArmMotionEngine100(spirv::ArmMotionEngine100Op),
     Debuginfo(spirv::DebuginfoOp),
     GlslStd450(spirv::GlslStd450Op),
     NonsemanticClspvreflection(spirv::NonsemanticClspvreflectionOp),
     NonsemanticDebugbreak(spirv::NonsemanticDebugbreakOp),
     NonsemanticDebugprintf(spirv::NonsemanticDebugprintfOp),
+    NonsemanticGraphDebuginfo(spirv::NonsemanticGraphDebuginfoOp),
+    NonsemanticShaderDebuginfo(spirv::NonsemanticShaderDebuginfoOp),
     NonsemanticShaderDebuginfo100(spirv::NonsemanticShaderDebuginfo100Op),
     NonsemanticVkspreflection(spirv::NonsemanticVkspreflectionOp),
     OpenclDebuginfo100(spirv::OpenclDebuginfo100Op),
@@ -105,12 +110,15 @@ pub enum ExtInstOp {
 impl From<ExtInstOp> for spirv::Word {
     fn from(op: ExtInstOp) -> spirv::Word {
         match op {
+            ExtInstOp::ArmExperimentalMlOperations(v) => v as spirv::Word,
             ExtInstOp::ArmMotionEngine100(v) => v as spirv::Word,
             ExtInstOp::Debuginfo(v) => v as spirv::Word,
             ExtInstOp::GlslStd450(v) => v as spirv::Word,
             ExtInstOp::NonsemanticClspvreflection(v) => v as spirv::Word,
             ExtInstOp::NonsemanticDebugbreak(v) => v as spirv::Word,
             ExtInstOp::NonsemanticDebugprintf(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticGraphDebuginfo(v) => v as spirv::Word,
+            ExtInstOp::NonsemanticShaderDebuginfo(v) => v as spirv::Word,
             ExtInstOp::NonsemanticShaderDebuginfo100(v) => v as spirv::Word,
             ExtInstOp::NonsemanticVkspreflection(v) => v as spirv::Word,
             ExtInstOp::OpenclDebuginfo100(v) => v as spirv::Word,
@@ -3406,6 +3414,17 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [(IdResult, One), (LiteralInteger, One), (IdRef, ZeroOrMore)]
     ),
     inst!(
+        BitcastExtractEXT,
+        [BitcastExtractEXT],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         TerminateInvocation,
         [Shader],
         ["SPV_KHR_terminate_invocation"],
@@ -3962,6 +3981,18 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        BFloat16MulAddQCOM,
+        [BFloat16MulAddQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         CompositeConstructCoopMatQCOM,
         [CooperativeMatrixConversionQCOM],
         [],
@@ -3982,6 +4013,20 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
             (IdResult, One),
             (IdRef, One),
             (IdRef, One)
+        ]
+    ),
+    inst!(
+        ImageGatherQCOM,
+        [ImageGatherLinearQCOM, ImageGatherExtendedModesQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (ImageOperands, ZeroOrOne)
         ]
     ),
     inst!(
@@ -4192,6 +4237,7 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
+    inst!(AbortKHR, [AbortKHR], [], [(IdRef, One), (IdRef, One)]),
     inst!(
         UntypedImageTexelPointerEXT,
         [DescriptorHeapEXT],
@@ -4214,6 +4260,38 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
     inst!(
         ConstantSizeOfEXT,
         [DescriptorHeapEXT],
+        [],
+        [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        ConstantDataKHR,
+        [ConstantDataKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (LiteralInteger, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        SpecConstantDataKHR,
+        [ConstantDataKHR],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (LiteralInteger, ZeroOrMore)
+        ]
+    ),
+    inst!(
+        PoisonKHR,
+        [PoisonFreezeKHR],
+        [],
+        [(IdResultType, One), (IdResult, One)]
+    ),
+    inst!(
+        FreezeKHR,
+        [PoisonFreezeKHR],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
@@ -4597,8 +4675,11 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        CooperativeMatrixConvertNV,
-        [CooperativeMatrixConversionsNV],
+        CooperativeMatrixConvertUseEXT,
+        [
+            CooperativeMatrixConversionsEXT,
+            CooperativeMatrixConversionsNV
+        ],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
@@ -4681,7 +4762,13 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         HitObjectRecordFromQueryEXT,
         [ShaderInvocationReorderEXT],
         [],
-        [(IdRef, One), (IdRef, One), (IdRef, One), (IdRef, One)]
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, ZeroOrOne)
+        ]
     ),
     inst!(
         HitObjectRecordMissEXT,
@@ -5153,6 +5240,17 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        CooperativeMatrixGetCoordinateEXT,
+        [CooperativeMatrixGetCoordinateEXT],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         BeginInvocationInterlockEXT,
         [
             FragmentShaderSampleInterlockEXT,
@@ -5173,8 +5271,8 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         []
     ),
     inst!(
-        CooperativeMatrixReduceNV,
-        [CooperativeMatrixReductionsNV],
+        CooperativeMatrixReduceEXT,
+        [CooperativeMatrixReductionsEXT],
         [],
         [
             (IdResultType, One),
@@ -5211,8 +5309,8 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        CooperativeMatrixPerElementOpNV,
-        [CooperativeMatrixPerElementOperationsNV],
+        CooperativeMatrixPerElementOpEXT,
+        [CooperativeMatrixPerElementOperationsEXT],
         [],
         [
             (IdResultType, One),
@@ -7843,23 +7941,13 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         ReadPipeBlockingALTERA,
         [BlockingPipesALTERA],
         [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One)
-        ]
+        [(IdRef, One), (IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     inst!(
         WritePipeBlockingALTERA,
         [BlockingPipesALTERA],
         [],
-        [
-            (IdResultType, One),
-            (IdResult, One),
-            (IdRef, One),
-            (IdRef, One)
-        ]
+        [(IdRef, One), (IdRef, One), (IdRef, One), (IdRef, One)]
     ),
     inst!(
         FPGARegALTERA,
@@ -8075,7 +8163,7 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         CompositeConstructContinuedINTEL,
         [LongCompositesINTEL],
         [],
-        [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrMore)]
+        [(IdRef, ZeroOrMore)]
     ),
     inst!(
         ConvertFToBF16INTEL,
@@ -8090,14 +8178,14 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
-        ControlBarrierArriveINTEL,
-        [SplitBarrierINTEL],
+        ControlBarrierArriveEXT,
+        [SplitBarrierEXT],
         [],
         [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
     ),
     inst!(
-        ControlBarrierWaitINTEL,
-        [SplitBarrierINTEL],
+        ControlBarrierWaitEXT,
+        [SplitBarrierEXT],
         [],
         [(IdScope, One), (IdScope, One), (IdMemorySemantics, One)]
     ),
@@ -8338,6 +8426,30 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, ZeroOrMore)]
     ),
     inst!(
+        PredicatedLoadINTEL,
+        [PredicatedIOINTEL],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
+        PredicatedStoreINTEL,
+        [PredicatedIOINTEL],
+        [],
+        [
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One),
+            (MemoryAccess, ZeroOrOne)
+        ]
+    ),
+    inst!(
         GroupIMulKHR,
         [GroupUniformArithmeticKHR],
         [],
@@ -8480,6 +8592,42 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [BindlessImagesINTEL],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
+    ),
+    inst!(
+        FDot2MixAcc32VALVE,
+        [DotProductFloat16AccFloat32VALVE, DotProductBFloat16AccVALVE],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        FDot2MixAcc16VALVE,
+        [DotProductFloat16AccFloat16VALVE, DotProductBFloat16AccVALVE],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
+        FDot4MixAcc32VALVE,
+        [DotProductFloat8AccFloat32VALVE],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
     ),
 ];
 pub static INSTRUCTION_TABLE: InstructionTable<spirv::Op> =
