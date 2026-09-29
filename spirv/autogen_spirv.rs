@@ -284,6 +284,8 @@ pub enum ExecutionMode {
     RoundingModeRTZ = 4463u32,
     NonCoherentTileAttachmentReadQCOM = 4489u32,
     TileShadingRateQCOM = 4490u32,
+    SubgroupSizeHalfQCOM = 4507u32,
+    SubgroupSizeFullQCOM = 4508u32,
     EarlyAndLateFragmentTestsAMD = 5017u32,
     StencilRefReplacingEXT = 5027u32,
     CoalescingAMDX = 5069u32,
@@ -345,6 +347,7 @@ impl ExecutionMode {
             4446u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(4446u32) },
             4459u32..=4463u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             4489u32..=4490u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
+            4507u32..=4508u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
             5017u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5017u32) },
             5027u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(5027u32) },
             5069u32..=5073u32 => unsafe { core::mem::transmute::<u32, ExecutionMode>(n) },
@@ -435,6 +438,8 @@ impl core::str::FromStr for ExecutionMode {
             "RoundingModeRTZ" => Self::RoundingModeRTZ,
             "NonCoherentTileAttachmentReadQCOM" => Self::NonCoherentTileAttachmentReadQCOM,
             "TileShadingRateQCOM" => Self::TileShadingRateQCOM,
+            "SubgroupSizeHalfQCOM" => Self::SubgroupSizeHalfQCOM,
+            "SubgroupSizeFullQCOM" => Self::SubgroupSizeFullQCOM,
             "EarlyAndLateFragmentTestsAMD" => Self::EarlyAndLateFragmentTestsAMD,
             "StencilRefReplacingEXT" => Self::StencilRefReplacingEXT,
             "CoalescingAMDX" => Self::CoalescingAMDX,
@@ -1381,6 +1386,7 @@ pub enum Decoration {
     BindlessImageNV = 5399u32,
     BoundSamplerNV = 5400u32,
     BoundImageNV = 5401u32,
+    CooperativeMatrixTransposeEXT = 5440u32,
     SIMTCallINTEL = 5599u32,
     ReferencedIndirectlyINTEL = 5602u32,
     ClobberINTEL = 5607u32,
@@ -1478,6 +1484,7 @@ impl Decoration {
             5386u32 => unsafe { core::mem::transmute::<u32, Decoration>(5386u32) },
             5389u32 => unsafe { core::mem::transmute::<u32, Decoration>(5389u32) },
             5397u32..=5401u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
+            5440u32 => unsafe { core::mem::transmute::<u32, Decoration>(5440u32) },
             5599u32 => unsafe { core::mem::transmute::<u32, Decoration>(5599u32) },
             5602u32 => unsafe { core::mem::transmute::<u32, Decoration>(5602u32) },
             5607u32..=5608u32 => unsafe { core::mem::transmute::<u32, Decoration>(n) },
@@ -1657,6 +1664,7 @@ impl core::str::FromStr for Decoration {
             "BindlessImageNV" => Self::BindlessImageNV,
             "BoundSamplerNV" => Self::BoundSamplerNV,
             "BoundImageNV" => Self::BoundImageNV,
+            "CooperativeMatrixTransposeEXT" => Self::CooperativeMatrixTransposeEXT,
             "SIMTCallINTEL" => Self::SIMTCallINTEL,
             "ReferencedIndirectlyINTEL" => Self::ReferencedIndirectlyINTEL,
             "ClobberINTEL" => Self::ClobberINTEL,
@@ -2386,6 +2394,8 @@ pub enum Capability {
     TileShadingQCOM = 4495u32,
     CooperativeMatrixConversionQCOM = 4496u32,
     TextureBlockMatch2QCOM = 4498u32,
+    BFloat16MulAddQCOM = 4504u32,
+    SubgroupSizeQCOM = 4506u32,
     MultipleWaitQueuesQCOM = 4539u32,
     ImageGatherLinearQCOM = 4543u32,
     ImageGatherExtendedModesQCOM = 4544u32,
@@ -2463,13 +2473,15 @@ pub enum Capability {
     PushConstantBanksNV = 5423u32,
     LongVectorEXT = 5425u32,
     Shader64BitIndexingEXT = 5426u32,
-    CooperativeMatrixReductionsNV = 5430u32,
+    CooperativeMatrixConversionsEXT = 5429u32,
+    CooperativeMatrixReductionsEXT = 5430u32,
     CooperativeMatrixConversionsNV = 5431u32,
-    CooperativeMatrixPerElementOperationsNV = 5432u32,
+    CooperativeMatrixPerElementOperationsEXT = 5432u32,
     CooperativeMatrixTensorAddressingNV = 5433u32,
     CooperativeMatrixBlockLoadsNV = 5434u32,
     CooperativeVectorTrainingNV = 5435u32,
     RayTracingClusterAccelerationStructureNV = 5437u32,
+    CooperativeMatrixGetCoordinateEXT = 5438u32,
     TensorAddressingNV = 5439u32,
     CooperativeMatrixDecodeVectorNV = 5447u32,
     SubgroupShuffleINTEL = 5568u32,
@@ -2591,6 +2603,8 @@ impl Capability {
             4484u32..=4486u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4495u32..=4496u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             4498u32 => unsafe { core::mem::transmute::<u32, Capability>(4498u32) },
+            4504u32 => unsafe { core::mem::transmute::<u32, Capability>(4504u32) },
+            4506u32 => unsafe { core::mem::transmute::<u32, Capability>(4506u32) },
             4539u32 => unsafe { core::mem::transmute::<u32, Capability>(4539u32) },
             4543u32..=4544u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5008u32..=5010u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
@@ -2636,9 +2650,8 @@ impl Capability {
             5418u32..=5419u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5423u32 => unsafe { core::mem::transmute::<u32, Capability>(5423u32) },
             5425u32..=5426u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
-            5430u32..=5435u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
-            5437u32 => unsafe { core::mem::transmute::<u32, Capability>(5437u32) },
-            5439u32 => unsafe { core::mem::transmute::<u32, Capability>(5439u32) },
+            5429u32..=5435u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
+            5437u32..=5439u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5447u32 => unsafe { core::mem::transmute::<u32, Capability>(5447u32) },
             5568u32..=5570u32 => unsafe { core::mem::transmute::<u32, Capability>(n) },
             5579u32 => unsafe { core::mem::transmute::<u32, Capability>(5579u32) },
@@ -2745,6 +2758,9 @@ impl Capability {
     pub const ComputeDerivativeGroupLinearNV: Self = Self::ComputeDerivativeGroupLinearKHR;
     pub const DemoteToHelperInvocationEXT: Self = Self::DemoteToHelperInvocation;
     pub const RayTracingOpacityMicromapEXT: Self = Self::RayTracingOpacityMicromapKHR;
+    pub const CooperativeMatrixReductionsNV: Self = Self::CooperativeMatrixReductionsEXT;
+    pub const CooperativeMatrixPerElementOperationsNV: Self =
+        Self::CooperativeMatrixPerElementOperationsEXT;
     pub const FPGAMemoryAttributesINTEL: Self = Self::FPGAMemoryAttributesALTERA;
     pub const ArbitraryPrecisionIntegersINTEL: Self = Self::ArbitraryPrecisionIntegersALTERA;
     pub const ArbitraryPrecisionFloatingPointINTEL: Self =
@@ -2909,6 +2925,8 @@ impl core::str::FromStr for Capability {
             "TileShadingQCOM" => Self::TileShadingQCOM,
             "CooperativeMatrixConversionQCOM" => Self::CooperativeMatrixConversionQCOM,
             "TextureBlockMatch2QCOM" => Self::TextureBlockMatch2QCOM,
+            "BFloat16MulAddQCOM" => Self::BFloat16MulAddQCOM,
+            "SubgroupSizeQCOM" => Self::SubgroupSizeQCOM,
             "MultipleWaitQueuesQCOM" => Self::MultipleWaitQueuesQCOM,
             "ImageGatherLinearQCOM" => Self::ImageGatherLinearQCOM,
             "ImageGatherExtendedModesQCOM" => Self::ImageGatherExtendedModesQCOM,
@@ -3031,10 +3049,15 @@ impl core::str::FromStr for Capability {
             "PushConstantBanksNV" => Self::PushConstantBanksNV,
             "LongVectorEXT" => Self::LongVectorEXT,
             "Shader64BitIndexingEXT" => Self::Shader64BitIndexingEXT,
-            "CooperativeMatrixReductionsNV" => Self::CooperativeMatrixReductionsNV,
+            "CooperativeMatrixConversionsEXT" => Self::CooperativeMatrixConversionsEXT,
+            "CooperativeMatrixReductionsEXT" => Self::CooperativeMatrixReductionsEXT,
+            "CooperativeMatrixReductionsNV" => Self::CooperativeMatrixReductionsEXT,
             "CooperativeMatrixConversionsNV" => Self::CooperativeMatrixConversionsNV,
+            "CooperativeMatrixPerElementOperationsEXT" => {
+                Self::CooperativeMatrixPerElementOperationsEXT
+            }
             "CooperativeMatrixPerElementOperationsNV" => {
-                Self::CooperativeMatrixPerElementOperationsNV
+                Self::CooperativeMatrixPerElementOperationsEXT
             }
             "CooperativeMatrixTensorAddressingNV" => Self::CooperativeMatrixTensorAddressingNV,
             "CooperativeMatrixBlockLoadsNV" => Self::CooperativeMatrixBlockLoadsNV,
@@ -3042,6 +3065,7 @@ impl core::str::FromStr for Capability {
             "RayTracingClusterAccelerationStructureNV" => {
                 Self::RayTracingClusterAccelerationStructureNV
             }
+            "CooperativeMatrixGetCoordinateEXT" => Self::CooperativeMatrixGetCoordinateEXT,
             "TensorAddressingNV" => Self::TensorAddressingNV,
             "CooperativeMatrixDecodeVectorNV" => Self::CooperativeMatrixDecodeVectorNV,
             "SubgroupShuffleINTEL" => Self::SubgroupShuffleINTEL,
@@ -4141,6 +4165,7 @@ pub enum Op {
     ImageBlockMatchWindowSADQCOM = 4501u32,
     ImageBlockMatchGatherSSDQCOM = 4502u32,
     ImageBlockMatchGatherSADQCOM = 4503u32,
+    BFloat16MulAddQCOM = 4505u32,
     CompositeConstructCoopMatQCOM = 4540u32,
     CompositeExtractCoopMatQCOM = 4541u32,
     ExtractSubArrayQCOM = 4542u32,
@@ -4215,7 +4240,7 @@ pub enum Op {
     CooperativeVectorOuterProductAccumulateNV = 5290u32,
     CooperativeVectorReduceSumAccumulateNV = 5291u32,
     CooperativeVectorMatrixMulAddNV = 5292u32,
-    CooperativeMatrixConvertNV = 5293u32,
+    CooperativeMatrixConvertUseEXT = 5293u32,
     EmitMeshTasksEXT = 5294u32,
     SetMeshOutputsEXT = 5295u32,
     GroupNonUniformPartitionEXT = 5296u32,
@@ -4276,12 +4301,13 @@ pub enum Op {
     CooperativeMatrixStoreNV = 5360u32,
     CooperativeMatrixMulAddNV = 5361u32,
     CooperativeMatrixLengthNV = 5362u32,
+    CooperativeMatrixGetCoordinateEXT = 5363u32,
     BeginInvocationInterlockEXT = 5364u32,
     EndInvocationInterlockEXT = 5365u32,
-    CooperativeMatrixReduceNV = 5366u32,
+    CooperativeMatrixReduceEXT = 5366u32,
     CooperativeMatrixLoadTensorNV = 5367u32,
     CooperativeMatrixStoreTensorNV = 5368u32,
-    CooperativeMatrixPerElementOpNV = 5369u32,
+    CooperativeMatrixPerElementOpEXT = 5369u32,
     TypeTensorLayoutNV = 5370u32,
     TypeTensorViewNV = 5371u32,
     CreateTensorLayoutNV = 5372u32,
@@ -4640,6 +4666,7 @@ impl Op {
             4479u32..=4483u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4497u32 => unsafe { core::mem::transmute::<u32, Op>(4497u32) },
             4500u32..=4503u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            4505u32 => unsafe { core::mem::transmute::<u32, Op>(4505u32) },
             4540u32..=4542u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             4545u32 => unsafe { core::mem::transmute::<u32, Op>(4545u32) },
             5000u32..=5007u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -4663,8 +4690,7 @@ impl Op {
             5288u32..=5296u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5299u32..=5341u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5344u32..=5352u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            5358u32..=5362u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
-            5364u32..=5382u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
+            5358u32..=5382u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5384u32 => unsafe { core::mem::transmute::<u32, Op>(5384u32) },
             5390u32..=5398u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
             5427u32..=5439u32 => unsafe { core::mem::transmute::<u32, Op>(n) },
@@ -4721,10 +4747,13 @@ impl Op {
     pub const UDotAccSatKHR: Self = Self::UDotAccSat;
     pub const SUDotAccSatKHR: Self = Self::SUDotAccSat;
     pub const TypeCooperativeVectorNV: Self = Self::TypeVectorIdEXT;
+    pub const CooperativeMatrixConvertNV: Self = Self::CooperativeMatrixConvertUseEXT;
     pub const GroupNonUniformPartitionNV: Self = Self::GroupNonUniformPartitionEXT;
     pub const ReportIntersectionNV: Self = Self::ReportIntersectionKHR;
     pub const TypeAccelerationStructureNV: Self = Self::TypeAccelerationStructureKHR;
     pub const RayQueryGetClusterIdNV: Self = Self::RayQueryGetIntersectionClusterIdNV;
+    pub const CooperativeMatrixReduceNV: Self = Self::CooperativeMatrixReduceEXT;
+    pub const CooperativeMatrixPerElementOpNV: Self = Self::CooperativeMatrixPerElementOpEXT;
     pub const DemoteToHelperInvocationEXT: Self = Self::DemoteToHelperInvocation;
     pub const DecorateStringGOOGLE: Self = Self::DecorateString;
     pub const MemberDecorateStringGOOGLE: Self = Self::MemberDecorateString;

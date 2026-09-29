@@ -3981,6 +3981,18 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
+        BFloat16MulAddQCOM,
+        [BFloat16MulAddQCOM],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         CompositeConstructCoopMatQCOM,
         [CooperativeMatrixConversionQCOM],
         [],
@@ -4663,8 +4675,11 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        CooperativeMatrixConvertNV,
-        [CooperativeMatrixConversionsNV],
+        CooperativeMatrixConvertUseEXT,
+        [
+            CooperativeMatrixConversionsEXT,
+            CooperativeMatrixConversionsNV
+        ],
         [],
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
@@ -5225,6 +5240,17 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         [(IdResultType, One), (IdResult, One), (IdRef, One)]
     ),
     inst!(
+        CooperativeMatrixGetCoordinateEXT,
+        [CooperativeMatrixGetCoordinateEXT],
+        [],
+        [
+            (IdResultType, One),
+            (IdResult, One),
+            (IdRef, One),
+            (IdRef, One)
+        ]
+    ),
+    inst!(
         BeginInvocationInterlockEXT,
         [
             FragmentShaderSampleInterlockEXT,
@@ -5245,8 +5271,8 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         []
     ),
     inst!(
-        CooperativeMatrixReduceNV,
-        [CooperativeMatrixReductionsNV],
+        CooperativeMatrixReduceEXT,
+        [CooperativeMatrixReductionsEXT],
         [],
         [
             (IdResultType, One),
@@ -5283,8 +5309,8 @@ static INSTRUCTIONS: &[Instruction<'static>] = &[
         ]
     ),
     inst!(
-        CooperativeMatrixPerElementOpNV,
-        [CooperativeMatrixPerElementOperationsNV],
+        CooperativeMatrixPerElementOpEXT,
+        [CooperativeMatrixPerElementOperationsEXT],
         [],
         [
             (IdResultType, One),

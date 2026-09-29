@@ -1282,6 +1282,9 @@ impl Operand {
                 | s::ExecutionMode::SubgroupsPerWorkgroupId => {
                     vec![spirv::Capability::SubgroupDispatch]
                 }
+                s::ExecutionMode::SubgroupSizeHalfQCOM | s::ExecutionMode::SubgroupSizeFullQCOM => {
+                    vec![spirv::Capability::SubgroupSizeQCOM]
+                }
                 s::ExecutionMode::SpacingEqual
                 | s::ExecutionMode::SpacingFractionalEven
                 | s::ExecutionMode::SpacingFractionalOdd
@@ -1567,6 +1570,9 @@ impl Operand {
                     vec![spirv::Capability::CacheControlsINTEL]
                 }
                 s::Decoration::UTFEncodedKHR => vec![spirv::Capability::ConstantDataKHR],
+                s::Decoration::CooperativeMatrixTransposeEXT => {
+                    vec![spirv::Capability::CooperativeMatrixConversionsEXT]
+                }
                 s::Decoration::ArrayStrideIdEXT | s::Decoration::OffsetIdEXT => {
                     vec![spirv::Capability::DescriptorHeapEXT]
                 }
@@ -2014,6 +2020,8 @@ impl Operand {
                 | s::Capability::TextureBoxFilterQCOM
                 | s::Capability::TextureBlockMatchQCOM
                 | s::Capability::TextureBlockMatch2QCOM
+                | s::Capability::BFloat16MulAddQCOM
+                | s::Capability::SubgroupSizeQCOM
                 | s::Capability::MultipleWaitQueuesQCOM
                 | s::Capability::ImageGatherLinearQCOM
                 | s::Capability::ImageGatherExtendedModesQCOM
@@ -2037,12 +2045,14 @@ impl Operand {
                 | s::Capability::RayTracingLinearSweptSpheresGeometryNV
                 | s::Capability::LongVectorEXT
                 | s::Capability::Shader64BitIndexingEXT
-                | s::Capability::CooperativeMatrixReductionsNV
+                | s::Capability::CooperativeMatrixConversionsEXT
+                | s::Capability::CooperativeMatrixReductionsEXT
                 | s::Capability::CooperativeMatrixConversionsNV
-                | s::Capability::CooperativeMatrixPerElementOperationsNV
+                | s::Capability::CooperativeMatrixPerElementOperationsEXT
                 | s::Capability::CooperativeMatrixTensorAddressingNV
                 | s::Capability::CooperativeMatrixBlockLoadsNV
                 | s::Capability::CooperativeVectorTrainingNV
+                | s::Capability::CooperativeMatrixGetCoordinateEXT
                 | s::Capability::TensorAddressingNV
                 | s::Capability::SubgroupShuffleINTEL
                 | s::Capability::SubgroupBufferBlockIOINTEL
@@ -2620,6 +2630,8 @@ impl Operand {
                 | s::ExecutionMode::NonCoherentStencilAttachmentReadEXT
                 | s::ExecutionMode::NonCoherentTileAttachmentReadQCOM
                 | s::ExecutionMode::TileShadingRateQCOM
+                | s::ExecutionMode::SubgroupSizeHalfQCOM
+                | s::ExecutionMode::SubgroupSizeFullQCOM
                 | s::ExecutionMode::CoalescingAMDX
                 | s::ExecutionMode::IsApiEntryAMDX
                 | s::ExecutionMode::MaxNodeRecursionAMDX
@@ -2967,6 +2979,7 @@ impl Operand {
                 | s::Decoration::BindlessImageNV
                 | s::Decoration::BoundSamplerNV
                 | s::Decoration::BoundImageNV
+                | s::Decoration::CooperativeMatrixTransposeEXT
                 | s::Decoration::SIMTCallINTEL
                 | s::Decoration::ClobberINTEL
                 | s::Decoration::SideEffectsINTEL
@@ -3385,6 +3398,15 @@ impl Operand {
                 | s::Capability::StorageTensorArrayDynamicIndexingARM
                 | s::Capability::StorageTensorArrayNonUniformIndexingARM => vec!["SPV_ARM_tensors"],
                 s::Capability::ArithmeticFenceEXT => vec!["SPV_EXT_arithmetic_fence"],
+                s::Capability::CooperativeMatrixConversionsEXT
+                | s::Capability::CooperativeMatrixGetCoordinateEXT => {
+                    vec!["SPV_EXT_cooperative_matrix_maintenance1"]
+                }
+                s::Capability::CooperativeMatrixReductionsEXT
+                | s::Capability::CooperativeMatrixPerElementOperationsEXT => vec![
+                    "SPV_EXT_cooperative_matrix_maintenance1",
+                    "SPV_NV_cooperative_matrix2",
+                ],
                 s::Capability::DemoteToHelperInvocation => {
                     vec!["SPV_EXT_demote_to_helper_invocation"]
                 }
@@ -3607,9 +3629,7 @@ impl Operand {
                     "SPV_KHR_compute_shader_derivatives",
                 ],
                 s::Capability::CooperativeMatrixNV => vec!["SPV_NV_cooperative_matrix"],
-                s::Capability::CooperativeMatrixReductionsNV
-                | s::Capability::CooperativeMatrixConversionsNV
-                | s::Capability::CooperativeMatrixPerElementOperationsNV
+                s::Capability::CooperativeMatrixConversionsNV
                 | s::Capability::CooperativeMatrixTensorAddressingNV
                 | s::Capability::CooperativeMatrixBlockLoadsNV => {
                     vec!["SPV_NV_cooperative_matrix2"]
@@ -3656,6 +3676,7 @@ impl Operand {
                 s::Capability::ShaderStereoViewNV => vec!["SPV_NV_stereo_view_rendering"],
                 s::Capability::TensorAddressingNV => vec!["SPV_NV_tensor_addressing"],
                 s::Capability::ShaderViewportMaskNV => vec!["SPV_NV_viewport_array2"],
+                s::Capability::BFloat16MulAddQCOM => vec!["SPV_QCOM_bfloat16_muladd"],
                 s::Capability::CooperativeMatrixConversionQCOM => {
                     vec!["SPV_QCOM_cooperative_matrix_conversion"]
                 }
@@ -3666,6 +3687,7 @@ impl Operand {
                 s::Capability::ImageGatherLinearQCOM
                 | s::Capability::ImageGatherExtendedModesQCOM => vec!["SPV_QCOM_image_processing3"],
                 s::Capability::MultipleWaitQueuesQCOM => vec!["SPV_QCOM_multiple_wait_queues"],
+                s::Capability::SubgroupSizeQCOM => vec!["SPV_QCOM_subgroup_size"],
                 s::Capability::TileShadingQCOM => vec!["SPV_QCOM_tile_shading"],
                 s::Capability::IntrinsicSAMSUNG => vec!["SPV_SAMSUNG_intrinsic"],
                 s::Capability::DotProductFloat16AccFloat32VALVE

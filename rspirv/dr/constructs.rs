@@ -221,6 +221,7 @@ impl ModuleHeader {
         let tool = (self.generator & 0xffff_0000) >> 16;
         let version = (self.generator & 0xffff) as u16;
         let tool: &str = match tool {
+            // TODO: Generate from spir-v.xml
             0 => "The Khronos Group",
             1 => "LunarG",
             2 => "Valve",

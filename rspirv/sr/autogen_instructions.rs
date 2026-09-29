@@ -63,7 +63,13 @@ pub struct ExtInstWithForwardRefsKHR {
     pub operand_1_operand_2: Vec<spirv::Word>,
 }
 #[derive(Clone, Debug)]
-pub struct CooperativeMatrixPerElementOpNV {
+pub struct CooperativeMatrixReduceEXT {
+    pub matrix: spirv::Word,
+    pub reduce: spirv::CooperativeMatrixReduce,
+    pub combine_func: spirv::Word,
+}
+#[derive(Clone, Debug)]
+pub struct CooperativeMatrixPerElementOpEXT {
     pub matrix: spirv::Word,
     pub func: spirv::Word,
     pub operands: Vec<spirv::Word>,

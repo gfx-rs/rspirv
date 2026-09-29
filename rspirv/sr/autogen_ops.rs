@@ -1625,6 +1625,11 @@ pub enum Op {
         reference_coordinates: spirv::Word,
         block_size: spirv::Word,
     },
+    BFloat16MulAddQCOM {
+        operand_1: spirv::Word,
+        operand_2: spirv::Word,
+        operand_3: spirv::Word,
+    },
     CompositeConstructCoopMatQCOM {
         source_array: spirv::Word,
     },
@@ -1975,7 +1980,7 @@ pub enum Op {
         matrix_stride: Option<spirv::Word>,
         cooperative_matrix_operands: Option<spirv::CooperativeMatrixOperands>,
     },
-    CooperativeMatrixConvertNV {
+    CooperativeMatrixConvertUseEXT {
         matrix: spirv::Word,
     },
     SetMeshOutputsEXT {
@@ -2278,13 +2283,12 @@ pub enum Op {
     CooperativeMatrixLengthNV {
         ty: Token<Type>,
     },
+    CooperativeMatrixGetCoordinateEXT {
+        matrix: spirv::Word,
+        index: spirv::Word,
+    },
     BeginInvocationInterlockEXT,
     EndInvocationInterlockEXT,
-    CooperativeMatrixReduceNV {
-        matrix: spirv::Word,
-        reduce: spirv::CooperativeMatrixReduce,
-        combine_func: spirv::Word,
-    },
     CooperativeMatrixLoadTensorNV {
         pointer: spirv::Word,
         object: spirv::Word,

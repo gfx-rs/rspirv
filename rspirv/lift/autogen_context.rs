@@ -6403,6 +6403,26 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            4505u32 => Ok(ops::Op::BFloat16MulAddQCOM {
+                operand_1: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operand_2: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+                operand_3: (match operands.next() {
+                    Some(dr::Operand::IdRef(value)) => Some(*value),
+                    Some(_) => return Err(OperandError::WrongType.into()),
+                    None => None,
+                })
+                .ok_or(OperandError::Missing)?,
+            }),
             4540u32 => Ok(ops::Op::CompositeConstructCoopMatQCOM {
                 source_array: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -7855,7 +7875,7 @@ impl LiftContext {
                     None => None,
                 },
             }),
-            5293u32 => Ok(ops::Op::CooperativeMatrixConvertNV {
+            5293u32 => Ok(ops::Op::CooperativeMatrixConvertUseEXT {
                 matrix: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
@@ -9102,28 +9122,22 @@ impl LiftContext {
                 })
                 .ok_or(OperandError::Missing)?,
             }),
-            5364u32 => Ok(ops::Op::BeginInvocationInterlockEXT),
-            5365u32 => Ok(ops::Op::EndInvocationInterlockEXT),
-            5366u32 => Ok(ops::Op::CooperativeMatrixReduceNV {
+            5363u32 => Ok(ops::Op::CooperativeMatrixGetCoordinateEXT {
                 matrix: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
-                reduce: (match operands.next() {
-                    Some(dr::Operand::CooperativeMatrixReduce(value)) => Some(*value),
-                    Some(_) => return Err(OperandError::WrongType.into()),
-                    None => None,
-                })
-                .ok_or(OperandError::Missing)?,
-                combine_func: (match operands.next() {
+                index: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
                     Some(_) => return Err(OperandError::WrongType.into()),
                     None => None,
                 })
                 .ok_or(OperandError::Missing)?,
             }),
+            5364u32 => Ok(ops::Op::BeginInvocationInterlockEXT),
+            5365u32 => Ok(ops::Op::EndInvocationInterlockEXT),
             5367u32 => Ok(ops::Op::CooperativeMatrixLoadTensorNV {
                 pointer: (match operands.next() {
                     Some(dr::Operand::IdRef(value)) => Some(*value),
@@ -15848,15 +15862,45 @@ impl LiftContext {
         })
     }
     #[allow(unused)]
-    pub fn lift_cooperative_matrix_per_element_op_nv(
+    pub fn lift_cooperative_matrix_reduce_ext(
         &mut self,
         raw: &dr::Instruction,
-    ) -> Result<instructions::CooperativeMatrixPerElementOpNV, InstructionError> {
+    ) -> Result<instructions::CooperativeMatrixReduceEXT, InstructionError> {
+        if raw.class.opcode as u32 != 5366u32 {
+            return Err(InstructionError::WrongOpcode);
+        }
+        let mut operands = raw.operands.iter();
+        Ok(instructions::CooperativeMatrixReduceEXT {
+            matrix: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            reduce: (match operands.next() {
+                Some(dr::Operand::CooperativeMatrixReduce(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+            combine_func: (match operands.next() {
+                Some(dr::Operand::IdRef(value)) => Some(*value),
+                Some(_) => return Err(OperandError::WrongType.into()),
+                None => None,
+            })
+            .ok_or(OperandError::Missing)?,
+        })
+    }
+    #[allow(unused)]
+    pub fn lift_cooperative_matrix_per_element_op_ext(
+        &mut self,
+        raw: &dr::Instruction,
+    ) -> Result<instructions::CooperativeMatrixPerElementOpEXT, InstructionError> {
         if raw.class.opcode as u32 != 5369u32 {
             return Err(InstructionError::WrongOpcode);
         }
         let mut operands = raw.operands.iter();
-        Ok(instructions::CooperativeMatrixPerElementOpNV {
+        Ok(instructions::CooperativeMatrixPerElementOpEXT {
             matrix: (match operands.next() {
                 Some(dr::Operand::IdRef(value)) => Some(*value),
                 Some(_) => return Err(OperandError::WrongType.into()),
