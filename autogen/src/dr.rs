@@ -99,7 +99,8 @@ fn get_function_name(opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         quote! { ret_value }
     } else {
-        let name = as_ident(&opname[2..].to_snake_case());
+        let opname = opname.strip_prefix("Op").unwrap();
+        let name = as_ident(&opname.to_snake_case());
         quote! { #name }
     }
 }
@@ -111,7 +112,8 @@ fn get_function_name_with_prepend(prepend: &str, opname: &str) -> TokenStream {
     } else if opname == "OpReturnValue" {
         as_ident(&format!("{}ret_value", prepend))
     } else {
-        as_ident(&format!("{}{}", prepend, opname[2..].to_snake_case()))
+        let opname = opname.strip_prefix("Op").unwrap();
+        as_ident(&format!("{}{}", prepend, opname.to_snake_case()))
     };
 
     quote! { #name }
@@ -391,9 +393,7 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
 
                 for e in enumerators {
                     let name = match category {
-                        structs::Category::BitEnum => {
-                            as_ident(&as_shouty_snake_case(&e.symbol))
-                        }
+                        structs::Category::BitEnum => as_ident(&as_shouty_snake_case(&e.symbol)),
                         structs::Category::ValueEnum => {
                             let name_str = if kind == "Dim" {
                                 let mut name = "Dim".to_string();
@@ -428,29 +428,30 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
 
                 let extensions = if category == &structs::Category::BitEnum {
                     let extensions = extension_clauses
-                            .into_iter()
-                            .filter(|(k, _)| !k.is_empty())
-                            .map(|(k, vals)| {
-                                let kinds = std::iter::repeat(quote! { s::#kind });
+                        .into_iter()
+                        .filter(|(k, _)| !k.is_empty())
+                        .map(|(k, vals)| {
+                            let kinds = std::iter::repeat(quote! { s::#kind });
 
-                                quote! {
-                                    if v.intersects(#(#kinds::#vals)|*) {
-                                        result.extend_from_slice(&[#( #k ),*])
-                                    }
-                                }
-                            }).collect::<Vec<_>>();
-
-                        if extensions.is_empty() {
-                            quote! {}
-                        } else {
                             quote! {
-                                Self::#kind(v) => {
-                                    let mut result = vec![];
-                                    #( #extensions );*;
-                                    result
+                                if v.intersects(#(#kinds::#vals)|*) {
+                                    result.extend_from_slice(&[#( #k ),*])
                                 }
                             }
+                        })
+                        .collect::<Vec<_>>();
+
+                    if extensions.is_empty() {
+                        quote! {}
+                    } else {
+                        quote! {
+                            Self::#kind(v) => {
+                                let mut result = vec![];
+                                #( #extensions );*;
+                                result
+                            }
                         }
+                    }
                 } else {
                     let extensions = extension_clauses.into_iter().map(|(k, vals)| {
                         let kinds = std::iter::repeat(quote! { s::#kind });
@@ -468,30 +469,33 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
 
                 let capabilities = if category == &structs::Category::BitEnum {
                     let capabilities = capability_clauses
-                            .into_iter()
-                            .filter(|(k, _)| !k.is_empty())
-                            .map(|(k, vals)| {
-                                let kinds = std::iter::repeat(quote! { s::#kind });
-                                let capabilities = k.iter().map(|cap| as_ident(cap));
+                        .into_iter()
+                        .filter(|(k, _)| !k.is_empty())
+                        .map(|(k, vals)| {
+                            let kinds = std::iter::repeat(quote! { s::#kind });
+                            let capabilities = k.iter().map(|cap| as_ident(cap));
 
-                                quote! {
-                                    if v.intersects(#(#kinds::#vals)|*) {
-                                        result.extend_from_slice(&[#( spirv::Capability::#capabilities ),*])
-                                    }
-                                }
-                            }).collect::<Vec<_>>();
-
-                        if capabilities.is_empty() {
-                            quote! {}
-                        } else {
                             quote! {
-                                Self::#kind(v) => {
-                                    let mut result = vec![];
-                                    #( #capabilities );*;
-                                    result
+                                if v.intersects(#(#kinds::#vals)|*) {
+                                    result.extend_from_slice(
+                                        &[#( spirv::Capability::#capabilities ),*]
+                                    )
                                 }
                             }
+                        })
+                        .collect::<Vec<_>>();
+
+                    if capabilities.is_empty() {
+                        quote! {}
+                    } else {
+                        quote! {
+                            Self::#kind(v) => {
+                                let mut result = vec![];
+                                #( #capabilities );*;
+                                result
+                            }
                         }
+                    }
                 } else {
                     let capabilities = capability_clauses.into_iter().map(|(k, vals)| {
                         let kinds = std::iter::repeat(quote! { s::#kind });
@@ -511,29 +515,27 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                 let operands = if operand_clauses.is_empty() {
                     quote! {}
                 } else if category == &structs::Category::BitEnum {
-                    let operands = operand_clauses
-                        .into_iter()
-                        .map(|(k, vals)| {
-                            let operands = k.iter().map(|op| {
-                                let kind = as_ident(&op.kind);
-                                let quant = translate_quant(op.quantifier);
-
-                                quote! {
-                                    crate::grammar::LogicalOperand {
-                                        kind: crate::grammar::OperandKind::#kind,
-                                        quantifier: #quant
-                                    }
-                                }
-                            });
-
-                            let kinds = std::iter::repeat(quote! { s::#kind });
+                    let operands = operand_clauses.into_iter().map(|(k, vals)| {
+                        let operands = k.iter().map(|op| {
+                            let kind = as_ident(&op.kind);
+                            let quant = translate_quant(op.quantifier);
 
                             quote! {
-                                result.extend([#(#kinds::#vals,)*].iter().filter(|arg| {
-                                    v.contains(**arg)
-                                }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
+                                crate::grammar::LogicalOperand {
+                                    kind: crate::grammar::OperandKind::#kind,
+                                    quantifier: #quant
+                                }
                             }
                         });
+
+                        let kinds = std::iter::repeat(quote! { s::#kind });
+
+                        quote! {
+                            result.extend([#(#kinds::#vals,)*].iter().filter(|arg| {
+                                v.contains(**arg)
+                            }).flat_map(|_| { [#( #operands ),*].iter().cloned() }))
+                        }
+                    });
 
                     quote! {
                         Self::#kind(v) => {
@@ -543,27 +545,25 @@ pub fn gen_dr_operand_kinds(grammar: &[structs::OperandKind]) -> TokenStream {
                         }
                     }
                 } else {
-                    let operands = operand_clauses
-                        .into_iter()
-                        .map(|(k, vals)| {
-                            let operands = k.iter().map(|op| {
-                                let kind = as_ident(&op.kind);
-                                let quant = translate_quant(op.quantifier);
-
-                                quote! {
-                                    crate::grammar::LogicalOperand {
-                                        kind: crate::grammar::OperandKind::#kind,
-                                        quantifier: #quant
-                                    }
-                                }
-                            });
-
-                            let kinds = std::iter::repeat(quote! { s::#kind });
+                    let operands = operand_clauses.into_iter().map(|(k, vals)| {
+                        let operands = k.iter().map(|op| {
+                            let kind = as_ident(&op.kind);
+                            let quant = translate_quant(op.quantifier);
 
                             quote! {
-                                #( #kinds::#vals )|* => vec![#( #operands ),*]
+                                crate::grammar::LogicalOperand {
+                                    kind: crate::grammar::OperandKind::#kind,
+                                    quantifier: #quant
+                                }
                             }
                         });
+
+                        let kinds = std::iter::repeat(quote! { s::#kind });
+
+                        quote! {
+                            #( #kinds::#vals )|* => vec![#( #operands ),*]
+                        }
+                    });
 
                     quote! {
                         Self::#kind(v) => match v {
@@ -659,8 +659,9 @@ pub fn gen_dr_builder_types(grammar: &structs::Grammar) -> TokenStream {
         let extras = get_push_extras(&inst.operands,
                                      kinds,
                                      quote! { inst.operands });
-        let opcode = as_ident(&inst.opname[2..]);
-        let name = as_ident(&inst.opname[2..].to_snake_case());
+        let opname = inst.opname.strip_prefix("Op").unwrap();
+        let opcode = as_ident(opname);
+        let name = as_ident(&opname.to_snake_case());
 
         let comment = format!("Appends an Op{} instruction and returns the result id, or return the existing id if the instruction was already present.", opcode);
         let name_id = format_ident!("{}_id", name);
@@ -719,7 +720,8 @@ pub fn gen_dr_builder_terminator(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+        let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!(
                 "Appends an Op{} instruction and ends the current block.",
                 opcode
@@ -790,7 +792,8 @@ pub fn gen_dr_builder_normal_insts(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, true, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction to the current block.", opcode);
             let name = get_function_name(&inst.opname);
             let insert_name = get_function_name_with_prepend("insert_", &inst.opname);
@@ -874,7 +877,8 @@ pub fn gen_dr_builder_constants(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction.", opcode);
             let name = get_function_name(&inst.opname);
             let init = get_init_list(&inst.operands);
@@ -912,7 +916,8 @@ pub fn gen_dr_builder_debug(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction.", opcode);
             let name = get_function_name(&inst.opname);
             let init = get_init_list(&inst.operands);
@@ -955,7 +960,8 @@ pub fn gen_dr_builder_annotation(grammar: &structs::Grammar) -> TokenStream {
         .map(|inst| {
             let params = get_param_list(&inst.operands, false, kinds);
             let extras = get_push_extras(&inst.operands, kinds, quote! { inst.operands });
-            let opcode = as_ident(&inst.opname[2..]);
+            let opname = inst.opname.strip_prefix("Op").unwrap();
+            let opcode = as_ident(opname);
             let comment = format!("Appends an Op{} instruction.", opcode);
             let name = get_function_name(&inst.opname);
             let init = get_init_list(&inst.operands);
